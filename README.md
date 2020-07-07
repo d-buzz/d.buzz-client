@@ -1,5 +1,5 @@
 # d.buzz-client
-Re-implementation of current (https://d.buzz)[d.buzz] using react.
+Re-implementation of current Hive Dapp [d.buzz](https://d.buzz) using react.
 
 ## TODOS
 
