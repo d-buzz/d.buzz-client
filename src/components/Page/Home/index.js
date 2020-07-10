@@ -1,36 +1,34 @@
-import React, { useEffect } from 'react'
-import { testRequest } from 'store/tests/actions'
-import compose from 'recompose/compose'
-import { bindActionCreators } from 'redux'
-import { connect} from 'react-redux'
+import React from 'react'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
+import { createUseStyles } from 'react-jss'
+
+const useStyles = createUseStyles({
+  blue: {
+    backgroundColor: 'blue'
+  },
+  red: {
+    backgroundColor: 'red',
+    height: '100vh',
+  }
+})
 
 const Home = (props) => {
-  const { testRequest, data } = props
+  const classes = useStyles()
   
-  useEffect(() => {
-    testRequest()
-    // eslint-disable-next-line
-  }, [])
-
   return (
     <React.Fragment>
-      <center>
-        <h2>{ JSON.stringify(data) }</h2>
-      </center>
+      <Container className={classes.container}>
+        <Row>
+          <Col className={classes.blue} xs={3}>1 of 3</Col>
+          <Col className={classes.red} xs={6}>2 of 3 (wider)</Col>
+          <Col className={classes.blue}>3 of 3</Col>
+        </Row>
+      </Container>
     </React.Fragment>
   )
 }
 
-const mapStateToProps = (state) => ({
-  data: state.tests.get('data'),
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    testRequest,
-  }, dispatch)
-})
-
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)(Home)
+export default Home
