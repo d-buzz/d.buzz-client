@@ -8,12 +8,12 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
   main: {
-    height: '100%', 
+    minHeight: '100vh', 
     borderLeft: '1px solid #c1bfbf', 
     borderRight: '1px solid #c1bfbf'
   },
   inner: {
-    widht: '98%',
+    width: '98%',
     margin: '0 auto',
   }
 })
