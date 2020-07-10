@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container'
 import { StickyContainer, Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Navbar from 'react-bootstrap/Navbar'
 import { SideBarLeft, SideBarRight } from 'components'
 import { createUseStyles } from 'react-jss'
 
@@ -26,7 +27,7 @@ const AppFrame = (props) => {
     <Container>
        <StickyContainer>
          <Row>
-          <Col lg={3} md>
+          <Col lg={2} md>
             <Sticky>
               {
                 ({ style }) => (
@@ -37,8 +38,19 @@ const AppFrame = (props) => {
               }
             </Sticky>
           </Col>
-          <Col xs={6}>
+          <Col xs={7}>
             <div className={classes.main}>
+              <Sticky>
+              {
+                ({ style }) => (
+                  <Navbar style={{ ...style, borderBottom: '1px solid #c1bfbf' }} expand="lg" variant="light" bg="light">
+                    <Container>
+                      <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>Home</Navbar.Brand>
+                    </Container>
+                  </Navbar>
+                )
+              }
+              </Sticky>
               <div className={classes.inner}>
                 { children }
               </div>
