@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "bootstrap": "^4.5.0",
+    "classnames": "^2.2.6",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.13.1",
     "react-bootstrap": "^1.1.1",

@@ -1,11 +1,22 @@
 import React from 'react'
 import ListGroup from 'react-bootstrap/ListGroup'
-import Form from 'react-bootstrap/Form'
+import { createUseStyles } from 'react-jss'
+import { RoundedField } from 'components/elements'
+
+
+const useStyles = createUseStyles({
+  search: {
+    marginBottom: 5,
+    marginTop: 5,
+  }
+})
 
 const SideBarRight = () => {
+  const classes = useStyles()
+
   return (
     <React.Fragment>
-      <Form.Control type="email" placeholder="Search D.buzz" />
+      <RoundedField placeholder="Search D.Buzz" className={classes.search} />
       <br />
       <ListGroup>
         <ListGroup.Item>Cras justo odio</ListGroup.Item>

@@ -1,48 +1,160 @@
 import React from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
-import NavLink from 'react-bootstrap/NavLink'
-import { BrandIcon } from 'components'
+import Image from 'react-bootstrap/Image'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
+import { 
+  HomeIcon,
+  BrandIcon,
+  TrendingIcon,
+  LatestIcon,
+  NotificationsIcon,
+  ProfileIcon, 
+} from 'components/elements'
 
 const useStyles = createUseStyles({
   items: {
     fontFamily: 'Roboto, sans-serif',
-    color: 'black',
+    width: 'max-content',
     fontSize: 20,
+    padding: 8,
+    marginBottom: 15,
+    '& a': {
+      color: 'black',
+      textDecoration: 'none',
+      padding: 6,
+      '&:hover': {
+        color: '#e53935'
+      }
+    },
+    '&:hover': {
+      backgroundColor: '#ffebee',
+      borderRadius: '50px 50px',
+      cursor: 'pointer',
+      '& a': {
+        color: '#e53935',
+      },
+      '& svg': {
+        '& path': {
+          stroke: 'red',
+        },
+      }
+    },
   },
-
+  navLinkContainer: {
+    marginTop: 20,
+  },
+  bottom: {
+    position: 'absolute',
+    bottom: 0
+  },
+  inline: {
+    display: 'inline-block',
+  }
 })
 
-const LinkContainer = ({ children, className }) => {
+const NavLinks = [
+  {
+    name: 'Home',
+    path: '/home',
+    icon: <HomeIcon top={-5} />,
+  },
+  {
+    name: 'Trending',
+    path: '/trending',
+    icon: <TrendingIcon top={-5} />
+  },
+  {
+    name: 'Latest',
+    path: '/latest',
+    icon: <LatestIcon top={-5} />
+  },
+  {
+    name: 'Notifications',
+    path: '/notifications',
+    icon: <NotificationsIcon top={-5} />,
+  },
+  {
+    name: 'Profile',
+    path: '/@stinkymonkeyph',
+    icon: <ProfileIcon top={-5} />,
+  },
+]
+
+const LinkContainer = ({ children }) => {
   return (
     <div style={{ width: 'auto' }}>
-      <div style={{ marginLeft: 10 }}>
+      <div>
         { children }
       </div>
     </div>
   )
 }
 
+const IconWrapper = ({ children, className }) => {
+  return (
+    <div style={{ paddingLeft: 5, paddingRight: 10 }} className={className}>
+      { children }
+    </div>
+  )
+}
+
+const NavLinkWrapper = ({ path, name, icon, textClass, iconClass }) => {
+  return (
+    <React.Fragment>
+      <div className={textClass}>
+        <IconWrapper className={iconClass}>{ icon }</IconWrapper> <a href={path}>{ name }</a>
+      </div>
+    </React.Fragment>
+  )
+}
+
 const SideBarLeft = () => {
   const classes = useStyles()
+  const profileImage = 'https://images.hive.net.ph/u/hive-net-ph/avatar/small'
 
   return (
     <React.Fragment>
-      <Nav defaultActiveKey="/home" className="flex-column">
-        <LinkContainer >
-          <NavbarBrand href="#">
-            <div style={{ marginLeft: 15, marginRight: 15 }}>
-              <BrandIcon />
+      <div style={{ height: '100vh', width: '50px' }}>
+        <Nav className="flex-row">
+          <LinkContainer >
+            <NavbarBrand href="#">
+              <div style={{ marginLeft: 15, marginRight: 15 }}>
+                <BrandIcon />
+              </div>
+            </NavbarBrand>
+            <div className={classes.navLinkContainer}>
+              {
+                NavLinks.map((item) => (
+                  <NavLinkWrapper 
+                    { ...item } 
+                    textClass={classes.items} 
+                    iconClass={classes.inline} 
+                  />
+                ))
+              }
             </div>
-          </NavbarBrand>
-          <div style={{ marginTop: 20 }}> 
-            <NavLink className={classes.items}>
-              Home
-            </NavLink>
-          </div>
-        </LinkContainer>
-      </Nav>
+            <div className={classes.bottom}>
+              <Row>
+                <Col md="auto" p="0" style={{ width: 'max-content', paddingRight: 0, paddingLeft: 35 }}>
+                  <Image 
+                    src={profileImage}
+                    roundedCircle
+                    height={50} 
+                    className={classes.inline}
+                  />
+                </Col>
+                <Col style={{ marginLeft: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 'bold' }}>stinkymonekyph</p>
+                  <p style={{ fontSize: 13, marginTop: -15 }}>@stinkymonkeyph</p>
+                </Col>
+              </Row>
+            </div>
+          </LinkContainer>
+        </Nav>
+      </div>
     </React.Fragment>
   )
 }

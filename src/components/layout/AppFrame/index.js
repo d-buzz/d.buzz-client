@@ -10,8 +10,8 @@ import { createUseStyles } from 'react-jss'
 const useStyles = createUseStyles({
   main: {
     minHeight: '100vh', 
-    borderLeft: '1px solid #c1bfbf', 
-    borderRight: '1px solid #c1bfbf'
+    borderLeft: '1px solid #e6ecf0', 
+    borderRight: '1px solid #e6ecf0'
   },
   inner: {
     width: '98%',
@@ -27,7 +27,7 @@ const AppFrame = (props) => {
     <Container>
        <StickyContainer>
          <Row>
-          <Col lg={2} md>
+          <Col xs={2}>
             <Sticky>
               {
                 ({ style }) => (
@@ -43,7 +43,7 @@ const AppFrame = (props) => {
               <Sticky>
               {
                 ({ style }) => (
-                  <Navbar style={{ ...style, borderBottom: '1px solid #c1bfbf' }} expand="lg" variant="light" bg="light">
+                  <Navbar style={{ ...style, borderBottom: '1px solid #e6ecf0' }} expand="lg" variant="light" bg="light">
                     <Container>
                       <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>Home</Navbar.Brand>
                     </Container>
