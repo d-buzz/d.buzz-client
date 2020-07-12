@@ -11,8 +11,10 @@ import {
   TrendingIcon,
   LatestIcon,
   NotificationsIcon,
-  ProfileIcon, 
+  ProfileIcon,
+  ContainedButton, 
 } from 'components/elements'
+
 
 const useStyles = createUseStyles({
   items: {
@@ -135,6 +137,7 @@ const SideBarLeft = () => {
                   />
                 ))
               }
+              <ContainedButton fontSize={18} label="Buzz" style={{ width: '100%' }} />
             </div>
             <div className={classes.bottom}>
               <Row>

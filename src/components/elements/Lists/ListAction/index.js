@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
     '&:hover': {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: 'rgba(0, 0, 0, 0.03)',
     }
   },
   label: {

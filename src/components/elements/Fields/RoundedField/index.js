@@ -46,7 +46,7 @@ const RoundedFields = (props) => {
     icon = '' 
   } = props
 
-  let defaultInputStyle = { width: 'auto', paddingLeft: 5, paddingRight: 5 }
+  let defaultInputStyle = { width: '100%', paddingLeft: 5, paddingRight: 5 }
 
   if(icon) {
     defaultInputStyle = {}

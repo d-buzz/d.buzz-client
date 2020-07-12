@@ -43,7 +43,7 @@ const AppFrame = (props) => {
               <Sticky>
               {
                 ({ style }) => (
-                  <Navbar style={{ ...style, borderBottom: '1px solid #e6ecf0' }} expand="lg" variant="light" bg="light">
+                  <Navbar style={{ ...style, borderBottom: '1px solid #e6ecf0', backgroundColor: 'white' }} expand="lg">
                     <Container>
                       <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>Home</Navbar.Brand>
                     </Container>
@@ -51,9 +51,7 @@ const AppFrame = (props) => {
                 )
               }
               </Sticky>
-              <div className={classes.inner}>
-                { children }
-              </div>
+              { children }
             </div>
           </Col>
           <Col xs={3}>
