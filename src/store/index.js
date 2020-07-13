@@ -2,17 +2,17 @@
 import { combineReducers } from 'redux'
 import { fork, all } from 'redux-saga/effects'
 
-import { tests } from './tests/reducers'
+import { posts } from './posts/reducers'
 import { reducer as thunkReducer } from 'redux-saga-thunk'
-import * as testSagas from './tests/sagas'
+import * as postSagas from './posts/sagas'
 
 export const rootReducer = combineReducers({
   thunk: thunkReducer,
-  tests,
+  posts,
 })
   
 export function* rootSaga() {
   yield all([
-    ...Object.values(testSagas),
+    ...Object.values(postSagas),
   ].map(fork))
 }

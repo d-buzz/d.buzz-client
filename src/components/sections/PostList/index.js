@@ -80,110 +80,65 @@ const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
   )
 }
 
-const PostList = () => {
+const PostList = (props) => {
+  const { items } = props
   const classes = useStyle()
-  const profileImage = 'https://images.hive.net.ph/u/postnzt/avatar/small'
 
   return (
     <React.Fragment>
-      <div className={classes.wrapper}>
-        <a href="/thread" style={{ heigt: 'max-content' }}>
-          <div className={classes.row}>
-              <div className={classNames(classes.inline, classes.left)}>
-                <Image 
-                  src={profileImage}
-                  roundedCircle
-                  height={50}
-                />
-                <div style={{ position: 'relative', width: 10, margin: '0 auto', display: 'block', flexDirection: 'column', height: '100%', backroundColor: 'red' }}></div>
+      {
+        items.map((item) => (
+          <div className={classes.wrapper}>
+            <a href="/thread" style={{ heigt: 'max-content' }}>
+              <div className={classes.row}>
+                  <div className={classNames(classes.inline, classes.left)}>
+                    <Image 
+                      src={`https://images.hive.net.ph/u/${item.author}/avatar/small`}
+                      roundedCircle
+                      height={50}
+                    />
+                    <div style={{ position: 'relative', width: 10, margin: '0 auto', display: 'block', flexDirection: 'column', height: '100%', backroundColor: 'red' }}></div>
+                  </div>
+                  <div className={classNames(classes.inline, classes.right)}>
+                    <div className={classes.content}>
+                      <label className={classes.name}>{item.author}</label>
+                      <label className={classes.username}>{ `@${item.author}` } &bull; 1h</label>
+                      <p className={classes.post}>{ item.title }</p>
+                      <img src="./sample-post-1.jpeg" alt="post" style={{ width: 'calc(100% - 20px)' }} />
+                    </div>
+                    <div className={classes.actionWrapper}>
+                      <ActionWrapper
+                        className={classes.actionWrapperSpace}
+                        inlineClass={classes.inline} 
+                        icon={<IconButton icon={<HeartIcon />} />}
+                        stat={
+                          <label style={{ marginTop: 5, marginLeft: 5, }}>
+                            300
+                          </label>
+                        }
+                      />
+                      <ActionWrapper
+                        className={classes.actionWrapperSpace}
+                        inlineClass={classes.inline} 
+                        icon={<IconButton icon={<CommentIcon />} />}
+                        stat={
+                          <label style={{ marginTop: 5, marginLeft: 5, }}>
+                            200
+                          </label>
+                        }
+                      />
+                      <ActionWrapper
+                        className={classes.actionWrapperSpace}
+                        inlineClass={classes.inline} 
+                        icon={<IconButton icon={<FlagIcon />} />}
+                      />
+                    </div>
+                  </div>
               </div>
-              <div className={classNames(classes.inline, classes.right)}>
-                <div className={classes.content}>
-                  <label className={classes.name}>Jhune Carlo Trogelio</label>
-                  <label className={classes.username}>@postnzt &bull; 1h</label>
-                  <p className={classes.post}>The only solution to Corona Virus</p>
-                  <img src="./sample-post-1.jpeg" alt="post" style={{ width: 'calc(100% - 20px)' }} />
-                </div>
-                <div className={classes.actionWrapper}>
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline} 
-                    icon={<IconButton icon={<HeartIcon />} />}
-                    stat={
-                      <label style={{ marginTop: 5, marginLeft: 5, }}>
-                        300
-                      </label>
-                    }
-                  />
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline} 
-                    icon={<IconButton icon={<CommentIcon />} />}
-                    stat={
-                      <label style={{ marginTop: 5, marginLeft: 5, }}>
-                        200
-                      </label>
-                    }
-                  />
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline} 
-                    icon={<IconButton icon={<FlagIcon />} />}
-                  />
-                </div>
-              </div>
+            </a>
           </div>
-        </a>
-      </div>
-      <div className={classes.wrapper}>
-        <a href="/thread" style={{ heigt: 'max-content' }}>
-          <div className={classes.row}>
-              <div className={classNames(classes.inline, classes.left)}>
-                <Image 
-                  src={profileImage}
-                  roundedCircle
-                  height={50}
-                />
-                <div style={{ position: 'relative', width: 10, margin: '0 auto', display: 'block', flexDirection: 'column', height: '100%', backroundColor: 'red' }}></div>
-              </div>
-              <div className={classNames(classes.inline, classes.right)}>
-                <div className={classes.content}>
-                  <label className={classes.name}>Jhune Carlo Trogelio</label>
-                  <label className={classes.username}>@postnzt  &bull; 2h</label>
-                  <p className={classes.post}>Kawaiii</p>
-                  <img src="./sample-post-2.jpeg" alt="post" style={{ width: 'calc(100% - 20px)' }} />
-                </div>
-                <div className={classes.actionWrapper}>
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline} 
-                    icon={<IconButton icon={<HeartIcon />} />}
-                    stat={
-                      <label style={{ marginTop: 5, marginLeft: 5, }}>
-                        300
-                      </label>
-                    }
-                  />
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline} 
-                    icon={<IconButton icon={<CommentIcon />} />}
-                    stat={
-                      <label style={{ marginTop: 5, marginLeft: 5, }}>
-                        200
-                      </label>
-                    }
-                  />
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline} 
-                    icon={<IconButton icon={<FlagIcon />} />}
-                  />
-                </div>
-              </div>
-          </div>
-        </a>
-      </div>
+        ))
+      }
     </React.Fragment>
   )
 }

@@ -1,4 +1,3 @@
-
 const config = {
   TAG: 'hive-193084',
 }
