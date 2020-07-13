@@ -16,6 +16,10 @@ const useStyles = createUseStyles({
   inner: {
     width: '98%',
     margin: '0 auto',
+  },
+  nav: {
+    borderBottom: '1px solid #e6ecf0', 
+    backgroundColor: 'white',
   }
 })
 
@@ -43,7 +47,7 @@ const AppFrame = (props) => {
               <Sticky>
               {
                 ({ style }) => (
-                  <Navbar style={{ ...style, borderBottom: '1px solid #e6ecf0', backgroundColor: 'white' }} expand="lg">
+                  <Navbar style={{ ...style,  }} className={classes.nav} expand="lg">
                     <Container>
                       <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>Home</Navbar.Brand>
                     </Container>

@@ -174,6 +174,11 @@ const PostList = () => {
                       </label>
                     }
                   />
+                  <ActionWrapper
+                    className={classes.actionWrapperSpace}
+                    inlineClass={classes.inline} 
+                    icon={<IconButton icon={<FlagIcon />} />}
+                  />
                 </div>
               </div>
           </div>
