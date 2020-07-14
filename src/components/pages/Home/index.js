@@ -9,7 +9,7 @@ const Home = (props) => {
 
   useEffect(() => {
     getRankedPostRequest()
-    // eslint-disable-next-line
+    //eslint-disable-next-line
   }, [])
   
   return (

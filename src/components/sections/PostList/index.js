@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'react-bootstrap/Image'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { 
@@ -7,7 +6,11 @@ import {
   IconButton,
   HeartIcon,
   FlagIcon,
+  Avatar,
 } from 'components/elements'
+import { MarkdownViewer } from 'components'
+import { ReactTinyLink } from 'react-tiny-link'
+import markdownLinkExtractor from 'markdown-link-extractor'
 
 const useStyle = createUseStyles({
   row: {
@@ -57,6 +60,9 @@ const useStyle = createUseStyles({
     width: '100%',
     '& img': {
       borderRadius: '15px 15px',
+    },
+    '& iframe': {
+      borderRadius: '15px 15px',
     }
   },
   actionWrapper: {
@@ -64,8 +70,57 @@ const useStyle = createUseStyles({
   },
   actionWrapperSpace: {
     paddingRight: 30,
+  },
+  preview: {
+    '& a': {
+      borderRadius: '10px 10px',
+      boxShadow: 'none',
+    }
   }
 })
+
+const PreviewLastLink = ({ className, content }) => {
+  const links  = markdownLinkExtractor(content)
+  let isValidUrl = false
+  let url = ''
+
+  if(links.length !== 0) {
+    for(let index = links.length; index > 0 ; index--) {
+      const link = links[index-1]
+      if(!link.includes('images.hive.blog') 
+          && !link.includes('img.') 
+          && !link.includes('youtu.be') 
+          && !link.includes('files.peakd') 
+          && !link.includes('youtube') 
+          && !link.includes('3speak')) {
+        url = link
+        isValidUrl = true
+        break;
+      }
+    }
+  }
+  
+  return (
+    <React.Fragment>
+      { 
+        isValidUrl ? (
+          <div className={className}>
+            <ReactTinyLink
+              width="95%"
+              borderRadius="50px 50px"
+              cardSize="small"
+              showGraphic={true}
+              maxLine={2}
+              minLine={1}
+              url={url}
+            />
+          </div>
+        ) : ''
+      }      
+    </React.Fragment>
+  )
+}
+
 
 const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
   return (
@@ -92,19 +147,18 @@ const PostList = (props) => {
             <a href="/thread" style={{ heigt: 'max-content' }}>
               <div className={classes.row}>
                   <div className={classNames(classes.inline, classes.left)}>
-                    <Image 
-                      src={`https://images.hive.net.ph/u/${item.author}/avatar/small`}
-                      roundedCircle
-                      height={50}
-                    />
+                    <Avatar author={item.author} />
                     <div style={{ position: 'relative', width: 10, margin: '0 auto', display: 'block', flexDirection: 'column', height: '100%', backroundColor: 'red' }}></div>
                   </div>
                   <div className={classNames(classes.inline, classes.right)}>
                     <div className={classes.content}>
                       <label className={classes.name}>{item.author}</label>
                       <label className={classes.username}>{ `@${item.author}` } &bull; 1h</label>
-                      <p className={classes.post}>{ item.title }</p>
-                      <img src="./sample-post-1.jpeg" alt="post" style={{ width: 'calc(100% - 20px)' }} />
+                      <MarkdownViewer content={item.body} />
+                      <PreviewLastLink 
+                        className={classes.preview} 
+                        content={item.body} 
+                      />
                     </div>
                     <div className={classes.actionWrapper}>
                       <ActionWrapper

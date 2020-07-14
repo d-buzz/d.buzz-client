@@ -2,7 +2,7 @@ export const GET_RANKED_POST_REQUEST = 'GET_RANKED_POST_REQUEST'
 export const GET_RANKED_POST_SUCCESS = 'GET_RANKED_POST_SUCCESS'
 export const GET_RANKED_POST_FAILURE = 'GET_RANKED_POST_FAILURE'
 
-export const getRankedPostRequest = (sort = 'trending', start_permlink = '', start_author = '') => ({
+export const getRankedPostRequest = (sort = 'created', start_permlink = '', start_author = '') => ({
   type: GET_RANKED_POST_REQUEST,
   payload: { sort, start_permlink, start_author },
   meta: {

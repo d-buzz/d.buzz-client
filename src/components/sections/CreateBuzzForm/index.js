@@ -1,8 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
-import Image from 'react-bootstrap/Image'
 import { createUseStyles } from 'react-jss'
-import { TextArea, ContainedButton } from 'components/elements'
+import { TextArea, ContainedButton, Avatar } from 'components/elements'
 
 const useStyles = createUseStyles({
   container: {
@@ -35,17 +34,12 @@ const useStyles = createUseStyles({
 
 const CreateBuzzForm = () => {
   const classes = useStyles()
-  const profileImage = 'https://images.hive.net.ph/u/hive-net-ph/avatar/small'
 
   return (
     <div className={classes.container}>
       <div className={classes.row}>
         <div className={classNames(classes.inline, classes.left)}>
-          <Image 
-            src={profileImage}
-            roundedCircle
-            height={50}
-          />
+          <Avatar author={'hive-net-ph'} />
         </div>
         <div className={classNames(classes.inline, classes.right)}>
           <TextArea />

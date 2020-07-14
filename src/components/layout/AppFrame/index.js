@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
   main: {
     minHeight: '100vh', 
     borderLeft: '1px solid #e6ecf0', 
-    borderRight: '1px solid #e6ecf0'
+    borderRight: '1px solid #e6ecf0',
   },
   inner: {
     width: '98%',
@@ -20,6 +20,7 @@ const useStyles = createUseStyles({
   nav: {
     borderBottom: '1px solid #e6ecf0', 
     backgroundColor: 'white',
+    zIndex: 100,
   }
 })
 
