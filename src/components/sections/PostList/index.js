@@ -12,7 +12,7 @@ import { MarkdownViewer } from 'components'
 import { ReactTinyLink } from 'react-tiny-link'
 import moment from 'moment'
 import markdownLinkExtractor from 'markdown-link-extractor'
-import InfiniteScroll from 'react-infinite-scroll-component'
+
 
 const useStyle = createUseStyles({
   row: {
@@ -144,10 +144,7 @@ const PostList = (props) => {
 
   return (
     <React.Fragment>
-      <InfiniteScroll
-          dataLength={items.length || 0}
-          hasMore={true}
-        >
+     
         {
           items.map((item) => (
             <div className={classes.wrapper}>
@@ -202,7 +199,6 @@ const PostList = (props) => {
             </div>
           ))
         }
-      </InfiniteScroll>
     </React.Fragment>
   )
 }

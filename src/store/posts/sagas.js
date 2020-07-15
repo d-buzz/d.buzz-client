@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from "redux-saga/effects"
+import { select, call, put, takeEvery } from "redux-saga/effects"
 import {
   GET_RANKED_POST_REQUEST,
   getRankedPostSuccess,
@@ -15,7 +15,13 @@ function* getRankedPostRequest(payload, meta) {
   const method = 'get_ranked_posts'
   
   try {
-    const data = yield call(callBridge, method, params)
+
+    let old = yield select( state => state.posts.get('items'))
+   
+    let data = yield call(callBridge, method, params)
+    
+    data = [ ...old, ...data]
+    
     yield put(setLastPost(data[data.length-1]))
     yield put(getRankedPostSuccess(data, meta))
   } catch(error) {
