@@ -22,4 +22,11 @@ export const getRankedPostFailure = (error, meta) => ({
   meta,
 })
 
+export const SET_LAST_POST = 'SET_LAST_POST'
+
+export const setLastPost = (post) => ({
+  type: SET_LAST_POST,
+  payload: post,
+})
+
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
+import config from 'config'
 import { 
   RoundedField,
   SearchIcon,
@@ -55,7 +56,7 @@ const SideBarRight = () => {
           <a href="/terms">Privacy Policy</a>
           <a href="/terms">Cookies</a>
           <a href="/terms">About</a> <br/ >
-          <label>&copy; D.Buzz, LLC</label>
+          <label>&copy; D.Buzz, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
         </div>
       </div>
     </React.Fragment>

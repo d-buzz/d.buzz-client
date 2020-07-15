@@ -3,6 +3,7 @@ import {
   GET_RANKED_POST_REQUEST,
   getRankedPostSuccess,
   getRankedPostFailure,
+  setLastPost,
 } from './actions'
 import { callBridge } from 'services/api'
 import config from 'config'
@@ -15,6 +16,7 @@ function* getRankedPostRequest(payload, meta) {
   
   try {
     const data = yield call(callBridge, method, params)
+    yield put(setLastPost(data[data.length-1]))
     yield put(getRankedPostSuccess(data, meta))
   } catch(error) {
     yield put(getRankedPostFailure(error, meta))

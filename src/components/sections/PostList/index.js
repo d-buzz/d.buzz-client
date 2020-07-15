@@ -10,7 +10,9 @@ import {
 } from 'components/elements'
 import { MarkdownViewer } from 'components'
 import { ReactTinyLink } from 'react-tiny-link'
+import moment from 'moment'
 import markdownLinkExtractor from 'markdown-link-extractor'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const useStyle = createUseStyles({
   row: {
@@ -88,7 +90,8 @@ const PreviewLastLink = ({ className, content }) => {
     for(let index = links.length; index > 0 ; index--) {
       const link = links[index-1]
       if(!link.includes('images.hive.blog') 
-          && !link.includes('img.') 
+          && !link.includes('img.')
+          && !link.includes('.jpg') 
           && !link.includes('youtu.be') 
           && !link.includes('files.peakd') 
           && !link.includes('youtube') 
@@ -136,63 +139,70 @@ const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
 }
 
 const PostList = (props) => {
-  const { items } = props
+  const { items = [] } = props
   const classes = useStyle()
 
   return (
     <React.Fragment>
-      {
-        items.map((item) => (
-          <div className={classes.wrapper}>
-            <a href="/thread" style={{ heigt: 'max-content' }}>
-              <div className={classes.row}>
-                  <div className={classNames(classes.inline, classes.left)}>
-                    <Avatar author={item.author} />
-                    <div style={{ position: 'relative', width: 10, margin: '0 auto', display: 'block', flexDirection: 'column', height: '100%', backroundColor: 'red' }}></div>
-                  </div>
-                  <div className={classNames(classes.inline, classes.right)}>
-                    <div className={classes.content}>
-                      <label className={classes.name}>{item.author}</label>
-                      <label className={classes.username}>{ `@${item.author}` } &bull; 1h</label>
-                      <MarkdownViewer content={item.body} />
-                      <PreviewLastLink 
-                        className={classes.preview} 
-                        content={item.body} 
-                      />
+      <InfiniteScroll
+          dataLength={items.length || 0}
+          hasMore={true}
+        >
+        {
+          items.map((item) => (
+            <div className={classes.wrapper}>
+              <a href="/thread" style={{ heigt: 'max-content' }}>
+                <div className={classes.row}>
+                    <div className={classNames(classes.inline, classes.left)}>
+                      <Avatar author={item.author} />
                     </div>
-                    <div className={classes.actionWrapper}>
-                      <ActionWrapper
-                        className={classes.actionWrapperSpace}
-                        inlineClass={classes.inline} 
-                        icon={<IconButton icon={<HeartIcon />} />}
-                        stat={
-                          <label style={{ marginTop: 5, marginLeft: 5, }}>
-                            300
+                    <div className={classNames(classes.inline, classes.right)}>
+                      <div className={classes.content}>
+                        <label className={classes.name}>{item.author}</label>
+                          <label className={classes.username}>
+                            { `@${item.author}` } &bull;&nbsp; 
+                            { moment(item.created).fromNow() }
                           </label>
-                        }
-                      />
-                      <ActionWrapper
-                        className={classes.actionWrapperSpace}
-                        inlineClass={classes.inline} 
-                        icon={<IconButton icon={<CommentIcon />} />}
-                        stat={
-                          <label style={{ marginTop: 5, marginLeft: 5, }}>
-                            200
-                          </label>
-                        }
-                      />
-                      <ActionWrapper
-                        className={classes.actionWrapperSpace}
-                        inlineClass={classes.inline} 
-                        icon={<IconButton icon={<FlagIcon />} />}
-                      />
+                        <MarkdownViewer content={item.body} />
+                        <PreviewLastLink 
+                          className={classes.preview} 
+                          content={item.body} 
+                        />
+                      </div>
+                      <div className={classes.actionWrapper}>
+                        <ActionWrapper
+                          className={classes.actionWrapperSpace}
+                          inlineClass={classes.inline} 
+                          icon={<IconButton icon={<HeartIcon />} />}
+                          stat={
+                            <label style={{ marginTop: 5, marginLeft: 5, }}>
+                              { item.active_votes.length }
+                            </label>
+                          }
+                        />
+                        <ActionWrapper
+                          className={classes.actionWrapperSpace}
+                          inlineClass={classes.inline} 
+                          icon={<IconButton icon={<CommentIcon />} />}
+                          stat={
+                            <label style={{ marginTop: 5, marginLeft: 5, }}>
+                              { item.children }
+                            </label>
+                          }
+                        />
+                        <ActionWrapper
+                          className={classes.actionWrapperSpace}
+                          inlineClass={classes.inline} 
+                          icon={<IconButton icon={<FlagIcon />} />}
+                        />
+                      </div>
                     </div>
-                  </div>
-              </div>
-            </a>
-          </div>
-        ))
-      }
+                </div>
+              </a>
+            </div>
+          ))
+        }
+      </InfiniteScroll>
     </React.Fragment>
   )
 }
