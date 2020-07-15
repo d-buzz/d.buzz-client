@@ -1,6 +1,6 @@
 {
   "name": "d.buzz-client",
-  "version": "0.1.0",
+  "version": "0.1.0-dev",
   "private": true,
   "dependencies": {
     "@ashwamegh/react-link-preview": "^0.2.2",
@@ -15,11 +15,14 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.1.1",
     "react-dom": "^16.13.1",
+    "react-infinite-scroll-component": "^5.0.5",
     "react-jss": "^10.3.0",
+    "react-loading-skeleton": "^2.1.1",
     "react-redux": "^7.2.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-spinners": "^0.9.0",
     "react-sticky": "^6.0.3",
     "react-textarea-autosize": "^8.2.0",
     "react-tiny-link": "^3.5.0",
