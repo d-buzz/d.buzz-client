@@ -24,6 +24,7 @@ const useStyle = createUseStyles({
   },
   wrapper: {
     width: '100%',
+    overflow: 'hidden',
     borderBottom: '1px solid #e6ecf0',
     '& a': {
       color: 'black',
@@ -38,7 +39,7 @@ const useStyle = createUseStyles({
     verticalAlign: 'top',
   },
   left: {
-    height: '100%',
+    flex: 1,
     width: 60,
   },
   right: {
@@ -66,7 +67,7 @@ const useStyle = createUseStyles({
     },
     '& iframe': {
       borderRadius: '15px 15px',
-    }
+    },
   },
   actionWrapper: {
     paddingTop: 10,
@@ -79,7 +80,15 @@ const useStyle = createUseStyles({
       borderRadius: '10px 10px',
       boxShadow: 'none',
     }
-  }
+  },
+  tags: {
+    wordWrap: 'break-word',
+    width: 'calc(100% - 60px)',
+    height: 'max-content',
+    '& a': {
+      color: '#d32f2f',
+    },
+  },
 })
 
 const PreviewLastLink = ({ className, content }) => {
@@ -90,13 +99,11 @@ const PreviewLastLink = ({ className, content }) => {
   if(links.length !== 0) {
     for(let index = links.length; index > 0 ; index--) {
       const link = links[index-1]
-      if(!link.includes('images.hive.blog') 
-          && !link.includes('img.')
+      if(!link.includes('images.hive.blog')
           && !link.includes('youtu.be') 
           && !link.includes('files.peakd') 
-          && !link.includes('youtube')
-          && !link.includes(['.png', '.jpg', '.gif']) 
-          && !link.includes('3speak')) {
+          && !link.includes('youtube.com/watch?v=')
+          && !link.match(/\.(jpeg|jpg|gif|png)$/)) {
         url = link
         isValidUrl = true
         break;
@@ -139,6 +146,23 @@ const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
   )
 }
 
+const PostTags = ({ className, meta }) => {
+  let tags = []
+  if('tags' in meta) {
+    tags = meta.tags
+  }
+
+  return (
+    <div className={className}>
+      {
+        tags.map((tag) => (
+          <a href="/" style={{ marginRight: 5 }}>#{ tag }</a> 
+        ))
+      }
+    </div>
+  )
+}
+
 const PostList = (props) => {
   const { items = [] } = props
   const classes = useStyle()
@@ -153,7 +177,7 @@ const PostList = (props) => {
                 <div className={classes.row}>
                     <div className={classNames(classes.inline, classes.left)}>
                       <Avatar author={item.author} />
-                      <div style={{ height: '100%', backgroundColor: 'red' }}>
+                      <div style={{ flex: 1, backgroundColor: 'red', width: 30 }}>
 
                       </div>
                     </div>
@@ -169,6 +193,7 @@ const PostList = (props) => {
                           className={classes.preview} 
                           content={item.body} 
                         />
+                        <PostTags meta={item.json_metadata} className={classes.tags} />
                       </div>
                       <div className={classes.actionWrapper}>
                         <ActionWrapper
