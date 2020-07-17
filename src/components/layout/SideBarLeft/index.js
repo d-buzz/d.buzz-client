@@ -4,6 +4,7 @@ import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Image from 'react-bootstrap/Image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import { 
@@ -31,9 +32,6 @@ const useStyles = createUseStyles({
       '&:hover': {
         color: '#e53935'
       },
-      '&.active': {
-        color: 'red',
-      },
     },
     '&:hover': {
       backgroundColor: '#ffebee',
@@ -48,6 +46,19 @@ const useStyles = createUseStyles({
         },
       }
     },
+  },
+  activeItem: {
+    backgroundColor: '#ffebee',
+    borderRadius: '50px 50px',
+    cursor: 'pointer',
+    '& a': {
+      color: '#e53935',
+    },
+    '& svg': {
+      '& path': {
+        stroke: 'red',
+      },
+    }
   },
   navLinkContainer: {
     marginTop: 20,
@@ -64,7 +75,7 @@ const useStyles = createUseStyles({
 const NavLinks = [
   {
     name: 'Home',
-    path: '/home',
+    path: '/',
     icon: <HomeIcon top={-5} />,
   },
   {
@@ -107,10 +118,24 @@ const IconWrapper = ({ children, className }) => {
   )
 }
 
-const NavLinkWrapper = ({ path, name, icon, textClass, iconClass }) => {
+const NavLinkWrapper = (props) => {
+  const { 
+    path,
+    name,
+    icon,
+    active,
+    textClass,
+    iconClass,
+    activeClass,
+  } = props
+
+  const isActivePath = (path, current) => {
+    return path === current
+  }
+
   return (
     <React.Fragment>
-      <div className={textClass}>
+      <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
         <IconWrapper className={iconClass}>{ icon }</IconWrapper> <a href={path}>{ name }</a>
       </div>
     </React.Fragment>
@@ -139,6 +164,8 @@ const SideBarLeft = () => {
                     { ...item } 
                     textClass={classes.items} 
                     iconClass={classes.inline}
+                    activeClass={classes.activeItem}
+                    active={location.pathname}
                   />
                 ))
               }
