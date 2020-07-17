@@ -5,6 +5,7 @@ import Image from 'react-bootstrap/Image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
+import { useLocation } from 'react-router-dom'
 import { 
   HomeIcon,
   BrandIcon,
@@ -29,7 +30,10 @@ const useStyles = createUseStyles({
       padding: 6,
       '&:hover': {
         color: '#e53935'
-      }
+      },
+      '&.active': {
+        color: 'red',
+      },
     },
     '&:hover': {
       backgroundColor: '#ffebee',
@@ -116,6 +120,7 @@ const NavLinkWrapper = ({ path, name, icon, textClass, iconClass }) => {
 const SideBarLeft = () => {
   const classes = useStyles()
   const profileImage = 'https://images.hive.net.ph/u/hive-net-ph/avatar/small'
+  const location = useLocation()
 
   return (
     <React.Fragment>
@@ -133,7 +138,7 @@ const SideBarLeft = () => {
                   <NavLinkWrapper 
                     { ...item } 
                     textClass={classes.items} 
-                    iconClass={classes.inline} 
+                    iconClass={classes.inline}
                   />
                 ))
               }

@@ -7,6 +7,7 @@ import {
   HeartIcon,
   FlagIcon,
   Avatar,
+  HiveIcon,
 } from 'components/elements'
 import { MarkdownViewer } from 'components'
 import { ReactTinyLink } from 'react-tiny-link'
@@ -91,10 +92,10 @@ const PreviewLastLink = ({ className, content }) => {
       const link = links[index-1]
       if(!link.includes('images.hive.blog') 
           && !link.includes('img.')
-          && !link.includes('.jpg') 
           && !link.includes('youtu.be') 
           && !link.includes('files.peakd') 
-          && !link.includes('youtube') 
+          && !link.includes('youtube')
+          && !link.includes(['.png', '.jpg', '.gif']) 
           && !link.includes('3speak')) {
         url = link
         isValidUrl = true
@@ -152,6 +153,9 @@ const PostList = (props) => {
                 <div className={classes.row}>
                     <div className={classNames(classes.inline, classes.left)}>
                       <Avatar author={item.author} />
+                      <div style={{ height: '100%', backgroundColor: 'red' }}>
+
+                      </div>
                     </div>
                     <div className={classNames(classes.inline, classes.right)}>
                       <div className={classes.content}>
@@ -184,6 +188,16 @@ const PostList = (props) => {
                           stat={
                             <label style={{ marginTop: 5, marginLeft: 5, }}>
                               { item.children }
+                            </label>
+                          }
+                        />
+                        <ActionWrapper
+                          className={classes.actionWrapperSpace}
+                          inlineClass={classes.inline} 
+                          icon={<IconButton icon={<HiveIcon />} />}
+                          stat={
+                            <label style={{ marginTop: 5, marginLeft: 5, }}>
+                              { item.payout }
                             </label>
                           }
                         />

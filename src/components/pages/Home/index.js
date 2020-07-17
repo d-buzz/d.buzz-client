@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
   loader: {
     width: 'max-content',
     margin: '0 auto',
-    paddingTop: 170,
+    paddingTop: 50,
   }
 })
 
@@ -31,7 +31,6 @@ const Home = (props) => {
   }, [])
 
   const loadMorePosts = () => {
-    console.log({ last })
     const { permlink, author } = last
     getRankedPostRequest('trending', permlink, author)
   }
