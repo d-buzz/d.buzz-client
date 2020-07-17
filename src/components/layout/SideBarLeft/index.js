@@ -48,7 +48,6 @@ const useStyles = createUseStyles({
     },
   },
   activeItem: {
-    backgroundColor: '#ffebee',
     borderRadius: '50px 50px',
     cursor: 'pointer',
     '& a': {
