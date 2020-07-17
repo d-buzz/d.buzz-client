@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
+    "hive-content-renderer": "^1.0.3",
     "immutable": "^4.0.0-rc.12",
     "markdown-link-extractor": "^1.2.3",
     "moment": "^2.27.0",
