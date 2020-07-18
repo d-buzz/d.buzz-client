@@ -2,7 +2,7 @@ export const GET_RANKED_POST_REQUEST = 'GET_RANKED_POST_REQUEST'
 export const GET_RANKED_POST_SUCCESS = 'GET_RANKED_POST_SUCCESS'
 export const GET_RANKED_POST_FAILURE = 'GET_RANKED_POST_FAILURE'
 
-export const getRankedPostRequest = (sort = 'created', start_permlink = '', start_author = '') => ({
+export const getRankedPostRequest = (sort = 'trending', start_permlink = '', start_author = '') => ({
   type: GET_RANKED_POST_REQUEST,
   payload: { sort, start_permlink, start_author },
   meta: {
@@ -49,6 +49,30 @@ export const getRepliesSuccess = (response, meta) => ({
 
 export const getRepliesFailure = (error, meta) => ({
   type: GET_REPLIES_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const GET_CONTENT_REQUEST = 'GET_CONTENT_REQUEST'
+export const GET_CONTENT_SUCCESS = 'GET_CONTENT_SUCCESS'
+export const GET_CONTENT_FAILURE = 'GET_CONTENT_FAILURE'
+
+export const getContentRequest = (author, permlink) => ({
+  type: GET_CONTENT_REQUEST,
+  payload: { author, permlink },
+  meta: {
+    thunk: true,
+  }
+})
+
+export const getContentSuccess = (response, meta) => ({
+  type: GET_CONTENT_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getContentFailure = (error, meta) => ({
+  type: GET_CONTENT_FAILURE,
   payload: error,
   meta,
 })

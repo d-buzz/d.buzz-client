@@ -7,8 +7,15 @@ import {
   GET_REPLIES_REQUEST,
   getRepliesSuccess,
   getRepliesFailure,
+  GET_CONTENT_REQUEST,
+  getContentSuccess,
+  getContentFailure,
 } from './actions'
-import { callBridge, fetchReplies } from 'services/api'
+import { 
+  callBridge,
+  fetchReplies,
+  fetchContent
+} from 'services/api'
 import config from 'config'
 
 function* getRankedPostRequest(payload, meta) {
@@ -41,16 +48,31 @@ function* getRepliesRequest(payload, meta) {
   }
 }
 
+function* getContentRequest(payload, meta) {
+  const { author, permlink } = payload
+  try {
+    const data = yield call(fetchContent, author, permlink)
+    yield put(getContentSuccess(data, meta))
+  } catch(error) {
+    yield put(getContentFailure(error, meta))
+  }
+}
+
 function* watchGetRankPostRequest({ payload, meta }) {
   yield call(getRankedPostRequest, payload, meta)
 }
 
-function* watchGetRepliesRequest({ payload, meta}) {
+function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
+}
+
+function* watchGetContentRequest({ payload, meta }) {
+  yield call(getContentRequest, payload, meta)
 }
 
 export default function* sagas() {
   yield takeEvery(GET_RANKED_POST_REQUEST, watchGetRankPostRequest)
   yield takeEvery(GET_REPLIES_REQUEST, watchGetRepliesRequest)
+  yield takeEvery(GET_CONTENT_REQUEST, watchGetContentRequest)
 }
 

@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { 
   HomeIcon,
   BrandIcon,
@@ -135,7 +136,7 @@ const NavLinkWrapper = (props) => {
   return (
     <React.Fragment>
       <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-        <IconWrapper className={iconClass}>{ icon }</IconWrapper> <a href={path}>{ name }</a>
+        <IconWrapper className={iconClass}>{ icon }</IconWrapper> <Link to={path}>{ name }</Link>
       </div>
     </React.Fragment>
   )

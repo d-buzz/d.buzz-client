@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col'
 import Navbar from 'react-bootstrap/Navbar'
 import { SideBarLeft, SideBarRight } from 'components'
 import { createUseStyles } from 'react-jss'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   main: {
@@ -27,6 +28,13 @@ const useStyles = createUseStyles({
 const AppFrame = (props) => {
   const classes = useStyles()
   const { children } = props
+  const { pathname } = useLocation()
+
+  let title = 'Home'
+
+  if(pathname.includes('/content/@')) {
+    title = 'DBuzz'
+  }
 
   return(
     <Container>
@@ -50,7 +58,7 @@ const AppFrame = (props) => {
                 ({ style }) => (
                   <Navbar style={{ ...style,  }} className={classes.nav} expand="lg">
                     <Container>
-                      <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>Home</Navbar.Brand>
+                      <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>{ title }</Navbar.Brand>
                     </Container>
                   </Navbar>
                 )

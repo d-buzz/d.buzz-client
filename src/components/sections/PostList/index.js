@@ -9,12 +9,11 @@ import {
   Avatar,
   HiveIcon,
 } from 'components/elements'
-import { MarkdownViewer } from 'components'
-import { ReactTinyLink } from 'react-tiny-link'
-import moment from 'moment'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import markdownLinkExtractor from 'markdown-link-extractor'
+import { MarkdownViewer, PostTags } from 'components'
+import { Link } from 'react-router-dom'
+import moment from 'moment'
 
 
 const useStyle = createUseStyles({
@@ -93,47 +92,6 @@ const useStyle = createUseStyles({
   },
 })
 
-const PreviewLastLink = ({ className, content }) => {
-  const links  = markdownLinkExtractor(content)
-  let isValidUrl = false
-  let url = ''
-
-  if(links.length !== 0) {
-    for(let index = links.length; index > 0 ; index--) {
-      const link = links[index-1]
-      if(!link.includes('images.hive.blog')
-          && !link.includes('youtu.be') 
-          && !link.includes('files.peakd') 
-          && !link.includes('youtube.com/watch?v=')
-          && !link.match(/\.(jpeg|jpg|gif|png)$/)) {
-        url = link
-        isValidUrl = true
-        break;
-      }
-    }
-  }
-  
-  return (
-    <React.Fragment>
-      { 
-        isValidUrl ? (
-          <div className={className}>
-            <ReactTinyLink
-              width="95%"
-              borderRadius="50px 50px"
-              cardSize="small"
-              showGraphic={true}
-              maxLine={2}
-              minLine={1}
-              url={url}
-            />
-          </div>
-        ) : ''
-      }      
-    </React.Fragment>
-  )
-}
-
 
 const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
   return (
@@ -148,23 +106,6 @@ const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
   )
 }
 
-const PostTags = ({ className, meta }) => {
-  let tags = []
-  if('tags' in meta) {
-    tags = meta.tags
-  }
-
-  return (
-    <div className={className}>
-      {
-        tags.map((tag) => (
-          <a href="/" style={{ marginRight: 5 }}>#{ tag }</a> 
-        ))
-      }
-    </div>
-  )
-}
-
 const PostList = (props) => {
   const { items = [] } = props
   const classes = useStyle()
@@ -175,7 +116,7 @@ const PostList = (props) => {
           items.map((item) => (
             <React.Fragment>
               <div className={classes.wrapper}>
-              <a href="/thread" style={{ height: 'max-content', textDecoration: 'none' }}>
+              <Link to={`content/@${item.author}/${item.permlink}`} style={{ textDecoration: 'none' }}>
                 <div className={classes.row}>
                   <Row>
                     <Col xs="auto" style={{ paddingRight: 0 }}>
@@ -190,16 +131,12 @@ const PostList = (props) => {
                       <div className={classes.right}>
                         <div className={classes.content}>
                           <label className={classes.name}>{item.author}</label>
-                            <label className={classes.username}>
-                              { `@${item.author}` } &bull;&nbsp; 
-                              { moment(item.created).fromNow() }
-                            </label>
+                          <label className={classes.username}>
+                            { `@${item.author}` } &bull;&nbsp; 
+                            { moment(item.created).fromNow() }
+                          </label>
                           <MarkdownViewer content={item.body} />
-                          <PreviewLastLink 
-                            className={classes.preview} 
-                            content={item.body} 
-                          />
-                          <PostTags meta={item.json_metadata} className={classes.tags} />
+                          <PostTags meta={item.json_metadata} />
                         </div>
                         <div className={classes.actionWrapper}>
                           <ActionWrapper
@@ -242,7 +179,7 @@ const PostList = (props) => {
                     </Col>
                   </Row>
                 </div>
-                </a>
+                </Link>
               </div>
             </React.Fragment>
           ))
