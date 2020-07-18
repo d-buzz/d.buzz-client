@@ -1,23 +1,14 @@
 import React, { useEffect } from 'react'
 import { PostList, CreateBuzzForm } from 'components'
+import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getRankedPostRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
-import HashLoader from 'react-spinners/HashLoader'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { createUseStyles } from 'react-jss'
 
-const useStyles = createUseStyles({
-  loader: {
-    width: 'max-content',
-    margin: '0 auto',
-    paddingTop: 50,
-  }
-})
 
 const Home = (props) => {
-  const classes = useStyles()
   const { 
     items,
     last,
@@ -45,16 +36,7 @@ const Home = (props) => {
       >
         <PostList items={items} />
       </InfiniteScroll>
-      {
-        loading && (
-          <div className={classes.loader}>
-            <HashLoader
-              color="#e61c34"
-              loading={true} 
-            />
-          </div>
-        )
-      }
+      <HashtagLoader loading={loading} />
     </React.Fragment>
   )
 }

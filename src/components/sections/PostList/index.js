@@ -122,9 +122,6 @@ const PostList = (props) => {
                     <Col xs="auto" style={{ paddingRight: 0 }}>
                       <div className={classes.left}>
                         <Avatar author={item.author} />
-                        {/* <div style={{ height: '90%', backgroundColor: 'rgb(245, 188, 196)', width: 2, margin: '0 auto', }}>
-
-                        </div> */}
                       </div>
                     </Col>
                     <Col>

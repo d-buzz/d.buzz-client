@@ -1,6 +1,7 @@
 import React from 'react'
 import DefaultRenderer from "hive-content-renderer"
 import markdownLinkExtractor from 'markdown-link-extractor'
+import classNames from 'classnames'
 import { PreviewLastLink } from 'components'
 import { createUseStyles } from 'react-jss'
 
@@ -22,17 +23,6 @@ const renderer = new DefaultRenderer({
 
 const useStyles = createUseStyles({
   markdown: {
-    '& iframe': {
-      height: 300,
-      width: '95%',
-    },
-    '& img': {
-      height: 300,
-      width: '95%',
-      objectFit: 'cover',
-      marginTop: 5,
-      border: '1px solid #ccd6dd',
-    },
     '& a': {
       wordWrap: 'break-word',
       color: '#d32f2f !important',
@@ -56,6 +46,31 @@ const useStyles = createUseStyles({
       },
     }
   },
+  minified: {
+    '& iframe': {
+      height: 300,
+      width: '95%',
+      border: '1px solid #ccd6dd',
+    },
+    '& img': {
+      height: 300,
+      width: '95%',
+      objectFit: 'cover',
+      marginTop: 5,
+      border: '1px solid #ccd6dd',
+    },
+  },
+  full: {
+    '& iframe': {
+      width: '100%',
+      border: '1px solid #ccd6dd',
+    },
+    '& img': {
+      width: '100%',
+      marginTop: 5,
+      border: '1px solid #ccd6dd',
+    },
+  }
 })
 
 // prepare images that are currently not supported on hive-content-renderer
@@ -76,15 +91,21 @@ const prepareImages = (content) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  let { content = '' } = props
+  let { content = '', minifyAssets = true } = props
   const original = content
   content = prepareImages(content)
   content = renderer.render(content)
 
+  let assetClass = classes.minified
+
+  if(!minifyAssets) {
+    assetClass = classes.full
+  }
+
   return (
     <React.Fragment>
       <div
-        className={classes.markdown}
+        className={classNames(classes.markdown, assetClass)}
         dangerouslySetInnerHTML={{ __html: content }} 
       />
       <PreviewLastLink className={classes.preview} content={original} />
