@@ -7,6 +7,7 @@
     "@hiveio/hive-js": "^0.8.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
+    "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
     "hive-content-renderer": "^1.0.3",

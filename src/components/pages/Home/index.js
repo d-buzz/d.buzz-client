@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { PostList, CreateBuzzForm } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getRankedPostRequest } from 'store/posts/actions'
+import { getRankedPostRequest, getRepliesRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import HashLoader from 'react-spinners/HashLoader'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -22,11 +22,14 @@ const Home = (props) => {
     items,
     last,
     loading,
-    getRankedPostRequest
+    getRankedPostRequest,
+    getRepliesRequest,
   } = props
 
   useEffect(() => {
     getRankedPostRequest('trending')
+    getRepliesRequest('oniemaniego', 'where-does-new-hive-tokens-go')
+
     //eslint-disable-next-line
   }, [])
 
@@ -68,6 +71,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getRankedPostRequest,
+    getRepliesRequest,
   }, dispatch)
 })
 

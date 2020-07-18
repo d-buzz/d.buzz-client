@@ -4,8 +4,11 @@ import {
   getRankedPostSuccess,
   getRankedPostFailure,
   setLastPost,
+  GET_REPLIES_REQUEST,
+  getRepliesSuccess,
+  getRepliesFailure,
 } from './actions'
-import { callBridge } from 'services/api'
+import { callBridge, fetchReplies } from 'services/api'
 import config from 'config'
 
 function* getRankedPostRequest(payload, meta) {
@@ -16,8 +19,7 @@ function* getRankedPostRequest(payload, meta) {
   
   try {
 
-    let old = yield select( state => state.posts.get('items'))
-   
+    let old = yield select( state => state.posts.get('items')) 
     let data = yield call(callBridge, method, params)
     
     data = [ ...old, ...data]
@@ -29,11 +31,26 @@ function* getRankedPostRequest(payload, meta) {
   }
 }
 
+function* getRepliesRequest(payload, meta) {
+  const { author, permlink } = payload
+  try {
+    const data = yield call(fetchReplies, author, permlink)
+    yield put(getRepliesSuccess(data, meta))
+  } catch(error) {
+    yield put(getRepliesFailure(error, meta))
+  }
+}
+
 function* watchGetRankPostRequest({ payload, meta }) {
   yield call(getRankedPostRequest, payload, meta)
 }
 
+function* watchGetRepliesRequest({ payload, meta}) {
+  yield call(getRepliesRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_RANKED_POST_REQUEST, watchGetRankPostRequest)
+  yield takeEvery(GET_REPLIES_REQUEST, watchGetRepliesRequest)
 }
 

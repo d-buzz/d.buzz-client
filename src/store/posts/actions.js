@@ -29,4 +29,27 @@ export const setLastPost = (post) => ({
   payload: post,
 })
 
+export const GET_REPLIES_REQUEST = 'GET_REPLIES_REQUEST'
+export const GET_REPLIES_SUCCESS = 'GET_REPLIES_SUCCESS'
+export const GET_REPLIES_FAILURE = 'GET_REPLIES_FAILURE'
+
+export const getRepliesRequest = (author, permlink) => ({
+  type: GET_REPLIES_REQUEST,
+  payload: { author, permlink },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getRepliesSuccess = (response, meta) => ({
+  type: GET_REPLIES_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getRepliesFailure = (error, meta) => ({
+  type: GET_REPLIES_FAILURE,
+  payload: error,
+  meta,
+})
 

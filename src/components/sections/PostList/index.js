@@ -12,6 +12,8 @@ import {
 import { MarkdownViewer } from 'components'
 import { ReactTinyLink } from 'react-tiny-link'
 import moment from 'moment'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import markdownLinkExtractor from 'markdown-link-extractor'
 
 
@@ -20,7 +22,7 @@ const useStyle = createUseStyles({
     width: '98%',
     margin: '0 auto',
     paddingTop: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   wrapper: {
     width: '100%',
@@ -39,12 +41,12 @@ const useStyle = createUseStyles({
     verticalAlign: 'top',
   },
   left: {
-    flex: 1,
-    width: 60,
+    height: '100%',
+    width: 50,
   },
   right: {
     height: 'max-content',
-    width: 'calc(100% - 60px)',
+    width: '98%',
   },
   name: {
     fontWeight: 'bold',
@@ -169,73 +171,80 @@ const PostList = (props) => {
 
   return (
     <React.Fragment>
-     
         {
           items.map((item) => (
-            <div className={classes.wrapper}>
-              <a href="/thread" style={{ heigt: 'max-content' }}>
+            <React.Fragment>
+              <div className={classes.wrapper}>
+              <a href="/thread" style={{ height: 'max-content', textDecoration: 'none' }}>
                 <div className={classes.row}>
-                    <div className={classNames(classes.inline, classes.left)}>
-                      <Avatar author={item.author} />
-                      <div style={{ flex: 1, backgroundColor: 'red', width: 30 }}>
+                  <Row>
+                    <Col xs="auto" style={{ paddingRight: 0 }}>
+                      <div className={classes.left}>
+                        <Avatar author={item.author} />
+                        {/* <div style={{ height: '90%', backgroundColor: 'rgb(245, 188, 196)', width: 2, margin: '0 auto', }}>
 
+                        </div> */}
                       </div>
-                    </div>
-                    <div className={classNames(classes.inline, classes.right)}>
-                      <div className={classes.content}>
-                        <label className={classes.name}>{item.author}</label>
-                          <label className={classes.username}>
-                            { `@${item.author}` } &bull;&nbsp; 
-                            { moment(item.created).fromNow() }
-                          </label>
-                        <MarkdownViewer content={item.body} />
-                        <PreviewLastLink 
-                          className={classes.preview} 
-                          content={item.body} 
-                        />
-                        <PostTags meta={item.json_metadata} className={classes.tags} />
+                    </Col>
+                    <Col>
+                      <div className={classes.right}>
+                        <div className={classes.content}>
+                          <label className={classes.name}>{item.author}</label>
+                            <label className={classes.username}>
+                              { `@${item.author}` } &bull;&nbsp; 
+                              { moment(item.created).fromNow() }
+                            </label>
+                          <MarkdownViewer content={item.body} />
+                          <PreviewLastLink 
+                            className={classes.preview} 
+                            content={item.body} 
+                          />
+                          <PostTags meta={item.json_metadata} className={classes.tags} />
+                        </div>
+                        <div className={classes.actionWrapper}>
+                          <ActionWrapper
+                            className={classes.actionWrapperSpace}
+                            inlineClass={classes.inline} 
+                            icon={<IconButton icon={<HeartIcon />} />}
+                            stat={
+                              <label style={{ marginTop: 5, marginLeft: 5, }}>
+                                { item.active_votes.length }
+                              </label>
+                            }
+                          />
+                          <ActionWrapper
+                            className={classes.actionWrapperSpace}
+                            inlineClass={classes.inline} 
+                            icon={<IconButton icon={<CommentIcon />} />}
+                            stat={
+                              <label style={{ marginTop: 5, marginLeft: 5, }}>
+                                { item.children }
+                              </label>
+                            }
+                          />
+                          <ActionWrapper
+                            className={classes.actionWrapperSpace}
+                            inlineClass={classes.inline} 
+                            icon={<IconButton icon={<HiveIcon />} />}
+                            stat={
+                              <label style={{ marginTop: 5, marginLeft: 5, }}>
+                                { item.payout }
+                              </label>
+                            }
+                          />
+                          <ActionWrapper
+                            className={classes.actionWrapperSpace}
+                            inlineClass={classes.inline} 
+                            icon={<IconButton icon={<FlagIcon />} />}
+                          />
+                        </div>
                       </div>
-                      <div className={classes.actionWrapper}>
-                        <ActionWrapper
-                          className={classes.actionWrapperSpace}
-                          inlineClass={classes.inline} 
-                          icon={<IconButton icon={<HeartIcon />} />}
-                          stat={
-                            <label style={{ marginTop: 5, marginLeft: 5, }}>
-                              { item.active_votes.length }
-                            </label>
-                          }
-                        />
-                        <ActionWrapper
-                          className={classes.actionWrapperSpace}
-                          inlineClass={classes.inline} 
-                          icon={<IconButton icon={<CommentIcon />} />}
-                          stat={
-                            <label style={{ marginTop: 5, marginLeft: 5, }}>
-                              { item.children }
-                            </label>
-                          }
-                        />
-                        <ActionWrapper
-                          className={classes.actionWrapperSpace}
-                          inlineClass={classes.inline} 
-                          icon={<IconButton icon={<HiveIcon />} />}
-                          stat={
-                            <label style={{ marginTop: 5, marginLeft: 5, }}>
-                              { item.payout }
-                            </label>
-                          }
-                        />
-                        <ActionWrapper
-                          className={classes.actionWrapperSpace}
-                          inlineClass={classes.inline} 
-                          icon={<IconButton icon={<FlagIcon />} />}
-                        />
-                      </div>
-                    </div>
+                    </Col>
+                  </Row>
                 </div>
-              </a>
-            </div>
+                </a>
+              </div>
+            </React.Fragment>
           ))
         }
     </React.Fragment>
