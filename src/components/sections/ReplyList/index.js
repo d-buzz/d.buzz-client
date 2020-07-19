@@ -183,9 +183,11 @@ const ReplyList = (props) => {
     <React.Fragment>
       {
         expectedCount !== replyCounter && (
-          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 5, color: '#d32f2f' }}>
-            Some replies were filtered because it exceeds 280 characters
-          </p>
+          <center>
+            <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f' }}>
+              Some replies were filtered because it exceeds 280 characters
+            </p>
+          </center>
         )
       }
       {
