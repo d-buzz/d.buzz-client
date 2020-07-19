@@ -11,7 +11,7 @@ import {
   getContentSuccess,
   getContentFailure,
 } from './actions'
-import { 
+import {
   callBridge,
   fetchReplies,
   fetchContent
@@ -23,14 +23,15 @@ function* getRankedPostRequest(payload, meta) {
 
   const params = { sort, "tag": `${config.TAG}`, start_permlink, start_author }
   const method = 'get_ranked_posts'
-  
+
   try {
 
-    let old = yield select( state => state.posts.get('items')) 
+    let old = yield select( state => state.posts.get('items'))
     let data = yield call(callBridge, method, params)
-    
-    data = [ ...old, ...data]
-    
+    data = data.filter((post) => post.body.length <= 280)
+
+    data = [...old, ...data]
+
     yield put(setLastPost(data[data.length-1]))
     yield put(getRankedPostSuccess(data, meta))
   } catch(error) {

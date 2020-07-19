@@ -76,7 +76,7 @@ const Content = (props) => {
     body,
     json_metadata,
     created,
-    children: commentCount = 0,
+    children: replyCount = 0,
     active_votes,
     pending_payout_value,
   } = content || ''
@@ -132,7 +132,7 @@ const Content = (props) => {
               <Row>
                 <Col>
                  <label className={classes.meta}><b className={classes.strong}>{ upvotes }</b> Upvotes</label>
-                 <label className={classes.meta}><b className={classes.strong}>{ commentCount }</b> Replies</label>
+                 <label className={classes.meta}><b className={classes.strong}>{ replyCount }</b> Replies</label>
                 </Col>
               </Row>
             </div>
@@ -143,18 +143,19 @@ const Content = (props) => {
                     <PostActions
                       hideStats={true}
                       voteCount={upvotes}
-                      replyCount={commentCount}
+                      replyCount={replyCount}
                       payout={pending_payout_value}
                     />
                   </Col>
                 </Row>
               </div>
             </div>
-            <ReplyList replies={replies} />
+            <ReplyList replies={replies} expectedCount={replyCount} />
           </React.Fragment>
         )
       }
       <HashtagLoader loading={loadingContent || loadingReplies} />
+      <br />
     </React.Fragment>
   )
 }

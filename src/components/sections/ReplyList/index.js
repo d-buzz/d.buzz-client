@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -88,10 +88,31 @@ const useStyle = createUseStyles({
   },
 })
 
+const countReplies = async (replies = []) => {
+  let counter = 0
+
+  replies.forEach((reply) => {
+    counter += (reply.children + 1)
+  })
+
+  console.log(counter)
+
+  return counter
+}
 
 const ReplyList = (props) => {
-  const { replies } = props
+  let { replies, expectedCount } = props
+  replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyle()
+  const [replyCounter, setReplyCounter] = useState(0)
+
+  useEffect(() => {
+    countReplies(replies)
+      .then((count) => {
+        setReplyCounter(count)
+      })
+  // eslint-disable-next-line
+  }, [replies])
 
   const RenderReplies = ({ reply }) => {
     const {
@@ -103,8 +124,10 @@ const ReplyList = (props) => {
       children: replyCount,
       pending_payout_value: payout,
       meta,
-      replies,
     } = reply
+
+    let { replies } = reply
+    replies = replies.filter((reply) => reply.body.length <= 280 )
 
     return (
       <React.Fragment>
@@ -160,6 +183,13 @@ const ReplyList = (props) => {
 
   return (
     <React.Fragment>
+      {
+        expectedCount !== replyCounter && (
+          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 5, color: '#d32f2f' }}>
+            Some replies were filtered because it exceeds 280 characters
+          </p>
+        )
+      }
       {
         replies.map((reply) => (
           <div className={classes.wrapper}>
