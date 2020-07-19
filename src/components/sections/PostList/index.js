@@ -90,6 +90,16 @@ const useStyle = createUseStyles({
   },
 })
 
+const getAuthorName = (profileMeta, postingMeta) => {
+  const meta = JSON.parse(profileMeta)
+  const posting = JSON.parse(postingMeta)
+
+  try {
+    return meta.profile.name
+  } catch(e) {
+    return posting.profile.name
+  }
+}
 
 const PostList = (props) => {
   const {
@@ -101,7 +111,19 @@ const PostList = (props) => {
     replyCount,
     payout,
     meta,
+    profile = {},
    } = props
+
+   let json_metadata = null
+   let posting_metadata = null
+
+   if('json_metadata' in profile && profile.json_metadata.includes('"name":')) {
+     json_metadata = profile.json_metadata
+   }
+
+   if('posting_metadata' in profile && profile.posting_metadata.includes('"name":')) {
+     posting_metadata = profile.posting_metadata
+   }
 
   const classes = useStyle()
 
@@ -119,7 +141,9 @@ const PostList = (props) => {
             <Col>
               <div className={classes.right}>
                 <div className={classes.content}>
-                  <label className={classes.name}>{author}</label>
+                  <label className={classes.name}>
+                    {json_metadata || posting_metadata ? getAuthorName(json_metadata, posting_metadata) : `@${author}`}
+                  </label>
                   <label className={classes.username}>
                     { `@${author}` } &bull;&nbsp;
                     { moment(created).fromNow() }

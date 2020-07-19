@@ -38,3 +38,10 @@ export const fetchReplies = (author, permlink) => {
     })
   })
 }
+
+export const fetchProfile = (username) => {
+  return api.lookupAccountNamesAsync([username])
+    .then((result) => {
+      return result
+    })
+}

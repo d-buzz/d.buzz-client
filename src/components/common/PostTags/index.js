@@ -15,22 +15,18 @@ const useStyle = createUseStyles({
 const PostTags = ({ meta }) => {
   const classes = useStyle()
 
-  console.log({ meta })
-
   let tags = []
   try {
     if('tags' in meta) {
       tags = meta.tags
     }
-  } catch (e) { 
-    console.log(e)
-  }
+  } catch (e) { }
 
   return (
     <div className={classes.tags}>
       {
         tags.map((tag) => (
-          <a href="/" style={{ marginRight: 5 }}>#{ tag }</a> 
+          <a href="/" style={{ marginRight: 5 }}>#{ tag }</a>
         ))
       }
     </div>

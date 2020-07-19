@@ -45,6 +45,7 @@ const Home = (props) => {
               replyCount={item.children}
               meta={item.json_metadata}
               payout={item.payout}
+              profile={item.profile}
             />
           ))
         }

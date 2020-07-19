@@ -95,8 +95,6 @@ const countReplies = async (replies = []) => {
     counter += (reply.children + 1)
   })
 
-  console.log(counter)
-
   return counter
 }
 

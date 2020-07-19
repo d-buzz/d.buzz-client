@@ -14,7 +14,8 @@ import {
 import {
   callBridge,
   fetchReplies,
-  fetchContent
+  fetchContent,
+  fetchProfile
 } from 'services/api'
 import config from 'config'
 
@@ -29,6 +30,26 @@ function* getRankedPostRequest(payload, meta) {
     let old = yield select( state => state.posts.get('items'))
     let data = yield call(callBridge, method, params)
     data = data.filter((post) => post.body.length <= 280)
+
+    const getProfileData = new Promise((resolve, reject) => {
+      let count = 0
+      try {
+        data.forEach(async(item, index) => {
+          fetchProfile(item.author).then((profile) => {
+            data[index].profile = profile[0]
+            count++
+
+            if(count === (data.length - 1)) {
+              resolve(true)
+            }
+          })
+        })
+      } catch(error) {
+        reject(error)
+      }
+    })
+
+    yield call([Promise, Promise.all], [getProfileData])
 
     data = [...old, ...data]
 
