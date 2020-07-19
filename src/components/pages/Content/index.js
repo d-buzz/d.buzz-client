@@ -64,7 +64,8 @@ const Content = (props) => {
     getRepliesRequest,
     match,
     content,
-    loading,
+    loadingContent,
+    loadingReplies,
     replies,
   } = props
   const { username, permlink } = match.params
@@ -102,7 +103,7 @@ const Content = (props) => {
   return (
     <React.Fragment>
       {
-        !loading && (
+        !loadingContent && (
           <React.Fragment>
             <div className={classes.wrapper}>
               <React.Fragment>
@@ -153,13 +154,14 @@ const Content = (props) => {
           </React.Fragment>
         )
       }
-      <HashtagLoader loading={loading} />
+      <HashtagLoader loading={loadingContent || loadingReplies} />
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
-  loading: pending(state, 'GET_CONTENT_REQUEST'),
+  loadingContent: pending(state, 'GET_CONTENT_REQUEST'),
+  loadingReplies: pending(state, 'GET_REPLIES_REQUEST'),
   replies: state.posts.get('replies'),
   content: state.posts.get('content'),
 })
