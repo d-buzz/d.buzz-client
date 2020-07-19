@@ -3,7 +3,7 @@ import { PostList, CreateBuzzForm } from 'components'
 import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getRankedPostRequest } from 'store/posts/actions'
+import { getRankedPostRequest, setHomeIsVisited } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -13,11 +13,16 @@ const Home = (props) => {
     items,
     last,
     loading,
+    isVisited,
     getRankedPostRequest,
+    setHomeIsVisited,
   } = props
 
   useEffect(() => {
-    getRankedPostRequest('created')
+    if(!isVisited) {
+      setHomeIsVisited()
+      getRankedPostRequest('created')
+    }
     //eslint-disable-next-line
   }, [])
 
@@ -57,6 +62,7 @@ const Home = (props) => {
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_RANKED_POST_REQUEST'),
+  isVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('items'),
   last: state.posts.get('last'),
 })
@@ -64,6 +70,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getRankedPostRequest,
+    setHomeIsVisited,
   }, dispatch)
 })
 

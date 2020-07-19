@@ -4,10 +4,10 @@ import { StickyContainer, Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Navbar from 'react-bootstrap/Navbar'
-import { BackArrow } from 'components/elements'
+import { BackArrowIcon, IconButton } from 'components/elements'
 import { SideBarLeft, SideBarRight } from 'components'
 import { createUseStyles } from 'react-jss'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   main: {
@@ -30,11 +30,16 @@ const AppFrame = (props) => {
   const classes = useStyles()
   const { children } = props
   const { pathname } = useLocation()
+  const history = useHistory()
 
   let title = 'Home'
 
   if(pathname.includes('/content/@')) {
-    title = 'DBuzz'
+    title = 'BUZZ'
+  }
+
+  const handleClickBackButton = () => {
+    history.goBack()
   }
 
   return(
@@ -58,11 +63,14 @@ const AppFrame = (props) => {
               {
                 ({ style }) => (
                   <Navbar style={{ ...style,  }} className={classes.nav} expand="lg">
-                    <Container>
-                      <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                        <BackArrow /> { title }
-                      </Navbar.Brand>
-                    </Container>
+                    <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                      {
+                        title !== 'Home' && (
+                          <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
+                        )
+                      }
+                      <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>
+                    </Navbar.Brand>
                   </Navbar>
                 )
               }

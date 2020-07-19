@@ -77,3 +77,9 @@ export const getContentFailure = (error, meta) => ({
   meta,
 })
 
+export const SET_HOME_IS_VISITED = 'SET_HOME_IS_VISITED'
+
+export const setHomeIsVisited = (visited = true) => ({
+  type: SET_HOME_IS_VISITED,
+  payload: visited,
+})

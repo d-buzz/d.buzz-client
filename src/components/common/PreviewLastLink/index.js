@@ -16,7 +16,7 @@ const PreviewLastLink = ({ className, content }) => {
           && !link.includes('files.peakd')
           && !link.includes('youtube.com/watch?v=')
           && !link.includes('app.dapplr.in')
-          && !link.match(/\.(jpeg|jpg|gif|png|pdf)$/)) {
+          && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
         isValidUrl = true
         break;

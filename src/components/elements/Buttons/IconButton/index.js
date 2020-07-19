@@ -17,27 +17,34 @@ const useStyles = createUseStyles({
     }
   },
   icon: {
-    padding: 4,
-    paddingRight: 6,
-    paddingLeft: 6,
     cursor: 'pointer',
+    height: 30,
+    width: 30,
+    borderRadius: 50,
+    textAlign: 'center',
+    '& svg': {
+      position: 'relative',
+      margin: '0 auto',
+    },
   }
 })
 
 const IconWrapper = ({ className, children }) => {
   return (
     <div className={className}>
-      { children }
+      <center>
+        { children }
+      </center>
     </div>
   )
 }
 
 const IconButton = (props) => {
   const classes = useStyles()
-  const { icon } = props
+  const { icon, style = {}, onClick } = props
 
   return (
-    <div className={classes.container}>
+    <div onClick={onClick} style={style} className={classes.container}>
       <IconWrapper className={classes.icon}>
         { icon }
       </IconWrapper>
