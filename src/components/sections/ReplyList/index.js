@@ -22,8 +22,8 @@ const useStyle = createUseStyles({
   },
   wrapper: {
     width: '100%',
-    overflow: 'hidden',
     borderBottom: '1px solid #e6ecf0',
+    overflow: 'hidden',
     '& a': {
       color: 'black',
     },
@@ -62,6 +62,9 @@ const useStyle = createUseStyles({
     '& iframe': {
       borderRadius: '15px 15px',
     },
+    '& a': {
+      color: '#d32f2f',
+    },
   },
   actionWrapper: {
     paddingTop: 10,
@@ -95,6 +98,7 @@ const ReplyList = (props) => {
       author,
       created,
       body,
+      parent_author,
       active_votes,
       children: replyCount,
       pending_payout_value: payout,
@@ -103,7 +107,7 @@ const ReplyList = (props) => {
     } = reply
 
     return (
-      <div className={classes.wrapper}>
+      <React.Fragment>
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
@@ -124,6 +128,7 @@ const ReplyList = (props) => {
                     { `@${author}` } &bull;&nbsp;
                     { moment(created).fromNow() }
                   </label>
+                  <p style={{ marginTop: -10 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                   <MarkdownViewer minifyAssets={false} content={body} />
                   <PostTags meta={meta} />
                 </div>
@@ -149,7 +154,7 @@ const ReplyList = (props) => {
             </React.Fragment>
           )
         }
-      </div>
+      </React.Fragment>
     )
   }
 
@@ -157,7 +162,9 @@ const ReplyList = (props) => {
     <React.Fragment>
       {
         replies.map((reply) => (
-          <RenderReplies reply={reply} />
+          <div className={classes.wrapper}>
+            <RenderReplies reply={reply} />
+          </div>
         ))
       }
     </React.Fragment>
