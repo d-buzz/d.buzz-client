@@ -17,13 +17,13 @@ const Home = (props) => {
   } = props
 
   useEffect(() => {
-    getRankedPostRequest('trending')
+    getRankedPostRequest('created')
     //eslint-disable-next-line
   }, [])
 
   const loadMorePosts = () => {
     const { permlink, author } = last
-    getRankedPostRequest('trending', permlink, author)
+    getRankedPostRequest('created', permlink, author)
   }
 
   return (
