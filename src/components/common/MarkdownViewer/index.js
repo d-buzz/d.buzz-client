@@ -41,6 +41,7 @@ const useStyles = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
+      color: 'black !important',
       '&:hover': {
         textDecoration: 'none !important',
         color: 'black',
@@ -107,7 +108,7 @@ const MarkdownViewer = (props) => {
     <React.Fragment>
       <div
         className={classNames(classes.markdown, assetClass)}
-        dangerouslySetInnerHTML={{ __html: content }} 
+        dangerouslySetInnerHTML={{ __html: content }}
       />
       <PreviewLastLink className={classes.preview} content={original} />
     </React.Fragment>
