@@ -54,7 +54,7 @@ const PostActions = (props) => {
           icon={<IconButton icon={<HeartIcon />} />}
           hideStats={hideStats}
           stat={
-            <label style={{ marginTop: 5, marginLeft: 5, }}>
+            <label style={{ marginLeft: 5, }}>
               { voteCount }
             </label>
           }
@@ -65,7 +65,7 @@ const PostActions = (props) => {
           icon={<IconButton icon={<CommentIcon />} />}
           hideStats={hideStats}
           stat={
-            <label style={{ marginTop: 5, marginLeft: 5, }}>
+            <label style={{ marginLeft: 5, }}>
               { replyCount }
             </label>
           }
@@ -76,7 +76,7 @@ const PostActions = (props) => {
           icon={<IconButton icon={<HiveIcon />} />}
           hideStats={false}
           stat={
-            <label style={{ marginTop: 5, marginLeft: 5, }}>
+            <label style={{ marginLeft: 5, }}>
               { payout }
             </label>
           }
