@@ -9,7 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 
 const Home = (props) => {
-  const { 
+  const {
     items,
     last,
     loading,
@@ -25,7 +25,7 @@ const Home = (props) => {
     const { permlink, author } = last
     getRankedPostRequest('trending', permlink, author)
   }
-  
+
   return (
     <React.Fragment>
       <CreateBuzzForm />
@@ -34,7 +34,20 @@ const Home = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        <PostList items={items} />
+        {
+          items.map((item) => (
+            <PostList
+              author={item.author}
+              permlink={item.permlink}
+              created={item.created}
+              body={item.body}
+              upvotes={item.active_votes.length}
+              replyCount={item.children}
+              meta={item.json_metadata}
+              payout={item.payout}
+            />
+          ))
+        }
       </InfiniteScroll>
       <HashtagLoader loading={loading} />
     </React.Fragment>

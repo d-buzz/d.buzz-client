@@ -4,14 +4,15 @@ import { StickyContainer, Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Navbar from 'react-bootstrap/Navbar'
+import { BackArrow } from 'components/elements'
 import { SideBarLeft, SideBarRight } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   main: {
-    minHeight: '100vh', 
-    borderLeft: '1px solid #e6ecf0', 
+    minHeight: '100vh',
+    borderLeft: '1px solid #e6ecf0',
     borderRight: '1px solid #e6ecf0',
   },
   inner: {
@@ -19,7 +20,7 @@ const useStyles = createUseStyles({
     margin: '0 auto',
   },
   nav: {
-    borderBottom: '1px solid #e6ecf0', 
+    borderBottom: '1px solid #e6ecf0',
     backgroundColor: 'white',
     zIndex: 100,
   }
@@ -58,7 +59,9 @@ const AppFrame = (props) => {
                 ({ style }) => (
                   <Navbar style={{ ...style,  }} className={classes.nav} expand="lg">
                     <Container>
-                      <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>{ title }</Navbar.Brand>
+                      <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                        <BackArrow /> { title }
+                      </Navbar.Brand>
                     </Container>
                   </Navbar>
                 )

@@ -43,6 +43,7 @@ const useStyles = createUseStyles({
       boxShadow: 'none',
       '&:hover': {
         textDecoration: 'none !important',
+        color: 'black',
       },
     }
   },

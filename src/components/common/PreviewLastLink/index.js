@@ -12,20 +12,21 @@ const PreviewLastLink = ({ className, content }) => {
     for(let index = links.length; index > 0 ; index--) {
       const link = links[index-1]
       if(!link.includes('images.hive.blog')
-          && !link.includes('youtu.be') 
-          && !link.includes('files.peakd') 
+          && !link.includes('youtu.be')
+          && !link.includes('files.peakd')
           && !link.includes('youtube.com/watch?v=')
-          && !link.match(/\.(jpeg|jpg|gif|png)$/)) {
+          && !link.includes('app.dapplr.in')
+          && !link.match(/\.(jpeg|jpg|gif|png|pdf)$/)) {
         url = link
         isValidUrl = true
         break;
       }
     }
   }
-  
+
   return (
     <React.Fragment>
-      { 
+      {
         isValidUrl ? (
           <div className={className}>
             <ReactTinyLink
@@ -39,7 +40,7 @@ const PreviewLastLink = ({ className, content }) => {
             />
           </div>
         ) : ''
-      }      
+      }
     </React.Fragment>
   )
 }

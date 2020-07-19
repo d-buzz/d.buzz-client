@@ -1,17 +1,15 @@
 import React from 'react'
-import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { 
-  CommentIcon,
-  IconButton,
-  HeartIcon,
-  FlagIcon,
+import {
   Avatar,
-  HiveIcon,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { MarkdownViewer, PostTags } from 'components'
+import {
+  MarkdownViewer,
+  PostTags,
+  PostActions
+} from 'components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
@@ -93,94 +91,55 @@ const useStyle = createUseStyles({
 })
 
 
-const ActionWrapper = ({ className, inlineClass, icon, stat }) => {
-  return (
-    <div className={classNames(className, inlineClass)}>
-      <div className={inlineClass}>
-        { icon }
-      </div>
-      <div className={inlineClass}>
-        { stat }
-      </div>
-    </div>
-  )
-}
-
 const PostList = (props) => {
-  const { items = [] } = props
+  const {
+    author,
+    permlink,
+    created,
+    body,
+    upvotes,
+    replyCount,
+    payout,
+    meta,
+   } = props
+
   const classes = useStyle()
 
   return (
     <React.Fragment>
-        {
-          items.map((item) => (
-            <React.Fragment>
-              <div className={classes.wrapper}>
-              <Link to={`content/@${item.author}/${item.permlink}`} style={{ textDecoration: 'none' }}>
-                <div className={classes.row}>
-                  <Row>
-                    <Col xs="auto" style={{ paddingRight: 0 }}>
-                      <div className={classes.left}>
-                        <Avatar author={item.author} />
-                      </div>
-                    </Col>
-                    <Col>
-                      <div className={classes.right}>
-                        <div className={classes.content}>
-                          <label className={classes.name}>{item.author}</label>
-                          <label className={classes.username}>
-                            { `@${item.author}` } &bull;&nbsp; 
-                            { moment(item.created).fromNow() }
-                          </label>
-                          <MarkdownViewer content={item.body} />
-                          <PostTags meta={item.json_metadata} />
-                        </div>
-                        <div className={classes.actionWrapper}>
-                          <ActionWrapper
-                            className={classes.actionWrapperSpace}
-                            inlineClass={classes.inline} 
-                            icon={<IconButton icon={<HeartIcon />} />}
-                            stat={
-                              <label style={{ marginTop: 5, marginLeft: 5, }}>
-                                { item.active_votes.length }
-                              </label>
-                            }
-                          />
-                          <ActionWrapper
-                            className={classes.actionWrapperSpace}
-                            inlineClass={classes.inline} 
-                            icon={<IconButton icon={<CommentIcon />} />}
-                            stat={
-                              <label style={{ marginTop: 5, marginLeft: 5, }}>
-                                { item.children }
-                              </label>
-                            }
-                          />
-                          <ActionWrapper
-                            className={classes.actionWrapperSpace}
-                            inlineClass={classes.inline} 
-                            icon={<IconButton icon={<HiveIcon />} />}
-                            stat={
-                              <label style={{ marginTop: 5, marginLeft: 5, }}>
-                                { item.payout }
-                              </label>
-                            }
-                          />
-                          <ActionWrapper
-                            className={classes.actionWrapperSpace}
-                            inlineClass={classes.inline} 
-                            icon={<IconButton icon={<FlagIcon />} />}
-                          />
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-                </Link>
+      <div className={classes.wrapper}>
+      <Link to={`content/@${author}/${permlink}`} style={{ textDecoration: 'none' }}>
+        <div className={classes.row}>
+          <Row>
+            <Col xs="auto" style={{ paddingRight: 0 }}>
+              <div className={classes.left}>
+                <Avatar author={author} />
               </div>
-            </React.Fragment>
-          ))
-        }
+            </Col>
+            <Col>
+              <div className={classes.right}>
+                <div className={classes.content}>
+                  <label className={classes.name}>{author}</label>
+                  <label className={classes.username}>
+                    { `@${author}` } &bull;&nbsp;
+                    { moment(created).fromNow() }
+                  </label>
+                  <MarkdownViewer content={body} />
+                  <PostTags meta={meta} />
+                </div>
+                <div className={classes.actionWrapper}>
+                  <PostActions
+                    voteCount={upvotes}
+                    replyCount={replyCount}
+                    payout={payout}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </div>
+        </Link>
+      </div>
     </React.Fragment>
   )
 }

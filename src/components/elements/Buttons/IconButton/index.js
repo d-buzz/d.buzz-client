@@ -20,6 +20,7 @@ const useStyles = createUseStyles({
     padding: 4,
     paddingRight: 6,
     paddingLeft: 6,
+    cursor: 'pointer',
   }
 })
 
