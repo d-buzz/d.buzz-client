@@ -117,11 +117,19 @@ const PostList = (props) => {
    let json_metadata = null
    let posting_metadata = null
 
-   if('json_metadata' in profile && profile.json_metadata.includes('"name":')) {
+   if(
+      'json_metadata' in profile
+      && profile.json_metadata.includes('"name":')
+      && profile.json_metadata.includes('"profile":')
+    ) {
      json_metadata = profile.json_metadata
    }
 
-   if('posting_metadata' in profile && profile.posting_metadata.includes('"name":')) {
+   if(
+     'posting_metadata' in profile
+     && profile.posting_metadata.includes('"name":')
+     && profile.posting_metadata.includes('"profile":')
+    ) {
      posting_metadata = profile.posting_metadata
    }
 
@@ -155,7 +163,7 @@ const PostList = (props) => {
                   <PostActions
                     voteCount={upvotes}
                     replyCount={replyCount}
-                    payout={payout}
+                    payout={`${payout} HBD`}
                   />
                 </div>
               </div>
