@@ -4,18 +4,25 @@ import {
   getRankedPostSuccess,
   getRankedPostFailure,
   setLastPost,
+
   GET_REPLIES_REQUEST,
   getRepliesSuccess,
   getRepliesFailure,
+
   GET_CONTENT_REQUEST,
   getContentSuccess,
   getContentFailure,
+
+  GET_TRENDING_TAGS_REQUEST,
+  getTrendingTagsSuccess,
+  getTrendingTagsFailure,
 } from './actions'
 import {
   callBridge,
   fetchReplies,
   fetchContent,
-  fetchProfile
+  fetchProfile,
+  fetchTrendingTags,
 } from 'services/api'
 import config from 'config'
 
@@ -27,7 +34,7 @@ function* getRankedPostRequest(payload, meta) {
 
   try {
 
-    let old = yield select( state => state.posts.get('items'))
+    let old = yield select(state => state.posts.get('items'))
     let data = yield call(callBridge, method, params)
     data = data.filter((post) => post.body.length <= 280)
 
@@ -80,6 +87,18 @@ function* getContentRequest(payload, meta) {
   }
 }
 
+function* getTrendingTagsRequests(meta) {
+  try {
+    let data = yield call(fetchTrendingTags)
+
+    data = data.filter((tag) => !tag.name.includes('hive') && !tag.name.split('')[1].match(new RegExp('^\\d+$')))
+
+    yield put(getTrendingTagsSuccess(data, meta))
+  } catch (error) {
+    yield put(getTrendingTagsFailure(error, meta))
+  }
+}
+
 function* watchGetRankPostRequest({ payload, meta }) {
   yield call(getRankedPostRequest, payload, meta)
 }
@@ -92,9 +111,14 @@ function* watchGetContentRequest({ payload, meta }) {
   yield call(getContentRequest, payload, meta)
 }
 
+function* watchGetTrendingTagsRequest({ meta }) {
+  yield call(getTrendingTagsRequests, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_RANKED_POST_REQUEST, watchGetRankPostRequest)
   yield takeEvery(GET_REPLIES_REQUEST, watchGetRepliesRequest)
   yield takeEvery(GET_CONTENT_REQUEST, watchGetContentRequest)
+  yield takeEvery(GET_TRENDING_TAGS_REQUEST, watchGetTrendingTagsRequest)
 }
 

@@ -10,6 +10,18 @@ export const callBridge = async(method, params) => {
   })
 }
 
+export const fetchTrendingTags = () => {
+  return new Promise((resolve, reject) => {
+    api.getTrendingTagsAsync(null, 100)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
 export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)

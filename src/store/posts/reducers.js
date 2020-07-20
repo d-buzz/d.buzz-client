@@ -4,6 +4,7 @@ import {
   GET_REPLIES_SUCCESS,
   GET_CONTENT_SUCCESS,
   SET_HOME_IS_VISITED,
+  GET_TRENDING_TAGS_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -13,6 +14,7 @@ const defaultState = fromJS({
   replies: [],
   content: {},
   isHomeVisited: false,
+  tags: [],
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -27,6 +29,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('content', payload)
     case SET_HOME_IS_VISITED:
       return state.set('isHomeVisited', payload)
+    case GET_TRENDING_TAGS_SUCCESS:
+      return state.set('tags', payload)
     default:
       return state
   }
