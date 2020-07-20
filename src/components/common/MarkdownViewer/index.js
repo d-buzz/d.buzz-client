@@ -1,4 +1,5 @@
 import React from 'react'
+import './markdown.css'
 import DefaultRenderer from "hive-content-renderer"
 import markdownLinkExtractor from 'markdown-link-extractor'
 import classNames from 'classnames'
@@ -29,7 +30,7 @@ const useStyles = createUseStyles({
     },
     '& p': {
       fontSize: 15,
-    }
+    },
   },
   preview: {
     paddingBottom: 5,
@@ -80,8 +81,6 @@ const prepareImages = (content) => {
   let body = content
   const links = markdownLinkExtractor(content)
 
-
-
   links.forEach((link) => {
 
     link = link.replace(/&amp;/g, '&')
@@ -92,14 +91,12 @@ const prepareImages = (content) => {
       (
         link.includes('dapplr-images')
         || (link.includes('//') && `${link}`.substring(0, 2) === '//')
-        || link.includes('steemitimages.com')
         || (link.includes('pbs.twimg.com') && link.includes('format=jpg'))
       ) && !link.includes('images.hive.blog')
     ) {
       body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
     }
   })
-
 
   return body
 }

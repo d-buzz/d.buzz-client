@@ -65,6 +65,11 @@ const useStyle = createUseStyles({
     '& a': {
       color: '#d32f2f',
     },
+    '&:after': {
+      content: '',
+      clear: 'both',
+      display: 'table',
+    },
   },
   actionWrapper: {
     paddingTop: 10,

@@ -2,11 +2,13 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { connect } from 'react-redux'
+import { pending } from 'redux-saga-thunk'
 import {
   RoundedField,
   SearchIcon,
   ListGroup,
   ListAction,
+  HashtagLoader,
 } from 'components/elements'
 
 const useStyles = createUseStyles({
@@ -35,7 +37,7 @@ const useStyles = createUseStyles({
 })
 
 const SideBarRight = (props) => {
-  const { items } = props
+  const { items, loading } = props
   const classes = useStyles()
 
   return (
@@ -51,6 +53,7 @@ const SideBarRight = (props) => {
             <ListAction label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} buzzes`} />
           ))
         }
+        <HashtagLoader loading={loading} />
       </ListGroup>
       <div className={classes.footer}>
         <div className={classes.inner}>
@@ -66,6 +69,7 @@ const SideBarRight = (props) => {
 }
 
 const mapStateToProps = (state) => ({
+  loading: pending(state, 'GET_TRENDING_TAGS_REQUEST'),
   items: state.posts.get('tags'),
 })
 
