@@ -80,20 +80,26 @@ const prepareImages = (content) => {
   let body = content
   const links = markdownLinkExtractor(content)
 
+
+
   links.forEach((link) => {
+
+    link = link.replace(/&amp;/g, '&')
+
     if((link.includes('images.hive.blog') && link.includes('.webp'))) {
-      body = body.replace(/${link}/g, `![](${link})`)
+      body = body.replace(link, `![](${link})`)
     } else if (
       (
         link.includes('dapplr-images')
         || (link.includes('//') && `${link}`.substring(0, 2) === '//')
+        || link.includes('steemitimages.com')
+        || (link.includes('pbs.twimg.com') && link.includes('format=jpg'))
       ) && !link.includes('images.hive.blog')
     ) {
-      body = body.replace(/${link}/g, `![](https://images.hive.blog/0x0/${link})`)
-    } else if (link.includes('steemitimages.com')) {
-      body = body.replace(/${link}/g, `![](${link})`)
+      body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
     }
   })
+
 
   return body
 }

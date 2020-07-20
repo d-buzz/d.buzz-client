@@ -1,11 +1,12 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
-import { 
+import { connect } from 'react-redux'
+import {
   RoundedField,
   SearchIcon,
   ListGroup,
-  ListAction, 
+  ListAction,
 } from 'components/elements'
 
 const useStyles = createUseStyles({
@@ -33,22 +34,23 @@ const useStyles = createUseStyles({
   },
 })
 
-const SideBarRight = () => {
+const SideBarRight = (props) => {
+  const { items } = props
   const classes = useStyles()
 
   return (
     <React.Fragment>
-      <RoundedField 
-        icon={<SearchIcon top={-2} />} 
-        placeholder="Search D.Buzz" 
-        className={classes.search} 
+      <RoundedField
+        icon={<SearchIcon top={-2} />}
+        placeholder="Search D.Buzz"
+        className={classes.search}
       />
       <ListGroup label="Trends for you">
-        <ListAction label="#AllLivesMatter" subLabel="3000 buzzes" />
-        <ListAction label="#AwesomeHive" subLabel="2500 buzzes" />
-        <ListAction label="#Earthquake" subLabel="1000 buzzes" />
-        <ListAction label="#Postmortem" subLabel="800 buzzes" />
-        <ListAction label="#RigorMortis" subLabel="800 buzzes" />
+        {
+          items.slice(0, 5).map((item) => (
+            <ListAction label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} buzzes`} />
+          ))
+        }
       </ListGroup>
       <div className={classes.footer}>
         <div className={classes.inner}>
@@ -63,4 +65,8 @@ const SideBarRight = () => {
   )
 }
 
-export default SideBarRight
+const mapStateToProps = (state) => ({
+  items: state.posts.get('tags'),
+})
+
+export default connect(mapStateToProps)(SideBarRight)
