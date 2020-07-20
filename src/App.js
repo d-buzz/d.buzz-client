@@ -5,7 +5,7 @@ import {
   Route,
 } from 'react-router-dom'
 import { withRouter } from 'react-router'
-import { AppFrame } from 'components'
+import { AppFrame, Init } from 'components'
 
 const RouteWithSubRoutes = (route) => {
   return (
@@ -21,14 +21,16 @@ const RouteWithSubRoutes = (route) => {
 
 const App = (props) => {
   return (
-    <React.Fragment> 
+    <React.Fragment>
       <AppFrame>
-        <Switch>
-          {routes.map((route, i) => (
-            <RouteWithSubRoutes key={i} {...route} />
-          ))}
-        </Switch>
-      </AppFrame> 
+        <Init>
+          <Switch>
+            {routes.map((route, i) => (
+              <RouteWithSubRoutes key={i} {...route} />
+            ))}
+          </Switch>
+        </Init>
+      </AppFrame>
     </React.Fragment>
   )
 }
