@@ -6,6 +6,7 @@ import {
   SET_HOME_IS_VISITED,
   GET_TRENDING_TAGS_SUCCESS,
   GET_TRENDING_POSTS_SUCCESS,
+  SET_TRENDING_LAST_POST,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -27,6 +28,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.setIn('items', payload)
     case SET_LAST_POST:
       return state.set('last', payload)
+    case SET_TRENDING_LAST_POST:
+      return state.set('lastTrending', payload)
     case GET_TRENDING_POSTS_SUCCESS:
       return state.set('trending', payload)
     case GET_REPLIES_SUCCESS:

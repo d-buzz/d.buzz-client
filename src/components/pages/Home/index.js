@@ -23,17 +23,19 @@ const Home = (props) => {
   let posts = trending
 
   useEffect(() => {
-    // if(!isVisited) {
-    //   setHomeIsVisited()
-    //   getRankedPostRequest('created')
-    // }
-    getTrendingPostsRequest()
+    if(!isVisited) {
+      setHomeIsVisited()
+      // getRankedPostRequest('created')
+      getTrendingPostsRequest()
+    }
     //eslint-disable-next-line
   }, [])
 
   const loadMorePosts = () => {
     const { permlink, author } = last
-    getRankedPostRequest('created', permlink, author)
+    console.log(last)
+    getTrendingPostsRequest(permlink, author)
+    // getRankedPostRequest('created', permlink, author)
   }
 
   return (
@@ -70,7 +72,7 @@ const mapStateToProps = (state) => ({
   isVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('items'),
   trending: state.posts.get('trending'),
-  last: state.posts.get('last'),
+  last: state.posts.get('lastTrending'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
