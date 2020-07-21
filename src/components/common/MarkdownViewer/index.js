@@ -1,5 +1,4 @@
 import React from 'react'
-import './markdown.css'
 import DefaultRenderer from "hive-content-renderer"
 import markdownLinkExtractor from 'markdown-link-extractor'
 import classNames from 'classnames'
