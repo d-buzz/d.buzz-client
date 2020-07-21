@@ -3,19 +3,17 @@ import { PostList, CreateBuzzForm } from 'components'
 import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getRankedPostRequest, getTrendingPostsRequest, setHomeIsVisited } from 'store/posts/actions'
+import { getTrendingPostsRequest, setHomeIsVisited } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 
 const Home = (props) => {
   const {
-    items,
     last,
     loading,
     trending,
     isVisited,
-    getRankedPostRequest,
     getTrendingPostsRequest,
     setHomeIsVisited,
   } = props
@@ -70,14 +68,12 @@ const Home = (props) => {
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_TRENDING_POSTS_REQUEST'),
   isVisited: state.posts.get('isHomeVisited'),
-  items: state.posts.get('items'),
   trending: state.posts.get('trending'),
   last: state.posts.get('lastTrending'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    getRankedPostRequest,
     setHomeIsVisited,
     getTrendingPostsRequest,
   }, dispatch)
