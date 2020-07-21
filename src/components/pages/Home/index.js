@@ -3,7 +3,7 @@ import { PostList, CreateBuzzForm } from 'components'
 import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getRankedPostRequest, setHomeIsVisited } from 'store/posts/actions'
+import { getRankedPostRequest, getTrendingPostsRequest, setHomeIsVisited } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -13,16 +13,21 @@ const Home = (props) => {
     items,
     last,
     loading,
+    trending,
     isVisited,
     getRankedPostRequest,
+    getTrendingPostsRequest,
     setHomeIsVisited,
   } = props
 
+  let posts = trending
+
   useEffect(() => {
-    if(!isVisited) {
-      setHomeIsVisited()
-      getRankedPostRequest('created')
-    }
+    // if(!isVisited) {
+    //   setHomeIsVisited()
+    //   getRankedPostRequest('created')
+    // }
+    getTrendingPostsRequest()
     //eslint-disable-next-line
   }, [])
 
@@ -35,12 +40,12 @@ const Home = (props) => {
     <React.Fragment>
       <CreateBuzzForm />
       <InfiniteScroll
-        dataLength={items.length || 0}
+        dataLength={posts.length || 0}
         next={loadMorePosts}
         hasMore={true}
       >
         {
-          items.map((item) => (
+          posts.map((item) => (
             <PostList
               author={item.author}
               permlink={item.permlink}
@@ -61,9 +66,10 @@ const Home = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  loading: pending(state, 'GET_RANKED_POST_REQUEST'),
+  loading: pending(state, 'GET_TRENDING_POSTS_REQUEST'),
   isVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('items'),
+  trending: state.posts.get('trending'),
   last: state.posts.get('last'),
 })
 
@@ -71,6 +77,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getRankedPostRequest,
     setHomeIsVisited,
+    getTrendingPostsRequest,
   }, dispatch)
 })
 

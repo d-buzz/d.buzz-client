@@ -29,6 +29,37 @@ export const setLastPost = (post) => ({
   payload: post,
 })
 
+export const GET_TRENDING_POSTS_REQUEST = 'GET_TRENDING_POSTS_REQUEST'
+export const GET_TRENDING_POSTS_SUCCESS = 'GET_TRENDING_POSTS_SUCCESS'
+export const GET_TRENDING_POSTS_FAILURE = 'GET_TRENDING_POSTS_FAILURE'
+
+export const getTrendingPostsRequest = (start_permlink = '', start_author = '') => ({
+  type: GET_TRENDING_POSTS_REQUEST,
+  payload: { start_permlink, start_author },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getTrendingPostsSuccess = (response, meta) => ({
+  type: GET_TRENDING_POSTS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getTrendingPostsFailure = (error, meta) => ({
+  type: GET_TRENDING_POSTS_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_TRENDING_LAST_POST = 'SET_TRENDING_LAST_POST'
+
+export const setTrendingLastPost = (post) => ({
+  type: SET_TRENDING_LAST_POST,
+  payload: post,
+})
+
 export const GET_REPLIES_REQUEST = 'GET_REPLIES_REQUEST'
 export const GET_REPLIES_SUCCESS = 'GET_REPLIES_SUCCESS'
 export const GET_REPLIES_FAILURE = 'GET_REPLIES_FAILURE'
