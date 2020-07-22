@@ -3,6 +3,7 @@ import {
   Trending,
   Profile,
   Content,
+  Latest,
 } from 'components'
 
 const routes =  [
@@ -15,6 +16,11 @@ const routes =  [
     path: '/trending',
     exact: true,
     component: Trending,
+  },
+  {
+    path: '/latest',
+    exact: true,
+    component: Latest,
   },
   {
     path: '/@:username',

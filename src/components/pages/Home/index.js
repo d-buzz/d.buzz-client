@@ -10,6 +10,7 @@ import {
   setHomeIsVisited,
   setTrendingIsVisited,
   clearTrendingPosts,
+  setLatestIsVisited,
 } from 'store/posts/actions'
 
 const Feeds = (props) => {
@@ -21,6 +22,7 @@ const Feeds = (props) => {
     setHomeIsVisited,
     getHomePostsRequest,
     setTrendingIsVisited,
+    setLatestIsVisited,
     clearTrendingPosts,
   } = props
 
@@ -30,6 +32,7 @@ const Feeds = (props) => {
       getHomePostsRequest()
       setHomeIsVisited()
       setTrendingIsVisited(false)
+      setLatestIsVisited(false)
     }
     //eslint-disable-next-line
   }, [])
@@ -81,6 +84,7 @@ const mapDispatchToProps = (dispatch) => ({
     getHomePostsRequest,
     setTrendingIsVisited,
     clearTrendingPosts,
+    setLatestIsVisited,
   }, dispatch)
 })
 

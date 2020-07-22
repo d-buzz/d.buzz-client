@@ -1,4 +1,5 @@
 import { select, call, put, takeEvery } from "redux-saga/effects"
+
 import {
   GET_REPLIES_REQUEST,
   getRepliesSuccess,
@@ -18,10 +19,16 @@ import {
   getHomePostsFailure,
   setHomeLastPost,
 
+  GET_LATEST_POSTS_REQUEST,
+  getLatestPostsSuccess,
+  getLatestPostsFailure,
+  setLatestLastPost,
+
   GET_TRENDING_TAGS_REQUEST,
   getTrendingTagsSuccess,
   getTrendingTagsFailure,
 } from './actions'
+
 import {
   callBridge,
   fetchReplies,
@@ -111,6 +118,30 @@ function* getHomePostsRequest(payload, meta) {
   }
 }
 
+function* getLatestPostsRequest(payload, meta) {
+  const { start_permlink, start_author } = payload
+
+  const params = { sort: 'created', start_permlink, start_author }
+  const method = 'get_ranked_posts'
+
+  try {
+    let old = yield select(state => state.posts.get('latest'))
+    let data = yield call(callBridge, method, params)
+    data = data.filter((post) => post.body.length <= 280)
+
+    const getProfileData = mapFetchProfile(data)
+
+    yield call([Promise, Promise.all], [getProfileData])
+
+    data = [...old, ...data]
+
+    yield put(setLatestLastPost(data[data.length-1]))
+    yield put(getLatestPostsSuccess(data, meta))
+  } catch(error) {
+    yield put(getLatestPostsFailure(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -131,11 +162,16 @@ function* watchGetHomePostsRequest({ payload, meta }) {
   yield call(getHomePostsRequest, payload, meta)
 }
 
+function* watchGetLatestPostsRequest({payload, meta}) {
+  yield call(getLatestPostsRequest, payload, meta)
+}
+
 export default function* sagas() {
+  yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
   yield takeEvery(GET_HOME_POSTS_REQUEST, watchGetHomePostsRequest)
+  yield takeEvery(GET_TRENDING_POSTS_REQUEST, watchGetTrendingPostsRequest)
   yield takeEvery(GET_REPLIES_REQUEST, watchGetRepliesRequest)
   yield takeEvery(GET_CONTENT_REQUEST, watchGetContentRequest)
   yield takeEvery(GET_TRENDING_TAGS_REQUEST, watchGetTrendingTagsRequest)
-  yield takeEvery(GET_TRENDING_POSTS_REQUEST, watchGetTrendingPostsRequest)
 }
 

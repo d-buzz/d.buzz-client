@@ -36,6 +36,10 @@ const AppFrame = (props) => {
 
   if(pathname.includes('/content/@')) {
     title = 'BUZZ'
+  } else if(pathname.includes('/trending')) {
+    title = 'Trending'
+  } else if(pathname.includes('/latest')) {
+    title = 'Latest'
   }
 
   const handleClickBackButton = () => {
@@ -65,7 +69,7 @@ const AppFrame = (props) => {
                   <Navbar style={{ ...style,  }} className={classes.nav} expand="lg">
                     <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
                       {
-                        title !== 'Home' && (
+                        title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                           <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
                         )
                       }

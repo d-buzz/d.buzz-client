@@ -64,7 +64,7 @@ export const GET_LATEST_POSTS_REQUEST = 'GET_LATEST_POSTS_REQUEST'
 export const GET_LATEST_POSTS_SUCCESS = 'GET_LATEST_POSTS_SUCCESS'
 export const GET_LATEST_POSTS_FAILURE = 'GET_LATEST_POSTS_FAILURE'
 
-export const getLatestPostRequest = (start_permlink = '', start_author = '') => ({
+export const getLatestPostsRequest = (start_permlink = '', start_author = '') => ({
   type: GET_LATEST_POSTS_REQUEST,
   payload: { start_permlink, start_author },
   meta: {
@@ -72,17 +72,25 @@ export const getLatestPostRequest = (start_permlink = '', start_author = '') => 
   },
 })
 
-export const getLatestPostSuccess = (response, meta) => ({
+export const getLatestPostsSuccess = (response, meta) => ({
   type: GET_LATEST_POSTS_SUCCESS,
   payload: response,
   meta,
 })
 
-export const getLatestPostFailure = (error, meta) => ({
+export const getLatestPostsFailure = (error, meta) => ({
   type: GET_LATEST_POSTS_FAILURE,
   payload: error,
   meta,
 })
+
+export const SET_LATEST_LAST_POST = 'SET_LATEST_LAST_POST'
+
+export const setLatestLastPost = (post) => ({
+  type: SET_LATEST_LAST_POST,
+  payload: post,
+})
+
 
 export const GET_REPLIES_REQUEST = 'GET_REPLIES_REQUEST'
 export const GET_REPLIES_SUCCESS = 'GET_REPLIES_SUCCESS'
@@ -155,7 +163,7 @@ export const getTrendingTagsFailure = (error, meta) => ({
   meta,
 })
 
-// Feeds visitation markers, prevent loading when loading previous history
+// feeds visitation markers, prevent loading when loading previous history
 export const SET_HOME_IS_VISITED = 'SET_HOME_IS_VISITED'
 
 export const setHomeIsVisited = (visited = true) => ({
@@ -177,7 +185,8 @@ export const setLatestIsVisited = (visited = true) => ({
   payload: visited,
 })
 
-// Clear stores
+
+// clear stores
 export const CLEAR_HOME_POSTS  = 'CLEAR_HOME_POSTS'
 
 export const clearHomePosts = () => ({
@@ -188,4 +197,10 @@ export const CLEAR_TRENDING_POSTS = 'CLEAR_TRENDING_POSTS'
 
 export const clearTrendingPosts = () => ({
   type: CLEAR_TRENDING_POSTS,
+})
+
+export const CLEAR_LATEST_POSTS = 'CLEAR_LATEST_POSTS'
+
+export const clearLatestPosts = () => ({
+  type: CLEAR_LATEST_POSTS,
 })
