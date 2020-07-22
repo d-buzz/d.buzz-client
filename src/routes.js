@@ -1,19 +1,25 @@
-import { 
+import {
   Home,
+  Trending,
   Profile,
   Content,
 } from 'components'
-  
+
 const routes =  [
   {
-    path: "/",
+    path: '/',
     exact: true,
     component: Home
   },
   {
+    path: '/trending',
+    exact: true,
+    component: Trending,
+  },
+  {
     path: '/@:username',
     exact: true,
-    component: Profile, 
+    component: Profile,
   },
   {
     path: '/content/@:username/:permlink',
@@ -21,5 +27,5 @@ const routes =  [
     component: Content,
   }
 ]
- 
+
 export default routes

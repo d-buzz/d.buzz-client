@@ -1,31 +1,31 @@
-export const GET_RANKED_POST_REQUEST = 'GET_RANKED_POST_REQUEST'
-export const GET_RANKED_POST_SUCCESS = 'GET_RANKED_POST_SUCCESS'
-export const GET_RANKED_POST_FAILURE = 'GET_RANKED_POST_FAILURE'
+export const GET_HOME_POSTS_REQUEST = 'GET_HOME_POSTS_REQUEST'
+export const GET_HOME_POSTS_SUCCESS = 'GET_HOME_POSTS_SUCCESS'
+export const GET_HOME_POSTS_FAILURE = 'GET_HOME_POSTS_FAILURE'
 
-export const getRankedPostRequest = (sort = 'trending', start_permlink = '', start_author = '') => ({
-  type: GET_RANKED_POST_REQUEST,
-  payload: { sort, start_permlink, start_author },
+export const getHomePostsRequest = (start_permlink = '', start_author = '') => ({
+  type: GET_HOME_POSTS_REQUEST,
+  payload: { start_permlink, start_author },
   meta: {
     thunk: true,
-  },
+  }
 })
 
-export const getRankedPostSuccess = (response, meta) => ({
-  type: GET_RANKED_POST_SUCCESS,
+export const getHomePostsSuccess = (response, meta) => ({
+  type: GET_HOME_POSTS_SUCCESS,
   payload: response,
   meta,
 })
 
-export const getRankedPostFailure = (error, meta) => ({
-  type: GET_RANKED_POST_FAILURE,
+export const getHomePostsFailure = (error, meta) => ({
+  type: GET_HOME_POSTS_FAILURE,
   payload: error,
   meta,
 })
 
-export const SET_LAST_POST = 'SET_LAST_POST'
+export const SET_HOME_LAST_POST = 'SET_HOME_LAST_POST'
 
-export const setLastPost = (post) => ({
-  type: SET_LAST_POST,
+export const setHomeLastPost = (post) => ({
+  type: SET_HOME_LAST_POST,
   payload: post,
 })
 
@@ -58,6 +58,30 @@ export const SET_TRENDING_LAST_POST = 'SET_TRENDING_LAST_POST'
 export const setTrendingLastPost = (post) => ({
   type: SET_TRENDING_LAST_POST,
   payload: post,
+})
+
+export const GET_LATEST_POSTS_REQUEST = 'GET_LATEST_POSTS_REQUEST'
+export const GET_LATEST_POSTS_SUCCESS = 'GET_LATEST_POSTS_SUCCESS'
+export const GET_LATEST_POSTS_FAILURE = 'GET_LATEST_POSTS_FAILURE'
+
+export const getLatestPostRequest = (start_permlink = '', start_author = '') => ({
+  type: GET_LATEST_POSTS_REQUEST,
+  payload: { start_permlink, start_author },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getLatestPostSuccess = (response, meta) => ({
+  type: GET_LATEST_POSTS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getLatestPostFailure = (error, meta) => ({
+  type: GET_LATEST_POSTS_FAILURE,
+  payload: error,
+  meta,
 })
 
 export const GET_REPLIES_REQUEST = 'GET_REPLIES_REQUEST'
@@ -108,13 +132,6 @@ export const getContentFailure = (error, meta) => ({
   meta,
 })
 
-export const SET_HOME_IS_VISITED = 'SET_HOME_IS_VISITED'
-
-export const setHomeIsVisited = (visited = true) => ({
-  type: SET_HOME_IS_VISITED,
-  payload: visited,
-})
-
 export const GET_TRENDING_TAGS_REQUEST = 'GET_TRENDING_TAGS_REQUEST'
 export const GET_TRENDING_TAGS_SUCCESS = 'GET_TRENDING_TAGS_SUCCESS'
 export const GET_TRENDING_TAGS_FAILURE = 'GET_TRENDING_TAGS_FAILURE'
@@ -136,4 +153,39 @@ export const getTrendingTagsFailure = (error, meta) => ({
   type: GET_TRENDING_TAGS_FAILURE,
   payload: error,
   meta,
+})
+
+// Feeds visitation markers, prevent loading when loading previous history
+export const SET_HOME_IS_VISITED = 'SET_HOME_IS_VISITED'
+
+export const setHomeIsVisited = (visited = true) => ({
+  type: SET_HOME_IS_VISITED,
+  payload: visited,
+})
+
+export const SET_TRENDING_IS_VISITED = 'SET_TRENDING_IS_VISITED'
+
+export const setTrendingIsVisited = (visited = true) => ({
+  type: SET_TRENDING_IS_VISITED,
+  payload: visited,
+})
+
+export const SET_LATEST_IS_VISITED = 'SET_LATEST_IS_VISITED'
+
+export const setLatestIsVisited = (visited = true) => ({
+  type: SET_LATEST_IS_VISITED,
+  payload: visited,
+})
+
+// Clear stores
+export const CLEAR_HOME_POSTS  = 'CLEAR_HOME_POSTS'
+
+export const clearHomePosts = () => ({
+  type: CLEAR_HOME_POSTS,
+})
+
+export const CLEAR_TRENDING_POSTS = 'CLEAR_TRENDING_POSTS'
+
+export const clearTrendingPosts = () => ({
+  type: CLEAR_TRENDING_POSTS,
 })

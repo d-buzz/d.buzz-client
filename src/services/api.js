@@ -1,8 +1,10 @@
 import { api } from '@hiveio/hive-js'
 import { Promise } from 'bluebird'
+import config from 'config'
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
+    params = { "tag": `${config.TAG}`, ...params }
     api.call('bridge.' + method, params, (err, data) => {
         if (err) reject(err)
         else resolve(data)
@@ -56,4 +58,24 @@ export const fetchProfile = (username) => {
     .then((result) => {
       return result
     })
+}
+
+export const mapFetchProfile = (data) => {
+  return new Promise((resolve, reject) => {
+    let count = 0
+    try {
+      data.forEach((item, index) => {
+        fetchProfile(item.author).then((profile) => {
+          data[index].profile = profile[0]
+          count++
+
+          if(count === (data.length - 1)) {
+            resolve(true)
+          }
+        })
+      })
+    } catch(error) {
+      reject(error)
+    }
+  })
 }

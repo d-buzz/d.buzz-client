@@ -1,47 +1,46 @@
 import React, { useEffect } from 'react'
-import { PostList, CreateBuzzForm } from 'components'
+import { PostList } from 'components'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { HashtagLoader } from 'components/elements'
+import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { pending } from 'redux-saga-thunk'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import {
-  getHomePostsRequest,
-  setHomeIsVisited,
+  getTrendingPostsRequest,
   setTrendingIsVisited,
-  clearTrendingPosts,
+  setHomeIsVisited,
+  clearHomePosts,
 } from 'store/posts/actions'
 
-const Feeds = (props) => {
+const Trending = (props) => {
   const {
-    last,
+    isVisited,
     loading,
     items,
-    isHomeVisited,
-    setHomeIsVisited,
-    getHomePostsRequest,
+    last,
+    getTrendingPostsRequest,
     setTrendingIsVisited,
-    clearTrendingPosts,
+    setHomeIsVisited,
+    clearHomePosts,
   } = props
 
   useEffect(() => {
-    if(!isHomeVisited) {
-      clearTrendingPosts()
-      getHomePostsRequest()
-      setHomeIsVisited()
-      setTrendingIsVisited(false)
+    if(!isVisited) {
+      clearHomePosts()
+      getTrendingPostsRequest()
+      setTrendingIsVisited()
+      setHomeIsVisited(false)
     }
-    //eslint-disable-next-line
+  // eslint-disable-next-line
   }, [])
 
   const loadMorePosts = () => {
     const { permlink, author } = last
-    getHomePostsRequest(permlink, author)
+    getTrendingPostsRequest(permlink, author)
   }
 
   return (
     <React.Fragment>
-      <CreateBuzzForm />
       <InfiniteScroll
         dataLength={items.length || 0}
         next={loadMorePosts}
@@ -63,25 +62,25 @@ const Feeds = (props) => {
           ))
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+        <HashtagLoader loading={loading} />
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
-  loading: pending(state, 'GET_HOME_POSTS_REQUEST'),
-  isHomeVisited: state.posts.get('isHomeVisited'),
-  items: state.posts.get('home'),
+  loading: pending(state, 'GET_TRENDING_POSTS_REQUEST'),
+  isVisited: state.posts.get('isTrendingVisited'),
+  items: state.posts.get('trending'),
   last: state.posts.get('lastTrending'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    setHomeIsVisited,
-    getHomePostsRequest,
+    getTrendingPostsRequest,
     setTrendingIsVisited,
-    clearTrendingPosts,
-  }, dispatch)
+    setHomeIsVisited,
+    clearHomePosts,
+  },dispatch)
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Feeds)
+export default connect(mapStateToProps, mapDispatchToProps)(Trending)
