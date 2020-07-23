@@ -75,7 +75,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_HOME_POSTS_REQUEST'),
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
-  last: state.posts.get('lastTrending'),
+  last: state.posts.get('lastHome'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

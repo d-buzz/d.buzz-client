@@ -13,6 +13,8 @@ import {
   GET_LATEST_POSTS_SUCCESS,
   SET_LATEST_LAST_POST,
   CLEAR_LATEST_POSTS,
+  CLEAR_REPLIES,
+  SET_HOME_LAST_POST
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -50,6 +52,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('content', payload)
     case SET_HOME_IS_VISITED:
       return state.set('isHomeVisited', payload)
+    case SET_HOME_LAST_POST:
+      return state.set('lastHome', payload)
     case SET_TRENDING_IS_VISITED:
       return state.set('isTrendingVisited', payload)
     case SET_LATEST_IS_VISITED:
@@ -62,6 +66,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('trending', [])
     case CLEAR_LATEST_POSTS:
       return state.set('latest', [])
+    case CLEAR_REPLIES:
+      return state.set('replies', [])
     default:
       return state
   }

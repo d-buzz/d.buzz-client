@@ -9,8 +9,8 @@ import {
   setTrendingIsVisited,
 } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { HashtagLoader } from 'components/elements'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const Latest = (props) => {
   const {

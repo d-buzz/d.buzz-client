@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { getContentRequest, getRepliesRequest } from 'store/posts/actions'
+import { getContentRequest, getRepliesRequest, clearReplies } from 'store/posts/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar, HashtagLoader } from 'components/elements'
 import {
@@ -67,6 +67,7 @@ const Content = (props) => {
     loadingContent,
     loadingReplies,
     replies,
+    clearReplies,
   } = props
   const { username, permlink } = match.params
   const classes = useStyles()
@@ -95,6 +96,7 @@ const Content = (props) => {
   }
 
   useEffect(() => {
+    clearReplies()
     getContentRequest(username, permlink)
     getRepliesRequest(username, permlink)
   // eslint-disable-next-line
@@ -171,6 +173,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getContentRequest,
     getRepliesRequest,
+    clearReplies,
   }, dispatch)
 })
 

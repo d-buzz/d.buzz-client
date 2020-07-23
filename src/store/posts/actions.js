@@ -204,3 +204,9 @@ export const CLEAR_LATEST_POSTS = 'CLEAR_LATEST_POSTS'
 export const clearLatestPosts = () => ({
   type: CLEAR_LATEST_POSTS,
 })
+
+export const CLEAR_REPLIES = 'CLEAR_REPLIES'
+
+export const clearReplies = () => ({
+  type: CLEAR_REPLIES,
+})
