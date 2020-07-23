@@ -8,6 +8,7 @@ import { BackArrowIcon, IconButton } from 'components/elements'
 import { SideBarLeft, SideBarRight } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory } from 'react-router-dom'
+import { renderRoutes } from 'react-router-config'
 
 const useStyles = createUseStyles({
   main: {
@@ -28,7 +29,7 @@ const useStyles = createUseStyles({
 
 const AppFrame = (props) => {
   const classes = useStyles()
-  const { children } = props
+  const { route } = props
   const { pathname } = useLocation()
   const history = useHistory()
 
@@ -79,7 +80,7 @@ const AppFrame = (props) => {
                 )
               }
               </Sticky>
-              { children }
+              { renderRoutes(route.routes) }
             </div>
           </Col>
           <Col xs={3}>

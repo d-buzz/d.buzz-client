@@ -185,7 +185,6 @@ export const setLatestIsVisited = (visited = true) => ({
   payload: visited,
 })
 
-
 // clear stores
 export const CLEAR_HOME_POSTS  = 'CLEAR_HOME_POSTS'
 
