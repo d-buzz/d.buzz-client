@@ -11,6 +11,7 @@ import {
   setHomeIsVisited,
   setLatestIsVisited,
   clearHomePosts,
+  clearLatestPosts,
 } from 'store/posts/actions'
 
 const Trending = (props) => {
@@ -23,12 +24,14 @@ const Trending = (props) => {
     setTrendingIsVisited,
     setHomeIsVisited,
     clearHomePosts,
+    clearLatestPosts,
     setLatestIsVisited,
   } = props
 
   useEffect(() => {
     if(!isVisited) {
       clearHomePosts()
+      clearLatestPosts()
       getTrendingPostsRequest()
       setTrendingIsVisited()
       setHomeIsVisited(false)
@@ -84,6 +87,7 @@ const mapDispatchToProps = (dispatch) => ({
     setHomeIsVisited,
     clearHomePosts,
     setLatestIsVisited,
+    clearLatestPosts,
   },dispatch)
 })
 

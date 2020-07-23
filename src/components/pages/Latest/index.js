@@ -7,6 +7,8 @@ import {
   setLatestIsVisited,
   setHomeIsVisited,
   setTrendingIsVisited,
+  clearHomePosts,
+  clearTrendingPosts,
 } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { HashtagLoader } from 'components/elements'
@@ -18,6 +20,9 @@ const Latest = (props) => {
     setLatestIsVisited,
     isVisited,
     setHomeIsVisited,
+    setTrendingIsVisited,
+    clearHomePosts,
+    clearTrendingPosts,
     items,
     last,
     loading
@@ -25,6 +30,8 @@ const Latest = (props) => {
 
   useEffect(() => {
     if(!isVisited) {
+      clearHomePosts()
+      clearTrendingPosts()
       setLatestIsVisited()
       getLatestPostsRequest()
       setHomeIsVisited(false)
@@ -79,6 +86,8 @@ const mapDispatchToProps = (dispatch) => ({
     setLatestIsVisited,
     setHomeIsVisited,
     setTrendingIsVisited,
+    clearHomePosts,
+    clearTrendingPosts,
   }, dispatch)
 })
 
