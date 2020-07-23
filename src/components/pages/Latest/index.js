@@ -13,6 +13,7 @@ import {
 import { pending } from 'redux-saga-thunk'
 import { HashtagLoader } from 'components/elements'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { anchorTop } from 'services/helper'
 
 const Latest = (props) => {
   const {
@@ -30,6 +31,7 @@ const Latest = (props) => {
 
   useEffect(() => {
     if(!isVisited) {
+      anchorTop()
       clearHomePosts()
       clearTrendingPosts()
       setLatestIsVisited()

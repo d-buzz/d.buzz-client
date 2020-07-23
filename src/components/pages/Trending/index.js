@@ -13,6 +13,7 @@ import {
   clearHomePosts,
   clearLatestPosts,
 } from 'store/posts/actions'
+import { anchorTop } from 'services/helper'
 
 const Trending = (props) => {
   const {
@@ -30,6 +31,7 @@ const Trending = (props) => {
 
   useEffect(() => {
     if(!isVisited) {
+      anchorTop()
       clearHomePosts()
       clearLatestPosts()
       getTrendingPostsRequest()

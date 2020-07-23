@@ -6,21 +6,20 @@ const useStyles = createUseStyles({
   loader: {
     width: 'max-content',
     margin: '0 auto',
-    paddingTop: 50,
   }
 })
 
-const HashtagLoader = ({ loading }) => {
+const HashtagLoader = ({ loading, top = 30 }) => {
   const classes = useStyles()
 
   return (
     <React.Fragment>
       {
         loading && (
-          <div className={classes.loader}>
+          <div style={{ marginTop: top }} className={classes.loader}>
             <HashLoader
               color="#e61c34"
-              loading={true} 
+              loading={true}
             />
           </div>
         )

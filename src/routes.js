@@ -7,8 +7,12 @@ import {
   Latest,
   Login,
 } from 'components'
-
 const routes =  [
+  {
+    path: '/login',
+    exact: true,
+    component: Login,
+  },
   {
     component: AppFrame,
     routes: [
@@ -28,11 +32,6 @@ const routes =  [
         component: Latest,
       },
       {
-        path: '/login',
-        exact: true,
-        component: Login,
-      },
-      {
         path: '/@:username',
         exact: true,
         component: Profile,
@@ -43,7 +42,7 @@ const routes =  [
         component: Content,
       }
     ]
-  }
+  },
 ]
 
 export default routes

@@ -14,6 +14,7 @@ import { pending } from 'redux-saga-thunk'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
+import { anchorTop } from 'services/helper'
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -96,6 +97,7 @@ const Content = (props) => {
   }
 
   useEffect(() => {
+    anchorTop()
     clearReplies()
     getContentRequest(username, permlink)
     getRepliesRequest(username, permlink)

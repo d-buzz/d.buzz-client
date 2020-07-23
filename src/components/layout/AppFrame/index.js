@@ -22,8 +22,11 @@ const useStyles = createUseStyles({
   },
   nav: {
     borderBottom: '1px solid #e6ecf0',
+    borderLeft: '1px solid #e6ecf0',
+    borderRight: '1px solid #e6ecf0',
     backgroundColor: 'white',
-    zIndex: 20,
+    zIndex: 2,
+    overflow: 'hidden',
     width: '100%',
   }
 })
@@ -64,11 +67,10 @@ const AppFrame = (props) => {
             </Sticky>
           </Col>
           <Col xs={7}>
-            <div className={classes.main}>
-              <Sticky>
+            <Sticky>
               {
                 ({ style }) => (
-                  <Navbar style={{ ...style,  }} className={classes.nav}>
+                  <Navbar style={{ ...style  }} className={classes.nav}>
                     <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
                       {
                         title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
@@ -80,8 +82,11 @@ const AppFrame = (props) => {
                   </Navbar>
                 )
               }
-              </Sticky>
-              { renderRoutes(route.routes) }
+            </Sticky>
+            <div className={classes.main}>
+              <React.Fragment>
+                { renderRoutes(route.routes) }
+              </React.Fragment>
             </div>
           </Col>
           <Col xs={3}>

@@ -13,6 +13,7 @@ import {
   setLatestIsVisited,
   clearLatestPosts,
 } from 'store/posts/actions'
+import { anchorTop } from 'services/helper'
 
 const Feeds = (props) => {
   const {
@@ -30,6 +31,7 @@ const Feeds = (props) => {
 
   useEffect(() => {
     if(!isHomeVisited) {
+      anchorTop()
       clearTrendingPosts()
       clearLatestPosts()
       getHomePostsRequest()

@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
   row: {
     width: '98%',
     margin: '0 auto',
-    marginTop: 10,
+    paddingTop: 15,
     marginBottom: 10,
   },
   left: {
