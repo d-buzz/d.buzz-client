@@ -37,24 +37,30 @@ const useStyles = createUseStyles({
 })
 
 const SideBarRight = (props) => {
-  const { items, loading } = props
+  const { items, loading, hideSearchBar = false, top = 0 } = props
   const classes = useStyles()
 
   return (
     <React.Fragment>
-      <RoundedField
-        icon={<SearchIcon top={-2} />}
-        placeholder="Search D.Buzz"
-        className={classes.search}
-      />
-      <ListGroup label="Trends for you">
-        {
-          items.slice(0, 5).map((item) => (
-            <ListAction label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
-          ))
-        }
-        <HashtagLoader loading={loading} />
-      </ListGroup>
+      {
+        !hideSearchBar && (
+          <RoundedField
+            icon={<SearchIcon top={-2} />}
+            placeholder="Search D.Buzz"
+            className={classes.search}
+          />
+        )
+      }
+      <div style={{ paddingTop: top }}>
+        <ListGroup label="Trends for you">
+          {
+            items.slice(0, 5).map((item) => (
+              <ListAction label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            ))
+          }
+          <HashtagLoader loading={loading} />
+        </ListGroup>
+      </div>
       <div className={classes.footer}>
         <div className={classes.inner}>
           <a href="/terms">Terms</a>
