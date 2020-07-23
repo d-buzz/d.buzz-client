@@ -31,7 +31,7 @@ const useStyles = createUseStyles({
   }
 })
 
-const AppFrame = (props) => {
+const GuardedAppFrame = (props) => {
   const classes = useStyles()
   const { route } = props
   const { pathname } = useLocation()
@@ -106,4 +106,4 @@ const AppFrame = (props) => {
   )
 }
 
-export default AppFrame
+export default GuardedAppFrame

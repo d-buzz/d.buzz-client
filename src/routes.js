@@ -1,5 +1,6 @@
 import {
-  AppFrame,
+  GuardedAppFrame,
+  UnguardedAppFrame,
   Home,
   Trending,
   Profile,
@@ -9,12 +10,22 @@ import {
 } from 'components'
 const routes =  [
   {
-    path: '/login',
-    exact: true,
-    component: Login,
+    component: UnguardedAppFrame,
+    routes: [
+      {
+        path: '/login',
+        exact: true,
+        component: Login,
+      },
+      {
+        path: '/ug/@:username/:permlink',
+        exact: true,
+        component: Content,
+      }
+    ]
   },
   {
-    component: AppFrame,
+    component: GuardedAppFrame,
     routes: [
       {
         path: '/',

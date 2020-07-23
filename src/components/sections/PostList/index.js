@@ -112,6 +112,7 @@ const PostList = (props) => {
     payout,
     meta,
     profile = {},
+    unguardedLinks,
    } = props
 
    let json_metadata = null
@@ -135,10 +136,19 @@ const PostList = (props) => {
 
   const classes = useStyle()
 
+  const generateLink = (author, permlink) => () => {
+    let link = 'content'
+    if(unguardedLinks) {
+      link = 'ug'
+    }
+    link += `/@${author}/${permlink}`
+    return link
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-      <Link to={`content/@${author}/${permlink}`} style={{ textDecoration: 'none' }}>
+      <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>

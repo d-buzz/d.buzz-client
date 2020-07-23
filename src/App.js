@@ -4,7 +4,7 @@ import { withRouter } from 'react-router'
 import { Init } from 'components'
 import { renderRoutes } from "react-router-config"
 
-const App = (props) => {
+const App = () => {
   return (
     <React.Fragment>
       <Init>

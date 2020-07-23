@@ -21,6 +21,7 @@ const Trending = (props) => {
     loading,
     items,
     last,
+    unguardedLinks,
     getTrendingPostsRequest,
     setTrendingIsVisited,
     setHomeIsVisited,
@@ -66,6 +67,7 @@ const Trending = (props) => {
               meta={item.json_metadata}
               payout={item.payout}
               profile={item.profile}
+              unguardedLinks={unguardedLinks}
             />
           ))
         }
