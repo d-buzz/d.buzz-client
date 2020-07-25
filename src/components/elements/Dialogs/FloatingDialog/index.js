@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { createUseStyles } from 'react-jss'
-import ClickAwayListener from 'react-click-away-listener'
 
 const useStyles = createUseStyles({
   menu: {
-    backgroundColor: 'white',
+    backgroundColor: '#f5f8fa',
     borderRadius: '10px 10px',
     position: 'absolute',
     minheight: 60,
@@ -24,7 +23,7 @@ const useStyles = createUseStyles({
   }
 })
 
-const ListDialog = (props) => {
+const FloatingDialog = (props) => {
   const classes = useStyles()
   const { children, show } = props
 
@@ -43,4 +42,4 @@ const ListDialog = (props) => {
   )
 }
 
-export default ListDialog
+export default FloatingDialog

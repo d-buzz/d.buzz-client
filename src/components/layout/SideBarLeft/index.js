@@ -17,11 +17,12 @@ import {
   ContainedButton,
   Avatar,
   ArrowDownIcon,
-  ListDialog,
+  FloatingDialog,
   LogoutIcon,
 } from 'components/elements'
 import ClickAwayListener from 'react-click-away-listener'
 import { connect } from 'react-redux'
+import { AiOutlinePoweroff } from 'react-icons/ai'
 
 const useStyles = createUseStyles({
   items: {
@@ -74,17 +75,12 @@ const useStyles = createUseStyles({
     width: '98%',
     borderRadius: '50px 50px',
     cursor: 'pointer',
+    backgroundColor: '#f5f8fa',
+    transitionDuration: '0.3s',
+    transitionProperty: 'background-color',
     '&:hover': {
-      backgroundColor: '#ffebee',
-      '& p': {
-        color: '#e53935',
-      },
-      '& svg': {
-        '& path': {
-          stroke: '#e53935',
-        },
-      }
-    },
+      backgroundColor: '#e6ecf0',
+    }
   },
   inline: {
     display: 'inline-block',
@@ -103,7 +99,7 @@ const useStyles = createUseStyles({
       },
       '&:hover': {
         height: '100%',
-        backgroundColor: '#ffebee',
+        backgroundColor: '#e6ecf0',
         width: '100%',
       },
     }
@@ -199,10 +195,10 @@ const DialogLinkWrapper = (props) => {
 }
 
 const DialogLinkInnerWrapper = (props) => {
-  const  { children, className } = props
+  const  { children, className, onClick } = props
 
   return (
-    <div className={className}>
+    <div className={className} onClick={onClick}>
       <div>
         <div style={{ width: '90%', margin: '0 auto' }}>
           <label>{ children }</label>
@@ -225,6 +221,10 @@ const SideBarLeft = (props) => {
 
   const handleClickAway = () => {
     setOpenDialog(false)
+  }
+
+  const handleClickLogout = () => {
+
   }
 
   return (
@@ -253,14 +253,16 @@ const SideBarLeft = (props) => {
             </div>
             <ClickAwayListener onClickAway={handleClickAway}>
               <div className={classes.bottom}>
-
-                  <ListDialog show={openDialog}>
-                    <DialogLinkWrapper className={classes.linkWrapper}>
-                      <DialogLinkInnerWrapper className={classes.dialogLinkInner}>
-                        Logout @{ username }
-                      </DialogLinkInnerWrapper>
-                    </DialogLinkWrapper>
-                  </ListDialog>
+                <FloatingDialog show={openDialog}>
+                  <DialogLinkWrapper className={classes.linkWrapper}>
+                  <DialogLinkInnerWrapper className={classes.dialogLinkInner} onClick={handleClickLogout}>
+                      Profile
+                    </DialogLinkInnerWrapper>
+                    <DialogLinkInnerWrapper className={classes.dialogLinkInner} onClick={handleClickLogout}>
+                      Logout @{ username }
+                    </DialogLinkInnerWrapper>
+                  </DialogLinkWrapper>
+                </FloatingDialog>
                 <div className={classes.avatarWrapper} onClick={handleClickShowDialog}>
                   <Row>
                     <Col xs="auto">
@@ -269,11 +271,11 @@ const SideBarLeft = (props) => {
                     <Col style={{ paddingLeft: 5 }}>
                       <Row style={{ padding: 0 }}>
                         <Col xs={9} style={{ padding: 0}}>
-                          <p style={{ fontWeight: 'bold', margin: 0, padding: 0 }}>{ username }</p>
+                          <p style={{ fontWeight: 'bold', margin: 0, padding: 0 }}>Logout</p>
                           <p style={{ paddingBottom: 0, margin: 0 }}>@{username}</p>
                         </Col>
                         <Col style={{ padding: 0}}>
-                          <ArrowDownIcon style={{ marginTop: 18, }}/>
+                          <AiOutlinePoweroff style={{ marginTop: 17, fontSize: 20, }}/>
                         </Col>
                       </Row>
                     </Col>
