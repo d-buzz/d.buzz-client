@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
-import Image from 'react-bootstrap/Image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
@@ -16,9 +15,13 @@ import {
   NotificationsIcon,
   ProfileIcon,
   ContainedButton,
+  Avatar,
+  ArrowDownIcon,
+  ListDialog,
+  LogoutIcon,
 } from 'components/elements'
+import ClickAwayListener from 'react-click-away-listener'
 import { connect } from 'react-redux'
-
 
 const useStyles = createUseStyles({
   items: {
@@ -44,7 +47,7 @@ const useStyles = createUseStyles({
       },
       '& svg': {
         '& path': {
-          stroke: 'red',
+          stroke: '#e53935',
         },
       }
     },
@@ -66,10 +69,52 @@ const useStyles = createUseStyles({
   },
   bottom: {
     position: 'absolute',
-    bottom: 0
+    bottom: 5,
+    height: 'max-content',
+    width: '98%',
+    borderRadius: '50px 50px',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#ffebee',
+      '& p': {
+        color: '#e53935',
+      },
+      '& svg': {
+        '& path': {
+          stroke: '#e53935',
+        },
+      }
+    },
   },
   inline: {
     display: 'inline-block',
+  },
+  avatarWrapper: {
+    padding: 5,
+  },
+  linkWrapper: {
+    width: '100%',
+    '& div': {
+      width: '100%',
+      '& label': {
+        padding: 0,
+        margin: 0,
+        cursor: 'pointer',
+      },
+      '&:hover': {
+        height: '100%',
+        backgroundColor: '#ffebee',
+        width: '100%',
+      },
+    }
+  },
+  dialogLinkInner: {
+    width: '90%',
+    margin: '0 auto',
+    fontWeight: 600,
+    fontSize: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
   }
 })
 
@@ -143,12 +188,44 @@ const NavLinkWrapper = (props) => {
   )
 }
 
+const DialogLinkWrapper = (props) => {
+  const { children, className} = props
+
+  return (
+    <div className={className}>
+      { children }
+    </div>
+  )
+}
+
+const DialogLinkInnerWrapper = (props) => {
+  const  { children, className } = props
+
+  return (
+    <div className={className}>
+      <div>
+        <div style={{ width: '90%', margin: '0 auto' }}>
+          <label>{ children }</label>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const SideBarLeft = (props) => {
   const { user } = props
   const { username } = user || ''
   const classes = useStyles()
-  const profileImage = `https://images.hive.net.ph/u/${username}/avatar/small`
   const location = useLocation()
+  const [openDialog, setOpenDialog] = useState()
+
+  const handleClickShowDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const handleClickAway = () => {
+    setOpenDialog(false)
+  }
 
   return (
     <React.Fragment>
@@ -174,22 +251,36 @@ const SideBarLeft = (props) => {
               }
               <ContainedButton fontSize={18} label="Buzz" style={{ width: '100%' }} />
             </div>
-            <div className={classes.bottom}>
-              <Row>
-                <Col md="auto" p="0" style={{ width: 'max-content', paddingRight: 0, paddingLeft: 35 }}>
-                  <Image
-                    src={profileImage}
-                    roundedCircle
-                    height={50}
-                    className={classes.inline}
-                  />
-                </Col>
-                <Col style={{ marginLeft: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 'bold' }}>{username}</p>
-                  <p style={{ fontSize: 13, marginTop: -15 }}>@{username}</p>
-                </Col>
-              </Row>
+            <ClickAwayListener onClickAway={handleClickAway}>
+              <div className={classes.bottom}>
+
+                  <ListDialog show={openDialog}>
+                    <DialogLinkWrapper className={classes.linkWrapper}>
+                      <DialogLinkInnerWrapper className={classes.dialogLinkInner}>
+                        Logout @{ username }
+                      </DialogLinkInnerWrapper>
+                    </DialogLinkWrapper>
+                  </ListDialog>
+                <div className={classes.avatarWrapper} onClick={handleClickShowDialog}>
+                  <Row>
+                    <Col xs="auto">
+                      <Avatar author={username} />
+                    </Col>
+                    <Col style={{ paddingLeft: 5 }}>
+                      <Row style={{ padding: 0 }}>
+                        <Col xs={9} style={{ padding: 0}}>
+                          <p style={{ fontWeight: 'bold', margin: 0, padding: 0 }}>{ username }</p>
+                          <p style={{ paddingBottom: 0, margin: 0 }}>@{username}</p>
+                        </Col>
+                        <Col style={{ padding: 0}}>
+                          <ArrowDownIcon style={{ marginTop: 18, }}/>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </div>
             </div>
+            </ClickAwayListener>
           </LinkContainer>
         </Nav>
       </div>

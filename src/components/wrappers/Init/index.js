@@ -37,29 +37,29 @@ const Init = (props) => {
       {
         !init && (
           <div className={classes.wrapper}>
-              <HashtagLoader
-                size={35}
-                loading={true}
-                style={{
-                  position: 'absolute',
-                  margin: 'auto',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }}
-              />
-              <BrandIcon
-                style={{
-                  position: 'absolute',
-                  margin: 'auto',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }}
-              />
-            </div>
+            <HashtagLoader
+              size={35}
+              loading={true}
+              style={{
+                position: 'absolute',
+                margin: 'auto',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+            <BrandIcon
+              style={{
+                position: 'absolute',
+                margin: 'auto',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+          </div>
         )
       }
       { init && (children) }
