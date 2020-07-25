@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, HashtagLoader } from 'components/elements'
 import { createUseStyles } from 'react-jss'
-import { setIn } from 'immutable'
 
 const useStyles = createUseStyles({
   wrapper: {
