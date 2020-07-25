@@ -1,6 +1,7 @@
 import { api } from '@hiveio/hive-js'
 import { Promise } from 'bluebird'
 import config from 'config'
+import { v4 as uuidv4 } from 'uuid'
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
@@ -77,5 +78,21 @@ export const mapFetchProfile = (data) => {
     } catch(error) {
       reject(error)
     }
+  })
+}
+
+export const keychainSignIn = (username) => {
+  const challenge = { token: uuidv4() }
+  const buffer = JSON.stringify(challenge, null, 0)
+
+  return new Promise((resolve) => {
+    window.hive_keychain.requestSignBuffer(
+      username,
+      buffer,
+      'Posting',
+      response => {
+        resolve(response)
+      }
+    )
   })
 }

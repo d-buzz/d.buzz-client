@@ -2,6 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { TextArea, ContainedButton, Avatar } from 'components/elements'
+import { connect } from 'react-redux'
 
 const useStyles = createUseStyles({
   container: {
@@ -32,14 +33,15 @@ const useStyles = createUseStyles({
   }
 })
 
-const CreateBuzzForm = () => {
+const CreateBuzzForm = (props) => {
   const classes = useStyles()
+  const { user } = props
 
   return (
     <div className={classes.container}>
       <div className={classes.row}>
         <div className={classNames(classes.inline, classes.left)}>
-          <Avatar author={'hive-net-ph'} />
+          <Avatar author={user.username} />
         </div>
         <div className={classNames(classes.inline, classes.right)}>
           <TextArea />
@@ -50,4 +52,8 @@ const CreateBuzzForm = () => {
   )
 }
 
-export default CreateBuzzForm
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(CreateBuzzForm)

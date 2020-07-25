@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
+import { getSavedUserRequest } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 const Init = (props) => {
-  const { getTrendingTagsRequest, children } = props
+  const {
+    getSavedUserRequest,
+    getTrendingTagsRequest,
+    children
+  } = props
 
   useEffect(() => {
     getTrendingTagsRequest()
+    getSavedUserRequest()
     // eslint-disable-next-line
   }, [])
 
@@ -21,6 +27,7 @@ const Init = (props) => {
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getTrendingTagsRequest,
+    getSavedUserRequest,
   }, dispatch)
 })
 

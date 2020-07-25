@@ -8,15 +8,16 @@ import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { 
+import {
   HomeIcon,
   BrandIcon,
   TrendingIcon,
   LatestIcon,
   NotificationsIcon,
   ProfileIcon,
-  ContainedButton, 
+  ContainedButton,
 } from 'components/elements'
+import { connect } from 'react-redux'
 
 
 const useStyles = createUseStyles({
@@ -119,7 +120,7 @@ const IconWrapper = ({ children, className }) => {
 }
 
 const NavLinkWrapper = (props) => {
-  const { 
+  const {
     path,
     name,
     icon,
@@ -142,9 +143,11 @@ const NavLinkWrapper = (props) => {
   )
 }
 
-const SideBarLeft = () => {
+const SideBarLeft = (props) => {
+  const { user } = props
+  const { username } = user || ''
   const classes = useStyles()
-  const profileImage = 'https://images.hive.net.ph/u/hive-net-ph/avatar/small'
+  const profileImage = `https://images.hive.net.ph/u/${username}/avatar/small`
   const location = useLocation()
 
   return (
@@ -160,9 +163,9 @@ const SideBarLeft = () => {
             <div className={classes.navLinkContainer}>
               {
                 NavLinks.map((item) => (
-                  <NavLinkWrapper 
-                    { ...item } 
-                    textClass={classes.items} 
+                  <NavLinkWrapper
+                    { ...item }
+                    textClass={classes.items}
                     iconClass={classes.inline}
                     activeClass={classes.activeItem}
                     active={location.pathname}
@@ -174,16 +177,16 @@ const SideBarLeft = () => {
             <div className={classes.bottom}>
               <Row>
                 <Col md="auto" p="0" style={{ width: 'max-content', paddingRight: 0, paddingLeft: 35 }}>
-                  <Image 
+                  <Image
                     src={profileImage}
                     roundedCircle
-                    height={50} 
+                    height={50}
                     className={classes.inline}
                   />
                 </Col>
                 <Col style={{ marginLeft: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 'bold' }}>stinkymonekyph</p>
-                  <p style={{ fontSize: 13, marginTop: -15 }}>@stinkymonkeyph</p>
+                  <p style={{ fontSize: 13, fontWeight: 'bold' }}>{username}</p>
+                  <p style={{ fontSize: 13, marginTop: -15 }}>@{username}</p>
                 </Col>
               </Row>
             </div>
@@ -194,4 +197,8 @@ const SideBarLeft = () => {
   )
 }
 
-export default SideBarLeft
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(SideBarLeft)
