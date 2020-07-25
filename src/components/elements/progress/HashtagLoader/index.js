@@ -9,15 +9,16 @@ const useStyles = createUseStyles({
   }
 })
 
-const HashtagLoader = ({ loading, top = 30 }) => {
+const HashtagLoader = ({ loading, top = 30, size, style = {} }) => {
   const classes = useStyles()
 
   return (
     <React.Fragment>
       {
         loading && (
-          <div style={{ paddingTop: top }} className={classes.loader}>
+          <div style={{ paddingTop: top, ...style }} className={classes.loader}>
             <HashLoader
+              size={size}
               color="#e61c34"
               loading={true}
             />

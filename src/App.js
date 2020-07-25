@@ -1,14 +1,16 @@
 import React from 'react'
 import routes from './routes'
 import { withRouter } from 'react-router'
-import { Init } from 'components'
+import { Init, AuthGuard } from 'components'
 import { renderRoutes } from "react-router-config"
 
 const App = () => {
   return (
     <React.Fragment>
       <Init>
-        { renderRoutes(routes) }
+        <AuthGuard>
+          { renderRoutes(routes) }
+        </AuthGuard>
       </Init>
     </React.Fragment>
   )

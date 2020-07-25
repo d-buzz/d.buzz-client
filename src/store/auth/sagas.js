@@ -48,7 +48,6 @@ function* getSavedUserRequest(meta) {
   } catch(error) {
     yield put(error, meta)
   }
-
 }
 
 function* watchAuthenticateUserRequest({ payload, meta }) {
