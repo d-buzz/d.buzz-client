@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
@@ -13,6 +13,8 @@ import {
   IconButton,
   BackArrowIcon,
 } from 'components/elements'
+import Modal from 'react-bootstrap/Modal'
+import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
 import { renderRoutes } from 'react-router-config'
 import { StickyContainer, Sticky } from 'react-sticky'
@@ -56,9 +58,34 @@ const UnguardedAppFrame = (props) => {
   const location = useLocation()
   const history = useHistory()
   const { pathname } = location
+  const [open, setOpen] = useState(false)
 
   const handleClickBackButton = () => {
     history.goBack()
+  }
+
+  const handleClickOpenLoginModal = () => {
+    setOpen(true)
+  }
+
+  const handleClickCloseLoginModal = () => {
+    setOpen(false)
+  }
+
+  const LoginModal = () => {
+    return (
+      <React.Fragment>
+        <Modal show={open} onHide={handleClickCloseLoginModal}>
+          <ModalBody>
+            <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
+              <center>
+                <h5>Login to D.Buzz</h5>
+              </center>
+            </div>
+          </ModalBody>
+        </Modal>
+      </React.Fragment>
+    )
   }
 
   return (
@@ -84,7 +111,7 @@ const UnguardedAppFrame = (props) => {
               className={classes.search}
             />
           </Nav>
-          <ContainedButton transparent={true} fontSize={15} label="Log in" className={classes.button} />
+          <ContainedButton onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
           <ContainedButton style={{ marginLeft: 5 }} fontSize={15} label="Sign up" className={classes.button} />
         </Container>
       </Navbar>
@@ -109,6 +136,7 @@ const UnguardedAppFrame = (props) => {
             </Col>
           </Row>
         </StickyContainer>
+        <LoginModal />
       </Container>
     </React.Fragment>
   )

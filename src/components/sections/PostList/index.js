@@ -173,7 +173,7 @@ const PostList = (props) => {
                   <PostActions
                     voteCount={upvotes}
                     replyCount={replyCount}
-                    payout={`${payout} HBD`}
+                    payout={`$${payout}`}
                   />
                 </div>
               </div>

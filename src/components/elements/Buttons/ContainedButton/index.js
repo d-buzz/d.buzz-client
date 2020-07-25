@@ -48,6 +48,7 @@ const ContainedButton = (props) => {
     style = {},
     fontSize = 15,
     transparent = false,
+    onClick = () => {},
   } = props
 
   let buttonClass = classes.button
@@ -57,7 +58,7 @@ const ContainedButton = (props) => {
   }
 
   return (
-    <div style={style} className={classNames(buttonClass, className)}>
+    <div onClick={onClick} style={style} className={classNames(buttonClass, className)}>
       <center>
         <label style={{ fontSize: fontSize }}>
           { label }

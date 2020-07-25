@@ -16,7 +16,7 @@ const HashtagLoader = ({ loading, top = 30 }) => {
     <React.Fragment>
       {
         loading && (
-          <div style={{ marginTop: top }} className={classes.loader}>
+          <div style={{ paddingTop: top }} className={classes.loader}>
             <HashLoader
               color="#e61c34"
               loading={true}
