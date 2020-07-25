@@ -1,4 +1,4 @@
-import { api } from '@hiveio/hive-js'
+import { api, auth } from '@hiveio/hive-js'
 import { Promise } from 'bluebird'
 import config from 'config'
 import { v4 as uuidv4 } from 'uuid'
@@ -95,4 +95,8 @@ export const keychainSignIn = (username) => {
       }
     )
   })
+}
+
+export const isWifValid = (password, pubWif) => {
+  return auth.wifIsValid(password, pubWif)
 }

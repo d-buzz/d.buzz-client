@@ -15,7 +15,9 @@ import {
 } from './actions'
 
 import {
-  keychainSignIn
+  keychainSignIn,
+  fetchProfile,
+  isWifValid
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
@@ -28,6 +30,21 @@ function* authenticateUserRequest(payload, meta) {
       const data = yield call(keychainSignIn, username)
       if(data.success) {
         user.is_authenticated = true
+      }
+    } else {
+      let data = yield call(fetchProfile, username)
+      data = data[0]
+
+      if(data) {
+        const pubWif =  data['posting'].key_auths[0][0]
+        try {
+          const isValid = isWifValid(password, pubWif)
+          user.is_authenticated = isValid
+        } catch(e) {
+          user.is_authenticated = false
+        }
+      } else {
+        user.is_authenticated = false
       }
     }
 
