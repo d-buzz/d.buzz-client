@@ -1,6 +1,5 @@
 import React from 'react'
 import { Trending } from 'components'
-
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
@@ -13,10 +12,12 @@ const useStyles = createUseStyles({
 
 const Login = () => {
   const classes = useStyles()
-
   return (
     <React.Fragment>
       <div className={classes.trendingWrapper}>
+        <div style={{ width: '98%', margin: '0 auto', }}>
+          <h5 style={{ fontWeight: 'bold' }}>Explore</h5>
+        </div>
         <Trending unguardedLinks={true} />
       </div>
     </React.Fragment>

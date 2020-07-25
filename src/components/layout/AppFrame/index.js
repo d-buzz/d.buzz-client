@@ -10,7 +10,6 @@ import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 
-
 const useStyles = createUseStyles({
   main: {
     minHeight: '100vh',
@@ -56,23 +55,16 @@ const AppFrame = (props) => {
   const { route } = props
   const { pathname } = useLocation()
   const history = useHistory()
+
   let containerClass = classes.guardedContainer
   let title = 'Home'
-  let contentColSize = 7
-  let rightColSize = 3
-  let hideSearchBar = false
-  let sideBarPaddingTop = 0
 
+  let hideSearchBar = false
   const unGuardedRoute = (pathname === '/login' || pathname.includes('/ug'))
 
   if(unGuardedRoute) {
     containerClass = classes.unGuardedContainer
-    contentColSize = 8
-    rightColSize = 4
-    hideSearchBar = true
-    sideBarPaddingTop = 70
   }
-
 
   if(pathname.includes('/content/@')) {
     title = 'BUZZ'
@@ -88,66 +80,88 @@ const AppFrame = (props) => {
 
   return(
     <React.Fragment>
-      {
-        unGuardedRoute && (<AppBar />)
-      }
+      { unGuardedRoute && (<AppBar />) }
       <Container className={containerClass}>
         <StickyContainer>
-          <Row>
-            {
-              !unGuardedRoute && (
-                <Col xs={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
-                  <Sticky>
-                    {
-                      ({ style }) => (
-                        <div style={style}>
-                          <SideBarLeft/>
-                        </div>
-                      )
-                    }
-                  </Sticky>
-                </Col>
-              )
-            }
-            <Col xs={contentColSize} style={{ paddingLeft: 0, paddingRight: 0 }}>
-              {
-                !unGuardedRoute && (
-                  <Sticky>
-                    {
-                      ({ style }) => (
-                        <Navbar style={{ ...style  }} className={classes.nav}>
-                          <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                            {
-                              title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                                <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
-                              )
-                            }
-                            <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>
-                          </Navbar.Brand>
-                        </Navbar>
-                      )
-                    }
-                  </Sticky>
-                )
-              }
-              <div className={classes.main}>
-                <React.Fragment>
-                  { renderRoutes(route.routes) }
-                </React.Fragment>
-              </div>
-            </Col>
-            <Col xs={rightColSize}>
-              <Sticky>
-                {
-                  ({ style }) => (
-                    <div style={{ ...style, paddingTop: sideBarPaddingTop }}>
-                      <SideBarRight hideSearchBar={hideSearchBar} />
+          {
+            !unGuardedRoute && (
+              <React.Fragment>
+                <Row>
+                  <Col xs={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
+                    <Sticky>
+                      {
+                        ({ style }) => (
+                          <div style={style}>
+                            <SideBarLeft/>
+                          </div>
+                        )
+                      }
+                    </Sticky>
+                  </Col>
+                  <Col xs={7} style={{ paddingLeft: 0, paddingRight: 0 }}>
+                    <Sticky>
+                      {
+                        ({ style }) => (
+                          <Navbar style={style} className={classes.nav}>
+                            <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                              {
+                                title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+                                  <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
+                                )
+                              }
+                              <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>
+                            </Navbar.Brand>
+                          </Navbar>
+                        )
+                      }
+                    </Sticky>
+                    <div className={classes.main}>
+                      <React.Fragment>
+                        { renderRoutes(route.routes) }
+                      </React.Fragment>
                     </div>
-                  )
-                }
-              </Sticky>
-            </Col>
-          </Row>
+                  </Col>
+                  <Col xs={3}>
+                    <Sticky>
+                      {
+                        ({ style }) => (
+                          <div style={style}>
+                            <SideBarRight hideSearchBar={hideSearchBar} />
+                          </div>
+                        )
+                      }
+                    </Sticky>
+                  </Col>
+                </Row>
+              </React.Fragment>
+            )
+          }
+          {
+            unGuardedRoute && (
+              <React.Fragment>
+                <Row>
+                  <Col xs={8} style={{ paddingLeft: 0, paddingRight: 0 }}>
+                    <div style={{ paddingTop: 25 }} className={classes.main}>
+                      <React.Fragment>
+                        { renderRoutes(route.routes) }
+                      </React.Fragment>
+                    </div>
+                  </Col>
+                  <Col xs={4}>
+                    <Sticky>
+                      {
+                        ({ style }) => (
+                          <div style={style}>
+                            <SideBarRight hideSearchBar={hideSearchBar} />
+                          </div>
+                        )
+                      }
+                    </Sticky>
+                  </Col>
+                </Row>
+              </React.Fragment>
+            )
+          }
         </StickyContainer>
       </Container>
     </React.Fragment>

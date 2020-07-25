@@ -37,7 +37,7 @@ const useStyles = createUseStyles({
 })
 
 const SideBarRight = (props) => {
-  const { items, loading, hideSearchBar = false, top = 0 } = props
+  const { items, loading, hideSearchBar = false } = props
   const classes = useStyles()
 
   return (
