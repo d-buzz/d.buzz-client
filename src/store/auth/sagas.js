@@ -8,6 +8,10 @@ import {
   GET_SAVED_USER_REQUEST,
   getSavedUserSuccess,
   getSavedUserFailure,
+
+  SIGNOUT_USER_REQUEST,
+  signoutUserSuccess,
+  signoutUserFailure,
 } from './actions'
 
 import {
@@ -50,6 +54,20 @@ function* getSavedUserRequest(meta) {
   }
 }
 
+function* signoutUserRequest(meta) {
+  let user = {username: '', useKeychain: false, is_authenticated: false}
+  try {
+    yield call([localStorage, localStorage.clear])
+    yield put(signoutUserSuccess(user, meta))
+  } catch(error) {
+    yield put(signoutUserFailure(error, meta))
+  }
+}
+
+function* watchSignoutUserRequest({ meta }) {
+  yield call(signoutUserRequest, meta)
+}
+
 function* watchAuthenticateUserRequest({ payload, meta }) {
   yield call(authenticateUserRequest, payload, meta)
 }
@@ -60,5 +78,6 @@ function* watchGetSavedUserRequest({ meta }) {
 
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
+  yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
 }

@@ -1,6 +1,7 @@
 import {
   AUTHENTICATE_USER_SUCCESS,
   GET_SAVED_USER_SUCCESS,
+  SIGNOUT_USER_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -13,6 +14,8 @@ export const auth = (state = defaultState, { type, payload }) => {
     case AUTHENTICATE_USER_SUCCESS:
       return state.set('user', payload)
     case GET_SAVED_USER_SUCCESS:
+      return state.set('user', payload)
+    case SIGNOUT_USER_SUCCESS:
       return state.set('user', payload)
     default:
       return state

@@ -1,5 +1,4 @@
 import { select, call, put, takeEvery } from "redux-saga/effects"
-
 import {
   GET_REPLIES_REQUEST,
   getRepliesSuccess,
@@ -35,6 +34,7 @@ import {
   fetchContent,
   mapFetchProfile,
   fetchTrendingTags,
+  fetchProfile,
 } from 'services/api'
 
 
@@ -52,6 +52,8 @@ function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
   try {
     const data = yield call(fetchContent, author, permlink)
+    const profile = yield call(fetchProfile, author)
+    data.profile = profile[0]
     yield put(getContentSuccess(data, meta))
   } catch(error) {
     yield put(getContentFailure(error, meta))

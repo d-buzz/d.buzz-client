@@ -51,7 +51,7 @@ const SideBarRight = (props) => {
           />
         )
       }
-      <div style={{ marginTop: top }}>
+      <div>
         <ListGroup label="Trends for you">
           {
             items.slice(0, 5).map((item) => (

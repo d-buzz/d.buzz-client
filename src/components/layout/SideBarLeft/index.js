@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
@@ -6,7 +6,6 @@ import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import {
   HomeIcon,
   BrandIcon,
@@ -16,13 +15,12 @@ import {
   ProfileIcon,
   ContainedButton,
   Avatar,
-  ArrowDownIcon,
-  FloatingDialog,
-  LogoutIcon,
 } from 'components/elements'
-import ClickAwayListener from 'react-click-away-listener'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { AiOutlinePoweroff } from 'react-icons/ai'
+import { signoutUserRequest } from 'store/auth/actions'
 
 const useStyles = createUseStyles({
   items: {
@@ -86,32 +84,9 @@ const useStyles = createUseStyles({
     display: 'inline-block',
   },
   avatarWrapper: {
+    height: 60,
     padding: 5,
   },
-  linkWrapper: {
-    width: '100%',
-    '& div': {
-      width: '100%',
-      '& label': {
-        padding: 0,
-        margin: 0,
-        cursor: 'pointer',
-      },
-      '&:hover': {
-        height: '100%',
-        backgroundColor: '#e6ecf0',
-        width: '100%',
-      },
-    }
-  },
-  dialogLinkInner: {
-    width: '90%',
-    margin: '0 auto',
-    fontWeight: 600,
-    fontSize: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
-  }
 })
 
 const NavLinks = [
@@ -184,47 +159,14 @@ const NavLinkWrapper = (props) => {
   )
 }
 
-const DialogLinkWrapper = (props) => {
-  const { children, className} = props
-
-  return (
-    <div className={className}>
-      { children }
-    </div>
-  )
-}
-
-const DialogLinkInnerWrapper = (props) => {
-  const  { children, className, onClick } = props
-
-  return (
-    <div className={className} onClick={onClick}>
-      <div>
-        <div style={{ width: '90%', margin: '0 auto' }}>
-          <label>{ children }</label>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 const SideBarLeft = (props) => {
-  const { user } = props
+  const { user, signoutUserRequest } = props
   const { username } = user || ''
   const classes = useStyles()
   const location = useLocation()
-  const [openDialog, setOpenDialog] = useState()
-
-  const handleClickShowDialog = () => {
-    setOpenDialog(true)
-  }
-
-  const handleClickAway = () => {
-    setOpenDialog(false)
-  }
 
   const handleClickLogout = () => {
-
+    signoutUserRequest()
   }
 
   return (
@@ -251,38 +193,26 @@ const SideBarLeft = (props) => {
               }
               <ContainedButton fontSize={18} label="Buzz" style={{ width: '100%' }} />
             </div>
-            <ClickAwayListener onClickAway={handleClickAway}>
-              <div className={classes.bottom}>
-                <FloatingDialog show={openDialog}>
-                  <DialogLinkWrapper className={classes.linkWrapper}>
-                  <DialogLinkInnerWrapper className={classes.dialogLinkInner} onClick={handleClickLogout}>
-                      Profile
-                    </DialogLinkInnerWrapper>
-                    <DialogLinkInnerWrapper className={classes.dialogLinkInner} onClick={handleClickLogout}>
-                      Logout @{ username }
-                    </DialogLinkInnerWrapper>
-                  </DialogLinkWrapper>
-                </FloatingDialog>
-                <div className={classes.avatarWrapper} onClick={handleClickShowDialog}>
-                  <Row>
-                    <Col xs="auto">
-                      <Avatar author={username} />
-                    </Col>
-                    <Col style={{ paddingLeft: 5 }}>
-                      <Row style={{ padding: 0 }}>
-                        <Col xs={9} style={{ padding: 0}}>
-                          <p style={{ fontWeight: 'bold', margin: 0, padding: 0 }}>Logout</p>
-                          <p style={{ paddingBottom: 0, margin: 0 }}>@{username}</p>
-                        </Col>
-                        <Col style={{ padding: 0}}>
-                          <AiOutlinePoweroff style={{ marginTop: 17, fontSize: 20, }}/>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </div>
+            <div className={classes.bottom}>
+              <div className={classes.avatarWrapper} onClick={handleClickLogout}>
+                <Row>
+                  <Col xs="auto">
+                    <Avatar author={username} />
+                  </Col>
+                  <Col style={{ paddingLeft: 5 }}>
+                    <Row style={{ padding: 0 }}>
+                      <Col xs={9} style={{ padding: 0}}>
+                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0 }}>Logout</p>
+                        <p style={{ paddingBottom: 0, margin: 0 }}>@{username}</p>
+                      </Col>
+                      <Col style={{ padding: 0}}>
+                        <AiOutlinePoweroff style={{ marginTop: 17, fontSize: 20, }}/>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </div>
             </div>
-            </ClickAwayListener>
           </LinkContainer>
         </Nav>
       </div>
@@ -294,4 +224,10 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(SideBarLeft)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    signoutUserRequest
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideBarLeft)

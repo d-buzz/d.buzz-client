@@ -29,7 +29,6 @@ const useStyles = createUseStyles({
     },
   },
   unGuardedContainer: {
-    paddingTop: 55,
     '@media (min-width: 1200px)': {
       '&.container': {
         maxWidth: '1100px',
@@ -71,7 +70,7 @@ const AppFrame = (props) => {
     contentColSize = 8
     rightColSize = 4
     hideSearchBar = true
-    sideBarPaddingTop = 15
+    sideBarPaddingTop = 70
   }
 
 
@@ -141,8 +140,8 @@ const AppFrame = (props) => {
               <Sticky>
                 {
                   ({ style }) => (
-                    <div style={style}>
-                      <SideBarRight top={sideBarPaddingTop} hideSearchBar={hideSearchBar} />
+                    <div style={{ ...style, paddingTop: sideBarPaddingTop }}>
+                      <SideBarRight hideSearchBar={hideSearchBar} />
                     </div>
                   )
                 }
