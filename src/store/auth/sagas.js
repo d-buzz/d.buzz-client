@@ -26,23 +26,29 @@ function* authenticateUserRequest(payload, meta) {
   let user = { username, useKeychain, is_authenticated: false, wif: '' }
 
   try {
+    let profile = yield call(fetchProfile, username)
+
+    if(profile) {
+      profile = profile[0]
+    }
 
     if(useKeychain) {
       const data = yield call(keychainSignIn, username)
       if(data.success) {
         user.is_authenticated = true
+        user.profile = profile
       }
     } else {
-      let data = yield call(fetchProfile, username)
-      data = data[0]
 
-      if(data) {
-        const pubWif =  data['posting'].key_auths[0][0]
+
+      if(profile) {
+        const pubWif =  profile['posting'].key_auths[0][0]
         try {
           const isValid = isWifValid(password, pubWif)
           user.is_authenticated = isValid
           const wif = generateWif(username, password, 'posting')
           user.wif = wif
+          user.profile = profile
         } catch(e) {
           user.is_authenticated = false
         }
@@ -60,7 +66,7 @@ function* authenticateUserRequest(payload, meta) {
 }
 
 function* getSavedUserRequest(meta) {
-  let user = {username: '', useKeychain: false, is_authenticated: false }
+  let user = {username: '', useKeychain: false, is_authenticated: false, wif: '' }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     saved = JSON.parse(saved)
@@ -75,7 +81,7 @@ function* getSavedUserRequest(meta) {
 }
 
 function* signoutUserRequest(meta) {
-  let user = {username: '', useKeychain: false, is_authenticated: false}
+  let user = {username: '', useKeychain: false, is_authenticated: false, wif: ''}
   try {
     yield call([localStorage, localStorage.clear])
     yield put(signoutUserSuccess(user, meta))
