@@ -17,12 +17,13 @@ import {
 import {
   keychainSignIn,
   fetchProfile,
-  isWifValid
+  isWifValid,
+  generateWif
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
-  let user = { username, useKeychain, is_authenticated: false }
+  let user = { username, useKeychain, is_authenticated: false, wif: '' }
 
   try {
 
@@ -40,6 +41,8 @@ function* authenticateUserRequest(payload, meta) {
         try {
           const isValid = isWifValid(password, pubWif)
           user.is_authenticated = isValid
+          const wif = generateWif(username, password, 'posting')
+          user.wif = wif
         } catch(e) {
           user.is_authenticated = false
         }

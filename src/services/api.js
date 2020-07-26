@@ -100,3 +100,7 @@ export const keychainSignIn = (username) => {
 export const isWifValid = (password, pubWif) => {
   return auth.wifIsValid(password, pubWif)
 }
+
+export const generateWif = (username, password, role) => {
+  return auth.toWif(username, password, role)
+}
