@@ -13,7 +13,6 @@ import {
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { useHistory } from 'react-router-dom'
-import { Slider  } from 'material-ui-slider'
 
 
 const useStyle = createUseStyles({
@@ -149,7 +148,7 @@ const PostList = (props) => {
     return link
   }
 
-  const handleOpenContent = (author, permlink) => (e) => {
+  const handleOpenContent = (e) => {
     const { target } = e
     const { href } = target
 
@@ -163,27 +162,31 @@ const PostList = (props) => {
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-      <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
+
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left}>
+             <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
+              <div className={classes.left} onClick={handleOpenContent}>
                 <Avatar author={author} />
               </div>
+              </Link>
             </Col>
-            <Col onClick={handleOpenContent(author, permlink)}>
+            <Col>
               <div className={classes.right}>
-                <div className={classes.content}>
-                  <label className={classes.name}>
-                    {json_metadata || posting_metadata ? getAuthorName(json_metadata, posting_metadata) : `@${author}`}
-                  </label>
-                  <label className={classes.username}>
-                    { `@${author}` } &bull;&nbsp;
-                    { moment(created).fromNow() }
-                  </label>
-                  <MarkdownViewer content={body}/>
-                  <PostTags meta={meta} />
-                </div>
+                <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
+                  <div className={classes.content} onClick={handleOpenContent}>
+                    <label className={classes.name}>
+                      {json_metadata || posting_metadata ? getAuthorName(json_metadata, posting_metadata) : `@${author}`}
+                    </label>
+                    <label className={classes.username}>
+                      { `@${author}` } &bull;&nbsp;
+                      { moment(created).fromNow() }
+                    </label>
+                    <MarkdownViewer content={body}/>
+                    <PostTags meta={meta} />
+                  </div>
+                </Link>
                 <div className={classes.actionWrapper}>
                   <PostActions
                     voteCount={upvotes}
@@ -195,7 +198,6 @@ const PostList = (props) => {
             </Col>
           </Row>
         </div>
-        </Link>
       </div>
     </React.Fragment>
   )
