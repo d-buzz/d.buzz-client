@@ -12,6 +12,8 @@ import {
 } from 'components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
+import { useHistory } from 'react-router-dom'
+import { Slider  } from 'material-ui-slider'
 
 
 const useStyle = createUseStyles({
@@ -115,6 +117,8 @@ const PostList = (props) => {
     unguardedLinks,
    } = props
 
+   const history = useHistory()
+
    let json_metadata = null
    let posting_metadata = null
 
@@ -136,13 +140,24 @@ const PostList = (props) => {
 
   const classes = useStyle()
 
-  const generateLink = (author, permlink) => () => {
+  const generateLink = (author, permlink) =>  {
     let link = 'content'
     if(unguardedLinks) {
       link = 'ug'
     }
     link += `/@${author}/${permlink}`
     return link
+  }
+
+  const handleOpenContent = (author, permlink) => (e) => {
+    const { target } = e
+    const { href } = target
+
+    if(href) {
+      e.preventDefault()
+      window.open(href, '_blank')
+    }
+
   }
 
   return (
@@ -156,7 +171,7 @@ const PostList = (props) => {
                 <Avatar author={author} />
               </div>
             </Col>
-            <Col>
+            <Col onClick={handleOpenContent(author, permlink)}>
               <div className={classes.right}>
                 <div className={classes.content}>
                   <label className={classes.name}>
@@ -166,7 +181,7 @@ const PostList = (props) => {
                     { `@${author}` } &bull;&nbsp;
                     { moment(created).fromNow() }
                   </label>
-                  <MarkdownViewer content={body} />
+                  <MarkdownViewer content={body}/>
                   <PostTags meta={meta} />
                 </div>
                 <div className={classes.actionWrapper}>
