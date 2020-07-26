@@ -136,6 +136,7 @@ const PostActions = (props) => {
     replyCount,
     payout,
     hideStats = false,
+    upvoteRequest,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -154,7 +155,8 @@ const PostActions = (props) => {
   }
 
   const handleClickUpvote = (author, permlink) => () => {
-    alert(`Hello world ${sliderValue} ${author} ${permlink}`)
+    // alert(`Hello world ${sliderValue} ${author} ${permlink}`)
+    upvoteRequest(author, permlink, sliderValue)
   }
 
 

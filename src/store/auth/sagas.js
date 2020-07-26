@@ -26,19 +26,18 @@ function* authenticateUserRequest(payload, meta) {
   let user = { username, useKeychain, is_authenticated: false  }
 
   try {
-    let profile = yield call(fetchProfile, username)
-
-    if(profile) {
-      profile = profile[0]
-    }
 
     if(useKeychain) {
       const data = yield call(keychainSignIn, username)
       if(data.success) {
         user.is_authenticated = true
-        user.profile = profile
       }
     } else {
+      let profile = yield call(fetchProfile, username)
+
+      if(profile) {
+        profile = profile[0]
+      }
 
       if(profile) {
         const pubWif =  profile['posting'].key_auths[0][0]
@@ -47,7 +46,6 @@ function* authenticateUserRequest(payload, meta) {
           user.is_authenticated = isValid
           const wif = generateWif(username, password, 'posting')
           user.wif = wif
-          user.profile = profile
         } catch(e) {
           user.is_authenticated = false
         }

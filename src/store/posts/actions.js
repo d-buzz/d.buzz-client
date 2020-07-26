@@ -2,9 +2,9 @@ export const UPVOTE_REQUEST = 'UPVOTE_REQUEST'
 export const UPVOTE_SUCCESS = 'UPVOTE_SUCCESS'
 export const UPVOTE_FAILURE = 'UPVOTE_FAILURE'
 
-export const upvoteRequest = (percentage) => ({
+export const upvoteRequest = (author, permlink, percentage) => ({
   type: UPVOTE_REQUEST,
-  payload: { percentage },
+  payload: { author, permlink, percentage },
   meta: {
     thunk: true,
   }

@@ -26,6 +26,9 @@ import {
   GET_TRENDING_TAGS_REQUEST,
   getTrendingTagsSuccess,
   getTrendingTagsFailure,
+
+  UPVOTE_REQUEST,
+  upvoteFailure,
 } from './actions'
 
 import {
@@ -35,6 +38,8 @@ import {
   mapFetchProfile,
   fetchTrendingTags,
   fetchProfile,
+  fetchFeedHistory,
+  fetchRewardFund,
 } from 'services/api'
 
 
@@ -144,6 +149,66 @@ function* getLatestPostsRequest(payload, meta) {
   }
 }
 
+function* upvoteRequest(payload, meta) {
+  try {
+    const { author, permlink, percentage } = payload
+    const user = yield select(state => state.auth.get('user'))
+    const { username, is_authenticated, useKeychain, profile } = user
+
+    if(is_authenticated) {
+
+      if(useKeychain) {
+
+      } else {
+
+        const rewardFund = yield call(fetchRewardFund, 'post')
+        const feedHistory = yield call(fetchFeedHistory)
+        let profile = yield call(fetchProfile, username)
+
+        if(profile) {
+          profile = profile[0]
+
+          let {
+            vesting_shares,
+            received_vesting_shares,
+            delegated_vesting_shares,
+            voting_manabar,
+          } = profile
+
+          const { current_mana: voting_power } = voting_manabar
+          let { reward_balance, recent_claims } = rewardFund
+          reward_balance = reward_balance.replace('HIVE','')
+
+          vesting_shares = vesting_shares.replace('VESTS', '')
+          received_vesting_shares = received_vesting_shares.replace('VESTS', '')
+          delegated_vesting_shares = delegated_vesting_shares.replace('VESTS', '')
+          const total_vests = parseFloat(vesting_shares) + parseFloat(received_vesting_shares) - parseFloat(delegated_vesting_shares)
+          const final_vests = total_vests * 1e6
+          const power = (voting_power * percentage / 10000) / 50
+          const rshares = power * final_vests / 10000
+          const estimate = rshares / parseFloat(recent_claims) * parseFloat(reward_balance)
+
+          console.log({ total_vests })
+          console.log({ final_vests })
+          console.log({ power })
+          console.log({ rshares })
+          console.log({ estimate })
+          console.log({ recent_claims: parseFloat(recent_claims) })
+          console.log({ reward_balance: parseFloat(reward_balance) })
+
+        }
+
+      }
+
+    } else {
+      yield put(upvoteFailure('Unauthenticated', meta))
+    }
+
+  } catch(error) {
+    yield put(upvoteFailure(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -168,6 +233,10 @@ function* watchGetLatestPostsRequest({payload, meta}) {
   yield call(getLatestPostsRequest, payload, meta)
 }
 
+function* watchUpvoteRequest({ payload, meta }) {
+  yield call(upvoteRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
   yield takeEvery(GET_HOME_POSTS_REQUEST, watchGetHomePostsRequest)
@@ -175,5 +244,6 @@ export default function* sagas() {
   yield takeEvery(GET_REPLIES_REQUEST, watchGetRepliesRequest)
   yield takeEvery(GET_CONTENT_REQUEST, watchGetContentRequest)
   yield takeEvery(GET_TRENDING_TAGS_REQUEST, watchGetTrendingTagsRequest)
+  yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
 }
 

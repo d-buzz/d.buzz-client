@@ -104,3 +104,22 @@ export const isWifValid = (password, pubWif) => {
 export const generateWif = (username, password, role) => {
   return auth.toWif(username, password, role)
 }
+
+export const fetchFeedHistory = () => {
+  return api.getFeedHistoryAsync()
+          .then((result) => {
+            return result
+          }).catch((error) => {
+            return error
+          })
+}
+
+export const fetchRewardFund = (username) => {
+  return api.getRewardFundAsync(username)
+          .then((result) => {
+            return result
+          }).catch((error) => {
+            return error
+          })
+}
+
