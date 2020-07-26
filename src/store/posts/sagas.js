@@ -175,6 +175,10 @@ function* upvoteRequest(payload, meta) {
             voting_manabar,
           } = profile
 
+          const { current_median_history } = feedHistory
+          let { base } = current_median_history
+          base = base.replace('HBD', '')
+
           const { current_mana: voting_power } = voting_manabar
           let { reward_balance, recent_claims } = rewardFund
           reward_balance = reward_balance.replace('HIVE','')
@@ -186,8 +190,10 @@ function* upvoteRequest(payload, meta) {
           const final_vests = total_vests * 1e6
           const power = (voting_power * percentage / 10000) / 50
           const rshares = power * final_vests / 10000
-          const estimate = rshares / parseFloat(recent_claims) * parseFloat(reward_balance)
+          const estimate = rshares / parseFloat(recent_claims) * parseFloat(reward_balance) * parseFloat(base)
 
+
+          console.log({ feedHistory })
           console.log({ total_vests })
           console.log({ final_vests })
           console.log({ power })
