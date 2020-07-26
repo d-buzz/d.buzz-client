@@ -8,8 +8,10 @@ import { useHistory } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
+import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles({
   loginButton: {
@@ -36,12 +38,14 @@ const LoginModal = (props) => {
     show,
     onHide,
     authenticateUserRequest,
+    loading,
   } = props
 
   const classes = useStyles()
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const [useKeychain, setUseKeychain] = useState(false)
+  const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const history = useHistory()
 
   const onChange = (e) => {
@@ -53,6 +57,7 @@ const LoginModal = (props) => {
     } else if(name === 'password') {
       setPassword(value)
     }
+    setHasAuthenticationError(false)
   }
 
   const onCheckBoxChanged = (e) => {
@@ -70,6 +75,8 @@ const LoginModal = (props) => {
       .then(({ is_authenticated }) => {
         if(is_authenticated) {
           history.replace('/')
+        } else {
+          setHasAuthenticationError(true)
         }
       })
   }
@@ -81,16 +88,21 @@ const LoginModal = (props) => {
           <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
             <center>
               <h5>Hi there, welcome back!</h5>
+              {
+                hasAuthenticationError && (
+                  <label style={{ color: 'red' }}>Authentication failed, please check credentials and retry again</label>
+                )
+              }
             </center>
           </div>
           <FormLabel>Username</FormLabel>
-          <FormControl name="username" type="text" value={username} onChange={onChange} />
+          <FormControl disabled={loading} name="username" type="text" value={username} onChange={onChange} />
           <FormSpacer />
           {
             !useKeychain && (
               <React.Fragment>
                 <FormLabel>Password</FormLabel>
-                <FormControl name="password" type="password" value={password} onChange={onChange} />
+                <FormControl disabled={loading} name="password" type="password" value={password} onChange={onChange} />
                 <FormSpacer />
               </React.Fragment>
             )
@@ -103,13 +115,22 @@ const LoginModal = (props) => {
             onChange={onCheckBoxChanged}
           />
           <center>
-            <ContainedButton
-              onClick={handleClickLogin}
-              transparent={true}
-              className={classes.loginButton}
-              fontSize={15}
-              label="Submit"
-            />
+            {
+              !loading && (
+                <ContainedButton
+                  onClick={handleClickLogin}
+                  transparent={true}
+                  className={classes.loginButton}
+                  fontSize={15}
+                  label="Submit"
+                />
+              )
+            }
+            {
+              loading && (
+                <HashtagLoader loading={true} />
+              )
+            }
           </center>
         </ModalBody>
       </Modal>
@@ -117,10 +138,14 @@ const LoginModal = (props) => {
   )
 }
 
+const mapStateToProps = (state) => ({
+  loading: pending(state, 'AUTHENTICATE_USER_REQUEST'),
+})
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     authenticateUserRequest,
   }, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(LoginModal)
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal)

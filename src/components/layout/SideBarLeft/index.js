@@ -206,7 +206,7 @@ const SideBarLeft = (props) => {
                         <p style={{ paddingBottom: 0, margin: 0 }}>@{username}</p>
                       </Col>
                       <Col style={{ padding: 0}}>
-                        <AiOutlinePoweroff style={{ marginTop: 17, fontSize: 20, }}/>
+                        <AiOutlinePoweroff height={22} style={{ marginTop: 17, fontSize: 20, }}/>
                       </Col>
                     </Row>
                   </Col>
