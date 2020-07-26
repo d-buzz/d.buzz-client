@@ -23,7 +23,7 @@ import {
 
 function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
-  let user = { username, useKeychain, is_authenticated: false, wif: '' }
+  let user = { username, useKeychain, is_authenticated: false  }
 
   try {
     let profile = yield call(fetchProfile, username)
@@ -39,7 +39,6 @@ function* authenticateUserRequest(payload, meta) {
         user.profile = profile
       }
     } else {
-
 
       if(profile) {
         const pubWif =  profile['posting'].key_auths[0][0]
@@ -66,7 +65,7 @@ function* authenticateUserRequest(payload, meta) {
 }
 
 function* getSavedUserRequest(meta) {
-  let user = {username: '', useKeychain: false, is_authenticated: false, wif: '' }
+  let user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     saved = JSON.parse(saved)
@@ -81,7 +80,7 @@ function* getSavedUserRequest(meta) {
 }
 
 function* signoutUserRequest(meta) {
-  let user = {username: '', useKeychain: false, is_authenticated: false, wif: ''}
+  let user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     yield call([localStorage, localStorage.clear])
     yield put(signoutUserSuccess(user, meta))

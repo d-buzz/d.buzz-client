@@ -12,7 +12,6 @@ import {
 } from 'components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { useHistory } from 'react-router-dom'
 
 
 const useStyle = createUseStyles({
@@ -116,7 +115,6 @@ const PostList = (props) => {
     unguardedLinks,
    } = props
 
-   const history = useHistory()
 
    let json_metadata = null
    let posting_metadata = null
@@ -189,6 +187,8 @@ const PostList = (props) => {
                 </Link>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    author={author}
+                    permlink={permlink}
                     voteCount={upvotes}
                     replyCount={replyCount}
                     payout={`$${payout}`}

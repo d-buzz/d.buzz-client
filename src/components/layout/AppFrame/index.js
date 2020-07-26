@@ -4,7 +4,8 @@ import { StickyContainer, Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Navbar from 'react-bootstrap/Navbar'
-import { BackArrowIcon, IconButton } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
+import { BackArrowIcon } from 'components/elements'
 import { SideBarLeft, SideBarRight, AppBar } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory } from 'react-router-dom'
@@ -103,10 +104,12 @@ const AppFrame = (props) => {
                       {
                         ({ style }) => (
                           <Navbar style={style} className={classes.nav}>
-                            <Navbar.Brand href="#" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                            <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
                               {
                                 title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                                  <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
+                                  <IconButton onClick={handleClickBackButton} size="small">
+                                    <BackArrowIcon />
+                                  </IconButton>
                                 )
                               }
                               <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>

@@ -2,17 +2,20 @@ import React, { useState } from 'react'
 import classNames from 'classnames'
 import {
   CommentIcon,
-  IconButton,
   HeartIcon,
   FlagIcon,
   HiveIcon,
   ContainedButton,
 } from 'components/elements'
-import { createUseStyles } from 'react-jss'
-import Slider from '@material-ui/core/Slider'
-import { withStyles } from '@material-ui/core/styles'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Slider from '@material-ui/core/Slider'
+import IconButton from '@material-ui/core/IconButton'
+import { createUseStyles } from 'react-jss'
+import { withStyles } from '@material-ui/core/styles'
+import { upvoteRequest } from 'store/posts/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const PrettoSlider = withStyles({
   root: {
@@ -127,6 +130,8 @@ const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick 
 const PostActions = (props) => {
   const classes = useStyles()
   const {
+    author,
+    permlink,
     voteCount,
     replyCount,
     payout,
@@ -148,6 +153,10 @@ const PostActions = (props) => {
     setSliderValue(value)
   }
 
+  const handleClickUpvote = (author, permlink) => () => {
+    alert(`Hello world ${sliderValue} ${author} ${permlink}`)
+  }
+
 
   return (
     <React.Fragment>
@@ -157,7 +166,7 @@ const PostActions = (props) => {
             <ActionWrapper
               className={classes.actionWrapperSpace}
               inlineClass={classes.inline}
-              icon={<IconButton icon={<HeartIcon />} />}
+              icon={<IconButton size="small"><HeartIcon /></IconButton>}
               hideStats={hideStats}
               onClick={handleClickShowSlider}
               stat={
@@ -169,7 +178,7 @@ const PostActions = (props) => {
             <ActionWrapper
               className={classes.actionWrapperSpace}
               inlineClass={classes.inline}
-              icon={<IconButton icon={<CommentIcon />} />}
+              icon={<IconButton size="small"><CommentIcon /></IconButton>}
               hideStats={hideStats}
               stat={
                 <label style={{ marginLeft: 5, }}>
@@ -180,7 +189,7 @@ const PostActions = (props) => {
             <ActionWrapper
               className={classes.actionWrapperSpace}
               inlineClass={classes.inline}
-              icon={<IconButton icon={<HiveIcon />} />}
+              icon={<IconButton size="small"><HiveIcon /></IconButton>}
               hideStats={false}
               stat={
                 <label style={{ marginLeft: 5, }}>
@@ -201,7 +210,7 @@ const PostActions = (props) => {
           <div style={{ width: '98%', paddingRight: 30 }}>
             <Row>
               <Col xs="auto">
-                <ContainedButton fontSize={15} label={`Upvote (${sliderValue}%)`} className={classes.button} />
+                <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={15} label={`Upvote (${sliderValue}%)`} className={classes.button} />
               </Col>
               <Col style={{ paddingLeft: 0 }}>
                 <ContainedButton
@@ -227,4 +236,10 @@ const PostActions = (props) => {
   )
 }
 
-export default PostActions
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    upvoteRequest,
+  }, dispatch)
+})
+
+export default connect(null, mapDispatchToProps)(PostActions)

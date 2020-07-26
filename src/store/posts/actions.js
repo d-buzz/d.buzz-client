@@ -1,3 +1,27 @@
+export const UPVOTE_REQUEST = 'UPVOTE_REQUEST'
+export const UPVOTE_SUCCESS = 'UPVOTE_SUCCESS'
+export const UPVOTE_FAILURE = 'UPVOTE_FAILURE'
+
+export const upvoteRequest = (percentage) => ({
+  type: UPVOTE_REQUEST,
+  payload: { percentage },
+  meta: {
+    thunk: true,
+  }
+})
+
+export const upvoteSuccess = (response, meta) => ({
+  type: UPVOTE_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const upvoteFailure = (error, meta) => ({
+  type: UPVOTE_FAILURE,
+  payload: error,
+  meta,
+})
+
 export const GET_HOME_POSTS_REQUEST = 'GET_HOME_POSTS_REQUEST'
 export const GET_HOME_POSTS_SUCCESS = 'GET_HOME_POSTS_SUCCESS'
 export const GET_HOME_POSTS_FAILURE = 'GET_HOME_POSTS_FAILURE'
@@ -90,7 +114,6 @@ export const setLatestLastPost = (post) => ({
   type: SET_LATEST_LAST_POST,
   payload: post,
 })
-
 
 export const GET_REPLIES_REQUEST = 'GET_REPLIES_REQUEST'
 export const GET_REPLIES_SUCCESS = 'GET_REPLIES_SUCCESS'
