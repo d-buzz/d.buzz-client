@@ -139,13 +139,14 @@ const PostActions = (props) => {
     payout,
     hideStats = false,
     upvoteRequest,
-    isUpvoted = false,
+    hasUpvoted = false,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
   const [vote, setVote] = useState(voteCount)
   const [loading, setLoading] = useState(false)
+  const [upvoted, setUpvoted] = useState(hasUpvoted)
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
@@ -165,6 +166,7 @@ const PostActions = (props) => {
     upvoteRequest(author, permlink, sliderValue)
       .then(() => {
         setVote(vote + 1)
+        setUpvoted(true)
         setLoading(false)
       })
       .catch(() => {
@@ -180,7 +182,7 @@ const PostActions = (props) => {
         !showSlider && (
           <div>
             {
-              !loading && isUpvoted && (
+              !loading && upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
@@ -195,7 +197,7 @@ const PostActions = (props) => {
               )
             }
             {
-              !loading && !isUpvoted && (
+              !loading && !upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}

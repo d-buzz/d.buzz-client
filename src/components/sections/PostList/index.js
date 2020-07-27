@@ -12,7 +12,7 @@ import {
 } from 'components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-
+import { connect } from 'react-redux'
 
 const useStyle = createUseStyles({
   row: {
@@ -113,11 +113,18 @@ const PostList = (props) => {
     meta,
     profile = {},
     unguardedLinks,
+    active_votes = [],
+    user = {},
    } = props
 
 
    let json_metadata = null
    let posting_metadata = null
+   let hasUpvoted = false
+
+   if(user.is_authenticated) {
+     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
+   }
 
    if(
       'json_metadata' in profile
@@ -186,6 +193,7 @@ const PostList = (props) => {
                 </Link>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    hasUpvoted={hasUpvoted}
                     author={author}
                     permlink={permlink}
                     voteCount={upvotes}
@@ -202,4 +210,8 @@ const PostList = (props) => {
   )
 }
 
-export default PostList
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(PostList)
