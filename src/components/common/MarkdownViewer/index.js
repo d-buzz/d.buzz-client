@@ -102,7 +102,7 @@ const prepareImages = (content) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  let { content = '', minifyAssets = true, onClick = () => {} } = props
+  let { content = '', minifyAssets = true } = props
   const original = content
   content = prepareImages(content)
   content = renderer.render(content)

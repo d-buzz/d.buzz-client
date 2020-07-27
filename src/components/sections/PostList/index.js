@@ -11,6 +11,7 @@ import {
   PostActions
 } from 'components'
 import { Link } from 'react-router-dom'
+import RelativeTime from 'react-relative-time'
 import moment from 'moment'
 
 
@@ -179,7 +180,7 @@ const PostList = (props) => {
                     </label>
                     <label className={classes.username}>
                       { `@${author}` } &bull;&nbsp;
-                      { moment(created).fromNow() }
+                      { moment(`${created}Z`).local().fromNow() }
                     </label>
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} />

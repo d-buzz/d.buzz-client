@@ -151,6 +151,7 @@ function* getLatestPostsRequest(payload, meta) {
 
 function* upvoteRequest(payload, meta) {
   try {
+
     const { author, permlink, percentage } = payload
     const user = yield select(state => state.auth.get('user'))
     const { username, is_authenticated, useKeychain, profile } = user
@@ -163,7 +164,7 @@ function* upvoteRequest(payload, meta) {
 
         const rewardFund = yield call(fetchRewardFund, 'post')
         const feedHistory = yield call(fetchFeedHistory)
-        let profile = yield call(fetchProfile, username)
+        let profile = yield call(fetchProfile, 'postnzt')
 
         if(profile) {
           profile = profile[0]
@@ -180,32 +181,23 @@ function* upvoteRequest(payload, meta) {
           base = base.replace('HBD', '')
 
           const { current_mana: voting_power } = voting_manabar
+
           let { reward_balance, recent_claims } = rewardFund
           reward_balance = reward_balance.replace('HIVE','')
-
           vesting_shares = vesting_shares.replace('VESTS', '')
           received_vesting_shares = received_vesting_shares.replace('VESTS', '')
           delegated_vesting_shares = delegated_vesting_shares.replace('VESTS', '')
+
           const total_vests = parseFloat(vesting_shares) + parseFloat(received_vesting_shares) - parseFloat(delegated_vesting_shares)
           const final_vests = total_vests * 1e6
           const power = (voting_power * percentage / 10000) / 50
           const rshares = power * final_vests / 10000
           const estimate = rshares / parseFloat(recent_claims) * parseFloat(reward_balance) * parseFloat(base)
 
-
-          console.log({ feedHistory })
-          console.log({ total_vests })
-          console.log({ final_vests })
-          console.log({ power })
-          console.log({ rshares })
           console.log({ estimate })
-          console.log({ recent_claims: parseFloat(recent_claims) })
-          console.log({ reward_balance: parseFloat(reward_balance) })
 
         }
-
       }
-
     } else {
       yield put(upvoteFailure('Unauthenticated', meta))
     }
