@@ -3,9 +3,9 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
-  field: { 
+  field: {
     fontSize: 18,
-    resize: 'none', 
+    resize: 'none',
     width: '100%',
     '&:focus': {
       outline: 'none',
@@ -16,16 +16,17 @@ const useStyles = createUseStyles({
   },
 })
 
-const TextArea = () => {
+const TextArea = (props) => {
   const classes = useStyles()
 
   return (
     <React.Fragment>
-      <TextareaAutosize 
+      <TextareaAutosize
         minRows={2}
         maxRows={15}
         placeholder="What's Buzzing?"
-        className={classes.field} 
+        className={classes.field}
+        { ...props }
       />
     </React.Fragment>
   )

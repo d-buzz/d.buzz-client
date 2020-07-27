@@ -170,7 +170,7 @@ function* upvoteRequest(payload, meta) {
         console.log({ wif })
         const weight = percentage * 100
 
-        const upvoted = yield call(broadcastVote, wif, username, author, permlink, weight)
+        yield call(broadcastVote, wif, username, author, permlink, weight)
         yield put(upvoteSuccess(meta))
 
       }

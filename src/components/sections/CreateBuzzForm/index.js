@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { TextArea, ContainedButton, Avatar } from 'components/elements'
+import Box from '@material-ui/core/Box'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { connect } from 'react-redux'
 
 
@@ -31,12 +33,41 @@ const useStyles = createUseStyles({
   float: {
     float: 'right',
     marginRight: 5,
-  }
+  },
+  root: {
+    position: 'relative',
+  },
+  bottom: {
+    color: '#ffebee',
+  },
+  top: {
+    color: '#1a90ff',
+    animationDuration: '550ms',
+    position: 'absolute',
+    left: 0,
+  },
+  circle: {
+    strokeLinecap: 'round',
+    color: '#e53935',
+  },
 })
+
 
 const CreateBuzzForm = (props) => {
   const classes = useStyles()
+  const [wordCount, setWordCount] = useState(0)
+  const [content, setContent] = useState()
   const { user } = props
+
+  const onChange = (e) => {
+    const { target } = e
+    const { value } = target
+    setContent(value)
+    setWordCount(Math.floor((value.length/280) * 100))
+  }
+
+
+  console.log({ wordCount })
 
   return (
     <div className={classes.container}>
@@ -45,8 +76,18 @@ const CreateBuzzForm = (props) => {
           <Avatar author={user.username} />
         </div>
         <div className={classNames(classes.inline, classes.right)}>
-          <TextArea />
+          <TextArea maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />
           <ContainedButton label="Buzz it" className={classes.float} />
+          <Box style={{ float: 'right', marginRight: 10, paddingTop: 5, }} position="relative" display="inline-flex">
+            <CircularProgress
+              classes={{
+                circle: classes.circle,
+              }}
+              size={30}
+              value={wordCount}
+              variant="static"
+            />
+          </Box>
         </div>
       </div>
     </div>
