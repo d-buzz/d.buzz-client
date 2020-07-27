@@ -1,4 +1,4 @@
-import { api, auth } from '@hiveio/hive-js'
+import { api, auth, broadcast } from '@hiveio/hive-js'
 import { Promise } from 'bluebird'
 import config from 'config'
 import { v4 as uuidv4 } from 'uuid'
@@ -122,4 +122,32 @@ export const fetchRewardFund = (username) => {
             return error
           })
 }
+
+export const broadcastVote = (wif, voter, author, permlink, weight) => {
+  return broadcast.voteAsync(wif, voter, author, permlink, weight)
+          .then((result) => {
+            return result
+          }).catch((error) => {
+            return error
+          })
+}
+
+export const wifToPublic = (privWif) => {
+  return auth.wifToPublic(privWif)
+}
+
+export const generateKeys = (username, password, role) => {
+  return auth.generateKeys(username, password, role)
+}
+
+export const packLoginData = (username, password) => {
+  return new Buffer(
+    `${username}\t${password}`
+  ).toString('hex')
+}
+
+export const extractLoginData = (data) => {
+  return new Buffer(data, 'hex').toString().split('\t')
+}
+
 

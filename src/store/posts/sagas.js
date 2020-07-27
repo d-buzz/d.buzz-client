@@ -28,6 +28,7 @@ import {
   getTrendingTagsFailure,
 
   UPVOTE_REQUEST,
+  upvoteSuccess,
   upvoteFailure,
 } from './actions'
 
@@ -38,8 +39,8 @@ import {
   mapFetchProfile,
   fetchTrendingTags,
   fetchProfile,
-  fetchFeedHistory,
-  fetchRewardFund,
+  extractLoginData,
+  broadcastVote,
 } from 'services/api'
 
 
@@ -150,53 +151,28 @@ function* getLatestPostsRequest(payload, meta) {
 }
 
 function* upvoteRequest(payload, meta) {
-  try {
 
+  try {
     const { author, permlink, percentage } = payload
     const user = yield select(state => state.auth.get('user'))
-    const { username, is_authenticated, useKeychain, profile } = user
+    const { username, is_authenticated, useKeychain } = user
+
 
     if(is_authenticated) {
 
       if(useKeychain) {
 
       } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+        const wif = login_data[1]
 
-        const rewardFund = yield call(fetchRewardFund, 'post')
-        const feedHistory = yield call(fetchFeedHistory)
-        let profile = yield call(fetchProfile, 'postnzt')
+        console.log({ wif })
+        const weight = percentage * 100
 
-        if(profile) {
-          profile = profile[0]
+        const upvoted = yield call(broadcastVote, wif, username, author, permlink, weight)
+        yield put(upvoteSuccess(meta))
 
-          let {
-            vesting_shares,
-            received_vesting_shares,
-            delegated_vesting_shares,
-            voting_manabar,
-          } = profile
-
-          const { current_median_history } = feedHistory
-          let { base } = current_median_history
-          base = base.replace('HBD', '')
-
-          const { current_mana: voting_power } = voting_manabar
-
-          let { reward_balance, recent_claims } = rewardFund
-          reward_balance = reward_balance.replace('HIVE','')
-          vesting_shares = vesting_shares.replace('VESTS', '')
-          received_vesting_shares = received_vesting_shares.replace('VESTS', '')
-          delegated_vesting_shares = delegated_vesting_shares.replace('VESTS', '')
-
-          const total_vests = parseFloat(vesting_shares) + parseFloat(received_vesting_shares) - parseFloat(delegated_vesting_shares)
-          const final_vests = total_vests * 1e6
-          const power = (voting_power * percentage / 10000) / 50
-          const rshares = power * final_vests / 10000
-          const estimate = rshares / parseFloat(recent_claims) * parseFloat(reward_balance) * parseFloat(base)
-
-          console.log({ estimate })
-
-        }
       }
     } else {
       yield put(upvoteFailure('Unauthenticated', meta))

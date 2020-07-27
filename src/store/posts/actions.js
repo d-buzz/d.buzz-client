@@ -10,9 +10,8 @@ export const upvoteRequest = (author, permlink, percentage) => ({
   }
 })
 
-export const upvoteSuccess = (response, meta) => ({
+export const upvoteSuccess = (meta) => ({
   type: UPVOTE_SUCCESS,
-  payload: response,
   meta,
 })
 

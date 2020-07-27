@@ -11,7 +11,6 @@ import {
   PostActions
 } from 'components'
 import { Link } from 'react-router-dom'
-import RelativeTime from 'react-relative-time'
 import moment from 'moment'
 
 
@@ -161,7 +160,6 @@ const PostList = (props) => {
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>

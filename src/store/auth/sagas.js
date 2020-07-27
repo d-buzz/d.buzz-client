@@ -18,7 +18,7 @@ import {
   keychainSignIn,
   fetchProfile,
   isWifValid,
-  generateWif
+  packLoginData,
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
@@ -44,8 +44,7 @@ function* authenticateUserRequest(payload, meta) {
         try {
           const isValid = isWifValid(password, pubWif)
           user.is_authenticated = isValid
-          const wif = generateWif(username, password, 'posting')
-          user.wif = wif
+          user.login_data = packLoginData(username, password)
         } catch(e) {
           user.is_authenticated = false
         }

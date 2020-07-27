@@ -6,11 +6,13 @@ import {
   FlagIcon,
   HiveIcon,
   ContainedButton,
+  HeartIconRed,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
+import { HashtagLoader } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
@@ -137,10 +139,13 @@ const PostActions = (props) => {
     payout,
     hideStats = false,
     upvoteRequest,
+    isUpvoted = false,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
+  const [vote, setVote] = useState(voteCount)
+  const [loading, setLoading] = useState(false)
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
@@ -155,8 +160,17 @@ const PostActions = (props) => {
   }
 
   const handleClickUpvote = (author, permlink) => () => {
-    // alert(`Hello world ${sliderValue} ${author} ${permlink}`)
+    setShowSlider(false)
+    setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
+      .then(() => {
+        setVote(vote + 1)
+        setLoading(false)
+      })
+      .catch(() => {
+        alert('upvote failure')
+        setLoading(false)
+      })
   }
 
 
@@ -165,18 +179,55 @@ const PostActions = (props) => {
       {
         !showSlider && (
           <div>
-            <ActionWrapper
-              className={classes.actionWrapperSpace}
-              inlineClass={classes.inline}
-              icon={<IconButton size="small"><HeartIcon /></IconButton>}
-              hideStats={hideStats}
-              onClick={handleClickShowSlider}
-              stat={
-                <label style={{ marginLeft: 5, }}>
-                  { voteCount }
-                </label>
-              }
-            />
+            {
+              !loading && isUpvoted && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<IconButton size="small"><HeartIconRed /></IconButton>}
+                  hideStats={hideStats}
+                  stat={
+                    <label style={{ marginLeft: 5, }}>
+                      { vote }
+                    </label>
+                  }
+                />
+              )
+            }
+            {
+              !loading && !isUpvoted && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<IconButton size="small"><HeartIcon /></IconButton>}
+                  hideStats={hideStats}
+                  onClick={handleClickShowSlider}
+                  stat={
+                    <label style={{ marginLeft: 5, }}>
+                      { vote }
+                    </label>
+                  }
+                />
+              )
+            }
+            {
+              loading && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />
+                }
+                  hideStats={hideStats}
+                  onClick={handleClickShowSlider}
+                  stat={
+                    <label style={{ marginLeft: 5, }}>
+                      { voteCount }
+                    </label>
+                  }
+                />
+              )
+            }
+
             <ActionWrapper
               className={classes.actionWrapperSpace}
               inlineClass={classes.inline}
@@ -231,6 +282,7 @@ const PostActions = (props) => {
                 onChange={handleChange}
               />
             </div>
+
           </div>
         )
       }
