@@ -69,6 +69,7 @@ const Content = (props) => {
     loadingReplies,
     replies,
     clearReplies,
+    user = {},
   } = props
   const { username, permlink } = match.params
   const classes = useStyles()
@@ -90,6 +91,7 @@ const Content = (props) => {
 
   let profile_json_metadata = null
   let profile_posting_metadata = null
+  let hasUpvoted = false
 
   if(
     'json_metadata' in profile
@@ -114,6 +116,9 @@ const Content = (props) => {
 
   if(active_votes) {
     upvotes = active_votes.filter((vote) => vote.weight >= 0).length
+    if(user.is_authenticated) {
+      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
+    }
   }
 
   useEffect(() => {
@@ -149,7 +154,7 @@ const Content = (props) => {
                 <PostTags meta={meta} />
                 <div style={{ marginTop: 10 }}>
                   <label className={classes.meta}>
-                    { moment(created).format('LTS • \nLL') }
+                    { moment(created).local().format('LTS • \nLL') }
                     { app && <React.Fragment> • Posted using <b className={classes.strong}>{ app }</b></React.Fragment> }
                   </label>
                 </div>
@@ -168,6 +173,7 @@ const Content = (props) => {
                 <Row>
                   <Col>
                     <PostActions
+                      hasUpvoted={hasUpvoted}
                       hideStats={true}
                       voteCount={upvotes}
                       replyCount={replyCount}
@@ -192,6 +198,7 @@ const mapStateToProps = (state) => ({
   loadingReplies: pending(state, 'GET_REPLIES_REQUEST'),
   replies: state.posts.get('replies'),
   content: state.posts.get('content'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

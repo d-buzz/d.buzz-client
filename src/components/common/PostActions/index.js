@@ -18,6 +18,8 @@ import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Snackbar from '@material-ui/core/Snackbar'
+import Alert from '@material-ui/lab/Alert'
 
 const PrettoSlider = withStyles({
   root: {
@@ -147,6 +149,11 @@ const PostActions = (props) => {
   const [vote, setVote] = useState(voteCount)
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
+  const [showSnackbar, setShowSnackBar] = useState(false)
+
+  const handleSnackBarClose = () => {
+    setShowSnackBar(false)
+  }
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
@@ -165,6 +172,7 @@ const PostActions = (props) => {
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
       .then(() => {
+        setShowSnackBar(true)
         setVote(vote + 1)
         setUpvoted(true)
         setLoading(false)
@@ -284,10 +292,14 @@ const PostActions = (props) => {
                 onChange={handleChange}
               />
             </div>
-
           </div>
         )
       }
+      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} style={{ width: 300 }} open={showSnackbar} autoHideDuration={6000} onClose={handleSnackBarClose}>
+        <Alert onClose={handleSnackBarClose} severity="success">
+          Succesfully upvoted <b>@{author}/{permlink}</b> at {sliderValue}%
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   )
 }

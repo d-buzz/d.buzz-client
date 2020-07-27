@@ -58,6 +58,7 @@ const Trending = (props) => {
         {
           items.map((item) => (
             <PostList
+              active_votes={item.active_votes}
               author={item.author}
               permlink={item.permlink}
               created={item.created}
