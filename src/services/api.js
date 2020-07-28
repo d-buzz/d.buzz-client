@@ -1,11 +1,24 @@
-import { api, auth, broadcast } from '@hiveio/hive-js'
+import { api, auth, broadcast, config } from '@hiveio/hive-js'
 import { Promise } from 'bluebird'
-import config from 'config'
+import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
+
+const witnesses = [
+  'https://api.openhive.network',
+  'https://api.hive.blog',
+  'https://api.hivekings.com',
+  'https://api.pharesim.me',
+  'https://hived.hive-engine.com',
+  'https://rpc.esteem.app',
+  'https://hived.privex.io',
+  'https://techcoderx.com'
+]
+
+config.set('alternative_api_endpoints', witnesses)
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${config.TAG}`, ...params }
+    params = { "tag": `${appConfig.TAG}`, ...params }
     api.call('bridge.' + method, params, (err, data) => {
         if (err) reject(err)
         else resolve(data)
