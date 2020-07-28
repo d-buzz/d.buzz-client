@@ -14,6 +14,37 @@ const useStyles = createUseStyles({
   },
 })
 
+const SplashScreen = () => {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.wrapper}>
+      <HashtagLoader
+        size={35}
+        loading={true}
+        style={{
+          position: 'absolute',
+          margin: 'auto',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
+      <BrandIcon
+        style={{
+          position: 'absolute',
+          margin: 'auto',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
+    </div>
+  )
+}
+
 const Init = (props) => {
   const {
     getSavedUserRequest,
@@ -21,7 +52,6 @@ const Init = (props) => {
     children,
   } = props
 
-  const classes = useStyles()
   const [init, setInit] = useState(false)
 
   useEffect(() => {
@@ -35,32 +65,7 @@ const Init = (props) => {
   return (
     <React.Fragment>
       {
-        !init && (
-          <div className={classes.wrapper}>
-            <HashtagLoader
-              size={35}
-              loading={true}
-              style={{
-                position: 'absolute',
-                margin: 'auto',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-            <BrandIcon
-              style={{
-                position: 'absolute',
-                margin: 'auto',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-          </div>
-        )
+        !init && (<SplashScreen />)
       }
       { init && (children) }
     </React.Fragment>
