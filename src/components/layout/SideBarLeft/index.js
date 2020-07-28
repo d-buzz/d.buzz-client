@@ -207,8 +207,12 @@ const SideBarLeft = (props) => {
                   </Col>
                   <Col style={{ paddingLeft: 5 }}>
                     <Row style={{ padding: 0 }}>
-                      <Col xs={9} style={{ padding: 0}}>
-                        <p style={{ fontWeight: 'bold', margin: 0, paddingTop: 0, paddingLeft: 5, fontSize: 15, }}>@{ username }</p>
+                      <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
+                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13, }}>Logout</p>
+                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12, }}>@{ username }</p>
+                      </Col>
+                      <Col style={{ padding: 0 }}>
+                        <AiOutlinePoweroff style={{ fontSize: 25, marginTop: 16 }} />
                       </Col>
                     </Row>
                   </Col>
