@@ -48,6 +48,14 @@ const useStyles = createUseStyles({
     width: '100%',
     minHeight: '100vh',
     border: '1px solid #e6ecf0',
+  },
+  clearPadding: {
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  title: {
+    display: 'inline-block',
+    marginLeft: 5,
   }
 })
 
@@ -74,7 +82,7 @@ const GuardedAppFrame = (props) => {
   return (
     <React.Fragment>
       <Row>
-        <Col xs={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
+        <Col xs={2} className={classes.clearPadding}>
           <Sticky>
             {
               ({ style }) => (
@@ -85,7 +93,7 @@ const GuardedAppFrame = (props) => {
             }
           </Sticky>
         </Col>
-        <Col xs={7} style={{ paddingLeft: 0, paddingRight: 0 }}>
+        <Col xs={7} className={classes.clearPadding}>
           <Sticky>
             {
               ({ style }) => (
@@ -98,7 +106,7 @@ const GuardedAppFrame = (props) => {
                         </IconButton>
                       )
                     }
-                    <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>
+                    <span className={classes.title}>{ title }</span>
                   </Navbar.Brand>
                 </Navbar>
               )
@@ -133,7 +141,7 @@ const UnguardedAppFrame = (props) => {
   return (
     <React.Fragment>
       <Row>
-        <Col xs={8} style={{ paddingLeft: 0, paddingRight: 0 }}>
+        <Col xs={8} className={classes.clearPadding}>
           <div style={{ paddingTop: 25 }} className={classes.main}>
             <React.Fragment>
               { renderRoutes(route.routes) }
