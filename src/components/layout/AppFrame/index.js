@@ -51,21 +51,13 @@ const useStyles = createUseStyles({
   }
 })
 
-const AppFrame = (props) => {
+const GuardedAppFrame = (props) => {
+
+  const { route, pathname } = props
   const classes = useStyles()
-  const { route } = props
-  const { pathname } = useLocation()
   const history = useHistory()
 
-  let containerClass = classes.guardedContainer
   let title = 'Home'
-
-  let hideSearchBar = false
-  const unGuardedRoute = (pathname === '/login' || pathname.includes('/ug'))
-
-  if(unGuardedRoute) {
-    containerClass = classes.unGuardedContainer
-  }
 
   if(pathname.includes('/content/@')) {
     title = 'BUZZ'
@@ -79,6 +71,103 @@ const AppFrame = (props) => {
     history.goBack()
   }
 
+  return (
+    <React.Fragment>
+      <Row>
+        <Col xs={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
+          <Sticky>
+            {
+              ({ style }) => (
+                <div style={style}>
+                  <SideBarLeft/>
+                </div>
+              )
+            }
+          </Sticky>
+        </Col>
+        <Col xs={7} style={{ paddingLeft: 0, paddingRight: 0 }}>
+          <Sticky>
+            {
+              ({ style }) => (
+                <Navbar style={style} className={classes.nav}>
+                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
+                    {
+                      title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+                        <IconButton onClick={handleClickBackButton} size="small">
+                          <BackArrowIcon />
+                        </IconButton>
+                      )
+                    }
+                    <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>
+                  </Navbar.Brand>
+                </Navbar>
+              )
+            }
+          </Sticky>
+          <div className={classes.main}>
+            <React.Fragment>
+              { renderRoutes(route.routes) }
+            </React.Fragment>
+          </div>
+        </Col>
+        <Col xs={3}>
+          <Sticky>
+            {
+              ({ style }) => (
+                <div style={style}>
+                  <SideBarRight hideSearchBar={false} />
+                </div>
+              )
+            }
+          </Sticky>
+        </Col>
+      </Row>
+    </React.Fragment>
+  )
+}
+
+const UnguardedAppFrame = (props) => {
+  const { route } = props
+  const classes = useStyles()
+
+  return (
+    <React.Fragment>
+      <Row>
+        <Col xs={8} style={{ paddingLeft: 0, paddingRight: 0 }}>
+          <div style={{ paddingTop: 25 }} className={classes.main}>
+            <React.Fragment>
+              { renderRoutes(route.routes) }
+            </React.Fragment>
+          </div>
+        </Col>
+        <Col xs={4}>
+          <Sticky>
+            {
+              ({ style }) => (
+                <div style={style}>
+                  <SideBarRight hideSearchBar={true} />
+                </div>
+              )
+            }
+          </Sticky>
+        </Col>
+      </Row>
+    </React.Fragment>
+  )
+}
+
+const AppFrame = (props) => {
+  const classes = useStyles()
+  const { route } = props
+  const { pathname } = useLocation()
+
+  let containerClass = classes.guardedContainer
+  const unGuardedRoute = (pathname === '/login' || pathname.includes('/ug'))
+
+  if(unGuardedRoute) {
+    containerClass = classes.unGuardedContainer
+  }
+
   return(
     <React.Fragment>
       { unGuardedRoute && (<AppBar />) }
@@ -86,83 +175,12 @@ const AppFrame = (props) => {
         <StickyContainer>
           {
             !unGuardedRoute && (
-              <React.Fragment>
-                <Row>
-                  <Col xs={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <Sticky>
-                      {
-                        ({ style }) => (
-                          <div style={style}>
-                            <SideBarLeft/>
-                          </div>
-                        )
-                      }
-                    </Sticky>
-                  </Col>
-                  <Col xs={7} style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <Sticky>
-                      {
-                        ({ style }) => (
-                          <Navbar style={style} className={classes.nav}>
-                            <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
-                              {
-                                title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                                  <IconButton onClick={handleClickBackButton} size="small">
-                                    <BackArrowIcon />
-                                  </IconButton>
-                                )
-                              }
-                              <span style={{ display: 'inline-block', marginLeft: 5, }}>{ title }</span>
-                            </Navbar.Brand>
-                          </Navbar>
-                        )
-                      }
-                    </Sticky>
-                    <div className={classes.main}>
-                      <React.Fragment>
-                        { renderRoutes(route.routes) }
-                      </React.Fragment>
-                    </div>
-                  </Col>
-                  <Col xs={3}>
-                    <Sticky>
-                      {
-                        ({ style }) => (
-                          <div style={style}>
-                            <SideBarRight hideSearchBar={hideSearchBar} />
-                          </div>
-                        )
-                      }
-                    </Sticky>
-                  </Col>
-                </Row>
-              </React.Fragment>
+              <GuardedAppFrame pathname={pathname} route={route} />
             )
           }
           {
             unGuardedRoute && (
-              <React.Fragment>
-                <Row>
-                  <Col xs={8} style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <div style={{ paddingTop: 25 }} className={classes.main}>
-                      <React.Fragment>
-                        { renderRoutes(route.routes) }
-                      </React.Fragment>
-                    </div>
-                  </Col>
-                  <Col xs={4}>
-                    <Sticky>
-                      {
-                        ({ style }) => (
-                          <div style={style}>
-                            <SideBarRight hideSearchBar={hideSearchBar} />
-                          </div>
-                        )
-                      }
-                    </Sticky>
-                  </Col>
-                </Row>
-              </React.Fragment>
+              <UnguardedAppFrame route={route} />
             )
           }
         </StickyContainer>

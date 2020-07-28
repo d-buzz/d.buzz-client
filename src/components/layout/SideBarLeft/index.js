@@ -68,9 +68,9 @@ const useStyles = createUseStyles({
   },
   bottom: {
     position: 'absolute',
-    bottom: 5,
+    bottom: 15,
     height: 'max-content',
-    width: '98%',
+    width: '90%',
     borderRadius: '50px 50px',
     cursor: 'pointer',
     backgroundColor: '#f5f8fa',
@@ -84,8 +84,10 @@ const useStyles = createUseStyles({
     display: 'inline-block',
   },
   avatarWrapper: {
-    height: 60,
-    padding: 5,
+    minHeight: 55,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop: 5,
   },
 })
 
@@ -197,16 +199,16 @@ const SideBarLeft = (props) => {
               <div className={classes.avatarWrapper} onClick={handleClickLogout}>
                 <Row>
                   <Col xs="auto">
-                    <Avatar author={username} />
+                    <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
+                      <div style={{ display: 'inline-flex', top: '50%', bottom: '50%', }}>
+                        <Avatar style={{  }} author={username} />
+                      </div>
+                    </div>
                   </Col>
                   <Col style={{ paddingLeft: 5 }}>
                     <Row style={{ padding: 0 }}>
                       <Col xs={9} style={{ padding: 0}}>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0 }}>Logout</p>
-                        <p style={{ paddingBottom: 0, margin: 0 }}>@{username}</p>
-                      </Col>
-                      <Col style={{ padding: 0}}>
-                        <AiOutlinePoweroff height={22} style={{ marginTop: 17, fontSize: 20, }}/>
+                        <p style={{ fontWeight: 'bold', margin: 0, paddingTop: 0, paddingLeft: 5, fontSize: 15, }}>@{ username }</p>
                       </Col>
                     </Row>
                   </Col>
