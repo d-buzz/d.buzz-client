@@ -172,7 +172,7 @@ const AppFrame = (props) => {
   const { pathname } = useLocation()
 
   let containerClass = classes.guardedContainer
-  const unGuardedRoute = (pathname === '/login' || pathname.includes('/ug'))
+  const unGuardedRoute = (pathname.match(/^\/login/) || pathname.match(/^\/ug/))
 
   if(unGuardedRoute) {
     containerClass = classes.unGuardedContainer
