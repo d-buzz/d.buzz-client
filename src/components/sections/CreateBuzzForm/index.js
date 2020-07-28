@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { TextArea, ContainedButton, Avatar } from 'components/elements'
