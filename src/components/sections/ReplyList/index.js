@@ -118,7 +118,7 @@ const ReplyList = (props) => {
   // eslint-disable-next-line
   }, [replies])
 
-  const RenderReplies = ({ reply, isAuthenticated, username }) => {
+  const RenderReplies = ({ reply }) => {
     const {
       author,
       created,
@@ -131,12 +131,15 @@ const ReplyList = (props) => {
       meta,
     } = reply
 
+    const { username, is_authenticated } = user
+
+
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )
 
     let hasUpvoted = false
 
-    if(isAuthenticated) {
+    if(is_authenticated) {
       hasUpvoted = active_votes.filter((vote) => vote.voter === username).length !== 0
     }
 
@@ -210,7 +213,7 @@ const ReplyList = (props) => {
       {
         replies.map((reply) => (
           <div className={classes.wrapper}>
-            <RenderReplies username={{ username: user.username }} isAuthenticated={{isAuthenticated: user.is_authenticated}} reply={reply} />
+            <RenderReplies reply={reply} />
           </div>
         ))
       }
