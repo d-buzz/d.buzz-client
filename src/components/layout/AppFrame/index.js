@@ -6,6 +6,15 @@ import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
+  main: {
+    minHeight: '100vh',
+    borderLeft: '1px solid #e6ecf0',
+    borderRight: '1px solid #e6ecf0',
+  },
+  inner: {
+    width: '98%',
+    margin: '0 auto',
+  },
   guardedContainer: {
     '@media (min-width: 1200px)': {
       '&.container': {

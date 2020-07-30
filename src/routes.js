@@ -7,6 +7,7 @@ import {
   Latest,
   Login,
 } from 'components'
+
 const routes =  [
   {
     component: AppFrame,

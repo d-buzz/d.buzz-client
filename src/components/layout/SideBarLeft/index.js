@@ -201,7 +201,7 @@ const SideBarLeft = (props) => {
                   <Col xs="auto">
                     <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
                       <div style={{ display: 'inline-flex', top: '50%', bottom: '50%', }}>
-                        <Avatar style={{  }} author={username} />
+                        <Avatar author={username} />
                       </div>
                     </div>
                   </Col>
