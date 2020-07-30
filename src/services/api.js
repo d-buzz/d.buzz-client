@@ -53,7 +53,17 @@ export const fetchContent = (author, permlink) => {
 export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
     .then((replies) => {
-      return Promise.map(replies, (reply) => {
+      return Promise.map(replies, async(reply) => {
+        const getActiveVotes = new Promise((resolve) => {
+          api.getActiveVotesAsync(reply.author, reply.permlink)
+          .then((active_votes) => {
+            resolve(active_votes)
+          })
+        })
+
+        const active_votes = await Promise.all([getActiveVotes])
+        reply.active_votes = active_votes[0]
+
         if (reply.children > 0) {
           return fetchReplies(reply.author, reply.permlink)
             .then((children) => {
@@ -63,7 +73,7 @@ export const fetchReplies = (author, permlink) => {
         } else {
           return reply
         }
-    })
+      })
   })
 }
 

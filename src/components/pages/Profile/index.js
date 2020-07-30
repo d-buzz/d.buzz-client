@@ -124,7 +124,9 @@ const Profile = () => {
           </Row>
           <Row>
             <Col xs="auto">
-              <p className={classes.paragraph}>Coordinator for D.Buzz | Author at ChrisRice.blog | To Prevent, Reduce & Eliminate Suffering</p>
+              <p className={classes.paragraph}>
+                Coordinator for D.Buzz | Author at ChrisRice.blog | To Prevent, Reduce & Eliminate Suffering
+              </p>
             </Col>
           </Row>
           <Row>

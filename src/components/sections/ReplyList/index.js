@@ -10,6 +10,7 @@ import {
   PostTags,
   PostActions
 } from 'components'
+import { connect } from 'react-redux'
 import moment from 'moment'
 
 
@@ -104,7 +105,7 @@ const countReplies = async (replies = []) => {
 }
 
 const ReplyList = (props) => {
-  let { replies, expectedCount } = props
+  let { replies, expectedCount, user } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyle()
   const [replyCounter, setReplyCounter] = useState(0)
@@ -117,10 +118,11 @@ const ReplyList = (props) => {
   // eslint-disable-next-line
   }, [replies])
 
-  const RenderReplies = ({ reply }) => {
+  const RenderReplies = ({ reply, isAuthenticated, username }) => {
     const {
       author,
       created,
+      permlink,
       body,
       parent_author,
       active_votes,
@@ -131,6 +133,13 @@ const ReplyList = (props) => {
 
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )
+
+    let hasUpvoted = false
+
+    if(isAuthenticated) {
+      hasUpvoted = active_votes.filter((vote) => vote.voter === username).length !== 0
+    }
+
 
     return (
       <React.Fragment>
@@ -160,6 +169,9 @@ const ReplyList = (props) => {
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    hasUpvoted={hasUpvoted}
+                    author={author}
+                    permlink={permlink}
                     voteCount={active_votes.length}
                     replyCount={replyCount}
                     payout={payout}
@@ -198,7 +210,7 @@ const ReplyList = (props) => {
       {
         replies.map((reply) => (
           <div className={classes.wrapper}>
-            <RenderReplies reply={reply} />
+            <RenderReplies username={{ username: user.username }} isAuthenticated={{isAuthenticated: user.is_authenticated}} reply={reply} />
           </div>
         ))
       }
@@ -206,4 +218,8 @@ const ReplyList = (props) => {
   )
 }
 
-export default ReplyList
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user')
+})
+
+export default connect(mapStateToProps)(ReplyList)
