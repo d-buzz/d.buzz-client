@@ -13,6 +13,7 @@ import {
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { getProfileMetaData } from 'services/helper'
 
 const useStyle = createUseStyles({
@@ -91,16 +92,6 @@ const useStyle = createUseStyles({
   },
 })
 
-const getAuthorName = (profileMeta, postingMeta) => {
-  const meta = JSON.parse(profileMeta)
-  const posting = JSON.parse(postingMeta)
-
-  try {
-    return meta.profile.name
-  } catch(e) {
-    return posting.profile.name
-  }
-}
 
 const PostList = (props) => {
   const {
@@ -118,17 +109,15 @@ const PostList = (props) => {
     user = {},
    } = props
 
+   const history = useHistory()
 
-   let json_metadata = null
-   let posting_metadata = null
    let hasUpvoted = false
 
    if(user.is_authenticated) {
      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
    }
 
-   const { name } = getProfileMetaData(profile)
-
+  const { name } = getProfileMetaData(profile)
   const classes = useStyle()
 
   const generateLink = (author, permlink) =>  {
@@ -143,8 +132,9 @@ const PostList = (props) => {
   const handleOpenContent = (e) => {
     const { target } = e
     const { href } = target
+    const hostname = window.location.hostname
 
-    if(href) {
+    if(href && !href.includes(hostname)) {
       e.preventDefault()
       window.open(href, '_blank')
     }
@@ -157,7 +147,7 @@ const PostList = (props) => {
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
-             <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
+             <Link to={`/@${author}`} style={{ textDecoration: 'none' }}>
               <div className={classes.left} onClick={handleOpenContent}>
                 <Avatar author={author} />
               </div>
@@ -165,10 +155,10 @@ const PostList = (props) => {
             </Col>
             <Col>
               <div className={classes.right}>
-                <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
+                <Link to={`/@${author}`} style={{ textDecoration: 'none' }}>
                   <div className={classes.content} onClick={handleOpenContent}>
                     <label className={classes.name}>
-                      { name ? name : `@${author}`}
+                      <a href={`/@${author}`}>{ name ? name : `@${author}`}</a>
                     </label>
                     <label className={classes.username}>
                       { `@${author}` } &bull;&nbsp;

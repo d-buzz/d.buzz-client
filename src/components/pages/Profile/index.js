@@ -9,7 +9,7 @@ import { Avatar, ContainedButton } from 'components/elements'
 import { getProfileRequest } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { getProfileMetaData } from 'services/helper'
+import { anchorTop, getProfileMetaData } from 'services/helper'
 
 const useStyles = createUseStyles({
   cover: {
@@ -102,75 +102,12 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
+    anchorTop()
     getProfileRequest(username)
   // eslint-disable-next-line
   }, [])
 
   const { cover, name, about, website } = getProfileMetaData(profile)
-
-  // if(
-  //   'json_metadata' in profile
-  //   && profile.json_metadata.includes('"cover_image":')
-  // ) {
-  //   const meta = JSON.parse(profile.json_metadata)
-  //   cover = meta.profile.cover_image
-  // }
-
-  // if(
-  //   'posting_metadata' in profile
-  //   && profile.posting_metadata.includes('"cover_image":')
-  // ) {
-  //   const meta = JSON.parse(profile.posting_metadata)
-  //   cover = meta.profile.cover_image
-  // }
-
-  // if(
-  //   'json_metadata' in profile
-  //   && profile.json_metadata.includes('"name":')
-  // ) {
-  //   const meta = JSON.parse(profile.json_metadata)
-  //   name = meta.profile.name
-  // }
-
-  // if(
-  //   'posting_metadata' in profile
-  //   && profile.posting_metadata.includes('"name":')
-  // ) {
-  //   const meta = JSON.parse(profile.posting_metadata)
-  //   name = meta.profile.name
-  // }
-
-  // if(
-  //   'json_metadata' in profile
-  //   && profile.json_metadata.includes('"about":')
-  // ) {
-  //   const meta = JSON.parse(profile.json_metadata)
-  //   about = meta.profile.about
-  // }
-
-  // if(
-  //   'posting_metadata' in profile
-  //   && profile.posting_metadata.includes('"about":')
-  // ) {
-  //   const meta = JSON.parse(profile.posting_metadata)
-  //   about = meta.profile.about
-  // }
-
-  // if(
-  //   'json_metadata' in profile
-  //   && profile.json_metadata.includes('"website":')
-  // ) {
-  //   const meta = JSON.parse(profile.json_metadata)
-  //   website = meta.profile.website
-  // }
-
-  // if(
-  //   'posting_metadata' in profile
-  //   && profile.posting_metadata.includes('"website":')
-  // ) {
-  //   const meta = JSON.parse(profile.posting_metadata)
-  //   website = meta.profile.website
-  // }
 
 
   return (
