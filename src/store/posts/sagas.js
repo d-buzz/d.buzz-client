@@ -48,6 +48,9 @@ function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
     const data = yield call(fetchReplies, author, permlink)
+    // const getProfileData = mapFetchProfile(data)
+    // yield call([Promise, Promise.all], [getProfileData])
+
     yield put(getRepliesSuccess(data, meta))
   } catch(error) {
     yield put(getRepliesFailure(error, meta))

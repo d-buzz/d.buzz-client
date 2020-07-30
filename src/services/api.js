@@ -62,7 +62,9 @@ export const fetchReplies = (author, permlink) => {
         })
 
         const active_votes = await Promise.all([getActiveVotes])
+        const profile = await fetchProfile(reply.author)
         reply.active_votes = active_votes[0]
+        reply.profile = profile[0]
 
         if (reply.children > 0) {
           return fetchReplies(reply.author, reply.permlink)

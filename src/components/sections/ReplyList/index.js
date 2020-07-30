@@ -12,6 +12,7 @@ import {
 } from 'components'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { getAuthorName } from 'services/helper'
 
 
 const useStyle = createUseStyles({
@@ -128,6 +129,7 @@ const ReplyList = (props) => {
       active_votes,
       children: replyCount,
       pending_payout_value: payout,
+      profile = {},
       meta,
     } = reply
 
@@ -136,6 +138,25 @@ const ReplyList = (props) => {
 
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )
+
+    let profile_json_metadata = null
+    let profile_posting_metadata = null
+
+    if(
+      'json_metadata' in profile
+      && profile.json_metadata.includes('"name":')
+      && profile.json_metadata.includes('"profile":')
+      ) {
+      profile_json_metadata = profile.json_metadata
+    }
+
+    if(
+      'posting_metadata' in profile
+      && profile.posting_metadata.includes('"name":')
+      && profile.posting_metadata.includes('"profile":')
+      ) {
+      profile_posting_metadata = profile.posting_metadata
+    }
 
     let hasUpvoted = false
 
@@ -161,9 +182,11 @@ const ReplyList = (props) => {
             <Col>
               <div className={classes.right}>
                 <div className={classes.content}>
-                  <label className={classes.name}>{author}</label>
+                  <label className={classes.name}>
+                    { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
+                  </label>
                   <label className={classes.username}>
-                    { `@${author}` } &bull;&nbsp;
+                    @{author}
                     { moment(created).fromNow() }
                   </label>
                   <p style={{ marginTop: -10 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
