@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
@@ -6,6 +6,10 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { createUseStyles } from 'react-jss'
 import { Avatar, ContainedButton } from 'components/elements'
+import { getProfileRequest } from 'store/profile/actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { getProfileMetaData } from 'services/helper'
 
 const useStyles = createUseStyles({
   cover: {
@@ -85,7 +89,8 @@ const useStyles = createUseStyles({
 })
 
 
-const Profile = () => {
+const Profile = (props) => {
+  const { match, getProfileRequest, profile } = props
   const classes = useStyles()
   const [index, setIndex] = useState(0)
 
@@ -93,16 +98,91 @@ const Profile = () => {
     setIndex(index)
   }
 
+  const { params } = match
+  const { username } = params
+
+  useEffect(() => {
+    getProfileRequest(username)
+  // eslint-disable-next-line
+  }, [])
+
+  const { cover, name, about, website } = getProfileMetaData(profile)
+
+  // if(
+  //   'json_metadata' in profile
+  //   && profile.json_metadata.includes('"cover_image":')
+  // ) {
+  //   const meta = JSON.parse(profile.json_metadata)
+  //   cover = meta.profile.cover_image
+  // }
+
+  // if(
+  //   'posting_metadata' in profile
+  //   && profile.posting_metadata.includes('"cover_image":')
+  // ) {
+  //   const meta = JSON.parse(profile.posting_metadata)
+  //   cover = meta.profile.cover_image
+  // }
+
+  // if(
+  //   'json_metadata' in profile
+  //   && profile.json_metadata.includes('"name":')
+  // ) {
+  //   const meta = JSON.parse(profile.json_metadata)
+  //   name = meta.profile.name
+  // }
+
+  // if(
+  //   'posting_metadata' in profile
+  //   && profile.posting_metadata.includes('"name":')
+  // ) {
+  //   const meta = JSON.parse(profile.posting_metadata)
+  //   name = meta.profile.name
+  // }
+
+  // if(
+  //   'json_metadata' in profile
+  //   && profile.json_metadata.includes('"about":')
+  // ) {
+  //   const meta = JSON.parse(profile.json_metadata)
+  //   about = meta.profile.about
+  // }
+
+  // if(
+  //   'posting_metadata' in profile
+  //   && profile.posting_metadata.includes('"about":')
+  // ) {
+  //   const meta = JSON.parse(profile.posting_metadata)
+  //   about = meta.profile.about
+  // }
+
+  // if(
+  //   'json_metadata' in profile
+  //   && profile.json_metadata.includes('"website":')
+  // ) {
+  //   const meta = JSON.parse(profile.json_metadata)
+  //   website = meta.profile.website
+  // }
+
+  // if(
+  //   'posting_metadata' in profile
+  //   && profile.posting_metadata.includes('"website":')
+  // ) {
+  //   const meta = JSON.parse(profile.posting_metadata)
+  //   website = meta.profile.website
+  // }
+
+
   return (
     <React.Fragment>
       <div className={classes.cover}>
-        <img src="https://images.hive.blog/0x0/https://cdn.steemitimages.com/DQmZDkfaVoq6Tb6qvghhwT8iFmWSLPBRMmZukLQcFxEGx3v/Philippines.jpg" alt="cover"/>
+        { cover !== '' && (<img src={cover} alt="cover"/>) }
       </div>
       <div className={classes.wrapper}>
         <Row>
           <Col xs="auto">
             <div className={classes.avatar}>
-              <Avatar border={true} height="135" author="chrisrice" size="medium" />
+              <Avatar border={true} height="135" author={username} size="medium" />
             </div>
           </Col>
           <Col>
@@ -118,21 +198,23 @@ const Profile = () => {
         <div className={classNames(classes.wrapper)}>
           <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
             <Col xs="auto">
-              <p className={classNames(classes.paragraph, classes.fullName)}>Chris Rice</p>
-              <p className={classNames(classes.paragraph, classes.userName)}>@chrisrice</p>
+              <p className={classNames(classes.paragraph, classes.fullName)}>{ name }</p>
+              <p className={classNames(classes.paragraph, classes.userName)}>@{username}</p>
             </Col>
           </Row>
           <Row>
             <Col xs="auto">
               <p className={classes.paragraph}>
-                Coordinator for D.Buzz | Author at ChrisRice.blog | To Prevent, Reduce & Eliminate Suffering
+                { about }
               </p>
             </Col>
           </Row>
           <Row>
             <Col xs="auto">
               <p className={classes.paragraph}>
-                <a href="/" className={classes.weblink}>https://d.buzz</a>
+                <a href={website} className={classes.weblink}>
+                  { website }
+                </a>
               </p>
             </Col>
           </Row>
@@ -163,4 +245,14 @@ const Profile = () => {
   )
 }
 
-export default Profile
+const mapStateToProps = (state) => ({
+  profile: state.profile.get('profile'),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    getProfileRequest,
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)

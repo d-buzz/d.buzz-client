@@ -14,7 +14,7 @@ import { pending } from 'redux-saga-thunk'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
-import { anchorTop, getAuthorName } from 'services/helper'
+import { anchorTop, getAuthorName, getProfileMetaData } from 'services/helper'
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -89,25 +89,9 @@ const Content = (props) => {
   let app = null
   let upvotes = 0
 
-  let profile_json_metadata = null
-  let profile_posting_metadata = null
   let hasUpvoted = false
 
-  if(
-    'json_metadata' in profile
-    && profile.json_metadata.includes('"name":')
-    && profile.json_metadata.includes('"profile":')
-  ) {
-    profile_json_metadata = profile.json_metadata
-  }
-
-  if(
-    'posting_metadata' in profile
-    && profile.posting_metadata.includes('"name":')
-    && profile.posting_metadata.includes('"profile":')
-  ) {
-    profile_posting_metadata = profile.posting_metadata
-  }
+  const { name } = getProfileMetaData(profile)
 
   if(json_metadata) {
     meta = JSON.parse(json_metadata)
@@ -143,7 +127,7 @@ const Content = (props) => {
                   <Col style={{ paddingLeft: 10, }}>
                     <div style={{ marginTop: 2, }}>
                       <p className={classes.name}>
-                        { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
+                        { name ? name : `@${author}` }
                       </p>
                       <br />
                       <p className={classes.username}>@{author}</p>
