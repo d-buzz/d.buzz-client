@@ -14,7 +14,7 @@ import { pending } from 'redux-saga-thunk'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
-import { anchorTop, getAuthorName, getProfileMetaData } from 'services/helper'
+import { anchorTop, getProfileMetaData } from 'services/helper'
 
 const useStyles = createUseStyles({
   wrapper: {

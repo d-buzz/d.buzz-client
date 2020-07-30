@@ -13,6 +13,7 @@ import {
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import { getProfileMetaData } from 'services/helper'
 
 const useStyle = createUseStyles({
   row: {
@@ -126,21 +127,7 @@ const PostList = (props) => {
      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
    }
 
-   if(
-      'json_metadata' in profile
-      && profile.json_metadata.includes('"name":')
-      && profile.json_metadata.includes('"profile":')
-    ) {
-     json_metadata = profile.json_metadata
-   }
-
-   if(
-     'posting_metadata' in profile
-     && profile.posting_metadata.includes('"name":')
-     && profile.posting_metadata.includes('"profile":')
-    ) {
-     posting_metadata = profile.posting_metadata
-   }
+   const { name } = getProfileMetaData(profile)
 
   const classes = useStyle()
 
@@ -181,7 +168,7 @@ const PostList = (props) => {
                 <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
                   <div className={classes.content} onClick={handleOpenContent}>
                     <label className={classes.name}>
-                      {json_metadata || posting_metadata ? getAuthorName(json_metadata, posting_metadata) : `@${author}`}
+                      { name ? name : `@${author}`}
                     </label>
                     <label className={classes.username}>
                       { `@${author}` } &bull;&nbsp;

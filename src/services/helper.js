@@ -21,6 +21,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'json_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.json_metadata.includes('"cover_image":')
   ) {
     const meta = JSON.parse(profile.json_metadata)
@@ -29,6 +30,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'posting_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.posting_metadata.includes('"cover_image":')
   ) {
     const meta = JSON.parse(profile.posting_metadata)
@@ -37,6 +39,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'json_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.json_metadata.includes('"name":')
   ) {
     const meta = JSON.parse(profile.json_metadata)
@@ -45,6 +48,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'posting_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.posting_metadata.includes('"name":')
   ) {
     const meta = JSON.parse(profile.posting_metadata)
@@ -53,6 +57,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'json_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.json_metadata.includes('"about":')
   ) {
     const meta = JSON.parse(profile.json_metadata)
@@ -61,6 +66,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'posting_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.posting_metadata.includes('"about":')
   ) {
     const meta = JSON.parse(profile.posting_metadata)
@@ -69,6 +75,7 @@ export const getProfileMetaData = (profile) => {
 
   if(
     'json_metadata' in profile
+    && profile.json_metadata.includes('"profile":')
     && profile.json_metadata.includes('"website":')
   ) {
     const meta = JSON.parse(profile.json_metadata)
