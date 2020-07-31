@@ -39,9 +39,6 @@ const useStyles = createUseStyles({
     fontSize: 25,
     fontWeight: 'bold',
     padding: 0,
-    '&:hover': {
-      textDecoration: 'underline',
-    },
   },
   userName: {
     fontSize: 16,
