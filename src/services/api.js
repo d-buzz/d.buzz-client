@@ -113,7 +113,7 @@ export const fetchReplies = (author, permlink) => {
 export const fetchProfile = (username) => {
   return api.getAccountsAsync([username])
     .then(async(result) => {
-      result[0].reputation = formatter.reputation(result[0].reputation)
+      result[0].reputation = result[0].reputation ? formatter.reputation(result[0].reputation) : 25
       const follow_count = await fetchFollowCount(username)
       result[0].follow_count = follow_count
       return result

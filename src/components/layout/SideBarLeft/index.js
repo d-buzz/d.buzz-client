@@ -91,33 +91,6 @@ const useStyles = createUseStyles({
   },
 })
 
-const NavLinks = [
-  {
-    name: 'Home',
-    path: '/',
-    icon: <HomeIcon top={-5} />,
-  },
-  {
-    name: 'Trending',
-    path: '/trending',
-    icon: <TrendingIcon top={-5} />
-  },
-  {
-    name: 'Latest',
-    path: '/latest',
-    icon: <LatestIcon top={-5} />
-  },
-  {
-    name: 'Notifications',
-    path: '/notifications',
-    icon: <NotificationsIcon top={-5} />,
-  },
-  {
-    name: 'Profile',
-    path: '/@stinkymonkeyph',
-    icon: <ProfileIcon top={-5} />,
-  },
-]
 
 const LinkContainer = ({ children }) => {
   return (
@@ -166,6 +139,34 @@ const SideBarLeft = (props) => {
   const { username } = user || ''
   const classes = useStyles()
   const location = useLocation()
+
+  const NavLinks = [
+    {
+      name: 'Home',
+      path: '/',
+      icon: <HomeIcon top={-5} />,
+    },
+    {
+      name: 'Trending',
+      path: '/trending',
+      icon: <TrendingIcon top={-5} />
+    },
+    {
+      name: 'Latest',
+      path: '/latest',
+      icon: <LatestIcon top={-5} />
+    },
+    {
+      name: 'Notifications',
+      path: '/notifications',
+      icon: <NotificationsIcon top={-5} />,
+    },
+    {
+      name: 'Profile',
+      path: `/@${username}`,
+      icon: <ProfileIcon top={-5} />,
+    },
+  ]
 
   const handleClickLogout = () => {
     signoutUserRequest()
