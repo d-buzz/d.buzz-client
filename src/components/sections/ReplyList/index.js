@@ -13,9 +13,10 @@ import {
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { getAuthorName, calculatePayout } from 'services/helper'
+import { Link } from 'react-router-dom'
 
 
-const useStyle = createUseStyles({
+const useStyles = createUseStyles({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -46,6 +47,7 @@ const useStyle = createUseStyles({
     fontWeight: 'bold',
     paddingRight: 5,
     paddingBottom: 0,
+    marginBottom: 0,
   },
   username: {
     color: '#657786',
@@ -93,6 +95,13 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
+  link: {
+    color: 'black !important',
+    '&:hover': {
+      color: 'black',
+      textDecoration: 'underline !important',
+    },
+  },
 })
 
 const countReplies = async (replies = []) => {
@@ -108,7 +117,7 @@ const countReplies = async (replies = []) => {
 const ReplyList = (props) => {
   let { replies, expectedCount, user } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
-  const classes = useStyle()
+  const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
 
   useEffect(() => {
@@ -181,11 +190,13 @@ const ReplyList = (props) => {
             <Col>
               <div className={classes.right}>
                 <div className={classes.content}>
-                  <label className={classes.name}>
-                    { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
-                  </label>
+                  <Link to={`/@${author}`} className={classes.link}>
+                    <p className={classes.name}>
+                      { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
+                    </p>
+                  </Link>
                   <label className={classes.username}>
-                    @{author}
+                    @{author}&nbsp;
                     { moment(created).fromNow() }
                   </label>
                   <p style={{ marginTop: -10 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>

@@ -15,6 +15,7 @@ import { anchorTop, getProfileMetaData, calculatePayout } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -56,7 +57,13 @@ const useStyles = createUseStyles({
   },
   strong: {
     color: 'black !important',
-  }
+  },
+  link: {
+    color: 'black',
+    '&:hover': {
+      color: 'black',
+    },
+  },
 })
 
 const Content = (props) => {
@@ -127,9 +134,11 @@ const Content = (props) => {
                   </Col>
                   <Col style={{ paddingLeft: 10, }}>
                     <div style={{ marginTop: 2, }}>
-                      <p className={classes.name}>
-                        { name ? name : `@${author}` }
-                      </p>
+                      <Link to={`/@${author}`} className={classes.link}>
+                        <p className={classes.name}>
+                          { name ? name : `@${author}` }
+                        </p>
+                      </Link>
                       <br />
                       <p className={classes.username}>@{author}</p>
                     </div>
