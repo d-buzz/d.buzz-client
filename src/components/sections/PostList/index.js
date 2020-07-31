@@ -108,7 +108,6 @@ const PostList = (props) => {
     active_votes = [],
     unguardedLinks,
     user = {},
-    ignoreUsername = false,
    } = props
 
 

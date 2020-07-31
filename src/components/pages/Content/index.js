@@ -11,10 +11,10 @@ import {
 } from 'components'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { anchorTop, getProfileMetaData, calculatePayout } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
-import { anchorTop, getProfileMetaData } from 'services/helper'
 
 const useStyles = createUseStyles({
   wrapper: {
@@ -71,6 +71,7 @@ const Content = (props) => {
     clearReplies,
     user = {},
   } = props
+
   const { username, permlink } = match.params
   const classes = useStyles()
 
@@ -81,15 +82,15 @@ const Content = (props) => {
     created,
     children: replyCount = 0,
     active_votes,
-    pending_payout_value,
     profile = {},
   } = content || ''
 
   let meta = {}
   let app = null
   let upvotes = 0
-
   let hasUpvoted = false
+
+  const payout = calculatePayout(content)
 
   const { name } = getProfileMetaData(profile)
 
@@ -161,7 +162,7 @@ const Content = (props) => {
                       hideStats={true}
                       voteCount={upvotes}
                       replyCount={replyCount}
-                      payout={`${pending_payout_value}`.replace('HBD', '')}
+                      payout={payout}
                     />
                   </Col>
                 </Row>

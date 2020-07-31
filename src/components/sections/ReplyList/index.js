@@ -12,7 +12,7 @@ import {
 } from 'components'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { getAuthorName } from 'services/helper'
+import { getAuthorName, calculatePayout } from 'services/helper'
 
 
 const useStyle = createUseStyles({
@@ -128,13 +128,12 @@ const ReplyList = (props) => {
       parent_author,
       active_votes,
       children: replyCount,
-      pending_payout_value: payout,
       profile = {},
       meta,
     } = reply
 
     const { username, is_authenticated } = user
-
+    const payout = calculatePayout(reply)
 
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )

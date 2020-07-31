@@ -40,8 +40,8 @@ export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') 
       if(err) {
         reject(err)
       }else {
-        const profile = await fetchProfile(account)
 
+        const profile = await fetchProfile(account)
         const posts = data.filter((item) => item.body.length <= 280 && item.community === 'hive-193084')
 
         posts.map((item) => (
