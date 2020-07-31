@@ -148,7 +148,7 @@ const Content = (props) => {
                 <PostTags meta={meta} />
                 <div style={{ marginTop: 10 }}>
                   <label className={classes.meta}>
-                    { moment(created).local().format('LTS • \nLL') }
+                    { moment(`${created}Z`).local().format('LTS • \nLL') }
                     { app && <React.Fragment> • Posted using <b className={classes.strong}>{ app }</b></React.Fragment> }
                   </label>
                 </div>

@@ -196,8 +196,8 @@ const ReplyList = (props) => {
                     </p>
                   </Link>
                   <label className={classes.username}>
-                    @{author}&nbsp;
-                    { moment(created).fromNow() }
+                    @{author} &bull;&nbsp;
+                    { moment(`${created}Z`).local().fromNow() }
                   </label>
                   <p style={{ marginTop: -10 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                   <MarkdownViewer minifyAssets={false} content={body} />
