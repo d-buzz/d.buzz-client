@@ -46,12 +46,25 @@ export const getAccountPostsFailure = (error, meta) => ({
   meta,
 })
 
-export const SET_OLD_ACCOUNT_POSTS = 'SET_OLD_ACCOUNT_POSTS'
+export const SET_LAST_ACCOUNT_POSTS = 'SET_LAST_ACCOUNT_POSTS'
 
-export const setOldProfilePosts = (response) => ({
-  type: SET_OLD_ACCOUNT_POSTS,
+export const setLastAccountPosts = (response) => ({
+  type: SET_LAST_ACCOUNT_POSTS,
   payload: response,
   meta: {
     thunk: true,
   },
+})
+
+export const SET_PROFILE_IS_VISITED = 'SET_PROFILE_IS_VISITED'
+
+export const setProfileIsVisited = (visited = true) => ({
+  type: SET_PROFILE_IS_VISITED,
+  payload: visited,
+})
+
+export const CLEAR_ACCOUNT_POSTS = 'CLEAR_ACCOUNT_POSTS'
+
+export const clearAccountPosts = () => ({
+  type: CLEAR_ACCOUNT_POSTS,
 })

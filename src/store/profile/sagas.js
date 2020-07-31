@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, select, takeEvery } from 'redux-saga/effects'
 import {
   GET_PROFILE_REQUEST,
   getProfileSuccess,
@@ -7,6 +7,7 @@ import {
   GET_ACCOUNT_POSTS_REQUEST,
   getAccountPostsSuccess,
   getAccountPostsFailure,
+  setLastAccountPosts,
 } from './actions'
 import {
   fetchProfile,
@@ -29,9 +30,13 @@ function* getAccountPostRequest(payload, meta) {
   try{
     const { username, start_permlink } = payload
 
-    const posts = yield call(fetchAccountPosts, username, start_permlink)
+    const old = yield select(state => state.profile.get('posts'))
+    let data = yield call(fetchAccountPosts, username, start_permlink)
 
-    yield put(getAccountPostsSuccess(posts, meta))
+    data = [...old, ...data]
+
+    yield put(setLastAccountPosts(data[data.length - 1]))
+    yield put(getAccountPostsSuccess(data, meta))
   } catch(error) {
     yield put(getAccountPostsFailure(error, meta))
   }

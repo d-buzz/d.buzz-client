@@ -7,7 +7,11 @@ import Tab from '@material-ui/core/Tab'
 import Chip from '@material-ui/core/Chip'
 import { createUseStyles } from 'react-jss'
 import { Avatar, ContainedButton, HashtagLoader } from 'components/elements'
-import { getProfileRequest, getAccountPostsRequest } from 'store/profile/actions'
+import {
+  getProfileRequest,
+  getAccountPostsRequest,
+  setProfileIsVisited,
+} from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { anchorTop, getProfileMetaData } from 'services/helper'
@@ -97,10 +101,15 @@ const Profile = (props) => {
     match,
     getProfileRequest,
     getAccountPostsRequest,
+    setProfileIsVisited,
+    isVisited,
     profile,
     loading,
     route,
   } = props
+
+  console.log({ isVisited })
+
   const classes = useStyles()
   const [index, setIndex] = useState(0)
 
@@ -112,10 +121,13 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
-    anchorTop()
-    getProfileRequest(username)
-    getAccountPostsRequest(username)
-  // eslint-disable-next-line
+    if(!isVisited) {
+      anchorTop()
+      setProfileIsVisited()
+      getProfileRequest(username)
+      getAccountPostsRequest(username)
+    }
+    // eslint-disable-next-line
   }, [])
 
   const { cover, name, about, website } = getProfileMetaData(profile)
@@ -152,8 +164,12 @@ const Profile = (props) => {
               <div className={classNames(classes.wrapper)}>
                 <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                   <Col xs="auto">
-                    <p className={classNames(classes.paragraph, classes.fullName)}>{ name || username }&nbsp;<Chip  size="small" label={reputation} /></p>
-                    <p className={classNames(classes.paragraph, classes.userName)}>@{username}</p>
+                    <p className={classNames(classes.paragraph, classes.fullName)}>
+                      { name || username }&nbsp;<Chip  size="small" label={reputation} />
+                    </p>
+                    <p className={classNames(classes.paragraph, classes.userName)}>
+                      @{username}
+                    </p>
                   </Col>
                 </Row>
                 <Row>
@@ -196,7 +212,7 @@ const Profile = (props) => {
               </div>
             </div>
             <React.Fragment>
-              { renderRoutes(route.routes) }
+              { renderRoutes(route.routes, { author: username }) }
             </React.Fragment>
           </React.Fragment>
         )
@@ -208,12 +224,14 @@ const Profile = (props) => {
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_PROFILE_REQUEST'),
   profile: state.profile.get('profile'),
+  isVisited: state.profile.get('isProfileVisited'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getProfileRequest,
     getAccountPostsRequest,
+    setProfileIsVisited,
   }, dispatch)
 })
 
