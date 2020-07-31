@@ -59,7 +59,7 @@ const useStyles = createUseStyles({
 })
 
 const GuardedAppFrame = (props) => {
-  const { route, pathname } = props
+  const { route, pathname  } = props
   const classes = useStyles()
   const history = useHistory()
 
@@ -74,6 +74,8 @@ const GuardedAppFrame = (props) => {
   } else if(pathname.match(/^(?:[^/content]*)\/@/)) {
     title = 'Profile'
   }
+
+  console.log(pathname)
 
   const handleClickBackButton = () => {
     history.goBack()

@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
+import { useHistory } from 'react-router-dom'
 
 const useStyle = createUseStyles({
   row: {
@@ -107,9 +108,12 @@ const PostList = (props) => {
     active_votes = [],
     unguardedLinks,
     user = {},
+    ignoreUsername = false,
    } = props
 
+
    let hasUpvoted = false
+   const history = useHistory()
 
    if(user.is_authenticated) {
      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
@@ -118,15 +122,17 @@ const PostList = (props) => {
   const { name } = getProfileMetaData(profile)
 
   const generateLink = (author, permlink) =>  {
-    let link = 'content'
+   let link = ''
     if(unguardedLinks) {
       link = 'ug'
     }
-    link += `/@${author}/${permlink}`
+
+    link += `/@${author}/c/${permlink}`
+
     return link
   }
 
-  const handleOpenContent = (e) => {
+  const handleOpenContent = (author, permlink) => (e) => {
     const { target } = e
     const { href } = target
     const hostname = window.location.hostname
@@ -134,8 +140,9 @@ const PostList = (props) => {
     if(href && !href.includes(hostname)) {
       e.preventDefault()
       window.open(href, '_blank')
+    } else {
+      history.push(generateLink(author, permlink))
     }
-
   }
 
   return (
@@ -150,21 +157,21 @@ const PostList = (props) => {
             </Col>
             <Col>
               <div className={classes.right}>
-                <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
-                  <div className={classes.content} onClick={handleOpenContent}>
-                    <label className={classes.name}>
-                      <Link to={`/@${author}`}>
-                        { name ? name : `@${author}`}
-                      </Link>
-                    </label>
-                    <label className={classes.username}>
-                      { `@${author}` } &bull;&nbsp;
-                      { moment(`${created}Z`).local().fromNow() }
-                    </label>
+                <div className={classes.content}>
+                  <label className={classes.name}>
+                    <Link to={`/@${author}`}>
+                      { name ? name : `@${author}`}
+                    </Link>
+                  </label>
+                  <label className={classes.username}>
+                    { `@${author}` } &bull;&nbsp;
+                    { moment(`${created}Z`).local().fromNow() }
+                  </label>
+                  <div onClick={handleOpenContent(author, permlink)}>
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} />
                   </div>
-                </Link>
+                </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
                     hasUpvoted={hasUpvoted}

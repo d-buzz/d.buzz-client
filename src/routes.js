@@ -24,7 +24,7 @@ const routes =  [
         component: Login,
       },
       {
-        path: '/ug/@:username/:permlink',
+        path: '/ug/@:username/c/:permlink',
         exact: true,
         component: Content,
       },
@@ -39,22 +39,22 @@ const routes =  [
         component: Latest,
       },
       {
-        path: '/@:username',
+        path: '/@:username/c/:permlink',
         exact: true,
+        component: Content,
+      },
+      {
+        path: '/@:username',
         component: Profile,
         routes: [
           {
             path: '/@:username/',
             exact: true,
             component: AccountPosts,
-          }
+            tabIndex: 'profile',
+          },
         ]
       },
-      {
-        path: '/content/@:username/:permlink',
-        exact: true,
-        component: Content,
-      }
     ]
   },
 ]
