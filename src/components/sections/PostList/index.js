@@ -172,7 +172,7 @@ const PostList = (props) => {
                     permlink={permlink}
                     voteCount={upvotes}
                     replyCount={replyCount}
-                    payout={`$${payout}`}
+                    payout={`${payout}`}
                   />
                 </div>
               </div>

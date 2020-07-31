@@ -161,7 +161,7 @@ const Content = (props) => {
                       hideStats={true}
                       voteCount={upvotes}
                       replyCount={replyCount}
-                      payout={pending_payout_value}
+                      payout={`${pending_payout_value}`.replace('HBD', '')}
                     />
                   </Col>
                 </Row>

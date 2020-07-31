@@ -256,7 +256,7 @@ const PostActions = (props) => {
               hideStats={false}
               stat={
                 <label style={{ marginLeft: 5, }}>
-                  { payout }
+                  ${ payout }
                 </label>
               }
             />

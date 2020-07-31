@@ -55,6 +55,7 @@ export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
     .then((replies) => {
       return Promise.map(replies, async(reply) => {
+
         const getActiveVotes = new Promise((resolve) => {
           api.getActiveVotesAsync(reply.author, reply.permlink)
           .then((active_votes) => {
@@ -76,6 +77,7 @@ export const fetchReplies = (author, permlink) => {
         } else {
           return reply
         }
+
       })
   })
 }
