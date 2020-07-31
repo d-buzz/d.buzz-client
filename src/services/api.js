@@ -1,5 +1,5 @@
-import { api, auth, broadcast, config } from '@hiveio/hive-js'
-import { Promise, resolve } from 'bluebird'
+import { api, auth, broadcast, config, formatter } from '@hiveio/hive-js'
+import { Promise } from 'bluebird'
 import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -25,6 +25,7 @@ export const callBridge = async(method, params) => {
     })
   })
 }
+
 
 export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
@@ -80,10 +81,10 @@ export const fetchReplies = (author, permlink) => {
 }
 
 export const fetchProfile = (username) => {
-  return api.lookupAccountNamesAsync([username])
+  return api.getAccountsAsync([username])
     .then(async(result) => {
+      result[0].reputation = formatter.reputation(result[0].reputation)
       const follow_count = await fetchFollowCount(username)
-      console.log({ follow_count })
       result[0].follow_count = follow_count
       return result
     })
@@ -187,5 +188,21 @@ export const fetchFollowCount = (username) => {
       return error
     })
 }
+
+export const fetchAccountPosts = (author, startPermlink = '', beforeDate = '', limit = 20) => {
+  return api.getDiscussionsByAuthorBeforeDateAsync(author, startPermlink, beforeDate, limit)
+    .then(async(result) => {
+      result = result.filter((item) => item.body.length <= 280 )
+      const getProfileData = mapFetchProfile(result)
+
+      await Promise.all([getProfileData])
+
+      return result
+    })
+    .catch((error) => {
+      return error
+    })
+}
+
 
 

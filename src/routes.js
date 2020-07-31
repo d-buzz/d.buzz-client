@@ -6,6 +6,7 @@ import {
   Content,
   Latest,
   Login,
+  AccountPosts,
 } from 'components'
 
 const routes =  [
@@ -41,6 +42,13 @@ const routes =  [
         path: '/@:username',
         exact: true,
         component: Profile,
+        routes: [
+          {
+            path: '/@:username/',
+            exact: true,
+            component: AccountPosts,
+          }
+        ]
       },
       {
         path: '/content/@:username/:permlink',

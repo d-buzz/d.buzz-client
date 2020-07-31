@@ -4,12 +4,15 @@ import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Chip from '@material-ui/core/Chip'
 import { createUseStyles } from 'react-jss'
-import { Avatar, ContainedButton } from 'components/elements'
-import { getProfileRequest } from 'store/profile/actions'
+import { Avatar, ContainedButton, HashtagLoader } from 'components/elements'
+import { getProfileRequest, getAccountPostsRequest } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { anchorTop, getProfileMetaData } from 'services/helper'
+import { pending } from 'redux-saga-thunk'
+import { renderRoutes } from 'react-router-config'
 
 const useStyles = createUseStyles({
   cover: {
@@ -93,7 +96,14 @@ const useStyles = createUseStyles({
 
 
 const Profile = (props) => {
-  const { match, getProfileRequest, profile } = props
+  const {
+    match,
+    getProfileRequest,
+    getAccountPostsRequest,
+    profile,
+    loading,
+    route,
+  } = props
   const classes = useStyles()
   const [index, setIndex] = useState(0)
 
@@ -107,92 +117,107 @@ const Profile = (props) => {
   useEffect(() => {
     anchorTop()
     getProfileRequest(username)
+    getAccountPostsRequest(username)
   // eslint-disable-next-line
   }, [])
 
   const { cover, name, about, website } = getProfileMetaData(profile)
   const { following_count, follower_count } = profile.follow_count || 0
+  const { reputation = 0 } = profile
 
 
   return (
     <React.Fragment>
-      <div className={classes.cover}>
-        { cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>) }
-      </div>
-      <div className={classes.wrapper}>
-        <Row>
-          <Col xs="auto">
-            <div className={classes.avatar}>
-              <Avatar border={true} height="135" author={username} size="medium" />
+      <HashtagLoader loading={loading} />
+      {
+        !loading && (
+          <React.Fragment>
+            <div className={classes.cover}>
+              { cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>) }
             </div>
-          </Col>
-          <Col>
-            <ContainedButton
-              className={classes.walletButton}
-              transparent={true}
-              label="View wallet"
-            />
-          </Col>
-        </Row>
-      </div>
-      <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
-        <div className={classNames(classes.wrapper)}>
-          <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-            <Col xs="auto">
-              <p className={classNames(classes.paragraph, classes.fullName)}>{ name || username }</p>
-              <p className={classNames(classes.paragraph, classes.userName)}>@{username}</p>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs="auto">
-              <p className={classes.paragraph}>
-                { about }
-              </p>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs="auto">
-              <p className={classes.paragraph}>
-                <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                  { website }
-                </a>
-              </p>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs="auto">
-              <p className={classes.paragraph}>
-              <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
-              </p>
-            </Col>
-          </Row>
-          <div className={classes.spacer} />
-          <Tabs
-            value={index}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-            onChange={onChange}
-            className={classes.tabContainer}
-          >
-            <Tab disableTouchRipple className={classes.tabs} label="Buzzes" />
-            <Tab disableTouchRipple className={classes.tabs} label="Replies" />
-            <Tab disableTouchRipple className={classes.tabs} label="Followers" />
-            <Tab disableTouchRipple className={classes.tabs}label="Following" />
-          </Tabs>
-        </div>
-      </div>
+            <div className={classes.wrapper}>
+              <Row>
+                <Col xs="auto">
+                  <div className={classes.avatar}>
+                    <Avatar border={true} height="135" author={username} size="medium" />
+                  </div>
+                </Col>
+                <Col>
+                  <ContainedButton
+                    className={classes.walletButton}
+                    transparent={true}
+                    label="Followed"
+                  />
+                </Col>
+              </Row>
+            </div>
+            <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
+              <div className={classNames(classes.wrapper)}>
+                <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+                  <Col xs="auto">
+                    <p className={classNames(classes.paragraph, classes.fullName)}>{ name || username }&nbsp;<Chip  size="small" label={reputation} /></p>
+                    <p className={classNames(classes.paragraph, classes.userName)}>@{username}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs="auto">
+                    <p className={classes.paragraph}>
+                      { about }
+                    </p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs="auto">
+                    <p className={classes.paragraph}>
+                      <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                        { website }
+                      </a>
+                    </p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs="auto">
+                    <p className={classes.paragraph}>
+                    <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                    </p>
+                  </Col>
+                </Row>
+                <div className={classes.spacer} />
+                <Tabs
+                  value={index}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                  onChange={onChange}
+                  className={classes.tabContainer}
+                >
+                  <Tab disableTouchRipple className={classes.tabs} label="Buzzes" />
+                  <Tab disableTouchRipple className={classes.tabs} label="Replies" />
+                  <Tab disableTouchRipple className={classes.tabs} label="Followers" />
+                  <Tab disableTouchRipple className={classes.tabs} label="Following" />
+                </Tabs>
+              </div>
+            </div>
+            <React.Fragment>
+              { renderRoutes(route.routes) }
+            </React.Fragment>
+          </React.Fragment>
+        )
+      }
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
+  loading: pending(state, 'GET_PROFILE_REQUEST'),
   profile: state.profile.get('profile'),
+  profilePosts: state.profile.get('profilePosts'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getProfileRequest,
+    getAccountPostsRequest,
   }, dispatch)
 })
 

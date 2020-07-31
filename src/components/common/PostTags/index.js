@@ -20,7 +20,7 @@ const PostTags = ({ meta }) => {
     if('tags' in meta) {
       tags = meta.tags
     }
-  } catch (e) { }
+  } catch (e) { console.log(e) }
 
   return (
     <div className={classes.tags}>
