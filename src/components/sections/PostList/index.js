@@ -144,11 +144,9 @@ const PostList = (props) => {
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
-             <Link to={`/@${author}`} style={{ textDecoration: 'none' }}>
               <div className={classes.left}>
                 <Avatar author={author} />
               </div>
-              </Link>
             </Col>
             <Col>
               <div className={classes.right}>
