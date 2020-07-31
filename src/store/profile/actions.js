@@ -45,3 +45,13 @@ export const getAccountPostsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_OLD_ACCOUNT_POSTS = 'SET_OLD_ACCOUNT_POSTS'
+
+export const setOldProfilePosts = (response) => ({
+  type: SET_OLD_ACCOUNT_POSTS,
+  payload: response,
+  meta: {
+    thunk: true,
+  },
+})

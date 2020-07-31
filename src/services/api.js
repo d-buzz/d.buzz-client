@@ -26,6 +26,34 @@ export const callBridge = async(method, params) => {
   })
 }
 
+export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') => {
+  return new Promise((resolve, reject) => {
+    const params = {
+      sort,
+      account,
+      observer: account,
+      start_author: account,
+      start_permlink,
+    }
+
+    api.call('bridge.get_account_posts', params, async(err, data) => {
+      if(err) {
+        reject(err)
+      }else {
+        const profile = await fetchProfile(account)
+
+        const posts = data.filter((item) => item.body.length <= 280 && item.community === 'hive-193084')
+
+        posts.map((item) => (
+          item.profile = profile[0]
+        ))
+
+        resolve(posts)
+      }
+    })
+  })
+}
+
 
 export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
@@ -190,21 +218,5 @@ export const fetchFollowCount = (username) => {
       return error
     })
 }
-
-export const fetchAccountPosts = (author, startPermlink = '', beforeDate = '', limit = 20) => {
-  return api.getDiscussionsByAuthorBeforeDateAsync(author, startPermlink, beforeDate, limit)
-    .then(async(result) => {
-      result = result.filter((item) => item.body.length <= 280 )
-      const getProfileData = mapFetchProfile(result)
-
-      await Promise.all([getProfileData])
-
-      return result
-    })
-    .catch((error) => {
-      return error
-    })
-}
-
 
 

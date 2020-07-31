@@ -28,6 +28,7 @@ function* getProfileRequest(payload, meta) {
 function* getAccountPostRequest(payload, meta) {
   try{
     const { username, start_permlink } = payload
+
     const posts = yield call(fetchAccountPosts, username, start_permlink)
 
     yield put(getAccountPostsSuccess(posts, meta))

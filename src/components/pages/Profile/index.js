@@ -208,7 +208,6 @@ const Profile = (props) => {
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_PROFILE_REQUEST'),
   profile: state.profile.get('profile'),
-  profilePosts: state.profile.get('profilePosts'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
