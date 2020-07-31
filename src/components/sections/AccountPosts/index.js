@@ -41,6 +41,10 @@ const AccountPosts = (props) => {
             ))
           )
         }
+        {
+          (!loading && items.length === 0) &&
+          (<center><br/><h6>No Buzz's</h6></center>)
+        }
       </InfiniteScroll>
     </React.Fragment>
   )

@@ -167,6 +167,8 @@ const Content = (props) => {
                 <Row>
                   <Col>
                     <PostActions
+                      author={username}
+                      permlink={permlink}
                       hasUpvoted={hasUpvoted}
                       hideStats={true}
                       voteCount={upvotes}
