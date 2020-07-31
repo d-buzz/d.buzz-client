@@ -170,7 +170,6 @@ function* upvoteRequest(payload, meta) {
         login_data = extractLoginData(login_data)
         const wif = login_data[1]
 
-        console.log({ wif })
         const weight = percentage * 100
 
         yield call(broadcastVote, wif, username, author, permlink, weight)

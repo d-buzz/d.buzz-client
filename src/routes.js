@@ -53,6 +53,12 @@ const routes =  [
             component: AccountPosts,
             tabIndex: 'profile',
           },
+          {
+            path: '/@:username/t/0/',
+            exact: true,
+            component: AccountPosts,
+            tabIndex: 'profile',
+          },
         ]
       },
     ]

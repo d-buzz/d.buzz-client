@@ -8,6 +8,10 @@ import {
   getAccountPostsSuccess,
   getAccountPostsFailure,
   setLastAccountPosts,
+
+  GET_ACCOUNT_REPLIES_REQUEST,
+  getAccountRepliesSuccess,
+  getAccountRepliesFailure,
 } from './actions'
 import {
   fetchProfile,
@@ -42,6 +46,18 @@ function* getAccountPostRequest(payload, meta) {
   }
 }
 
+function* getAccountRepliesRequest(payload, meta) {
+  try {
+    const { username, start_permlink } = payload
+
+    let data = yield call(fetchAccountPosts, username, start_permlink, 'replies')
+
+    yield put(getAccountRepliesSuccess(data, meta))
+  } catch(error) {
+    yield put(getAccountRepliesFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -50,7 +66,12 @@ function* watchGetAccountPostRequest({ payload, meta }) {
   yield call(getAccountPostRequest, payload, meta)
 }
 
+function* watchGetAccountRepliesRequest({ payload, meta }) {
+  yield call(getAccountRepliesRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
+  yield takeEvery(GET_ACCOUNT_REPLIES_REQUEST, watchGetAccountRepliesRequest)
 }

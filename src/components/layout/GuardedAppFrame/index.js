@@ -75,8 +75,6 @@ const GuardedAppFrame = (props) => {
     title = 'Profile'
   }
 
-  console.log(pathname)
-
   const handleClickBackButton = () => {
     history.goBack()
   }

@@ -3,7 +3,8 @@ import {
   GET_ACCOUNT_POSTS_SUCCESS,
   SET_LAST_ACCOUNT_POSTS,
   SET_PROFILE_IS_VISITED,
-  CLEAR_ACCOUNT_POSTS
+  CLEAR_ACCOUNT_POSTS,
+  GET_ACCOUNT_REPLIES_SUCCESS
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -12,6 +13,7 @@ const defaultState = fromJS({
   posts: [],
   last: [],
   isProfileVisited: false,
+  replies: [],
 })
 
 export const profile = (state = defaultState, { type, payload }) => {
@@ -26,6 +28,8 @@ export const profile = (state = defaultState, { type, payload }) => {
       return state.set('isProfileVisited', payload)
     case CLEAR_ACCOUNT_POSTS:
       return state.set('posts', [])
+    case GET_ACCOUNT_REPLIES_SUCCESS:
+      return state.set('replies', payload)
     default:
       return state
   }

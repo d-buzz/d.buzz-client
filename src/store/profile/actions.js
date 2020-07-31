@@ -46,6 +46,30 @@ export const getAccountPostsFailure = (error, meta) => ({
   meta,
 })
 
+export const GET_ACCOUNT_REPLIES_REQUEST = 'GET_ACCOUNT_REPLIES_REQUEST'
+export const GET_ACCOUNT_REPLIES_SUCCESS = 'GET_ACCOUNT_REPLIES_SUCCESS'
+export const GET_ACCOUNT_REPLIES_FAILURE = 'GET_ACCOUNT_REPLIES_FAILURE'
+
+export const getAccountRepliesRequest = (username, start_permlink = '') => ({
+  type: GET_ACCOUNT_REPLIES_REQUEST,
+  payload: { username, start_permlink },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getAccountRepliesSuccess = (response, meta) => ({
+  type: GET_ACCOUNT_REPLIES_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getAccountRepliesFailure = (error, meta) => ({
+  type: GET_ACCOUNT_REPLIES_FAILURE,
+  payload: error,
+  meta,
+})
+
 export const SET_LAST_ACCOUNT_POSTS = 'SET_LAST_ACCOUNT_POSTS'
 
 export const setLastAccountPosts = (response) => ({
@@ -68,3 +92,4 @@ export const CLEAR_ACCOUNT_POSTS = 'CLEAR_ACCOUNT_POSTS'
 export const clearAccountPosts = () => ({
   type: CLEAR_ACCOUNT_POSTS,
 })
+

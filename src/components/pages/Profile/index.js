@@ -11,12 +11,14 @@ import {
   getProfileRequest,
   getAccountPostsRequest,
   setProfileIsVisited,
+  getAccountRepliesRequest,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { anchorTop, getProfileMetaData } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
+import { useHistory, useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   cover: {
@@ -102,19 +104,26 @@ const Profile = (props) => {
     getProfileRequest,
     getAccountPostsRequest,
     setProfileIsVisited,
+    getAccountRepliesRequest,
     isVisited,
     profile,
     loading,
     route,
   } = props
 
-  console.log({ isVisited })
+  const history = useHistory()
+  const location = useLocation()
+  const { pathname } = location
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
 
   const onChange = (e, index) => {
     setIndex(index)
+  }
+
+  const handleTabs = (index) => () => {
+    history.push(`/@${username}/t/${index}/`)
   }
 
   const { params } = match
@@ -126,9 +135,24 @@ const Profile = (props) => {
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
+      getAccountRepliesRequest(username)
     }
     // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if(pathname.match(/^(?:(?:.+)\/@[/t/0/])|(?:(?:\/t\/0))/)) {
+      setIndex(0)
+    } else if(pathname.match(/^(?:(?:.+)\/@[/t/1/])|(?:(?:\/t\/1))/)) {
+      setIndex(1)
+    } else if(/^(?:(?:.+)\/@[/t/2/])|(?:(?:\/t\/2))/) {
+      setIndex(2)
+    } else if(/^(?:(?:.+)\/@[/t/3/])|(?:(?:\/t\/3))/) {
+      setIndex(3)
+    }
+  }, [pathname])
+
+
 
   const { cover, name, about, website } = getProfileMetaData(profile)
   const { following_count, follower_count } = profile.follow_count || 0
@@ -204,10 +228,10 @@ const Profile = (props) => {
                   onChange={onChange}
                   className={classes.tabContainer}
                 >
-                  <Tab disableTouchRipple className={classes.tabs} label="Buzzes" />
-                  <Tab disableTouchRipple className={classes.tabs} label="Replies" />
-                  <Tab disableTouchRipple className={classes.tabs} label="Followers" />
-                  <Tab disableTouchRipple className={classes.tabs} label="Following" />
+                  <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzzes" />
+                  <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
+                  <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
+                  <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
                 </Tabs>
               </div>
             </div>
@@ -232,6 +256,7 @@ const mapDispatchToProps = (dispatch) => ({
     getProfileRequest,
     getAccountPostsRequest,
     setProfileIsVisited,
+    getAccountRepliesRequest,
   }, dispatch)
 })
 
