@@ -13,7 +13,6 @@ import {
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { getProfileMetaData } from 'services/helper'
 
 const useStyle = createUseStyles({
@@ -94,6 +93,7 @@ const useStyle = createUseStyles({
 
 
 const PostList = (props) => {
+  const classes = useStyle()
   const {
     author,
     permlink,
@@ -104,12 +104,10 @@ const PostList = (props) => {
     payout,
     meta,
     profile = {},
-    unguardedLinks,
     active_votes = [],
+    unguardedLinks,
     user = {},
    } = props
-
-   const history = useHistory()
 
    let hasUpvoted = false
 
@@ -118,7 +116,6 @@ const PostList = (props) => {
    }
 
   const { name } = getProfileMetaData(profile)
-  const classes = useStyle()
 
   const generateLink = (author, permlink) =>  {
     let link = 'content'
@@ -148,17 +145,19 @@ const PostList = (props) => {
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
              <Link to={`/@${author}`} style={{ textDecoration: 'none' }}>
-              <div className={classes.left} onClick={handleOpenContent}>
+              <div className={classes.left}>
                 <Avatar author={author} />
               </div>
               </Link>
             </Col>
             <Col>
               <div className={classes.right}>
-                <Link to={`/@${author}`} style={{ textDecoration: 'none' }}>
+                <Link to={generateLink(author, permlink)} style={{ textDecoration: 'none' }}>
                   <div className={classes.content} onClick={handleOpenContent}>
                     <label className={classes.name}>
-                      <a href={`/@${author}`}>{ name ? name : `@${author}`}</a>
+                      <Link to={`/@${author}`}>
+                        { name ? name : `@${author}`}
+                      </Link>
                     </label>
                     <label className={classes.username}>
                       { `@${author}` } &bull;&nbsp;

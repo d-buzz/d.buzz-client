@@ -36,6 +36,9 @@ const useStyles = createUseStyles({
     fontSize: 25,
     fontWeight: 'bold',
     padding: 0,
+    '&:hover': {
+      textDecoration: 'underline',
+    },
   },
   userName: {
     fontSize: 16,
@@ -108,12 +111,13 @@ const Profile = (props) => {
   }, [])
 
   const { cover, name, about, website } = getProfileMetaData(profile)
+  const { following_count, follower_count } = profile.follow_count || 0
 
 
   return (
     <React.Fragment>
       <div className={classes.cover}>
-        { cover !== '' && (<img src={cover} alt="cover"/>) }
+        { cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>) }
       </div>
       <div className={classes.wrapper}>
         <Row>
@@ -135,7 +139,7 @@ const Profile = (props) => {
         <div className={classNames(classes.wrapper)}>
           <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
             <Col xs="auto">
-              <p className={classNames(classes.paragraph, classes.fullName)}>{ name }</p>
+              <p className={classNames(classes.paragraph, classes.fullName)}>{ name || username }</p>
               <p className={classNames(classes.paragraph, classes.userName)}>@{username}</p>
             </Col>
           </Row>
@@ -149,7 +153,7 @@ const Profile = (props) => {
           <Row>
             <Col xs="auto">
               <p className={classes.paragraph}>
-                <a href={website} className={classes.weblink}>
+                <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
                   { website }
                 </a>
               </p>
@@ -158,7 +162,7 @@ const Profile = (props) => {
           <Row>
             <Col xs="auto">
               <p className={classes.paragraph}>
-                <b>619</b> Following &nbsp; <b>357</b> Follower
+              <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
               </p>
             </Col>
           </Row>

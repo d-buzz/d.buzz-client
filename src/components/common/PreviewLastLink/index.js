@@ -17,8 +17,10 @@ const PreviewLastLink = ({ className, content }) => {
           && !link.includes('youtube.com/watch?v=')
           && !link.includes('app.dapplr.in')
           && !link.includes('pbs.twimg.com')
+          && link.match( /^[https][http]/)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
+        console.log({ link })
         isValidUrl = true
         break;
       }

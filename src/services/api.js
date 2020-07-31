@@ -1,9 +1,9 @@
 import { api, auth, broadcast, config } from '@hiveio/hive-js'
-import { Promise } from 'bluebird'
+import { Promise, resolve } from 'bluebird'
 import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
 
-const witnesses = [
+const endpoints = [
   'https://api.openhive.network',
   'https://api.hive.blog',
   'https://api.hivekings.com',
@@ -14,7 +14,7 @@ const witnesses = [
   'https://techcoderx.com'
 ]
 
-config.set('alternative_api_endpoints', witnesses)
+config.set('alternative_api_endpoints', endpoints)
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
@@ -81,7 +81,10 @@ export const fetchReplies = (author, permlink) => {
 
 export const fetchProfile = (username) => {
   return api.lookupAccountNamesAsync([username])
-    .then((result) => {
+    .then(async(result) => {
+      const follow_count = await fetchFollowCount(username)
+      console.log({ follow_count })
+      result[0].follow_count = follow_count
       return result
     })
 }
@@ -132,29 +135,29 @@ export const generateWif = (username, password, role) => {
 
 export const fetchFeedHistory = () => {
   return api.getFeedHistoryAsync()
-          .then((result) => {
-            return result
-          }).catch((error) => {
-            return error
-          })
+      .then((result) => {
+        return result
+      }).catch((error) => {
+        return error
+      })
 }
 
 export const fetchRewardFund = (username) => {
   return api.getRewardFundAsync(username)
-          .then((result) => {
-            return result
-          }).catch((error) => {
-            return error
-          })
+      .then((result) => {
+        return result
+      }).catch((error) => {
+        return error
+      })
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
-          .then((result) => {
-            return result
-          }).catch((error) => {
-            return error
-          })
+      .then((result) => {
+        return result
+      }).catch((error) => {
+        return error
+      })
 }
 
 export const wifToPublic = (privWif) => {
@@ -173,6 +176,16 @@ export const packLoginData = (username, password) => {
 
 export const extractLoginData = (data) => {
   return new Buffer(data, 'hex').toString().split('\t')
+}
+
+export const fetchFollowCount = (username) => {
+  return api.getFollowCountAsync(username)
+    .then((result) => {
+      return result
+    })
+    .catch((error) => {
+      return error
+    })
 }
 
 

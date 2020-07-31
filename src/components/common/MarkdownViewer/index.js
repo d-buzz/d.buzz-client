@@ -81,22 +81,24 @@ const prepareImages = (content) => {
   const links = markdownLinkExtractor(content)
 
   links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
 
-    link = link.replace(/&amp;/g, '&')
-
-    if((link.includes('images.hive.blog') && link.includes('.webp'))) {
-      body = body.replace(link, `![](${link})`)
-    } else if (
-      (
-        link.includes('dapplr-images')
-        || (link.includes('//') && `${link}`.substring(0, 2) === '//')
-        || (link.includes('pbs.twimg.com') && link.includes('format=jpg'))
-      ) && !link.includes('images.hive.blog')
-    ) {
-      body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
+      if((link.includes('images.hive.blog') && link.includes('.webp'))) {
+        body = body.replace(link, `![](${link})`)
+      } else if (
+        (
+          link.includes('dapplr-images')
+          || (link.includes('//') && `${link}`.substring(0, 2) === '//')
+          || (link.includes('pbs.twimg.com') && link.includes('format=jpg'))
+        ) && (!link.includes('images.hive.blog') && !link.includes('facebook.com'))
+      ) {
+        body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
+      }
+    } catch(e) {
+      console.log(e)
     }
   })
-
   return body
 }
 

@@ -11,7 +11,7 @@ const Avatar = (props) => {
         roundedCircle
         height={height}
         width={height}
-        style={{ border: border ? '5px solid white' : 'none' }}
+        style={{ border: border ? '5px solid white' : 'none', backgroundColor: '#ffebee' }}
       />
     </React.Fragment>
   )
