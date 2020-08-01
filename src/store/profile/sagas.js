@@ -38,11 +38,9 @@ function* getAccountPostRequest(payload, meta) {
     const old = yield select(state => state.profile.get('posts'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
 
-    const oldPermlink = Array.isArray(old) && old.length !== 0 ? old[old.length-1].permlink : ''
-    const newPermlink = data[data.length-1].permlink
 
-    console.log({ oldPermlink })
-    console.log({ newPermlink })
+    const oldPermlink = Array.isArray(old) && old.length !== 0 ? old[old.length-1].permlink : ''
+    const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
 
     if((oldPermlink !== newPermlink)) {
       data = [...old, ...data]
@@ -64,8 +62,9 @@ function* getAccountRepliesRequest(payload, meta) {
     const old = yield select(state => state.profile.get('replies'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'replies')
 
-    const oldPermlink = Array.isArray(old) ? old[old.length-1].permlink : ''
-    const newPermlink = data[data.length-1].permlink
+
+    const oldPermlink = Array.isArray(old) && old.length ? old[old.length-1].permlink : ''
+    const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
 
     if((oldPermlink !== newPermlink)) {
       data = [...old, ...data]

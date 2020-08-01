@@ -28,7 +28,7 @@ export const GET_ACCOUNT_POSTS_FAILURE = 'GET_ACCOUNT_POSTS_FAILURE'
 
 export const getAccountPostsRequest = (username, start_permlink = '', start_author = '') => ({
   type: GET_ACCOUNT_POSTS_REQUEST,
-  payload: { username, start_permlink },
+  payload: { username, start_permlink, start_author },
   meta: {
     thunk: true,
   }
