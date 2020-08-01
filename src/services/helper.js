@@ -29,11 +29,11 @@ export const getProfileMetaData = (profile) => {
   }
 
   if(
-    'posting_metadata' in profile
-    && profile.json_metadata.includes('"profile":')
-    && profile.posting_metadata.includes('"cover_image":')
+    'posting_json_metadata' in profile
+    && profile.posting_json_metadata.includes('"profile":')
+    && profile.posting_json_metadata.includes('"cover_image":')
   ) {
-    const meta = JSON.parse(profile.posting_metadata)
+    const meta = JSON.parse(profile.posting_json_metadata)
     cover = meta.profile.cover_image
   }
 

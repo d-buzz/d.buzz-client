@@ -36,7 +36,6 @@ import {
   callBridge,
   fetchReplies,
   fetchContent,
-  mapFetchProfile,
   fetchTrendingTags,
   fetchProfile,
   extractLoginData,
@@ -147,9 +146,7 @@ function* upvoteRequest(payload, meta) {
     const { username, is_authenticated, useKeychain } = user
     const weight = percentage * 100
 
-
     if(is_authenticated) {
-
       if(useKeychain) {
         try {
           yield call(keychainUpvote, username, permlink, author, weight)
@@ -162,10 +159,8 @@ function* upvoteRequest(payload, meta) {
         login_data = extractLoginData(login_data)
         const wif = login_data[1]
 
-
         yield call(broadcastVote, wif, username, author, permlink, weight)
         yield put(upvoteSuccess(meta))
-
       }
     } else {
       yield put(upvoteFailure('Unauthenticated', meta))
