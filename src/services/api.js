@@ -166,6 +166,20 @@ export const keychainSignIn = (username) => {
   })
 }
 
+export const keychainUpvote = (username, permlink, author, weight) => {
+  return new Promise((resolve) => {
+    window.hive_keychain.requestVote(
+      username,
+      permlink,
+      author,
+      weight,
+      response => {
+        resolve(response)
+      }
+    )
+  })
+}
+
 export const isWifValid = (password, pubWif) => {
   return auth.wifIsValid(password, pubWif)
 }

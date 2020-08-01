@@ -76,7 +76,11 @@ const GuardedAppFrame = (props) => {
   }
 
   const handleClickBackButton = () => {
-    history.goBack()
+    try {
+      history.goBack()
+    } catch(e) {
+      history.replace('/')
+    }
   }
 
   return (

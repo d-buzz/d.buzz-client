@@ -42,7 +42,7 @@ const AccountPosts = (props) => {
               upvotes={item.active_votes.length}
               replyCount={item.children}
               meta={item.json_metadata}
-              payout={(item.pending_payout_value).replace('HBD', '')}
+              payout={item.payout}
               profile={item.profile}
             />
           ))

@@ -41,6 +41,7 @@ import {
   fetchProfile,
   extractLoginData,
   broadcastVote,
+  keychainUpvote,
 } from 'services/api'
 
 
@@ -158,18 +159,24 @@ function* upvoteRequest(payload, meta) {
     const { author, permlink, percentage } = payload
     const user = yield select(state => state.auth.get('user'))
     const { username, is_authenticated, useKeychain } = user
+    const weight = percentage * 100
 
 
     if(is_authenticated) {
 
       if(useKeychain) {
-
+        try {
+          console.log({ useKeychain })
+          yield call(keychainUpvote, username, permlink, author, weight)
+          yield put(upvoteSuccess(meta))
+        } catch(error) {
+          yield put(upvoteFailure(error, meta))
+        }
       } else {
         let { login_data } = user
         login_data = extractLoginData(login_data)
         const wif = login_data[1]
 
-        const weight = percentage * 100
 
         yield call(broadcastVote, wif, username, author, permlink, weight)
         yield put(upvoteSuccess(meta))

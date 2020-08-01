@@ -12,6 +12,7 @@ import {
   getAccountPostsRequest,
   setProfileIsVisited,
   getAccountRepliesRequest,
+  clearAccountPosts,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -19,6 +20,7 @@ import { anchorTop, getProfileMetaData } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
+import queryString from 'query-string'
 
 const useStyles = createUseStyles({
   cover: {
@@ -109,6 +111,7 @@ const Profile = (props) => {
     profile,
     loading,
     route,
+    clearAccountPosts,
   } = props
 
   const history = useHistory()
@@ -130,8 +133,11 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
-    if(!isVisited) {
+    const params = queryString.parse(location.search)
+
+    if(!isVisited || (params.ref && params.ref === 'replies')) {
       anchorTop()
+      clearAccountPosts()
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
@@ -257,6 +263,7 @@ const mapDispatchToProps = (dispatch) => ({
     getAccountPostsRequest,
     setProfileIsVisited,
     getAccountRepliesRequest,
+    clearAccountPosts,
   }, dispatch)
 })
 

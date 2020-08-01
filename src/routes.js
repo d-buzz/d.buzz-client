@@ -7,6 +7,7 @@ import {
   Latest,
   Login,
   AccountPosts,
+  AccountReplies,
 } from 'components'
 
 const routes =  [
@@ -51,14 +52,17 @@ const routes =  [
             path: '/@:username/',
             exact: true,
             component: AccountPosts,
-            tabIndex: 'profile',
           },
           {
             path: '/@:username/t/0/',
             exact: true,
             component: AccountPosts,
-            tabIndex: 'profile',
           },
+          {
+            path: '/@:username/t/1/',
+            exact: true,
+            component: AccountReplies,
+          }
         ]
       },
     ]

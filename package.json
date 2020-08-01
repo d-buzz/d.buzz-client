@@ -17,6 +17,7 @@
     "javascript-time-ago": "^2.0.13",
     "markdown-link-extractor": "^1.2.3",
     "moment": "^2.27.0",
+    "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.1.1",
     "react-circular-progressbar": "^2.0.3",

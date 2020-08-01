@@ -106,15 +106,26 @@ export const calculatePayout = (data) => {
     pending_payout_value,
     total_payout_value,
     curator_payout_value,
+    is_paidout,
   } = data
 
   let payout = 0
 
-  if(author_rewards === 0) {
-    payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
+  if(author_rewards) {
+    if(author_rewards === 0) {
+      payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
+    } else {
+      payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
+    }
   } else {
-    payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
+    if(is_paidout) {
+      payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
+    } else {
+      payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
+    }
   }
+
+  payout = payout.toFixed(2)
 
   if(payout === 0) {
     payout = '0.00'

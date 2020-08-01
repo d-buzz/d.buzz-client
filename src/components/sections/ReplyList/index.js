@@ -190,7 +190,7 @@ const ReplyList = (props) => {
             <Col>
               <div className={classes.right}>
                 <div className={classes.content}>
-                  <Link to={`/@${author}`} className={classes.link}>
+                  <Link to={`/@${author}?ref=replies`} className={classes.link}>
                     <p className={classes.name}>
                       { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
                     </p>
