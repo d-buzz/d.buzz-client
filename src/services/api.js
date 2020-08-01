@@ -15,13 +15,16 @@ const endpoints = [
 ]
 
 config.set('alternative_api_endpoints', endpoints)
-
+const visited = []
 
 const invokeFilter = (item) => {
   return (item.body.length <= 280 && item.community === `${appConfig.TAG}`)
 }
 
 export const callBridge = async(method, params) => {
+
+  console.log({ visited })
+
   return new Promise((resolve, reject) => {
     params = { "tag": `${appConfig.TAG}`, ...params }
     api.call('bridge.' + method, params, (err, data) => {
@@ -88,8 +91,6 @@ export const fetchContent = (author, permlink) => {
   })
 }
 
-const visited = []
-
 export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
     .then((replies) => {
@@ -107,19 +108,16 @@ export const fetchReplies = (author, permlink) => {
         let profile = []
         const profileVisited = visited.filter((item) => item.name === reply.author)
 
-        console.log({ profileVisited })
-
         if(profileVisited.length === 0) {
           profile = await fetchProfile(reply.author)
           visited.push(profile[0])
         } else {
-          console.log({ already: profileVisited })
           profile.push(profileVisited[0])
         }
 
+
         reply.active_votes = active_votes[0]
         reply.profile = profile[0]
-
 
         if (reply.children > 0) {
           return fetchReplies(reply.author, reply.permlink)
@@ -149,16 +147,26 @@ export const fetchProfile = (username) => {
 export const mapFetchProfile = (data) => {
   return new Promise((resolve, reject) => {
     let count = 0
-    try {
-      data.forEach((item, index) => {
-        fetchProfile(item.author).then((profile) => {
-          data[index].profile = profile[0]
-          count++
 
-          if(count === (data.length - 1)) {
-            resolve(true)
-          }
-        })
+    try {
+      data.forEach(async(item, index) => {
+
+        const profileVisited = visited.filter((profile) => profile.name === item.author)
+        let profile = []
+
+        if(profileVisited.length === 0) {
+          profile = await fetchProfile(item.author)
+          visited.push(profile[0])
+        } else {
+          profile.push(profileVisited[0])
+        }
+
+        data[index].profile = profile[0]
+        count++
+
+        if(count === (data.length - 1)) {
+          resolve(true)
+        }
       })
     } catch(error) {
       reject(error)
