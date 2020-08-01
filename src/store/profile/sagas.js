@@ -62,16 +62,18 @@ function* getAccountRepliesRequest(payload, meta) {
     const old = yield select(state => state.profile.get('replies'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'replies')
 
-
     const oldPermlink = Array.isArray(old) && old.length ? old[old.length-1].permlink : ''
     const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
 
+
     if((oldPermlink !== newPermlink)) {
-      data = [...old, ...data]
       yield put(setLastAccountReply(data[data.length-1]))
     } else {
+      data = []
       yield put(setLastAccountReply([]))
     }
+
+    data = [...old, ...data]
 
     yield put(getAccountRepliesSuccess(data, meta))
   } catch(error) {

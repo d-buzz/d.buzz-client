@@ -1,4 +1,10 @@
-import { api, auth, broadcast, config, formatter } from '@hiveio/hive-js'
+import {
+  api,
+  auth,
+  broadcast,
+  config,
+  formatter
+} from '@hiveio/hive-js'
 import { Promise } from 'bluebird'
 import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
@@ -15,6 +21,7 @@ const endpoints = [
 ]
 
 config.set('alternative_api_endpoints', endpoints)
+
 const visited = []
 
 const invokeFilter = (item) => {
