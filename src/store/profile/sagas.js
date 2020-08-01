@@ -36,7 +36,6 @@ function* getAccountPostRequest(payload, meta) {
 
     const old = yield select(state => state.profile.get('posts'))
     let data = yield call(fetchAccountPosts, username, start_permlink)
-
     data = [...old, ...data]
 
     yield put(setLastAccountPosts(data[data.length - 1]))
@@ -51,6 +50,8 @@ function* getAccountRepliesRequest(payload, meta) {
     const { username, start_permlink } = payload
 
     let data = yield call(fetchAccountPosts, username, start_permlink, 'replies')
+
+    console.log({ data })
 
     yield put(getAccountRepliesSuccess(data, meta))
   } catch(error) {

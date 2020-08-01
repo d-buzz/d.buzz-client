@@ -133,6 +133,10 @@ const PostList = (props) => {
   }
 
   const handleOpenContent = (author, permlink) => (e) => {
+
+    console.log(author)
+    console.log(permlink)
+
     const { target } = e
     const { href } = target
     const hostname = window.location.hostname
@@ -167,8 +171,8 @@ const PostList = (props) => {
                     { `@${author}` } &bull;&nbsp;
                     { moment(`${created}Z`).local().fromNow() }
                   </label>
-                  { title && <h6>{ title }</h6> }
                   <div onClick={handleOpenContent(author, permlink)}>
+                    { title && <h6>{ title }</h6> }
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} />
                   </div>

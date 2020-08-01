@@ -102,8 +102,10 @@ const Content = (props) => {
   const { name } = getProfileMetaData(profile)
 
   if(json_metadata) {
-    meta = JSON.parse(json_metadata)
-    app = meta.app.split('/')[0]
+    try{
+      meta = JSON.parse(json_metadata)
+      app = meta.app.split('/')[0]
+    } catch(e) { }
   }
 
   if(active_votes) {

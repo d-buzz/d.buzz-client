@@ -52,10 +52,12 @@ export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') 
       if(err) {
         reject(err)
       }else {
+
+
         let posts = data.filter((item) => invokeFilter(item))
 
-
         if(posts.length !== 0) {
+
           if(sort === 'posts') {
             const profile = await fetchProfile(account)
             posts.map((item) => (
@@ -65,6 +67,7 @@ export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') 
             const getProfiledata = mapFetchProfile(posts)
             await Promise.all([getProfiledata])
           }
+
         } else {
           posts = []
         }
@@ -160,22 +163,24 @@ export const mapFetchProfile = (data) => {
     try {
       data.forEach(async(item, index) => {
 
-        const profileVisited = visited.filter((profile) => profile.name === item.author)
-        let profile = []
+      const profileVisited = visited.filter((profile) => profile.name === item.author)
+      let profile = []
 
-        if(profileVisited.length === 0) {
-          profile = await fetchProfile(item.author)
-          visited.push(profile[0])
-        } else {
-          profile.push(profileVisited[0])
-        }
+      if(profileVisited.length === 0) {
+        profile = await fetchProfile(item.author)
+        visited.push(profile[0])
+      } else {
+        profile.push(profileVisited[0])
+      }
 
-        data[index].profile = profile[0]
-        count++
+      data[index].profile = profile[0]
 
-        if(count === (data.length - 1)) {
-          resolve(true)
-        }
+      if(count === (data.length - 1)) {
+        resolve(true)
+      }
+
+      count += 1
+
       })
     } catch(error) {
       reject(error)
