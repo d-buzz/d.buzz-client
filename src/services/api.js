@@ -38,13 +38,13 @@ export const callBridge = async(method, params) => {
 }
 
 // get_account_posts doesn't use tag
-export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') => {
+export const fetchAccountPosts = (account, start_permlink = '', start_author = '', sort = 'posts') => {
   return new Promise((resolve, reject) => {
     const params = {
       sort,
       account,
       observer: account,
-      start_author: account,
+      start_author: start_author || account,
       start_permlink,
     }
 
@@ -273,6 +273,16 @@ export const extractLoginData = (data) => {
 
 export const fetchFollowCount = (username) => {
   return api.getFollowCountAsync(username)
+    .then((result) => {
+      return result
+    })
+    .catch((error) => {
+      return error
+    })
+}
+
+export const fetchFollower = (following, start_follower, limit = 20) => {
+  return api.getFollowersAsync(following, start_follower, 'blog', limit)
     .then((result) => {
       return result
     })

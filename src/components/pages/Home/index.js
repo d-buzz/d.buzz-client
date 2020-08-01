@@ -16,6 +16,7 @@ import {
 import {
   setProfileIsVisited,
   clearAccountPosts,
+  clearAccountReplies,
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
 
@@ -33,6 +34,7 @@ const Feeds = (props) => {
     clearTrendingPosts,
     clearLatestPosts,
     clearAccountPosts,
+    clearAccountReplies,
   } = props
 
   useEffect(() => {
@@ -46,6 +48,7 @@ const Feeds = (props) => {
       setLatestIsVisited(false)
     }
     clearAccountPosts()
+    clearAccountReplies()
     setProfileIsVisited(false)
     //eslint-disable-next-line
   }, [])
@@ -102,6 +105,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearTrendingPosts,
     clearLatestPosts,
     clearAccountPosts,
+    clearAccountReplies,
   }, dispatch)
 })
 

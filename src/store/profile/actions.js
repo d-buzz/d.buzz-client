@@ -50,9 +50,9 @@ export const GET_ACCOUNT_REPLIES_REQUEST = 'GET_ACCOUNT_REPLIES_REQUEST'
 export const GET_ACCOUNT_REPLIES_SUCCESS = 'GET_ACCOUNT_REPLIES_SUCCESS'
 export const GET_ACCOUNT_REPLIES_FAILURE = 'GET_ACCOUNT_REPLIES_FAILURE'
 
-export const getAccountRepliesRequest = (username, start_permlink = '') => ({
+export const getAccountRepliesRequest = (username, start_permlink = '', start_author = '') => ({
   type: GET_ACCOUNT_REPLIES_REQUEST,
-  payload: { username, start_permlink },
+  payload: { username, start_permlink, start_author },
   meta: {
     thunk: true,
   },
@@ -75,9 +75,6 @@ export const SET_LAST_ACCOUNT_POSTS = 'SET_LAST_ACCOUNT_POSTS'
 export const setLastAccountPosts = (response) => ({
   type: SET_LAST_ACCOUNT_POSTS,
   payload: response,
-  meta: {
-    thunk: true,
-  },
 })
 
 export const SET_PROFILE_IS_VISITED = 'SET_PROFILE_IS_VISITED'
@@ -91,5 +88,18 @@ export const CLEAR_ACCOUNT_POSTS = 'CLEAR_ACCOUNT_POSTS'
 
 export const clearAccountPosts = () => ({
   type: CLEAR_ACCOUNT_POSTS,
+})
+
+export const CLEAR_ACCOUNT_REPLIES = 'CLEAR_ACCOUNT_REPLIES'
+
+export const clearAccountReplies = () => ({
+  type: CLEAR_ACCOUNT_REPLIES,
+})
+
+export const SET_LAST_ACCOUNT_REPLY = 'SET_LAST_ACCOUNT_REPLY'
+
+export const setLastAccountReply = (response) => ({
+  type: SET_LAST_ACCOUNT_REPLY,
+  payload: response,
 })
 

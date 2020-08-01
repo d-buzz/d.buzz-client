@@ -12,6 +12,7 @@ import {
   GET_ACCOUNT_REPLIES_REQUEST,
   getAccountRepliesSuccess,
   getAccountRepliesFailure,
+  setLastAccountReply,
 } from './actions'
 import {
   fetchProfile,
@@ -47,12 +48,17 @@ function* getAccountPostRequest(payload, meta) {
 
 function* getAccountRepliesRequest(payload, meta) {
   try {
-    const { username, start_permlink } = payload
+    const { username, start_permlink, start_author } = payload
 
-    let data = yield call(fetchAccountPosts, username, start_permlink, 'replies')
+    console.log({start_permlink})
+
+    const old = yield select(state => state.profile.get('replies'))
+    let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'replies')
+    data = [...old, ...data]
 
     console.log({ data })
 
+    yield put(setLastAccountReply(data[data.length-1]))
     yield put(getAccountRepliesSuccess(data, meta))
   } catch(error) {
     yield put(getAccountRepliesFailure(error, meta))

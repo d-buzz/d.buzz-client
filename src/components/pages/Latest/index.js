@@ -10,7 +10,11 @@ import {
   clearHomePosts,
   clearTrendingPosts,
 } from 'store/posts/actions'
-import { setProfileIsVisited, clearAccountPosts } from 'store/profile/actions'
+import {
+  setProfileIsVisited,
+  clearAccountPosts,
+  clearAccountReplies,
+} from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { pending } from 'redux-saga-thunk'
 import { HashtagLoader } from 'components/elements'
@@ -27,6 +31,7 @@ const Latest = (props) => {
     clearTrendingPosts,
     setProfileIsVisited,
     clearAccountPosts,
+    clearAccountReplies,
     items,
     last,
     loading
@@ -43,6 +48,7 @@ const Latest = (props) => {
       setTrendingIsVisited(false)
     }
     clearAccountPosts()
+    clearAccountReplies()
     setProfileIsVisited(false)
     //eslint-disable-next-line
   }, [])
@@ -98,6 +104,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearTrendingPosts,
     setProfileIsVisited,
     clearAccountPosts,
+    clearAccountReplies,
   }, dispatch)
 })
 
