@@ -22,9 +22,6 @@ const invokeFilter = (item) => {
 }
 
 export const callBridge = async(method, params) => {
-
-  console.log({ visited })
-
   return new Promise((resolve, reject) => {
     params = { "tag": `${appConfig.TAG}`, ...params }
     api.call('bridge.' + method, params, (err, data) => {
