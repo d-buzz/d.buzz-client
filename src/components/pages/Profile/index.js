@@ -141,14 +141,16 @@ const Profile = (props) => {
   }, [])
 
   useEffect(() => {
-    if(pathname.match(/^(?:(?:.+)\/@[/t/0/])|(?:(?:\/t\/0))/)) {
+    if(pathname.match(/(\/t\/0\/)$|(\/t\/0)$/m)) {
       setIndex(0)
-    } else if(pathname.match(/^(?:(?:.+)\/@[/t/1/])|(?:(?:\/t\/1))/)) {
+    } else if(pathname.match(/(\/t\/1\/)$|(\/t\/1)$/m)) {
       setIndex(1)
-    } else if(/^(?:(?:.+)\/@[/t/2/])|(?:(?:\/t\/2))/) {
+    } else if(pathname.match(/(\/t\/2\/)$|(\/t\/2)$/m)) {
       setIndex(2)
-    } else if(/^(?:(?:.+)\/@[/t/3/])|(?:(?:\/t\/3))/) {
+    } else if(pathname.match(/(\/t\/3\/)$|(\/t\/3)$/m)) {
       setIndex(3)
+    } else {
+      setIndex(0)
     }
   }, [pathname])
 
