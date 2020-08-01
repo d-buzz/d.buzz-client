@@ -65,13 +65,13 @@ const GuardedAppFrame = (props) => {
 
   let title = 'Home'
 
-  if(pathname.match(/^\/content\/@/)) {
+  if(pathname.match(/(\/c\/)/)) {
     title = 'BUZZ'
   } else if(pathname.match(/^\/trending/)) {
     title = 'Trending'
   } else if(pathname.match( /^\/latest/)) {
     title = 'Latest'
-  } else if(pathname.match(/^(?:[^/content]*)\/@/)) {
+  } else if(!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
     title = 'Profile'
   }
 
