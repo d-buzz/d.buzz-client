@@ -109,6 +109,8 @@ const PostList = (props) => {
     unguardedLinks,
     user = {},
     title = null,
+    disableProfileLink = false,
+    profileRef = null,
    } = props
 
 
@@ -133,10 +135,6 @@ const PostList = (props) => {
   }
 
   const handleOpenContent = (author, permlink) => (e) => {
-
-    console.log(author)
-    console.log(permlink)
-
     const { target } = e
     const { href } = target
     const hostname = window.location.hostname
@@ -163,9 +161,16 @@ const PostList = (props) => {
               <div className={classes.right}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    <Link to={`/@${author}`}>
-                      { name ? name : `@${author}`}
-                    </Link>
+                    {
+                      !disableProfileLink && (
+                        <Link to={`/@${author}${'?ref='+profileRef}`}>
+                          { name ? name : `@${author}`}
+                        </Link>
+                      )
+                    }
+                    {
+                      disableProfileLink && (<span>{ name ? name : `@${author}`}</span>)
+                    }
                   </label>
                   <label className={classes.username}>
                     { `@${author}` } &bull;&nbsp;

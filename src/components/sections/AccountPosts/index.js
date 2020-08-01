@@ -18,8 +18,8 @@ const AccountPosts = (props) => {
 
   const loadMorePosts = () => {
     try {
-      const { permlink } = last
-      getAccountPostsRequest(author, permlink)
+      const { permlink, author: start_author } = last
+      getAccountPostsRequest(author, permlink, start_author)
     } catch(e) { }
   }
 
@@ -33,6 +33,7 @@ const AccountPosts = (props) => {
         {
           items.map((item) => (
             <PostList
+              disableProfileLink={true}
               ignoreUsername={true}
               active_votes={item.active_votes}
               author={item.author}

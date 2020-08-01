@@ -31,6 +31,7 @@ const AccountReplies = (props) => {
         {
           items.map((item) => (
             <PostList
+              disableProfileLink={true}
               title={item.title}
               ignoreUsername={true}
               active_votes={item.active_votes}

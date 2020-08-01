@@ -25,14 +25,14 @@ export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
     params = { "tag": `${appConfig.TAG}`, ...params }
     api.call('bridge.' + method, params, async(err, data) => {
-        if (err) {
-          reject(err)
-        }else {
-          const result = data.filter((item) => invokeFilter(item))
-          const getProfiledata = mapFetchProfile(result)
-          await Promise.all([getProfiledata])
-          resolve(result)
-        }
+      if (err) {
+        reject(err)
+      }else {
+        const result = data.filter((item) => invokeFilter(item))
+        const getProfiledata = mapFetchProfile(result)
+        await Promise.all([getProfiledata])
+        resolve(result)
+      }
     })
   })
 }

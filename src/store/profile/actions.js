@@ -26,7 +26,7 @@ export const GET_ACCOUNT_POSTS_REQUEST = 'GET_ACCOUNT_POSTS_REQUEST'
 export const GET_ACCOUNT_POSTS_SUCCESS = 'GET_ACCOUNT_POSTS_SUCCESS'
 export const GET_ACCOUNT_POSTS_FAILURE = 'GET_ACCOUNT_POSTS_FAILURE'
 
-export const getAccountPostsRequest = (username, start_permlink = '') => ({
+export const getAccountPostsRequest = (username, start_permlink = '', start_author = '') => ({
   type: GET_ACCOUNT_POSTS_REQUEST,
   payload: { username, start_permlink },
   meta: {

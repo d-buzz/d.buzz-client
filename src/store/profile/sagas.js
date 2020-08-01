@@ -33,11 +33,23 @@ function* getProfileRequest(payload, meta) {
 
 function* getAccountPostRequest(payload, meta) {
   try{
-    const { username, start_permlink } = payload
+    const { username, start_permlink, start_author } = payload
 
     const old = yield select(state => state.profile.get('posts'))
-    let data = yield call(fetchAccountPosts, username, start_permlink)
-    data = [...old, ...data]
+    let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
+
+    const oldPermlink = Array.isArray(old) && old.length !== 0 ? old[old.length-1].permlink : ''
+    const newPermlink = data[data.length-1].permlink
+
+    console.log({ oldPermlink })
+    console.log({ newPermlink })
+
+    if((oldPermlink !== newPermlink)) {
+      data = [...old, ...data]
+      yield put(setLastAccountPosts(data[data.length-1]))
+    } else {
+      yield put(setLastAccountPosts([]))
+    }
 
     yield put(getAccountPostsSuccess(data, meta))
   } catch(error) {
