@@ -95,9 +95,7 @@ const prepareImages = (content) => {
       ) {
         body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
       }
-    } catch(e) {
-      console.log(e)
-    }
+    } catch(e) { }
   })
   return body
 }

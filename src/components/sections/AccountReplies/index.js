@@ -1,11 +1,19 @@
 import React from 'react'
+import { connect } from 'react-redux'
+// import { bindActionCreators } from 'redux'
 
-const AccountReplies = () => {
+const AccountReplies = (props) => {
+  const { items } = props
+
   return (
     <React.Fragment>
-      Hello World
+      { JSON.stringify(items) }
     </React.Fragment>
   )
 }
 
-export default AccountReplies
+const mapStateToProps = (state) => ({
+  items: state.profile.get('replies'),
+})
+
+export default connect(mapStateToProps)(AccountReplies)

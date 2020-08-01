@@ -88,6 +88,8 @@ export const fetchContent = (author, permlink) => {
   })
 }
 
+const visited = []
+
 export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
     .then((replies) => {
@@ -101,9 +103,23 @@ export const fetchReplies = (author, permlink) => {
         })
 
         const active_votes = await Promise.all([getActiveVotes])
-        const profile = await fetchProfile(reply.author)
+
+        let profile = []
+        const profileVisited = visited.filter((item) => item.name === reply.author)
+
+        console.log({ profileVisited })
+
+        if(profileVisited.length === 0) {
+          profile = await fetchProfile(reply.author)
+          visited.push(profile[0])
+        } else {
+          console.log({ already: profileVisited })
+          profile.push(profileVisited[0])
+        }
+
         reply.active_votes = active_votes[0]
         reply.profile = profile[0]
+
 
         if (reply.children > 0) {
           return fetchReplies(reply.author, reply.permlink)

@@ -20,7 +20,6 @@ const PreviewLastLink = ({ className, content }) => {
           && link.match( /^[https][http]/)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
-        console.log({ link })
         isValidUrl = true
         break;
       }

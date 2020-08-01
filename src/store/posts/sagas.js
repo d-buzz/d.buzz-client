@@ -166,7 +166,6 @@ function* upvoteRequest(payload, meta) {
 
       if(useKeychain) {
         try {
-          console.log({ useKeychain })
           yield call(keychainUpvote, username, permlink, author, weight)
           yield put(upvoteSuccess(meta))
         } catch(error) {

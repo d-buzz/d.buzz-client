@@ -66,9 +66,6 @@ const CreateBuzzForm = (props) => {
     setWordCount(Math.floor((value.length/280) * 100))
   }
 
-
-  console.log({ wordCount })
-
   return (
     <div className={classes.container}>
       <div className={classes.row}>
