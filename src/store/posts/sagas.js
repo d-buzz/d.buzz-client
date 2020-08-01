@@ -92,10 +92,6 @@ function* getTrendingPostsRequest(payload, meta) {
     let old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
 
-    const getProfileData = mapFetchProfile(data)
-
-    yield call([Promise, Promise.all], [getProfileData])
-
     data = [...old, ...data]
 
     yield put(setTrendingLastPost(data[data.length-1]))
@@ -114,11 +110,6 @@ function* getHomePostsRequest(payload, meta) {
   try {
     let old = yield select(state => state.posts.get('home'))
     let data = yield call(callBridge, method, params)
-    data = data.filter((post) => post.body.length <= 280)
-
-    const getProfileData = mapFetchProfile(data)
-
-    yield call([Promise, Promise.all], [getProfileData])
 
     data = [...old, ...data]
 
@@ -138,11 +129,6 @@ function* getLatestPostsRequest(payload, meta) {
   try {
     let old = yield select(state => state.posts.get('latest'))
     let data = yield call(callBridge, method, params)
-    data = data.filter((post) => post.body.length <= 280)
-
-    const getProfileData = mapFetchProfile(data)
-
-    yield call([Promise, Promise.all], [getProfileData])
 
     data = [...old, ...data]
 

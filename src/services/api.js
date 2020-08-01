@@ -24,11 +24,13 @@ const invokeFilter = (item) => {
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
     params = { "tag": `${appConfig.TAG}`, ...params }
-    api.call('bridge.' + method, params, (err, data) => {
+    api.call('bridge.' + method, params, async(err, data) => {
         if (err) {
           reject(err)
         }else {
           const result = data.filter((item) => invokeFilter(item))
+          const getProfiledata = mapFetchProfile(result)
+          await Promise.all([getProfiledata])
           resolve(result)
         }
     })
@@ -52,14 +54,19 @@ export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') 
       }else {
         let posts = data.filter((item) => invokeFilter(item))
 
-        if(sort === 'posts') {
-          const profile = await fetchProfile(account)
-          posts.map((item) => (
-            item.profile = profile[0]
-          ))
+
+        if(posts.length !== 0) {
+          if(sort === 'posts') {
+            const profile = await fetchProfile(account)
+            posts.map((item) => (
+              item.profile = profile[0]
+            ))
+          } else {
+            const getProfiledata = mapFetchProfile(posts)
+            await Promise.all([getProfiledata])
+          }
         } else {
-          const getProfiledata = mapFetchProfile(posts)
-          await Promise.all([getProfiledata])
+          posts = []
         }
 
         resolve(posts)
