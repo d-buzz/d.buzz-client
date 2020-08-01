@@ -126,7 +126,17 @@ const Profile = (props) => {
   }
 
   const handleTabs = (index) => () => {
-    history.push(`/@${username}/t/${index}/`)
+    let tab = 'buzz'
+
+    if(index === 1) {
+      tab = 'replies'
+    } else if (index === 2) {
+      tab = 'followers'
+    } else if (index === 3) {
+      tab = 'following'
+    }
+
+    history.push(`/@${username}/t/${tab}/`)
   }
 
   const { params } = match
@@ -147,13 +157,13 @@ const Profile = (props) => {
   }, [])
 
   useEffect(() => {
-    if(pathname.match(/(\/t\/0\/)$|(\/t\/0)$/m)) {
+    if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if(pathname.match(/(\/t\/1\/)$|(\/t\/1)$/m)) {
+    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(1)
-    } else if(pathname.match(/(\/t\/2\/)$|(\/t\/2)$/m)) {
+    } else if(pathname.match(/(\/t\/followers\/)$|(\/t\/followers)$/m)) {
       setIndex(2)
-    } else if(pathname.match(/(\/t\/3\/)$|(\/t\/3)$/m)) {
+    } else if(pathname.match(/(\/t\/following\/)$|(\/t\/following)$/m)) {
       setIndex(3)
     } else {
       setIndex(0)

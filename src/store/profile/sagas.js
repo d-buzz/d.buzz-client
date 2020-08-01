@@ -13,12 +13,14 @@ import {
   getAccountRepliesSuccess,
   getAccountRepliesFailure,
   setLastAccountReply,
+
+  GET_FOLLOWERS_REQUEST,
 } from './actions'
 import {
   fetchProfile,
-  fetchAccountPosts
+  fetchAccountPosts,
+  fetchFollowers,
 } from 'services/api'
-
 
 function* getProfileRequest(payload, meta) {
   try {
@@ -37,7 +39,6 @@ function* getAccountPostRequest(payload, meta) {
 
     const old = yield select(state => state.profile.get('posts'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
-
 
     const oldPermlink = Array.isArray(old) && old.length !== 0 ? old[old.length-1].permlink : ''
     const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
@@ -65,7 +66,6 @@ function* getAccountRepliesRequest(payload, meta) {
     const oldPermlink = Array.isArray(old) && old.length ? old[old.length-1].permlink : ''
     const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
 
-
     if((oldPermlink !== newPermlink)) {
       yield put(setLastAccountReply(data[data.length-1]))
     } else {
@@ -81,6 +81,12 @@ function* getAccountRepliesRequest(payload, meta) {
   }
 }
 
+function* getFollowersRequest(payload, meta) {
+  const { username, start_follower } = payload
+  const data = yield call(fetchFollowers, username, start_follower)
+  console.log({ data })
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -93,8 +99,13 @@ function* watchGetAccountRepliesRequest({ payload, meta }) {
   yield call(getAccountRepliesRequest, payload, meta)
 }
 
+function* watchGetFollowersRequest({ payload, meta }) {
+  yield call(getFollowersRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
   yield takeEvery(GET_ACCOUNT_REPLIES_REQUEST, watchGetAccountRepliesRequest)
+  yield takeEvery(GET_FOLLOWERS_REQUEST, watchGetFollowersRequest)
 }

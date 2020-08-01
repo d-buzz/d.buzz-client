@@ -103,3 +103,27 @@ export const setLastAccountReply = (response) => ({
   payload: response,
 })
 
+export const GET_FOLLOWERS_REQUEST = 'GET_FOLLOWERS_REQUEST'
+export const GET_FOLLOWERS_SUCCESS = 'GET_FOLLOWERS_SUCCESS'
+export const GET_FOLLOWERS_FAILURE = 'GET_FOLLOWERS_fAILURE'
+
+export const getFollowersRequest = (username, start_follower = '') => ({
+  type: GET_FOLLOWERS_REQUEST,
+  payload: { username, start_follower },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getFollowersSuccess = (response, meta) => ({
+  type: GET_FOLLOWERS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getFollowersFailure = (error, meta) => ({
+  type: GET_FOLLOWERS_FAILURE,
+  payload: error,
+  meta,
+})
+

@@ -288,7 +288,7 @@ export const fetchFollowCount = (username) => {
     })
 }
 
-export const fetchFollower = (following, start_follower, limit = 20) => {
+export const fetchFollowers = (following, start_follower, limit = 20) => {
   return api.getFollowersAsync(following, start_follower, 'blog', limit)
     .then((result) => {
       return result
