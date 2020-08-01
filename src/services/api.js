@@ -50,12 +50,17 @@ export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') 
       if(err) {
         reject(err)
       }else {
-        const profile = await fetchProfile(account)
-        const posts = data.filter((item) => invokeFilter(item))
+        let posts = data.filter((item) => invokeFilter(item))
 
-        posts.map((item) => (
-          item.profile = profile[0]
-        ))
+        if(sort === 'posts') {
+          const profile = await fetchProfile(account)
+          posts.map((item) => (
+            item.profile = profile[0]
+          ))
+        } else {
+          const getProfiledata = mapFetchProfile(posts)
+          await Promise.all([getProfiledata])
+        }
 
         resolve(posts)
       }

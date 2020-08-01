@@ -108,6 +108,7 @@ const PostList = (props) => {
     active_votes = [],
     unguardedLinks,
     user = {},
+    title = null,
    } = props
 
 
@@ -166,6 +167,7 @@ const PostList = (props) => {
                     { `@${author}` } &bull;&nbsp;
                     { moment(`${created}Z`).local().fromNow() }
                   </label>
+                  { title && <h6>{ title }</h6> }
                   <div onClick={handleOpenContent(author, permlink)}>
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} />
