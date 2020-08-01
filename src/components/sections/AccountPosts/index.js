@@ -17,8 +17,10 @@ const AccountPosts = (props) => {
   } = props
 
   const loadMorePosts = () => {
-    const { permlink } = last
-    getAccountPostsRequest(author, permlink)
+    try {
+      const { permlink } = last
+      getAccountPostsRequest(author, permlink)
+    } catch(e) { }
   }
 
   return (

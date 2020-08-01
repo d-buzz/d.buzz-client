@@ -90,7 +90,6 @@ function* getTrendingPostsRequest(payload, meta) {
   try {
     let old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
-    data = data.filter((post) => post.body.length <= 280)
 
     const getProfileData = mapFetchProfile(data)
 

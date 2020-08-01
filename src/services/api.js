@@ -16,16 +16,26 @@ const endpoints = [
 
 config.set('alternative_api_endpoints', endpoints)
 
+
+const invokeFilter = (item) => {
+  return (item.body.length <= 280 && item.community === `${appConfig.TAG}`)
+}
+
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
     params = { "tag": `${appConfig.TAG}`, ...params }
     api.call('bridge.' + method, params, (err, data) => {
-        if (err) reject(err)
-        else resolve(data)
+        if (err) {
+          reject(err)
+        }else {
+          const result = data.filter((item) => invokeFilter(item))
+          resolve(result)
+        }
     })
   })
 }
 
+// get_account_posts doesn't use tag
 export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') => {
   return new Promise((resolve, reject) => {
     const params = {
@@ -40,9 +50,8 @@ export const fetchAccountPosts = (account, start_permlink = '', sort = 'posts') 
       if(err) {
         reject(err)
       }else {
-
         const profile = await fetchProfile(account)
-        const posts = data.filter((item) => item.body.length <= 280 && item.community === 'hive-193084')
+        const posts = data.filter((item) => invokeFilter(item))
 
         posts.map((item) => (
           item.profile = profile[0]

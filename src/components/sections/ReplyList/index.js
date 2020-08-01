@@ -235,10 +235,10 @@ const ReplyList = (props) => {
   return (
     <React.Fragment>
       {
-        expectedCount !== replyCounter && (
+        (expectedCount !== replyCounter) && (
           <center>
             <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f' }}>
-              Some may not appear because it exceeds 280 characters
+              Some replies may not appear because it exceeds 280 characters
             </p>
           </center>
         )

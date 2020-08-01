@@ -155,11 +155,9 @@ const Profile = (props) => {
   }, [pathname])
 
 
-
   const { cover, name, about, website } = getProfileMetaData(profile)
   const { following_count, follower_count } = profile.follow_count || 0
   const { reputation = 0 } = profile
-
 
   return (
     <React.Fragment>
@@ -230,7 +228,7 @@ const Profile = (props) => {
                   onChange={onChange}
                   className={classes.tabContainer}
                 >
-                  <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzzes" />
+                  <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
                   <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
                   <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
                   <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
