@@ -96,6 +96,12 @@ export const clearAccountReplies = () => ({
   type: CLEAR_ACCOUNT_REPLIES,
 })
 
+export const CLEAR_ACCOUNT_FOLLOWERS = 'CLEAR_FOLLOWERS'
+
+export const clearAccountFollowers = () => ({
+  type: CLEAR_ACCOUNT_FOLLOWERS,
+})
+
 export const CLEAR_PROFILE = 'CLEAR_PROFILE'
 
 export const clearProfile = () => ({
@@ -140,4 +146,32 @@ export const setLastFollower = (response) => ({
   type: SET_LAST_FOLLOWER,
   payload: response,
 })
+
+export const GET_FOLLOWING_REQUEST = 'GET_FOLLOWING_REQUEST'
+export const GET_FOLLOWING_SUCCESS = 'GET_FOLLOWING_SUCCESS'
+export const GET_FOLLOWING_FAILURE = 'GET_FOLLOWING_FAILURE'
+
+export const getFollowingRequest = (username, start_following = '') => ({
+  type: GET_FOLLOWING_REQUEST,
+  payload: { username, start_following },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getFollowingSuccess = (response, meta) => ({
+  type: GET_FOLLOWING_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getFollowingFailure = (error, meta) => ({
+  type: GET_FOLLOWING_FAILURE,
+  payload: error,
+  meta,
+})
+
+
+
+
 

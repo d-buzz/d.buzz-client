@@ -10,6 +10,8 @@ import {
   GET_FOLLOWERS_SUCCESS,
   CLEAR_PROFILE,
   SET_LAST_FOLLOWER,
+  CLEAR_ACCOUNT_FOLLOWERS,
+  GET_FOLLOWING_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -22,6 +24,7 @@ const defaultState = fromJS({
   lastReply: [],
   followers: [],
   lastFollower: [],
+  following: [],
 })
 
 export const profile = (state = defaultState, { type, payload }) => {
@@ -48,6 +51,10 @@ export const profile = (state = defaultState, { type, payload }) => {
       return state.set('profile', {})
     case SET_LAST_FOLLOWER:
       return state.set('lastFollower', payload)
+    case CLEAR_ACCOUNT_FOLLOWERS:
+      return state.set('followers', [])
+    case GET_FOLLOWING_SUCCESS:
+      return state.set('following', payload)
     default:
       return state
   }

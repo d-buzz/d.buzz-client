@@ -18,11 +18,17 @@ import {
   getFollowersSuccess,
   getFollowersFailure,
   setLastFollower,
+
+  GET_FOLLOWING_REQUEST,
+  getFollowingSuccess,
+  getFollowingFailure,
 } from './actions'
+
 import {
   fetchProfile,
   fetchAccountPosts,
   fetchFollowers,
+  fetchFollowing,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
@@ -104,6 +110,18 @@ function* getFollowersRequest(payload, meta) {
   }
 }
 
+function* getFollowingRequest(payload, meta) {
+  try {
+    const { username, start_following } = payload
+
+    const data = yield call(fetchFollowing, username, start_following)
+
+    yield put(getFollowingSuccess(data, meta))
+  } catch(error) {
+    yield put(getFollowingFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -120,9 +138,14 @@ function* watchGetFollowersRequest({ payload, meta }) {
   yield call(getFollowersRequest, payload, meta)
 }
 
+function* watchGetFollowingRequest({ payload, meta }) {
+  yield call(getFollowingRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
   yield takeEvery(GET_ACCOUNT_REPLIES_REQUEST, watchGetAccountRepliesRequest)
   yield takeEvery(GET_FOLLOWERS_REQUEST, watchGetFollowersRequest)
+  yield takeEvery(GET_FOLLOWING_REQUEST, watchGetFollowingRequest)
 }

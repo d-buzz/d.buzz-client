@@ -20,6 +20,8 @@ import {
   clearAccountReplies,
   getFollowersRequest,
   clearProfile,
+  getFollowingRequest,
+  clearAccountFollowers,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -122,6 +124,8 @@ const Profile = (props) => {
     clearAccountPosts,
     clearProfile,
     clearAccountReplies,
+    getFollowingRequest,
+    clearAccountFollowers,
   } = props
 
   const history = useHistory()
@@ -160,11 +164,13 @@ const Profile = (props) => {
       clearProfile()
       clearAccountPosts()
       clearAccountReplies()
+      clearAccountFollowers()
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
       getAccountRepliesRequest(username)
       getFollowersRequest(username)
+      getFollowingRequest(username)
     }
     // eslint-disable-next-line
   }, [username])
@@ -290,6 +296,8 @@ const mapDispatchToProps = (dispatch) => ({
     getFollowersRequest,
     clearProfile,
     clearAccountReplies,
+    getFollowingRequest,
+    clearAccountFollowers,
   }, dispatch)
 })
 
