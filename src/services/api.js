@@ -160,19 +160,18 @@ export const fetchProfile = (username) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync([...username])
       .then(async(result) => {
-        if(result.length !== 0) {
-          try {
-            const repscore = result[0].reputation
-            result[0].reputation = repscore ? formatter.reputation(repscore) : 25
-            const follow_count = await fetchFollowCount(username)
-            result[0].follow_count = follow_count
+
+        result.forEach(async(item, index) => {
+          const repscore = item.reputation
+          result[index].reputation = repscore ? formatter.reputation(repscore) : 25
+          const follow_count = await fetchFollowCount(item.name)
+          result[index].follow_count = follow_count
+
+          if(index === result.length - 1) {
             resolve(result)
-          } catch(error) {
-            reject(error)
           }
-        } else {
-          resolve([])
-        }
+        })
+
       }).catch((error) => {
         reject(error)
       })

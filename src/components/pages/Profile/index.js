@@ -193,8 +193,17 @@ const Profile = (props) => {
   }, [pathname])
 
 
+  let following_count = 0
+  let follower_count = 0
+
+  if(profile.follow_count) {
+    follower_count = profile.follow_count.follower_count
+    following_count = profile.follow_count.following_count
+  }
+
   const { cover, name, about, website } = getProfileMetaData(profile)
-  const { following_count, follower_count } = profile.follow_count || 0
+  // const { follow_count = {} } = profile
+  // const { following_count, follower_count } = profile.follow_count || 0
   const { reputation = 0 } = profile
 
   return (
