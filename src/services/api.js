@@ -59,17 +59,26 @@ export const fetchAccountPosts = (account, start_permlink = '', start_author = '
       if(err) {
         reject(err)
       }else {
-
-
         let posts = data.filter((item) => invokeFilter(item))
 
         if(posts.length !== 0) {
 
           if(sort === 'posts') {
-            const profile = await fetchProfile(account)
+
+            const profileVisited = visited.map((profile) => profile.name === account)
+
+            let profile = []
+
+            if(profileVisited.length !== 0) {
+              profile.push(profileVisited[0])
+            } else {
+              profile = await fetchProfile([account])
+            }
+
             posts.map((item) => (
               item.profile = profile[0]
             ))
+
           } else {
             const getProfiledata = mapFetchProfile(posts)
             await Promise.all([getProfiledata])
@@ -308,31 +317,18 @@ export const fetchFollowCount = (username) => {
 
 export const fetchFollowers = (following, start_follower = '', limit = 20) => {
   return new Promise((resolve, reject) => {
-    let iterator = 0
-
     api.getFollowersAsync(following, start_follower, 'blog', limit)
-      .then((result) => {
-
+      .then(async(result) => {
         if(result.length !== 0) {
-          result.forEach(async(item, index) => {
-            const profileVisited = visited.filter((profile) => profile.name === item.follower)
-            let profile = []
 
-            if(profileVisited.length === 0) {
-              profile = await fetchProfile([item.follower])
-              visited.push(profile[0])
-            } else {
-              profile.push(profileVisited[0])
-            }
-
-            result[index].profile = profile[0]
-
-            if(iterator === (result.length-1)) {
-              resolve(result)
-            }
-
-            iterator += 1
+          result.forEach((item, index) => {
+            result[index].author = item.follower
           })
+
+          const getProfiledata = mapFetchProfile(result)
+          await Promise.all([getProfiledata])
+
+          resolve(result)
         } else {
           resolve(result)
         }
