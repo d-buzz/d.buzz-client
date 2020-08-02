@@ -9,7 +9,7 @@ import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
 import {
   setProfileIsVisited,
-  getFollowersRequest
+  getFollowingRequest,
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
@@ -102,15 +102,15 @@ const useStyle = createUseStyles({
   },
 })
 
-const AccountFollowers = (props) => {
+const AccountFollowing = (props) => {
   const classes = useStyle()
   const {
     items,
     loading,
     setProfileIsVisited,
-    getFollowersRequest,
     author,
     last,
+    getFollowingRequest,
   } = props
   const history = useHistory()
 
@@ -124,14 +124,14 @@ const AccountFollowers = (props) => {
     return about
   }
 
-  const handleClickFollower = (name) => () => {
+  const handleClickFollowing = (name) => () => {
     setProfileIsVisited(false)
     history.replace(`/@${name}/t/buzz`)
   }
 
   const loadMorePosts = () => {
-    const { follower } = last
-    getFollowersRequest(author, follower)
+    const { following } = last
+    getFollowingRequest(author, following)
   }
 
   return (
@@ -144,11 +144,11 @@ const AccountFollowers = (props) => {
         {
           items.map((item) => (
             <div className={classes.wrapper}>
-              <div className={classes.row} onClick={handleClickFollower(item.follower)}>
+              <div className={classes.row} onClick={handleClickFollowing(item.following)}>
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <div className={classes.left}>
-                      <Avatar author={item.follower} />
+                      <Avatar author={item.following} />
                     </div>
                   </Col>
                   <Col>
@@ -175,7 +175,7 @@ const AccountFollowers = (props) => {
         }
         {
           (!loading && items.length === 0) &&
-          (<center><br/><h6>Do not have a follower</h6></center>)
+          (<center><br/><h6>Not following anyone</h6></center>)
         }
       </InfiniteScroll>
       <HashtagLoader loading={loading} />
@@ -184,16 +184,16 @@ const AccountFollowers = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  items: state.profile.get('followers'),
-  loading: pending(state, 'GET_FOLLOWERS_REQUEST'),
-  last: state.profile.get('lastFollower'),
+  items: state.profile.get('following'),
+  loading: pending(state, 'GET_FOLLOWING_REQUEST'),
+  last: state.profile.get('lastFollowing'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setProfileIsVisited,
-    getFollowersRequest,
+    getFollowingRequest,
   }, dispatch)
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountFollowers)
+export default connect(mapStateToProps, mapDispatchToProps)(AccountFollowing)

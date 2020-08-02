@@ -9,6 +9,7 @@ import {
   AccountPosts,
   AccountReplies,
   AccountFollowers,
+  AccountFollowing,
 } from 'components'
 
 const routes =  [
@@ -69,6 +70,11 @@ const routes =  [
             exact: true,
             component: AccountFollowers,
           },
+          {
+            path: '/@:username/t/following',
+            exact: true,
+            component: AccountFollowing,
+          }
         ]
       },
     ]

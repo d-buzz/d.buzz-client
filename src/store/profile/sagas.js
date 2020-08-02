@@ -22,6 +22,7 @@ import {
   GET_FOLLOWING_REQUEST,
   getFollowingSuccess,
   getFollowingFailure,
+  setLastFollowing,
 } from './actions'
 
 import {
@@ -114,8 +115,16 @@ function* getFollowingRequest(payload, meta) {
   try {
     const { username, start_following } = payload
 
-    const data = yield call(fetchFollowing, username, start_following)
+    const old = yield select(state => state.profile.get('following'))
+    let data = yield call(fetchFollowing, username, start_following)
 
+    if(old.length !== 0 && data.length !== 0) {
+      old.splice(old.length-1, 1)
+    }
+
+    data = [...old, ...data]
+
+    yield put(setLastFollowing(data[data.length-1]))
     yield put(getFollowingSuccess(data, meta))
   } catch(error) {
     yield put(getFollowingFailure(error, meta))

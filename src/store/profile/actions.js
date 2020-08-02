@@ -171,6 +171,18 @@ export const getFollowingFailure = (error, meta) => ({
   meta,
 })
 
+export const SET_LAST_FOLLOWING = 'SET_LAST_FOLLOWING'
+
+export const setLastFollowing = (response) => ({
+  type: SET_LAST_FOLLOWING,
+  payload: response,
+})
+
+export const CLEAR_ACCOUNT_FOLLOWING = 'CLEAR_FOLLOWING'
+
+export const clearAccountFollowing = () => ({
+  type: CLEAR_ACCOUNT_FOLLOWING,
+})
 
 
 
