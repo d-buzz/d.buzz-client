@@ -297,7 +297,7 @@ export const fetchFollowers = (following, start_follower = '', limit = 20) => {
 
         if(result.length !== 0) {
           result.forEach(async(item, index) => {
-            const profileVisited = visited.filter((profile) => profile.name === item.author)
+            const profileVisited = visited.filter((profile) => profile.name === item.follower)
             let profile = []
 
             if(profileVisited.length === 0) {
@@ -324,8 +324,44 @@ export const fetchFollowers = (following, start_follower = '', limit = 20) => {
       })
 
   })
+}
 
+export const fetchFollowing = (follower, start_following = '', limit = 20) => {
+  return new Promise((resolve, reject) => {
+    let iterator = 0
 
+    api.getFollowingAsync(follower, start_following, 'blog', limit)
+      .then((result) => {
+
+        if(result.length !== 0) {
+          result.forEach(async(item, index) => {
+            const profileVisited = visited.filter((profile) => profile.name === item.following)
+            let profile = []
+
+            if(profileVisited.length === 0) {
+              profile = await fetchProfile(item.following)
+              visited.push(profile[0])
+            } else {
+              profile.push(profileVisited[0])
+            }
+
+            result[index].profile = profile[0]
+
+            if(iterator === (result.length-1)) {
+              resolve(result)
+            }
+
+            iterator += 1
+          })
+        } else {
+          resolve(result)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
+
+  })
 }
 
 
