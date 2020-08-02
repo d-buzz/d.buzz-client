@@ -123,8 +123,10 @@ export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
     .then(async(replies) => {
 
-      const getProfiledata = mapFetchProfile(replies)
-      await Promise.all([getProfiledata])
+      if(replies.length !== 0) {
+        const getProfiledata = mapFetchProfile(replies)
+        await Promise.all([getProfiledata])
+      }
 
       return Promise.map(replies, async(reply) => {
         const getActiveVotes = new Promise((resolve) => {
