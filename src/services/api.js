@@ -289,13 +289,43 @@ export const fetchFollowCount = (username) => {
 }
 
 export const fetchFollowers = (following, start_follower, limit = 20) => {
-  return api.getFollowersAsync(following, start_follower, 'blog', limit)
-    .then((result) => {
-      return result
-    })
-    .catch((error) => {
-      return error
-    })
+  return new Promise((resolve, reject) => {
+    let iterator = 0
+
+    api.getFollowersAsync(following, start_follower, 'blog', limit)
+      .then((result) => {
+
+        if(result.length !== 0) {
+          result.forEach(async(item, index) => {
+            const profileVisited = visited.filter((profile) => profile.name === item.author)
+            let profile = []
+
+            if(profileVisited.length === 0) {
+              profile = await fetchProfile(item.follower)
+              visited.push(profile[0])
+            } else {
+              profile.push(profileVisited[0])
+            }
+
+            result[index].profile = profile[0]
+
+            if(iterator === (result.length-1)) {
+              resolve(result)
+            }
+
+            iterator += 1
+          })
+        } else {
+          resolve(result)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
+
+  })
+
+
 }
 
 

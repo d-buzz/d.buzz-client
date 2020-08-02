@@ -96,6 +96,13 @@ export const clearAccountReplies = () => ({
   type: CLEAR_ACCOUNT_REPLIES,
 })
 
+export const CLEAR_PROFILE = 'CLEAR_PROFILE'
+
+export const clearProfile = () => ({
+  type: CLEAR_PROFILE,
+})
+
+
 export const SET_LAST_ACCOUNT_REPLY = 'SET_LAST_ACCOUNT_REPLY'
 
 export const setLastAccountReply = (response) => ({

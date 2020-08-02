@@ -15,6 +15,8 @@ import {
   setLastAccountReply,
 
   GET_FOLLOWERS_REQUEST,
+  getFollowersSuccess,
+  getFollowersFailure,
 } from './actions'
 import {
   fetchProfile,
@@ -82,9 +84,14 @@ function* getAccountRepliesRequest(payload, meta) {
 }
 
 function* getFollowersRequest(payload, meta) {
-  const { username, start_follower } = payload
-  const data = yield call(fetchFollowers, username, start_follower)
-  console.log({ data })
+  try {
+    const { username, start_follower } = payload
+    const data = yield call(fetchFollowers, username, start_follower)
+    console.log({ data })
+    yield put(getFollowersSuccess(data, meta))
+  } catch(error) {
+    yield put(getFollowersFailure(error, meta))
+  }
 }
 
 function* watchGetProfileRequest({ payload, meta }) {

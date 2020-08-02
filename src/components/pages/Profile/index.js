@@ -13,6 +13,9 @@ import {
   setProfileIsVisited,
   getAccountRepliesRequest,
   clearAccountPosts,
+  clearAccountReplies,
+  getFollowersRequest,
+  clearProfile,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -107,11 +110,14 @@ const Profile = (props) => {
     getAccountPostsRequest,
     setProfileIsVisited,
     getAccountRepliesRequest,
+    getFollowersRequest,
     isVisited,
     profile,
     loading,
     route,
     clearAccountPosts,
+    clearProfile,
+    clearAccountReplies,
   } = props
 
   const history = useHistory()
@@ -147,14 +153,17 @@ const Profile = (props) => {
 
     if(!isVisited || (params.ref && params.ref === 'replies')) {
       anchorTop()
+      clearProfile()
       clearAccountPosts()
+      clearAccountReplies()
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
       getAccountRepliesRequest(username)
+      getFollowersRequest(username)
     }
     // eslint-disable-next-line
-  }, [])
+  }, [username])
 
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
@@ -274,6 +283,9 @@ const mapDispatchToProps = (dispatch) => ({
     setProfileIsVisited,
     getAccountRepliesRequest,
     clearAccountPosts,
+    getFollowersRequest,
+    clearProfile,
+    clearAccountReplies,
   }, dispatch)
 })
 
