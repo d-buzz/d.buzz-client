@@ -5,7 +5,7 @@ import {
   config,
   formatter
 } from '@hiveio/hive-js'
-import { Promise } from 'bluebird'
+import { Promise, reject } from 'bluebird'
 import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -112,9 +112,12 @@ export const fetchContent = (author, permlink) => {
 
 export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
-    .then((replies) => {
-      return Promise.map(replies, async(reply) => {
+    .then(async(replies) => {
 
+      const getProfiledata = mapFetchProfile(replies)
+      await Promise.all([getProfiledata])
+
+      return Promise.map(replies, async(reply) => {
         const getActiveVotes = new Promise((resolve) => {
           api.getActiveVotesAsync(reply.author, reply.permlink)
           .then((active_votes) => {
@@ -123,20 +126,7 @@ export const fetchReplies = (author, permlink) => {
         })
 
         const active_votes = await Promise.all([getActiveVotes])
-
-        let profile = []
-        const profileVisited = visited.filter((item) => item.name === reply.author)
-
-        if(profileVisited.length === 0) {
-          profile = await fetchProfile(reply.author)
-          visited.push(profile[0])
-        } else {
-          profile.push(profileVisited[0])
-        }
-
-
         reply.active_votes = active_votes[0]
-        reply.profile = profile[0]
 
         if (reply.children > 0) {
           return fetchReplies(reply.author, reply.permlink)
@@ -147,12 +137,13 @@ export const fetchReplies = (author, permlink) => {
         } else {
           return reply
         }
-
       })
+  }).catch((error) => {
+    reject(error)
   })
 }
 
-export const fetchProfile = (username) => {
+export const fetchProfile2 = (username) => {
   return api.getAccountsAsync([username])
     .then(async(result) => {
       const repscore = result[0].reputation
@@ -160,34 +151,52 @@ export const fetchProfile = (username) => {
       const follow_count = await fetchFollowCount(username)
       result[0].follow_count = follow_count
       return result
+    }).catch((error) => {
+      return error
+    })
+}
+
+export const fetchProfile = (username) => {
+  return api.getAccountsAsync([...username])
+    .then(async(result) => {
+      const repscore = result[0].reputation
+      result[0].reputation = repscore ? formatter.reputation(repscore) : 25
+      const follow_count = await fetchFollowCount(username)
+      result[0].follow_count = follow_count
+      return result
+    }).catch((error) => {
+      return error
     })
 }
 
 export const mapFetchProfile = (data) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
     let count = 0
+
+    let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
+    let profiles = []
+
+    uniqueAuthors.forEach((item, index) => {
+      const profileVisited = visited.filter((profile) => profile.name === item)
+      if(profileVisited.length !== 0) {
+        profiles.push(profileVisited[0])
+        uniqueAuthors.splice(index, 1)
+      }
+    })
+
+    const profilesFetch = await fetchProfile(uniqueAuthors)
+    profiles = [...profiles, ...profilesFetch]
 
     try {
       data.forEach(async(item, index) => {
+        const info = profiles.filter((profile) => profile.name === item.author)
+        data[index].profile = info[0]
 
-      const profileVisited = visited.filter((profile) => profile.name === item.author)
-      let profile = []
+        if(count === (data.length - 1)) {
+          resolve(true)
+        }
 
-      if(profileVisited.length === 0) {
-        profile = await fetchProfile(item.author)
-        visited.push(profile[0])
-      } else {
-        profile.push(profileVisited[0])
-      }
-
-      data[index].profile = profile[0]
-
-      if(count === (data.length - 1)) {
-        resolve(true)
-      }
-
-      count += 1
-
+        count += 1
       })
     } catch(error) {
       reject(error)
@@ -301,7 +310,7 @@ export const fetchFollowers = (following, start_follower = '', limit = 20) => {
             let profile = []
 
             if(profileVisited.length === 0) {
-              profile = await fetchProfile(item.follower)
+              profile = await fetchProfile([item.follower])
               visited.push(profile[0])
             } else {
               profile.push(profileVisited[0])
@@ -339,7 +348,7 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
             let profile = []
 
             if(profileVisited.length === 0) {
-              profile = await fetchProfile(item.following)
+              profile = await fetchProfile([item.following])
               visited.push(profile[0])
             } else {
               profile.push(profileVisited[0])
