@@ -157,37 +157,47 @@ export const fetchProfile2 = (username) => {
 }
 
 export const fetchProfile = (username) => {
-  return api.getAccountsAsync([...username])
-    .then(async(result) => {
-      const repscore = result[0].reputation
-      result[0].reputation = repscore ? formatter.reputation(repscore) : 25
-      const follow_count = await fetchFollowCount(username)
-      result[0].follow_count = follow_count
-      return result
-    }).catch((error) => {
-      return error
-    })
+  return new Promise((resolve, reject) => {
+    api.getAccountsAsync([...username])
+      .then(async(result) => {
+        if(result.length !== 0) {
+          try {
+            const repscore = result[0].reputation
+            result[0].reputation = repscore ? formatter.reputation(repscore) : 25
+            const follow_count = await fetchFollowCount(username)
+            result[0].follow_count = follow_count
+            resolve(result)
+          } catch(error) {
+            reject(error)
+          }
+        } else {
+          resolve([])
+        }
+      }).catch((error) => {
+        reject(error)
+      })
+  })
 }
 
 export const mapFetchProfile = (data) => {
   return new Promise(async(resolve, reject) => {
-    let count = 0
-
-    let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
-    let profiles = []
-
-    uniqueAuthors.forEach((item, index) => {
-      const profileVisited = visited.filter((profile) => profile.name === item)
-      if(profileVisited.length !== 0) {
-        profiles.push(profileVisited[0])
-        uniqueAuthors.splice(index, 1)
-      }
-    })
-
-    const profilesFetch = await fetchProfile(uniqueAuthors)
-    profiles = [...profiles, ...profilesFetch]
-
     try {
+      let count = 0
+
+      let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
+      let profiles = []
+
+      uniqueAuthors.forEach((item, index) => {
+        const profileVisited = visited.filter((profile) => profile.name === item)
+        if(profileVisited.length !== 0) {
+          profiles.push(profileVisited[0])
+          uniqueAuthors.splice(index, 1)
+        }
+      })
+
+      const profilesFetch = await fetchProfile(uniqueAuthors)
+      profiles = [...profiles, ...profilesFetch]
+
       data.forEach(async(item, index) => {
         const info = profiles.filter((profile) => profile.name === item.author)
         data[index].profile = info[0]
