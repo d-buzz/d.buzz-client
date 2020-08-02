@@ -7,7 +7,11 @@ import { createUseStyles } from 'react-jss'
 import { getProfileMetaData } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
-import { setProfileIsVisited } from 'store/profile/actions'
+import {
+  setProfileIsVisited,
+  getFollowersRequest
+} from 'store/profile/actions'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 
 
@@ -49,10 +53,16 @@ const useStyle = createUseStyles({
   name: {
     fontWeight: 'bold',
     paddingRight: 5,
+    marginTop: 0,
+    marginBottom: 0,
+    paddingTop: 0,
     paddingBottom: 0,
   },
   username: {
     color: '#657786',
+    paddingTop: 0,
+    marginTop: 0,
+    marginBottom: 0,
     paddingBottom: 0,
   },
   post: {
@@ -98,6 +108,9 @@ const AccountFollowers = (props) => {
     items,
     loading,
     setProfileIsVisited,
+    getFollowersRequest,
+    author,
+    last,
   } = props
   const history = useHistory()
 
@@ -116,40 +129,51 @@ const AccountFollowers = (props) => {
     history.replace(`/@${name}/t/buzz`)
   }
 
+  const loadMorePosts = () => {
+    const { follower } = last
+    getFollowersRequest(author, follower)
+  }
+
   return (
     <React.Fragment>
-      {
-        items.map((item) => (
-          <div className={classes.wrapper}>
-            <div className={classes.row} onClick={handleClickFollower(item.follower)}>
-              <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <div className={classes.left}>
-                    <Avatar author={item.follower} />
-                  </div>
-                </Col>
-                <Col>
-                  <div className={classes.right}>
-                    <div className={classes.content}>
-                      <label className={classes.name}>
-                        { getName(item.profile) }
-                      </label>
-                      <label className={classes.username}>
-                        @{ item.profile.name }
-                      </label>
+      <InfiniteScroll
+        dataLength={items.length || 0}
+        next={loadMorePosts}
+        hasMore={true}
+      >
+        {
+          items.map((item) => (
+            <div className={classes.wrapper}>
+              <div className={classes.row} onClick={handleClickFollower(item.follower)}>
+                <Row>
+                  <Col xs="auto" style={{ paddingRight: 0 }}>
+                    <div className={classes.left}>
+                      <Avatar author={item.follower} />
                     </div>
-                    <div className={classes.content}>
-                      <label className={classes.username}>
-                        { getAbout(item.profile) }
-                      </label>
+                  </Col>
+                  <Col>
+                    <div className={classes.right}>
+                      <div className={classes.content}>
+                        <p className={classes.name}>
+                          { getName(item.profile) }
+                        </p>
+                        <p className={classes.username}>
+                          @{ item.profile.name }
+                        </p>
+                      </div>
+                      <div className={classes.content}>
+                        <label className={classes.username}>
+                          { getAbout(item.profile) }
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                </Col>
-              </Row>
+                  </Col>
+                </Row>
+              </div>
             </div>
-          </div>
-        ))
-      }
+          ))
+        }
+      </InfiniteScroll>
       <HashtagLoader loading={loading} />
     </React.Fragment>
   )
@@ -158,11 +182,13 @@ const AccountFollowers = (props) => {
 const mapStateToProps = (state) => ({
   items: state.profile.get('followers'),
   loading: pending(state, 'GET_FOLLOWERS_REQUEST'),
+  last: state.profile.get('lastFollower'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setProfileIsVisited,
+    getFollowersRequest,
   }, dispatch)
 })
 

@@ -68,6 +68,7 @@ const Latest = (props) => {
         {
           items.map((item) => (
             <PostList
+              profileRef="latest"
               active_votes={item.active_votes}
               author={item.author}
               permlink={item.permlink}

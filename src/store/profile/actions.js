@@ -134,3 +134,10 @@ export const getFollowersFailure = (error, meta) => ({
   meta,
 })
 
+export const SET_LAST_FOLLOWER = 'SET_LAST_FOLLOWER'
+
+export const setLastFollower = (response) => ({
+  type: SET_LAST_FOLLOWER,
+  payload: response,
+})
+

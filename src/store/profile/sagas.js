@@ -17,6 +17,7 @@ import {
   GET_FOLLOWERS_REQUEST,
   getFollowersSuccess,
   getFollowersFailure,
+  setLastFollower,
 } from './actions'
 import {
   fetchProfile,
@@ -86,8 +87,17 @@ function* getAccountRepliesRequest(payload, meta) {
 function* getFollowersRequest(payload, meta) {
   try {
     const { username, start_follower } = payload
-    const data = yield call(fetchFollowers, username, start_follower)
-    console.log({ data })
+
+    const old = yield select(state => state.profile.get('followers'))
+    let data = yield call(fetchFollowers, username, start_follower)
+
+    if(old.length !== 0 && data.length !== 0) {
+      old.splice(old.length-1, 1)
+    }
+
+    data = [...old, ...data]
+
+    yield put(setLastFollower(data[data.length-1]))
     yield put(getFollowersSuccess(data, meta))
   } catch(error) {
     yield put(getFollowersFailure(error, meta))

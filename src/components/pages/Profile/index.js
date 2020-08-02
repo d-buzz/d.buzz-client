@@ -6,7 +6,11 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Chip from '@material-ui/core/Chip'
 import { createUseStyles } from 'react-jss'
-import { Avatar, ContainedButton, HashtagLoader } from 'components/elements'
+import {
+  Avatar,
+  // ContainedButton,
+  HashtagLoader
+} from 'components/elements'
 import {
   getProfileRequest,
   getAccountPostsRequest,
@@ -201,11 +205,11 @@ const Profile = (props) => {
                   </div>
                 </Col>
                 <Col>
-                  <ContainedButton
+                  {/* <ContainedButton
                     className={classes.walletButton}
                     transparent={true}
                     label="Followed"
-                  />
+                  /> */}
                 </Col>
               </Row>
             </div>

@@ -69,6 +69,7 @@ const Feeds = (props) => {
         {
           items.map((item) => (
             <PostList
+              profileRef="home"
               active_votes={item.active_votes}
               author={item.author}
               permlink={item.permlink}

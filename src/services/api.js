@@ -288,7 +288,7 @@ export const fetchFollowCount = (username) => {
     })
 }
 
-export const fetchFollowers = (following, start_follower, limit = 20) => {
+export const fetchFollowers = (following, start_follower = '', limit = 20) => {
   return new Promise((resolve, reject) => {
     let iterator = 0
 
