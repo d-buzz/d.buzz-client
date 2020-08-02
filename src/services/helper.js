@@ -101,24 +101,25 @@ export const getProfileMetaData = (profile) => {
 export const calculatePayout = (data) => {
 
   const {
-    author_rewards,
+    author_rewards = null,
     total_pending_payout_value,
     pending_payout_value,
     total_payout_value,
     curator_payout_value,
-    is_paidout,
+    is_paidout = null,
   } = data
 
   let payout = 0
 
-  if(author_rewards) {
-    if(author_rewards === 0) {
+  if(is_paidout) {
+
+    if(is_paidout) {
       payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
     } else {
       payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
     }
   } else {
-    if(is_paidout) {
+    if(author_rewards === 0) {
       payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
     } else {
       payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
