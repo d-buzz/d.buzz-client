@@ -26,7 +26,7 @@ const PostTags = ({ meta }) => {
     <div className={classes.tags}>
       {
         tags.map((tag) => (
-          <a href="/" style={{ marginRight: 5 }}>#{ tag }</a>
+          <a key={`${tag}`} href="/" style={{ marginRight: 5 }}>#{ tag }</a>
         ))
       }
     </div>

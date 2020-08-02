@@ -55,7 +55,7 @@ const SideBarRight = (props) => {
         <ListGroup label="Trends for you">
           {
             items.slice(0, 5).map((item) => (
-              <ListAction label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+              <ListAction key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
             ))
           }
           <HashtagLoader loading={loading} />

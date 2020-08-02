@@ -126,11 +126,9 @@ const NavLinkWrapper = (props) => {
   }
 
   return (
-    <React.Fragment>
-      <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-        <IconWrapper className={iconClass}>{ icon }</IconWrapper> <Link to={path}>{ name }</Link>
-      </div>
-    </React.Fragment>
+    <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+      <IconWrapper className={iconClass}>{ icon }</IconWrapper> <Link to={path}>{ name }</Link>
+    </div>
   )
 }
 
@@ -186,6 +184,7 @@ const SideBarLeft = (props) => {
               {
                 NavLinks.map((item) => (
                   <NavLinkWrapper
+                    key={`${item.path}-side`}
                     { ...item }
                     textClass={classes.items}
                     iconClass={classes.inline}

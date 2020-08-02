@@ -114,9 +114,9 @@ const useStyles = createUseStyles({
   },
 })
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick }) => {
+const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false, }) => {
   return (
-    <div className={classNames(className, inlineClass)} onClick={onClick}>
+    <div className={classNames(className, inlineClass)} onClick={ disabled ? () => {} : onClick }>
       <div className={inlineClass}>
         { icon }
       </div>
@@ -142,6 +142,7 @@ const PostActions = (props) => {
     hideStats = false,
     upvoteRequest,
     hasUpvoted = false,
+    user,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -150,6 +151,7 @@ const PostActions = (props) => {
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [showSnackbar, setShowSnackBar] = useState(false)
+  const { is_authenticated } = user
 
   const handleSnackBarClose = () => {
     setShowSnackBar(false)
@@ -194,7 +196,7 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<IconButton size="small"><HeartIconRed /></IconButton>}
+                  icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
                   hideStats={hideStats}
                   stat={
                     <label style={{ marginLeft: 5, }}>
@@ -209,8 +211,9 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<IconButton size="small"><HeartIcon /></IconButton>}
+                  icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
                   hideStats={hideStats}
+                  disabled={!is_authenticated}
                   onClick={handleClickShowSlider}
                   stat={
                     <label style={{ marginLeft: 5, }}>
@@ -304,10 +307,14 @@ const PostActions = (props) => {
   )
 }
 
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     upvoteRequest,
   }, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(PostActions)
+export default connect(mapStateToProps, mapDispatchToProps)(PostActions)
