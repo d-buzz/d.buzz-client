@@ -231,3 +231,28 @@ export const CLEAR_REPLIES = 'CLEAR_REPLIES'
 export const clearReplies = () => ({
   type: CLEAR_REPLIES,
 })
+
+export const UPLOAD_FILE_REQUEST = 'UPLOAD_FILE_REQUEST'
+export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_FAILURE'
+export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE'
+
+export const uploadFileRequest = (file) => ({
+  type: UPLOAD_FILE_REQUEST,
+  payload: { file },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const uploadFileSuccess = (response, meta) => ({
+  type: UPLOAD_FILE_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const uploadFileError = (error, meta) => ({
+  type: UPLOAD_FILE_FAILURE,
+  payload: error,
+  meta,
+})
+

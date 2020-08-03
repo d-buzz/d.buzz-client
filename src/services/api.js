@@ -3,11 +3,13 @@ import {
   auth,
   broadcast,
   config,
-  formatter
+  formatter,
 } from '@hiveio/hive-js'
+import { hash } from '@hiveio/hive-js/lib/auth/ecc'
 import { Promise, reject } from 'bluebird'
 import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios'
 
 const endpoints = [
   'https://api.openhive.network',
@@ -20,9 +22,15 @@ const endpoints = [
   'https://techcoderx.com'
 ]
 
+api.setOptions({ url: 'https://anyx.io' })
+
 config.set('alternative_api_endpoints', endpoints)
 
 const visited = []
+
+export const hashBuffer = (buffer) => {
+  return hash.sha256(buffer)
+}
 
 const invokeFilter = (item) => {
   return (item.body.length <= 280 && item.community === `${appConfig.TAG}`)
@@ -378,6 +386,18 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
       })
 
   })
+}
+
+export const uploadImage = (url, formData) => {
+  return new Promise((resolve, reject) => {
+    axios.post(`${url}`,formData).then((result) => {
+      resolve(result)
+    }).catch((error) => {
+      reject(error)
+    })
+  })
+
+
 }
 
 

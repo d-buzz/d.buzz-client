@@ -5,7 +5,10 @@ import { TextArea, ContainedButton, Avatar, UploadIcon } from 'components/elemen
 import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { bindActionCreators } from 'redux'
+import { uploadFileRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
+
 
 const useStyles = createUseStyles({
   container: {
@@ -59,8 +62,7 @@ const CreateBuzzForm = (props) => {
   const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
   const [content, setContent] = useState(null)
-  const [fileSelected, setFileSelected] = useState(0)
-  const { user } = props
+  const { user, uploadFileRequest } = props
 
   const onChange = (e) => {
     const { target } = e
@@ -74,10 +76,9 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleFileSelectChange = (event) => {
-    setFileSelected(event.target.files[0])
+    const files = event.target.files[0]
+    uploadFileRequest(files)
   }
-
-  console.log(fileSelected)
 
   return (
     <div className={classes.container}>
@@ -118,4 +119,10 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(CreateBuzzForm)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    uploadFileRequest,
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateBuzzForm)

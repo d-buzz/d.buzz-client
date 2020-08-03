@@ -9,6 +9,8 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
+    "axios": "^0.19.2",
+    "base58-encode": "^0.2.0",
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",

@@ -30,6 +30,10 @@ import {
   UPVOTE_REQUEST,
   upvoteSuccess,
   upvoteFailure,
+
+  UPLOAD_FILE_REQUEST,
+  uploadFileSuccess,
+  uploadFileError,
 } from './actions'
 
 import {
@@ -41,7 +45,11 @@ import {
   extractLoginData,
   broadcastVote,
   keychainUpvote,
+  hashBuffer,
+  uploadImage,
 } from 'services/api'
+
+import base58 from 'base58-encode'
 
 
 function* getRepliesRequest(payload, meta) {
@@ -171,6 +179,70 @@ function* upvoteRequest(payload, meta) {
   }
 }
 
+function* fileUploadRequest(payload, meta) {
+  try {
+    const user = yield select(state => state.auth.get('user'))
+    const { username, is_authenticated, useKeychain } = user
+    const { file } = payload
+
+    console.log({ file })
+
+    let data
+
+    if(file) {
+      const reader = new FileReader()
+      data = yield new Promise((resolve) => {
+        reader.addEventListener('load', () => {
+          const result = new Buffer(reader.result, 'binary')
+          resolve(result)
+        })
+        reader.readAsBinaryString(file)
+      })
+    }
+
+    // console.log({ data })
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const prefix = new Buffer('ImageSigningChallenge');
+    const buf = Buffer.concat([prefix, data]);
+    const bufSha = hashBuffer(buf)
+
+    console.log({ bufSha })
+    console.log({ data })
+
+    let sig
+    if(useKeychain) {
+      const response = yield new Promise(resolve => {
+          window.hive_keychain.requestSignBuffer(
+              username,
+              JSON.stringify(buf),
+              'Posting',
+              response => {
+                  resolve(response)
+              }
+          );
+      });
+      if (response.success) {
+          sig = response.result
+      }
+    } else {
+
+    }
+
+    const postUrl = `https://images.hive.net.ph/${username}/${sig}`
+    const result = yield call(uploadImage, postUrl, formData)
+    console.log({ result })
+    const base58Encoded = base58(result.data.url)
+    console.log({ base58Encoded })
+
+  } catch (error) {
+    console.log(error)
+    yield put(uploadFileError(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -199,6 +271,10 @@ function* watchUpvoteRequest({ payload, meta }) {
   yield call(upvoteRequest, payload, meta)
 }
 
+function* watchUploadFileUploadRequest({ payload, meta }) {
+  yield call(fileUploadRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
   yield takeEvery(GET_HOME_POSTS_REQUEST, watchGetHomePostsRequest)
@@ -207,5 +283,6 @@ export default function* sagas() {
   yield takeEvery(GET_CONTENT_REQUEST, watchGetContentRequest)
   yield takeEvery(GET_TRENDING_TAGS_REQUEST, watchGetTrendingTagsRequest)
   yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
+  yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
 }
 
