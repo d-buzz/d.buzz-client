@@ -15,6 +15,7 @@ import {
   SET_LATEST_LAST_POST,
   CLEAR_LATEST_POSTS,
   CLEAR_REPLIES,
+  UPLOAD_FILE_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -32,6 +33,7 @@ const defaultState = fromJS({
   lastTrending: {},
   lastHome: {},
   lastLatest: {},
+  images: [],
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -68,6 +70,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('latest', [])
     case CLEAR_REPLIES:
       return state.set('replies', [])
+    case UPLOAD_FILE_SUCCESS:
+      return state.set('images', payload)
     default:
       return state
   }

@@ -45,7 +45,6 @@ import {
   extractLoginData,
   broadcastVote,
   keychainUpvote,
-  hashBuffer,
   uploadImage,
 } from 'services/api'
 
@@ -207,10 +206,6 @@ function* fileUploadRequest(payload, meta) {
 
     const prefix = new Buffer('ImageSigningChallenge');
     const buf = Buffer.concat([prefix, data]);
-    const bufSha = hashBuffer(buf)
-
-    console.log({ bufSha })
-    console.log({ data })
 
     let sig
     if(useKeychain) {
@@ -233,12 +228,11 @@ function* fileUploadRequest(payload, meta) {
 
     const postUrl = `https://images.hive.net.ph/${username}/${sig}`
     const result = yield call(uploadImage, postUrl, formData)
-    console.log({ result })
     const base58Encoded = base58(result.data.url)
-    console.log({ base58Encoded })
+    const proxyUrl = `https://images.hive.blog/p/${base58Encoded}`
 
+    yield put(uploadFileSuccess(proxyUrl, meta))
   } catch (error) {
-    console.log(error)
     yield put(uploadFileError(error, meta))
   }
 }
