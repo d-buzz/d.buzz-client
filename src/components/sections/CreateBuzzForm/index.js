@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { TextArea, ContainedButton, Avatar } from 'components/elements'
+import { TextArea, ContainedButton, Avatar, UploadIcon } from 'components/elements'
 import Box from '@material-ui/core/Box'
+import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { connect } from 'react-redux'
-
 
 const useStyles = createUseStyles({
   container: {
@@ -33,6 +33,7 @@ const useStyles = createUseStyles({
   float: {
     float: 'right',
     marginRight: 5,
+    marginTop: 10,
   },
   root: {
     position: 'relative',
@@ -55,8 +56,10 @@ const useStyles = createUseStyles({
 
 const CreateBuzzForm = (props) => {
   const classes = useStyles()
+  const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
-  const [content, setContent] = useState()
+  const [content, setContent] = useState(null)
+  const [fileSelected, setFileSelected] = useState(0)
   const { user } = props
 
   const onChange = (e) => {
@@ -65,6 +68,16 @@ const CreateBuzzForm = (props) => {
     setContent(value)
     setWordCount(Math.floor((value.length/280) * 100))
   }
+
+  const handleFileSelect = () => {
+    inputRef.current.click()
+  }
+
+  const handleFileSelectChange = (event) => {
+    setFileSelected(event.target.files[0])
+  }
+
+  console.log(fileSelected)
 
   return (
     <div className={classes.container}>
@@ -75,7 +88,17 @@ const CreateBuzzForm = (props) => {
         <div className={classNames(classes.inline, classes.right)}>
           <TextArea maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />
           <ContainedButton label="Buzz it" className={classes.float} />
-          <Box style={{ float: 'right', marginRight: 10, paddingTop: 5, }} position="relative" display="inline-flex">
+          <input
+            type='file'
+            accept='image/*'
+            ref={inputRef}
+            onChange={handleFileSelectChange}
+            style={{ display: 'none' }}
+          />
+          <IconButton size="medium" onClick={handleFileSelect}>
+            <UploadIcon />
+          </IconButton>
+          <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
             <CircularProgress
               classes={{
                 circle: classes.circle,

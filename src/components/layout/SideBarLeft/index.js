@@ -59,7 +59,7 @@ const useStyles = createUseStyles({
     },
     '& svg': {
       '& path': {
-        stroke: 'red',
+        stroke: '#e53935',
       },
     }
   },

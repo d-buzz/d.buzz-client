@@ -8,7 +8,6 @@ import Chip from '@material-ui/core/Chip'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
-  // ContainedButton,
   HashtagLoader
 } from 'components/elements'
 import {
@@ -109,7 +108,6 @@ const useStyles = createUseStyles({
   }
 })
 
-
 const Profile = (props) => {
   const {
     match,
@@ -192,7 +190,6 @@ const Profile = (props) => {
     }
   }, [pathname])
 
-
   let following_count = 0
   let follower_count = 0
 
@@ -202,8 +199,6 @@ const Profile = (props) => {
   }
 
   const { cover, name, about, website } = getProfileMetaData(profile)
-  // const { follow_count = {} } = profile
-  // const { following_count, follower_count } = profile.follow_count || 0
   const { reputation = 0 } = profile
 
   return (
@@ -239,7 +234,7 @@ const Profile = (props) => {
                       { name || username }&nbsp;<Chip  size="small" label={reputation} />
                     </p>
                     <p className={classNames(classes.paragraph, classes.userName)}>
-                      @{username}
+                      @{ username }
                     </p>
                   </Col>
                 </Row>

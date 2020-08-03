@@ -4,7 +4,6 @@ import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import {
   getHomePostsRequest,
   setHomeIsVisited,
@@ -18,6 +17,7 @@ import {
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { anchorTop } from 'services/helper'
 
 const Feeds = (props) => {
