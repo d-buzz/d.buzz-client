@@ -181,57 +181,68 @@ function* upvoteRequest(payload, meta) {
 function* fileUploadRequest(payload, meta) {
   try {
     const user = yield select(state => state.auth.get('user'))
+    const old = yield select(state => state.posts.get('images'))
     const { username, is_authenticated, useKeychain } = user
     const { file } = payload
 
-    console.log({ file })
-
-    let data
+    if(is_authenticated) {
+      let data
 
     if(file) {
       const reader = new FileReader()
       data = yield new Promise((resolve) => {
-        reader.addEventListener('load', () => {
-          const result = new Buffer(reader.result, 'binary')
-          resolve(result)
+          reader.addEventListener('load', () => {
+            const result = new Buffer(reader.result, 'binary')
+            resolve(result)
+          })
+          reader.readAsBinaryString(file)
         })
-        reader.readAsBinaryString(file)
-      })
-    }
-
-    // console.log({ data })
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const prefix = new Buffer('ImageSigningChallenge');
-    const buf = Buffer.concat([prefix, data]);
-
-    let sig
-    if(useKeychain) {
-      const response = yield new Promise(resolve => {
-          window.hive_keychain.requestSignBuffer(
-              username,
-              JSON.stringify(buf),
-              'Posting',
-              response => {
-                  resolve(response)
-              }
-          );
-      });
-      if (response.success) {
-          sig = response.result
       }
+
+      // console.log({ data })
+
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const prefix = new Buffer('ImageSigningChallenge');
+      const buf = Buffer.concat([prefix, data]);
+
+      let sig
+      if(useKeychain) {
+        const response = yield new Promise(resolve => {
+            window.hive_keychain.requestSignBuffer(
+                username,
+                JSON.stringify(buf),
+                'Posting',
+                response => {
+                    resolve(response)
+                }
+            );
+        });
+        if (response.success) {
+            sig = response.result
+        }
+      } else {
+
+      }
+
+      const postUrl = `https://images.hive.net.ph/${username}/${sig}`
+      const result = yield call(uploadImage, postUrl, formData)
+      const base58Encoded = base58(result.data.url)
+      const proxyUrl = `https://images.hive.blog/p/${base58Encoded}`
+
+      let images = []
+
+      if(Array.isArray(old) && old.length !== 0) {
+        images = [ ...old ]
+      }
+
+      images.push(proxyUrl)
+
+      yield put(uploadFileSuccess(images, meta))
     } else {
-
+      yield put(uploadFileError('authentication required', meta))
     }
-
-    const postUrl = `https://images.hive.net.ph/${username}/${sig}`
-    const result = yield call(uploadImage, postUrl, formData)
-    const base58Encoded = base58(result.data.url)
-    const proxyUrl = `https://images.hive.blog/p/${base58Encoded}`
-
-    yield put(uploadFileSuccess(proxyUrl, meta))
   } catch (error) {
     yield put(uploadFileError(error, meta))
   }
