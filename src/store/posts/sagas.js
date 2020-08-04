@@ -199,7 +199,7 @@ function* fileUploadRequest(payload, meta) {
         })
       }
 
-      // console.log({ data })
+      console.log({ data })
 
       const formData = new FormData()
       formData.append('file', file)

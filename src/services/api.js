@@ -52,6 +52,19 @@ export const callBridge = async(method, params) => {
   })
 }
 
+export const getCommunityRole = async(observer) => {
+  return new Promise((resolve, reject) => {
+    const params = { "name": `${appConfig.TAG}`, observer }
+    api.call('bridge.get_community', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        resolve(data.context.subscribed)
+      }
+    })
+  })
+}
+
 // get_account_posts doesn't use tag
 export const fetchAccountPosts = (account, start_permlink = '', start_author = '', sort = 'posts') => {
   return new Promise((resolve, reject) => {

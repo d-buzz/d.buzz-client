@@ -19,11 +19,12 @@ import {
   fetchProfile,
   isWifValid,
   packLoginData,
+  getCommunityRole,
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
-  let user = { username, useKeychain, is_authenticated: false  }
+  let user = { username, useKeychain, is_authenticated: false, is_subscribe: false,  }
 
   try {
 
@@ -53,10 +54,15 @@ function* authenticateUserRequest(payload, meta) {
       }
     }
 
+    const is_subscribe = yield call(getCommunityRole, username)
+
+    user.is_subscribe = is_subscribe
+
     yield call([localStorage, localStorage.clear])
     yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(user))
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
