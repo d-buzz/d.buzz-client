@@ -89,6 +89,10 @@ const useStyles = createUseStyles({
     paddingRight: 5,
     paddingTop: 5,
   },
+  sideBarButton: {
+    width: '100%',
+    marginBottom: 10,
+  }
 })
 
 
@@ -134,7 +138,7 @@ const NavLinkWrapper = (props) => {
 
 const SideBarLeft = (props) => {
   const { user, signoutUserRequest } = props
-  const { username } = user || ''
+  const { username, is_subscribe } = user || ''
   const classes = useStyles()
   const location = useLocation()
 
@@ -193,7 +197,12 @@ const SideBarLeft = (props) => {
                   />
                 ))
               }
-              <ContainedButton fontSize={18} label="Buzz" style={{ width: '100%' }} />
+              {
+                !is_subscribe && (
+                  <ContainedButton transparent={true} fontSize={18} label="Subscribe" className={classes.sideBarButton} />
+                )
+              }
+              <ContainedButton fontSize={18} label="Buzz" className={classes.sideBarButton} />
             </div>
             <div className={classes.bottom}>
               <div className={classes.avatarWrapper} onClick={handleClickLogout}>
