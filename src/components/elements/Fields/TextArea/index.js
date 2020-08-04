@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
   field: {
-    fontSize: 18,
+    fontSize: 15,
     resize: 'none',
     width: '100%',
     '&:focus': {

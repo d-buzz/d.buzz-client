@@ -48,7 +48,7 @@ import {
   uploadImage,
 } from 'services/api'
 
-import base58 from 'base58-encode'
+// import base58 from 'base58-encode'
 
 
 function* getRepliesRequest(payload, meta) {
@@ -226,10 +226,10 @@ function* fileUploadRequest(payload, meta) {
 
       }
 
-      const postUrl = `https://images.hive.net.ph/${username}/${sig}`
+      const postUrl = `https://images.hive.blog/${username}/${sig}`
       const result = yield call(uploadImage, postUrl, formData)
-      const base58Encoded = base58(result.data.url)
-      const proxyUrl = `https://images.hive.blog/p/${base58Encoded}`
+      // const base58Encoded = base58(result.data.url)
+      // const proxyUrl = `https://images.hive.blog/p/${base58Encoded}`
 
       let images = []
 
@@ -237,7 +237,7 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      images.push(proxyUrl)
+      images.push(result.data.url)
 
       yield put(uploadFileSuccess(images, meta))
     } else {
