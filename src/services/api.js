@@ -10,6 +10,8 @@ import { Promise, reject } from 'bluebird'
 import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
+import getSlug from 'speakingurl'
+import base58 from 'base58-encode'
 
 const endpoints = [
   'https://api.openhive.network',
@@ -245,35 +247,6 @@ export const mapFetchProfile = (data) => {
   })
 }
 
-export const keychainSignIn = (username) => {
-  const challenge = { token: uuidv4() }
-  const buffer = JSON.stringify(challenge, null, 0)
-
-  return new Promise((resolve) => {
-    window.hive_keychain.requestSignBuffer(
-      username,
-      buffer,
-      'Posting',
-      response => {
-        resolve(response)
-      }
-    )
-  })
-}
-
-export const keychainUpvote = (username, permlink, author, weight) => {
-  return new Promise((resolve) => {
-    window.hive_keychain.requestVote(
-      username,
-      permlink,
-      author,
-      weight,
-      response => {
-        resolve(response)
-      }
-    )
-  })
-}
 
 export const isWifValid = (password, pubWif) => {
   return auth.wifIsValid(password, pubWif)
@@ -409,8 +382,168 @@ export const uploadImage = (url, formData) => {
       reject(error)
     })
   })
+}
+
+// keychain apis
+
+export const keychainSignIn = (username) => {
+  const challenge = { token: uuidv4() }
+  const buffer = JSON.stringify(challenge, null, 0)
+
+  return new Promise((resolve) => {
+    window.hive_keychain.requestSignBuffer(
+      username,
+      buffer,
+      'Posting',
+      response => {
+        resolve(response)
+      }
+    )
+  })
+}
+
+export const keychainUpvote = (username, permlink, author, weight) => {
+  return new Promise((resolve) => {
+    window.hive_keychain.requestVote(
+      username,
+      permlink,
+      author,
+      weight,
+      response => {
+        resolve(response)
+      }
+    )
+  })
+}
+
+export const keychainPublishPost = (account, title, body) => {
+
+  const json_metadata = {
+    app: 'hiveph/v1.0.0-dev',
+    tags: ['loremipsum', 'loremtest']
+  }
+
+  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
+
+  if (permlink.length > 255) {
+      permlink = permlink.substring(0, 255);
+  }
+
+  const comment_options = {
+    author: account,
+    permlink,
+    max_accepted_payout: '1000000.000 HBD',
+    percent_steem_dollars: 10000,
+    allow_votes: true,
+    allow_curation_rewards: true,
+    extensions: []
+  }
 
 
+  return new Promise((resolve, reject) => {
+    try {
+      window.hive_keychain.requestPost(
+        account,
+        title,
+        body,
+        appConfig.TAG,
+        null,
+        json_metadata,
+        permlink,
+        comment_options,
+        response => {
+          console.log({ response })
+          // if(!response.success) {
+          //   reject(response.message)
+          // } else {
+          //   resolve(response)
+          // }
+        }
+      )
+
+    } catch(error) {
+      console.log({ error })
+      reject(error)
+    }
+  })
+}
+
+export const generatePostOperations = (account, title, body) => {
+
+  const meta = {
+    app: 'hiveph/v1.0.0-dev',
+    tags: [`${appConfig.TAG}`, 'loremipsum', 'loremtest']
+  }
+
+  const json_metadata = JSON.stringify(meta)
+
+  console.log({ json_metadata })
+
+  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
+
+  if (permlink.length > 255) {
+      permlink = permlink.substring(0, 100);
+  }
+
+  permlink = permlink.toLowerCase()
+
+  const operations = []
+
+  return new Promise((resolve) => {
+    const op_comment = [
+      'comment',
+      {
+        'author': account,
+        'title': title,
+        'body': `${body.trim()}`,
+        'parent_author': '',
+        'parent_permlink': `${appConfig.TAG}`,
+        permlink,
+        json_metadata,
+      }
+    ]
+
+    operations.push(op_comment)
+
+    const op_comment_options = [
+      'comment_options',
+      {
+        'author': account,
+        permlink,
+        'max_accepted_payout': ['1000000.000', 'HBD'].join(' '),
+        'percent_steem_dollars': 10000,
+        'allow_votes': true,
+        'allow_curation_rewards': true,
+        'extensions': []
+      }
+    ]
+
+    operations.push(op_comment_options)
+
+    resolve(operations)
+  })
+
+}
+
+export const broadcastOperation = (account, operations, key = 'Posting') => {
+  return new Promise((resolve, reject) => {
+    window.hive_keychain.requestBroadcast(
+      account,
+      operations,
+      key,
+      response => {
+        if(!response.success) {
+          reject(response.message)
+        } else {
+          resolve(response)
+        }
+      }
+    )
+  })
+}
+
+export const slug = (text) => {
+  return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 });
 }
 
 

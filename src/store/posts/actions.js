@@ -256,3 +256,27 @@ export const uploadFileError = (error, meta) => ({
   meta,
 })
 
+export const PUBLISH_POST_REQUEST = 'PUBLISH_POST_REQUEST'
+export const PUBLISH_POST_SUCCESS = 'PUBLISH_POST_SUCCESS'
+export const PUBLISH_POST_FAILURE = 'PUBLISH_POST_FAILURE'
+
+export const publishPostRequest = (body) => ({
+  type: PUBLISH_POST_REQUEST,
+  payload: { body },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const publishPostSuccess = (response, meta) => ({
+  type: PUBLISH_POST_REQUEST,
+  payload: response,
+  meta,
+})
+
+export const publishPostFailure = (error, meta) => ({
+  type: PUBLISH_POST_FAILURE,
+  payload: error,
+  meta,
+})
+

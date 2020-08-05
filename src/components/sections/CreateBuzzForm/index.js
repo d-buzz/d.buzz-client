@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest } from 'store/posts/actions'
+import { uploadFileRequest, publishPostRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 
@@ -86,6 +86,7 @@ const CreateBuzzForm = (props) => {
   const {
     user,
     uploadFileRequest,
+    publishPostRequest,
     images,
     loading
   } = props
@@ -119,6 +120,10 @@ const CreateBuzzForm = (props) => {
     })
   }
 
+  const handleClickPublishPost = () => {
+    publishPostRequest(content)
+  }
+
   return (
     <div className={classes.container}>
       <div className={classes.row}>
@@ -141,12 +146,16 @@ const CreateBuzzForm = (props) => {
             content.length !== 0 && (
               <div className={classes.previewContainer}>
                 <h6>Buzz preview</h6>
-                <MarkdownViewer content={content}/>
+                <MarkdownViewer content={content} minifyAssets={false}/>
                 <hr />
               </div>
             )
           }
-          <ContainedButton label="Buzz it" className={classes.float} />
+          <ContainedButton
+            label="Buzz it"
+            className={classes.float}
+            onClick={handleClickPublishPost}
+          />
           <input
             type='file'
             accept='image/*'
@@ -182,6 +191,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     uploadFileRequest,
+    publishPostRequest,
   }, dispatch)
 })
 

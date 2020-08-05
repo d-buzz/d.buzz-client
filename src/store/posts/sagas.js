@@ -34,6 +34,9 @@ import {
   UPLOAD_FILE_REQUEST,
   uploadFileSuccess,
   uploadFileError,
+
+  PUBLISH_POST_REQUEST,
+  publishPostFailure,
 } from './actions'
 
 import {
@@ -46,6 +49,8 @@ import {
   broadcastVote,
   keychainUpvote,
   uploadImage,
+  generatePostOperations,
+  broadcastOperation,
 } from 'services/api'
 
 // import base58 from 'base58-encode'
@@ -199,8 +204,6 @@ function* fileUploadRequest(payload, meta) {
         })
       }
 
-      console.log({ data })
-
       const formData = new FormData()
       formData.append('file', file)
 
@@ -248,6 +251,38 @@ function* fileUploadRequest(payload, meta) {
   }
 }
 
+function* publishPostRequest(payload, meta) {
+  try {
+    const { body } = payload
+
+    console.log({ body })
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+    let title = body
+
+    if(title.length > 70) {
+      title = `${title.substr(0, 70)} ...`
+    }
+
+    if(useKeychain) {
+      // const operation = yield call(keychainPublishPost, username, title, body)
+      // console.log({ operation })
+
+      const operations = yield call(generatePostOperations, username, title, body)
+      console.log({ operations })
+      const result = yield call(broadcastOperation, username, operations)
+
+      console.log({ result })
+    }
+
+
+  } catch (error) {
+    console.log({error})
+    yield put(publishPostFailure(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -280,6 +315,10 @@ function* watchUploadFileUploadRequest({ payload, meta }) {
   yield call(fileUploadRequest, payload, meta)
 }
 
+function* watchPublishPostRequest({ payload, meta }) {
+  yield call(publishPostRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
   yield takeEvery(GET_HOME_POSTS_REQUEST, watchGetHomePostsRequest)
@@ -289,5 +328,6 @@ export default function* sagas() {
   yield takeEvery(GET_TRENDING_TAGS_REQUEST, watchGetTrendingTagsRequest)
   yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
   yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
+  yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
 }
 
