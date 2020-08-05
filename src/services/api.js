@@ -470,22 +470,9 @@ export const keychainPublishPost = (account, title, body) => {
 
 export const generatePostOperations = (account, title, body) => {
 
-  const meta = {
-    app: 'hiveph/v1.0.0-dev',
-    tags: [`${appConfig.TAG}`, 'loremipsum', 'loremtest']
-  }
+  const json_metadata = createMeta()
 
-  const json_metadata = JSON.stringify(meta)
-
-  console.log({ json_metadata })
-
-  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
-
-  if (permlink.length > 255) {
-      permlink = permlink.substring(0, 100);
-  }
-
-  permlink = permlink.toLowerCase()
+  let permlink = createPermlink(title)
 
   const operations = []
 
@@ -544,6 +531,24 @@ export const broadcastOperation = (account, operations, key = 'Posting') => {
 
 export const slug = (text) => {
   return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 });
+}
+
+
+export const createMeta = () => {
+  const meta = {
+    app: 'hiveph/v1.0.0-dev',
+    tags: [`${appConfig.TAG}`, 'loremipsum', 'loremtest']
+  }
+
+  return JSON.stringify(meta)
+}
+
+export const createPermlink = (title) => {
+  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
+  permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
+  permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
+
+  return permlink
 }
 
 

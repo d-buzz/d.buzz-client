@@ -255,8 +255,6 @@ function* publishPostRequest(payload, meta) {
   try {
     const { body } = payload
 
-    console.log({ body })
-
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
     let title = body
@@ -266,16 +264,14 @@ function* publishPostRequest(payload, meta) {
     }
 
     if(useKeychain) {
-      // const operation = yield call(keychainPublishPost, username, title, body)
-      // console.log({ operation })
 
       const operations = yield call(generatePostOperations, username, title, body)
       console.log({ operations })
+
       const result = yield call(broadcastOperation, username, operations)
 
       console.log({ result })
     }
-
 
   } catch (error) {
     console.log({error})

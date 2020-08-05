@@ -26,7 +26,11 @@ function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
   let user = { username, useKeychain, is_authenticated: false, is_subscribe: false,  }
 
+
+
   try {
+
+
 
     if(useKeychain) {
       const data = yield call(keychainSignIn, username)
@@ -34,7 +38,9 @@ function* authenticateUserRequest(payload, meta) {
         user.is_authenticated = true
       }
     } else {
-      let profile = yield call(fetchProfile, username)
+      console.log({ user, password })
+
+      let profile = yield call(fetchProfile, [username])
 
       if(profile) {
         profile = profile[0]
@@ -53,6 +59,8 @@ function* authenticateUserRequest(payload, meta) {
         user.is_authenticated = false
       }
     }
+
+    console.log({ user })
 
     const is_subscribe = yield call(getCommunityRole, username)
 
