@@ -52,6 +52,7 @@ import {
   generatePostOperations,
   broadcastOperation,
 } from 'services/api'
+import { PrivateKey, Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
 // import base58 from 'base58-encode'
 
@@ -209,6 +210,7 @@ function* fileUploadRequest(payload, meta) {
 
       const prefix = new Buffer('ImageSigningChallenge');
       const buf = Buffer.concat([prefix, data]);
+      const bufSha = hash.sha256(buf)
 
       let sig
       if(useKeychain) {
@@ -226,13 +228,14 @@ function* fileUploadRequest(payload, meta) {
             sig = response.result
         }
       } else {
-
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+        const wif = login_data[1]
+        sig = Signature.signBufferSha256(bufSha, wif).toHex()
       }
 
       const postUrl = `https://images.hive.blog/${username}/${sig}`
       const result = yield call(uploadImage, postUrl, formData)
-      // const base58Encoded = base58(result.data.url)
-      // const proxyUrl = `https://images.hive.blog/p/${base58Encoded}`
 
       let images = []
 
