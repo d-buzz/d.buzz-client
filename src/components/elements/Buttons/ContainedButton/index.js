@@ -37,7 +37,24 @@ const useStyles = createUseStyles({
     '&:hover': {
       backgroundColor: '#b71c1c1c',
     }
-  }
+  },
+  disabledButton: {
+    backgroundColor: '#d0cfcf',
+    borderRadius: '50px 50px',
+    width: 'max-content',
+    cursor: 'mouse',
+    '& label': {
+      cursor: 'mouse',
+      paddingTop: 5,
+      paddingLeft: 15,
+      paddingRight: 15,
+      whiteSpace: 'nowrap',
+      color: 'white',
+    },
+    '&:hover': {
+      backgroundColor: '#d0cfcf',
+    }
+  },
 })
 
 const ContainedButton = (props) => {
@@ -49,6 +66,7 @@ const ContainedButton = (props) => {
     fontSize = 15,
     transparent = false,
     onClick = () => {},
+    disabled = false,
   } = props
 
   let buttonClass = classes.button
@@ -57,8 +75,12 @@ const ContainedButton = (props) => {
     buttonClass = classes.transparentButton
   }
 
+  if(disabled) {
+    buttonClass = classes.disabledButton
+  }
+
   return (
-    <div onClick={onClick} style={style} className={classNames(buttonClass, className)}>
+    <div onClick={!disabled ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} >
       <center>
         <label style={{ fontSize: fontSize }}>
           { label }

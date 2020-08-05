@@ -36,6 +36,7 @@ import {
   uploadFileError,
 
   PUBLISH_POST_REQUEST,
+  publishPostSuccess,
   publishPostFailure,
 } from './actions'
 
@@ -52,7 +53,7 @@ import {
   generatePostOperations,
   broadcastOperation,
 } from 'services/api'
-import { PrivateKey, Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
+import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
 // import base58 from 'base58-encode'
 
@@ -266,18 +267,27 @@ function* publishPostRequest(payload, meta) {
       title = `${title.substr(0, 70)} ...`
     }
 
+    const operations = yield call(generatePostOperations, username, title, body)
+    let data = {}
     if(useKeychain) {
-
-      const operations = yield call(generatePostOperations, username, title, body)
-      console.log({ operations })
-
       const result = yield call(broadcastOperation, username, operations)
+      if(result.success) {
+        const comment_options = operations[2]
+        let permlink = comment_options[1].permlink
+        data = {
+          success: result.success,
+          author: username,
+          permlink,
+        }
+      } else {
+        yield put(publishPostFailure('Unable to publish post', meta))
+      }
+    } else {
 
-      console.log({ result })
     }
 
+    yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    console.log({error})
     yield put(publishPostFailure(error, meta))
   }
 }

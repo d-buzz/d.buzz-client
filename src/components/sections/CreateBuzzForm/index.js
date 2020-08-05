@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 
 const useStyles = createUseStyles({
@@ -88,8 +89,11 @@ const CreateBuzzForm = (props) => {
     uploadFileRequest,
     publishPostRequest,
     images,
-    loading
+    loading,
+    publishing,
   } = props
+
+  const history = useHistory()
 
   useEffect(() => {
     images.forEach((item, index) => {
@@ -122,6 +126,12 @@ const CreateBuzzForm = (props) => {
 
   const handleClickPublishPost = () => {
     publishPostRequest(content)
+      .then((data) => {
+        if(data.success) {
+          const { author, permlink } = data
+          history.push(`/@${author}/${permlink}`)
+        }
+    })
   }
 
   return (
@@ -131,7 +141,7 @@ const CreateBuzzForm = (props) => {
           <Avatar author={user.username} />
         </div>
         <div className={classNames(classes.inline, classes.right)}>
-          <TextArea disabled={loading} maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />
+          { publishing && (<TextArea disabled={loading} maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           {
             loading && (
               <div style={{ width: '100%'}}>
@@ -152,6 +162,7 @@ const CreateBuzzForm = (props) => {
             )
           }
           <ContainedButton
+            disabled={true}
             label="Buzz it"
             className={classes.float}
             onClick={handleClickPublishPost}
@@ -185,7 +196,8 @@ const CreateBuzzForm = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   images: state.posts.get('images'),
-  loading: pending(state, 'UPLOAD_FILE_REQUEST')
+  loading: pending(state, 'UPLOAD_FILE_REQUEST'),
+  publishing: pending(state, 'PUBLISH_POST_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
