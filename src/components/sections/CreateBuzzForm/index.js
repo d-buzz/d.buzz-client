@@ -128,8 +128,9 @@ const CreateBuzzForm = (props) => {
     publishPostRequest(content)
       .then((data) => {
         if(data.success) {
+          alert(JSON.stringify(data.success))
           const { author, permlink } = data
-          history.push(`/@${author}/${permlink}`)
+          history.push(`/@${author}/c/${permlink}`)
         }
     })
   }
@@ -141,7 +142,16 @@ const CreateBuzzForm = (props) => {
           <Avatar author={user.username} />
         </div>
         <div className={classNames(classes.inline, classes.right)}>
-          { publishing && (<TextArea disabled={loading} maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          { publishing && (
+              <div style={{ width: '100%'}}>
+                <Box  position="relative" display="inline-flex">
+                  <HashtagLoader top={0} size={20} loading={publishing} />&nbsp;
+                  <label style={{ marginTop: -2 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
+                </Box>
+              </div>
+            )
+          }
+          { !publishing && (<TextArea disabled={loading} maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           {
             loading && (
               <div style={{ width: '100%'}}>
@@ -162,7 +172,7 @@ const CreateBuzzForm = (props) => {
             )
           }
           <ContainedButton
-            disabled={true}
+            disabled={loading || publishing}
             label="Buzz it"
             className={classes.float}
             onClick={handleClickPublishPost}

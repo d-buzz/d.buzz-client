@@ -268,11 +268,13 @@ function* publishPostRequest(payload, meta) {
     }
 
     const operations = yield call(generatePostOperations, username, title, body)
+
     let data = {}
     if(useKeychain) {
       const result = yield call(broadcastOperation, username, operations)
+      console.log({ result })
       if(result.success) {
-        const comment_options = operations[2]
+        const comment_options = operations[1]
         let permlink = comment_options[1].permlink
         data = {
           success: result.success,
@@ -285,7 +287,7 @@ function* publishPostRequest(payload, meta) {
     } else {
 
     }
-
+    console.log({ data })
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
     yield put(publishPostFailure(error, meta))

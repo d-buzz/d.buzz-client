@@ -537,7 +537,7 @@ export const slug = (text) => {
 export const createMeta = () => {
   const meta = {
     app: 'hiveph/v1.0.0-dev',
-    tags: [`${appConfig.TAG}`, 'loremipsum', 'loremtest']
+    tags: [`${appConfig.TAG}`, 'thisisatest', 'anothertestpost', 'unreleasedapp']
   }
 
   return JSON.stringify(meta)

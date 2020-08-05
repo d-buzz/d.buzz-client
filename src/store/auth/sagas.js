@@ -54,10 +54,7 @@ function* authenticateUserRequest(payload, meta) {
       }
     }
 
-    console.log({ user })
-
     const is_subscribe = yield call(getCommunityRole, username)
-
     user.is_subscribe = is_subscribe
 
     yield call([localStorage, localStorage.clear])

@@ -269,7 +269,7 @@ export const publishPostRequest = (body) => ({
 })
 
 export const publishPostSuccess = (response, meta) => ({
-  type: PUBLISH_POST_REQUEST,
+  type: PUBLISH_POST_SUCCESS,
   payload: response,
   meta,
 })
