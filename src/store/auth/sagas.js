@@ -26,19 +26,13 @@ function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
   let user = { username, useKeychain, is_authenticated: false, is_subscribe: false,  }
 
-
-
   try {
-
-
-
     if(useKeychain) {
       const data = yield call(keychainSignIn, username)
       if(data.success) {
         user.is_authenticated = true
       }
     } else {
-      console.log({ user, password })
 
       let profile = yield call(fetchProfile, [username])
 
