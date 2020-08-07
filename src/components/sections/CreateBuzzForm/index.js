@@ -128,7 +128,6 @@ const CreateBuzzForm = (props) => {
     publishPostRequest(content)
       .then((data) => {
         if(data.success) {
-          alert(JSON.stringify(data.success))
           const { author, permlink } = data
           history.push(`/@${author}/c/${permlink}`)
         }
@@ -151,7 +150,7 @@ const CreateBuzzForm = (props) => {
               </div>
             )
           }
-          { !publishing && (<TextArea disabled={loading} maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          { !publishing && (<TextArea maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           {
             loading && (
               <div style={{ width: '100%'}}>

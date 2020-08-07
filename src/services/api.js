@@ -468,7 +468,7 @@ export const keychainPublishPost = (account, title, body) => {
   })
 }
 
-export const generatePostOperations = (account, title, body) => {
+export const generatePostOperations = (account, title, body, useKeychain) => {
 
   const json_metadata = createMeta()
 
@@ -477,6 +477,7 @@ export const generatePostOperations = (account, title, body) => {
   const operations = []
 
   return new Promise((resolve) => {
+
     const op_comment = [
       'comment',
       {
@@ -492,12 +493,14 @@ export const generatePostOperations = (account, title, body) => {
 
     operations.push(op_comment)
 
+    const max_accepted_payout = '1000000.000 HBD'
+
     const op_comment_options = [
       'comment_options',
       {
         'author': account,
         permlink,
-        'max_accepted_payout': ['1000000.000', 'HBD'].join(' '),
+        'max_accepted_payout': max_accepted_payout,
         'percent_steem_dollars': 10000,
         'allow_votes': true,
         'allow_curation_rewards': true,
@@ -512,7 +515,7 @@ export const generatePostOperations = (account, title, body) => {
 
 }
 
-export const broadcastOperation = (account, operations, key = 'Posting') => {
+export const broadcastKeychainOperation = (account, operations, key = 'Posting') => {
   return new Promise((resolve, reject) => {
     window.hive_keychain.requestBroadcast(
       account,
@@ -529,10 +532,30 @@ export const broadcastOperation = (account, operations, key = 'Posting') => {
   })
 }
 
+export const broadcastOperation = (operations, keys) => {
+  return new Promise((resolve, reject) => {
+    broadcast.send(
+      {
+        extensions: [],
+        operations,
+      },
+      keys,
+      (error, result) => {
+        if(error) {
+          console.log({ error })
+          reject(false)
+        } else {
+          console.log({ result })
+          resolve(true)
+        }
+      }
+    )
+  })
+}
+
 export const slug = (text) => {
   return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 });
 }
-
 
 export const createMeta = () => {
   const meta = {

@@ -52,6 +52,7 @@ import {
   uploadImage,
   generatePostOperations,
   broadcastOperation,
+  broadcastKeychainOperation,
 } from 'services/api'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
@@ -62,8 +63,6 @@ function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
     const data = yield call(fetchReplies, author, permlink)
-    // const getProfileData = mapFetchProfile(data)
-    // yield call([Promise, Promise.all], [getProfileData])
 
     yield put(getRepliesSuccess(data, meta))
   } catch(error) {
@@ -214,6 +213,7 @@ function* fileUploadRequest(payload, meta) {
       const bufSha = hash.sha256(buf)
 
       let sig
+
       if(useKeychain) {
         const response = yield new Promise(resolve => {
             window.hive_keychain.requestSignBuffer(
@@ -225,9 +225,11 @@ function* fileUploadRequest(payload, meta) {
                 }
             );
         });
+
         if (response.success) {
             sig = response.result
         }
+
       } else {
         let { login_data } = user
         login_data = extractLoginData(login_data)
@@ -267,27 +269,36 @@ function* publishPostRequest(payload, meta) {
       title = `${title.substr(0, 70)} ...`
     }
 
-    const operations = yield call(generatePostOperations, username, title, body)
+    const operations = yield call(generatePostOperations, username, title, body, useKeychain)
 
-    let data = {}
+    let success = false
+    const comment_options = operations[1]
+    let permlink = comment_options[1].permlink
+
     if(useKeychain) {
-      const result = yield call(broadcastOperation, username, operations)
-      console.log({ result })
-      if(result.success) {
-        const comment_options = operations[1]
-        let permlink = comment_options[1].permlink
-        data = {
-          success: result.success,
-          author: username,
-          permlink,
-        }
-      } else {
+      const result = yield call(broadcastKeychainOperation, username, operations)
+      success = result.success
+
+      if(!success) {
         yield put(publishPostFailure('Unable to publish post', meta))
       }
-    } else {
 
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operations, [wif])
+
+      success = result
     }
-    console.log({ data })
+
+    const data = {
+      success,
+      author: username,
+      permlink,
+    }
+
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
     yield put(publishPostFailure(error, meta))
