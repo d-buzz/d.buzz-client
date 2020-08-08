@@ -280,3 +280,25 @@ export const publishPostFailure = (error, meta) => ({
   meta,
 })
 
+
+export const SUBSCRIBE_REQUEST = 'SUBSCRIBE_REQUEST'
+export const SUBSCRIBE_SUCCESS = 'SUBSCRIBE_SUCCESS'
+export const SUBSCRIBE_FAILURE = 'SUBSCRIBE_FAILURE'
+
+export const subscribeRequest = () => ({
+  type: SUBSCRIBE_REQUEST,
+  meta: {
+    thunk: true,
+  },
+})
+
+export const subscribeSuccess = (meta) => ({
+  type: SUBSCRIBE_SUCCESS,
+  meta,
+})
+
+export const subscribeFailure = (error, meta) => ({
+  type: SUBSCRIBE_FAILURE,
+  payload: error,
+  meta,
+})

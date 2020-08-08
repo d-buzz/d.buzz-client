@@ -418,7 +418,6 @@ export const keychainUpvote = (username, permlink, author, weight) => {
 
 export const generateSubscribeOperation = (username) => {
   return new Promise((resolve) => {
-
     let json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
 
     const operation = [

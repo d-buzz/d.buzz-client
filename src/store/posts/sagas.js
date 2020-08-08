@@ -38,6 +38,10 @@ import {
   PUBLISH_POST_REQUEST,
   publishPostSuccess,
   publishPostFailure,
+
+  SUBSCRIBE_REQUEST,
+  subscribeSuccess,
+  subscribeFailure,
 } from './actions'
 
 import {
@@ -53,11 +57,9 @@ import {
   generatePostOperations,
   broadcastOperation,
   broadcastKeychainOperation,
+  generateSubscribeOperation,
 } from 'services/api'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
-
-// import base58 from 'base58-encode'
-
 
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
@@ -227,7 +229,7 @@ function* fileUploadRequest(payload, meta) {
         });
 
         if (response.success) {
-            sig = response.result
+          sig = response.result
         }
 
       } else {
@@ -305,6 +307,31 @@ function* publishPostRequest(payload, meta) {
   }
 }
 
+function* subscribeRequest(meta) {
+  try {
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+    const operation = yield call(generateSubscribeOperation, username)
+
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+
+      if(!success) {
+        yield put(subscribeFailure('Subscription failed', meta))
+      }
+    } else {
+
+    }
+
+    yield put(subscribeSuccess(success, meta))
+  } catch (error) {
+    yield put(subscribeFailure(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -341,6 +368,10 @@ function* watchPublishPostRequest({ payload, meta }) {
   yield call(publishPostRequest, payload, meta)
 }
 
+function* watchSubscribeRequest({ meta }) {
+  yield call(subscribeRequest, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
   yield takeEvery(GET_HOME_POSTS_REQUEST, watchGetHomePostsRequest)
@@ -351,5 +382,6 @@ export default function* sagas() {
   yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
   yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
   yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
+  yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
 }
 

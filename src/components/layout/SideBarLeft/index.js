@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { AiOutlinePoweroff } from 'react-icons/ai'
 import { signoutUserRequest } from 'store/auth/actions'
+import { subscribeRequest } from 'store/posts/actions'
 
 const useStyles = createUseStyles({
   items: {
@@ -139,7 +140,7 @@ const NavLinkWrapper = (props) => {
 }
 
 const SideBarLeft = (props) => {
-  const { user, signoutUserRequest } = props
+  const { user, signoutUserRequest, subscribeRequest } = props
   const { username, is_subscribe } = user || ''
   const classes = useStyles()
   const location = useLocation()
@@ -177,7 +178,7 @@ const SideBarLeft = (props) => {
   }
 
   const handleClickSubscribe = () => {
-    alert('subscribe me')
+    subscribeRequest()
   }
 
   return (
@@ -253,7 +254,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    signoutUserRequest
+    signoutUserRequest,
+    subscribeRequest,
   }, dispatch)
 })
 
