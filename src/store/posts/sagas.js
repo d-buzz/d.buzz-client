@@ -38,10 +38,6 @@ import {
   PUBLISH_POST_REQUEST,
   publishPostSuccess,
   publishPostFailure,
-
-  SUBSCRIBE_REQUEST,
-  subscribeSuccess,
-  subscribeFailure,
 } from './actions'
 
 import {
@@ -57,7 +53,6 @@ import {
   generatePostOperations,
   broadcastOperation,
   broadcastKeychainOperation,
-  generateSubscribeOperation,
 } from 'services/api'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
@@ -307,37 +302,6 @@ function* publishPostRequest(payload, meta) {
   }
 }
 
-function* subscribeRequest(meta) {
-  try {
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
-    const operation = yield call(generateSubscribeOperation, username)
-
-    let success = false
-
-    if(useKeychain) {
-      const result = yield call(broadcastKeychainOperation, username, operation)
-      success = result.success
-
-      if(!success) {
-        yield put(subscribeFailure('Subscription failed', meta))
-      }
-    } else {
-
-    }
-
-    if(success) {
-      let saved = yield call([localStorage, localStorage.getItem], 'user')
-      saved = JSON.parse(saved)
-      saved.is_subscribe = true
-      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(saved))
-    }
-
-    yield put(subscribeSuccess(success, meta))
-  } catch (error) {
-    yield put(subscribeFailure(error, meta))
-  }
-}
 
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
@@ -375,9 +339,6 @@ function* watchPublishPostRequest({ payload, meta }) {
   yield call(publishPostRequest, payload, meta)
 }
 
-function* watchSubscribeRequest({ meta }) {
-  yield call(subscribeRequest, meta)
-}
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -389,6 +350,5 @@ export default function* sagas() {
   yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
   yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
   yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
-  yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
 }
 

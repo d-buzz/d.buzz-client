@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
@@ -20,8 +20,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { AiOutlinePoweroff } from 'react-icons/ai'
-import { signoutUserRequest } from 'store/auth/actions'
-import { subscribeRequest } from 'store/posts/actions'
+import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 
 const useStyles = createUseStyles({
   items: {

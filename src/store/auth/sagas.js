@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from "redux-saga/effects"
+import { call, put, takeEvery, select } from "redux-saga/effects"
 
 import {
   AUTHENTICATE_USER_REQUEST,
@@ -12,6 +12,10 @@ import {
   SIGNOUT_USER_REQUEST,
   signoutUserSuccess,
   signoutUserFailure,
+
+  SUBSCRIBE_REQUEST,
+  subscribeSuccess,
+  subscribeFailure,
 } from './actions'
 
 import {
@@ -20,6 +24,8 @@ import {
   isWifValid,
   packLoginData,
   getCommunityRole,
+  broadcastKeychainOperation,
+  generateSubscribeOperation,
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
@@ -91,6 +97,38 @@ function* signoutUserRequest(meta) {
   }
 }
 
+function* subscribeRequest(meta) {
+  try {
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+    const operation = yield call(generateSubscribeOperation, username)
+
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+
+      if(!success) {
+        yield put(subscribeFailure('Subscription failed', meta))
+      }
+    } else {
+
+    }
+
+    if(success) {
+      let saved = yield call([localStorage, localStorage.getItem], 'user')
+      saved = JSON.parse(saved)
+      saved.is_subscribe = true
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(saved))
+    }
+
+    yield put(subscribeSuccess(success, meta))
+  } catch (error) {
+    yield put(subscribeFailure(error, meta))
+  }
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -103,8 +141,14 @@ function* watchGetSavedUserRequest({ meta }) {
   yield call(getSavedUserRequest, meta)
 }
 
+function* watchSubscribeRequest({ meta }) {
+  yield call(subscribeRequest, meta)
+}
+
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
+  yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
 }
