@@ -416,58 +416,6 @@ export const keychainUpvote = (username, permlink, author, weight) => {
   })
 }
 
-export const keychainPublishPost = (account, title, body) => {
-
-  const json_metadata = {
-    app: 'hiveph/v1.0.0-dev',
-    tags: ['loremipsum', 'loremtest']
-  }
-
-  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
-
-  if (permlink.length > 255) {
-      permlink = permlink.substring(0, 255);
-  }
-
-  const comment_options = {
-    author: account,
-    permlink,
-    max_accepted_payout: '1000000.000 HBD',
-    percent_steem_dollars: 10000,
-    allow_votes: true,
-    allow_curation_rewards: true,
-    extensions: []
-  }
-
-
-  return new Promise((resolve, reject) => {
-    try {
-      window.hive_keychain.requestPost(
-        account,
-        title,
-        body,
-        appConfig.TAG,
-        null,
-        json_metadata,
-        permlink,
-        comment_options,
-        response => {
-          console.log({ response })
-          // if(!response.success) {
-          //   reject(response.message)
-          // } else {
-          //   resolve(response)
-          // }
-        }
-      )
-
-    } catch(error) {
-      console.log({ error })
-      reject(error)
-    }
-  })
-}
-
 export const generatePostOperations = (account, title, body, useKeychain) => {
 
   const json_metadata = createMeta()

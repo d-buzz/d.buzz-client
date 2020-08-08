@@ -97,7 +97,6 @@ const CreateBuzzForm = (props) => {
 
   useEffect(() => {
     images.forEach((item, index) => {
-      console.log({ content })
       if(!content.includes(item)) {
         images.splice(index, 1)
       }
@@ -142,10 +141,10 @@ const CreateBuzzForm = (props) => {
         </div>
         <div className={classNames(classes.inline, classes.right)}>
           { publishing && (
-              <div style={{ width: '100%'}}>
+              <div style={{ width: '100%', paddingTop: 10, }}>
                 <Box  position="relative" display="inline-flex">
                   <HashtagLoader top={0} size={20} loading={publishing} />&nbsp;
-                  <label style={{ marginTop: -2 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
+                  <label style={{ marginTop: -3 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
                 </Box>
               </div>
             )
@@ -170,32 +169,39 @@ const CreateBuzzForm = (props) => {
               </div>
             )
           }
-          <ContainedButton
-            disabled={loading || publishing}
-            label="Buzz it"
-            className={classes.float}
-            onClick={handleClickPublishPost}
-          />
-          <input
-            type='file'
-            accept='image/*'
-            ref={inputRef}
-            onChange={handleFileSelectChange}
-            style={{ display: 'none' }}
-          />
-          <IconButton size="medium" onClick={handleFileSelect}>
-            <UploadIcon />
-          </IconButton>
-          <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
-            <CircularProgress
-              classes={{
-                circle: classes.circle,
-              }}
-              size={30}
-              value={wordCount}
-              variant="static"
-            />
-          </Box>
+          {
+            !publishing && (
+              <React.Fragment>
+                <ContainedButton
+                  disabled={loading || publishing}
+                  label="Buzz it"
+                  className={classes.float}
+                  onClick={handleClickPublishPost}
+                />
+                <input
+                  type='file'
+                  accept='image/*'
+                  ref={inputRef}
+                  onChange={handleFileSelectChange}
+                  style={{ display: 'none' }}
+                />
+                <IconButton size="medium" onClick={handleFileSelect}>
+                  <UploadIcon />
+                </IconButton>
+                <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
+                  <CircularProgress
+                    classes={{
+                      circle: classes.circle,
+                    }}
+                    size={30}
+                    value={wordCount}
+                    variant="static"
+                  />
+                </Box>
+              </React.Fragment>
+            )
+          }
+
         </div>
       </div>
     </div>
