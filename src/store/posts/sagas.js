@@ -326,6 +326,13 @@ function* subscribeRequest(meta) {
 
     }
 
+    if(success) {
+      let saved = yield call([localStorage, localStorage.getItem], 'user')
+      saved = JSON.parse(saved)
+      saved.is_subscribe = true
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(saved))
+    }
+
     yield put(subscribeSuccess(success, meta))
   } catch (error) {
     yield put(subscribeFailure(error, meta))
