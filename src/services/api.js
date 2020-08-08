@@ -416,6 +416,27 @@ export const keychainUpvote = (username, permlink, author, weight) => {
   })
 }
 
+export const generateSubscribeOperation = (username) => {
+  return new Promise((resolve) => {
+
+    let json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [username],
+          'id': 'community',
+          json,
+        }
+      ]
+    ]
+
+    resolve(operation)
+  })
+}
+
 export const generatePostOperations = (account, title, body, useKeychain) => {
 
   const json_metadata = createMeta()

@@ -114,6 +114,7 @@ const IconWrapper = ({ children, className }) => {
   )
 }
 
+
 const NavLinkWrapper = (props) => {
   const {
     path,
@@ -124,6 +125,7 @@ const NavLinkWrapper = (props) => {
     iconClass,
     activeClass,
   } = props
+
 
   const isActivePath = (path, current) => {
     return path === current
@@ -174,6 +176,10 @@ const SideBarLeft = (props) => {
     signoutUserRequest()
   }
 
+  const handleClickSubscribe = () => {
+    alert('subscribe me')
+  }
+
   return (
     <React.Fragment>
       <div style={{ height: '100vh', width: '50px' }}>
@@ -199,7 +205,13 @@ const SideBarLeft = (props) => {
               }
               {
                 !is_subscribe && (
-                  <ContainedButton transparent={true} fontSize={18} label="Subscribe" className={classes.sideBarButton} />
+                  <ContainedButton
+                    transparent={true}
+                    fontSize={18}
+                    label="Subscribe"
+                    className={classes.sideBarButton}
+                    onClick={handleClickSubscribe}
+                  />
                 )
               }
               <ContainedButton fontSize={18} label="Buzz" className={classes.sideBarButton} />
