@@ -130,7 +130,7 @@ const AccountFollowers = (props) => {
   }
 
   const loadMorePosts = () => {
-    const { follower } = last
+    const { follower } = last || ''
     getFollowersRequest(author, follower)
   }
 
