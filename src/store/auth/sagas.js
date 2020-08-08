@@ -24,8 +24,10 @@ import {
   isWifValid,
   packLoginData,
   getCommunityRole,
+  broadcastOperation,
   broadcastKeychainOperation,
   generateSubscribeOperation,
+  extractLoginData,
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
@@ -67,7 +69,6 @@ function* authenticateUserRequest(payload, meta) {
     yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(user))
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
@@ -113,7 +114,12 @@ function* subscribeRequest(meta) {
         yield put(subscribeFailure('Subscription failed', meta))
       }
     } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
 
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result
     }
 
     if(success) {
