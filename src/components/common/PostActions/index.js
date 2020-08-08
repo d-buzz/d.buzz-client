@@ -191,83 +191,85 @@ const PostActions = (props) => {
       {
         !showSlider && (
           <div>
-            {
-              !loading && upvoted && (
-                <ActionWrapper
-                  className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
-                  hideStats={hideStats}
-                  stat={
-                    <label style={{ marginLeft: 5, }}>
-                      { vote }
-                    </label>
-                  }
-                />
-              )
-            }
-            {
-              !loading && !upvoted && (
-                <ActionWrapper
-                  className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
-                  hideStats={hideStats}
-                  disabled={!is_authenticated}
-                  onClick={handleClickShowSlider}
-                  stat={
-                    <label style={{ marginLeft: 5, }}>
-                      { vote }
-                    </label>
-                  }
-                />
-              )
-            }
-            {
-              loading && (
-                <ActionWrapper
-                  className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />
+            <Row>
+              <Col>
+                {
+                  !loading && upvoted && (
+                    <ActionWrapper
+                      className={classes.actionWrapperSpace}
+                      inlineClass={classes.inline}
+                      icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
+                      hideStats={hideStats}
+                      stat={
+                        <label style={{ marginLeft: 5, }}>
+                          { vote }
+                        </label>
+                      }
+                    />
+                  )
                 }
+                {
+                  !loading && !upvoted && (
+                    <ActionWrapper
+                      className={classes.actionWrapperSpace}
+                      inlineClass={classes.inline}
+                      icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
+                      hideStats={hideStats}
+                      disabled={!is_authenticated}
+                      onClick={handleClickShowSlider}
+                      stat={
+                        <label style={{ marginLeft: 5, }}>
+                          { vote }
+                        </label>
+                      }
+                    />
+                  )
+                }
+                {
+                  loading && (
+                    <ActionWrapper
+                      className={classes.actionWrapperSpace}
+                      inlineClass={classes.inline}
+                      icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />
+                    }
+                      hideStats={hideStats}
+                      onClick={handleClickShowSlider}
+                      stat={
+                        <label style={{ marginLeft: 5, }}>
+                          { voteCount }
+                        </label>
+                      }
+                    />
+                  )
+                }
+              </Col>
+              <Col>
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<IconButton size="small"><CommentIcon /></IconButton>}
                   hideStats={hideStats}
-                  onClick={handleClickShowSlider}
                   stat={
                     <label style={{ marginLeft: 5, }}>
-                      { voteCount }
+                      { replyCount }
                     </label>
                   }
                 />
-              )
-            }
-
-            <ActionWrapper
-              className={classes.actionWrapperSpace}
-              inlineClass={classes.inline}
-              icon={<IconButton size="small"><CommentIcon /></IconButton>}
-              hideStats={hideStats}
-              stat={
-                <label style={{ marginLeft: 5, }}>
-                  { replyCount }
-                </label>
-              }
-            />
-            <ActionWrapper
-              className={classes.actionWrapperSpace}
-              inlineClass={classes.inline}
-              icon={<IconButton size="small"><HiveIcon /></IconButton>}
-              hideStats={false}
-              stat={
-                <label style={{ marginLeft: 5, }}>
-                  ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }
-                </label>
-              }
-            />
-            <ActionWrapper
-              className={classes.actionWrapperSpace}
-              inlineClass={classes.inline}
-              icon={<IconButton icon={<FlagIcon />} />}
-            />
+              </Col>
+              <Col>
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<IconButton size="small"><HiveIcon /></IconButton>}
+                  hideStats={false}
+                  stat={
+                    <label style={{ marginLeft: 5, }}>
+                      ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }
+                    </label>
+                  }
+                />
+              </Col>
+            </Row>
           </div>
         )
       }

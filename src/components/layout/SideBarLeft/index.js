@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { AiOutlinePoweroff } from 'react-icons/ai'
+import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 
 const useStyles = createUseStyles({
@@ -139,7 +140,7 @@ const NavLinkWrapper = (props) => {
 }
 
 const SideBarLeft = (props) => {
-  const { user, signoutUserRequest, subscribeRequest } = props
+  const { user, signoutUserRequest, subscribeRequest, loading } = props
   const { username, is_subscribe } = user || ''
   const classes = useStyles()
   const location = useLocation()
@@ -209,6 +210,7 @@ const SideBarLeft = (props) => {
                     transparent={true}
                     fontSize={18}
                     label="Subscribe"
+                    loading={loading}
                     className={classes.sideBarButton}
                     onClick={handleClickSubscribe}
                   />
@@ -249,6 +251,7 @@ const SideBarLeft = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  loading: pending(state, 'SUBSCRIBE_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

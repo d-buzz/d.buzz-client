@@ -1,5 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
+import { HashtagLoader } from 'components/elements'
 import classNames from 'classnames'
 
 const useStyles = createUseStyles({
@@ -67,6 +68,7 @@ const ContainedButton = (props) => {
     transparent = false,
     onClick = () => {},
     disabled = false,
+    loading = false,
   } = props
 
   let buttonClass = classes.button
@@ -80,10 +82,13 @@ const ContainedButton = (props) => {
   }
 
   return (
-    <div onClick={!disabled ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} >
+    <div onClick={!disabled && !loading ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} >
       <center>
         <label style={{ fontSize: fontSize }}>
-          { label }
+          { !loading && label }
+          {
+            loading && (<HashtagLoader size={20} top={5} loading={true} />)
+          }
         </label>
       </center>
     </div>
