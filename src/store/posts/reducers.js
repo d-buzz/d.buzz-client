@@ -17,7 +17,6 @@ import {
   CLEAR_REPLIES,
   UPLOAD_FILE_SUCCESS,
   PUBLISH_POST_SUCCESS,
-  SUBSCRIBE_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
