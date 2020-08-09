@@ -96,11 +96,6 @@ const CreateBuzzForm = (props) => {
   const history = useHistory()
 
   useEffect(() => {
-    images.forEach((item, index) => {
-      if(!content.includes(item)) {
-        images.splice(index, 1)
-      }
-    })
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content, images])
 

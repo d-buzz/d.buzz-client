@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Avatar, TextArea, ContainedButton, UploadIcon } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
@@ -85,7 +85,18 @@ const BuzzFormModal = (props) => {
 
   const { username } = user
 
-  const [wordCount, setWordCount] = useState(95)
+  const [content, setContent] = useState('')
+  const [wordCount, setWordCount] = useState(0)
+
+  useEffect(() => {
+    setWordCount(Math.floor((content.length/280) * 100))
+  }, [content])
+
+  const handleOnChange = (e) => {
+    const { target } = e
+    const { value } = target
+    setContent(value)
+  }
 
   return (
     <React.Fragment>
@@ -108,6 +119,10 @@ const BuzzFormModal = (props) => {
                     minRows={3}
                     maxlength="280"
                     label="Buzz your reply"
+                    value={content}
+                    onKeyUp={handleOnChange}
+                    onKeyDown={handleOnChange}
+                    onChange={handleOnChange}
                   />
                   <div style={{ width: '100%' }}>
                     <IconButton size="medium">
