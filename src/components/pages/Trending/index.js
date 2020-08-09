@@ -69,6 +69,7 @@ const Trending = (props) => {
         {
           items.map((item) => (
             <PostList
+              title={item.title}
               profileRef="trending"
               active_votes={item.active_votes}
               author={item.author}
