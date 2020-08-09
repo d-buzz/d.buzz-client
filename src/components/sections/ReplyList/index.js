@@ -172,6 +172,8 @@ const ReplyList = (props) => {
       hasUpvoted = active_votes.filter((vote) => vote.voter === username).length !== 0
     }
 
+    const title = body.substring(0, 100)
+
 
     return (
       <React.Fragment>
@@ -205,6 +207,7 @@ const ReplyList = (props) => {
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    title={title}
                     hasUpvoted={hasUpvoted}
                     author={author}
                     permlink={permlink}

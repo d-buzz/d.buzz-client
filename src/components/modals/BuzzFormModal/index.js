@@ -6,6 +6,7 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
 import stripHtml from "string-strip-html"
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
@@ -79,7 +80,10 @@ const BuzzFormModal = (props) => {
     author,
     permlink,
     title = '',
+    user,
   } = props
+
+  const { username } = user
 
   const [wordCount, setWordCount] = useState(95)
 
@@ -93,7 +97,7 @@ const BuzzFormModal = (props) => {
                 <div style={{ width: 'max-content', display: 'inline-block' }}>
                   <Avatar author={author} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
                   <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: 60, flexGrow: 1, }} />
-                  <Avatar author={author} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
+                  <Avatar author={username} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
                 </div>
                 <div style={{ width: 520, display: 'inline-block', maarginLeft: 5, paddingLeft: 5, }}>
                   <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
@@ -134,4 +138,8 @@ const BuzzFormModal = (props) => {
   )
 }
 
-export default BuzzFormModal
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(BuzzFormModal)
