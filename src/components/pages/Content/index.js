@@ -102,8 +102,6 @@ const Content = (props) => {
 
   const { name } = getProfileMetaData(profile)
 
-
-
   if(json_metadata) {
     try{
       meta = JSON.parse(json_metadata)

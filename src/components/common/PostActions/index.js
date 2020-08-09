@@ -145,6 +145,7 @@ const PostActions = (props) => {
     user,
     title = null,
     replyRef = 'list',
+    treeHistory = 0,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -318,6 +319,7 @@ const PostActions = (props) => {
         </Alert>
       </Snackbar>
       <BuzzFormModal
+        treeHistory={treeHistory}
         title={title}
         show={open}
         onHide={handleOnClose}

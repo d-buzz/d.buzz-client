@@ -130,13 +130,53 @@ const ReplyList = (props) => {
   }, [replies])
 
   useEffect(() => {
-    if(append.hasOwnProperty('refMeta') && append.refMeta.ref === 'content') {
-      setRepliesState([...repliesState, append])
+    if(append.hasOwnProperty('refMeta')) {
+      const { refMeta } = append
+      const { ref, treeHistory } = refMeta
+
+      if(ref === 'content') {
+        setRepliesState([...repliesState, append])
+      } else if(ref === 'replies') {
+        let tree = treeHistory
+
+        if(`${tree}`.includes('|')) {
+          tree = tree.split('|')
+        } else {
+          tree = [tree]
+        }
+
+        const firstIndex = tree[0]
+        tree.splice(0, 1)
+
+        let iterableState = [...repliesState]
+        const first = iterableState[firstIndex]
+
+        let prefix = 'first'
+        let rep = ''
+
+        if(tree.length !== 0 ) {
+          tree.forEach((item, index) => {
+            rep += `.replies[${item}]`
+            if(index === tree.length-1) {
+              rep += `.replies = [...${prefix}${rep}.replies, ${JSON.stringify(append)}]`
+            }
+          })
+        } else {
+           rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
+        }
+
+        const combine = `${prefix}${rep}`
+        // eslint-disable-next-line
+        eval(combine)
+
+        iterableState[firstIndex] = first
+        setRepliesState(iterableState)
+      }
     }
   // eslint-disable-next-line
   }, [append])
 
-  const RenderReplies = ({ reply }) => {
+  const RenderReplies = ({ reply, treeHistory }) => {
     const {
       author,
       created,
@@ -215,6 +255,7 @@ const ReplyList = (props) => {
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    treeHistory={treeHistory}
                     title={title}
                     hasUpvoted={hasUpvoted}
                     author={author}
@@ -222,6 +263,7 @@ const ReplyList = (props) => {
                     voteCount={active_votes.length}
                     replyCount={replyCount}
                     payout={payout}
+                    replyRef="replies"
                   />
                 </div>
               </div>
@@ -232,8 +274,8 @@ const ReplyList = (props) => {
           replies.length !== 0 && (
             <React.Fragment>
               {
-                replies.map((reply) => (
-                  <RenderReplies reply={reply} />
+                replies.map((reply, index) => (
+                  <RenderReplies reply={reply} treeHistory={`${treeHistory}|${index}`}/>
                 ))
               }
             </React.Fragment>
@@ -255,9 +297,9 @@ const ReplyList = (props) => {
         )
       }
       {
-        repliesState.map((reply) => (
+        repliesState.map((reply, index) => (
           <div className={classes.wrapper}>
-            <RenderReplies reply={reply} />
+            <RenderReplies reply={reply} treeHistory={index} />
           </div>
         ))
       }

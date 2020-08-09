@@ -99,6 +99,7 @@ const BuzzFormModal = (props) => {
     user,
     publishReplyRequest,
     replyRef,
+    treeHistory,
   } = props
 
   const { username } = user
@@ -117,7 +118,7 @@ const BuzzFormModal = (props) => {
   }
 
   const handleSubmitReply = () => {
-    publishReplyRequest(author, permlink, content, replyRef)
+    publishReplyRequest(author, permlink, content, replyRef, treeHistory)
   }
 
   return (

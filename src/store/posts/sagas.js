@@ -309,11 +309,11 @@ function* publishPostRequest(payload, meta) {
 
 function* publishReplyRequest(payload, meta) {
   try {
-    const { parent_author, parent_permlink, body, ref } = payload
+    const { parent_author, parent_permlink, body, ref, treeHistory } = payload
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
 
-    let replyData
+    let replyData = {}
 
     let success = false
     const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
@@ -325,13 +325,16 @@ function* publishReplyRequest(payload, meta) {
 
     }
 
-    if(ref === 'content') {
+    if(success) {
       const meta = operation[0]
       const reply = yield call(fetchContent, username, meta[1].permlink)
       const profile = yield call(fetchProfile, [username])
       reply.profile = profile[0]
       reply.refMeta = {
-        ref: 'content',
+        ref,
+        author: parent_author,
+        permlink: parent_permlink,
+        treeHistory
       }
       replyData = reply
     }
