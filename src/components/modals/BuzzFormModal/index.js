@@ -4,10 +4,13 @@ import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
-import stripHtml from "string-strip-html"
+import stripHtml from 'string-strip-html'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { publishReplyRequest } from 'store/posts/actions'
+import { MarkdownViewer } from 'components'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
+import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles({
   modal: {
@@ -70,6 +73,19 @@ const useStyles = createUseStyles({
     strokeLinecap: 'round',
     color: '#e53935',
   },
+  previewContainer: {
+    width: '100%',
+    height: 'max-content',
+    paddingBottom: 10,
+    '& img': {
+      border: '1px solid #ccd6dd',
+      borderRadius: '10px 10px',
+    },
+    '& iframe': {
+      border: '1px solid #ccd6dd',
+      borderRadius: '10px 10px',
+    },
+  }
 })
 
 const BuzzFormModal = (props) => {
@@ -81,6 +97,8 @@ const BuzzFormModal = (props) => {
     permlink,
     title = '',
     user,
+    publishReplyRequest,
+    replyRef,
   } = props
 
   const { username } = user
@@ -96,6 +114,10 @@ const BuzzFormModal = (props) => {
     const { target } = e
     const { value } = target
     setContent(value)
+  }
+
+  const handleSubmitReply = () => {
+    publishReplyRequest(author, permlink, content, replyRef)
   }
 
   return (
@@ -124,6 +146,15 @@ const BuzzFormModal = (props) => {
                     onKeyDown={handleOnChange}
                     onChange={handleOnChange}
                   />
+                  {
+                    content.length !== 0 && (
+                      <div className={classes.previewContainer}>
+                        <h6>Reply preview</h6>
+                        <MarkdownViewer content={content} minifyAssets={false}/>
+                        <hr />
+                      </div>
+                    )
+                  }
                   <div style={{ width: '100%' }}>
                     <IconButton size="medium">
                       <UploadIcon />
@@ -132,6 +163,7 @@ const BuzzFormModal = (props) => {
                       label="Reply"
                       style={{ width: 70 }}
                       className={classes.float}
+                      onClick={handleSubmitReply}
                     />
                     <CircularProgress
                       style={{ float: 'right', marginRight: 5, marginTop: 15, }}
@@ -157,4 +189,10 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(BuzzFormModal)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    publishReplyRequest,
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BuzzFormModal)

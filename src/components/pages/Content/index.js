@@ -74,9 +74,9 @@ const Content = (props) => {
     content,
     loadingContent,
     loadingReplies,
-    replies,
     clearReplies,
     user = {},
+    replies,
   } = props
 
   const { username, permlink } = match.params
@@ -101,6 +101,8 @@ const Content = (props) => {
   const payout = calculatePayout(content)
 
   const { name } = getProfileMetaData(profile)
+
+
 
   if(json_metadata) {
     try{
@@ -178,12 +180,17 @@ const Content = (props) => {
                       voteCount={upvotes}
                       replyCount={replyCount}
                       payout={payout}
+                      replyRef="content"
                     />
                   </Col>
                 </Row>
               </div>
             </div>
-            <ReplyList replies={replies} expectedCount={replyCount} />
+            {
+              !loadingReplies && (
+                <ReplyList replies={replies} expectedCount={replyCount} />
+              )
+            }
           </React.Fragment>
         )
       }

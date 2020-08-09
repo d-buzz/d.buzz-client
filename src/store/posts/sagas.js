@@ -38,6 +38,10 @@ import {
   PUBLISH_POST_REQUEST,
   publishPostSuccess,
   publishPostFailure,
+
+  PUBLISH_REPLY_REQUEST,
+  publishReplySuccess,
+  publishReplyFailure,
 } from './actions'
 
 import {
@@ -53,6 +57,7 @@ import {
   generatePostOperations,
   broadcastOperation,
   broadcastKeychainOperation,
+  generateReplyOperation,
 } from 'services/api'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
@@ -266,7 +271,7 @@ function* publishPostRequest(payload, meta) {
       title = `${title.substr(0, 70)} ...`
     }
 
-    const operations = yield call(generatePostOperations, username, title, body, useKeychain)
+    const operations = yield call(generatePostOperations, username, title, body)
 
     let success = false
     const comment_options = operations[1]
@@ -275,7 +280,7 @@ function* publishPostRequest(payload, meta) {
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
-
+      console.log({ result })
       if(!success) {
         yield put(publishPostFailure('Unable to publish post', meta))
       }
@@ -287,7 +292,7 @@ function* publishPostRequest(payload, meta) {
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operations, [wif])
 
-      success = result
+      success = result.success
     }
 
     const data = {
@@ -299,6 +304,46 @@ function* publishPostRequest(payload, meta) {
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
     yield put(publishPostFailure(error, meta))
+  }
+}
+
+function* publishReplyRequest(payload, meta) {
+  try {
+    const { parent_author, parent_permlink, body, ref } = payload
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+
+    let replyData
+
+    let success = false
+    const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+
+    }
+
+    if(ref === 'content') {
+      const meta = operation[0]
+      const reply = yield call(fetchContent, username, meta[1].permlink)
+      const profile = yield call(fetchProfile, [username])
+      reply.profile = profile[0]
+      reply.refMeta = {
+        ref: 'content',
+      }
+      replyData = reply
+    }
+
+    const data = {
+      success,
+      reply: replyData,
+    }
+
+    yield put(publishReplySuccess(data, meta))
+  } catch(error) {
+    yield put(publishReplyFailure(error, meta))
   }
 }
 
@@ -339,6 +384,10 @@ function* watchPublishPostRequest({ payload, meta }) {
   yield call(publishPostRequest, payload, meta)
 }
 
+function* watchPublishReplyRequest({ payload, meta }) {
+  yield call(publishReplyRequest, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -350,5 +399,6 @@ export default function* sagas() {
   yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
   yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
   yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
+  yield takeEvery(PUBLISH_REPLY_REQUEST, watchPublishReplyRequest)
 }
 

@@ -115,10 +115,11 @@ const countReplies = async (replies = []) => {
 }
 
 const ReplyList = (props) => {
-  let { replies, expectedCount, user } = props
+  let { replies, expectedCount, user, append } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
+  const [repliesState, setRepliesState] = useState(replies)
 
   useEffect(() => {
     countReplies(replies)
@@ -127,6 +128,13 @@ const ReplyList = (props) => {
       })
   // eslint-disable-next-line
   }, [replies])
+
+  useEffect(() => {
+    if(append.hasOwnProperty('refMeta') && append.refMeta.ref === 'content') {
+      setRepliesState([...repliesState, append])
+    }
+  // eslint-disable-next-line
+  }, [append])
 
   const RenderReplies = ({ reply }) => {
     const {
@@ -247,7 +255,7 @@ const ReplyList = (props) => {
         )
       }
       {
-        replies.map((reply) => (
+        repliesState.map((reply) => (
           <div className={classes.wrapper}>
             <RenderReplies reply={reply} />
           </div>
@@ -258,7 +266,8 @@ const ReplyList = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.auth.get('user')
+  user: state.auth.get('user'),
+  append: state.posts.get('appendReply'),
 })
 
 export default connect(mapStateToProps)(ReplyList)

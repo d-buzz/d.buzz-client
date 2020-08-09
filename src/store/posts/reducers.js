@@ -17,6 +17,7 @@ import {
   CLEAR_REPLIES,
   UPLOAD_FILE_SUCCESS,
   PUBLISH_POST_SUCCESS,
+  PUBLISH_REPLY_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -36,6 +37,7 @@ const defaultState = fromJS({
   lastLatest: {},
   images: [],
   published: {},
+  appendReply: {},
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -76,6 +78,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('images', payload)
     case PUBLISH_POST_SUCCESS:
       return state.set('published', payload)
+    case PUBLISH_REPLY_SUCCESS:
+      return state.set('appendReply', payload.reply)
     default:
       return state
   }

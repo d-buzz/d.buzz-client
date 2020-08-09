@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
+import stripHtml from 'string-strip-html'
 
 const endpoints = [
   'https://api.openhive.network',
@@ -436,7 +437,31 @@ export const generateSubscribeOperation = (username) => {
   })
 }
 
-export const generatePostOperations = (account, title, body, useKeychain) => {
+export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
+
+  const json_metadata = createMeta()
+  let permlink = createPermlink(body.substring(0, 100))
+
+  return new Promise((resolve) => {
+
+    const op_comment = [[
+      'comment',
+      {
+        'author': account,
+        'title': '',
+        'body': `${body.trim()}`,
+        parent_author,
+        parent_permlink,
+        permlink,
+        json_metadata,
+      }
+    ]]
+
+    resolve(op_comment)
+  })
+}
+
+export const generatePostOperations = (account, title, body) => {
 
   const json_metadata = createMeta()
 
@@ -450,7 +475,7 @@ export const generatePostOperations = (account, title, body, useKeychain) => {
       'comment',
       {
         'author': account,
-        'title': title,
+        'title': stripHtml(title),
         'body': `${body.trim()}`,
         'parent_author': '',
         'parent_permlink': `${appConfig.TAG}`,
@@ -510,11 +535,15 @@ export const broadcastOperation = (operations, keys) => {
       keys,
       (error, result) => {
         if(error) {
-          console.log({ error })
-          reject(false)
+          reject({
+            success: false,
+            error,
+          })
         } else {
-          console.log({ result })
-          resolve(true)
+          resolve({
+            scucess: true,
+            result,
+          })
         }
       }
     )

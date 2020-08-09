@@ -144,6 +144,7 @@ const PostActions = (props) => {
     hasUpvoted = false,
     user,
     title = null,
+    replyRef = 'list',
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -322,6 +323,7 @@ const PostActions = (props) => {
         onHide={handleOnClose}
         author={author}
         permlink={permlink}
+        replyRef={replyRef}
       />
     </React.Fragment>
   )
