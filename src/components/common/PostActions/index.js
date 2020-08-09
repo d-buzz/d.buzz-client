@@ -3,16 +3,16 @@ import classNames from 'classnames'
 import {
   CommentIcon,
   HeartIcon,
-  FlagIcon,
   HiveIcon,
   ContainedButton,
   HeartIconRed,
+  HashtagLoader,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
-import { HashtagLoader } from 'components/elements'
+import { BuzzFormModal } from 'components'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
@@ -143,6 +143,7 @@ const PostActions = (props) => {
     upvoteRequest,
     hasUpvoted = false,
     user,
+    title = null,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -152,6 +153,7 @@ const PostActions = (props) => {
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [showSnackbar, setShowSnackBar] = useState(false)
   const { is_authenticated } = user
+  const [open, setOpen] = useState(false)
 
   const handleSnackBarClose = () => {
     setShowSnackBar(false)
@@ -183,6 +185,14 @@ const PostActions = (props) => {
         alert('upvote failure')
         setLoading(false)
       })
+  }
+
+  const handleClickReply = (author, permlink) => () => {
+    setOpen(true)
+  }
+
+  const handleOnClose = () => {
+    setOpen(false)
   }
 
 
@@ -249,6 +259,7 @@ const PostActions = (props) => {
                   inlineClass={classes.inline}
                   icon={<IconButton size="small"><CommentIcon /></IconButton>}
                   hideStats={hideStats}
+                  onClick={handleClickReply(author, permlink)}
                   stat={
                     <label style={{ marginLeft: 5, }}>
                       { replyCount }
@@ -305,6 +316,13 @@ const PostActions = (props) => {
           Succesfully upvoted <b>@{author}/{permlink}</b> at {sliderValue}%
         </Alert>
       </Snackbar>
+      <BuzzFormModal
+        title={title}
+        show={open}
+        onHide={handleOnClose}
+        author={author}
+        permlink={permlink}
+      />
     </React.Fragment>
   )
 }

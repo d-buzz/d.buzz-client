@@ -90,6 +90,7 @@ const Content = (props) => {
     children: replyCount = 0,
     active_votes,
     profile = {},
+    title = null,
   } = content || ''
 
   let meta = {}
@@ -169,6 +170,7 @@ const Content = (props) => {
                 <Row>
                   <Col>
                     <PostActions
+                      title={title}
                       author={username}
                       permlink={permlink}
                       hasUpvoted={hasUpvoted}

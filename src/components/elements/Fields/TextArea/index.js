@@ -18,13 +18,17 @@ const useStyles = createUseStyles({
 
 const TextArea = (props) => {
   const classes = useStyles()
+  const {
+    label = 'What\'s buzzing?',
+    minRows = 2,
+  } = props
 
   return (
     <React.Fragment>
       <TextareaAutosize
-        minRows={2}
+        minRows={minRows}
         maxRows={15}
-        placeholder="What's Buzzing?"
+        placeholder={label}
         className={classes.field}
         { ...props }
       />

@@ -1,7 +1,7 @@
 @media (min-width: 768px){
   .container{
     max-width:750px;
-  }  
+  }
 }
 
 @media (min-width: 992px){
@@ -9,3 +9,4 @@
     max-width:1250px;
   }
 }
+

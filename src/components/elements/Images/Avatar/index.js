@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'react-bootstrap/Image'
 
 const Avatar = (props) => {
-  const { author, height = 50, size = 'small', border = false } = props
+  const { author, height = 50, size = 'small', border = false, style = {} } = props
 
   return (
     <React.Fragment>
@@ -11,7 +11,7 @@ const Avatar = (props) => {
         roundedCircle
         height={height}
         width={height}
-        style={{ border: border ? '5px solid white' : 'none', backgroundColor: 'white' }}
+        style={{ border: border ? '5px solid white' : 'none', backgroundColor: 'white', ...style }}
       />
     </React.Fragment>
   )
