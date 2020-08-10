@@ -8,7 +8,7 @@ import {
   UploadIcon,
   HashtagLoader,
 } from 'components/elements'
-import { MarkdownViewer } from 'components'
+import { MarkdownViewer, NotificationBox } from 'components'
 import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -84,6 +84,10 @@ const CreateBuzzForm = (props) => {
   const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
   const [content, setContent] = useState('')
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [message, setMessage] = useState()
+  const [severity, setSeverity] = useState('success')
+
   const {
     user,
     uploadFileRequest,
@@ -105,6 +109,10 @@ const CreateBuzzForm = (props) => {
     setContent(value)
   }
 
+  const handleSnackBarClose = () => {
+    setShowSnackbar(false)
+  }
+
   const handleFileSelect = () => {
     inputRef.current.click()
   }
@@ -123,7 +131,12 @@ const CreateBuzzForm = (props) => {
       .then((data) => {
         if(data.success) {
           const { author, permlink } = data
+          setShowSnackbar(true)
+          setMessage('You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
+        } else {
+          setSeverity('error')
+          setMessage('You failed publishing a post')
         }
     })
   }
@@ -199,6 +212,12 @@ const CreateBuzzForm = (props) => {
 
         </div>
       </div>
+      <NotificationBox
+        show={showSnackbar}
+        message={message}
+        severity={severity}
+        onClose={handleSnackBarClose}
+      />
     </div>
   )
 }
