@@ -7,7 +7,7 @@ import stripHtml from 'string-strip-html'
 import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest } from 'store/posts/actions'
-import { MarkdownViewer, NotificationBox } from 'components'
+import { MarkdownViewer } from 'components'
 import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
@@ -134,6 +134,7 @@ const ReplyFormModal = (props) => {
     replyRef,
     treeHistory,
     loading,
+    onReplyDone,
   } = props
 
   const { username } = user
@@ -141,17 +142,10 @@ const ReplyFormModal = (props) => {
   const [content, setContent] = useState('')
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
 
   useEffect(() => {
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content])
-
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
 
   const handleOnChange = (e) => {
     const { target } = e
@@ -162,13 +156,18 @@ const ReplyFormModal = (props) => {
   const handleSubmitReply = () => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
       .then(({ success }) => {
+        console.log({ success })
         if(success) {
-          setShowSnackbar(true)
-          setMessage(`Succesfully replied to @${author}/${permlink}`)
+          onReplyDone({
+            message: `Succesfully replied to @${author}/${permlink}`,
+            severity: 'success',
+          })
           setReplyDone(true)
         } else {
-          setMessage(`Failed reply to @${author}/${permlink}`)
-          setSeverity('error')
+          onReplyDone({
+            message: `Failed reply to @${author}/${permlink}`,
+            severity: 'error',
+          })
         }
       })
   }
@@ -246,12 +245,6 @@ const ReplyFormModal = (props) => {
           </ModalBody>
         </div>
       </Modal>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }

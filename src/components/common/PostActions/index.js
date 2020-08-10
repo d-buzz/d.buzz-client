@@ -186,7 +186,7 @@ const PostActions = (props) => {
       })
       .catch(() => {
         setUpvoted(false)
-      setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
+        setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
         setSeverity('error')
         setLoading(false)
       })
@@ -199,6 +199,14 @@ const PostActions = (props) => {
   const handleOnClose = () => {
     setOpen(false)
   }
+
+  const onReplyDone = ({ message, severity }) => {
+    setShowSnackBar(true)
+    setMessage(message)
+    setSeverity(severity)
+  }
+
+  console.log({ message, severity })
 
   return (
     <React.Fragment>
@@ -329,6 +337,7 @@ const PostActions = (props) => {
         author={author}
         permlink={permlink}
         replyRef={replyRef}
+        onReplyDone={onReplyDone}
       />
     </React.Fragment>
   )
