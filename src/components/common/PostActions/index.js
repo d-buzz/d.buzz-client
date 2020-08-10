@@ -206,7 +206,6 @@ const PostActions = (props) => {
     setSeverity(severity)
   }
 
-  console.log({ message, severity })
 
   return (
     <React.Fragment>

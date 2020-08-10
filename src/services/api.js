@@ -541,7 +541,7 @@ export const broadcastOperation = (operations, keys) => {
           })
         } else {
           resolve({
-            scucess: true,
+            success: true,
             result,
           })
         }

@@ -280,7 +280,7 @@ function* publishPostRequest(payload, meta) {
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
-      console.log({ result })
+
       if(!success) {
         yield put(publishPostFailure('Unable to publish post', meta))
       }
@@ -322,7 +322,13 @@ function* publishReplyRequest(payload, meta) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
     } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
 
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      console.log({ result })
+      success = result.success
     }
 
     if(success) {
