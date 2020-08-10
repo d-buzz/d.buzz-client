@@ -8,7 +8,8 @@ import Col from 'react-bootstrap/Col'
 import {
   MarkdownViewer,
   PostTags,
-  PostActions
+  PostActions,
+  NotificationBox,
 } from 'components'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -120,6 +121,13 @@ const ReplyList = (props) => {
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [message, setMessage] = useState('')
+  const [severity, setSeverity] = useState('error')
+
+  const handleSnackBarClose = () => {
+    setShowSnackbar(false)
+  }
 
   useEffect(() => {
     countReplies(replies)
@@ -131,13 +139,15 @@ const ReplyList = (props) => {
 
   useEffect(() => {
     if(append.hasOwnProperty('refMeta')) {
-      const { refMeta } = append
+      const { refMeta, root_author, root_permlink } = append
       const { ref, treeHistory } = refMeta
 
       if(ref === 'content') {
         setRepliesState([...repliesState, append])
       } else if(ref === 'replies') {
         let tree = treeHistory
+
+        console.log({ tree })
 
         if(`${tree}`.includes('|')) {
           tree = tree.split('|')
@@ -171,6 +181,9 @@ const ReplyList = (props) => {
 
         iterableState[firstIndex] = first
         setRepliesState(iterableState)
+        setShowSnackbar(true)
+        setSeverity('success')
+        setMessage(`Succesfully replied to @${root_author}/${root_permlink}`)
       }
     }
   // eslint-disable-next-line
@@ -303,6 +316,12 @@ const ReplyList = (props) => {
           </div>
         ))
       }
+      <NotificationBox
+        show={showSnackbar}
+        message={message}
+        severity={severity}
+        onClose={handleSnackBarClose}
+      />
     </React.Fragment>
   )
 }

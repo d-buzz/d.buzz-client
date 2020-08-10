@@ -156,7 +156,6 @@ const ReplyFormModal = (props) => {
   const handleSubmitReply = () => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
       .then(({ success }) => {
-        console.log({ success })
         if(success) {
           onReplyDone({
             message: `Succesfully replied to @${author}/${permlink}`,
