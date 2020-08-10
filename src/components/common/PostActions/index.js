@@ -12,7 +12,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
-import { BuzzFormModal, NotificationBox } from 'components'
+import { ReplyFormModal, NotificationBox } from 'components'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
@@ -321,7 +321,7 @@ const PostActions = (props) => {
         severity={severity}
         onClose={handleSnackBarClose}
       />
-      <BuzzFormModal
+      <ReplyFormModal
         treeHistory={treeHistory}
         title={title}
         show={open}
