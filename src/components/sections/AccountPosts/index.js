@@ -45,6 +45,7 @@ const AccountPosts = (props) => {
               replyCount={item.children}
               meta={item.json_metadata}
               payout={item.payout}
+              payoutAt={item.payout_at}
               profile={item.profile}
               unguardedLinks={!user.is_authenticated}
             />

@@ -81,6 +81,7 @@ const Feeds = (props) => {
               meta={item.json_metadata}
               payout={item.payout}
               profile={item.profile}
+              payoutAt={item.payout_at}
             />
           ))
         }

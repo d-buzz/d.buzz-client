@@ -91,6 +91,7 @@ const Content = (props) => {
     active_votes,
     profile = {},
     title = null,
+    cashout_time,
   } = content || ''
 
   let meta = {}
@@ -187,6 +188,7 @@ const Content = (props) => {
                       voteCount={upvotes}
                       replyCount={replyCount}
                       payout={payout}
+                      payoutAt={cashout_time}
                       replyRef="content"
                     />
                   </Col>

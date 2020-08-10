@@ -17,6 +17,7 @@ import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
+import moment from 'moment'
 import { bindActionCreators } from 'redux'
 
 const PrettoSlider = withStyles({
@@ -144,6 +145,7 @@ const PostActions = (props) => {
     title = null,
     replyRef = 'list',
     treeHistory = 0,
+    payoutAt = null,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -283,7 +285,7 @@ const PostActions = (props) => {
                   }
                 />
               </Col>
-              <Col>
+              <Col xs="auto">
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
@@ -292,6 +294,7 @@ const PostActions = (props) => {
                   stat={
                     <label style={{ marginLeft: 5, }}>
                       ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }
+                      &nbsp;(Payout { moment(`${payoutAt}Z`).local().fromNow() })
                     </label>
                   }
                 />

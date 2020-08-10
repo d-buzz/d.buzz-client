@@ -200,6 +200,7 @@ const ReplyList = (props) => {
       children: replyCount,
       profile = {},
       meta,
+      cashout_time,
     } = reply
 
     const { username, is_authenticated } = user
@@ -280,6 +281,7 @@ const ReplyList = (props) => {
                     voteCount={active_votes.length}
                     replyCount={replyCount}
                     payout={payout}
+                    payoutAt={cashout_time}
                     replyRef="replies"
                   />
                 </div>

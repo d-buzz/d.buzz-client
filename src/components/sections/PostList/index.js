@@ -111,6 +111,7 @@ const PostList = (props) => {
     title = null,
     disableProfileLink = false,
     profileRef = null,
+    payoutAt = null,
    } = props
 
 
@@ -196,6 +197,7 @@ const PostList = (props) => {
                     voteCount={upvotes}
                     replyCount={replyCount}
                     payout={`${payout}`}
+                    payoutAt={payoutAt}
                   />
                 </div>
               </div>

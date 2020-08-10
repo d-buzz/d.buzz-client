@@ -42,10 +42,11 @@ const AccountReplies = (props) => {
               body={item.body}
               upvotes={item.active_votes.length}
               replyCount={item.children}
+              unguardedLinks={!user.is_authenticated}
               meta={item.json_metadata}
               payout={item.payout === 0 ? '0.00' : item.payout.toFixed(2)}
+              payoutAt={item.payout_at}
               profile={item.profile}
-              unguardedLinks={!user.is_authenticated}
             />
           ))
         }

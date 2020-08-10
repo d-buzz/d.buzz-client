@@ -12,7 +12,7 @@ import {
 } from 'components/elements'
 import { LoginModal } from 'components'
 import { createUseStyles } from 'react-jss'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useHistory, Link } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   nav: {
@@ -75,7 +75,9 @@ const AppBar = () => {
               </React.Fragment>
             )
           }
-          <BrandIcon height={30} top={-15} />
+          <Link to="/">
+            <BrandIcon height={30} top={-15} />
+          </Link>
         </Navbar.Brand>
         <Nav className="mr-auto">
           <RoundedField
