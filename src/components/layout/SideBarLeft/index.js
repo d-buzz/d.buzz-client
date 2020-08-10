@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
@@ -25,6 +25,7 @@ import { bindActionCreators } from 'redux'
 import { AiOutlinePoweroff } from 'react-icons/ai'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
+import { pollNotifRequest } from 'store/polling/actions'
 
 const useStyles = createUseStyles({
   items: {
@@ -143,7 +144,13 @@ const NavLinkWrapper = (props) => {
 }
 
 const SideBarLeft = (props) => {
-  const { user, signoutUserRequest, subscribeRequest, loading } = props
+  const {
+    user,
+    signoutUserRequest,
+    subscribeRequest,
+    loading,
+    pollNotifRequest,
+  } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
   const classes = useStyles()
@@ -176,6 +183,11 @@ const SideBarLeft = (props) => {
       icon: <ProfileIcon top={-5} />,
     },
   ]
+
+  useEffect(() => {
+    pollNotifRequest()
+    // eslint-disable-next-line
+  }, [])
 
   const handleClickLogout = () => {
     signoutUserRequest()
@@ -276,6 +288,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     signoutUserRequest,
     subscribeRequest,
+    pollNotifRequest,
   }, dispatch)
 })
 

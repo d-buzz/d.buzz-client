@@ -1,13 +1,12 @@
-import { put, call, takeLatest, race, delay } from 'redux-saga/effects'
+import { put, call, takeLatest, take, race, delay } from 'redux-saga/effects'
 import { getAccountNotifications } from 'services/api'
 import {
   POLL_NOTIF_REQUEST,
-  POLL_NOTIF_FAILURE,
   pollNotifSuccess,
   pollNotifFailure
 } from './actions'
 
-const POLLING_DELAY = 60000
+const POLLING_DELAY = 120000
 
 function* poll() {
   while (true) {
@@ -15,9 +14,8 @@ function* poll() {
       const notification = yield call(getAccountNotifications)
       console.log({ notification })
       yield put(pollNotifSuccess(notification))
-      yield call(delay, POLLING_DELAY)
+      yield delay(POLLING_DELAY)
     } catch (error) {
-      // If there's an error, polling will stop.
       yield put(pollNotifFailure(error))
     }
   }
@@ -25,7 +23,7 @@ function* poll() {
 
 function* watchPollingTasks() {
   while (true) {
-    yield race([call(poll), takeLatest(POLL_NOTIF_FAILURE)])
+    yield race([call(poll)])
   }
 }
 
