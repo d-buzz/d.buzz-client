@@ -55,7 +55,7 @@ export const callBridge = async(method, params) => {
   })
 }
 
-export const getUnredNotificationsCount = async(account) => {
+export const getUnreadNotificationsCount = async(account) => {
   return new Promise((resolve, reject) => {
     const params = { account }
     api.call('bridge.unread_notifications', params, (err, data) => {

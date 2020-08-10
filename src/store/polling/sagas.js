@@ -7,7 +7,7 @@ import {
 } from './actions'
 import {
   getAccountNotifications,
-  getUnredNotificationsCount
+  getUnreadNotificationsCount
 } from 'services/api'
 
 const POLLING_DELAY = 120000
@@ -16,10 +16,10 @@ function* poll() {
   while (true) {
     try {
       const user = yield select(state => state.auth.get('user'))
-      const { username } = user
-
+      // const { username } = user
+      const username = 'chrisrice'
       const notification = yield call(getAccountNotifications, username)
-      const count = yield call(getUnredNotificationsCount, username)
+      const count = yield call(getUnreadNotificationsCount, username)
 
       yield put(pollNotifSuccess(notification))
       yield put(pollNotifCount(count))
