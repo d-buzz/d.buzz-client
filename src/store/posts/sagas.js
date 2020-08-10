@@ -59,6 +59,7 @@ import {
   broadcastKeychainOperation,
   generateReplyOperation,
 } from 'services/api'
+import stripHtml from 'string-strip-html'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
 function* getRepliesRequest(payload, meta) {
@@ -265,7 +266,7 @@ function* publishPostRequest(payload, meta) {
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
-    let title = body
+    let title = stripHtml(body)
 
     if(title.length > 70) {
       title = `${title.substr(0, 70)} ...`
