@@ -149,6 +149,7 @@ const PostActions = (props) => {
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
   const [vote, setVote] = useState(voteCount)
+  const [replyStateCount, setReplyStateCount] = useState(replyCount)
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [showSnackbar, setShowSnackBar] = useState(false)
@@ -201,6 +202,9 @@ const PostActions = (props) => {
   }
 
   const onReplyDone = ({ message, severity }) => {
+    if(severity === 'success') {
+      setReplyStateCount(replyStateCount+1)
+    }
     setShowSnackBar(true)
     setMessage(message)
     setSeverity(severity)
@@ -273,7 +277,7 @@ const PostActions = (props) => {
                   onClick={handleClickReply(author, permlink)}
                   stat={
                     <label style={{ marginLeft: 5, }}>
-                      { replyCount }
+                      { replyStateCount }
                     </label>
                   }
                 />
