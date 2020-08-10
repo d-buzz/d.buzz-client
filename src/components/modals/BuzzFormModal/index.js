@@ -8,6 +8,7 @@ import stripHtml from 'string-strip-html'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
+import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -74,8 +75,8 @@ const useStyles = createUseStyles({
     color: '#e53935',
   },
   previewContainer: {
-    width: '100%',
     height: 'max-content',
+    wordBreak: 'break-all !important',
     paddingBottom: 10,
     '& img': {
       border: '1px solid #ccd6dd',
@@ -147,11 +148,12 @@ const BuzzFormModal = (props) => {
                     onKeyDown={handleOnChange}
                     onChange={handleOnChange}
                   />
+                  <br />
                   {
                     content.length !== 0 && (
-                      <div className={classes.previewContainer}>
+                      <div style={{ width: 520 }} className={classes.previewContainer}>
                         <h6>Reply preview</h6>
-                        <MarkdownViewer content={content} minifyAssets={false}/>
+                        <MarkdownViewer content={content} minifyAssets={false} onModal={true}/>
                         <hr />
                       </div>
                     )

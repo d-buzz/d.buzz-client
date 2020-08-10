@@ -23,6 +23,7 @@ const renderer = new DefaultRenderer({
 
 const useStyles = createUseStyles({
   markdown: {
+    wordBreak: 'break-all !important',
     '& a': {
       wordWrap: 'break-word',
       color: '#d32f2f !important',
@@ -107,20 +108,26 @@ const prepareImages = (content) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  let { content = '', minifyAssets = true } = props
+  let { content = '', minifyAssets = true, onModal = false } = props
   const original = content
   content = prepareImages(content)
   content = renderer.render(content)
 
   let assetClass = classes.minified
+  let style = {}
 
   if(!minifyAssets) {
     assetClass = classes.full
   }
 
+  if(onModal) {
+    style = { width: 520 }
+  }
+
   return (
     <React.Fragment>
       <div
+        style={style}
         className={classNames(classes.markdown, assetClass)}
         dangerouslySetInnerHTML={{ __html: content }}
       />
