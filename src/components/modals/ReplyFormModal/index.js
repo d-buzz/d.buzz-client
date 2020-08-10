@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
-import { HashtagLoader } from 'components/elements'
+import { HashtagLoader, CloseIcon } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -191,6 +191,9 @@ const ReplyFormModal = (props) => {
     <React.Fragment>
       <Modal show={show && !replyDone} onHide={onHide} dialogClassName={classes.modal}>
         <div className="container">
+          <IconButton style={{ marginTop: 15 }} onClick={onHide}>
+            <CloseIcon />
+          </IconButton>
           <ModalBody className={classes.modalBody}>
             <div className={classes.left}>
               <Avatar author={author} className={classes.avatar}/>
