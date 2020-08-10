@@ -293,7 +293,7 @@ const PostActions = (props) => {
                   hideStats={false}
                   stat={
                     <Chip
-                      style={{ border: '1px solid #e53935' }}
+                      style={{ border: '1px solid #e53935', marginTop: -5, }}
                       size='small'
                       icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
                       label={
