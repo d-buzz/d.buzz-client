@@ -73,6 +73,20 @@ const useStyles = createUseStyles({
       marginTop: 5,
       border: '1px solid #ccd6dd',
     },
+  },
+  modalAssets: {
+    '& iframe': {
+      height: 300,
+      width: 520,
+      border: '1px solid #ccd6dd',
+    },
+    '& img': {
+      height: 300,
+      width: 520,
+      objectFit: 'cover',
+      marginTop: 5,
+      border: '1px solid #ccd6dd',
+    },
   }
 })
 
@@ -123,6 +137,7 @@ const MarkdownViewer = (props) => {
   if(onModal) {
     style = { width: 520 }
   }
+
 
   return (
     <React.Fragment>

@@ -15,15 +15,16 @@ import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles({
   modal: {
+    width: 630,
     backgroundColor: 'none',
-    '& div': {
-      width: 600,
+    '& div.modal-content': {
+      width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
     }
   },
   inner: {
-    width: '95%',
+    width: '99%',
     minHeight: 250,
     margin: '0 auto !important',
     backgroundColor: 'white'
@@ -85,6 +86,7 @@ const useStyles = createUseStyles({
     '& iframe': {
       border: '1px solid #ccd6dd',
       borderRadius: '10px 10px',
+      width: '100% !important',
     },
   }
 })
@@ -125,63 +127,59 @@ const BuzzFormModal = (props) => {
   return (
     <React.Fragment>
       <Modal show={show} onHide={onHide} dialogClassName={classes.modal}>
-        <div className={classes.inner}>
-          <div style={{ width: '95%', margin: '0 auto', heigt: 'max-content'}}>
-            <ModalBody className="show-grid">
-              <Row>
-                <div style={{ width: 'max-content', display: 'inline-block' }}>
-                  <Avatar author={author} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
-                  <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: 60, flexGrow: 1, }} />
-                  <Avatar author={username} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
-                </div>
-                <div style={{ width: 520, display: 'inline-block', maarginLeft: 5, paddingLeft: 5, }}>
-                  <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
-                  <div style={{ height: 70, width: 500, }}>
-                    <p style={{ paddingBottom: 0 }}>{stripHtml(`${title}`)}</p>
+        <div className="container">
+          <ModalBody style={{ paddingLeft: 0, paddingRight: 0 }}>
+            <div style={{ width: 'max-content', display: 'inline-block', verticalAlign: 'top' }}>
+              <Avatar author={author} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
+              <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: 60, flexGrow: 1, }} />
+              <Avatar author={username} style={{ width: '60', paddingRight: 0, marginRight: 0 }} />
+            </div>
+            <div style={{ width: 520, display: 'inline-block', marginLeft: 5, paddingLeft: 5, verticalAlign: 'top' }}>
+              <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
+              <div style={{ height: 70, width: 500, }}>
+                <p style={{ paddingBottom: 0 }}>{stripHtml(`${title}`)}</p>
+              </div>
+              <TextArea
+                minRows={3}
+                maxlength="280"
+                label="Buzz your reply"
+                value={content}
+                onKeyUp={handleOnChange}
+                onKeyDown={handleOnChange}
+                onChange={handleOnChange}
+              />
+              <br />
+              {
+                content.length !== 0 && (
+                  <div style={{ width: 520 }} className={classes.previewContainer}>
+                    <h6>Reply preview</h6>
+                    <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                    <hr />
                   </div>
-                  <TextArea
-                    minRows={3}
-                    maxlength="280"
-                    label="Buzz your reply"
-                    value={content}
-                    onKeyUp={handleOnChange}
-                    onKeyDown={handleOnChange}
-                    onChange={handleOnChange}
-                  />
-                  <br />
-                  {
-                    content.length !== 0 && (
-                      <div style={{ width: 520 }} className={classes.previewContainer}>
-                        <h6>Reply preview</h6>
-                        <MarkdownViewer content={content} minifyAssets={false} onModal={true}/>
-                        <hr />
-                      </div>
-                    )
-                  }
-                  <div style={{ width: '100%' }}>
-                    <IconButton size="medium">
-                      <UploadIcon />
-                    </IconButton>
-                    <ContainedButton
-                      label="Reply"
-                      style={{ width: 70 }}
-                      className={classes.float}
-                      onClick={handleSubmitReply}
-                    />
-                    <CircularProgress
-                      style={{ float: 'right', marginRight: 5, marginTop: 15, }}
-                      classes={{
-                        circle: classes.circle,
-                      }}
-                      size={30}
-                      value={wordCount}
-                      variant="static"
-                    />
-                  </div>
-                </div>
-              </Row>
-            </ModalBody>
-          </div>
+                )
+              }
+              <div style={{ width: '100%' }}>
+                <IconButton size="medium">
+                  <UploadIcon />
+                </IconButton>
+                <ContainedButton
+                  label="Reply"
+                  style={{ width: 70 }}
+                  className={classes.float}
+                  onClick={handleSubmitReply}
+                />
+                <CircularProgress
+                  style={{ float: 'right', marginRight: 5, marginTop: 15, }}
+                  classes={{
+                    circle: classes.circle,
+                  }}
+                  size={30}
+                  value={wordCount}
+                  variant="static"
+                />
+              </div>
+            </div>
+          </ModalBody>
         </div>
       </Modal>
     </React.Fragment>
