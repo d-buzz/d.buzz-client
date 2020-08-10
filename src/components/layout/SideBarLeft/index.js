@@ -19,6 +19,7 @@ import {
 import {
   BuzzFormModal
 } from 'components'
+import Badge from '@material-ui/core/Badge'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -175,7 +176,7 @@ const SideBarLeft = (props) => {
     {
       name: 'Notifications',
       path: '/notifications',
-      icon: <NotificationsIcon top={-5} />,
+      icon: <Badge badgeContent={4} color="secondary"><NotificationsIcon top={-5} /></Badge>
     },
     {
       name: 'Profile',
