@@ -62,7 +62,7 @@ const UnguardedAppFrame = (props) => {
     <React.Fragment>
       <Row>
         <Col xs={8} className={classes.clearPadding}>
-          <div style={{ paddingTop: 25 }} className={classes.main}>
+          <div style={{ paddingTop: 60 }} className={classes.main}>
             <React.Fragment>
               { renderRoutes(route.routes) }
             </React.Fragment>
@@ -72,7 +72,7 @@ const UnguardedAppFrame = (props) => {
           <Sticky>
             {
               ({ style }) => (
-                <div style={style}>
+                <div style={{ ...style, paddingTop: 60, }}>
                   <SideBarRight hideSearchBar={true} />
                 </div>
               )

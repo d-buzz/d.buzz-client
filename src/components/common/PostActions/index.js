@@ -272,8 +272,9 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<IconButton size="small"><CommentIcon /></IconButton>}
+                  icon={<IconButton size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
                   hideStats={hideStats}
+                  disabled={!is_authenticated}
                   onClick={handleClickReply(author, permlink)}
                   stat={
                     <label style={{ marginLeft: 5, }}>
