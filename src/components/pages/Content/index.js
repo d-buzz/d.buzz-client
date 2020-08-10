@@ -99,6 +99,7 @@ const Content = (props) => {
   let hasUpvoted = false
 
   const payout = calculatePayout(content)
+  const { is_authenticated } = user
 
   const { name } = getProfileMetaData(profile)
 
@@ -111,7 +112,7 @@ const Content = (props) => {
 
   if(active_votes) {
     upvotes = active_votes.filter((vote) => vote.weight >= 0).length
-    if(user.is_authenticated) {
+    if(is_authenticated) {
       hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
     }
   }
@@ -123,6 +124,14 @@ const Content = (props) => {
     getRepliesRequest(username, permlink)
   // eslint-disable-next-line
   }, [])
+
+  const generateAuthorLink = () => {
+    let link = `/@${author}`
+    if(!is_authenticated) {
+      link = `/ug${link}`
+    }
+    return link
+  }
 
   return (
     <React.Fragment>
@@ -137,7 +146,7 @@ const Content = (props) => {
                   </Col>
                   <Col style={{ paddingLeft: 10, }}>
                     <div style={{ marginTop: 2, }}>
-                      <Link to={`/@${author}`} className={classes.link}>
+                      <Link to={generateAuthorLink} className={classes.link}>
                         <p className={classes.name}>
                           { name ? name : `@${author}` }
                         </p>

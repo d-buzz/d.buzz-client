@@ -14,6 +14,7 @@ const AccountReplies = (props) => {
     last,
     author,
     getAccountRepliesRequest,
+    user,
   } = props
 
   const loadMorePosts = () => {
@@ -44,6 +45,7 @@ const AccountReplies = (props) => {
               meta={item.json_metadata}
               payout={item.payout === 0 ? '0.00' : item.payout.toFixed(2)}
               profile={item.profile}
+              unguardedLinks={!user.is_authenticated}
             />
           ))
         }
@@ -61,6 +63,7 @@ const mapStateToProps = (state) => ({
   items: state.profile.get('replies'),
   loading: pending(state, 'GET_ACCOUNT_REPLIES_REQUEST'),
   last: state.profile.get('lastReply'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

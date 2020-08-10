@@ -229,8 +229,12 @@ const ReplyList = (props) => {
 
     let hasUpvoted = false
 
+    let authorLink = `/@${author}`
+
     if(is_authenticated) {
       hasUpvoted = active_votes.filter((vote) => vote.voter === username).length !== 0
+    } else {
+      authorLink = `/ug${authorLink}`
     }
 
     const title = body.substring(0, 100)
@@ -253,7 +257,7 @@ const ReplyList = (props) => {
             <Col>
               <div className={classes.right}>
                 <div className={classes.content}>
-                  <Link to={`/@${author}?ref=replies`} className={classes.link}>
+                  <Link to={`${authorLink}?ref=replies`} className={classes.link}>
                     <p className={classes.name}>
                       { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
                     </p>

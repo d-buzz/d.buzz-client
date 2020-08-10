@@ -116,6 +116,12 @@ const PostList = (props) => {
 
    let hasUpvoted = false
    const history = useHistory()
+   let authorLink = `/@${author}${'?ref='+profileRef}`
+
+   if(unguardedLinks) {
+     authorLink = `ug${authorLink}`
+   }
+
 
    if(user.is_authenticated) {
      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
@@ -126,7 +132,7 @@ const PostList = (props) => {
   const generateLink = (author, permlink) =>  {
    let link = ''
     if(unguardedLinks) {
-      link = 'ug'
+      link = '/ug'
     }
 
     link += `/@${author}/c/${permlink}`
@@ -163,7 +169,7 @@ const PostList = (props) => {
                   <label className={classes.name}>
                     {
                       !disableProfileLink && (
-                        <Link to={`/@${author}${'?ref='+profileRef}`}>
+                        <Link to={authorLink}>
                           { name ? name : `@${author}`}
                         </Link>
                       )

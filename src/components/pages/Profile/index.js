@@ -126,6 +126,7 @@ const Profile = (props) => {
     getFollowingRequest,
     clearAccountFollowers,
     clearAccountFollowing,
+    user,
   } = props
 
   const history = useHistory()
@@ -149,8 +150,12 @@ const Profile = (props) => {
     } else if (index === 3) {
       tab = 'following'
     }
-
-    history.push(`/@${username}/t/${tab}/`)
+    const { is_authenticated } = user
+    if(is_authenticated) {
+      history.push(`/@${username}/t/${tab}/`)
+    } else {
+      history.push(`/ug/@${username}/t/${tab}/`)
+    }
   }
 
   const { params } = match
@@ -291,6 +296,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_PROFILE_REQUEST'),
   profile: state.profile.get('profile'),
   isVisited: state.profile.get('isProfileVisited'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

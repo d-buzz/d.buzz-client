@@ -14,6 +14,7 @@ const AccountPosts = (props) => {
     getAccountPostsRequest,
     author,
     last,
+    user,
   } = props
 
   const loadMorePosts = () => {
@@ -45,6 +46,7 @@ const AccountPosts = (props) => {
               meta={item.json_metadata}
               payout={item.payout}
               profile={item.profile}
+              unguardedLinks={!user.is_authenticated}
             />
           ))
         }
@@ -61,7 +63,8 @@ const AccountPosts = (props) => {
 const mapStateToProps = (state) => ({
   items: state.profile.get('posts'),
   loading: pending(state, 'GET_ACCOUNT_POSTS_REQUEST'),
-  last: state.profile.get('last')
+  last: state.profile.get('last'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
