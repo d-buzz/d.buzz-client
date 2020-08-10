@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Avatar, TextArea, ContainedButton, UploadIcon } from 'components/elements'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
@@ -6,7 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import stripHtml from 'string-strip-html'
 import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { publishReplyRequest } from 'store/posts/actions'
+import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
 import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
@@ -135,10 +135,12 @@ const ReplyFormModal = (props) => {
     treeHistory,
     loading,
     onReplyDone,
+    uploadFileRequest,
+    uploading,
   } = props
 
   const { username } = user
-
+  const inputRef = useRef(null)
   const [content, setContent] = useState('')
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
@@ -152,6 +154,20 @@ const ReplyFormModal = (props) => {
     const { value } = target
     setContent(value)
   }
+
+  const handleFileSelect = () => {
+    inputRef.current.click()
+  }
+
+  const handleFileSelectChange = (event) => {
+    const files = event.target.files[0]
+    uploadFileRequest(files).then((images) => {
+      const lastImage = images[images.length-1]
+      const contentAppend = `${content} ${lastImage}`
+      setContent(contentAppend)
+    })
+  }
+
 
   const handleSubmitReply = () => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
@@ -209,6 +225,16 @@ const ReplyFormModal = (props) => {
                   />
                 )
               }
+              {
+                uploading && (
+                  <div style={{ width: '100%'}}>
+                    <Box  position="relative" display="inline-flex">
+                      <HashtagLoader top={0} size={20} loading={uploading} />&nbsp;
+                      <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
+                    </Box>
+                  </div>
+                )
+              }
               <br />
               {
                 content.length !== 0 && (
@@ -220,7 +246,14 @@ const ReplyFormModal = (props) => {
                 )
               }
               <div style={{ width: '100%' }}>
-                <IconButton size="medium">
+                <input
+                  type='file'
+                  accept='image/*'
+                  ref={inputRef}
+                  onChange={handleFileSelectChange}
+                  style={{ display: 'none' }}
+                />
+                <IconButton size="medium" onClick={handleFileSelect}>
                   <UploadIcon />
                 </IconButton>
                 <ContainedButton
@@ -250,12 +283,14 @@ const ReplyFormModal = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
-  loading: pending(state, 'PUBLISH_REPLY_REQUEST')
+  loading: pending(state, 'PUBLISH_REPLY_REQUEST'),
+  uploading: pending(state, 'UPLOAD_FILE_REQUEST')
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     publishReplyRequest,
+    uploadFileRequest,
   }, dispatch)
 })
 
