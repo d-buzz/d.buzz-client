@@ -55,6 +55,19 @@ export const callBridge = async(method, params) => {
   })
 }
 
+export const getAccountNotifications = async() => {
+  return new Promise((resolve, reject) => {
+    const params = { account:'chrisrice', limit:100 }
+    api.call('bridge.account_notifications', params, (err, data) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+
 export const getCommunityRole = async(observer) => {
   return new Promise((resolve, reject) => {
     const params = { "name": `${appConfig.TAG}`, observer }
