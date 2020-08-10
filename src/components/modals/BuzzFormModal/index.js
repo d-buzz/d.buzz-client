@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Avatar, TextArea, ContainedButton, UploadIcon } from 'components/elements'
-import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
 import stripHtml from 'string-strip-html'
+import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
@@ -12,6 +12,7 @@ import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles({
   modal: {
@@ -103,12 +104,14 @@ const BuzzFormModal = (props) => {
     publishReplyRequest,
     replyRef,
     treeHistory,
+    loading,
   } = props
 
   const { username } = user
 
   const [content, setContent] = useState('')
   const [wordCount, setWordCount] = useState(0)
+  const [replyDone, setReplyDone] = useState(false)
 
   useEffect(() => {
     setWordCount(Math.floor((content.length/280) * 100))
@@ -122,11 +125,16 @@ const BuzzFormModal = (props) => {
 
   const handleSubmitReply = () => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
+      .then(({ success }) => {
+        if(success) {
+          setReplyDone(true)
+        }
+      })
   }
 
   return (
     <React.Fragment>
-      <Modal show={show} onHide={onHide} dialogClassName={classes.modal}>
+      <Modal show={show && !replyDone} onHide={onHide} dialogClassName={classes.modal}>
         <div className="container">
           <ModalBody style={{ paddingLeft: 0, paddingRight: 0 }}>
             <div style={{ width: 'max-content', display: 'inline-block', verticalAlign: 'top' }}>
@@ -139,15 +147,29 @@ const BuzzFormModal = (props) => {
               <div style={{ height: 70, width: 500, }}>
                 <p style={{ paddingBottom: 0 }}>{stripHtml(`${title}`)}</p>
               </div>
-              <TextArea
-                minRows={3}
-                maxlength="280"
-                label="Buzz your reply"
-                value={content}
-                onKeyUp={handleOnChange}
-                onKeyDown={handleOnChange}
-                onChange={handleOnChange}
-              />
+              {
+                loading && (
+                  <div style={{ width: '100%', paddingTop: 10, }}>
+                    <Box  position="relative" display="inline-flex">
+                      <HashtagLoader top={0} size={20} loading={true} />&nbsp;
+                      <label style={{ marginTop: -3 }}>Broadcasting your reply to the network, please wait ...</label>&nbsp;
+                    </Box>
+                  </div>
+                )
+              }
+              {
+                !loading && (
+                  <TextArea
+                    minRows={3}
+                    maxlength="280"
+                    label="Buzz your reply"
+                    value={content}
+                    onKeyUp={handleOnChange}
+                    onKeyDown={handleOnChange}
+                    onChange={handleOnChange}
+                  />
+                )
+              }
               <br />
               {
                 content.length !== 0 && (
@@ -167,6 +189,7 @@ const BuzzFormModal = (props) => {
                   style={{ width: 70 }}
                   className={classes.float}
                   onClick={handleSubmitReply}
+                  disabled={loading}
                 />
                 <CircularProgress
                   style={{ float: 'right', marginRight: 5, marginTop: 15, }}
@@ -188,6 +211,7 @@ const BuzzFormModal = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  loading: pending(state, 'PUBLISH_REPLY_REQUEST')
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -12,14 +12,12 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
-import { BuzzFormModal } from 'components'
+import { BuzzFormModal, NotificationBox } from 'components'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Snackbar from '@material-ui/core/Snackbar'
-import Alert from '@material-ui/lab/Alert'
 
 const PrettoSlider = withStyles({
   root: {
@@ -154,6 +152,8 @@ const PostActions = (props) => {
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [showSnackbar, setShowSnackBar] = useState(false)
+  const [message, setMessage] = useState()
+  const [severity, setSeverity] = useState('success')
   const { is_authenticated } = user
   const [open, setOpen] = useState(false)
 
@@ -182,9 +182,12 @@ const PostActions = (props) => {
         setVote(vote + 1)
         setUpvoted(true)
         setLoading(false)
+        setMessage(`Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
       })
       .catch(() => {
-        alert('upvote failure')
+        setUpvoted(false)
+      setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
+        setSeverity('error')
         setLoading(false)
       })
   }
@@ -196,7 +199,6 @@ const PostActions = (props) => {
   const handleOnClose = () => {
     setOpen(false)
   }
-
 
   return (
     <React.Fragment>
@@ -313,11 +315,12 @@ const PostActions = (props) => {
           </div>
         )
       }
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} style={{ width: 300 }} open={showSnackbar} autoHideDuration={6000} onClose={handleSnackBarClose}>
-        <Alert onClose={handleSnackBarClose} severity="success">
-          Succesfully upvoted <b>@{author}/{permlink}</b> at {sliderValue}%
-        </Alert>
-      </Snackbar>
+      <NotificationBox
+        show={showSnackbar}
+        message={message}
+        severity={severity}
+        onClose={handleSnackBarClose}
+      />
       <BuzzFormModal
         treeHistory={treeHistory}
         title={title}
