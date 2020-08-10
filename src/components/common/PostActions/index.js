@@ -16,8 +16,9 @@ import { ReplyFormModal, NotificationBox } from 'components'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
-import { connect } from 'react-redux'
 import moment from 'moment'
+import { connect } from 'react-redux'
+import Chip from '@material-ui/core/Chip'
 import { bindActionCreators } from 'redux'
 
 const PrettoSlider = withStyles({
@@ -289,13 +290,20 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<IconButton size="small"><HiveIcon /></IconButton>}
                   hideStats={false}
                   stat={
-                    <label style={{ marginLeft: 5, }}>
-                      ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }
-                      &nbsp;(Payout { moment(`${payoutAt}Z`).local().fromNow() })
-                    </label>
+                    <Chip
+                      style={{ border: '1px solid #e53935' }}
+                      size='small'
+                      icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
+                      label={
+                        <span style={{ color: '#e53935' }}>
+                          ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout } { moment(`${payoutAt}Z`).local().fromNow() }
+                        </span>
+                      }
+                      color="secondary"
+                      variant="outlined"
+                    />
                   }
                 />
               </Col>
