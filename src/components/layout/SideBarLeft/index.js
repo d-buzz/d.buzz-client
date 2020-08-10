@@ -151,6 +151,7 @@ const SideBarLeft = (props) => {
     subscribeRequest,
     loading,
     pollNotifRequest,
+    count = 0,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -176,7 +177,7 @@ const SideBarLeft = (props) => {
     {
       name: 'Notifications',
       path: '/notifications',
-      icon: <Badge badgeContent={4} color="secondary"><NotificationsIcon top={-5} /></Badge>
+      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>
     },
     {
       name: 'Profile',
@@ -283,6 +284,7 @@ const SideBarLeft = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'SUBSCRIBE_REQUEST'),
+  count: state.polling.get('count'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -55,9 +55,22 @@ export const callBridge = async(method, params) => {
   })
 }
 
-export const getAccountNotifications = async() => {
+export const getUnredNotificationsCount = async(account) => {
   return new Promise((resolve, reject) => {
-    const params = { account:'chrisrice', limit:100 }
+    const params = { account }
+    api.call('bridge.unread_notifications', params, (err, data) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+
+export const getAccountNotifications = async(account) => {
+  return new Promise((resolve, reject) => {
+    const params = { account, limit:100 }
     api.call('bridge.account_notifications', params, (err, data) => {
       if(err) {
         reject(err)

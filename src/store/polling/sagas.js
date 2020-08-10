@@ -1,19 +1,28 @@
-import { put, call, takeLatest, take, race, delay } from 'redux-saga/effects'
-import { getAccountNotifications } from 'services/api'
+import { put, call, takeLatest, select, race, delay } from 'redux-saga/effects'
 import {
   POLL_NOTIF_REQUEST,
   pollNotifSuccess,
-  pollNotifFailure
+  pollNotifFailure,
+  pollNotifCount,
 } from './actions'
+import {
+  getAccountNotifications,
+  getUnredNotificationsCount
+} from 'services/api'
 
 const POLLING_DELAY = 120000
 
 function* poll() {
   while (true) {
     try {
-      const notification = yield call(getAccountNotifications)
-      console.log({ notification })
+      const user = yield select(state => state.auth.get('user'))
+      const { username } = user
+
+      const notification = yield call(getAccountNotifications, username)
+      const count = yield call(getUnredNotificationsCount, username)
+
       yield put(pollNotifSuccess(notification))
+      yield put(pollNotifCount(count))
       yield delay(POLLING_DELAY)
     } catch (error) {
       yield put(pollNotifFailure(error))
