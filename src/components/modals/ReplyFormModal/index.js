@@ -191,10 +191,13 @@ const ReplyFormModal = (props) => {
     <React.Fragment>
       <Modal show={show && !replyDone} onHide={onHide} dialogClassName={classes.modal}>
         <div className="container">
-          <IconButton style={{ marginTop: 15 }} onClick={onHide}>
-            <CloseIcon />
-          </IconButton>
           <ModalBody className={classes.modalBody}>
+            <div style={{ width: '100%'}}>
+              <IconButton style={{ marginTop: -5 }} onClick={onHide}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <hr />
             <div className={classes.left}>
               <Avatar author={author} className={classes.avatar}/>
               <div className={classes.thread} />

@@ -24,6 +24,10 @@ const useStyles = createUseStyles({
     width: '100%',
     borderBottom: '10px solid #e6ecf0',
   },
+  containerModal: {
+    width: '100%',
+    borderTop: '1px solid #e6ecf0',
+  },
   row: {
     width: '98%',
     margin: '0 auto',
@@ -95,9 +99,18 @@ const CreateBuzzForm = (props) => {
     images,
     loading,
     publishing,
+    modal = false,
+    hideModalCallback = () => {},
   } = props
 
   const history = useHistory()
+  let containerClass = classes.container
+  let minRows = 2
+
+  if(modal) {
+    containerClass = classes.containerModal
+    minRows = 5
+  }
 
   useEffect(() => {
     setWordCount(Math.floor((content.length/280) * 100))
@@ -132,6 +145,7 @@ const CreateBuzzForm = (props) => {
         if(data.success) {
           const { author, permlink } = data
           setShowSnackbar(true)
+          hideModalCallback()
           setMessage('You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
@@ -142,7 +156,7 @@ const CreateBuzzForm = (props) => {
   }
 
   return (
-    <div className={classes.container}>
+    <div className={containerClass}>
       <div className={classes.row}>
         <div className={classNames(classes.inline, classes.left)}>
           <Avatar author={user.username} />
@@ -157,7 +171,7 @@ const CreateBuzzForm = (props) => {
               </div>
             )
           }
-          { !publishing && (<TextArea maxlength="280" value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          { !publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           {
             loading && (
               <div style={{ width: '100%'}}>

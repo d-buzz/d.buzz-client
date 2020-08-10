@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
@@ -16,6 +16,9 @@ import {
   ContainedButton,
   Avatar,
 } from 'components/elements'
+import {
+  BuzzFormModal
+} from 'components'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -142,6 +145,7 @@ const NavLinkWrapper = (props) => {
 const SideBarLeft = (props) => {
   const { user, signoutUserRequest, subscribeRequest, loading } = props
   const { username, is_subscribe } = user || ''
+  const [open, setOpen] = useState(false)
   const classes = useStyles()
   const location = useLocation()
 
@@ -181,6 +185,14 @@ const SideBarLeft = (props) => {
     subscribeRequest()
   }
 
+  const handleClickBuzz = () => {
+    setOpen(true)
+  }
+
+  const onHide = () => {
+    setOpen(false)
+  }
+
   return (
     <React.Fragment>
       <div style={{ height: '100vh', width: '50px' }}>
@@ -216,7 +228,12 @@ const SideBarLeft = (props) => {
                   />
                 )
               }
-              <ContainedButton fontSize={18} label="Buzz" className={classes.sideBarButton} />
+              <ContainedButton
+                 fontSize={18}
+                 label="Buzz"
+                 className={classes.sideBarButton}
+                 onClick={handleClickBuzz}
+              />
             </div>
             <div className={classes.bottom}>
               <div className={classes.avatarWrapper} onClick={handleClickLogout}>
@@ -245,6 +262,7 @@ const SideBarLeft = (props) => {
           </LinkContainer>
         </Nav>
       </div>
+      <BuzzFormModal show={open}  onHide={onHide} />
     </React.Fragment>
   )
 }
