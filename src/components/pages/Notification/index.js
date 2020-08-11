@@ -104,6 +104,20 @@ const Notification = (props) => {
     return author
   }
 
+  const generateNotifLink = (type, url) => {
+    let link
+    const split = url.split('/')
+
+    if(type !== 'follow') {
+      link = `/${split[0]}/c/${split[1]}`
+    } else {
+      link = `/${split[0]}/t/buzz`
+    }
+
+
+    return link
+  }
+
   return (
     <React.Fragment>
       {
@@ -121,7 +135,8 @@ const Notification = (props) => {
                     <div className={classes.right}>
                       <div className={classes.content}>
                         <label className={classes.username}>
-                          { item.msg }
+                          { item.msg } <br />
+                          { generateNotifLink(item.type, item.url) }
                         </label>
                       </div>
                     </div>
