@@ -5,16 +5,12 @@ export const POLL_NOTIF_FAILURE = 'POLL_NOTIF_FAILURE'
 export const POLL_NOTIF_COUNT = 'POLL_NOTIF_COUNT'
 
 export const pollNotifRequest = () => ({
-  type: POLL_NOTIF_REQUEST,
-  meta: {
-    thunk: true,
-  }
+  type: POLL_NOTIF_REQUEST
 })
 
-export const pollNotifSuccess = (response, meta) => ({
+export const pollNotifSuccess = (response) => ({
   type: POLL_NOTIF_SUCCESS,
   payload: response,
-  meta,
 })
 
 export const pollNotifFailure = (error) => ({

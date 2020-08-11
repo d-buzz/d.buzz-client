@@ -213,6 +213,11 @@ const PostActions = (props) => {
     setSeverity(severity)
   }
 
+  const getPayoutDate = (date) => {
+    const semantic =  moment(`${date}Z`).local().fromNow()
+    return semantic !== '51 years ago' ? semantic : ''
+  }
+
 
   return (
     <React.Fragment>
@@ -298,7 +303,8 @@ const PostActions = (props) => {
                       icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
                       label={
                         <span style={{ color: '#e53935' }}>
-                          ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout } { moment(`${payoutAt}Z`).local().fromNow() }
+                          ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }&nbsp;
+                          { getPayoutDate(payoutAt) }
                         </span>
                       }
                       color="secondary"

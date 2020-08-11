@@ -10,18 +10,18 @@ import {
   getUnreadNotificationsCount
 } from 'services/api'
 
-const POLLING_DELAY = 60000
+const POLLING_DELAY = 3000
 
-function* poll(meta) {
+function* poll() {
   while (true) {
     try {
       const user = yield select(state => state.auth.get('user'))
       const { username } = user
-      // const username = 'postnzt'
+
       const notification = yield call(getAccountNotifications, username)
       const count = yield call(getUnreadNotificationsCount, username)
 
-      yield put(pollNotifSuccess(notification, meta))
+      yield put(pollNotifSuccess(notification))
       yield put(pollNotifCount(count))
       yield delay(POLLING_DELAY)
     } catch (error) {
@@ -30,12 +30,11 @@ function* poll(meta) {
   }
 }
 
-function* watchPollingTasks({ meta }) {
+function* watchPollingTasks() {
   while (true) {
-    yield race([call(poll, meta)])
+    yield race([call(poll)])
   }
 }
-
 
 export default function* sagas() {
   yield takeLatest(POLL_NOTIF_REQUEST, watchPollingTasks)
