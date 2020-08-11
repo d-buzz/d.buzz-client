@@ -25,7 +25,7 @@ const endpoints = [
   'https://techcoderx.com'
 ]
 
-api.setOptions({ url: 'https://anyx.io' })
+api.setOptions({ url: 'https://rpc.esteem.app' })
 
 config.set('alternative_api_endpoints', endpoints)
 
