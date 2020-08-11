@@ -1,6 +1,7 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { Link } from 'react-router-dom'
 import { Avatar } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
@@ -125,23 +126,24 @@ const Notification = (props) => {
           <React.Fragment>
             <div className={classes.wrapper}>
               <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Avatar author={actionAuthor(item.msg).replace('@', '')} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.username}>
-                          { item.msg } <br />
-                          { generateNotifLink(item.type, item.url) }
-                        </label>
+                <Link to={generateNotifLink(item.type, item.url)}>
+                  <Row>
+                    <Col xs="auto" style={{ paddingRight: 0 }}>
+                      <div className={classes.left}>
+                        <Avatar author={actionAuthor(item.msg).replace('@', '')} />
                       </div>
-                    </div>
-                  </Col>
-                </Row>
+                    </Col>
+                    <Col>
+                      <div className={classes.right}>
+                        <div className={classes.content}>
+                          <label className={classes.username}>
+                            { item.msg } <br />
+                          </label>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Link>
               </div>
             </div>
           </React.Fragment>

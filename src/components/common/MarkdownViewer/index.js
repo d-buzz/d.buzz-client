@@ -17,7 +17,7 @@ const renderer = new DefaultRenderer({
   assetsHeight: 480,
   imageProxyFn: (url) => url,
   usertagUrlFn: (account) => "/@" + account,
-  hashtagUrlFn: (hashtag) => "/trending/" + hashtag,
+  hashtagUrlFn: (hashtag) => "/tags?q=" + hashtag,
   isLinkSafeFn: (url) => true,
 })
 
