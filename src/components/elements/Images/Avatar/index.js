@@ -4,6 +4,8 @@ import Image from 'react-bootstrap/Image'
 const Avatar = (props) => {
   const { author, height = 50, size = 'small', border = false, style = {}, className = {} } = props
 
+
+
   return (
     <React.Fragment>
       <Image
