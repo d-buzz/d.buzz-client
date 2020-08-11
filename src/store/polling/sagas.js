@@ -10,14 +10,14 @@ import {
   getUnreadNotificationsCount
 } from 'services/api'
 
-const POLLING_DELAY = 120000
+const POLLING_DELAY = 30000
 
 function* poll(meta) {
   while (true) {
     try {
       const user = yield select(state => state.auth.get('user'))
-      // const { username } = user
-      const username = 'postnzt'
+      const { username } = user
+      // const username = 'postnzt'
       const notification = yield call(getAccountNotifications, username)
       const count = yield call(getUnreadNotificationsCount, username)
 
