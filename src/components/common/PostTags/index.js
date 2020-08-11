@@ -41,7 +41,7 @@ const PostTags = (props) => {
         tags.map((tag) => (
           <Link
             key={`${tag}`}
-            to={`/search?q=${tag}&type=trending`}
+            to={`/tags?q=${tag}`}
             className={classNames(classes.default, highlightTag === tag ? classes.highlighted : '')}
           >
             #{ tag }

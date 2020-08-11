@@ -85,8 +85,8 @@ const GuardedAppFrame = (props) => {
     title = 'Notifications'
   }
 
-  if(pathname.match(/(\/search)/)) {
-    title = 'Explore'
+  if(pathname.match(/(\/tags?)/)) {
+    title = 'Tags'
   }
 
   const handleClickBackButton = () => {
