@@ -10,7 +10,7 @@ import {
   getUnreadNotificationsCount
 } from 'services/api'
 
-const POLLING_DELAY = 30000
+const POLLING_DELAY = 60000
 
 function* poll(meta) {
   while (true) {

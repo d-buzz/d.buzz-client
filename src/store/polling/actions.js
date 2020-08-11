@@ -17,10 +17,9 @@ export const pollNotifSuccess = (response, meta) => ({
   meta,
 })
 
-export const pollNotifFailure = (error, meta) => ({
+export const pollNotifFailure = (error) => ({
   type: POLL_NOTIF_FAILURE,
   payload: error,
-  meta,
 })
 
 export const pollNotifCount = (response) => ({
