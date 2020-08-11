@@ -47,7 +47,7 @@ const Explore = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  items: state.posts.get('search'),
+  items: state.posts.get('searchTag'),
   loading: pending(state, 'GET_SEARCH_TAGS_REQUEST')
 })
 

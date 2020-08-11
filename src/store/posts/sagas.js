@@ -46,6 +46,7 @@ import {
   GET_SEARCH_TAG_REQUEST,
   getSearchTagsSuccess,
   getSearchTagFailure,
+  setLastSearchTag,
 } from './actions'
 
 import {
@@ -368,6 +369,9 @@ function* getSearchTags(payload, meta) {
 
     const data = yield call(callBridge, method, params)
 
+    if(data.length !== 0) {
+      yield put(setLastSearchTag(data[data.length-1]))
+    }
     yield put(getSearchTagsSuccess(data, meta))
   } catch(error) {
 

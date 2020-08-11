@@ -327,3 +327,10 @@ export const getSearchTagFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_LAST_SEARCH_TAG = 'SET_LAST_SEARCH_TAG'
+
+export const setLastSearchTag = (response) => ({
+  type: SET_LAST_SEARCH_TAG,
+  payload: response,
+})
