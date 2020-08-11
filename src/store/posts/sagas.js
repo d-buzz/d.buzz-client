@@ -364,17 +364,23 @@ function* publishReplyRequest(payload, meta) {
 function* getSearchTags(payload, meta) {
   try {
     const { tag, start_permlink, start_author } = payload
+    let old = yield select(state => state.posts.get('searchTag'))
     const params = { sort: 'trending', tag, start_permlink, start_author }
     const method = 'get_ranked_posts'
 
-    const data = yield call(callBridge, method, params)
 
-    if(data.length !== 0) {
-      yield put(setLastSearchTag(data[data.length-1]))
+    let data = yield call(callBridge, method, params)
+
+    data = [...old, ...data]
+
+    let last = data[data.length-1]
+    if(data.length === 0) {
+      last = {}
     }
+
+    yield put(setLastSearchTag(last))
     yield put(getSearchTagsSuccess(data, meta))
   } catch(error) {
-
     yield put(getSearchTagFailure(error, meta))
   }
 }

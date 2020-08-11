@@ -304,9 +304,9 @@ export const publishReplyFailure = (error, meta) => ({
   meta,
 })
 
-export const GET_SEARCH_TAG_REQUEST = 'GET_SEARCH_TAGS_REQUEST'
-export const GET_SEARCH_TAG_SUCCESS = 'GET_SEARCH_TAGS_SUCCESS'
-export const GET_SEARCH_TAG_FAILURE = 'GET_SEARCH_TAGS_FAILURE'
+export const GET_SEARCH_TAG_REQUEST = 'GET_SEARCH_TAG_REQUEST'
+export const GET_SEARCH_TAG_SUCCESS = 'GET_SEARCH_TAG_SUCCESS'
+export const GET_SEARCH_TAG_FAILURE = 'GET_SEARCH_TAG_FAILURE'
 
 export const getSearchTagsRequest = (tag, start_permlink = '', start_author = '') => ({
   type: GET_SEARCH_TAG_REQUEST,
