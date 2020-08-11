@@ -42,6 +42,10 @@ import {
   PUBLISH_REPLY_REQUEST,
   publishReplySuccess,
   publishReplyFailure,
+
+  GET_SEARCH_TAG_REQUEST,
+  getSearchTagsSuccess,
+  getSearchTagFailure,
 } from './actions'
 
 import {
@@ -328,7 +332,6 @@ function* publishReplyRequest(payload, meta) {
 
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operation, [wif])
-      console.log({ result })
       success = result.success
     }
 
@@ -354,6 +357,21 @@ function* publishReplyRequest(payload, meta) {
     yield put(publishReplySuccess(data, meta))
   } catch(error) {
     yield put(publishReplyFailure(error, meta))
+  }
+}
+
+function* getSearchTags(payload, meta) {
+  try {
+    const { tag, start_permlink, start_author } = payload
+    const params = { sort: 'trending', tag, start_permlink, start_author }
+    const method = 'get_ranked_posts'
+
+    const data = yield call(callBridge, method, params)
+
+    yield put(getSearchTagsSuccess(data, meta))
+  } catch(error) {
+
+    yield put(getSearchTagFailure(error, meta))
   }
 }
 
@@ -398,6 +416,10 @@ function* watchPublishReplyRequest({ payload, meta }) {
   yield call(publishReplyRequest, payload, meta)
 }
 
+function* watchGetSearchTags({ payload, meta }) {
+  yield call(getSearchTags, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -410,5 +432,6 @@ export default function* sagas() {
   yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
   yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
   yield takeEvery(PUBLISH_REPLY_REQUEST, watchPublishReplyRequest)
+  yield takeEvery(GET_SEARCH_TAG_REQUEST, watchGetSearchTags)
 }
 
