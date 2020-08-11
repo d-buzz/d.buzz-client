@@ -10,6 +10,7 @@ import {
   AccountReplies,
   AccountFollowers,
   AccountFollowing,
+  Notification,
 } from 'components'
 
 const routes =  [
@@ -40,6 +41,11 @@ const routes =  [
         path: '/latest',
         exact: true,
         component: Latest,
+      },
+      {
+        path: '/@:username/p/notifications',
+        exact: true,
+        component: Notification,
       },
       {
         path: '/@:username/c/:permlink',

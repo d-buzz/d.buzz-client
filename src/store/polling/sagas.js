@@ -17,7 +17,7 @@ function* poll() {
     try {
       const user = yield select(state => state.auth.get('user'))
       // const { username } = user
-      const username = 'chrisrice'
+      const username = 'postnzt'
       const notification = yield call(getAccountNotifications, username)
       const count = yield call(getUnreadNotificationsCount, username)
 
