@@ -176,7 +176,7 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Notifications',
-      path: `/@${username}/p/notifications`,
+      path: `/notifications`,
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>
     },
     {

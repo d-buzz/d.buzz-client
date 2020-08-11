@@ -43,7 +43,7 @@ const routes =  [
         component: Latest,
       },
       {
-        path: '/@:username/p/notifications',
+        path: '/notifications',
         exact: true,
         component: Notification,
       },
