@@ -66,14 +66,14 @@ const GuardedAppFrame = (props) => {
   let title = 'Home'
 
   if(pathname.match(/(\/c\/)/)) {
-    title = 'BUZZ'
+    title = 'Buzz'
   }
 
   if(pathname.match(/^\/trending/)) {
     title = 'Trending'
   }
 
-  if(pathname.match( /^\/latest/)) {
+  if(pathname.match(/^\/latest/)) {
     title = 'Latest'
   }
 
@@ -83,6 +83,10 @@ const GuardedAppFrame = (props) => {
 
   if(pathname.match(/(\/notifications)/)) {
     title = 'Notifications'
+  }
+
+  if(pathname.match(/(\/search)/)) {
+    title = 'Explore'
   }
 
   const handleClickBackButton = () => {
