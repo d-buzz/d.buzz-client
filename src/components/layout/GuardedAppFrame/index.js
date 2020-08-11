@@ -67,12 +67,22 @@ const GuardedAppFrame = (props) => {
 
   if(pathname.match(/(\/c\/)/)) {
     title = 'BUZZ'
-  } else if(pathname.match(/^\/trending/)) {
+  }
+
+  if(pathname.match(/^\/trending/)) {
     title = 'Trending'
-  } else if(pathname.match( /^\/latest/)) {
+  }
+
+  if(pathname.match( /^\/latest/)) {
     title = 'Latest'
-  } else if(!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
+  }
+
+  if(!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
     title = 'Profile'
+  }
+
+  if(pathname.match(/(\/notifications)/) && pathname.match(/(\/p\/)/)) {
+    title = 'Notifications'
   }
 
   const handleClickBackButton = () => {
