@@ -11,6 +11,7 @@ import {
   AccountFollowers,
   AccountFollowing,
   Notification,
+  Explore,
 } from 'components'
 
 const routes =  [
@@ -46,6 +47,10 @@ const routes =  [
         path: '/notifications',
         exact: true,
         component: Notification,
+      },
+      {
+        path: '/search',
+        component: Explore,
       },
       {
         path: '/@:username/c/:permlink',

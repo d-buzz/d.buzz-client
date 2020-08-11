@@ -146,19 +146,16 @@ const PostList = (props) => {
     let { href } = target
     const hostname = window.location.hostname
 
-    if(href && href.match(/(\/tags\/?q\/=)/)) {
-      const split = href.split('/')
-      href = `${split[3]}`
-    }
-
+    e.preventDefault()
     if(href && !href.includes(hostname)) {
-      e.preventDefault()
       window.open(href, '_blank')
     } else {
       if(!href) {
         history.push(generateLink(author, permlink))
       } else {
-        history.push(`/${href}`)
+        const split = href.split('/')
+        href = `/${split[3]}`
+        history.push(href)
       }
     }
   }
