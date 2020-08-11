@@ -12,7 +12,7 @@ import {
 
 const POLLING_DELAY = 120000
 
-function* poll() {
+function* poll(meta) {
   while (true) {
     try {
       const user = yield select(state => state.auth.get('user'))
@@ -21,7 +21,7 @@ function* poll() {
       const notification = yield call(getAccountNotifications, username)
       const count = yield call(getUnreadNotificationsCount, username)
 
-      yield put(pollNotifSuccess(notification))
+      yield put(pollNotifSuccess(notification, meta))
       yield put(pollNotifCount(count))
       yield delay(POLLING_DELAY)
     } catch (error) {
@@ -30,9 +30,9 @@ function* poll() {
   }
 }
 
-function* watchPollingTasks() {
+function* watchPollingTasks({ meta }) {
   while (true) {
-    yield race([call(poll)])
+    yield race([call(poll, meta)])
   }
 }
 

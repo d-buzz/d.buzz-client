@@ -1,9 +1,11 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { Avatar } from 'components/elements'
+import { Avatar, HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
+import { pending } from 'redux-saga-thunk'
 import { createUseStyles } from 'react-jss'
 
 const useStyle = createUseStyles({
@@ -95,7 +97,7 @@ const useStyle = createUseStyles({
 
 
 const Notification = (props) => {
-  const { notifications } = props
+  const { notifications, loading } = props
 
   const classes = useStyle()
 
@@ -137,7 +139,10 @@ const Notification = (props) => {
                       <div className={classes.right}>
                         <div className={classes.content}>
                           <label className={classes.username}>
-                            { item.msg } <br />
+                            { item.msg }
+                          </label> <br />
+                          <label className={classes.username}>
+                            { moment(`${item.date}Z`).local().fromNow() }
                           </label>
                         </div>
                       </div>
@@ -149,12 +154,14 @@ const Notification = (props) => {
           </React.Fragment>
         ))
       }
+      <HashtagLoader loading={loading} />
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
-  notifications: state.polling.get('notifications')
+  notifications: state.polling.get('notifications'),
+  loading: pending(state, 'POLL_NOTIF_REQUEST'),
 })
 
 export default connect(mapStateToProps)(Notification)
