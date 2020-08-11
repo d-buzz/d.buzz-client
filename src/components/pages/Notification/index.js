@@ -176,6 +176,10 @@ const Notification = (props) => {
           </React.Fragment>
         ))
       }
+      {
+        (!loading && notifications.length === 0) &&
+        (<center><br/><h6>Not unread notifications</h6></center>)
+      }
       <HashtagLoader loading={loading} />
     </React.Fragment>
   )
