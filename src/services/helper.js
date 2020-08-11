@@ -13,12 +13,12 @@ export const getAuthorName = (profileMeta, postingMeta) => {
   }
 }
 
-export const getProfileMetaData = (profile) => {
+export const getProfileMetaData = (profile = {}) => {
   let cover = ''
   let name = ''
   let about = ''
   let website = ''
-
+  console.log({ profile })
   if(
     'json_metadata' in profile
     && profile.json_metadata.includes('"profile":')

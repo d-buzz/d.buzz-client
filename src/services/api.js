@@ -116,9 +116,7 @@ export const fetchAccountPosts = (account, start_permlink = '', start_author = '
         if(posts.length !== 0) {
 
           if(sort === 'posts') {
-
-            const profileVisited = visited.map((profile) => profile.name === account)
-
+            const profileVisited = visited.filter((profile) => profile.name === account)
             let profile = []
 
             if(profileVisited.length !== 0) {
