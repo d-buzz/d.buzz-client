@@ -2,6 +2,7 @@ import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
+import Chip from '@material-ui/core/Chip'
 import { Link } from 'react-router-dom'
 import { Avatar, HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
@@ -29,7 +30,7 @@ const useStyle = createUseStyles({
     '&:hover': {
       backgroundColor: '#f5f8fa',
     },
-    cursor: 'pointer',
+    cursor: 'pointer !important',
   },
   inline: {
     display: 'inline-block',
@@ -93,6 +94,17 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
+  chips: {
+    '&:hover': {
+      textDecoration: 'none !important',
+    },
+    '& span': {
+      textDecoration: 'none !important',
+      '&:hover': {
+        textDecoration: 'none !important'
+      }
+    }
+  }
 })
 
 
@@ -128,7 +140,7 @@ const Notification = (props) => {
           <React.Fragment>
             <div className={classes.wrapper}>
               <div className={classes.row}>
-                <Link to={generateNotifLink(item.type, item.url)}>
+                <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
                   <Row>
                     <Col xs="auto" style={{ paddingRight: 0 }}>
                       <div className={classes.left}>
@@ -146,6 +158,16 @@ const Notification = (props) => {
                           </label>
                         </div>
                       </div>
+                    </Col>
+                    <Col xs="auto">
+                      <Chip
+                        className={classes.chips}
+                        style={{ border: '1px solid #e53935', marginTop: -5 }}
+                        size='small'
+                        label={item.type}
+                        color="secondary"
+                        variant="outlined"
+                      />
                     </Col>
                   </Row>
                 </Link>
