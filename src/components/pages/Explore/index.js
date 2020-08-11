@@ -1,23 +1,55 @@
 import React, { useEffect } from 'react'
 import { getSearchTagsRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
+import { PostList } from 'components'
 import { bindActionCreators } from 'redux'
+import { useLocation } from 'react-router-dom'
+import { pending } from 'redux-saga-thunk'
+import { HashtagLoader } from 'components/elements'
+import queryString from 'query-string'
 
 const Explore = (props) => {
-  const { getSearchTagsRequest } = props
+  const { getSearchTagsRequest, items, loading } = props
+  const location = useLocation()
+  const params = queryString.parse(location.search)
+  const tag = params.q
 
   useEffect(() => {
-    const tag = 'redux'
     getSearchTagsRequest(tag)
   // eslint-disable-next-line
   }, [])
 
   return (
     <React.Fragment>
-      <h4>Hello World</h4>
+      {
+        items.map((item) => (
+          <PostList
+            title={item.title}
+            profileRef="home"
+            active_votes={item.active_votes}
+            author={item.author}
+            permlink={item.permlink}
+            created={item.created}
+            body={item.body}
+            upvotes={item.active_votes.length}
+            replyCount={item.children}
+            meta={item.json_metadata}
+            payout={item.payout}
+            profile={item.profile}
+            payoutAt={item.payout_at}
+            highlightTag={tag}
+          />
+        ))
+      }
+      <HashtagLoader loading={loading} />
     </React.Fragment>
   )
 }
+
+const mapStateToProps = (state) => ({
+  items: state.posts.get('search'),
+  loading: pending(state, 'GET_SEARCH_TAGS_REQUEST')
+})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
@@ -25,4 +57,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(Explore)
+export default connect(mapStateToProps, mapDispatchToProps)(Explore)

@@ -112,6 +112,7 @@ const PostList = (props) => {
     disableProfileLink = false,
     profileRef = null,
     payoutAt = null,
+    highlightTag = null,
    } = props
 
 
@@ -191,7 +192,7 @@ const PostList = (props) => {
                   </label>
                   <div onClick={handleOpenContent(author, permlink)}>
                     <MarkdownViewer content={body}/>
-                    <PostTags meta={meta} />
+                    <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
                 </div>
                 <div className={classes.actionWrapper}>
