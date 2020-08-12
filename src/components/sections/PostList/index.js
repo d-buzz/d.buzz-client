@@ -5,7 +5,6 @@ import {
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { ContainedButton } from 'components/elements'
 import {
   MarkdownViewer,
   PostTags,
@@ -17,8 +16,6 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
-import classNames from 'classnames'
-import Popover from '@material-ui/core/Popover'
 
 const useStyle = createUseStyles({
   row: {
@@ -157,16 +154,8 @@ const PostList = (props) => {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
   }
 
-  const { name, about } = getProfileMetaData(profile)
-  const { reputation = 0 } = profile
+  const { name } = getProfileMetaData(profile)
 
-  let following_count = 0
-  let follower_count = 0
-
-  if(profile.follow_count) {
-    follower_count = profile.follow_count.follower_count
-    following_count = profile.follow_count.following_count
-  }
 
   const generateLink = (author, permlink) =>  {
    let link = ''
