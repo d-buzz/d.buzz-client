@@ -11,6 +11,7 @@ import { followRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
+import Chip from '@material-ui/core/Chip'
 
 const useStyles = createUseStyles({
   left: {
@@ -188,8 +189,8 @@ const UserDialog = (props) => {
                     to={authorLink}
                     style={{ color: 'black' }}
                   >
-                    { name ? name : `${author}`}({reputation})
-                  </Link>
+                    { name ? name : `${author}`}
+                  </Link>&nbsp;<Chip  size="small" label={reputation} />
                 </label>
                 <p className={classNames(classes.paragraph, classes.username)}>
                   { `@${author}` }
