@@ -5,6 +5,7 @@ import {
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { ContainedButton } from 'components/elements'
 import {
   MarkdownViewer,
   PostTags,
@@ -52,6 +53,7 @@ const useStyle = createUseStyles({
     fontWeight: 'bold',
     paddingRight: 5,
     paddingBottom: 0,
+    marginBottom: 0,
   },
   username: {
     color: '#657786',
@@ -104,6 +106,14 @@ const useStyle = createUseStyles({
       border: '1px solid red',
     }
   },
+  button: {
+    width: 100,
+    height: 35,
+  },
+  paragraph: {
+    padding: 0,
+    margin: 0,
+  },
 })
 
 
@@ -130,7 +140,6 @@ const PostList = (props) => {
    } = props
 
    const [open, setOpen] = useState(false)
-   const [anchorEl, setAnchorEl] = React.useState(null)
    const popoverAnchor = useRef(null)
 
 
@@ -147,7 +156,15 @@ const PostList = (props) => {
      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
    }
 
-  const { name } = getProfileMetaData(profile)
+  const { name, about } = getProfileMetaData(profile)
+
+  let following_count = 0
+  let follower_count = 0
+
+  if(profile.follow_count) {
+    follower_count = profile.follow_count.follower_count
+    following_count = profile.follow_count.following_count
+  }
 
   const generateLink = (author, permlink) =>  {
    let link = ''
@@ -209,7 +226,7 @@ const PostList = (props) => {
                           onMouseEnter={openPopOver}
                           onMouseLeave={closePopOver}
                         >
-                          { name ? name : `@${author}`}
+                          { name ? name : `${author}`}
                         </Link>
                       )
                     }
@@ -252,7 +269,7 @@ const PostList = (props) => {
         open={open}
         anchorEl={popoverAnchor.current}
         anchorOrigin={{
-          vertical: 'top',
+          vertical: 'bottom',
           horizontal: 'left',
         }}
         transformOrigin={{
@@ -262,20 +279,40 @@ const PostList = (props) => {
         PaperProps={{ onMouseEnter: openPopOver, onMouseLeave: closePopOver }}
         onClose={closePopOver}
       >
-        <div style={{ width: 300, height: 200 }}>
+        <div style={{ width: 300, minHeight: 200 }}>
           <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, }}>
-          <Row>
-            <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left}>
-                <Avatar author={author} />
-              </div>
-            </Col>
-            <Col>
-              <div className={classes.right}>
-
-              </div>
-            </Col>
-          </Row>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={author} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <ContainedButton style={{ float: 'right', marginTop: 5, }} transparent={true} fontSize={15} label="Follow" className={classes.button} />
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <label className={classes.name} style={{ color: 'black' }}>
+                    <Link
+                      to={authorLink}
+                      style={{ color: 'black' }}
+                    >
+                      { name ? name : `${author}`}
+                    </Link>
+                  </label>
+                  <p className={classes.paragraph}>
+                    { about }
+                  </p>
+                  <p className={classes.paragraph}>
+                    <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                  </p>
+                </Col>
+             </Row>
+            </div>
           </div>
         </div>
       </Popover>

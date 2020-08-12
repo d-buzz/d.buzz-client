@@ -47,11 +47,11 @@ export const getProfileMetaData = (profile = {}) => {
   }
 
   if(
-    'posting_metadata' in profile
-    && profile.json_metadata.includes('"profile":')
-    && profile.posting_metadata.includes('"name":')
+    'posting_json_metadata' in profile
+    && profile.posting_json_metadata.includes('"profile":')
+    && profile.posting_json_metadata.includes('"name":')
   ) {
-    const meta = JSON.parse(profile.posting_metadata)
+    const meta = JSON.parse(profile.posting_json_metadata)
     name = meta.profile.name
   }
 
@@ -65,11 +65,11 @@ export const getProfileMetaData = (profile = {}) => {
   }
 
   if(
-    'posting_metadata' in profile
-    && profile.json_metadata.includes('"profile":')
-    && profile.posting_metadata.includes('"about":')
+    'posting_json_metadata' in profile
+    && profile.posting_json_metadata.includes('"profile":')
+    && profile.posting_json_metadata.includes('"about":')
   ) {
-    const meta = JSON.parse(profile.posting_metadata)
+    const meta = JSON.parse(profile.posting_json_metadata)
     about = meta.profile.about
   }
 
@@ -83,10 +83,10 @@ export const getProfileMetaData = (profile = {}) => {
   }
 
   if(
-    'posting_metadata' in profile
-    && profile.posting_metadata.includes('"website":')
+    'posting_json_metadata' in profile
+    && profile.posting_json_metadata.includes('"website":')
   ) {
-    const meta = JSON.parse(profile.posting_metadata)
+    const meta = JSON.parse(profile.posting_json_metadata)
     website = meta.profile.website
   }
 
