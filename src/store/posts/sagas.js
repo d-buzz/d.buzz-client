@@ -395,9 +395,9 @@ function* followRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
 
-    const operation = yield call(generateFollowOperation, user, following)
-
+    const operation = yield call(generateFollowOperation, username, following)
     let success = false
+
 
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
