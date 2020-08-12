@@ -378,3 +378,27 @@ export const setHasBeenFollowedRecently = (following) => ({
   type: SET_HAS_BEEN_FOLLOWED_RECENTLY,
   payload: following,
 })
+
+export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST'
+export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS'
+export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE'
+
+export const unfollowRequest = (following) => ({
+  type: UNFOLLOW_REQUEST,
+  payload: { following },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const unfollowSuccess = (response, meta) => ({
+  type: UNFOLLOW_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const unfollowFailure = (error, meta) => ({
+  type: UNFOLLOW_FAILURE,
+  payload: error,
+  meta,
+})
