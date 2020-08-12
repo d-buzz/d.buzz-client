@@ -371,3 +371,10 @@ export const followFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_HAS_BEEN_FOLLOWED_RECENTLY = 'SET_HAS_BEEN_FOLLOWED_RECENTLY'
+
+export const setHasBeenFollowedRecently = (following) => ({
+  type: SET_HAS_BEEN_FOLLOWED_RECENTLY,
+  payload: following,
+})

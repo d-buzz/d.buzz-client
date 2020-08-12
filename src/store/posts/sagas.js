@@ -51,6 +51,7 @@ import {
   FOLLOW_REQUEST,
   followSuccess,
   followFailure,
+  setHasBeenFollowedRecently,
 } from './actions'
 
 import {
@@ -409,6 +410,15 @@ function* followRequest(payload, meta) {
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
+    }
+
+    if(success) {
+      let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+      if(!Array.isArray(recentFollows)) {
+        recentFollows = []
+      }
+      recentFollows.push(following)
+      yield put(setHasBeenFollowedRecently(recentFollows))
     }
 
     yield put(followSuccess(success, meta))

@@ -23,6 +23,7 @@ import {
   SET_TAGS_IS_VISITED,
   CLEAR_TAGS_POST,
   FOLLOW_SUCCESS,
+  SET_HAS_BEEN_FOLLOWED_RECENTLY,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -47,6 +48,7 @@ const defaultState = fromJS({
   lastSearchTag: {},
   isTagsVisited: false,
   following: false,
+  hasBeenRecentlyFollowed: [],
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -99,6 +101,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('searchTag', [])
     case FOLLOW_SUCCESS:
       return state.set('following', payload)
+    case SET_HAS_BEEN_FOLLOWED_RECENTLY:
+      return state.set('hasBeenRecentlyFollowed', payload)
     default:
       return state
   }
