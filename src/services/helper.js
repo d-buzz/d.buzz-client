@@ -18,7 +18,6 @@ export const getProfileMetaData = (profile = {}) => {
   let name = ''
   let about = ''
   let website = ''
-  console.log({ profile })
   if(
     'json_metadata' in profile
     && profile.json_metadata.includes('"profile":')

@@ -147,8 +147,6 @@ const ReplyList = (props) => {
       } else if(ref === 'replies') {
         let tree = treeHistory
 
-        console.log({ tree })
-
         if(`${tree}`.includes('|')) {
           tree = tree.split('|')
         } else {
