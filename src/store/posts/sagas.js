@@ -47,6 +47,10 @@ import {
   getSearchTagsSuccess,
   getSearchTagFailure,
   setLastSearchTag,
+
+  FOLLOW_REQUEST,
+  followSuccess,
+  followFailure,
 } from './actions'
 
 import {
@@ -63,6 +67,7 @@ import {
   broadcastOperation,
   broadcastKeychainOperation,
   generateReplyOperation,
+  generateFollowOperation,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
@@ -368,7 +373,6 @@ function* getSearchTags(payload, meta) {
     const params = { sort: 'trending', tag, start_permlink, start_author }
     const method = 'get_ranked_posts'
 
-
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -382,6 +386,34 @@ function* getSearchTags(payload, meta) {
     yield put(getSearchTagsSuccess(data, meta))
   } catch(error) {
     yield put(getSearchTagFailure(error, meta))
+  }
+}
+
+function* followRequest(payload, meta) {
+  try {
+    const { following } = payload
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+
+    const operation = yield call(generateFollowOperation, user, following)
+
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+
+    yield put(followSuccess(success, meta))
+  } catch (error) {
+    yield put(followFailure(error, meta))
   }
 }
 
@@ -430,6 +462,10 @@ function* watchGetSearchTags({ payload, meta }) {
   yield call(getSearchTags, payload, meta)
 }
 
+function* watchFollowRequest({ payload, meta }) {
+  yield call(followRequest, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -443,5 +479,6 @@ export default function* sagas() {
   yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
   yield takeEvery(PUBLISH_REPLY_REQUEST, watchPublishReplyRequest)
   yield takeEvery(GET_SEARCH_TAG_REQUEST, watchGetSearchTags)
+  yield takeEvery(FOLLOW_REQUEST, watchFollowRequest)
 }
 
