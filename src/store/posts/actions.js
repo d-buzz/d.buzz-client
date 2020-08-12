@@ -334,3 +334,16 @@ export const setLastSearchTag = (response) => ({
   type: SET_LAST_SEARCH_TAG,
   payload: response,
 })
+
+export const SET_TAGS_IS_VISITED = 'SET_TAGS_IS_VISITED'
+
+export const setTagsIsVisited = (visited = true) => ({
+  type: SET_TAGS_IS_VISITED,
+  payload: { visited },
+})
+
+export const CLEAR_TAGS_POST  = 'CLEAR_TAGS_POST'
+
+export const clearTagsPost = () => ({
+  type: CLEAR_TAGS_POST,
+})

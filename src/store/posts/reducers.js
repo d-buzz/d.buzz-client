@@ -20,6 +20,7 @@ import {
   PUBLISH_REPLY_SUCCESS,
   GET_SEARCH_TAG_SUCCESS,
   SET_LAST_SEARCH_TAG,
+  SET_TAGS_IS_VISITED,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -41,7 +42,8 @@ const defaultState = fromJS({
   published: {},
   appendReply: {},
   searchTag: [],
-  lastSearchTag: {}
+  lastSearchTag: {},
+  isTagsVisited: false,
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -88,6 +90,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('searchTag', payload)
     case SET_LAST_SEARCH_TAG:
       return state.set('lastSearchTag', payload)
+    case SET_TAGS_IS_VISITED:
+      return state.set('isTagsVisited', payload)
     default:
       return state
   }

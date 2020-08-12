@@ -9,6 +9,8 @@ import {
   setTrendingIsVisited,
   clearHomePosts,
   clearTrendingPosts,
+  clearTagsPost,
+  setTagsIsVisited,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -34,7 +36,9 @@ const Latest = (props) => {
     clearAccountReplies,
     items,
     last,
-    loading
+    loading,
+    clearTagsPost,
+    setTagsIsVisited,
   } = props
 
   useEffect(() => {
@@ -49,6 +53,8 @@ const Latest = (props) => {
     }
     clearAccountPosts()
     clearAccountReplies()
+    clearTagsPost()
+    setTagsIsVisited(false)
     setProfileIsVisited(false)
     //eslint-disable-next-line
   }, [])
@@ -108,6 +114,8 @@ const mapDispatchToProps = (dispatch) => ({
     setProfileIsVisited,
     clearAccountPosts,
     clearAccountReplies,
+    clearTagsPost,
+    setTagsIsVisited,
   }, dispatch)
 })
 
