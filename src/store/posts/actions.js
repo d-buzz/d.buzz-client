@@ -347,3 +347,27 @@ export const CLEAR_TAGS_POST  = 'CLEAR_TAGS_POST'
 export const clearTagsPost = () => ({
   type: CLEAR_TAGS_POST,
 })
+
+export const FOLLOW_REQUEST = 'FOLLOW_REQUEST'
+export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS'
+export const FOLLOW_FAILURE = 'FOLLOW_FAILURE'
+
+export const followRequest = (following) => ({
+  type: FOLLOW_REQUEST,
+  payload: { following },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const followSuccess = (response, meta) => ({
+  type: FOLLOW_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const followFailure = (error, meta) => ({
+  type: FOLLOW_FAILURE,
+  payload: error,
+  meta,
+})
