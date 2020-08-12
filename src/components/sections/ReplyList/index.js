@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -10,6 +10,7 @@ import {
   PostTags,
   PostActions,
   NotificationBox,
+  UserDialog,
 } from 'components'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -237,7 +238,16 @@ const ReplyList = (props) => {
     }
 
     const title = body.substring(0, 100)
+    const [open, setOpen] = useState(false)
+    const popoverAnchor = useRef(null)
 
+    const openPopOver = (e) => {
+      setOpen(true)
+    }
+
+    const closePopOver = (e) => {
+      setOpen(false)
+    }
 
     return (
       <React.Fragment>
@@ -256,7 +266,13 @@ const ReplyList = (props) => {
             <Col>
               <div className={classes.right}>
                 <div className={classes.content}>
-                  <Link to={`${authorLink}?ref=replies`} className={classes.link}>
+                  <Link
+                    ref={popoverAnchor}
+                    to={`${authorLink}?ref=replies`}
+                    className={classes.link}
+                    onMouseEnter={openPopOver}
+                    onMouseLeave={closePopOver}
+                  >
                     <p className={classes.name}>
                       { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
                     </p>
@@ -285,6 +301,13 @@ const ReplyList = (props) => {
                 </div>
               </div>
             </Col>
+            <UserDialog
+              open={open}
+              anchorEl={popoverAnchor.current}
+              onMouseEnter={openPopOver}
+              onMouseLeave={closePopOver}
+              profile={profile}
+            />
           </Row>
         </div>
         {
