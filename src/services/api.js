@@ -243,7 +243,13 @@ export const fetchProfile = (username) => {
 
         result.forEach(async(item, index) => {
           const repscore = item.reputation
-          result[index].reputation = repscore ? formatter.reputation(repscore) : 25
+          let score = formatter.reputation(repscore)
+
+          if(!score || score < 25) {
+            score = 25
+          }
+
+          result[index].reputation = score
           const follow_count = await fetchFollowCount(item.name)
           result[index].follow_count = follow_count
 
