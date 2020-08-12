@@ -9,13 +9,15 @@ import { ContainedButton } from 'components/elements'
 import {
   MarkdownViewer,
   PostTags,
-  PostActions
+  PostActions,
+  UserDialog,
 } from 'components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
+import classNames from 'classnames'
 import Popover from '@material-ui/core/Popover'
 
 const useStyle = createUseStyles({
@@ -107,7 +109,7 @@ const useStyle = createUseStyles({
     }
   },
   button: {
-    width: 100,
+    width: 85,
     height: 35,
   },
   paragraph: {
@@ -137,26 +139,26 @@ const PostList = (props) => {
     profileRef = null,
     payoutAt = null,
     highlightTag = null,
-   } = props
+  } = props
 
-   const [open, setOpen] = useState(false)
-   const popoverAnchor = useRef(null)
-
-
-   let hasUpvoted = false
-   const history = useHistory()
-   let authorLink = `/@${author}${'?ref='+profileRef}`
-
-   if(unguardedLinks) {
-     authorLink = `ug${authorLink}`
-   }
+  const [open, setOpen] = useState(false)
+  const popoverAnchor = useRef(null)
 
 
-   if(user.is_authenticated) {
-     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
-   }
+  let hasUpvoted = false
+  const history = useHistory()
+  let authorLink = `/@${author}${'?ref='+profileRef}`
+
+  if(unguardedLinks) {
+    authorLink = `ug${authorLink}`
+  }
+
+  if(user.is_authenticated) {
+    hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
+  }
 
   const { name, about } = getProfileMetaData(profile)
+  const { reputation = 0 } = profile
 
   let following_count = 0
   let follower_count = 0
@@ -260,62 +262,13 @@ const PostList = (props) => {
           </Row>
         </div>
       </div>
-      <Popover
-        id="mouse-over-popover"
-        className={classes.popover}
-        classes={{
-          paper: classes.paper,
-        }}
+      <UserDialog
         open={open}
         anchorEl={popoverAnchor.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        PaperProps={{ onMouseEnter: openPopOver, onMouseLeave: closePopOver }}
-        onClose={closePopOver}
-      >
-        <div style={{ width: 300, minHeight: 200 }}>
-          <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, }}>
-            <div className={classes.row}>
-              <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <div className={classes.left}>
-                    <Avatar author={author} />
-                  </div>
-                </Col>
-                <Col>
-                  <div className={classes.right}>
-                    <ContainedButton style={{ float: 'right', marginTop: 5, }} transparent={true} fontSize={15} label="Follow" className={classes.button} />
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <label className={classes.name} style={{ color: 'black' }}>
-                    <Link
-                      to={authorLink}
-                      style={{ color: 'black' }}
-                    >
-                      { name ? name : `${author}`}
-                    </Link>
-                  </label>
-                  <p className={classes.paragraph}>
-                    { about }
-                  </p>
-                  <p className={classes.paragraph}>
-                    <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
-                  </p>
-                </Col>
-             </Row>
-            </div>
-          </div>
-        </div>
-      </Popover>
+        onMouseEnter={openPopOver}
+        onMouseLeave={closePopOver}
+        profile={profile}
+      />
     </React.Fragment>
   )
 }
