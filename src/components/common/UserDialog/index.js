@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { ContainedButton, Avatar } from 'components/elements'
@@ -7,6 +7,10 @@ import classNames from 'classnames'
 import { getProfileMetaData } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 import Popover from '@material-ui/core/Popover'
+import { followRequest } from 'store/posts/actions'
+import { connect } from 'react-redux'
+import { pending } from 'redux-saga-thunk'
+import { bindActionCreators} from 'redux'
 
 const useStyles = createUseStyles({
   left: {
@@ -58,11 +62,14 @@ const UserDialog = (props) => {
     onMouseEnter,
     onMouseLeave,
     profile,
-    unguardedLinks
+    loading,
+    unguardedLinks,
+    followRequest,
   } = props
 
   const { name, about } = getProfileMetaData(profile)
   const { reputation = 0, name: author } = profile
+  const [shouldStayOpen, setShouldStayOpen] = useState(false)
 
   let following_count = 0
   let follower_count = 0
@@ -78,6 +85,13 @@ const UserDialog = (props) => {
     authorLink = `ug${authorLink}`
   }
 
+  const followUser = () => {
+    setShouldStayOpen(true)
+    followRequest(author).then(() => {
+      setShouldStayOpen(false)
+    })
+  }
+
   return (
     <Popover
       id="mouse-over-popover"
@@ -85,7 +99,7 @@ const UserDialog = (props) => {
       classes={{
         paper: classes.paper,
       }}
-      open={open}
+      open={open | shouldStayOpen}
       anchorEl={anchorEl}
       anchorOrigin={{
         vertical: 'bottom',
@@ -109,7 +123,16 @@ const UserDialog = (props) => {
               </Col>
               <Col>
                 <div className={classes.right}>
-                  <ContainedButton style={{ float: 'right', marginTop: 5, }} transparent={true} fontSize={15} label="Follow" className={classes.button} />
+                  <ContainedButton
+                    loading={loading}
+                    disabled={loading}
+                    style={{ float: 'right', marginTop: 5, }}
+                    transparent={true}
+                    fontSize={15}
+                    label="Follow"
+                    className={classes.button}
+                    onClick={followUser}
+                  />
                 </div>
               </Col>
             </Row>
@@ -141,4 +164,14 @@ const UserDialog = (props) => {
   )
 }
 
-export default UserDialog
+const mapStateToProps = (state) => ({
+  loading: pending(state, 'FOLLOW_REQUEST')
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    followRequest,
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserDialog)
