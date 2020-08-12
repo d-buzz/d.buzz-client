@@ -217,7 +217,26 @@ export const fetchProfile2 = (username) => {
     })
 }
 
+export const isFollowing = (follower, following) => {
+  return new Promise((resolve, reject) => {
+    const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
+    api.call('follow_api.get_followers', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        if(data.length !== 0) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      }
+    })
+  })
+}
+
 export const fetchProfile = (username) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
   return new Promise((resolve, reject) => {
     api.getAccountsAsync([...username])
       .then(async(result) => {
@@ -227,6 +246,14 @@ export const fetchProfile = (username) => {
           result[index].reputation = repscore ? formatter.reputation(repscore) : 25
           const follow_count = await fetchFollowCount(item.name)
           result[index].follow_count = follow_count
+
+          let isFollowed = false
+
+          if(user) {
+            isFollowed = await isFollowing(user.username, item.name)
+          }
+
+          result[index].isFollowed = isFollowed
 
           if(index === result.length - 1) {
             resolve(result)
@@ -238,6 +265,8 @@ export const fetchProfile = (username) => {
       })
   })
 }
+
+
 
 export const mapFetchProfile = (data) => {
   return new Promise(async(resolve, reject) => {
