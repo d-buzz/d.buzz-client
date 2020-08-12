@@ -266,8 +266,6 @@ export const fetchProfile = (username) => {
   })
 }
 
-
-
 export const mapFetchProfile = (data) => {
   return new Promise(async(resolve, reject) => {
     try {

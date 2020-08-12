@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { ContainedButton, Avatar } from 'components/elements'
@@ -65,11 +65,13 @@ const UserDialog = (props) => {
     loading,
     unguardedLinks,
     followRequest,
+    recentFollows,
   } = props
 
   const { name, about } = getProfileMetaData(profile)
-  const { reputation = 0, name: author } = profile
+  const { reputation = 0, name: author, isFollowed } = profile
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
+  const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
 
   let following_count = 0
   let follower_count = 0
@@ -87,10 +89,23 @@ const UserDialog = (props) => {
 
   const followUser = () => {
     setShouldStayOpen(true)
-    followRequest(author).then(() => {
+    followRequest(author).then((result) => {
+      if(result) {
+        setHasRecentlyFollowed(true)
+      }
       setShouldStayOpen(false)
     })
   }
+
+  useEffect(() => {
+    if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
+      const hasBeenFollowed = recentFollows.filter((item) => item === author).length
+
+      if(hasBeenFollowed) {
+        setHasRecentlyFollowed(true)
+      }
+    }
+  }, [recentFollows, author])
 
   return (
     <Popover
@@ -123,16 +138,34 @@ const UserDialog = (props) => {
               </Col>
               <Col>
                 <div className={classes.right}>
-                  <ContainedButton
-                    loading={loading}
-                    disabled={loading}
-                    style={{ float: 'right', marginTop: 5, }}
-                    transparent={true}
-                    fontSize={15}
-                    label="Follow"
-                    className={classes.button}
-                    onClick={followUser}
-                  />
+                  {
+                    !isFollowed && !hasRecentlyFollowed && (
+                      <ContainedButton
+                        loading={loading}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, }}
+                        transparent={true}
+                        fontSize={15}
+                        label="Follow"
+                        className={classes.button}
+                        onClick={followUser}
+                      />
+                    )
+                  }
+                  {
+                    (isFollowed || hasRecentlyFollowed) && (
+                      <ContainedButton
+                        loading={loading}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, }}
+                        transparent={true}
+                        fontSize={15}
+                        label="Unfollow"
+                        className={classes.button}
+                        onClick={followUser}
+                      />
+                    )
+                  }
                 </div>
               </Col>
             </Row>
@@ -165,7 +198,8 @@ const UserDialog = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  loading: pending(state, 'FOLLOW_REQUEST')
+  loading: pending(state, 'FOLLOW_REQUEST'),
+  recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
