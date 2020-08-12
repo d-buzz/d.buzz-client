@@ -443,6 +443,26 @@ export const keychainUpvote = (username, permlink, author, weight) => {
   })
 }
 
+export const generateFollowOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+           json,
+        }
+      ]
+    ]
+
+    resolve(operation)
+  })
+}
+
 export const generateSubscribeOperation = (username) => {
   return new Promise((resolve) => {
     let json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
