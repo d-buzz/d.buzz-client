@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { getContentRequest, getRepliesRequest, clearReplies } from 'store/posts/actions'
 import { createUseStyles } from 'react-jss'
@@ -8,6 +8,7 @@ import {
   PostTags,
   PostActions,
   ReplyList,
+  UserDialog,
 } from 'components'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -81,6 +82,8 @@ const Content = (props) => {
 
   const { username, permlink } = match.params
   const classes = useStyles()
+  const [open, setOpen] = useState(false)
+  const popoverAnchor = useRef(null)
 
   const {
     author,
@@ -134,6 +137,14 @@ const Content = (props) => {
     return link
   }
 
+  const openPopOver = (e) => {
+    setOpen(true)
+  }
+
+  const closePopOver = (e) => {
+    setOpen(false)
+  }
+
   return (
     <React.Fragment>
       {
@@ -147,7 +158,13 @@ const Content = (props) => {
                   </Col>
                   <Col style={{ paddingLeft: 10, }}>
                     <div style={{ marginTop: 2, }}>
-                      <Link to={generateAuthorLink} className={classes.link}>
+                      <Link
+                        ref={popoverAnchor}
+                        to={generateAuthorLink}
+                        className={classes.link}
+                        onMouseEnter={openPopOver}
+                        onMouseLeave={closePopOver}
+                      >
                         <p className={classes.name}>
                           { name ? name : `@${author}` }
                         </p>
@@ -205,6 +222,13 @@ const Content = (props) => {
       }
       <HashtagLoader loading={loadingContent || loadingReplies} />
       <br />
+      <UserDialog
+        open={open}
+        anchorEl={popoverAnchor.current}
+        onMouseEnter={openPopOver}
+        onMouseLeave={closePopOver}
+        profile={profile}
+      />
     </React.Fragment>
   )
 }
