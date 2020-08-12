@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -15,6 +15,7 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
+import Popover from '@material-ui/core/Popover'
 
 const useStyle = createUseStyles({
   row: {
@@ -90,6 +91,19 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
+  popover: {
+    pointerEvents: 'none',
+    '& :after': {
+      border: '1px solid red',
+    }
+  },
+  paper: {
+    pointerEvents: "auto",
+    padding: 2,
+    '& :after': {
+      border: '1px solid red',
+    }
+  },
 })
 
 
@@ -114,6 +128,10 @@ const PostList = (props) => {
     payoutAt = null,
     highlightTag = null,
    } = props
+
+   const [open, setOpen] = useState(false)
+   const [anchorEl, setAnchorEl] = React.useState(null)
+   const popoverAnchor = useRef(null)
 
 
    let hasUpvoted = false
@@ -161,6 +179,14 @@ const PostList = (props) => {
     }
   }
 
+  const openPopOver = (e) => {
+    setOpen(true)
+  }
+
+  const closePopOver = (e) => {
+    setOpen(false)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -177,7 +203,12 @@ const PostList = (props) => {
                   <label className={classes.name}>
                     {
                       !disableProfileLink && (
-                        <Link to={authorLink}>
+                        <Link
+                          ref={popoverAnchor}
+                          to={authorLink}
+                          onMouseEnter={openPopOver}
+                          onMouseLeave={closePopOver}
+                        >
                           { name ? name : `@${author}`}
                         </Link>
                       )
@@ -212,6 +243,42 @@ const PostList = (props) => {
           </Row>
         </div>
       </div>
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={open}
+        anchorEl={popoverAnchor.current}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        PaperProps={{ onMouseEnter: openPopOver, onMouseLeave: closePopOver }}
+        onClose={closePopOver}
+      >
+        <div style={{ width: 300, height: 200 }}>
+          <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, }}>
+          <Row>
+            <Col xs="auto" style={{ paddingRight: 0 }}>
+              <div className={classes.left}>
+                <Avatar author={author} />
+              </div>
+            </Col>
+            <Col>
+              <div className={classes.right}>
+
+              </div>
+            </Col>
+          </Row>
+          </div>
+        </div>
+      </Popover>
     </React.Fragment>
   )
 }
