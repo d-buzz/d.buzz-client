@@ -402,3 +402,11 @@ export const unfollowFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_HAS_BEEN_UNFOLLOWED_RECENTLY = 'SET_HAS_BEEN_UNFOLLOWED_RECENTLY'
+
+export const setHasBeenUnfollowedRecently = (following) => ({
+  type: SET_HAS_BEEN_UNFOLLOWED_RECENTLY,
+  payload: following,
+})
+

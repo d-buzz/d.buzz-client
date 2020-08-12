@@ -68,6 +68,7 @@ const UserDialog = (props) => {
     followRequest,
     recentFollows,
     unfollowRequest,
+    recentUnfollows,
     user,
   } = props
 
@@ -76,6 +77,7 @@ const UserDialog = (props) => {
   const { reputation = 0, name: author, isFollowed } = profile
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
+  const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
 
   useEffect(() => {
     checkIfRecentlyFollowed()
@@ -102,6 +104,18 @@ const UserDialog = (props) => {
 
       if(hasBeenFollowed) {
         setHasRecentlyFollowed(true)
+        setHasRecentlyUnfollowed(false)
+      }
+    }
+  }
+
+  const checkIfRecentlyUnfollowed = () => {
+    if(Array.isArray(recentUnfollows) && recentUnfollows.length !== 0) {
+      const hasBeenUnfollowed = recentUnfollows.filter((item) => item === author).length
+
+      if(hasBeenUnfollowed) {
+        setHasRecentlyUnfollowed(true)
+        setHasRecentlyFollowed(false)
       }
     }
   }
@@ -111,6 +125,7 @@ const UserDialog = (props) => {
     followRequest(author).then((result) => {
       if(result) {
         setHasRecentlyFollowed(true)
+        setHasRecentlyUnfollowed(false)
       }
       setShouldStayOpen(false)
     })
@@ -121,6 +136,7 @@ const UserDialog = (props) => {
     unfollowRequest(author).then((result) => {
       if(result) {
         setHasRecentlyFollowed(false)
+        setHasRecentlyUnfollowed(true)
       }
       setShouldStayOpen(false)
     })
@@ -128,8 +144,9 @@ const UserDialog = (props) => {
 
   useEffect(() => {
     checkIfRecentlyFollowed()
+    checkIfRecentlyUnfollowed()
   // eslint-disable-next-line
-  }, [recentFollows, author, loading])
+  }, [recentFollows, recentUnfollows, author, loading])
 
   return (
     <Popover
@@ -163,7 +180,7 @@ const UserDialog = (props) => {
               <Col>
                 <div className={classes.right}>
                   {
-                    !isFollowed && !hasRecentlyFollowed && (username !== author) && (
+                    ((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
                       <ContainedButton
                         loading={loading}
                         disabled={loading}
@@ -177,7 +194,7 @@ const UserDialog = (props) => {
                     )
                   }
                   {
-                    (isFollowed || hasRecentlyFollowed) && (username !== author) && (
+                    ((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
                       <ContainedButton
                         loading={loading}
                         disabled={loading}
@@ -225,6 +242,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
+  recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

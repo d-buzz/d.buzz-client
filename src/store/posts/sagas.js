@@ -56,6 +56,7 @@ import {
   UNFOLLOW_REQUEST,
   unfollowSuccess,
   unfollowFailure,
+  setHasBeenUnfollowedRecently,
 } from './actions'
 
 import {
@@ -419,11 +420,23 @@ function* followRequest(payload, meta) {
 
     if(success) {
       let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+      let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+
+      if(!Array.isArray(recentUnfollows)) {
+        recentUnfollows = []
+      } else {
+        const index = recentUnfollows.findIndex((item) => item === following)
+        if(index) {
+          recentUnfollows.splice(index, 1)
+        }
+      }
+
       if(!Array.isArray(recentFollows)) {
         recentFollows = []
       }
       recentFollows.push(following)
       yield put(setHasBeenFollowedRecently(recentFollows))
+      yield put(setHasBeenUnfollowedRecently(recentUnfollows))
     }
 
     yield put(followSuccess(success, meta))
@@ -456,13 +469,24 @@ function* unfollowRequest(payload, meta) {
 
     if(success) {
       let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+      let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+
       if(!Array.isArray(recentFollows)) {
         recentFollows = []
       } else {
         const index = recentFollows.findIndex((item) => item === following)
-        recentFollows.splice(index, 1)
+        if(index) {
+          recentFollows.splice(index, 1)
+        }
       }
+
+      if(!Array.isArray(recentUnfollows)) {
+        recentUnfollows = []
+      }
+      recentUnfollows.push(following)
+
       yield put(setHasBeenFollowedRecently(recentFollows))
+      yield put(setHasBeenUnfollowedRecently(recentUnfollows))
     }
 
     yield put(unfollowSuccess(success, meta))
