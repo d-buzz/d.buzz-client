@@ -21,6 +21,7 @@ import {
   GET_SEARCH_TAG_SUCCESS,
   SET_LAST_SEARCH_TAG,
   SET_TAGS_IS_VISITED,
+  CLEAR_TAGS_POST,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -92,6 +93,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('lastSearchTag', payload)
     case SET_TAGS_IS_VISITED:
       return state.set('isTagsVisited', payload)
+    case CLEAR_TAGS_POST:
+      return state.set('searchTag', [])
     default:
       return state
   }
