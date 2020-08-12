@@ -66,8 +66,10 @@ const UserDialog = (props) => {
     unguardedLinks,
     followRequest,
     recentFollows,
+    user,
   } = props
 
+  const { username } = user
   const { name, about } = getProfileMetaData(profile)
   const { reputation = 0, name: author, isFollowed } = profile
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
@@ -149,7 +151,7 @@ const UserDialog = (props) => {
               <Col>
                 <div className={classes.right}>
                   {
-                    !isFollowed && !hasRecentlyFollowed && (
+                    !isFollowed && !hasRecentlyFollowed && (username !== author) && (
                       <ContainedButton
                         loading={loading}
                         disabled={loading}
@@ -163,7 +165,7 @@ const UserDialog = (props) => {
                     )
                   }
                   {
-                    (isFollowed || hasRecentlyFollowed) && (
+                    (isFollowed || hasRecentlyFollowed) && (username !== author) && (
                       <ContainedButton
                         loading={loading}
                         disabled={loading}
@@ -208,6 +210,7 @@ const UserDialog = (props) => {
 }
 
 const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
   loading: pending(state, 'FOLLOW_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
 })
