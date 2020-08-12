@@ -73,6 +73,11 @@ const UserDialog = (props) => {
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
 
+  useEffect(() => {
+    checkIfRecentlyFollowed()
+  // eslint-disable-next-line
+  }, [])
+
   let following_count = 0
   let follower_count = 0
 
@@ -87,6 +92,16 @@ const UserDialog = (props) => {
     authorLink = `ug${authorLink}`
   }
 
+  const checkIfRecentlyFollowed = () => {
+    if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
+      const hasBeenFollowed = recentFollows.filter((item) => item === author).length
+
+      if(hasBeenFollowed) {
+        setHasRecentlyFollowed(true)
+      }
+    }
+  }
+
   const followUser = () => {
     setShouldStayOpen(true)
     followRequest(author).then((result) => {
@@ -98,14 +113,9 @@ const UserDialog = (props) => {
   }
 
   useEffect(() => {
-    if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
-      const hasBeenFollowed = recentFollows.filter((item) => item === author).length
-
-      if(hasBeenFollowed) {
-        setHasRecentlyFollowed(true)
-      }
-    }
-  }, [recentFollows, author])
+    checkIfRecentlyFollowed()
+  // eslint-disable-next-line
+  }, [recentFollows, author, loading])
 
   return (
     <Popover
