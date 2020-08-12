@@ -164,7 +164,7 @@ const Profile = (props) => {
   useEffect(() => {
     const params = queryString.parse(location.search)
 
-    if(!isVisited || (params.ref && params.ref === 'replies')) {
+    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
       anchorTop()
       clearProfile()
       clearAccountPosts()

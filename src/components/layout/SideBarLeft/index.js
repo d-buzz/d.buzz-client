@@ -181,7 +181,7 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Profile',
-      path: `/@${username}`,
+      path: `/@${username}/t/buzz?ref=nav`,
       icon: <ProfileIcon top={-5} />,
     },
   ]
