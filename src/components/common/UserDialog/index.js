@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import { getProfileMetaData } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 import Popover from '@material-ui/core/Popover'
-import { followRequest } from 'store/posts/actions'
+import { followRequest, unfollowRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
@@ -67,6 +67,7 @@ const UserDialog = (props) => {
     unguardedLinks,
     followRequest,
     recentFollows,
+    unfollowRequest,
     user,
   } = props
 
@@ -110,6 +111,16 @@ const UserDialog = (props) => {
     followRequest(author).then((result) => {
       if(result) {
         setHasRecentlyFollowed(true)
+      }
+      setShouldStayOpen(false)
+    })
+  }
+
+  const unfollowUser = () => {
+    setShouldStayOpen(true)
+    unfollowRequest(author).then((result) => {
+      if(result) {
+        setHasRecentlyFollowed(false)
       }
       setShouldStayOpen(false)
     })
@@ -175,7 +186,7 @@ const UserDialog = (props) => {
                         fontSize={15}
                         label="Unfollow"
                         className={classes.button}
-                        onClick={followUser}
+                        onClick={unfollowUser}
                       />
                     )
                   }
@@ -212,13 +223,14 @@ const UserDialog = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
-  loading: pending(state, 'FOLLOW_REQUEST'),
+  loading: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     followRequest,
+    unfollowRequest,
   }, dispatch)
 })
 

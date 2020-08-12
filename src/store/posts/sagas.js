@@ -52,6 +52,10 @@ import {
   followSuccess,
   followFailure,
   setHasBeenFollowedRecently,
+
+  UNFOLLOW_REQUEST,
+  unfollowSuccess,
+  unfollowFailure,
 } from './actions'
 
 import {
@@ -69,6 +73,7 @@ import {
   broadcastKeychainOperation,
   generateReplyOperation,
   generateFollowOperation,
+  generateUnfollowOperation,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
@@ -427,6 +432,45 @@ function* followRequest(payload, meta) {
   }
 }
 
+function* unfollowRequest(payload, meta) {
+  try {
+    const { following } = payload
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+
+    const operation = yield call(generateUnfollowOperation, username, following)
+    let success = false
+
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+
+    if(success) {
+      let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+      if(!Array.isArray(recentFollows)) {
+        recentFollows = []
+      } else {
+        const index = recentFollows.findIndex((item) => item === following)
+        recentFollows.splice(index, 1)
+      }
+      yield put(setHasBeenFollowedRecently(recentFollows))
+    }
+
+    yield put(unfollowSuccess(success, meta))
+  } catch(error) {
+    yield put(unfollowFailure(error, meta))
+  }
+}
+
 
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
@@ -476,6 +520,10 @@ function* watchFollowRequest({ payload, meta }) {
   yield call(followRequest, payload, meta)
 }
 
+function* watchUnfollowRequest({ payload, meta}) {
+  yield call(unfollowRequest, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -490,5 +538,6 @@ export default function* sagas() {
   yield takeEvery(PUBLISH_REPLY_REQUEST, watchPublishReplyRequest)
   yield takeEvery(GET_SEARCH_TAG_REQUEST, watchGetSearchTags)
   yield takeEvery(FOLLOW_REQUEST, watchFollowRequest)
+  yield takeEvery(UNFOLLOW_REQUEST, watchUnfollowRequest)
 }
 

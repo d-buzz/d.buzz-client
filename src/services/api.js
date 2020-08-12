@@ -224,7 +224,8 @@ export const isFollowing = (follower, following) => {
       if (err) {
         reject(err)
       }else {
-        if(data.length !== 0) {
+        console.log({ following: data })
+        if(data.length !== 0 && data[0].follower === follower) {
           resolve(true)
         } else {
           resolve(false)
@@ -615,6 +616,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
+          console.log({ error: response.message })
           reject(response.message)
         } else {
           resolve(response)
