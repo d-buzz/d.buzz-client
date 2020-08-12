@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import classNames from 'classnames'
+import Chip from '@material-ui/core/Chip'
+import Popover from '@material-ui/core/Popover'
 import { ContainedButton, Avatar } from 'components/elements'
 import { Link } from 'react-router-dom'
-import classNames from 'classnames'
 import { getProfileMetaData } from 'services/helper'
 import { createUseStyles } from 'react-jss'
-import Popover from '@material-ui/core/Popover'
 import { followRequest, unfollowRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
-import Chip from '@material-ui/core/Chip'
+import { NotificationBox } from 'components'
 
 const useStyles = createUseStyles({
   left: {
@@ -78,6 +79,9 @@ const UserDialog = (props) => {
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [message, setMessage] = useState('')
+  const [severity, setSeverity] = useState('success')
 
   useEffect(() => {
     checkIfRecentlyFollowed()
@@ -123,9 +127,14 @@ const UserDialog = (props) => {
   const followUser = () => {
     setShouldStayOpen(true)
     followRequest(author).then((result) => {
+      setShowSnackbar(true)
       if(result) {
+        setMessage(`Successfully followed @${author}`)
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
+      } else {
+        setMessage(`Failed following @${author}`)
+        setSeverity('error')
       }
       setShouldStayOpen(false)
     })
@@ -134,12 +143,21 @@ const UserDialog = (props) => {
   const unfollowUser = () => {
     setShouldStayOpen(true)
     unfollowRequest(author).then((result) => {
+      setShowSnackbar(true)
       if(result) {
+        setMessage(`Successfully Unfollowed @${author}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
+      } else {
+        setMessage(`Failed Unfollowing @${author}`)
+        setSeverity('error')
       }
       setShouldStayOpen(false)
     })
+  }
+
+  const handleSnackBarClose = () => {
+    setShowSnackbar(false)
   }
 
   useEffect(() => {
@@ -149,92 +167,102 @@ const UserDialog = (props) => {
   }, [recentFollows, recentUnfollows, author, loading])
 
   return (
-    <Popover
-      id="mouse-over-popover"
-      className={classes.popover}
-      classes={{
-        paper: classes.paper,
-      }}
-      open={open | shouldStayOpen}
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      PaperProps={{ onMouseEnter, onMouseLeave }}
-      onClose={onMouseLeave}
-    >
-      <div className={classes.wrapper}>
-      <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5, }}>
-        <div className={classes.row}>
-            <Row>
-              <Col xs="auto" style={{ paddingRight: 0 }}>
-                <div className={classes.left}>
-                  <Avatar author={author} />
-                </div>
-              </Col>
-              <Col>
-                <div className={classes.right}>
-                  {
-                    ((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
-                      <ContainedButton
-                        loading={loading}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, }}
-                        transparent={true}
-                        fontSize={15}
-                        label="Follow"
-                        className={classes.button}
-                        onClick={followUser}
-                      />
-                    )
-                  }
-                  {
-                    ((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
-                      <ContainedButton
-                        loading={loading}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, }}
-                        transparent={true}
-                        fontSize={15}
-                        label="Unfollow"
-                        className={classes.button}
-                        onClick={unfollowUser}
-                      />
-                    )
-                  }
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs="auto" style={{ paddingRight: 0 }}>
-                <label className={classes.name} style={{ color: 'black' }}>
-                  <Link
-                    to={authorLink}
-                    style={{ color: 'black' }}
-                  >
-                    { name ? name : `${author}`}
-                  </Link>&nbsp;<Chip  size="small" label={reputation} />
-                </label>
-                <p className={classNames(classes.paragraph, classes.username)}>
-                  { `@${author}` }
-                </p>
-                <p className={classes.paragraph}>
-                  { about }
-                </p>
-                <p className={classes.paragraph}>
-                  <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
-                </p>
-              </Col>
-            </Row>
+    <React.Fragment>
+
+
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={open | shouldStayOpen}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        PaperProps={{ onMouseEnter, onMouseLeave }}
+        onClose={onMouseLeave}
+      >
+        <div className={classes.wrapper}>
+        <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5, }}>
+          <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={author} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    {
+                      ((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
+                        <ContainedButton
+                          loading={loading}
+                          disabled={loading}
+                          style={{ float: 'right', marginTop: 5, }}
+                          transparent={true}
+                          fontSize={15}
+                          label="Follow"
+                          className={classes.button}
+                          onClick={followUser}
+                        />
+                      )
+                    }
+                    {
+                      ((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
+                        <ContainedButton
+                          loading={loading}
+                          disabled={loading}
+                          style={{ float: 'right', marginTop: 5, }}
+                          transparent={true}
+                          fontSize={15}
+                          label="Unfollow"
+                          className={classes.button}
+                          onClick={unfollowUser}
+                        />
+                      )
+                    }
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <label className={classes.name} style={{ color: 'black' }}>
+                    <Link
+                      to={authorLink}
+                      style={{ color: 'black' }}
+                    >
+                      { name ? name : `${author}`}
+                    </Link>&nbsp;<Chip  size="small" label={reputation} />
+                  </label>
+                  <p className={classNames(classes.paragraph, classes.username)}>
+                    { `@${author}` }
+                  </p>
+                  <p className={classes.paragraph}>
+                    { about }
+                  </p>
+                  <p className={classes.paragraph}>
+                    <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                  </p>
+                </Col>
+              </Row>
+            </div>
           </div>
         </div>
-      </div>
-    </Popover>
+      </Popover>
+      <NotificationBox
+        show={showSnackbar}
+        message={message}
+        severity={severity}
+        onClose={handleSnackBarClose}
+      />
+    </React.Fragment>
   )
 }
 
