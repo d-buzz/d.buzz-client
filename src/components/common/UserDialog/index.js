@@ -55,7 +55,7 @@ const useStyles = createUseStyles({
   },
   wrapper: {
     width: 300,
-    minHeight: 160
+    minHeight: 135,
   }
 })
 
@@ -171,8 +171,6 @@ const UserDialog = (props) => {
 
   return (
     <React.Fragment>
-
-
       <Popover
         id="mouse-over-popover"
         className={classes.popover}
