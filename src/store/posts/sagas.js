@@ -104,6 +104,18 @@ function* getContentRequest(payload, meta) {
         const home = yield select(state => state.posts.get('home'))
         const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
         data = filtered[0]
+      } else if(fromPage === 'trending') {
+        const trending = yield select(state => state.posts.get('trending'))
+        const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
+        data = filtered[0]
+      } else if(fromPage === 'latest') {
+        const latest = yield select(state => state.posts.get('latest'))
+        const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
+        data = filtered[0]
+      } else if(fromPage === 'tags') {
+        const tags = yield select(state => state.posts.get('tags'))
+        const filtered = tags.filter((item) => item.author === author && item.permlink === permlink)
+        data = filtered[0]
       }
 
     }

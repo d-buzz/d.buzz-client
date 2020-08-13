@@ -71,21 +71,26 @@ export const fetchDiscussions = (author, permlink) => {
         let authors = []
         let profile = []
 
-        Object.keys(data).forEach((key) => {
-          const itemSplit = key.split('/')
-          const profileVisited = visited.filter((prof) => prof.name === itemSplit[0])
+        const arr = Object.values(data)
+        let uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
-          if(!authors.includes(itemSplit[0]) && profileVisited.length === 0) {
-            authors.push(itemSplit[0])
-          } else if(profileVisited.length !== 0) {
-            profile.push(profileVisited[0])
+        uniqueAuthors.forEach((item) => {
+          if(!authors.includes(item)) {
+            const profileVisited = visited.filter((prof) => prof.name === item)
+            if(!authors.includes(item) && profileVisited.length === 0) {
+              authors.push(item)
+            } else if(profileVisited.length !== 0) {
+              profile.push(profileVisited[0])
+            }
           }
         })
+
 
         if(authors.length !== 0 ) {
           const info = await fetchProfile(authors)
           profile = [ ...profile, ...info]
         }
+
 
         Object.keys(data).forEach((key) => {
           if(!visitedNode.includes(key)) {
