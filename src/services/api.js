@@ -492,6 +492,10 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
     api.getFollowingAsync(follower, start_following, 'blog', limit)
       .then((result) => {
 
+        if(result.length === 1 && (result[0].following === start_following)) {
+          resolve([])
+        }
+
         if(result.length !== 0) {
           result.forEach(async(item, index) => {
             const profileVisited = visited.filter((profile) => profile.name === item.following)
