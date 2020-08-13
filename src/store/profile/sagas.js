@@ -83,6 +83,12 @@ function* getAccountRepliesRequest(payload, meta) {
     const oldPermlink = Array.isArray(old) && old.length ? old[old.length-1].permlink : ''
     const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
 
+    if(old.length !== 0 && data.length !== 0) {
+      if((old[old.length-1].permlink === data[0].permlink)) {
+        data.splice(0, 1)
+      }
+    }
+
     if((oldPermlink !== newPermlink)) {
       yield put(setLastAccountReply(data[data.length-1]))
     } else {
