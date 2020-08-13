@@ -41,6 +41,9 @@ const useStyles = createUseStyles({
     pointerEvents: 'none',
     '& :after': {
       border: '1px solid red',
+    },
+    '& div.MuiPopover-paper': {
+      borderRadius: '20px 20px !important',
     }
   },
   paper: {
@@ -48,7 +51,7 @@ const useStyles = createUseStyles({
     padding: 2,
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   wrapper: {
     width: 300,
