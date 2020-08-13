@@ -95,7 +95,21 @@ function* getRepliesRequest(payload, meta) {
 function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
   try {
-    const data = yield call(fetchContent, author, permlink)
+    let data = {}
+    const fromPage = yield select(state => state.posts.get('pageFrom'))
+    console.log({ fromPage })
+    if(!fromPage) {
+      data = yield call(fetchContent, author, permlink)
+    } else {
+
+      if(fromPage === 'home') {
+        console.log('using alternative route')
+        const home = yield select(state => state.posts.get('home'))
+        const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
+        data = filtered[0]
+      }
+
+    }
     yield put(getContentSuccess(data, meta))
   } catch(error) {
     yield put(getContentFailure(error, meta))

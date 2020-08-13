@@ -410,3 +410,9 @@ export const setHasBeenUnfollowedRecently = (following) => ({
   payload: following,
 })
 
+export const SET_PAGE_FROM = 'SET_PAGE_FROM'
+
+export const setPageFrom = (from) => ({
+  type: SET_PAGE_FROM,
+  payload: from,
+})

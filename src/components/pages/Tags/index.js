@@ -5,6 +5,7 @@ import {
   getSearchTagsRequest,
   clearTagsPost,
   setTagsIsVisited,
+  setPageFrom,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { PostList } from 'components'
@@ -21,12 +22,14 @@ const Explore = (props) => {
     loading,
     last,
     visited,
+    setPageFrom,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
   const tag = params.q
 
   useEffect(() => {
+    setPageFrom('trending')
     if(!visited) {
       setTagsIsVisited()
       clearTagsPost()
@@ -85,6 +88,7 @@ const mapDispatchToProps = (dispatch) => ({
     getSearchTagsRequest,
     clearTagsPost,
     setTagsIsVisited,
+    setPageFrom,
   }, dispatch)
 })
 

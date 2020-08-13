@@ -14,6 +14,7 @@ import {
   clearLatestPosts,
   clearTagsPost,
   setTagsIsVisited,
+  setPageFrom,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -40,9 +41,11 @@ const Trending = (props) => {
     clearAccountReplies,
     clearTagsPost,
     setTagsIsVisited,
+    setPageFrom,
   } = props
 
   useEffect(() => {
+    setPageFrom('trending')
     if(!isVisited) {
       anchorTop()
       clearHomePosts()
@@ -118,6 +121,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAccountReplies,
     clearTagsPost,
     setTagsIsVisited,
+    setPageFrom,
   },dispatch)
 })
 
