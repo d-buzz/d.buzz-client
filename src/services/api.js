@@ -116,6 +116,7 @@ export const fetchDiscussions = (author, permlink) => {
                 children.push(content)
               })
 
+              delete data[key]
               return children
             }
 
