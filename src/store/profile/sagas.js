@@ -54,6 +54,15 @@ function* getAccountPostRequest(payload, meta) {
     const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
 
     if((oldPermlink !== newPermlink)) {
+
+      if(old.length !== 0) {
+        if((old[old.length-1].permlink === data[0].permlink)) {
+          data.splice(0, 1)
+        }
+      }
+      console.log({ old })
+      console.log({ data })
+
       data = [...old, ...data]
       yield put(setLastAccountPosts(data[data.length-1]))
     } else {
