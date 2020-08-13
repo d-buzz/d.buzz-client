@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { PostList, CreateBuzzForm } from 'components'
-import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -22,6 +21,7 @@ import {
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { anchorTop } from 'services/helper'
+import { PostlistSkeleton } from 'components'
 
 const Feeds = (props) => {
   const {
@@ -95,7 +95,8 @@ const Feeds = (props) => {
           ))
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <PostlistSkeleton loading={loading} />
+      {/* <HashtagLoader loading={loading} /> */}
     </React.Fragment>
   )
 }
