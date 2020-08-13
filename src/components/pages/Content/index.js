@@ -101,8 +101,20 @@ const Content = (props) => {
   let app = null
   let upvotes = 0
   let hasUpvoted = false
+  let payout_at = cashout_time
 
-  const payout = calculatePayout(content)
+  let payout = calculatePayout(content)
+
+  if(!cashout_time) {
+    const { payout_at: payday } = content
+    payout_at = payday
+  }
+
+  if(isNaN(payout)) {
+    const { payout: pay } = content
+    payout = pay
+  }
+
   const { is_authenticated } = user
 
   const { name } = getProfileMetaData(profile)
@@ -115,9 +127,17 @@ const Content = (props) => {
   }
 
   if(active_votes) {
-    upvotes = active_votes.filter((vote) => vote.weight >= 0).length
-    if(is_authenticated) {
-      hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
+    if(active_votes.length > 0) {
+
+      if(active_votes[0].hasOwnProperty('weight')) {
+        upvotes = active_votes.filter((vote) => vote.weight >= 0).length
+      } else {
+        upvotes = active_votes.length
+      }
+
+      if(is_authenticated) {
+        hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
+      }
     }
   }
 
@@ -205,7 +225,7 @@ const Content = (props) => {
                       voteCount={upvotes}
                       replyCount={replyCount}
                       payout={payout}
-                      payoutAt={cashout_time}
+                      payoutAt={payout_at}
                       replyRef="content"
                     />
                   </Col>

@@ -84,8 +84,6 @@ function* getRepliesRequest(payload, meta) {
   try {
     const replies = yield call(fetchDiscussions, author, permlink)
 
-    // console.log({ replies })
-
     yield put(getRepliesSuccess(replies, meta))
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
@@ -103,7 +101,6 @@ function* getContentRequest(payload, meta) {
     } else {
 
       if(fromPage === 'home') {
-        console.log('using alternative route')
         const home = yield select(state => state.posts.get('home'))
         const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
         data = filtered[0]
