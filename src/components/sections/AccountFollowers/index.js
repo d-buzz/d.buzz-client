@@ -1,7 +1,7 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Avatar, HashtagLoader } from 'components/elements'
+import { Avatar } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { getProfileMetaData } from 'services/helper'
@@ -13,6 +13,7 @@ import {
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
+import { AvatarlistSkeleton } from 'components'
 
 
 const useStyle = createUseStyles({
@@ -178,7 +179,7 @@ const AccountFollowers = (props) => {
           (<center><br/><h6>Do not have a follower</h6></center>)
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <AvatarlistSkeleton loading={true} />
     </React.Fragment>
   )
 }
