@@ -128,8 +128,9 @@ export const fetchDiscussions = (author, permlink) => {
           }
 
         })
-
-        resolve(discussions[0].replies)
+        let replies = discussions[0].replies
+        replies = replies.reverse()
+        resolve(replies)
       }
     })
   })
