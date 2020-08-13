@@ -57,6 +57,93 @@ export const callBridge = async(method, params) => {
   })
 }
 
+// export const fetchReplies = (author, permlink) => {
+//   return api.getContentRepliesAsync(author, permlink)
+//     .then(async(replies) => {
+
+//       if(replies.length !== 0) {
+//         const getProfiledata = mapFetchProfile(replies)
+//         await Promise.all([getProfiledata])
+//       }
+
+//       return Promise.map(replies, async(reply) => {
+//         const getActiveVotes = new Promise((resolve) => {
+//           api.getActiveVotesAsync(reply.author, reply.permlink)
+//           .then((active_votes) => {
+//             resolve(active_votes)
+//           })
+//         })
+
+//         const active_votes = await Promise.all([getActiveVotes])
+//         reply.active_votes = active_votes[0]
+
+//         if (reply.children > 0) {
+//           return fetchReplies(reply.author, reply.permlink)
+//             .then((children) => {
+//               reply.replies = children
+//               return reply
+//             })
+//         } else {
+//           return reply
+//         }
+//       })
+//   }).catch((error) => {
+//     reject(error)
+//   })
+// }
+
+export const fetchDiscussions = (author, permlink) => {
+  return new Promise((resolve, reject) => {
+    const params = {"author":`${author}`, "permlink": `${permlink}`}
+    let discussions = []
+    let visited = []
+
+    api.call('bridge.get_discussion', params, (err, data) => {
+      if(err) {
+        console.log({ discussions: err })
+        reject(err)
+      } else {
+        Object.keys(data).forEach(function(key) {
+
+          if(!visited.includes(key)) {
+            visited.push(key)
+            const reply = data[key]
+
+            const getChildren = (reply) => {
+              const { replies } = reply
+              let children = []
+
+              replies.forEach((item) => {
+                visited.push(item)
+
+                const content = data[item]
+
+                if(content.replies.length !== 0) {
+                  const child = getChildren(content)
+                  content.replies = child
+                }
+
+                children.push(content)
+              })
+
+              return children
+            }
+
+            const children = getChildren(reply)
+            reply.replies = children
+            discussions.push(reply)
+          }
+
+        })
+
+        console.log({ discussions })
+        resolve(discussions)
+      }
+    })
+  })
+}
+
+
 export const getUnreadNotificationsCount = async(account) => {
   return new Promise((resolve, reject) => {
     const params = { account }
