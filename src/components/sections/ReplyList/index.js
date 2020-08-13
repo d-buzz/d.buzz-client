@@ -199,11 +199,16 @@ const ReplyList = (props) => {
       children: replyCount,
       profile = {},
       meta,
-      cashout_time,
+      payout_at,
     } = reply
 
+    let { payout } = reply
+
+    if(payout === 0) {
+      payout = '0.00'
+    }
+
     const { username, is_authenticated } = user
-    const payout = calculatePayout(reply)
 
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )
@@ -295,7 +300,7 @@ const ReplyList = (props) => {
                     voteCount={active_votes.length}
                     replyCount={replyCount}
                     payout={payout}
-                    payoutAt={cashout_time}
+                    payoutAt={payout_at}
                     replyRef="replies"
                   />
                 </div>

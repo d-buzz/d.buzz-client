@@ -176,6 +176,7 @@ export const fetchAccountPosts = (account, start_permlink = '', start_author = '
       observer: account,
       start_author: start_author || account,
       start_permlink,
+      limit: 5,
     }
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
@@ -233,7 +234,7 @@ export const fetchContent = (author, permlink) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
         const profile = await fetchProfile([result.author])
-        result.profile = profile
+        result.profile = profile[0]
         resolve(result)
       })
       .catch((error) => {
