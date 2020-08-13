@@ -10,9 +10,6 @@ import {
   ListAction,
   HashtagLoader,
 } from 'components/elements'
-import {
-  SidebarRightSkeleton
-} from 'components'
 
 const useStyles = createUseStyles({
   search: {
