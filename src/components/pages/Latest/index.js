@@ -20,8 +20,8 @@ import {
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { pending } from 'redux-saga-thunk'
-import { HashtagLoader } from 'components/elements'
 import { anchorTop } from 'services/helper'
+import { PostlistSkeleton } from 'components'
 
 const Latest = (props) => {
   const {
@@ -94,7 +94,7 @@ const Latest = (props) => {
           ))
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
 }

@@ -3,8 +3,9 @@ import Skeleton from 'react-loading-skeleton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
+import { Link } from 'react-router-dom'
 
-const useStyle = createUseStyles({
+const useStyles = createUseStyles({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -13,15 +14,11 @@ const useStyle = createUseStyles({
   },
   wrapper: {
     width: '100%',
-    overflow: 'hidden',
     borderBottom: '1px solid #e6ecf0',
+    overflow: 'hidden',
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      backgroundColor: '#f5f8fa',
-    },
-    cursor: 'pointer',
   },
   inline: {
     display: 'inline-block',
@@ -58,6 +55,14 @@ const useStyle = createUseStyles({
     '& iframe': {
       borderRadius: '15px 15px',
     },
+    '& a': {
+      color: '#d32f2f',
+    },
+    '&:after': {
+      content: '',
+      clear: 'both',
+      display: 'table',
+    },
   },
   actionWrapper: {
     paddingTop: 10,
@@ -79,31 +84,17 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-  popover: {
-    pointerEvents: 'none',
-    '& :after': {
-      border: '1px solid red',
-    }
-  },
-  paper: {
-    pointerEvents: "auto",
-    padding: 2,
-    '& :after': {
-      border: '1px solid red',
-    }
-  },
-  button: {
-    width: 85,
-    height: 35,
-  },
-  paragraph: {
-    padding: 0,
-    margin: 0,
+  link: {
+    color: 'black !important',
+    '&:hover': {
+      color: 'black',
+      textDecoration: 'underline !important',
+    },
   },
 })
 
-const PostlistSkeleton = ({ loading }) => {
-  const classes = useStyle()
+const ReplylistSkeleton = ({ loading }) => {
+  const classes = useStyles()
 
   return (
     <React.Fragment>
@@ -116,23 +107,55 @@ const PostlistSkeleton = ({ loading }) => {
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <div className={classes.left}>
                       <Skeleton circle={true} height={50} width={50} />
+                      <div style={{ margin: '0 auto', width: 2, backgroundColor: '#eee', backgroundImage: 'linear-gradient( 90deg,#eee,#f5f5f5,#eee )', height: '100%', flexGrow: 1, }} />
                     </div>
                   </Col>
                   <Col>
                     <div className={classes.right}>
                       <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
+                        <Link
+                          className={classes.link}
+                        >
+                          <p className={classes.name}>
+                            <Skeleton height={10} width={120} />
+                          </p>
+                        </Link>
+                        <label className={classes.username}>
+                            <Skeleton height={10} width={120} />
                         </label>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton count={2} height={10} />
-                          <Skeleton height={10} width={300} />
-                          <Skeleton count={2} height={10} />
-                        </div>
+                        <Skeleton count={2} height={10} />
+                        <Skeleton height={150} />
+                        <Skeleton width={300} height={10} />
+                        <Skeleton width={550} height={10} top={10} />
                       </div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+              <div className={classes.row}>
+                <Row>
+                  <Col xs="auto" style={{ paddingRight: 0 }}>
+                    <div className={classes.left}>
+                      <Skeleton circle={true} height={50} width={50} />
+                    </div>
+                  </Col>
+                  <Col>
+                    <div className={classes.right}>
+                      <div className={classes.content}>
+                        <Link
+                          className={classes.link}
+                        >
+                          <p className={classes.name}>
+                            <Skeleton height={10} width={120} />
+                          </p>
+                        </Link>
+                        <label className={classes.username}>
+                          <Skeleton height={10} width={120} />
+                        </label>
+                      </div>
+                      <Skeleton width={350} height={10} />
+                      <Skeleton width={650} height={10} top={10} />
+                      <Skeleton count={3} height={10} />
                     </div>
                   </Col>
                 </Row>
@@ -149,51 +172,20 @@ const PostlistSkeleton = ({ loading }) => {
                   <Col>
                     <div className={classes.right}>
                       <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
+                        <Link
+                          className={classes.link}
+                        >
+                          <p className={classes.name}>
+                            <Skeleton height={10} width={120} />
+                          </p>
+                        </Link>
+                        <label className={classes.username}>
+                          <Skeleton height={10} width={120} />
                         </label>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton width={200} height={10} />
-                          <Skeleton count={3} height={10} />
-                          <Skeleton height={250} />
-                          <Skeleton height={10} width={500} />
-                        </div>
                       </div>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton count={2} height={10} />
-                          <Skeleton width={300} height={10} />
-                          <Skeleton height={150} />
-                          <Skeleton count={3} height={10} />
-                        </div>
-                      </div>
+                      <Skeleton count={3} height={10} />
+                      <Skeleton width={350} height={10} />
+                      <Skeleton width={650} height={10} top={10} />
                     </div>
                   </Col>
                 </Row>
@@ -206,4 +198,4 @@ const PostlistSkeleton = ({ loading }) => {
   )
 }
 
-export default PostlistSkeleton
+export default ReplylistSkeleton

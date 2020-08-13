@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { PostList } from 'components'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { HashtagLoader } from 'components/elements'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -22,6 +21,7 @@ import {
   clearAccountReplies,
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
+import { PostlistSkeleton } from 'components'
 
 const Trending = (props) => {
   const {
@@ -96,7 +96,7 @@ const Trending = (props) => {
           ))
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <PostlistSkeleton loading={loading}/>
     </React.Fragment>
   )
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { getContentRequest, getRepliesRequest, clearReplies } from 'store/posts/actions'
 import { createUseStyles } from 'react-jss'
-import { Avatar, HashtagLoader } from 'components/elements'
+import { Avatar } from 'components/elements'
 import {
   MarkdownViewer,
   PostTags,
@@ -17,12 +17,13 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import { ContentSkeleton, ReplylistSkeleton } from 'components'
 
 const useStyles = createUseStyles({
   wrapper: {
     width: '95%',
     margin: '0 auto',
-    marginTop: 5,
+    marginTop: 0,
     borderBottom: '1px solid #e6ecf0',
     '& img': {
       borderRadius: '15px 15px',
@@ -232,15 +233,20 @@ const Content = (props) => {
                 </Row>
               </div>
             </div>
-            {
-              !loadingReplies && (
-                <ReplyList replies={replies} expectedCount={replyCount} />
-              )
-            }
           </React.Fragment>
         )
       }
-      <HashtagLoader loading={loadingContent || loadingReplies} />
+      {
+        !loadingReplies && (
+          <ReplyList replies={replies} expectedCount={replyCount} />
+        )
+      }
+      <ContentSkeleton loading={loadingContent} />
+      {
+        replyCount !== 0 && (
+          <ReplylistSkeleton loading={loadingReplies} />
+        )
+      }
       <br />
       <UserDialog
         open={open}
