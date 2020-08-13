@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { PostList } from 'components'
 import { pending } from 'redux-saga-thunk'
-import { HashtagLoader } from 'components/elements'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { getAccountPostsRequest } from 'store/profile/actions'
+import { PostlistSkeleton } from 'components'
 
 const AccountPosts = (props) => {
   const {
@@ -56,7 +56,7 @@ const AccountPosts = (props) => {
           (<center><br/><h6>No Buzz's from @{author}</h6></center>)
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
 }

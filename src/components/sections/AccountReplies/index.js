@@ -6,6 +6,7 @@ import { HashtagLoader } from 'components/elements'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { getAccountRepliesRequest } from 'store/profile/actions'
+import { PostlistSkeleton } from 'components'
 
 const AccountReplies = (props) => {
   const {
@@ -55,7 +56,7 @@ const AccountReplies = (props) => {
           (<center><br/><h6>No replies found</h6></center>)
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
 }

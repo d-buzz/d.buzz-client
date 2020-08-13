@@ -10,6 +10,9 @@ import {
   ListAction,
   HashtagLoader,
 } from 'components/elements'
+import {
+  SidebarRightSkeleton
+} from 'components'
 
 const useStyles = createUseStyles({
   search: {
@@ -53,6 +56,7 @@ const SideBarRight = (props) => {
       }
       <div>
         <ListGroup label="Trends for you">
+
           {
             items.slice(0, 5).map((item) => (
               <ListAction key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />

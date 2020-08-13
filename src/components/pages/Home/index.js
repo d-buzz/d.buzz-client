@@ -96,7 +96,6 @@ const Feeds = (props) => {
         }
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />
-      {/* <HashtagLoader loading={loading} /> */}
     </React.Fragment>
   )
 }
