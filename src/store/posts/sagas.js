@@ -83,12 +83,12 @@ import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
-    const data = yield call(fetchReplies, author, permlink)
+    // const data = yield call(fetchReplies, author, permlink)
     const replies = yield call(fetchDiscussions, author, permlink)
 
-    console.log({ replies })
+    // console.log({ replies })
 
-    yield put(getRepliesSuccess(data, meta))
+    yield put(getRepliesSuccess(replies, meta))
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
   }
