@@ -60,8 +60,6 @@ function* getAccountPostRequest(payload, meta) {
           data.splice(0, 1)
         }
       }
-      console.log({ old })
-      console.log({ data })
 
       data = [...old, ...data]
       yield put(setLastAccountPosts(data[data.length-1]))
