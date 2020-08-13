@@ -100,7 +100,6 @@ export const fetchDiscussions = (author, permlink) => {
 
     api.call('bridge.get_discussion', params, (err, data) => {
       if(err) {
-        console.log({ discussions: err })
         reject(err)
       } else {
         Object.keys(data).forEach(function(key) {
@@ -136,8 +135,7 @@ export const fetchDiscussions = (author, permlink) => {
 
         })
 
-        console.log({ discussions })
-        resolve(discussions)
+        resolve(discussions[0].replies)
       }
     })
   })
