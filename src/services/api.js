@@ -455,7 +455,7 @@ export const fetchFollowCount = (username) => {
     })
 }
 
-export const fetchFollowers = (following, start_follower = '', limit = 20) => {
+export const fetchFollowers = (following, start_follower = '', limit = 10) => {
   return new Promise((resolve, reject) => {
     api.getFollowersAsync(following, start_follower, 'blog', limit)
       .then(async(result) => {
@@ -464,6 +464,10 @@ export const fetchFollowers = (following, start_follower = '', limit = 20) => {
           result.forEach((item, index) => {
             result[index].author = item.follower
           })
+
+          if(result.length === 1 && (result[0].follower === start_follower)) {
+            resolve([])
+          }
 
           const getProfiledata = mapFetchProfile(result)
           await Promise.all([getProfiledata])
@@ -474,6 +478,7 @@ export const fetchFollowers = (following, start_follower = '', limit = 20) => {
         }
       })
       .catch((error) => {
+        console.log({ error })
         reject(error)
       })
 

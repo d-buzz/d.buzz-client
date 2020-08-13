@@ -94,8 +94,9 @@ function* getAccountRepliesRequest(payload, meta) {
 function* getFollowersRequest(payload, meta) {
   try {
     const { username, start_follower } = payload
-
     const old = yield select(state => state.profile.get('followers'))
+
+
     let data = yield call(fetchFollowers, username, start_follower)
 
     if(old.length !== 0 && data.length !== 0) {
@@ -103,6 +104,7 @@ function* getFollowersRequest(payload, meta) {
     }
 
     data = [...old, ...data]
+
 
     yield put(setLastFollower(data[data.length-1]))
     yield put(getFollowersSuccess(data, meta))

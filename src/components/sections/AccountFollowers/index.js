@@ -179,7 +179,7 @@ const AccountFollowers = (props) => {
           (<center><br/><h6>Do not have a follower</h6></center>)
         }
       </InfiniteScroll>
-      <AvatarlistSkeleton loading={true} />
+      <AvatarlistSkeleton loading={loading} />
     </React.Fragment>
   )
 }
