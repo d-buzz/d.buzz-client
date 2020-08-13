@@ -41,7 +41,7 @@ const invokeFilter = (item) => {
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, ...params }
+    params = { "tag": `${appConfig.TAG}`, ...params, limit: 7 }
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
         reject(err)
@@ -57,64 +57,47 @@ export const callBridge = async(method, params) => {
   })
 }
 
-// export const fetchReplies = (author, permlink) => {
-//   return api.getContentRepliesAsync(author, permlink)
-//     .then(async(replies) => {
-
-//       if(replies.length !== 0) {
-//         const getProfiledata = mapFetchProfile(replies)
-//         await Promise.all([getProfiledata])
-//       }
-
-//       return Promise.map(replies, async(reply) => {
-//         const getActiveVotes = new Promise((resolve) => {
-//           api.getActiveVotesAsync(reply.author, reply.permlink)
-//           .then((active_votes) => {
-//             resolve(active_votes)
-//           })
-//         })
-
-//         const active_votes = await Promise.all([getActiveVotes])
-//         reply.active_votes = active_votes[0]
-
-//         if (reply.children > 0) {
-//           return fetchReplies(reply.author, reply.permlink)
-//             .then((children) => {
-//               reply.replies = children
-//               return reply
-//             })
-//         } else {
-//           return reply
-//         }
-//       })
-//   }).catch((error) => {
-//     reject(error)
-//   })
-// }
 
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
     let discussions = []
-    let visited = []
-
-    api.call('bridge.get_discussion', params, (err, data) => {
+    let visitedNode = []
+    api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
       } else {
-        Object.keys(data).forEach(function(key) {
 
-          if(!visited.includes(key)) {
-            visited.push(key)
+        let authors = []
+        let profile = []
+
+        Object.keys(data).forEach((key) => {
+          const itemSplit = key.split('/')
+          const profileVisited = visited.filter((prof) => prof.name === itemSplit[0])
+
+          if(!authors.includes(itemSplit[0]) && profileVisited.length === 0) {
+            authors.push(itemSplit[0])
+          } else if(profileVisited.length !== 0) {
+            profile.push(profileVisited[0])
+          }
+        })
+
+        if(authors.length !== 0 ) {
+          const info = await fetchProfile(authors)
+          profile = [ ...profile, ...info]
+        }
+
+        Object.keys(data).forEach((key) => {
+          if(!visitedNode.includes(key)) {
+            visitedNode.push(key)
             const reply = data[key]
 
             const getChildren = (reply) => {
               const { replies } = reply
               let children = []
 
-              replies.forEach((item) => {
-                visited.push(item)
-
+              replies.forEach(async(item) => {
+                visitedNode.push(item)
                 const content = data[item]
 
                 if(content.replies.length !== 0) {
@@ -122,6 +105,9 @@ export const fetchDiscussions = (author, permlink) => {
                   content.replies = child
                 }
 
+                const info = profile.filter((prof) => prof.name === content.author)
+                visited.push(info[0])
+                content.profile = info[0]
                 children.push(content)
               })
 
@@ -245,7 +231,9 @@ export const fetchTrendingTags = () => {
 export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
-      .then((result) => {
+      .then(async(result) => {
+        const profile = await fetchProfile([result.author])
+        result.profile = profile
         resolve(result)
       })
       .catch((error) => {
@@ -309,7 +297,6 @@ export const isFollowing = (follower, following) => {
       if (err) {
         reject(err)
       }else {
-        console.log({ following: data })
         if(data.length !== 0 && data[0].follower === follower) {
           resolve(true)
         } else {
@@ -346,6 +333,7 @@ export const fetchProfile = (username) => {
           }
 
           result[index].isFollowed = isFollowed
+          visited.push(result[index])
 
           if(index === result.length - 1) {
             resolve(result)

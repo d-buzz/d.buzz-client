@@ -96,8 +96,6 @@ function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
   try {
     const data = yield call(fetchContent, author, permlink)
-    const profile = yield call(fetchProfile, [author])
-    data.profile = profile[0]
     yield put(getContentSuccess(data, meta))
   } catch(error) {
     yield put(getContentFailure(error, meta))
