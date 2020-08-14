@@ -308,7 +308,7 @@ export const GET_SEARCH_TAG_REQUEST = 'GET_SEARCH_TAG_REQUEST'
 export const GET_SEARCH_TAG_SUCCESS = 'GET_SEARCH_TAG_SUCCESS'
 export const GET_SEARCH_TAG_FAILURE = 'GET_SEARCH_TAG_FAILURE'
 
-export const getSearchTagsRequest = (tag, start_permlink = '', start_author = '') => ({
+export const getSearchTagsRequest = (tag, start_permlink = null, start_author = null) => ({
   type: GET_SEARCH_TAG_REQUEST,
   payload: { tag, start_permlink, start_author },
   meta: {
@@ -346,6 +346,12 @@ export const CLEAR_TAGS_POST  = 'CLEAR_TAGS_POST'
 
 export const clearTagsPost = () => ({
   type: CLEAR_TAGS_POST,
+})
+
+export const CLEAR_LAST_SEARCH_TAG = 'CLEAR_LAST_SEARCH_TAG'
+
+export const clearLastSearchTag = () => ({
+  type: CLEAR_LAST_SEARCH_TAG,
 })
 
 export const FOLLOW_REQUEST = 'FOLLOW_REQUEST'

@@ -25,7 +25,7 @@ const endpoints = [
   'https://techcoderx.com'
 ]
 
-api.setOptions({ url: 'https://rpc.esteem.app' })
+api.setOptions({ url: 'https://anyx.io' })
 
 config.set('alternative_api_endpoints', endpoints)
 
@@ -61,8 +61,7 @@ export const callBridge = async(method, params) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-    let discussions = []
-    let visitedNode = []
+
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
@@ -91,44 +90,41 @@ export const fetchDiscussions = (author, permlink) => {
           profile = [ ...profile, ...info]
         }
 
+        const parent = data[`${author}/${permlink}`]
 
-        Object.keys(data).forEach((key) => {
-          if(!visitedNode.includes(key)) {
-            visitedNode.push(key)
-            const reply = data[key]
+        const getChildren = (reply) => {
+          const { replies } = reply
+          let children = []
 
-            const getChildren = (reply) => {
-              const { replies } = reply
-              let children = []
+          replies.forEach(async(item) => {
 
-              replies.forEach(async(item) => {
-                visitedNode.push(item)
-                const content = data[item]
+            let content = data[item]
 
-                if(content.replies.length !== 0) {
-                  const child = getChildren(content)
-                  content.replies = child
-                }
-
-                const info = profile.filter((prof) => prof.name === content.author)
-                visited.push(info[0])
-                content.profile = info[0]
-                children.push(content)
-
-                delete data[item]
-              })
-
-              delete data[key]
-              return children
+            if(!content) {
+              content = item
             }
 
-            const children = getChildren(reply)
-            reply.replies = children
-            discussions.push(reply)
-          }
 
-        })
-        let replies = discussions[0].replies
+            if(content.replies.length !== 0) {
+              const child = getChildren(content)
+              content.replies = child
+            }
+
+            const info = profile.filter((prof) => prof.name === content.author)
+            visited.push(info[0])
+            content.profile = info[0]
+            children.push(content)
+
+          })
+
+
+          return children
+        }
+
+        const children = getChildren(parent)
+        parent.replies = children
+
+        let replies = parent.replies
         replies = replies.reverse()
         resolve(replies)
       }

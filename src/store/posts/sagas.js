@@ -400,21 +400,47 @@ function* getSearchTags(payload, meta) {
   try {
     const { tag, start_permlink, start_author } = payload
     let old = yield select(state => state.posts.get('searchTag'))
-    const params = { sort: 'trending', tag, start_permlink, start_author }
-    const method = 'get_ranked_posts'
+    let data = []
 
-    let data = yield call(callBridge, method, params)
+    let runQuery = true
 
-    data = [...old, ...data]
-
-    let last = data[data.length-1]
-    if(data.length === 0) {
-      last = {}
+    if(!Array.isArray(old)) {
+      old = []
     }
 
-    yield put(setLastSearchTag(last))
+    data = old
+
+    if(old.length !== 0) {
+      if(old[old.length-1].author === start_author && old[old.length-1].permlink === start_permlink) {
+        runQuery = false
+      }
+    }
+
+    if(runQuery) {
+      const user = yield select(state => state.auth.get('user'))
+      const { username } = user
+      const params = { sort: 'trending', tag, start_permlink, start_author, observer: username, limit: 21, }
+      const method = 'get_ranked_posts'
+
+      console.log({ params })
+
+      const result = yield call(callBridge, method, params)
+
+      console.log({ result })
+
+      let last = {}
+      if(result.length !== 0) {
+
+        data = [...old, ...result]
+        last = data[data.length-1]
+      }
+
+      yield put(setLastSearchTag(last))
+    }
+
     yield put(getSearchTagsSuccess(data, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getSearchTagFailure(error, meta))
   }
 }
