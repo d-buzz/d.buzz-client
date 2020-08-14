@@ -227,7 +227,7 @@ const PostActions = (props) => {
       {
         !showSlider && (
           <div>
-            <Row>
+            <Row style={{ width: '100%' }}>
               <Col>
                 {
                   !loading && upvoted && (
