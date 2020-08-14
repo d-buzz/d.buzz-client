@@ -125,8 +125,6 @@ const ReplylistSkeleton = ({ loading }) => {
                         </label>
                         <Skeleton count={2} height={10} />
                         <Skeleton height={150} />
-                        <Skeleton width={300} height={10} />
-                        <Skeleton width={550} height={10} top={10} />
                       </div>
                     </div>
                   </Col>
@@ -153,9 +151,7 @@ const ReplylistSkeleton = ({ loading }) => {
                           <Skeleton height={10} width={120} />
                         </label>
                       </div>
-                      <Skeleton width={350} height={10} />
-                      <Skeleton width={650} height={10} top={10} />
-                      <Skeleton count={3} height={10} />
+                      <Skeleton count={2} height={10} />
                     </div>
                   </Col>
                 </Row>
@@ -183,9 +179,7 @@ const ReplylistSkeleton = ({ loading }) => {
                           <Skeleton height={10} width={120} />
                         </label>
                       </div>
-                      <Skeleton count={3} height={10} />
                       <Skeleton width={350} height={10} />
-                      <Skeleton width={650} height={10} top={10} />
                     </div>
                   </Col>
                 </Row>

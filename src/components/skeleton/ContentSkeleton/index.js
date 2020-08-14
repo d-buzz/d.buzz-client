@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   wrapper: {
+    height: 200,
     width: '95%',
     margin: '0 auto',
     borderBottom: '1px solid #e6ecf0',
@@ -85,13 +86,9 @@ const ContentSkeleton = ({ loading }) => {
                   </Col>
                 </Row>
                 <Skeleton height={10}/>
-                <Skeleton height={250}/>
                 <br />
               </React.Fragment>
               <br />
-            </div>
-            <div className={classes.wrapper}>
-
             </div>
           </React.Fragment>
         )
