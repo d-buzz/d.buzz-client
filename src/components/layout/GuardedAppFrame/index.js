@@ -100,52 +100,58 @@ const GuardedAppFrame = (props) => {
   return (
     <React.Fragment>
       <Row>
-        <Col xs={2} className={classes.clearPadding}>
+        <Col xs="auto" className={classes.clearPadding}>
+          <div style={{ width: 270 }}>
           <Sticky>
             {
               ({ style }) => (
-                <div style={style}>
+                <div style={{...style}}>
                   <SideBarLeft/>
                 </div>
               )
             }
           </Sticky>
+          </div>
         </Col>
-        <Col xs={7} className={classes.clearPadding}>
-          <Sticky>
-            {
-              ({ style }) => (
-                <Navbar style={style} className={classes.nav}>
-                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
-                    {
-                      title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                        <IconButton onClick={handleClickBackButton} size="small">
-                          <BackArrowIcon />
-                        </IconButton>
-                      )
-                    }
-                    <span className={classes.title}>{ title }</span>
-                  </Navbar.Brand>
-                </Navbar>
-              )
-            }
-          </Sticky>
-          <div className={classes.main}>
-            <React.Fragment>
-              { renderRoutes(route.routes) }
-            </React.Fragment>
+        <Col xs="auto" className={classes.clearPadding}>
+          <div style={{ width: 600 }}>
+            <Sticky>
+              {
+                ({ style }) => (
+                  <Navbar style={style} className={classes.nav}>
+                    <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
+                      {
+                        title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+                          <IconButton onClick={handleClickBackButton} size="small">
+                            <BackArrowIcon />
+                          </IconButton>
+                        )
+                      }
+                      <span className={classes.title}>{ title }</span>
+                    </Navbar.Brand>
+                  </Navbar>
+                )
+              }
+            </Sticky>
+            <div className={classes.main}>
+              <React.Fragment>
+                { renderRoutes(route.routes) }
+              </React.Fragment>
+            </div>
           </div>
         </Col>
         <Col xs={3}>
-          <Sticky>
-            {
-              ({ style }) => (
-                <div style={style}>
-                  <SideBarRight hideSearchBar={false} />
-                </div>
-              )
-            }
-          </Sticky>
+          <div style={{ width: 350 }}>
+            <Sticky>
+              {
+                ({ style }) => (
+                  <div style={style}>
+                    <SideBarRight hideSearchBar={false} />
+                  </div>
+                )
+              }
+            </Sticky>
+          </div>
         </Col>
       </Row>
     </React.Fragment>
