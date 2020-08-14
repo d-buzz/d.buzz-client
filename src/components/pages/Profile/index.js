@@ -33,6 +33,7 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
+import { ProfileSkeleton } from 'components'
 
 const useStyles = createUseStyles({
   cover: {
@@ -215,7 +216,7 @@ const Profile = (props) => {
 
   return (
     <React.Fragment>
-      <HashtagLoader loading={loading} />
+      <ProfileSkeleton loading={loading} />
       {
         !loading && (
           <React.Fragment>
