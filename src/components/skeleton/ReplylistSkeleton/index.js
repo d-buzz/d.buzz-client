@@ -124,7 +124,6 @@ const ReplylistSkeleton = ({ loading }) => {
                             <Skeleton height={10} width={120} />
                         </label>
                         <Skeleton count={2} height={10} />
-                        <Skeleton height={150} />
                       </div>
                     </div>
                   </Col>

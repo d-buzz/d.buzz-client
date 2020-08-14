@@ -124,7 +124,10 @@ const Content = (props) => {
     try{
       meta = JSON.parse(json_metadata)
       app = meta.app.split('/')[0]
-    } catch(e) { }
+    } catch(e) {
+      app = json_metadata.app.split('/')[0]
+      console.log({ app })
+    }
   }
 
   if(active_votes) {
