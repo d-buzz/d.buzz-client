@@ -56,9 +56,10 @@ const useStyles = createUseStyles({
     marginRight: 15,
   },
   fullName: {
-    fontSize: 25,
+    fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
+    fontFamily: 'Segoe-Bold !important'
   },
   userName: {
     fontSize: 16,
@@ -73,6 +74,7 @@ const useStyles = createUseStyles({
   paragraph: {
     padding: 0,
     margin: 0,
+    fontSize: 14,
   },
   spacer: {
     width: '100%',
