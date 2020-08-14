@@ -18,6 +18,10 @@
   float: right!important;
 }
 
+.pull-right:after {
+  padding-bottom: 15;
+}
+
 @font-face {
   font-family: 'Segoe-Bold';
   src: url('fonts/Segoe-Bold.woff');

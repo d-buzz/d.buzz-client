@@ -224,6 +224,7 @@ const Content = (props) => {
                 <Row>
                   <Col>
                     <PostActions
+                      disableExtraPadding={true}
                       title={title}
                       author={username}
                       permlink={permlink}

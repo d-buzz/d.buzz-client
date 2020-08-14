@@ -150,6 +150,7 @@ const PostActions = (props) => {
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
+    disableExtraPadding = false
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -163,6 +164,12 @@ const PostActions = (props) => {
   const [severity, setSeverity] = useState('success')
   const { is_authenticated } = user
   const [open, setOpen] = useState(false)
+
+  let extraPadding = { paddingTop: 10 }
+
+  if(disableExtraPadding) {
+    extraPadding = {}
+  }
 
   const handleSnackBarClose = () => {
     setShowSnackBar(false)
@@ -227,7 +234,7 @@ const PostActions = (props) => {
       {
         !showSlider && (
           <div>
-            <Row style={{ width: '100%' }}>
+            <Row style={{ width: '100%', ...extraPadding }}>
               <Col>
                 {
                   !loading && upvoted && (
