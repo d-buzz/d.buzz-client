@@ -46,15 +46,17 @@ const useStyles = createUseStyles({
     paddingRight: 5,
     paddingBottom: 0,
     marginBottom: 0,
+    fontSize: 14,
   },
   username: {
     marginTop: -30,
     color: '#657786',
     paddingBottom: 0,
+    fontSize: 14,
   },
   meta: {
     color: 'rgb(101, 119, 134)',
-    fontSize: 15,
+    fontSize: 14,
     marginRight: 15,
   },
   strong: {
@@ -62,6 +64,7 @@ const useStyles = createUseStyles({
   },
   link: {
     color: 'black',
+    fontSize: 14,
     '&:hover': {
       color: 'black',
     },

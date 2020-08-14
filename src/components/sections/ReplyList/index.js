@@ -50,10 +50,12 @@ const useStyles = createUseStyles({
     paddingRight: 5,
     paddingBottom: 0,
     marginBottom: 0,
+    fontSize: 14,
   },
   username: {
     color: '#657786',
     paddingBottom: 0,
+    fontSize: 14,
   },
   post: {
     color: '#14171a',
@@ -99,6 +101,7 @@ const useStyles = createUseStyles({
   },
   link: {
     color: 'black !important',
+    fontSize: 14,
     '&:hover': {
       color: 'black',
       textDecoration: 'underline !important',
@@ -286,7 +289,7 @@ const ReplyList = (props) => {
                     @{author} &bull;&nbsp;
                     { moment(`${created}Z`).local().fromNow() }
                   </label>
-                  <p style={{ marginTop: -10 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                  <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                   <MarkdownViewer minifyAssets={false} content={body} />
                   <PostTags meta={meta} />
                 </div>
