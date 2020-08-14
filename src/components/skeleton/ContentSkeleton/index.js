@@ -64,6 +64,7 @@ const ContentSkeleton = ({ loading }) => {
           <React.Fragment>
             <div className={classes.wrapper}>
               <React.Fragment>
+                <br />
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <Skeleton circle={true} height={50} width={50} />
@@ -82,9 +83,10 @@ const ContentSkeleton = ({ loading }) => {
                           <Skeleton height={10} width={120} />
                       </p>
                     </div>
-
                   </Col>
                 </Row>
+                <Skeleton height={10}/>
+                <Skeleton height={10}/>
                 <Skeleton height={10}/>
                 <br />
               </React.Fragment>

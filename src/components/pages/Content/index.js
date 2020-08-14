@@ -172,6 +172,7 @@ const Content = (props) => {
         !loadingContent && (
           <React.Fragment>
             <div className={classes.wrapper}>
+              <br />
               <React.Fragment>
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
