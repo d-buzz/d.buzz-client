@@ -114,7 +114,7 @@ const GuardedAppFrame = (props) => {
           </div>
         </Col>
         <Col xs="auto" className={classes.clearPadding}>
-          <div style={{ width: 600 }}>
+          <div style={{ width: 595 }}>
             <Sticky>
               {
                 ({ style }) => (

@@ -16,9 +16,9 @@ const useStyles = createUseStyles({
     margin: '0 auto',
   },
   guardedContainer: {
-    '@media (min-width: 1200px)': {
+    '@media (min-width: 1250px)': {
       '&.container': {
-        maxWidth: '1300px',
+        maxWidth: '1250px',
       },
     },
   },

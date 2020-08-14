@@ -96,7 +96,7 @@ const useStyles = createUseStyles({
     paddingTop: 5,
   },
   sideBarButton: {
-    width: '100%',
+    width: '120%',
     marginBottom: 10,
   }
 })
