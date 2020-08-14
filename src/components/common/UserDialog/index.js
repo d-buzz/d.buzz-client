@@ -38,8 +38,9 @@ const useStyles = createUseStyles({
   paragraph: {
     padding: 0,
     margin: 0,
-    width: '90%',
+    width: '97%',
     fontSize: 14,
+    wordBreak: 'break-all',
   },
   popover: {
     pointerEvents: 'none',
