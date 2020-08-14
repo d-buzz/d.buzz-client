@@ -53,6 +53,7 @@ const useStyle = createUseStyles({
     paddingRight: 5,
     paddingBottom: 0,
     marginBottom: 0,
+    fontSize: 14,
   },
   username: {
     color: '#657786',

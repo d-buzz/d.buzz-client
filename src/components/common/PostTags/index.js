@@ -8,6 +8,7 @@ const useStyle = createUseStyles({
     wordWrap: 'break-word',
     width: 'calc(100% - 60px)',
     height: 'max-content',
+    fontSize: 14,
   },
   default: {
     marginRight: 5,

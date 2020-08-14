@@ -12,7 +12,7 @@ const renderer = new DefaultRenderer({
   allowInsecureScriptTags: false,
   addNofollowToLinks: true,
   doNotShowImages: false,
-  ipfsPrefix: "",
+  ipfsPrefix: "https://images.hive.blog/0x0/",
   assetsWidth: 640,
   assetsHeight: 480,
   imageProxyFn: (url) => url,
@@ -29,8 +29,9 @@ const useStyles = createUseStyles({
       color: '#d32f2f !important',
     },
     '& p': {
-      fontSize: 15,
+      fontSize: 14,
     },
+    fontSize: '14 !important',
   },
   preview: {
     paddingBottom: 5,

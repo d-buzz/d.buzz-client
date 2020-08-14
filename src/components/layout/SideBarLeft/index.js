@@ -71,6 +71,7 @@ const useStyles = createUseStyles({
   },
   navLinkContainer: {
     marginTop: 20,
+    fontSize: 14,
   },
   bottom: {
     position: 'absolute',
