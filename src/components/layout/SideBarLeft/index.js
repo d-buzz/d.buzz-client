@@ -30,9 +30,9 @@ import { pollNotifRequest } from 'store/polling/actions'
 
 const useStyles = createUseStyles({
   items: {
-    fontFamily: 'Roboto, sans-serif',
+    fontFamily: 'Segoe-Bold',
     width: 'max-content',
-    fontSize: 20,
+    fontSize: 18,
     padding: 8,
     marginBottom: 15,
     '& a': {

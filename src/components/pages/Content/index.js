@@ -126,7 +126,6 @@ const Content = (props) => {
       app = meta.app.split('/')[0]
     } catch(e) {
       app = json_metadata.app.split('/')[0]
-      console.log({ app })
     }
   }
 
