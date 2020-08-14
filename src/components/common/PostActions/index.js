@@ -105,12 +105,15 @@ const useStyles = createUseStyles({
   inline: {
     display: 'inline-block',
     verticalAlign: 'top',
+    fontSize: 14,
   },
   actionWrapperSpace: {
     paddingRight: 30,
+    fontSize: 14,
   },
   button: {
     height: 33,
+    fontSize: 14,
   },
 })
 
@@ -122,7 +125,7 @@ const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick,
       </div>
       {
         !hideStats && (
-          <div className={inlineClass}>
+          <div style={{ paddingTop: 2 }} className={inlineClass}>
             { stat }
           </div>
         )
@@ -302,7 +305,7 @@ const PostActions = (props) => {
                       size='small'
                       icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
                       label={
-                        <span style={{ color: '#e53935' }}>
+                        <span style={{ color: '#e53935', fontSize: 12, }}>
                           ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }&nbsp;
                           { getPayoutDate(payoutAt) }
                         </span>
@@ -322,7 +325,7 @@ const PostActions = (props) => {
           <div style={{ width: '98%', paddingRight: 30 }}>
             <Row>
               <Col xs="auto">
-                <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={15} label={`Upvote (${sliderValue}%)`} className={classes.button} />
+                <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
               </Col>
               <Col style={{ paddingLeft: 0 }}>
                 <ContainedButton
