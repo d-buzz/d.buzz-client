@@ -213,7 +213,7 @@ const SideBarLeft = (props) => {
       <div style={{ height: '100vh', width: '50px' }}>
         <Nav className="flex-row">
           <LinkContainer >
-            <NavbarBrand href="#">
+            <NavbarBrand href="/">
               <div style={{ marginLeft: 15, marginRight: 15 }}>
                 <BrandIcon />
               </div>
