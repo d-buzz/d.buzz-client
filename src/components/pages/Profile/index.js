@@ -23,6 +23,9 @@ import {
   clearAccountFollowers,
   clearAccountFollowing,
 } from 'store/profile/actions'
+import {
+  setPageFrom
+} from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { anchorTop, getProfileMetaData } from 'services/helper'
@@ -126,6 +129,7 @@ const Profile = (props) => {
     getFollowingRequest,
     clearAccountFollowers,
     clearAccountFollowing,
+    setPageFrom,
     user,
   } = props
 
@@ -162,6 +166,7 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
+    setPageFrom('profile')
     const params = queryString.parse(location.search)
 
     if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
@@ -312,6 +317,7 @@ const mapDispatchToProps = (dispatch) => ({
     getFollowingRequest,
     clearAccountFollowers,
     clearAccountFollowing,
+    setPageFrom,
   }, dispatch)
 })
 

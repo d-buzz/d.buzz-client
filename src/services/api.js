@@ -84,7 +84,6 @@ export const fetchDiscussions = (author, permlink) => {
           }
         })
 
-
         if(authors.length !== 0 ) {
           const info = await fetchProfile(authors)
           profile = [ ...profile, ...info]
@@ -104,7 +103,6 @@ export const fetchDiscussions = (author, permlink) => {
               content = item
             }
 
-
             if(content.replies.length !== 0) {
               const child = getChildren(content)
               content.replies = child
@@ -116,7 +114,6 @@ export const fetchDiscussions = (author, permlink) => {
             children.push(content)
 
           })
-
 
           return children
         }
@@ -704,7 +701,6 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
-          console.log({ error: response.message })
           reject(response.message)
         } else {
           resolve(response)

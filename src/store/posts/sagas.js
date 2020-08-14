@@ -116,6 +116,10 @@ function* getContentRequest(payload, meta) {
         const tags = yield select(state => state.posts.get('tags'))
         const filtered = tags.filter((item) => item.author === author && item.permlink === permlink)
         data = filtered[0]
+      } else if(fromPage === 'profile') {
+        const profilePosts = yield select(state => state.profile.get('posts'))
+        const filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+        data = filtered[0]
       }
 
     }
@@ -422,11 +426,7 @@ function* getSearchTags(payload, meta) {
       const params = { sort: 'trending', tag, start_permlink, start_author, observer: username, limit: 21, }
       const method = 'get_ranked_posts'
 
-      console.log({ params })
-
       const result = yield call(callBridge, method, params)
-
-      console.log({ result })
 
       let last = {}
       if(result.length !== 0) {
