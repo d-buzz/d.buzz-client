@@ -18,10 +18,12 @@ const useStyles = createUseStyles({
   left: {
     height: '100%',
     width: 50,
+    fontSize: 14,
   },
   right: {
     height: 'max-content',
     width: '98%',
+    fontSize: 14,
   },
   name: {
     fontWeight: 'bold',
@@ -36,6 +38,8 @@ const useStyles = createUseStyles({
   paragraph: {
     padding: 0,
     margin: 0,
+    width: '90%',
+    fontSize: 14,
   },
   popover: {
     pointerEvents: 'none',
@@ -204,11 +208,11 @@ const UserDialog = (props) => {
                     {
                       ((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
                         <ContainedButton
+                          fontSize={14}
                           loading={loading}
                           disabled={loading}
                           style={{ float: 'right', marginTop: 5, }}
                           transparent={true}
-                          fontSize={15}
                           label="Follow"
                           className={classes.button}
                           onClick={followUser}
@@ -218,11 +222,11 @@ const UserDialog = (props) => {
                     {
                       ((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
                         <ContainedButton
+                          fontSize={14}
                           loading={loading}
                           disabled={loading}
                           style={{ float: 'right', marginTop: 5, }}
                           transparent={true}
-                          fontSize={15}
                           label="Unfollow"
                           className={classes.button}
                           onClick={unfollowUser}
