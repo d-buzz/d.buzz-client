@@ -84,12 +84,9 @@ const ContentSkeleton = ({ loading }) => {
 
                   </Col>
                 </Row>
-                <Skeleton height={10} width={300} />
-                <Skeleton height={10} count={3} />
-                <Skeleton height={10} width={200} />
-                <Skeleton height={10} count={2} />
-                <Skeleton height={300}/>
-                <Skeleton height={10} count={2} />
+                <Skeleton height={10}/>
+                <Skeleton height={250}/>
+                <br />
               </React.Fragment>
               <br />
             </div>
