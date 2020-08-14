@@ -16,6 +16,7 @@ const useStyles = createUseStyles({
       paddingRight: 15,
       whiteSpace: 'nowrap',
       color: 'white',
+      fontFamily: 'Segoe-Bold',
     },
     '&:hover': {
       backgroundColor: '#b71c1c',
@@ -34,6 +35,7 @@ const useStyles = createUseStyles({
       whiteSpace: 'nowrap',
       color: '#e61c34',
       fontWeight: 'bold',
+      fontFamily: 'Segoe-Bold',
     },
     '&:hover': {
       backgroundColor: '#b71c1c1c',
@@ -51,6 +53,7 @@ const useStyles = createUseStyles({
       paddingRight: 15,
       whiteSpace: 'nowrap',
       color: 'white',
+      fontFamily: 'Segoe-Bold',
     },
     '&:hover': {
       backgroundColor: '#d0cfcf',
@@ -69,6 +72,7 @@ const ContainedButton = (props) => {
     onClick = () => {},
     disabled = false,
     loading = false,
+    labelStyle = {}
   } = props
 
   let buttonClass = classes.button
@@ -84,7 +88,7 @@ const ContainedButton = (props) => {
   return (
     <div onClick={!disabled && !loading ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} >
       <center>
-        <label style={{ fontSize: fontSize }}>
+        <label style={{ fontSize: fontSize, ...labelStyle }}>
           { !loading && label }
           {
             loading && (<HashtagLoader size={20} top={5} loading={true} />)

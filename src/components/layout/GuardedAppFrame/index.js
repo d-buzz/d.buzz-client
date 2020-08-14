@@ -55,6 +55,7 @@ const useStyles = createUseStyles({
   title: {
     display: 'inline-block',
     marginLeft: 5,
+    fontFamily: 'Segoe-Bold',
   }
 })
 

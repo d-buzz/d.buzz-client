@@ -235,7 +235,7 @@ const SideBarLeft = (props) => {
                 !is_subscribe && (
                   <ContainedButton
                     transparent={true}
-                    fontSize={18}
+                    fontSize={14}
                     label="Subscribe"
                     loading={loading}
                     className={classes.sideBarButton}
@@ -244,8 +244,10 @@ const SideBarLeft = (props) => {
                 )
               }
               <ContainedButton
-                 fontSize={18}
+                 style={{ height: 45 }}
+                 fontSize={14}
                  label="Buzz"
+                 labelStyle={{ paddingTop: 10 }}
                  className={classes.sideBarButton}
                  onClick={handleClickBuzz}
               />

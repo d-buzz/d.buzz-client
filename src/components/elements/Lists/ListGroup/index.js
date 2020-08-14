@@ -16,6 +16,7 @@ const useStyles = createUseStyles({
     marginBottom: 10,
     fontWeight: 'bold',
     fontSize: 18,
+    fontFamily: 'Segoe-Bold',
   }
 })
 

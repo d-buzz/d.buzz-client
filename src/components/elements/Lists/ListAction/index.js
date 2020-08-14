@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
   label: {
     paddingTop: 10,
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 14,
   },
   subLabel: {
     fontSize: 13,
@@ -42,7 +42,7 @@ const useStyles = createUseStyles({
 const ListAction = (props) => {
   const classes = useStyles()
   const { label, subLabel } = props
-  
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
