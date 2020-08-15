@@ -56,7 +56,7 @@ const SideBarRight = (props) => {
 
           {
             items.slice(0, 5).map((item) => (
-              <ListAction key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+              <ListAction href={`/tags?q=${item.name}`} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
             ))
           }
           <HashtagLoader loading={loading} />

@@ -1,5 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
+import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   inner: {
@@ -41,16 +42,16 @@ const useStyles = createUseStyles({
 
 const ListAction = (props) => {
   const classes = useStyles()
-  const { label, subLabel } = props
+  const { label, subLabel, href } = props
 
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
         <div className={classes.inner}>
-          <a href="/tag" className={classes.linkWrapper}>
+          <Link to={href} className={classes.linkWrapper}>
             <label className={classes.label}>{ label }</label> <br />
             <label className={classes.subLabel}>{ subLabel }</label>
-          </a>
+          </Link>
         </div>
       </div>
     </React.Fragment>
