@@ -41,12 +41,18 @@ const invokeFilter = (item) => {
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, ...params, limit: 5 }
+    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params,}
+
+    console.log({ params2: params })
+
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
         reject(err)
       }else {
+        console.log({ result2: data })
         const result = data.filter((item) => invokeFilter(item))
+        console.log({ resul3: result })
+
         if(result.length !== 0) {
           const getProfiledata = mapFetchProfile(result)
           await Promise.all([getProfiledata])
@@ -353,7 +359,6 @@ export const mapFetchProfile = (data) => {
   return new Promise(async(resolve, reject) => {
     try {
       let count = 0
-
       let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
       let profiles = []
 
@@ -365,7 +370,12 @@ export const mapFetchProfile = (data) => {
         }
       })
 
-      const profilesFetch = await fetchProfile(uniqueAuthors)
+      let profilesFetch = []
+
+      if(uniqueAuthors.length !== 0) {
+        profilesFetch = await fetchProfile(uniqueAuthors)
+      }
+
       profiles = [...profiles, ...profilesFetch]
 
       data.forEach(async(item, index) => {

@@ -406,6 +406,8 @@ function* getSearchTags(payload, meta) {
     let old = yield select(state => state.posts.get('searchTag'))
     let data = []
 
+    console.log({ old })
+
     let runQuery = true
 
     if(!Array.isArray(old)) {
@@ -425,22 +427,17 @@ function* getSearchTags(payload, meta) {
       const { username } = user
       const params = { sort: 'trending', tag, start_permlink, start_author, observer: username, limit: 21, }
       const method = 'get_ranked_posts'
-
       const result = yield call(callBridge, method, params)
 
-      let last = {}
       if(result.length !== 0) {
-
         data = [...old, ...result]
-        last = data[data.length-1]
+        yield put(setLastSearchTag(data[data.length-1]))
       }
 
-      yield put(setLastSearchTag(last))
     }
 
     yield put(getSearchTagsSuccess(data, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getSearchTagFailure(error, meta))
   }
 }
