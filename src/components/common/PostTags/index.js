@@ -35,7 +35,6 @@ const PostTags = (props) => {
     }
   } catch (e) {  }
 
-
   return (
     <div className={classes.tags}>
       {

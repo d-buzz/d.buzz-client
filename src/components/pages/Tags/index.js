@@ -57,7 +57,7 @@ const Explore = (props) => {
       {
         results.map((item) => (
           <PostList
-            searchList={true}
+            searchListMode={true}
             title={item.title}
             profileRef="tags"
             active_votes={item.total_votes}

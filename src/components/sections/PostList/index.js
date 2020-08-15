@@ -140,6 +140,8 @@ const PostList = (props) => {
     highlightTag = null,
   } = props
 
+  console.log({ created })
+
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)
 
@@ -152,7 +154,7 @@ const PostList = (props) => {
     authorLink = `ug${authorLink}`
   }
 
-  if(user.is_authenticated && searchListMode) {
+  if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
   } else {
     hasUpvoted = false
@@ -230,7 +232,7 @@ const PostList = (props) => {
                   </label>
                   <label className={classes.username}>
                     { `@${author}` } &bull;&nbsp;
-                    { moment(`${created}Z`).local().fromNow() }
+                    { moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow() }
                   </label>
                   <div onClick={handleOpenContent(author, permlink)}>
                     <MarkdownViewer content={body}/>
@@ -246,7 +248,6 @@ const PostList = (props) => {
                     voteCount={upvotes}
                     replyCount={replyCount}
                     payout={`${payout}`}
-                    payoutAt={payoutAt}
                   />
                 </div>
               </div>
