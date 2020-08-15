@@ -425,7 +425,7 @@ function* getSearchTags(payload, meta) {
     if(runQuery) {
       const user = yield select(state => state.auth.get('user'))
       const { username } = user
-      const params = { sort: 'trending', tag, start_permlink, start_author, observer: username, limit: 21, }
+      const params = { sort: 'trending', tag, start_permlink, start_author, observer: username, limit: 100, }
       const method = 'get_ranked_posts'
       const result = yield call(callBridge, method, params)
 

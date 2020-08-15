@@ -8,7 +8,6 @@ import Chip from '@material-ui/core/Chip'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
-  HashtagLoader
 } from 'components/elements'
 import {
   getProfileRequest,

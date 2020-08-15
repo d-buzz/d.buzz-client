@@ -12,7 +12,7 @@ import { PostList } from 'components'
 import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { pending } from 'redux-saga-thunk'
-import { HashtagLoader } from 'components/elements'
+import { PostlistSkeleton } from 'components'
 
 const Explore = (props) => {
   const {
@@ -71,7 +71,7 @@ const Explore = (props) => {
           ))
         }
       </InfiniteScroll>
-      <HashtagLoader loading={loading} />
+      <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
 }
