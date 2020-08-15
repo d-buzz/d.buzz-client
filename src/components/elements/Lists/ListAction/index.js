@@ -47,12 +47,12 @@ const ListAction = (props) => {
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classes.inner}>
-          <Link to={href} className={classes.linkWrapper}>
-            <label className={classes.label}>{ label }</label> <br />
-            <label className={classes.subLabel}>{ subLabel }</label>
-          </Link>
-        </div>
+        <Link to={href} className={classes.linkWrapper}>
+          <div className={classes.inner}>
+              <label className={classes.label}>{ label }</label> <br />
+              <label className={classes.subLabel}>{ subLabel }</label>
+          </div>
+        </Link>
       </div>
     </React.Fragment>
   )
