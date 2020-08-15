@@ -228,6 +228,7 @@ const PostActions = (props) => {
     return semantic !== '51 years ago' ? semantic : ''
   }
 
+  console.log({ payoutAt })
 
   return (
     <React.Fragment>

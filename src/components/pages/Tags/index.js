@@ -76,6 +76,10 @@ const Explore = (props) => {
         ))
       }
       <PostlistSkeleton loading={loading} />
+      {
+        (!loading && results.length === 0) &&
+        (<center><br/><h6>No Buzz's found with #{tag}</h6></center>)
+      }
     </React.Fragment>
   )
 }
