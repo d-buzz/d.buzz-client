@@ -13,6 +13,7 @@ import {
   clearTagsPost,
   setTagsIsVisited,
   setPageFrom,
+  clearLastSearchTag,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -41,6 +42,7 @@ const Feeds = (props) => {
     clearTagsPost,
     setTagsIsVisited,
     setPageFrom,
+    clearLastSearchTag,
   } = props
 
   useEffect(() => {
@@ -54,6 +56,7 @@ const Feeds = (props) => {
       setTrendingIsVisited(false)
       setLatestIsVisited(false)
     }
+    clearLastSearchTag()
     clearTagsPost()
     setTagsIsVisited(false)
     clearAccountPosts()
@@ -120,7 +123,8 @@ const mapDispatchToProps = (dispatch) => ({
     clearAccountReplies,
     clearTagsPost,
     setTagsIsVisited,
-    setPageFrom
+    setPageFrom,
+    clearLastSearchTag
   }, dispatch)
 })
 

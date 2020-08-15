@@ -43,7 +43,7 @@ const PostTags = (props) => {
           <Link
             key={`${tag}`}
             to={`/tags?q=${tag}`}
-            className={classNames(classes.default, highlightTag === tag ? classes.highlighted : '')}
+            className={classNames(classes.default, highlightTag === tag.toLowerCase() ? classes.highlighted : '')}
           >
             #{ tag }
           </Link>

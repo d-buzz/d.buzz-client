@@ -6,6 +6,7 @@ import {
   clearTagsPost,
   setTagsIsVisited,
   setPageFrom,
+  clearLastSearchTag,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { PostList } from 'components'
@@ -23,6 +24,7 @@ const Explore = (props) => {
     last,
     visited,
     setPageFrom,
+    clearLastSearchTag,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
@@ -31,12 +33,20 @@ const Explore = (props) => {
   useEffect(() => {
     setPageFrom('trending')
     if(!visited) {
+      clearLastSearchTag()
+      setTagsIsVisited()
+      clearTagsPost()
+      getSearchTagsRequest(tag)
+    }
+
+    if(tag !== params.q) {
+      clearLastSearchTag()
       setTagsIsVisited()
       clearTagsPost()
       getSearchTagsRequest(tag)
     }
   // eslint-disable-next-line
-  }, [])
+  }, [tag])
 
   const loadMorePosts = () => {
     const { permlink, author } = last
@@ -89,6 +99,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearTagsPost,
     setTagsIsVisited,
     setPageFrom,
+    clearLastSearchTag,
   }, dispatch)
 })
 
