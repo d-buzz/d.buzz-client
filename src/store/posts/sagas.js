@@ -46,7 +46,6 @@ import {
   GET_SEARCH_TAG_REQUEST,
   getSearchTagsSuccess,
   getSearchTagFailure,
-  setLastSearchTag,
 
   FOLLOW_REQUEST,
   followSuccess,
@@ -403,40 +402,7 @@ function* publishReplyRequest(payload, meta) {
 
 function* getSearchTags(payload, meta) {
   try {
-    const { tag, start_permlink, start_author } = payload
-    let old = yield select(state => state.posts.get('searchTag'))
-    let data = []
-
-    // console.log({ old })
-
-    // let runQuery = true
-
-    // if(!Array.isArray(old)) {
-    //   old = []
-    // }
-
-    // data = old
-
-    // if(old.length !== 0) {
-    //   if(old[old.length-1].author === start_author && old[old.length-1].permlink === start_permlink) {
-    //     runQuery = false
-    //   }
-    // }
-
-    // if(runQuery) {
-    //   const user = yield select(state => state.auth.get('user'))
-    //   const { username } = user
-    //   const params = { sort: 'trending', tag, start_permlink, start_author, observer: username, limit: 100, }
-    //   const method = 'get_ranked_posts'
-    //   const result = yield call(callBridge, method, params)
-
-    //   if(result.length !== 0) {
-    //     data = [...old, ...result]
-    //     yield put(setLastSearchTag(data[data.length-1]))
-    //   }
-
-    // }
-
+    const { tag } = payload
     const searchPosts = yield call(searchPostTags, tag)
 
     yield put(getSearchTagsSuccess(searchPosts, meta))

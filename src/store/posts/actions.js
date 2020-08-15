@@ -308,9 +308,9 @@ export const GET_SEARCH_TAG_REQUEST = 'GET_SEARCH_TAG_REQUEST'
 export const GET_SEARCH_TAG_SUCCESS = 'GET_SEARCH_TAG_SUCCESS'
 export const GET_SEARCH_TAG_FAILURE = 'GET_SEARCH_TAG_FAILURE'
 
-export const getSearchTagsRequest = (tag, start_permlink = null, start_author = null) => ({
+export const getSearchTagsRequest = (tag) => ({
   type: GET_SEARCH_TAG_REQUEST,
-  payload: { tag, start_permlink, start_author },
+  payload: { tag },
   meta: {
     thunk: true,
   },

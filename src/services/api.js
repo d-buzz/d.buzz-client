@@ -16,16 +16,6 @@ import stripHtml from 'string-strip-html'
 
 const searchUrl = 'http://127.0.0.1:3030/api/v1/search'
 
-const request_base = {
-  method: 'post',
-  mode: 'no-cors',
-  credentials: 'same-origin',
-  headers: {
-      Accept: 'application/json',
-      'Content-type': 'application/json',
-  },
-}
-
 const endpoints = [
   'https://api.openhive.network',
   'https://api.hive.blog',
