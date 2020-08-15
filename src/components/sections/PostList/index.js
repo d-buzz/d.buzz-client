@@ -120,6 +120,7 @@ const useStyle = createUseStyles({
 const PostList = (props) => {
   const classes = useStyle()
   const {
+    searchListMode = false,
     author,
     permlink,
     created,
@@ -151,12 +152,13 @@ const PostList = (props) => {
     authorLink = `ug${authorLink}`
   }
 
-  if(user.is_authenticated) {
+  if(user.is_authenticated && searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
+  } else {
+    hasUpvoted = false
   }
 
   const { name } = getProfileMetaData(profile)
-
 
   const generateLink = (author, permlink) =>  {
    let link = ''

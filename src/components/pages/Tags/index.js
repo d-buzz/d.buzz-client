@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import queryString from 'query-string'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import {
   getSearchTagsRequest,
   clearTagsPost,
@@ -21,7 +20,6 @@ const Explore = (props) => {
     clearTagsPost,
     items,
     loading,
-    last,
     visited,
     setPageFrom,
     clearLastSearchTag,
@@ -29,6 +27,7 @@ const Explore = (props) => {
   const location = useLocation()
   const params = queryString.parse(location.search)
   const tag = params.q
+  const [results, setResults] = useState([])
 
   useEffect(() => {
     setPageFrom('trending')
@@ -48,39 +47,34 @@ const Explore = (props) => {
   // eslint-disable-next-line
   }, [tag])
 
-  const loadMorePosts = () => {
-    const { permlink, author } = last
-    getSearchTagsRequest(tag, permlink, author)
-  }
+  useEffect(() => {
+    setResults(items.results || [])
+  // eslint-disable-next-line
+  }, [items])
 
   return (
     <React.Fragment>
-      <InfiniteScroll
-        dataLength={items.length || 0}
-        next={loadMorePosts}
-        hasMore={true}
-      >
-        {
-          items.map((item) => (
-            <PostList
-              title={item.title}
-              profileRef="home"
-              active_votes={item.active_votes}
-              author={item.author}
-              permlink={item.permlink}
-              created={item.created}
-              body={item.body}
-              upvotes={item.active_votes.length}
-              replyCount={item.children}
-              meta={item.json_metadata}
-              payout={item.payout}
-              profile={item.profile}
-              payoutAt={item.payout_at}
-              highlightTag={tag}
-            />
-          ))
-        }
-      </InfiniteScroll>
+      {
+        results.map((item) => (
+          <PostList
+            searchList={true}
+            title={item.title}
+            profileRef="tags"
+            active_votes={item.total_votes}
+            author={item.author}
+            permlink={item.permlink}
+            created={item.created_at}
+            body={item.body}
+            upvotes={item.total_votes}
+            replyCount={item.children}
+            meta={{ app: item.app, tags: item.tags }}
+            payout={item.payout}
+            profile={item.profile}
+            payoutAt={item.payout_at}
+            highlightTag={tag}
+          />
+        ))
+      }
       <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )

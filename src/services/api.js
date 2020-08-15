@@ -14,6 +14,18 @@ import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
 
+const searchUrl = 'http://127.0.0.1:3030/api/v1/search'
+
+const request_base = {
+  method: 'post',
+  mode: 'no-cors',
+  credentials: 'same-origin',
+  headers: {
+      Accept: 'application/json',
+      'Content-type': 'application/json',
+  },
+}
+
 const endpoints = [
   'https://api.openhive.network',
   'https://api.hive.blog',
@@ -22,10 +34,11 @@ const endpoints = [
   'https://hived.hive-engine.com',
   'https://rpc.esteem.app',
   'https://hived.privex.io',
-  'https://techcoderx.com'
+  'https://techcoderx.com',
+  'https://rpc.esteem.app'
 ]
 
-api.setOptions({ url: 'https://anyx.io' })
+api.setOptions({ url: 'https://rpc.esteem.app' })
 
 config.set('alternative_api_endpoints', endpoints)
 
@@ -766,4 +779,21 @@ export const createPermlink = (title) => {
   return permlink
 }
 
+
+export const searchPostTags = (tag) => {
+  return new Promise(async(resolve, reject) => {
+    const body = { tag }
+
+    axios({
+      method: 'POST',
+      url: `${searchUrl}/tags`,
+      data: body,
+    }).then((result) => {
+      resolve(result.data)
+    }).catch((error) => {
+      reject(error)
+    })
+
+  })
+}
 
