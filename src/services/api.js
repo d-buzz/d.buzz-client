@@ -7,8 +7,8 @@ import {
 } from '@hiveio/hive-js'
 import { hash } from '@hiveio/hive-js/lib/auth/ecc'
 import { Promise, reject } from 'bluebird'
-import appConfig from 'config'
 import { v4 as uuidv4 } from 'uuid'
+import appConfig from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
@@ -749,7 +749,7 @@ export const broadcastOperation = (operations, keys) => {
 }
 
 export const slug = (text) => {
-  return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 });
+  return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 })
 }
 
 export const createMeta = () => {
@@ -778,8 +778,13 @@ export const searchPostTags = (tag) => {
       method: 'POST',
       url: `${searchUrl}/tags`,
       data: body,
-    }).then((result) => {
-      resolve(result.data)
+    }).then(async(result) => {
+      const data = result.data
+      // console.log({ data })
+      const getProfiledata = mapFetchProfile(data.results)
+      await Promise.all([getProfiledata])
+      console.log({ data })
+      resolve(data)
     }).catch((error) => {
       reject(error)
     })

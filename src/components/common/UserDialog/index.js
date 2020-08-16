@@ -61,6 +61,9 @@ const useStyles = createUseStyles({
   wrapper: {
     width: 300,
     minHeight: 135,
+  },
+  followWrapper: {
+    width: '100%',
   }
 })
 
@@ -249,8 +252,8 @@ const UserDialog = (props) => {
                   <p className={classes.paragraph}>
                     {about}
                   </p>
-                  <p className={classes.paragraph}>
-                    <b>{following_count}</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                  <p className={classNames(classes.paragraph, classes.followWrapper)}>
+                    <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
                   </p>
                 </Col>
               </Row>
