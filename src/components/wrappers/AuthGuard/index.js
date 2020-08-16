@@ -14,17 +14,13 @@ const AuthGuard = (props) => {
 
   return (
     <React.Fragment>
-      {
-         isUnguardedRoute() && is_authenticated && (
-          <Redirect to={{ pathname: '/', }} />
-        )
-      }
-      {
-        !isUnguardedRoute() && !is_authenticated && (
-          <Redirect to={{ pathname: '/login', }} />
-        )
-      }
-      { children }
+      {isUnguardedRoute() && is_authenticated && (
+        <Redirect to={{ pathname: '/', }} />
+      )}
+      {!isUnguardedRoute() && !is_authenticated && (
+        <Redirect to={{ pathname: '/login', }} />
+      )}
+      {children}
     </React.Fragment>
   )
 }
