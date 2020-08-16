@@ -95,7 +95,6 @@ function* getContentRequest(payload, meta) {
   try {
     let data = {}
     const fromPage = yield select(state => state.posts.get('pageFrom'))
-    console.log({ fromPage })
     if(!fromPage) {
       data = yield call(fetchContent, author, permlink)
     } else {
