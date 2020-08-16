@@ -9,10 +9,6 @@
     max-width:1250px;
   }
 }
-/*
-.pull-right {
-  float: right!important;
-} */
 
 .pull-right > a  {
   float: right!important;
