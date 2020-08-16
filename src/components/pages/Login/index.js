@@ -7,6 +7,10 @@ const useStyles = createUseStyles({
     width: '100%',
     minHeight: '100vh',
     border: '1px solid #e6ecf0',
+  },
+  headerWrapper: {
+    width: '98%',
+    margin: '0 auto',
   }
 })
 
@@ -15,7 +19,7 @@ const Login = () => {
   return (
     <React.Fragment>
       <div className={classes.trendingWrapper}>
-        <div style={{ width: '98%', margin: '0 auto', }}>
+        <div>
           <h5 style={{ fontWeight: 'bold' }}>Explore</h5>
         </div>
         <Trending unguardedLinks={true} />
