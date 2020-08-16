@@ -11,7 +11,7 @@ const App = () => {
       <Init>
         <ScrollMemory />
         <AuthGuard>
-          { renderRoutes(routes) }
+          {renderRoutes(routes)}
         </AuthGuard>
       </Init>
     </React.Fragment>
