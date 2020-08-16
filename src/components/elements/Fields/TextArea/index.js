@@ -30,7 +30,7 @@ const TextArea = (props) => {
         maxRows={15}
         placeholder={label}
         className={classes.field}
-        { ...props }
+        {...props}
       />
     </React.Fragment>
   )

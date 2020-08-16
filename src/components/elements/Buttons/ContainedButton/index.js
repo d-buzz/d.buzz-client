@@ -89,10 +89,8 @@ const ContainedButton = (props) => {
     <div onClick={!disabled && !loading ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} >
       <center>
         <label style={{ fontSize: fontSize, ...labelStyle }}>
-          { !loading && label }
-          {
-            loading && (<HashtagLoader size={20} top={5} loading={true} />)
-          }
+          {!loading && label}
+          {loading && (<HashtagLoader size={20} top={5} loading={true} />)}
         </label>
       </center>
     </div>

@@ -29,15 +29,13 @@ const FloatingDialog = (props) => {
 
   return (
     <React.Fragment>
-      {
-        show && (
-          <div className={classes.menu}>
-            <div style={{ paddingTop: 10, paddingBottom: 10, }}>
-              { children }
-            </div>
+      {show && (
+        <div className={classes.menu}>
+          <div style={{ paddingTop: 10, paddingBottom: 10, }}>
+            {children}
           </div>
-        )
-      }
+        </div>
+      )}
     </React.Fragment>
   )
 }

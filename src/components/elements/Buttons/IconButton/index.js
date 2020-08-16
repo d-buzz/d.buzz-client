@@ -33,7 +33,7 @@ const IconWrapper = ({ className, children }) => {
   return (
     <div className={className}>
       <center>
-        { children }
+        {children}
       </center>
     </div>
   )
@@ -46,7 +46,7 @@ const IconButton = (props) => {
   return (
     <div onClick={onClick} style={style} className={classes.container}>
       <IconWrapper className={classes.icon}>
-        { icon }
+        {icon}
       </IconWrapper>
     </div>
   )

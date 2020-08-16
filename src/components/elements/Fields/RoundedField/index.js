@@ -31,19 +31,19 @@ const useStyles = createUseStyles({
 const IconWrapper = ({ children, className }) => {
   return (
     <div className={className}>
-      { children }
+      {children}
     </div>
   )
 }
 
 const RoundedFields = (props) => {
   const classes = useStyles()
-  const { 
+  const {
     placeholder = '',
     type = 'text',
     className = {},
     style = {},
-    icon = '' 
+    icon = ''
   } = props
 
   let defaultInputStyle = { width: '100%', paddingLeft: 5, paddingRight: 5 }
@@ -56,12 +56,12 @@ const RoundedFields = (props) => {
     <React.Fragment>
       <div className={classNames(classes.round, className)}>
         <IconWrapper className={classNames(classes.inline, classes.iconWrapper)}>
-          { icon }
+          {icon}
         </IconWrapper>
-        <input 
+        <input
           type={type}
-          style={{ ...style, ...defaultInputStyle }} 
-          placeholder={ placeholder } 
+          style={{ ...style, ...defaultInputStyle }}
+          placeholder={placeholder}
           className={classNames(classes.field, classes.inline)}
         />
       </div>
