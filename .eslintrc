@@ -10,6 +10,7 @@
         "allowMultiline": false,
         "children": true
       }
-    ]
+    ],
+    "semi": [2, "never"]
   }
 }
