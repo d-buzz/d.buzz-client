@@ -208,49 +208,41 @@ const ReplyFormModal = (props) => {
               <div className={classes.titleContainer}>
                 <p style={{ paddingBottom: 0 }}>{stripHtml(`${title}`)}</p>
               </div>
-              {
-                loading && (
-                  <div className={classes.loadState}>
-                    <Box  position="relative" display="inline-flex">
-                      <HashtagLoader top={0} size={20} loading={true} />&nbsp;
-                      <label style={{ marginTop: -3 }}>Broadcasting your reply to the network, please wait ...</label>&nbsp;
-                    </Box>
-                  </div>
-                )
-              }
-              {
-                !loading && (
-                  <TextArea
-                    minRows={3}
-                    maxlength="280"
-                    label="Buzz your reply"
-                    value={content}
-                    onKeyUp={handleOnChange}
-                    onKeyDown={handleOnChange}
-                    onChange={handleOnChange}
-                  />
-                )
-              }
-              {
-                uploading && (
-                  <div style={{ width: '100%'}}>
-                    <Box  position="relative" display="inline-flex">
-                      <HashtagLoader top={0} size={20} loading={uploading} />&nbsp;
-                      <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
-                    </Box>
-                  </div>
-                )
-              }
+              {loading && (
+                <div className={classes.loadState}>
+                  <Box  position="relative" display="inline-flex">
+                    <HashtagLoader top={0} size={20} loading={true} />&nbsp;
+                    <label style={{ marginTop: -3 }}>Broadcasting your reply to the network, please wait ...</label>&nbsp;
+                  </Box>
+                </div>
+              )}
+              {!loading && (
+                <TextArea
+                  minRows={3}
+                  maxlength="280"
+                  label="Buzz your reply"
+                  value={content}
+                  onKeyUp={handleOnChange}
+                  onKeyDown={handleOnChange}
+                  onChange={handleOnChange}
+                />
+              )}
+              {uploading && (
+                <div style={{ width: '100%'}}>
+                  <Box  position="relative" display="inline-flex">
+                    <HashtagLoader top={0} size={20} loading={uploading} />&nbsp;
+                    <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
+                  </Box>
+                </div>
+              )}
               <br />
-              {
-                content.length !== 0 && (
-                  <div className={classes.previewContainer}>
-                    <h6>Reply preview</h6>
-                    <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
-                    <hr />
-                  </div>
-                )
-              }
+              {content.length !== 0 && (
+                <div className={classes.previewContainer}>
+                  <h6>Reply preview</h6>
+                  <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                  <hr />
+                </div>
+              )}
               <div style={{ width: '100%' }}>
                 <input
                   type='file'

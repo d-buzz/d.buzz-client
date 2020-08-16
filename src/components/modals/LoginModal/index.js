@@ -88,25 +88,27 @@ const LoginModal = (props) => {
           <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
             <center>
               <h5>Hi there, welcome back!</h5>
-              {
-                hasAuthenticationError && (
-                  <label style={{ color: 'red' }}>Authentication failed, please check credentials and retry again</label>
-                )
-              }
+              {hasAuthenticationError && (
+                <label style={{ color: 'red' }}>Authentication failed, please check credentials and retry again</label>
+              )}
             </center>
           </div>
           <FormLabel>Username</FormLabel>
           <FormControl disabled={loading} name="username" type="text" value={username} onChange={onChange} />
           <FormSpacer />
-          {
-            !useKeychain && (
-              <React.Fragment>
-                <FormLabel>Password</FormLabel>
-                <FormControl disabled={loading} name="password" type="password" value={password} onChange={onChange} />
-                <FormSpacer />
-              </React.Fragment>
-            )
-          }
+          {!useKeychain && (
+            <React.Fragment>
+              <FormLabel>Posting key</FormLabel>
+              <FormControl
+                disabled={loading}
+                name="password"
+                type="password"
+                value={password}
+                onChange={onChange}
+              />
+              <FormSpacer />
+            </React.Fragment>
+          )}
           <FormCheck
             name="keychain"
             type="checkbox"
@@ -115,22 +117,18 @@ const LoginModal = (props) => {
             onChange={onCheckBoxChanged}
           />
           <center>
-            {
-              !loading && (
-                <ContainedButton
-                  onClick={handleClickLogin}
-                  transparent={true}
-                  className={classes.loginButton}
-                  fontSize={15}
-                  label="Submit"
-                />
-              )
-            }
-            {
-              loading && (
-                <HashtagLoader loading={true} />
-              )
-            }
+            {!loading && (
+              <ContainedButton
+                onClick={handleClickLogin}
+                transparent={true}
+                className={classes.loginButton}
+                fontSize={15}
+                label="Submit"
+              />
+            )}
+            {loading && (
+              <HashtagLoader loading={true} />
+            )}
           </center>
         </ModalBody>
       </Modal>
