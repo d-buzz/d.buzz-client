@@ -115,6 +115,14 @@ const useStyles = createUseStyles({
     height: 33,
     fontSize: 14,
   },
+  chip: {
+    border: '1px solid #e53935',
+    marginTop: -5,
+  },
+  sliderWrapper: {
+    width: '98%',
+    paddingRight: 30
+  }
 })
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false, }) => {
@@ -309,7 +317,7 @@ const PostActions = (props) => {
                   hideStats={false}
                   stat={
                     <Chip
-                      style={{ border: '1px solid #e53935', marginTop: -5, }}
+                      className={classes.chip}
                       size='small'
                       icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
                       label={
@@ -330,7 +338,7 @@ const PostActions = (props) => {
       }
       {
         showSlider && (
-          <div style={{ width: '98%', paddingRight: 30 }}>
+          <div className={classes.sliderWrapper}>
             <Row>
               <Col xs="auto">
                 <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
