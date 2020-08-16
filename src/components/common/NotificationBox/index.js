@@ -21,7 +21,7 @@ const NotificationBox = (props) => {
         style={{ maxWidth: 300, wordBreak: 'break-all' }}
       >
         <AlertTitle>{`${severity.charAt(0).toUpperCase()}${severity.slice(1)}`}</AlertTitle>
-        { message }
+        {message}
       </Alert>
     </Snackbar>
   )
