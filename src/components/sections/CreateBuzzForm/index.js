@@ -162,68 +162,60 @@ const CreateBuzzForm = (props) => {
           <Avatar author={user.username} />
         </div>
         <div className={classNames(classes.inline, classes.right)}>
-          { publishing && (
-              <div style={{ width: '100%', paddingTop: 10, }}>
-                <Box  position="relative" display="inline-flex">
-                  <HashtagLoader top={0} size={20} loading={publishing} />&nbsp;
-                  <label style={{ marginTop: -3 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
-                </Box>
-              </div>
-            )
-          }
-          { !publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
-          {
-            loading && (
-              <div style={{ width: '100%'}}>
-                <Box  position="relative" display="inline-flex">
-                  <HashtagLoader top={0} size={20} loading={loading} />&nbsp;
-                  <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
-                </Box>
-              </div>
-            )
-          }
-          {
-            content.length !== 0 && (
-              <div className={classes.previewContainer}>
-                <h6>Buzz preview</h6>
-                <MarkdownViewer content={content} minifyAssets={false}/>
-                <hr />
-              </div>
-            )
-          }
-          {
-            !publishing && (
-              <React.Fragment>
-                <ContainedButton
-                  disabled={loading || publishing || content.length === 0}
-                  label="Buzz it"
-                  className={classes.float}
-                  onClick={handleClickPublishPost}
+          {publishing && (
+            <div style={{ width: '100%', paddingTop: 10, }}>
+              <Box  position="relative" display="inline-flex">
+                <HashtagLoader top={0} size={20} loading={publishing} />&nbsp;
+                <label style={{ marginTop: -3 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
+              </Box>
+            </div>
+          )}
+          {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {loading && (
+            <div style={{ width: '100%'}}>
+              <Box  position="relative" display="inline-flex">
+                <HashtagLoader top={0} size={20} loading={loading} />&nbsp;
+                <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
+              </Box>
+            </div>
+          )}
+          {content.length !== 0 && (
+            <div className={classes.previewContainer}>
+              <h6>Buzz preview</h6>
+              <MarkdownViewer content={content} minifyAssets={false}/>
+              <hr />
+            </div>
+          )}
+          {!publishing && (
+            <React.Fragment>
+              <ContainedButton
+                disabled={loading || publishing || content.length === 0}
+                label="Buzz it"
+                className={classes.float}
+                onClick={handleClickPublishPost}
+              />
+              <input
+                type='file'
+                accept='image/*'
+                ref={inputRef}
+                onChange={handleFileSelectChange}
+                style={{ display: 'none' }}
+              />
+              <IconButton size="medium" onClick={handleFileSelect}>
+                <UploadIcon />
+              </IconButton>
+              <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
+                <CircularProgress
+                  classes={{
+                    circle: classes.circle,
+                  }}
+                  size={30}
+                  value={wordCount}
+                  variant="static"
                 />
-                <input
-                  type='file'
-                  accept='image/*'
-                  ref={inputRef}
-                  onChange={handleFileSelectChange}
-                  style={{ display: 'none' }}
-                />
-                <IconButton size="medium" onClick={handleFileSelect}>
-                  <UploadIcon />
-                </IconButton>
-                <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
-                  <CircularProgress
-                    classes={{
-                      circle: classes.circle,
-                    }}
-                    size={30}
-                    value={wordCount}
-                    variant="static"
-                  />
-                </Box>
-              </React.Fragment>
-            )
-          }
-
+              </Box>
+            </React.Fragment>
+          )}
         </div>
       </div>
       <NotificationBox

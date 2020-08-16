@@ -216,50 +216,47 @@ const Profile = (props) => {
   return (
     <React.Fragment>
       <ProfileSkeleton loading={loading} />
-      {
-        !loading && (
-            <React.Fragment>
-              <div className={classes.cover}>
-                { cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>) }
-              </div>
-              <div className={classes.wrapper}>
-                <Row>
-                  <Col xs="auto">
-                    <div className={classes.avatar}>
-                      <Avatar border={true} height="135" author={username} size="medium" />
-                    </div>
-                  </Col>
-                  <Col>
-                    {/* <ContainedButton
-                      className={classes.walletButton}
-                      transparent={true}
-                      label="Followed"
-                    /> */}
-                  </Col>
-                </Row>
-              </div>
-            </React.Fragment>
-          )
-        }
+      {!loading && (
+          <React.Fragment>
+            <div className={classes.cover}>
+              {cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>)}
+            </div>
+            <div className={classes.wrapper}>
+              <Row>
+                <Col xs="auto">
+                  <div className={classes.avatar}>
+                    <Avatar border={true} height="135" author={username} size="medium" />
+                  </div>
+                </Col>
+                <Col>
+                  {/* <ContainedButton
+                    className={classes.walletButton}
+                    transparent={true}
+                    label="Followed"
+                  /> */}
+                </Col>
+              </Row>
+            </div>
+          </React.Fragment>
+        )}
         <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
           <div className={classNames(classes.wrapper)}>
-            {
-              !loading && (
+            {!loading && (
                 <React.Fragment>
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                     <Col xs="auto">
                       <p className={classNames(classes.paragraph, classes.fullName)}>
-                        { name || username }&nbsp;<Chip  size="small" label={reputation} />
+                        {name || username}&nbsp;<Chip  size="small" label={reputation} />
                       </p>
                       <p className={classNames(classes.paragraph, classes.userName)}>
-                        @{ username }
+                        @{username}
                       </p>
                     </Col>
                   </Row>
                   <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                        { about }
+                        {about}
                       </p>
                     </Col>
                   </Row>
@@ -267,7 +264,7 @@ const Profile = (props) => {
                     <Col xs="auto">
                       <p className={classes.paragraph}>
                         <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                          { website }
+                          {website}
                         </a>
                       </p>
                     </Col>
@@ -275,13 +272,12 @@ const Profile = (props) => {
                   <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                      <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                      <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
                       </p>
                     </Col>
                   </Row>
                 </React.Fragment>
-              )
-            }
+            )}
             </div>
             <div className={classes.spacer} />
             <Tabs
@@ -299,7 +295,7 @@ const Profile = (props) => {
             </Tabs>
         </div>
         <React.Fragment>
-          { renderRoutes(route.routes, { author: username }) }
+          {renderRoutes(route.routes, { author: username })}
         </React.Fragment>
     </React.Fragment>
   )

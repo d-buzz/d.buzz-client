@@ -29,31 +29,27 @@ const AccountReplies = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        {
-          items.map((item) => (
-            <PostList
-              profileRef="replies"
-              title={item.title}
-              ignoreUsername={true}
-              active_votes={item.active_votes}
-              author={item.author}
-              permlink={item.permlink}
-              created={item.created}
-              body={item.body}
-              upvotes={item.active_votes.length}
-              replyCount={item.children}
-              unguardedLinks={!user.is_authenticated}
-              meta={item.json_metadata}
-              payout={item.payout === 0 ? '0.00' : item.payout.toFixed(2)}
-              payoutAt={item.payout_at}
-              profile={item.profile}
-            />
-          ))
-        }
-        {
-          (!loading && items.length === 0) &&
-          (<center><br/><h6>No replies found</h6></center>)
-        }
+        {items.map((item) => (
+          <PostList
+            profileRef="replies"
+            title={item.title}
+            ignoreUsername={true}
+            active_votes={item.active_votes}
+            author={item.author}
+            permlink={item.permlink}
+            created={item.created}
+            body={item.body}
+            upvotes={item.active_votes.length}
+            replyCount={item.children}
+            unguardedLinks={!user.is_authenticated}
+            meta={item.json_metadata}
+            payout={item.payout === 0 ? '0.00' : item.payout.toFixed(2)}
+            payoutAt={item.payout_at}
+            profile={item.profile}
+          />
+        ))}
+        {(!loading && items.length === 0) &&
+          (<center><br/><h6>No replies found</h6></center>)}
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />
     </React.Fragment>

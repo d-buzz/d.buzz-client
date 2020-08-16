@@ -108,104 +108,102 @@ const PostlistSkeleton = ({ loading }) => {
 
   return (
     <React.Fragment>
-      {
-        loading && (
-          <React.Fragment>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton count={2} height={10} />
-                        </div>
+      {loading && (
+        <React.Fragment>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <label className={classes.name}>
+                        <Skeleton height={10} width={80} />
+                      </label>
+                      <div>
+                        <Skeleton count={2} height={10} />
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton count={1} height={10} />
-                        </div>
+          </div>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <label className={classes.name}>
+                        <Skeleton height={10} width={80} />
+                      </label>
+                      <div>
+                        <Skeleton count={1} height={10} />
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton count={2} height={10} />
-                        </div>
+          </div>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <label className={classes.name}>
+                        <Skeleton height={10} width={80} />
+                      </label>
+                      <div>
+                        <Skeleton count={2} height={10} />
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.name}>
-                          <Skeleton height={10} width={80} />
-                        </label>
-                        <div>
-                          <Skeleton count={2} height={10} />
-                        </div>
+          </div>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <label className={classes.name}>
+                        <Skeleton height={10} width={80} />
+                      </label>
+                      <div>
+                        <Skeleton count={2} height={10} />
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-          </React.Fragment>
-        )
-      }
+          </div>
+        </React.Fragment>
+      )}
     </React.Fragment>
   )
 }

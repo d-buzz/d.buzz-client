@@ -78,26 +78,24 @@ const Trending = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        {
-          items.map((item) => (
-            <PostList
-              title={item.title}
-              profileRef="trending"
-              active_votes={item.active_votes}
-              author={item.author}
-              permlink={item.permlink}
-              created={item.created}
-              body={item.body}
-              upvotes={item.active_votes.length}
-              replyCount={item.children}
-              meta={item.json_metadata}
-              payout={item.payout}
-              payoutAt={item.payout_at}
-              profile={item.profile}
-              unguardedLinks={unguardedLinks}
-            />
-          ))
-        }
+        {items.map((item) => (
+          <PostList
+            title={item.title}
+            profileRef="trending"
+            active_votes={item.active_votes}
+            author={item.author}
+            permlink={item.permlink}
+            created={item.created}
+            body={item.body}
+            upvotes={item.active_votes.length}
+            replyCount={item.children}
+            meta={item.json_metadata}
+            payout={item.payout}
+            payoutAt={item.payout_at}
+            profile={item.profile}
+            unguardedLinks={unguardedLinks}
+          />
+        ))}
       </InfiniteScroll>
       <PostlistSkeleton loading={loading}/>
     </React.Fragment>

@@ -77,25 +77,23 @@ const Latest = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        {
-          items.map((item) => (
-            <PostList
-              title={item.title}
-              profileRef="latest"
-              active_votes={item.active_votes}
-              author={item.author}
-              permlink={item.permlink}
-              created={item.created}
-              body={item.body}
-              upvotes={item.active_votes.length}
-              replyCount={item.children}
-              meta={item.json_metadata}
-              payout={item.payout}
-              profile={item.profile}
-              payoutAt={item.payout_at}
-            />
-          ))
-        }
+        {items.map((item) => (
+          <PostList
+            title={item.title}
+            profileRef="latest"
+            active_votes={item.active_votes}
+            author={item.author}
+            permlink={item.permlink}
+            created={item.created}
+            body={item.body}
+            upvotes={item.active_votes.length}
+            replyCount={item.children}
+            meta={item.json_metadata}
+            payout={item.payout}
+            profile={item.profile}
+            payoutAt={item.payout_at}
+          />
+        ))}
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />
     </React.Fragment>

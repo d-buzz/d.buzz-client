@@ -32,30 +32,27 @@ const ProfileSkeleton = ({ loading }) => {
 
   return (
     <React.Fragment>
-      {
-        loading && (
-          <React.Fragment>
-            <Skeleton height={270} />
-            <div className={classes.wrapper}>
-              <Row>
-                <Col xs="auto">
-                  <div className={classes.avatar}>
-                    <Skeleton circle={true} height={135} width={135} />
-                  </div>
-                </Col>
-                <Col></Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Skeleton height={10} width={180} /> <br />
-                  <Skeleton height={10} width={160} />
-                </Col>
-              </Row>
-            </div>
-
-          </React.Fragment>
-        )
-      }
+      {loading && (
+        <React.Fragment>
+          <Skeleton height={270} />
+          <div className={classes.wrapper}>
+            <Row>
+              <Col xs="auto">
+                <div className={classes.avatar}>
+                  <Skeleton circle={true} height={135} width={135} />
+                </div>
+              </Col>
+              <Col></Col>
+            </Row>
+            <Row>
+              <Col>
+                <Skeleton height={10} width={180} /> <br />
+                <Skeleton height={10} width={160} />
+              </Col>
+            </Row>
+          </div>
+        </React.Fragment>
+      )}
     </React.Fragment>
   )
 }

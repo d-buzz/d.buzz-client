@@ -31,8 +31,7 @@ const AccountPosts = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        {
-          items.map((item) => (
+      {items.map((item) => (
             <PostList
               disableProfileLink={true}
               ignoreUsername={true}
@@ -49,12 +48,9 @@ const AccountPosts = (props) => {
               profile={item.profile}
               unguardedLinks={!user.is_authenticated}
             />
-          ))
-        }
-        {
-          (!loading && items.length === 0) &&
-          (<center><br/><h6>No Buzz's from @{author}</h6></center>)
-        }
+        ))}
+        {!(loading && items.length === 0) &&
+          (<center><br/><h6>No Buzz's from @{author}</h6></center>)}
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />
     </React.Fragment>

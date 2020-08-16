@@ -135,51 +135,47 @@ const Notification = (props) => {
 
   return (
     <React.Fragment>
-      {
-        notifications.map((item) => (
-          <React.Fragment>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
-                  <Row>
-                    <Col xs="auto" style={{ paddingRight: 0 }}>
-                      <div className={classes.left}>
-                        <Avatar author={actionAuthor(item.msg).replace('@', '')} />
+      {notifications.map((item) => (
+        <React.Fragment>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
+                <Row>
+                  <Col xs="auto" style={{ paddingRight: 0 }}>
+                    <div className={classes.left}>
+                      <Avatar author={actionAuthor(item.msg).replace('@', '')} />
+                    </div>
+                  </Col>
+                  <Col>
+                    <div className={classes.right}>
+                      <div className={classes.content}>
+                        <label className={classes.username}>
+                          {item.msg}
+                        </label> <br />
+                        <label className={classes.username}>
+                          {moment(`${item.date}Z`).local().fromNow()}
+                        </label>
                       </div>
-                    </Col>
-                    <Col>
-                      <div className={classes.right}>
-                        <div className={classes.content}>
-                          <label className={classes.username}>
-                            { item.msg }
-                          </label> <br />
-                          <label className={classes.username}>
-                            { moment(`${item.date}Z`).local().fromNow() }
-                          </label>
-                        </div>
-                      </div>
-                    </Col>
-                    <Col xs="auto">
-                      <Chip
-                        className={classes.chips}
-                        style={{ border: '1px solid #e53935', marginTop: -5 }}
-                        size='small'
-                        label={item.type}
-                        color="secondary"
-                        variant="outlined"
-                      />
-                    </Col>
-                  </Row>
-                </Link>
-              </div>
+                    </div>
+                  </Col>
+                  <Col xs="auto">
+                    <Chip
+                      className={classes.chips}
+                      style={{ border: '1px solid #e53935', marginTop: -5 }}
+                      size='small'
+                      label={item.type}
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  </Col>
+                </Row>
+              </Link>
             </div>
-          </React.Fragment>
-        ))
-      }
-      {
-        (!loading && notifications.length === 0) &&
-        (<center><br/><h6>You have no notifications</h6></center>)
-      }
+          </div>
+        </React.Fragment>
+      ))}
+      {(!loading && notifications.length === 0) &&
+        (<center><br/><h6>You have no notifications</h6></center>)}
       <HashtagLoader loading={loading} />
     </React.Fragment>
   )

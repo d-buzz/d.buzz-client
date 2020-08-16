@@ -264,11 +264,9 @@ const ReplyList = (props) => {
             <Col xs="auto" style={{ paddingRight: 0 }}>
               <div className={classes.left}>
                 <Avatar author={author} />
-                {
-                  replies.length !== 0 && (
-                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
-                  )
-                }
+                {replies.length !== 0 && (
+                  <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
+                )}
               </div>
             </Col>
             <Col>
@@ -282,12 +280,12 @@ const ReplyList = (props) => {
                     onMouseLeave={closePopOver}
                   >
                     <p className={classes.name}>
-                      { profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}` }
+                      {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
                     </p>
                   </Link>
                   <label className={classes.username}>
                     @{author} &bull;&nbsp;
-                    { moment(`${created}Z`).local().fromNow() }
+                    {moment(`${created}Z`).local().fromNow()}
                   </label>
                   <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                   <MarkdownViewer minifyAssets={false} content={body} />
@@ -318,39 +316,31 @@ const ReplyList = (props) => {
             />
           </Row>
         </div>
-        {
-          replies.length !== 0 && (
-            <React.Fragment>
-              {
-                replies.map((reply, index) => (
-                  <RenderReplies reply={reply} treeHistory={`${treeHistory}|${index}`}/>
-                ))
-              }
-            </React.Fragment>
-          )
-        }
+        {replies.length !== 0 && (
+          <React.Fragment>
+            {replies.map((reply, index) => (
+              <RenderReplies reply={reply} treeHistory={`${treeHistory}|${index}`}/>
+            ))}
+          </React.Fragment>
+        )}
       </React.Fragment>
     )
   }
 
   return (
     <React.Fragment>
-      {
-        (expectedCount !== replyCounter) && (
-          <center>
-            <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f' }}>
-              Some replies may not appear because it exceeds 280 characters
-            </p>
-          </center>
-        )
-      }
-      {
-        repliesState.map((reply, index) => (
-          <div className={classes.wrapper}>
-            <RenderReplies reply={reply} treeHistory={index} />
-          </div>
-        ))
-      }
+      {(expectedCount !== replyCounter) && (
+        <center>
+          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f' }}>
+            Some replies may not appear because it exceeds 280 characters
+          </p>
+        </center>
+      )}
+      {repliesState.map((reply, index) => (
+        <div className={classes.wrapper}>
+          <RenderReplies reply={reply} treeHistory={index} />
+        </div>
+      ))}
       <NotificationBox
         show={showSnackbar}
         message={message}

@@ -98,95 +98,93 @@ const ReplylistSkeleton = ({ loading }) => {
 
   return (
     <React.Fragment>
-      {
-        loading && (
-          <React.Fragment>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                      <div style={{ margin: '0 auto', width: 2, backgroundColor: '#eee', backgroundImage: 'linear-gradient( 90deg,#eee,#f5f5f5,#eee )', height: '100%', flexGrow: 1, }} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <Link
-                          className={classes.link}
-                        >
-                          <p className={classes.name}>
-                            <Skeleton height={10} width={120} />
-                          </p>
-                        </Link>
-                        <label className={classes.username}>
-                            <Skeleton height={10} width={120} />
-                        </label>
-                        <Skeleton count={2} height={10} />
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <Link
-                          className={classes.link}
-                        >
-                          <p className={classes.name}>
-                            <Skeleton height={10} width={120} />
-                          </p>
-                        </Link>
-                        <label className={classes.username}>
+      {loading && (
+        <React.Fragment>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#eee', backgroundImage: 'linear-gradient( 90deg,#eee,#f5f5f5,#eee )', height: '100%', flexGrow: 1, }} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <Link
+                        className={classes.link}
+                      >
+                        <p className={classes.name}>
                           <Skeleton height={10} width={120} />
-                        </label>
-                      </div>
+                        </p>
+                      </Link>
+                      <label className={classes.username}>
+                          <Skeleton height={10} width={120} />
+                      </label>
                       <Skeleton count={2} height={10} />
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Skeleton circle={true} height={50} width={50} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <Link
-                          className={classes.link}
-                        >
-                          <p className={classes.name}>
-                            <Skeleton height={10} width={120} />
-                          </p>
-                        </Link>
-                        <label className={classes.username}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <Link
+                        className={classes.link}
+                      >
+                        <p className={classes.name}>
                           <Skeleton height={10} width={120} />
-                        </label>
-                      </div>
-                      <Skeleton width={350} height={10} />
+                        </p>
+                      </Link>
+                      <label className={classes.username}>
+                        <Skeleton height={10} width={120} />
+                      </label>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                    <Skeleton count={2} height={10} />
+                  </div>
+                </Col>
+              </Row>
             </div>
-          </React.Fragment>
-        )
-      }
+          </div>
+          <div className={classes.wrapper}>
+            <div className={classes.row}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Skeleton circle={true} height={50} width={50} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <Link
+                        className={classes.link}
+                      >
+                        <p className={classes.name}>
+                          <Skeleton height={10} width={120} />
+                        </p>
+                      </Link>
+                      <label className={classes.username}>
+                        <Skeleton height={10} width={120} />
+                      </label>
+                    </div>
+                    <Skeleton width={350} height={10} />
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </div>
+        </React.Fragment>
+      )}
     </React.Fragment>
   )
 }

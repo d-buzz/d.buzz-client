@@ -64,10 +64,8 @@ const Init = (props) => {
 
   return (
     <React.Fragment>
-      {
-        !init && (<SplashScreen />)
-      }
-      { init && (children) }
+      {!init && (<SplashScreen />)}
+      {init && (children)}
     </React.Fragment>
   )
 }

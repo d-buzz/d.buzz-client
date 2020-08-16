@@ -59,42 +59,40 @@ const ContentSkeleton = ({ loading }) => {
 
   return (
     <React.Fragment>
-      {
-        loading && (
-          <React.Fragment>
-            <div className={classes.wrapper}>
-              <React.Fragment>
-                <br />
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <Skeleton circle={true} height={50} width={50} />
-                  </Col>
-                  <Col style={{ paddingLeft: 10, }}>
-                    <div style={{ marginTop: 2, }}>
-                      <Link
-                        className={classes.link}
-                      >
-                        <p className={classes.name}>
-                          <Skeleton height={10} width={120} />
-                        </p>
-                      </Link>
-                      <br />
-                      <p className={classes.username}>
-                          <Skeleton height={10} width={120} />
-                      </p>
-                    </div>
-                  </Col>
-                </Row>
-                <Skeleton height={10}/>
-                <Skeleton height={10}/>
-                <Skeleton height={10}/>
-                <br />
-              </React.Fragment>
+      {loading && (
+        <React.Fragment>
+          <div className={classes.wrapper}>
+            <React.Fragment>
               <br />
-            </div>
-          </React.Fragment>
-        )
-      }
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <Skeleton circle={true} height={50} width={50} />
+                </Col>
+                <Col style={{ paddingLeft: 10, }}>
+                  <div style={{ marginTop: 2, }}>
+                    <Link
+                      className={classes.link}
+                    >
+                      <p className={classes.name}>
+                        <Skeleton height={10} width={120} />
+                      </p>
+                    </Link>
+                    <br />
+                    <p className={classes.username}>
+                        <Skeleton height={10} width={120} />
+                    </p>
+                  </div>
+                </Col>
+              </Row>
+              <Skeleton height={10}/>
+              <Skeleton height={10}/>
+              <Skeleton height={10}/>
+              <br />
+            </React.Fragment>
+            <br />
+          </div>
+        </React.Fragment>
+      )}
     </React.Fragment>
   )
 }

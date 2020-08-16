@@ -173,8 +173,7 @@ const Content = (props) => {
 
   return (
     <React.Fragment>
-      {
-        !loadingContent && (
+      {!loadingContent && (
           <React.Fragment>
             <div className={classes.wrapper}>
               <br />
@@ -193,7 +192,7 @@ const Content = (props) => {
                         onMouseLeave={closePopOver}
                       >
                         <p className={classes.name}>
-                          { name ? name : `@${author}` }
+                          {name ? name : `@${author}`}
                         </p>
                       </Link>
                       <br />
@@ -205,8 +204,8 @@ const Content = (props) => {
                 <PostTags meta={meta} />
                 <div style={{ marginTop: 10 }}>
                   <label className={classes.meta}>
-                    { moment(`${created}Z`).local().format('LTS • \nLL') }
-                    { app && <React.Fragment> • Posted using <b className={classes.strong}>{ app }</b></React.Fragment> }
+                    {moment(`${created}Z`).local().format('LTS • \nLL')}
+                    {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
                   </label>
                 </div>
               </React.Fragment>
@@ -214,8 +213,8 @@ const Content = (props) => {
             <div className={classes.wrapper}>
               <Row>
                 <Col>
-                 <label className={classes.meta}><b className={classes.strong}>{ upvotes }</b> Upvotes</label>
-                 <label className={classes.meta}><b className={classes.strong}>{ replyCount }</b> Replies</label>
+                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
+                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
                 </Col>
               </Row>
             </div>
@@ -241,19 +240,14 @@ const Content = (props) => {
               </div>
             </div>
           </React.Fragment>
-        )
-      }
-      {
-        !loadingReplies && (
-          <ReplyList replies={replies} expectedCount={replyCount} />
-        )
-      }
+      )}
+      {!loadingReplies && (
+        <ReplyList replies={replies} expectedCount={replyCount} />
+      )}
       <ContentSkeleton loading={loadingContent} />
-      {
-        replyCount !== 0 && (
-          <ReplylistSkeleton loading={loadingReplies} />
-        )
-      }
+      {replyCount !== 0 && (
+        <ReplylistSkeleton loading={loadingReplies} />
+      )}
       <br />
       <UserDialog
         open={open}

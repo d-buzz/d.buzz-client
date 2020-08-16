@@ -15,7 +15,6 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton } from 'components'
 
-
 const useStyle = createUseStyles({
   row: {
     width: '98%',
@@ -142,42 +141,38 @@ const AccountFollowing = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        {
-          items.map((item) => (
-            <div className={classes.wrapper}>
-              <div className={classes.row} onClick={handleClickFollowing(item.following)}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Avatar author={item.following} />
+        {items.map((item) => (
+          <div className={classes.wrapper}>
+            <div className={classes.row} onClick={handleClickFollowing(item.following)}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={item.following} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <p className={classes.name}>
+                        {getName(item.profile)}
+                      </p>
+                      <p className={classes.username}>
+                        @{item.profile.name}
+                      </p>
                     </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <p className={classes.name}>
-                          { getName(item.profile) }
-                        </p>
-                        <p className={classes.username}>
-                          @{ item.profile.name }
-                        </p>
-                      </div>
-                      <div className={classes.content}>
-                        <label className={classes.username}>
-                          { getAbout(item.profile) }
-                        </label>
-                      </div>
+                    <div className={classes.content}>
+                      <label className={classes.username}>
+                        {getAbout(item.profile)}
+                      </label>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-          ))
-        }
-        {
-          (!loading && items.length === 0) &&
-          (<center><br/><h6>Not following anyone</h6></center>)
-        }
+          </div>
+        ))}
+        {(!loading && items.length === 0) &&
+          (<center><br/><h6>Not following anyone</h6></center>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>

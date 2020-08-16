@@ -142,42 +142,38 @@ const AccountFollowers = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-        {
-          items.map((item) => (
-            <div className={classes.wrapper}>
-              <div className={classes.row} onClick={handleClickFollower(item.follower)}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Avatar author={item.follower} />
+        {items.map((item) => (
+          <div className={classes.wrapper}>
+            <div className={classes.row} onClick={handleClickFollower(item.follower)}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={item.follower} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <p className={classes.name}>
+                        {getName(item.profile)}
+                      </p>
+                      <p className={classes.username}>
+                        @{item.profile.name}
+                      </p>
                     </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <p className={classes.name}>
-                          { getName(item.profile) }
-                        </p>
-                        <p className={classes.username}>
-                          @{ item.profile.name }
-                        </p>
-                      </div>
-                      <div className={classes.content}>
-                        <label className={classes.username}>
-                          { getAbout(item.profile) }
-                        </label>
-                      </div>
+                    <div className={classes.content}>
+                      <label className={classes.username}>
+                        {getAbout(item.profile)}
+                      </label>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+              </Row>
             </div>
-          ))
-        }
-        {
-          (!loading && items.length === 0) &&
-          (<center><br/><h6>Do not have a follower</h6></center>)
-        }
+          </div>
+        ))}
+        {(!loading && items.length === 0) &&
+          (<center><br/><h6>Do not have a follower</h6></center>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>
