@@ -42,23 +42,18 @@ const SideBarRight = (props) => {
 
   return (
     <React.Fragment>
-      {
-        !hideSearchBar && (
-          <RoundedField
-            icon={<SearchIcon top={-2} />}
-            placeholder="Search D.Buzz"
-            className={classes.search}
-          />
-        )
-      }
+      {!hideSearchBar && (
+        <RoundedField
+          icon={<SearchIcon top={-2} />}
+          placeholder="Search D.Buzz"
+          className={classes.search}
+        />
+      )}
       <div>
         <ListGroup label="Trends for you">
-
-          {
-            items.slice(0, 5).map((item) => (
-              <ListAction href={`/tags?q=${item.name}`} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
-            ))
-          }
+          {items.slice(0, 5).map((item) => (
+            <ListAction href={`/tags?q=${item.name}`} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+          ))}
           <HashtagLoader loading={loading} />
         </ListGroup>
       </div>

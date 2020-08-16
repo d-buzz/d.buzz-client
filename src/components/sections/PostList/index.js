@@ -214,25 +214,21 @@ const PostList = (props) => {
               <div className={classes.right}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {
-                      !disableProfileLink && (
+                    {!disableProfileLink && (
                         <Link
                           ref={popoverAnchor}
                           to={authorLink}
                           onMouseEnter={openPopOver}
                           onMouseLeave={closePopOver}
                         >
-                          { name ? name : `${author}`}
+                          {name ? name : `${author}`}
                         </Link>
-                      )
-                    }
-                    {
-                      disableProfileLink && (<span>{ name ? name : `@${author}`}</span>)
-                    }
+                    )}
+                    {disableProfileLink && (<span>{name ? name : `@${author}`}</span>)}
                   </label>
                   <label className={classes.username}>
-                    { `@${author}` } &bull;&nbsp;
-                    { moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow() }
+                    {`@${author}`} &bull;&nbsp;
+                    {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
                   <div onClick={handleOpenContent(author, permlink)}>
                     <MarkdownViewer content={body}/>

@@ -54,32 +54,28 @@ const Explore = (props) => {
 
   return (
     <React.Fragment>
-      {
-        results.map((item) => (
-          <PostList
-            searchListMode={true}
-            title={item.title}
-            profileRef="tags"
-            active_votes={item.total_votes}
-            author={item.author}
-            permlink={item.permlink}
-            created={item.created_at}
-            body={item.body}
-            upvotes={item.total_votes}
-            replyCount={item.children}
-            meta={{ app: item.app, tags: item.tags }}
-            payout={item.payout}
-            profile={item.profile}
-            payoutAt={item.payout_at}
-            highlightTag={tag}
-          />
-        ))
-      }
+      {results.map((item) => (
+        <PostList
+          searchListMode={true}
+          title={item.title}
+          profileRef="tags"
+          active_votes={item.total_votes}
+          author={item.author}
+          permlink={item.permlink}
+          created={item.created_at}
+          body={item.body}
+          upvotes={item.total_votes}
+          replyCount={item.children}
+          meta={{ app: item.app, tags: item.tags }}
+          payout={item.payout}
+          profile={item.profile}
+          payoutAt={item.payout_at}
+          highlightTag={tag}
+        />)
+      )}
       <PostlistSkeleton loading={loading} />
-      {
-        (!loading && results.length === 0) &&
-        (<center><br/><h6>No Buzz's found with #{tag}</h6></center>)
-      }
+      {(!loading && results.length === 0) &&
+        (<center><br/><h6>No Buzz's found with #{tag}</h6></center>)}
     </React.Fragment>
   )
 }

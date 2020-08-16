@@ -579,4 +579,3 @@ export default function* sagas() {
   yield takeEvery(FOLLOW_REQUEST, watchFollowRequest)
   yield takeEvery(UNFOLLOW_REQUEST, watchUnfollowRequest)
 }
-

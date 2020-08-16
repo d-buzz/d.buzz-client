@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "react-app"
+  ],
+  "rules": {
+    "react/jsx-curly-spacing": [
+      2,
+      {
+        "when": "never",
+        "allowMultiline": false,
+        "children": true
+      }
+    ]
+  }
+}
