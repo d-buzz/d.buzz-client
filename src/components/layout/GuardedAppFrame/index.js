@@ -104,39 +104,33 @@ const GuardedAppFrame = (props) => {
         <Col xs="auto" className={classes.clearPadding}>
           <div style={{ width: 270 }}>
           <Sticky>
-            {
-              ({ style }) => (
-                <div style={{...style}}>
-                  <SideBarLeft/>
-                </div>
-              )
-            }
+            {({ style }) => (
+              <div style={{...style}}>
+                <SideBarLeft/>
+              </div>
+            )}
           </Sticky>
           </div>
         </Col>
         <Col xs="auto" className={classes.clearPadding}>
           <div style={{ width: 595 }}>
             <Sticky>
-              {
-                ({ style }) => (
-                  <Navbar style={style} className={classes.nav}>
-                    <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
-                      {
-                        title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                          <IconButton onClick={handleClickBackButton} size="small">
-                            <BackArrowIcon />
-                          </IconButton>
-                        )
-                      }
-                      <span className={classes.title}>{ title }</span>
-                    </Navbar.Brand>
-                  </Navbar>
-                )
-              }
+              {({ style }) => (
+                <Navbar style={style} className={classes.nav}>
+                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
+                    {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+                      <IconButton onClick={handleClickBackButton} size="small">
+                        <BackArrowIcon />
+                      </IconButton>
+                    )}
+                    <span className={classes.title}>{title}</span>
+                  </Navbar.Brand>
+                </Navbar>
+              )}
             </Sticky>
             <div className={classes.main}>
               <React.Fragment>
-                { renderRoutes(route.routes) }
+                {renderRoutes(route.routes)}
               </React.Fragment>
             </div>
           </div>
@@ -144,13 +138,11 @@ const GuardedAppFrame = (props) => {
         <Col xs={3}>
           <div style={{ width: 350 }}>
             <Sticky>
-              {
-                ({ style }) => (
-                  <div style={style}>
-                    <SideBarRight hideSearchBar={false} />
-                  </div>
-                )
-              }
+              {({ style }) => (
+                <div style={style}>
+                  <SideBarRight hideSearchBar={false} />
+                </div>
+              )}
             </Sticky>
           </div>
         </Col>

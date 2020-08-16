@@ -107,7 +107,7 @@ const LinkContainer = ({ children }) => {
   return (
     <div style={{ width: 'auto' }}>
       <div>
-        { children }
+        {children}
       </div>
     </div>
   )
@@ -116,7 +116,7 @@ const LinkContainer = ({ children }) => {
 const IconWrapper = ({ children, className }) => {
   return (
     <div style={{ paddingLeft: 5, paddingRight: 10 }} className={className}>
-      { children }
+      {children}
     </div>
   )
 }
@@ -140,7 +140,7 @@ const NavLinkWrapper = (props) => {
 
   return (
     <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-      <IconWrapper className={iconClass}>{ icon }</IconWrapper> <Link to={path}>{ name }</Link>
+      <IconWrapper className={iconClass}>{icon}</IconWrapper> <Link to={path}>{name}</Link>
     </div>
   )
 }
@@ -219,30 +219,26 @@ const SideBarLeft = (props) => {
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>
-              {
-                NavLinks.map((item) => (
-                  <NavLinkWrapper
-                    key={`${item.path}-side`}
-                    { ...item }
-                    textClass={classes.items}
-                    iconClass={classes.inline}
-                    activeClass={classes.activeItem}
-                    active={location.pathname}
-                  />
-                ))
-              }
-              {
-                !is_subscribe && (
-                  <ContainedButton
-                    transparent={true}
-                    fontSize={14}
-                    label="Subscribe"
-                    loading={loading}
-                    className={classes.sideBarButton}
-                    onClick={handleClickSubscribe}
-                  />
-                )
-              }
+              {NavLinks.map((item) => (
+                <NavLinkWrapper
+                  key={`${item.path}-side`}
+                  {...item}
+                  textClass={classes.items}
+                  iconClass={classes.inline}
+                  activeClass={classes.activeItem}
+                  active={location.pathname}
+                />
+              ))}
+              {!is_subscribe && (
+                <ContainedButton
+                  transparent={true}
+                  fontSize={14}
+                  label="Subscribe"
+                  loading={loading}
+                  className={classes.sideBarButton}
+                  onClick={handleClickSubscribe}
+                />
+              )}
               <ContainedButton
                  style={{ height: 45 }}
                  fontSize={14}
@@ -266,7 +262,7 @@ const SideBarLeft = (props) => {
                     <Row style={{ padding: 0 }}>
                       <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
                         <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13, }}>Logout</p>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12, }}>@{ username }</p>
+                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12, }}>@{username}</p>
                       </Col>
                       <Col style={{ padding: 0 }}>
                         <AiOutlinePoweroff style={{ fontSize: 25, marginTop: 16 }} />

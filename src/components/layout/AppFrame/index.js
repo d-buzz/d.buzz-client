@@ -45,19 +45,15 @@ const AppFrame = (props) => {
 
   return(
     <React.Fragment>
-      { unGuardedRoute && (<AppBar />) }
+      {unGuardedRoute && (<AppBar />)}
       <Container className={containerClass}>
         <StickyContainer>
-          {
-            !unGuardedRoute && (
-              <GuardedAppFrame pathname={pathname} route={route} />
-            )
-          }
-          {
-            unGuardedRoute && (
-              <UnguardedAppFrame route={route} />
-            )
-          }
+          {!unGuardedRoute && (
+            <GuardedAppFrame pathname={pathname} route={route} />
+          )}
+          {unGuardedRoute && (
+            <UnguardedAppFrame route={route} />
+          )}
         </StickyContainer>
       </Container>
     </React.Fragment>

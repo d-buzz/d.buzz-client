@@ -64,19 +64,17 @@ const UnguardedAppFrame = (props) => {
         <Col xs={8} className={classes.clearPadding}>
           <div style={{ paddingTop: 60 }} className={classes.main}>
             <React.Fragment>
-              { renderRoutes(route.routes) }
+              {renderRoutes(route.routes)}
             </React.Fragment>
           </div>
         </Col>
         <Col xs={4}>
           <Sticky>
-            {
-              ({ style }) => (
-                <div style={{ ...style, paddingTop: 60, }}>
-                  <SideBarRight hideSearchBar={true} />
-                </div>
-              )
-            }
+            {({ style }) => (
+              <div style={{ ...style, paddingTop: 60, }}>
+                <SideBarRight hideSearchBar={true} />
+              </div>
+            )}
           </Sticky>
         </Col>
       </Row>
