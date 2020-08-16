@@ -218,83 +218,89 @@ const Profile = (props) => {
       <ProfileSkeleton loading={loading} />
       {
         !loading && (
-          <React.Fragment>
-            <div className={classes.cover}>
-              { cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>) }
-            </div>
-            <div className={classes.wrapper}>
-              <Row>
-                <Col xs="auto">
-                  <div className={classes.avatar}>
-                    <Avatar border={true} height="135" author={username} size="medium" />
-                  </div>
-                </Col>
-                <Col>
-                  {/* <ContainedButton
-                    className={classes.walletButton}
-                    transparent={true}
-                    label="Followed"
-                  /> */}
-                </Col>
-              </Row>
-            </div>
-            <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
-              <div className={classNames(classes.wrapper)}>
-                <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-                  <Col xs="auto">
-                    <p className={classNames(classes.paragraph, classes.fullName)}>
-                      { name || username }&nbsp;<Chip  size="small" label={reputation} />
-                    </p>
-                    <p className={classNames(classes.paragraph, classes.userName)}>
-                      @{ username }
-                    </p>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs="auto">
-                    <p className={classes.paragraph}>
-                      { about }
-                    </p>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs="auto">
-                    <p className={classes.paragraph}>
-                      <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                        { website }
-                      </a>
-                    </p>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs="auto">
-                    <p className={classes.paragraph}>
-                    <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
-                    </p>
-                  </Col>
-                </Row>
-                <div className={classes.spacer} />
-                <Tabs
-                  value={index}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                  onChange={onChange}
-                  className={classes.tabContainer}
-                >
-                  <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-                  <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
-                  <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
-                  <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
-                </Tabs>
-              </div>
-            </div>
             <React.Fragment>
-              { renderRoutes(route.routes, { author: username }) }
+              <div className={classes.cover}>
+                { cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>) }
+              </div>
+              <div className={classes.wrapper}>
+                <Row>
+                  <Col xs="auto">
+                    <div className={classes.avatar}>
+                      <Avatar border={true} height="135" author={username} size="medium" />
+                    </div>
+                  </Col>
+                  <Col>
+                    {/* <ContainedButton
+                      className={classes.walletButton}
+                      transparent={true}
+                      label="Followed"
+                    /> */}
+                  </Col>
+                </Row>
+              </div>
             </React.Fragment>
-          </React.Fragment>
-        )
-      }
+          )
+        }
+        <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
+          <div className={classNames(classes.wrapper)}>
+            {
+              !loading && (
+                <React.Fragment>
+                  <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+                    <Col xs="auto">
+                      <p className={classNames(classes.paragraph, classes.fullName)}>
+                        { name || username }&nbsp;<Chip  size="small" label={reputation} />
+                      </p>
+                      <p className={classNames(classes.paragraph, classes.userName)}>
+                        @{ username }
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="auto">
+                      <p className={classes.paragraph}>
+                        { about }
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="auto">
+                      <p className={classes.paragraph}>
+                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                          { website }
+                        </a>
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="auto">
+                      <p className={classes.paragraph}>
+                      <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                      </p>
+                    </Col>
+                  </Row>
+                </React.Fragment>
+              )
+            }
+            </div>
+            <div className={classes.spacer} />
+            <Tabs
+              value={index}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+              onChange={onChange}
+              className={classes.tabContainer}
+            >
+              <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
+              <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
+              <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
+              <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
+            </Tabs>
+        </div>
+        <React.Fragment>
+          { renderRoutes(route.routes, { author: username }) }
+        </React.Fragment>
     </React.Fragment>
   )
 }

@@ -45,7 +45,14 @@ const ProfileSkeleton = ({ loading }) => {
                 </Col>
                 <Col></Col>
               </Row>
+              <Row>
+                <Col>
+                  <Skeleton height={10} width={180} /> <br />
+                  <Skeleton height={10} width={160} />
+                </Col>
+              </Row>
             </div>
+
           </React.Fragment>
         )
       }
