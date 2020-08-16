@@ -37,17 +37,15 @@ const PostTags = (props) => {
 
   return (
     <div className={classes.tags}>
-      {
-        tags.map((tag) => (
-          <Link
-            key={`${tag}`}
-            to={`/tags?q=${tag}`}
-            className={classNames(classes.default, `${highlightTag}`.toLowerCase() === `${tag}`.toLowerCase() ? classes.highlighted : '')}
-          >
-            #{ tag }
-          </Link>
-        ))
-      }
+      {tags.map((tag) => (
+        <Link
+          key={`${tag}`}
+          to={`/tags?q=${tag}`}
+          className={classNames(classes.default, `${highlightTag}`.toLowerCase() === `${tag}`.toLowerCase() ? classes.highlighted : '')}
+        >
+          #{tag}
+        </Link>
+      ))}
     </div>
   )
 }

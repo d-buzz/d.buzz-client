@@ -206,34 +206,30 @@ const UserDialog = (props) => {
                 </Col>
                 <Col>
                   <div className={classes.right}>
-                    {
-                      ((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
-                        <ContainedButton
-                          fontSize={14}
-                          loading={loading}
-                          disabled={loading}
-                          style={{ float: 'right', marginTop: 5, }}
-                          transparent={true}
-                          label="Follow"
-                          className={classes.button}
-                          onClick={followUser}
-                        />
-                      )
-                    }
-                    {
-                      ((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
-                        <ContainedButton
-                          fontSize={14}
-                          loading={loading}
-                          disabled={loading}
-                          style={{ float: 'right', marginTop: 5, }}
-                          transparent={true}
-                          label="Unfollow"
-                          className={classes.button}
-                          onClick={unfollowUser}
-                        />
-                      )
-                    }
+                    {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
+                      <ContainedButton
+                        fontSize={14}
+                        loading={loading}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, }}
+                        transparent={true}
+                        label="Follow"
+                        className={classes.button}
+                        onClick={followUser}
+                      />
+                    )}
+                    {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
+                      <ContainedButton
+                        fontSize={14}
+                        loading={loading}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, }}
+                        transparent={true}
+                        label="Unfollow"
+                        className={classes.button}
+                        onClick={unfollowUser}
+                      />
+                    )}
                   </div>
                 </Col>
               </Row>
@@ -244,17 +240,17 @@ const UserDialog = (props) => {
                       to={authorLink}
                       style={{ color: 'black' }}
                     >
-                      { name ? name : `${author}`}
+                      {name ? name : `${author}`}
                     </Link>&nbsp;<Chip  size="small" label={reputation} />
                   </label>
                   <p className={classNames(classes.paragraph, classes.username)}>
-                    { `@${author}` }
+                    {`@${author}`}
                   </p>
                   <p className={classes.paragraph}>
-                    { about }
+                    {about}
                   </p>
                   <p className={classes.paragraph}>
-                    <b>{ following_count }</b> Following &nbsp; <b>{ follower_count }</b> Follower
+                    <b>{following_count}</b> Following &nbsp; <b>{ follower_count }</b> Follower
                   </p>
                 </Col>
               </Row>

@@ -21,29 +21,27 @@ const PreviewLastLink = ({ className, content }) => {
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
         isValidUrl = true
-        break;
+        break
       }
     }
   }
 
   return (
     <React.Fragment>
-      {
-        isValidUrl ? (
-          <div className={className}>
-            <ReactTinyLink
-              proxyUrl="http://167.71.204.127:8080"
-              width="95%"
-              borderRadius="50px 50px"
-              cardSize="small"
-              showGraphic={true}
-              maxLine={2}
-              minLine={1}
-              url={url}
-            />
-          </div>
-        ) : ''
-      }
+      {isValidUrl ? (
+        <div className={className}>
+          <ReactTinyLink
+            proxyUrl="http://167.71.204.127:8080"
+            width="95%"
+            borderRadius="50px 50px"
+            cardSize="small"
+            showGraphic={true}
+            maxLine={2}
+            minLine={1}
+            url={url}
+          />
+        </div>
+      ) : ''}
     </React.Fragment>
   )
 }
