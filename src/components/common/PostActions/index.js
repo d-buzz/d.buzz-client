@@ -127,17 +127,15 @@ const useStyles = createUseStyles({
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false, }) => {
   return (
-    <div className={classNames(className, inlineClass)} onClick={ disabled ? () => {} : onClick }>
+    <div className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
       <div className={inlineClass}>
-        { icon }
+        {icon}
       </div>
-      {
-        !hideStats && (
-          <div style={{ paddingTop: 2 }} className={inlineClass}>
-            { stat }
-          </div>
-        )
-      }
+      {!hideStats && (
+        <div style={{ paddingTop: 2 }} className={inlineClass}>
+          {stat}
+        </div>
+      )}
     </div>
   )
 }
@@ -236,133 +234,120 @@ const PostActions = (props) => {
     return semantic !== '51 years ago' ? semantic : ''
   }
 
-  console.log({ payoutAt })
-
   return (
     <React.Fragment>
-      {
-        !showSlider && (
-          <div>
-            <Row style={{ width: '100%', ...extraPadding }}>
-              <Col>
-                {
-                  !loading && upvoted && (
-                    <ActionWrapper
-                      className={classes.actionWrapperSpace}
-                      inlineClass={classes.inline}
-                      icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
-                      hideStats={hideStats}
-                      stat={
-                        <label style={{ marginLeft: 5, }}>
-                          { vote }
-                        </label>
-                      }
-                    />
-                  )
-                }
-                {
-                  !loading && !upvoted && (
-                    <ActionWrapper
-                      className={classes.actionWrapperSpace}
-                      inlineClass={classes.inline}
-                      icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
-                      hideStats={hideStats}
-                      disabled={!is_authenticated}
-                      onClick={handleClickShowSlider}
-                      stat={
-                        <label style={{ marginLeft: 5, }}>
-                          { vote }
-                        </label>
-                      }
-                    />
-                  )
-                }
-                {
-                  loading && (
-                    <ActionWrapper
-                      className={classes.actionWrapperSpace}
-                      inlineClass={classes.inline}
-                      icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />
-                    }
-                      hideStats={hideStats}
-                      onClick={handleClickShowSlider}
-                      stat={
-                        <label style={{ marginLeft: 5, }}>
-                          { voteCount }
-                        </label>
-                      }
-                    />
-                  )
-                }
-              </Col>
-              <Col>
+      {!showSlider && (
+        <div>
+          <Row style={{ width: '100%', ...extraPadding }}>
+            <Col>
+              {!loading && upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<IconButton size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
+                  icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
+                  hideStats={hideStats}
+                  stat={(
+                    <label style={{ marginLeft: 5, }}>
+                      {vote}
+                    </label>
+                  )}
+                />
+              )}
+              {!loading && !upvoted && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
                   hideStats={hideStats}
                   disabled={!is_authenticated}
-                  onClick={handleClickReply(author, permlink)}
-                  stat={
+                  onClick={handleClickShowSlider}
+                  stat={(
                     <label style={{ marginLeft: 5, }}>
-                      { replyStateCount }
+                      {vote}
                     </label>
-                  }
+                  )}
                 />
-              </Col>
-              <Col xs="auto">
+              )}
+              {loading && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  hideStats={false}
-                  stat={
-                    <Chip
-                      className={classes.chip}
-                      size='small'
-                      icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
-                      label={
-                        <span style={{ color: '#e53935', fontSize: 12, }}>
-                          ${ payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout }&nbsp;
-                          { payoutAt ? getPayoutDate(payoutAt) : '' }
-                        </span>
-                      }
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  }
+                  icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
+                  hideStats={hideStats}
+                  onClick={handleClickShowSlider}
+                  stat={(
+                    <label style={{ marginLeft: 5, }}>
+                      {voteCount}
+                    </label>
+                  )}
                 />
-              </Col>
-            </Row>
-          </div>
-        )
-      }
-      {
-        showSlider && (
-          <div className={classes.sliderWrapper}>
-            <Row>
-              <Col xs="auto">
-                <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
-              </Col>
-              <Col style={{ paddingLeft: 0 }}>
-                <ContainedButton
-                  fontSize={14}
-                  transparent={true}
-                  label="Cancel"
-                  className={classes.button}
-                  onClick={handleClickHideSlider}
-                />
-              </Col>
-            </Row>
-            <div style={{ paddingLeft: 10 }}>
-              <PrettoSlider
-                marks={marks}
-                value={sliderValue}
-                onChange={handleChange}
+              )}
+            </Col>
+            <Col>
+              <ActionWrapper
+                className={classes.actionWrapperSpace}
+                inlineClass={classes.inline}
+                icon={<IconButton size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
+                hideStats={hideStats}
+                disabled={!is_authenticated}
+                onClick={handleClickReply(author, permlink)}
+                stat={(
+                  <label style={{ marginLeft: 5, }}>
+                    {replyStateCount}
+                  </label>
+                )}
               />
-            </div>
+            </Col>
+            <Col xs="auto">
+              <ActionWrapper
+                className={classes.actionWrapperSpace}
+                inlineClass={classes.inline}
+                hideStats={false}
+                stat={(
+                  <Chip
+                    className={classes.chip}
+                    size='small'
+                    icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
+                    label={(
+                      <span style={{ color: '#e53935', fontSize: 12, }}>
+                        ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
+                        {payoutAt ? getPayoutDate(payoutAt) : ''}
+                      </span>
+                    )}
+                    color="secondary"
+                    variant="outlined"
+                  />
+                )}
+              />
+            </Col>
+          </Row>
+        </div>
+      )}
+      {showSlider && (
+        <div className={classes.sliderWrapper}>
+          <Row>
+            <Col xs="auto">
+              <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
+            </Col>
+            <Col style={{ paddingLeft: 0 }}>
+              <ContainedButton
+                fontSize={14}
+                transparent={true}
+                label="Cancel"
+                className={classes.button}
+                onClick={handleClickHideSlider}
+              />
+            </Col>
+          </Row>
+          <div style={{ paddingLeft: 10 }}>
+            <PrettoSlider
+              marks={marks}
+              value={sliderValue}
+              onChange={handleChange}
+            />
           </div>
-        )
-      }
+        </div>
+      )}
       <NotificationBox
         show={showSnackbar}
         message={message}
