@@ -9,6 +9,7 @@ const useStyle = createUseStyles({
     width: 'calc(100% - 60px)',
     height: 'max-content',
     fontSize: 14,
+    fontFamily: 'Segoe-Bold',
   },
   default: {
     marginRight: 5,
