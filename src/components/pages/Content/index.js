@@ -128,7 +128,9 @@ const Content = (props) => {
       meta = JSON.parse(json_metadata)
       app = meta.app.split('/')[0]
     } catch(e) {
-      app = json_metadata.app.split('/')[0]
+      if(Object.keys(json_metadata).length !== 0 && json_metadata.constructor === Object) {
+        app = json_metadata.app.split('/')[0]
+      }
     }
   }
 
