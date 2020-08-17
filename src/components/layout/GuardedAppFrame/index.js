@@ -1,5 +1,5 @@
 import React from 'react'
-import { SideBarLeft, SideBarRight } from 'components'
+import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
@@ -122,14 +122,22 @@ const GuardedAppFrame = (props) => {
             <Sticky>
               {({ style }) => (
                 <Navbar style={style} className={classes.nav}>
-                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif' }}>
+                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif', display: 'inline-block', verticalAlign: 'top' }}>
                     {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                       <IconButton onClick={handleClickBackButton} size="small">
                         <BackArrowIcon />
                       </IconButton>
                     )}
-                    <span className={classes.title}>{title}</span>
+                    {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
                   </Navbar.Brand>
+                  {title === 'Search' && (
+                    <div style={{ display: 'inline-block', verticalAlign: 'top', width: '100%' }}>
+                      <SearchField
+                        disableTips={true}
+                        iconTop={-2}
+                      />
+                    </div>
+                  )}
                 </Navbar>
               )}
             </Sticky>

@@ -34,11 +34,12 @@ const SearchTips = ({ show, className }) => {
   )
 }
 
-const SearchField = () => {
+const SearchField = (props) => {
   const [openTips, setOpenTips] = useState(false)
   const [search, setSearch] = useState()
   const classes = useStyles()
   const history = useHistory()
+  const { disableTips = false, iconTop = -2 } = props
 
   const onMouseEnter = () => {
     setOpenTips(true)
@@ -63,7 +64,7 @@ const SearchField = () => {
   return (
     <React.Fragment>
       <RoundedField
-        icon={<SearchIcon top={-2} />}
+        icon={<SearchIcon top={iconTop} />}
         placeholder="Search D.Buzz"
         className={classes.search}
         onMouseEnter={onMouseEnter}
@@ -71,8 +72,9 @@ const SearchField = () => {
         onKeyDown={handleSearchKey}
         value={search}
         onChange={onChange}
+        {...props}
       />
-      <SearchTips show={openTips || search} className={classes.searchTips} />
+      {!disableTips && (<SearchTips show={openTips || search} className={classes.searchTips} />)}
     </React.Fragment>
   )
 }

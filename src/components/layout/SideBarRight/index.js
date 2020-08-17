@@ -9,6 +9,7 @@ import {
   HashtagLoader,
 } from 'components/elements'
 import { SearchField } from 'components'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   search: {
@@ -48,11 +49,19 @@ const useStyles = createUseStyles({
 const SideBarRight = (props) => {
   const { items, loading, hideSearchBar = false } = props
   const classes = useStyles()
+  const location = useLocation()
+  const { pathname } = location
+  let isInSearchRoute = false
+
+  if(pathname.match(/(\/search?)/)) {
+    isInSearchRoute = true
+  }
+
 
   return (
     <React.Fragment>
-      {!hideSearchBar && (<SearchField />)}
-      <div>
+      {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
+      <div style={{ paddingTop: 5, }}>
         <ListGroup label="Trends for you">
           {items.slice(0, 5).map((item) => (
             <ListAction href={`/tags?q=${item.name}`} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
