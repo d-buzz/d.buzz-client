@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { connect } from 'react-redux'
@@ -34,20 +34,55 @@ const useStyles = createUseStyles({
     width: '95%',
     margin: '0 auto',
   },
+  searchTips: {
+    fontSize: 14,
+    fontFamily: 'Segoe-Bold',
+    '& span': {
+      color: '#d32f2f',
+      fontWeight: 400,
+    }
+  }
 })
+
+const SearchTips = ({ show, className }) => {
+  return (
+    <React.Fragment>
+      {show && (
+        <label className={className}>You can use <span>@username</span> or <span>#tags</span> to simplify your search</label>
+      )}
+    </React.Fragment>
+  )
+}
+
 
 const SideBarRight = (props) => {
   const { items, loading, hideSearchBar = false } = props
+  const [openTips, setOpenTips] = useState(false)
   const classes = useStyles()
+
+  const onMouseEnter = () => {
+    setOpenTips(true)
+  }
+
+  const onMouseLeave = () => {
+    setOpenTips(false)
+  }
+
+  console.log({ openTips })
 
   return (
     <React.Fragment>
       {!hideSearchBar && (
-        <RoundedField
-          icon={<SearchIcon top={-2} />}
-          placeholder="Search D.Buzz"
-          className={classes.search}
-        />
+        <React.Fragment>
+          <RoundedField
+            icon={<SearchIcon top={-2} />}
+            placeholder="Search D.Buzz"
+            className={classes.search}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+          />
+          <SearchTips show={openTips} className={classes.searchTips} />
+        </React.Fragment>
       )}
       <div>
         <ListGroup label="Trends for you">

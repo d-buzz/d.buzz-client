@@ -43,7 +43,8 @@ const RoundedFields = (props) => {
     type = 'text',
     className = {},
     style = {},
-    icon = ''
+    icon = '',
+    ...otherProps
   } = props
 
   let defaultInputStyle = { width: '100%', paddingLeft: 5, paddingRight: 5 }
@@ -63,6 +64,7 @@ const RoundedFields = (props) => {
           style={{ ...style, ...defaultInputStyle }}
           placeholder={placeholder}
           className={classNames(classes.field, classes.inline)}
+          {...otherProps}
         />
       </div>
     </React.Fragment>
