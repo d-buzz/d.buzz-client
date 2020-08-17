@@ -12,6 +12,7 @@ import {
   AccountFollowing,
   Notification,
   Tags,
+  Search,
 } from 'components'
 
 const routes =  [
@@ -47,6 +48,10 @@ const routes =  [
         path: '/notifications',
         exact: true,
         component: Notification,
+      },
+      {
+        path: '/search',
+        component: Search,
       },
       {
         path: '/tags',

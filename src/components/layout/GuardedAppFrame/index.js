@@ -90,6 +90,11 @@ const GuardedAppFrame = (props) => {
     title = 'Tags'
   }
 
+  if(pathname.match(/(\/search?)/)) {
+    title = 'Search'
+  }
+
+
   const handleClickBackButton = () => {
     try {
       history.goBack()
