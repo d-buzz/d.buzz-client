@@ -133,7 +133,6 @@ const PostList = (props) => {
     active_votes = [],
     unguardedLinks,
     user = {},
-    title = null,
     disableProfileLink = false,
     profileRef = null,
     payoutAt = null,
