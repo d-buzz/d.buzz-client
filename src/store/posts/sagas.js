@@ -256,8 +256,8 @@ function* fileUploadRequest(payload, meta) {
       const formData = new FormData()
       formData.append('file', file)
 
-      const prefix = new Buffer('ImageSigningChallenge');
-      const buf = Buffer.concat([prefix, data]);
+      const prefix = new Buffer('ImageSigningChallenge')
+      const buf = Buffer.concat([prefix, data])
       const bufSha = hash.sha256(buf)
 
       let sig
@@ -271,8 +271,8 @@ function* fileUploadRequest(payload, meta) {
                 response => {
                     resolve(response)
                 }
-            );
-        });
+            )
+        })
 
         if (response.success) {
           sig = response.result
