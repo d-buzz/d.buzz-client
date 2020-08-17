@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
@@ -9,6 +9,8 @@ import IconButton from '@material-ui/core/IconButton'
 import Navbar from 'react-bootstrap/Navbar'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   main: {
@@ -68,6 +70,8 @@ const GuardedAppFrame = (props) => {
   const { route, pathname  } = props
   const classes = useStyles()
   const history = useHistory()
+  const location = useLocation()
+  const params = queryString.parse(location.search)
 
   let title = 'Home'
 
@@ -143,6 +147,7 @@ const GuardedAppFrame = (props) => {
                         labelFontSize={14}
                         searchWrapperClass={classes.searchWrapper}
                         style={{ height: 30 }}
+                        defaultValue={params.q}
                         placeholder="You can use @username or #tag to simplify your query"
                       />
                     </div>

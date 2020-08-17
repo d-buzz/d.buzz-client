@@ -45,6 +45,7 @@ const RoundedFields = (props) => {
     style = {},
     icon = '',
     searchWrapperClass = {},
+    defaultValue,
     ...otherProps
   } = props
 

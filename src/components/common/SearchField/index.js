@@ -35,11 +35,11 @@ const SearchTips = ({ show, className }) => {
 }
 
 const SearchField = (props) => {
+  const { disableTips = false, iconTop = -2, defaultValue } = props
   const [openTips, setOpenTips] = useState(false)
-  const [search, setSearch] = useState()
+  const [search, setSearch] = useState(defaultValue)
   const classes = useStyles()
   const history = useHistory()
-  const { disableTips = false, iconTop = -2 } = props
 
   const onMouseEnter = () => {
     setOpenTips(true)
