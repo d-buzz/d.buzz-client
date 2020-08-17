@@ -237,7 +237,7 @@ const PostList = (props) => {
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
-                    title={title}
+                    body={body}
                     hasUpvoted={hasUpvoted}
                     author={author}
                     permlink={permlink}

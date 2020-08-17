@@ -128,7 +128,7 @@ const ReplyFormModal = (props) => {
     onHide = () => {},
     author,
     permlink,
-    title = '',
+    body = '',
     user,
     publishReplyRequest,
     replyRef,
@@ -206,7 +206,7 @@ const ReplyFormModal = (props) => {
             <div className={classes.right}>
               <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
               <div className={classes.titleContainer}>
-                <p style={{ paddingBottom: 0 }}>{stripHtml(`${title}`)}</p>
+                <p style={{ paddingBottom: 0 }}>{stripHtml(`${body}`)}</p>
               </div>
               {loading && (
                 <div className={classes.loadState}>

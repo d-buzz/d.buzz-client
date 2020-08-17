@@ -113,7 +113,13 @@ function* getContentRequest(payload, meta) {
         data = filtered[0]
       } else if(fromPage === 'profile') {
         const profilePosts = yield select(state => state.profile.get('posts'))
-        const filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+        let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+
+        if(filtered.length === 0) {
+          const profileReplies = yield select(state => state.profile.get('replies'))
+          filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+        }
+
         data = filtered[0]
       }
 

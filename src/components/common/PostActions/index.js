@@ -152,7 +152,7 @@ const PostActions = (props) => {
     upvoteRequest,
     hasUpvoted = false,
     user,
-    title = null,
+    body = null,
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
@@ -356,7 +356,7 @@ const PostActions = (props) => {
       />
       <ReplyFormModal
         treeHistory={treeHistory}
-        title={title}
+        body={body}
         show={open}
         onHide={handleOnClose}
         author={author}
