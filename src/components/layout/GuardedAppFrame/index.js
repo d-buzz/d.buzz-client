@@ -56,6 +56,7 @@ const useStyles = createUseStyles({
     display: 'inline-block',
     marginLeft: 5,
     fontFamily: 'Segoe-Bold',
+    fontSize: 18,
   },
   searchWrapper: {
     padding: 0,

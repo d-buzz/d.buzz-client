@@ -42,7 +42,6 @@ const useStyle = createUseStyles({
   },
   left: {
     height: '100%',
-    width: 50,
   },
   right: {
     height: 'max-content',
