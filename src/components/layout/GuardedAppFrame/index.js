@@ -3,12 +3,12 @@ import { SideBarLeft, SideBarRight } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
+import { createUseStyles } from 'react-jss'
+import { renderRoutes } from 'react-router-config'
 import IconButton from '@material-ui/core/IconButton'
 import Navbar from 'react-bootstrap/Navbar'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { createUseStyles } from 'react-jss'
-import { renderRoutes } from 'react-router-config'
 
 const useStyles = createUseStyles({
   main: {
