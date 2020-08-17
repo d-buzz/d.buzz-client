@@ -75,7 +75,7 @@ const Explore = (props) => {
       )}
       <PostlistSkeleton loading={loading} />
       {(!loading && results.length === 0) &&
-        (<center><br/><h6>No Buzz's found with #{tag}</h6></center>)}
+        (<center><br/><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></center>)}
     </React.Fragment>
   )
 }

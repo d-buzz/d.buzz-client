@@ -781,9 +781,10 @@ export const searchPostTags = (tag) => {
     }).then(async(result) => {
       const data = result.data
       // console.log({ data })
-      const getProfiledata = mapFetchProfile(data.results)
-      await Promise.all([getProfiledata])
-      console.log({ data })
+      if(data.results.length !== 0) {
+        const getProfiledata = mapFetchProfile(data.results)
+        await Promise.all([getProfiledata])
+      }
       resolve(data)
     }).catch((error) => {
       reject(error)
