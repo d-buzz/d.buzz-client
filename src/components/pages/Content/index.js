@@ -246,7 +246,7 @@ const Content = (props) => {
       )}
       <ContentSkeleton loading={loadingContent} />
       {replyCount !== 0 && (
-        <ReplylistSkeleton loading={loadingReplies} />
+        <ReplylistSkeleton loading={loadingReplies || loadingContent} />
       )}
       <br />
       <UserDialog
