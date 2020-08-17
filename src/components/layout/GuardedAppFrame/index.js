@@ -56,6 +56,10 @@ const useStyles = createUseStyles({
     display: 'inline-block',
     marginLeft: 5,
     fontFamily: 'Segoe-Bold',
+  },
+  searchWrapper: {
+    padding: 0,
+    margin: 0,
   }
 })
 
@@ -135,6 +139,10 @@ const GuardedAppFrame = (props) => {
                       <SearchField
                         disableTips={true}
                         iconTop={-2}
+                        labelFontSize={14}
+                        searchWrapperClass={classes.searchWrapper}
+                        style={{ height: 30 }}
+                        placeholder="You can use @username or #tag to simplify your query"
                       />
                     </div>
                   )}

@@ -96,6 +96,7 @@ const useStyles = createUseStyles({
     },
     '& span': {
       fontWeight: 'bold',
+      fontFamily: 'Segoe-Bold',
     },
     '&.Mui-selected': {
       '& span': {

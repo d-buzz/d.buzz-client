@@ -44,6 +44,7 @@ const RoundedFields = (props) => {
     className = {},
     style = {},
     icon = '',
+    searchWrapperClass = {},
     ...otherProps
   } = props
 
@@ -55,7 +56,7 @@ const RoundedFields = (props) => {
 
   return (
     <React.Fragment>
-      <div className={classNames(classes.round, className)}>
+      <div className={classNames(classes.round, className, searchWrapperClass)}>
         <IconWrapper className={classNames(classes.inline, classes.iconWrapper)}>
           {icon}
         </IconWrapper>

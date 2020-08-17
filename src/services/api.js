@@ -323,9 +323,8 @@ export const fetchProfile = (username) => {
   const user = JSON.parse(localStorage.getItem('user'))
 
   return new Promise((resolve, reject) => {
-    api.getAccountsAsync([...username])
+    api.getAccountsAsync(username)
       .then(async(result) => {
-
         result.forEach(async(item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
