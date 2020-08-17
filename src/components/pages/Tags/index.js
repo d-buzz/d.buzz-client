@@ -14,7 +14,7 @@ import { useLocation } from 'react-router-dom'
 import { pending } from 'redux-saga-thunk'
 import { PostlistSkeleton } from 'components'
 
-const Explore = (props) => {
+const Tags = (props) => {
   const {
     getSearchTagsRequest,
     clearTagsPost,
@@ -97,4 +97,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Explore)
+export default connect(mapStateToProps, mapDispatchToProps)(Tags)
