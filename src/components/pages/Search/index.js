@@ -4,7 +4,6 @@ import Tab from '@material-ui/core/Tab'
 import { anchorTop } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 
-
 const useStyles = createUseStyles({
   tabs: {
     textTransform: 'none !important',
