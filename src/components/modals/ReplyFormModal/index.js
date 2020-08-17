@@ -111,9 +111,10 @@ const useStyles = createUseStyles({
     height: 60,
     flexGrow: 1,
   },
-  titleContainer: {
-    height: 70,
-     width: 500,
+  bodyContainer: {
+    minHeight: 70,
+    width: 500,
+    fontSize: 14,
   },
   loadState: {
     width: '100%',
@@ -205,7 +206,7 @@ const ReplyFormModal = (props) => {
             </div>
             <div className={classes.right}>
               <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
-              <div className={classes.titleContainer}>
+              <div className={classes.bodyContainer}>
                 <p style={{ paddingBottom: 0 }}>{stripHtml(`${body}`)}</p>
               </div>
               {loading && (
