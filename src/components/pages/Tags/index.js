@@ -4,6 +4,7 @@ import {
   getSearchTagsRequest,
   clearTagsPost,
   setTagsIsVisited,
+  setPageFrom,
   clearLastSearchTag,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
@@ -21,6 +22,7 @@ const Explore = (props) => {
     loading,
     visited,
     clearLastSearchTag,
+    setPageFrom,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
@@ -28,6 +30,7 @@ const Explore = (props) => {
   const [results, setResults] = useState([])
 
   useEffect(() => {
+    setPageFrom(null)
     if(!visited) {
       clearLastSearchTag()
       setTagsIsVisited()
@@ -90,6 +93,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearTagsPost,
     setTagsIsVisited,
     clearLastSearchTag,
+    setPageFrom,
   }, dispatch)
 })
 
