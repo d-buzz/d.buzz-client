@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import {
-  RoundedField,
-  SearchIcon,
   ListGroup,
   ListAction,
   HashtagLoader,
 } from 'components/elements'
-import { useHistory } from 'react-router-dom'
+import { SearchField } from 'components'
 
 const useStyles = createUseStyles({
   search: {
@@ -45,61 +43,15 @@ const useStyles = createUseStyles({
   }
 })
 
-const SearchTips = ({ show, className }) => {
-  return (
-    <React.Fragment>
-      {show && (
-        <label className={className}>You can use <span>@username</span> or <span>#tags</span> to simplify your search</label>
-      )}
-    </React.Fragment>
-  )
-}
 
 
 const SideBarRight = (props) => {
   const { items, loading, hideSearchBar = false } = props
-  const [openTips, setOpenTips] = useState(false)
-  const [search, setSearch] = useState()
   const classes = useStyles()
-  const history = useHistory()
-
-  const onMouseEnter = () => {
-    setOpenTips(true)
-  }
-
-  const onMouseLeave = () => {
-    setOpenTips(false)
-  }
-
-  const handleSearchKey = (e) => {
-    if(e.key === 'Enter') {
-      history.replace(`/search?q=${search}`)
-    }
-  }
-
-  const onChange = (e) => {
-    const { target } = e
-    const { value } = target
-    setSearch(value)
-  }
 
   return (
     <React.Fragment>
-      {!hideSearchBar && (
-        <React.Fragment>
-          <RoundedField
-            icon={<SearchIcon top={-2} />}
-            placeholder="Search D.Buzz"
-            className={classes.search}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onKeyDown={handleSearchKey}
-            value={search}
-            onChange={onChange}
-          />
-          <SearchTips show={openTips || search} className={classes.searchTips} />
-        </React.Fragment>
-      )}
+      {!hideSearchBar && (<SearchField />)}
       <div>
         <ListGroup label="Trends for you">
           {items.slice(0, 5).map((item) => (
