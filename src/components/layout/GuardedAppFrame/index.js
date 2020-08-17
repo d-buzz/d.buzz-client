@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
