@@ -10,6 +10,7 @@ import {
   ListAction,
   HashtagLoader,
 } from 'components/elements'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   search: {
@@ -58,7 +59,9 @@ const SearchTips = ({ show, className }) => {
 const SideBarRight = (props) => {
   const { items, loading, hideSearchBar = false } = props
   const [openTips, setOpenTips] = useState(false)
+  const [search, setSearch] = useState()
   const classes = useStyles()
+  const history = useHistory()
 
   const onMouseEnter = () => {
     setOpenTips(true)
@@ -68,7 +71,17 @@ const SideBarRight = (props) => {
     setOpenTips(false)
   }
 
-  console.log({ openTips })
+  const handleSearchKey = (e) => {
+    if(e.key === 'Enter') {
+      history.replace(`/search?q=${search}`)
+    }
+  }
+
+  const onChange = (e) => {
+    const { target } = e
+    const { value } = target
+    setSearch(value)
+  }
 
   return (
     <React.Fragment>
@@ -80,8 +93,11 @@ const SideBarRight = (props) => {
             className={classes.search}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            onKeyDown={handleSearchKey}
+            value={search}
+            onChange={onChange}
           />
-          <SearchTips show={openTips} className={classes.searchTips} />
+          <SearchTips show={openTips || search} className={classes.searchTips} />
         </React.Fragment>
       )}
       <div>
