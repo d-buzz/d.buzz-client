@@ -4,7 +4,6 @@ import {
   getSearchTagsRequest,
   clearTagsPost,
   setTagsIsVisited,
-  setPageFrom,
   clearLastSearchTag,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
@@ -21,7 +20,6 @@ const Explore = (props) => {
     items,
     loading,
     visited,
-    setPageFrom,
     clearLastSearchTag,
   } = props
   const location = useLocation()
@@ -30,7 +28,6 @@ const Explore = (props) => {
   const [results, setResults] = useState([])
 
   useEffect(() => {
-    setPageFrom('trending')
     if(!visited) {
       clearLastSearchTag()
       setTagsIsVisited()
@@ -92,7 +89,6 @@ const mapDispatchToProps = (dispatch) => ({
     getSearchTagsRequest,
     clearTagsPost,
     setTagsIsVisited,
-    setPageFrom,
     clearLastSearchTag,
   }, dispatch)
 })

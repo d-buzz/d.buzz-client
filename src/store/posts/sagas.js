@@ -111,10 +111,6 @@ function* getContentRequest(payload, meta) {
         const latest = yield select(state => state.posts.get('latest'))
         const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
         data = filtered[0]
-      } else if(fromPage === 'tags') {
-        const tags = yield select(state => state.posts.get('tags'))
-        const filtered = tags.filter((item) => item.author === author && item.permlink === permlink)
-        data = filtered[0]
       } else if(fromPage === 'profile') {
         const profilePosts = yield select(state => state.profile.get('posts'))
         const filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
