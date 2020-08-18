@@ -517,7 +517,7 @@ function* unfollowRequest(payload, meta) {
 
 function* searchRequest(payload, meta) {
   try {
-    const { query } = payload
+    let { query } = payload
     let type = 'full'
 
     if(`${query}`.match(/^@/g)) {
@@ -534,9 +534,10 @@ function* searchRequest(payload, meta) {
 
     console.log({ type })
 
-    // if(type === 'tag') {
-    //   results = yield call(searchPostTags, query)
-    // }
+    if(type === 'tag') {
+      query =  `${query}`.replace('#', '')
+      // results = yield call(searchPostTags, query)
+    }
 
     console.log({ results })
 
