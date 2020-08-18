@@ -5,7 +5,7 @@ import {
   Profile,
   Content,
   Latest,
-  Login,
+  Landing,
   AccountPosts,
   AccountReplies,
   AccountFollowers,
@@ -26,9 +26,9 @@ const routes =  [
         component: Home
       },
       {
-        path: '/login',
+        path: '/ug',
         exact: true,
-        component: Login,
+        component: Landing,
       },
       {
         path: '/ug/tags',
