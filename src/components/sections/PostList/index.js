@@ -42,10 +42,11 @@ const useStyle = createUseStyles({
   },
   left: {
     height: '100%',
+    width: 60,
   },
   right: {
     height: 'max-content',
-    width: '98%',
+    width: 500,
   },
   name: {
     fontWeight: 'bold',
@@ -206,7 +207,7 @@ const PostList = (props) => {
                 <Avatar author={author} />
               </div>
             </Col>
-            <Col>
+            <Col xs="auto">
               <div className={classes.right}>
                 <div className={classes.content}>
                   <label className={classes.name}>
