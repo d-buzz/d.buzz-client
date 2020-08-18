@@ -12,6 +12,7 @@ import { HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import classNames from 'classnames'
 
 const useStyles = createUseStyles({
   loginButton: {
@@ -22,6 +23,20 @@ const useStyles = createUseStyles({
   checkBox: {
     '&input': {
       cusor: 'pointer',
+    }
+  },
+  label: {
+    fontFamily: 'Segoe-Bold',
+  },
+  modal: {
+    '& div.modal-content': {
+      borderRadius: '15px 15px !important',
+      border: 'none',
+      width: 400,
+      margin: '0 auto',
+    },
+    '& input.form-control': {
+      borderRadius: '50px 50px',
     }
   }
 })
@@ -83,22 +98,22 @@ const LoginModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal show={show} onHide={onHide}>
+      <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
           <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
             <center>
-              <h5>Hi there, welcome back!</h5>
+              <h6 className={classes.label}>Hi there, welcome back!</h6>
               {hasAuthenticationError && (
                 <label style={{ color: 'red' }}>Authentication failed, please check credentials and retry again</label>
               )}
             </center>
           </div>
-          <FormLabel>Username</FormLabel>
+          <FormLabel className={classes.label}>Username</FormLabel>
           <FormControl disabled={loading} name="username" type="text" value={username} onChange={onChange} />
           <FormSpacer />
           {!useKeychain && (
             <React.Fragment>
-              <FormLabel>Posting key</FormLabel>
+              <FormLabel className={classes.label}>Posting key</FormLabel>
               <FormControl
                 disabled={loading}
                 name="password"
@@ -113,7 +128,7 @@ const LoginModal = (props) => {
             name="keychain"
             type="checkbox"
             label="Use hivekeychain"
-            className={classes.checkBox}
+            className={classNames(classes.checkBox, classes.label)}
             onChange={onCheckBoxChanged}
           />
           <center>
