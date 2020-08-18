@@ -10,7 +10,7 @@ import {
   getUnreadNotificationsCount
 } from 'services/api'
 
-const POLLING_DELAY = 300000
+const POLLING_DELAY = 120000
 
 function* poll() {
   while (true) {

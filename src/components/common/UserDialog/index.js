@@ -87,7 +87,7 @@ const UserDialog = (props) => {
     user,
   } = props
 
-  const { username } = user
+  const { username, is_authenticated } = user
   const { name, about } = getProfileMetaData(profile)
   const { reputation = 0, name: author, isFollowed } = profile
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
@@ -213,29 +213,33 @@ const UserDialog = (props) => {
                 </Col>
                 <Col>
                   <div className={classes.right}>
-                    {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
-                      <ContainedButton
-                        fontSize={14}
-                        loading={loading}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, }}
-                        transparent={true}
-                        label="Follow"
-                        className={classes.button}
-                        onClick={followUser}
-                      />
-                    )}
-                    {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
-                      <ContainedButton
-                        fontSize={14}
-                        loading={loading}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, }}
-                        transparent={true}
-                        label="Unfollow"
-                        className={classes.button}
-                        onClick={unfollowUser}
-                      />
+                    {is_authenticated && (
+                      <React.Fragment>
+                        {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
+                          <ContainedButton
+                            fontSize={14}
+                            loading={loading}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5, }}
+                            transparent={true}
+                            label="Follow"
+                            className={classes.button}
+                            onClick={followUser}
+                          />
+                        )}
+                        {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
+                          <ContainedButton
+                            fontSize={14}
+                            loading={loading}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5, }}
+                            transparent={true}
+                            label="Unfollow"
+                            className={classes.button}
+                            onClick={unfollowUser}
+                          />
+                        )}
+                      </React.Fragment>
                     )}
                   </div>
                 </Col>
