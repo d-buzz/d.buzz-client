@@ -245,7 +245,6 @@ const ReplyList = (props) => {
       authorLink = `/ug${authorLink}`
     }
 
-    const title = body.substring(0, 100)
     const [open, setOpen] = useState(false)
     const popoverAnchor = useRef(null)
 
@@ -294,7 +293,7 @@ const ReplyList = (props) => {
                 <div className={classes.actionWrapper}>
                   <PostActions
                     treeHistory={treeHistory}
-                    title={title}
+                    body={body}
                     hasUpvoted={hasUpvoted}
                     author={author}
                     permlink={permlink}

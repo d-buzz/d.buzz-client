@@ -97,7 +97,6 @@ const Content = (props) => {
     children: replyCount = 0,
     active_votes,
     profile = {},
-    title = null,
     cashout_time,
   } = content || ''
 
@@ -230,7 +229,7 @@ const Content = (props) => {
                   <Col>
                     <PostActions
                       disableExtraPadding={true}
-                      title={title}
+                      body={body}
                       author={username}
                       permlink={permlink}
                       hasUpvoted={hasUpvoted}
