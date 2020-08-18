@@ -768,7 +768,6 @@ export const createPermlink = (title) => {
   return permlink
 }
 
-
 export const searchPostTags = (tag) => {
   return new Promise(async(resolve, reject) => {
     const body = { tag }
@@ -784,6 +783,30 @@ export const searchPostTags = (tag) => {
         const getProfiledata = mapFetchProfile(data.results)
         await Promise.all([getProfiledata])
       }
+
+      resolve(data)
+    }).catch((error) => {
+      reject(error)
+    })
+  })
+}
+
+export const searchPostAuthor = (author) => {
+  return new Promise(async(resolve, reject) => {
+    const body = { author }
+
+    axios({
+      method: 'POST',
+      url: `${searchUrl}/author`,
+      data: body,
+    }).then(async(result) => {
+      const data = result.data
+
+      if(data.results.length !== 0) {
+        const getProfiledata = mapFetchProfile(data.results)
+        await Promise.all([getProfiledata])
+      }
+
       resolve(data)
     }).catch((error) => {
       reject(error)

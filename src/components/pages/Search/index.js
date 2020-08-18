@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import { searchRequest } from 'store/posts/actions'
 import { anchorTop } from 'services/helper'
 import { createUseStyles } from 'react-jss'
+import { connect } from 'react-redux'
+import queryString from 'query-string'
+import { bindActionCreators } from 'redux'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   tabs: {
@@ -47,12 +52,16 @@ const useStyles = createUseStyles({
   },
 })
 
-const Search = () => {
+const Search = (props) => {
   const [index, setIndex] = useState(0)
   const classes = useStyles()
+  const { searchRequest } = props
+  const location = useLocation()
+  const params = queryString.parse(location.search)
 
   useEffect(() => {
     anchorTop()
+    searchRequest(params.q)
   // eslint-disable-next-line
   }, [])
 
@@ -79,4 +88,10 @@ const Search = () => {
   )
 }
 
-export default Search
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    searchRequest,
+  }, dispatch)
+})
+
+export default connect(null, mapDispatchToProps)(Search)

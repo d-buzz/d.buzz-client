@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
@@ -10,7 +10,10 @@ import Navbar from 'react-bootstrap/Navbar'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
+import { searchRequest } from 'store/posts/actions'
 import { useLocation } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles({
   main: {
@@ -67,11 +70,13 @@ const useStyles = createUseStyles({
 })
 
 const GuardedAppFrame = (props) => {
-  const { route, pathname  } = props
+  const { route, pathname, searchRequest } = props
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
   const params = queryString.parse(location.search)
+  const [search, setSearch] = useState()
+  const { q } = params
 
   let title = 'Home'
 
@@ -112,6 +117,22 @@ const GuardedAppFrame = (props) => {
     }
   }
 
+  useEffect(() => {
+    setSearch(q)
+  }, [q])
+
+  const onChange = (e) => {
+    const { target } = e
+    const { value } = target
+    setSearch(value)
+  }
+
+  const handleSearchKey = (e) => {
+    if(e.key === 'Enter') {
+      searchRequest(search)
+    }
+  }
+
   return (
     <React.Fragment>
       <Row>
@@ -147,7 +168,9 @@ const GuardedAppFrame = (props) => {
                         labelFontSize={14}
                         searchWrapperClass={classes.searchWrapper}
                         style={{ height: 30 }}
-                        defaultValue={params.q}
+                        value={search}
+                        onChange={onChange}
+                        onKeyDown={handleSearchKey}
                         placeholder="You can use @username or #tag to simplify your query"
                       />
                     </div>
@@ -178,4 +201,10 @@ const GuardedAppFrame = (props) => {
   )
 }
 
-export default GuardedAppFrame
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    searchRequest,
+  }, dispatch)
+})
+
+export default connect(null, mapDispatchToProps)(GuardedAppFrame)

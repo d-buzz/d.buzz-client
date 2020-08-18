@@ -56,6 +56,10 @@ import {
   unfollowSuccess,
   unfollowFailure,
   setHasBeenUnfollowedRecently,
+
+  SEARCH_REQUEST,
+  searchSuccess,
+  searchFailure
 } from './actions'
 
 import {
@@ -511,6 +515,21 @@ function* unfollowRequest(payload, meta) {
   }
 }
 
+function* searchRequest(payload, meta) {
+  try {
+    const { query } = payload
+
+    if(`${query}`.match(/^(@)/g)) {
+      console.log('author')
+    } else {
+      console.log('naah')
+    }
+
+  } catch(error) {
+    yield put(searchFailure(error, meta))
+  }
+}
+
 
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
@@ -564,6 +583,10 @@ function* watchUnfollowRequest({ payload, meta}) {
   yield call(unfollowRequest, payload, meta)
 }
 
+function* watchSearchRequest({ payload, meta}) {
+  yield call(searchRequest, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -579,4 +602,5 @@ export default function* sagas() {
   yield takeEvery(GET_SEARCH_TAG_REQUEST, watchGetSearchTags)
   yield takeEvery(FOLLOW_REQUEST, watchFollowRequest)
   yield takeEvery(UNFOLLOW_REQUEST, watchUnfollowRequest)
+  yield takeEvery(SEARCH_REQUEST, watchSearchRequest)
 }
