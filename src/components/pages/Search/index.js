@@ -59,6 +59,8 @@ const Search = (props) => {
   const location = useLocation()
   const params = queryString.parse(location.search)
 
+  console.log({ params })
+
   useEffect(() => {
     anchorTop()
     searchRequest(params.q)

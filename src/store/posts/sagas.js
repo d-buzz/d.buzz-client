@@ -408,7 +408,7 @@ function* publishReplyRequest(payload, meta) {
 function* getSearchTags(payload, meta) {
   try {
     const { tag } = payload
-    const searchPosts = yield call(searchPostTags, tag)
+    const searchPosts = yield call(searchPostTags,   tag)
 
     yield put(getSearchTagsSuccess(searchPosts, meta))
   } catch(error) {
@@ -518,12 +518,27 @@ function* unfollowRequest(payload, meta) {
 function* searchRequest(payload, meta) {
   try {
     const { query } = payload
+    let type = 'full'
 
-    if(`${query}`.match(/^(@)/g)) {
-      console.log('author')
-    } else {
-      console.log('naah')
+    if(`${query}`.match(/^@/g)) {
+      type = 'author'
     }
+
+    if(`${query}`.match(/^#/g)) {
+      type = 'tag'
+    }
+
+    console.log({ query })
+
+    let results = []
+
+    console.log({ type })
+
+    // if(type === 'tag') {
+    //   results = yield call(searchPostTags, query)
+    // }
+
+    console.log({ results })
 
   } catch(error) {
     yield put(searchFailure(error, meta))

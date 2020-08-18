@@ -74,9 +74,8 @@ const GuardedAppFrame = (props) => {
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
-  const params = queryString.parse(location.search)
+  const params = {} || queryString.parse(location.search)
   const [search, setSearch] = useState()
-  const { q } = params
 
   let title = 'Home'
 
@@ -118,8 +117,10 @@ const GuardedAppFrame = (props) => {
   }
 
   useEffect(() => {
-    setSearch(q)
-  }, [q])
+    if(params.hasOwnProperty('q')) {
+      setSearch(params.q)
+    }
+  }, [params])
 
   const onChange = (e) => {
     const { target } = e
