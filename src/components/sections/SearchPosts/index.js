@@ -15,11 +15,13 @@ const SearchPosts = (props) => {
   const [full, setFull] = useState([])
   const location = useLocation()
   const params = queryString.parse(location.search)
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(20)
   const query = params.q
 
   useEffect(() => {
-    setFull(items.results || [])
+    if(items.hasOwnProperty('results')) {
+      setFull(items.results)
+    }
   }, [items])
 
   const loadMorePosts = () => {
