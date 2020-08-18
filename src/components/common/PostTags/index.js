@@ -1,7 +1,8 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
+import { Link, useHistory } from 'react-router-dom'
 
 const useStyle = createUseStyles({
   tags: {
@@ -27,7 +28,9 @@ const useStyle = createUseStyles({
 
 const PostTags = (props) => {
   const classes = useStyle()
-  const { meta, highlightTag } = props
+  const { meta, highlightTag, user } = props
+  const { is_authenticated } = user
+  const history = useHistory()
 
   let tags = []
   try {
@@ -36,12 +39,34 @@ const PostTags = (props) => {
     }
   } catch (e) {  }
 
+  const generateTagsLink = (tag) => {
+    let link = ''
+
+    if(!is_authenticated) {
+      link = '/ug'
+    }
+
+    link += `/tags?q=${tag}`
+
+    return link
+  }
+
+  const prevent = (e) => {
+    e.preventDefault()
+  }
+
+  const onClick = (link) => (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    history.push(link)
+  }
+
   return (
-    <div className={classes.tags}>
-      {tags.map((tag) => (
+    <div className={classes.tags} onClick={prevent}>
+      {tags.map((tag, index) => (
         <Link
-          key={`${tag}`}
-          to={`/tags?q=${tag}`}
+          onClick={onClick(generateTagsLink(tag))}
+          key={`${tag}~${index}~${Math.random(0,100)}`}
           className={classNames(classes.default, `${highlightTag}`.toLowerCase() === `${tag}`.toLowerCase() ? classes.highlighted : '')}
         >
           #{tag}
@@ -51,4 +76,8 @@ const PostTags = (props) => {
   )
 }
 
-export default PostTags
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(PostTags)

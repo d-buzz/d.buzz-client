@@ -31,6 +31,10 @@ const routes =  [
         component: Login,
       },
       {
+        path: '/ug/tags',
+        component: Tags,
+      },
+      {
         path: '/ug/@:username/c/:permlink',
         exact: true,
         component: Content,

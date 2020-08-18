@@ -88,9 +88,7 @@ const LoginModal = (props) => {
   const handleClickLogin = () => {
     authenticateUserRequest(username, password, useKeychain)
       .then(({ is_authenticated }) => {
-        if(is_authenticated) {
-          history.replace('/')
-        } else {
+        if(!is_authenticated) {
           setHasAuthenticationError(true)
         }
       })
