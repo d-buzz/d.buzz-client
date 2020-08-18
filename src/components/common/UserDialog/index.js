@@ -57,6 +57,9 @@ const useStyles = createUseStyles({
     '& :after': {
       border: '1px solid red',
     },
+    '&:hover': {
+      overflowY: 'overlay',
+    }
   },
   wrapper: {
     width: 300,
@@ -195,6 +198,7 @@ const UserDialog = (props) => {
           vertical: 'top',
           horizontal: 'left',
         }}
+        disableScrollLock
         PaperProps={{ onMouseEnter, onMouseLeave }}
         onClose={onMouseLeave}
       >

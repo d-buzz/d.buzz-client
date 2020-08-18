@@ -133,11 +133,12 @@ const PostList = (props) => {
     active_votes = [],
     unguardedLinks,
     user = {},
-    disableProfileLink = false,
     profileRef = null,
     payoutAt = null,
     highlightTag = null,
   } = props
+
+  let { disableProfileLink = false  } = props
 
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)

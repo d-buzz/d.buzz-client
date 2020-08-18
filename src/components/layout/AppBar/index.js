@@ -19,6 +19,7 @@ const useStyles = createUseStyles({
     height: 55,
     backgroundColor: 'white',
     borderBottom: '1px solid rgb(204, 214, 221)',
+    zIndex: 2000,
   },
   search: {
     width: 350,
@@ -36,9 +37,10 @@ const useStyles = createUseStyles({
     height: 35,
   },
   container: {
-    '@media (min-width: 1200px)': {
+    margin: '0 auto',
+    '@media (min-width: 1100px)': {
       '&.container': {
-        maxWidth: '1100px',
+        maxWidth: '900px',
       },
     },
   },

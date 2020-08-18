@@ -23,9 +23,9 @@ const useStyles = createUseStyles({
     },
   },
   unGuardedContainer: {
-    '@media (min-width: 1200px)': {
+    '@media (min-width: 1100px)': {
       '&.container': {
-        maxWidth: '1100px',
+        maxWidth: '900px',
       },
     },
   },
