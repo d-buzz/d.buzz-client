@@ -49,7 +49,7 @@ const AccountPosts = (props) => {
             unguardedLinks={!user.is_authenticated}
           />
         ))}
-        {!(loading && items.length === 0) &&
+        {(!loading && items.length === 0) &&
           (<center><br/><h6>No Buzz's from @{author}</h6></center>)}
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />
