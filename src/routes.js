@@ -14,6 +14,7 @@ import {
   Tags,
   Search,
   SearchPosts,
+  SearchPeople,
 } from 'components'
 
 const routes =  [
@@ -55,7 +56,7 @@ const routes =  [
         component: Notification,
       },
       {
-        path: '/search/posts',
+        path: '/search',
         component: Search,
         routes: [
           {
@@ -66,7 +67,7 @@ const routes =  [
           {
             path: '/search/people',
             exact: true,
-            component: AccountPosts,
+            component: SearchPeople,
           },
         ]
       },

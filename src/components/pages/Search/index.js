@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import queryString from 'query-string'
 import { renderRoutes } from 'react-router-config'
 import { bindActionCreators } from 'redux'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   tabs: {
@@ -56,9 +56,11 @@ const useStyles = createUseStyles({
 const Search = (props) => {
   const [index, setIndex] = useState(0)
   const classes = useStyles()
-  const { searchRequest, route } = props
+  const { searchRequest, route, user } = props
   const location = useLocation()
+  const { pathname } = location
   const params = queryString.parse(location.search)
+  const history = useHistory()
 
   useEffect(() => {
     anchorTop()
@@ -66,8 +68,32 @@ const Search = (props) => {
   // eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    if(pathname.match(/(\/search\/posts)/m)) {
+      setIndex(0)
+    } else if(pathname.match(/(\/search\/people)/m)) {
+      setIndex(1)
+    }
+  }, [pathname])
+
   const onChange = (e, index) => {
     setIndex(index)
+  }
+
+  const handleTabs = (index) => () => {
+    let tab = 'posts'
+
+    if(index === 1) {
+      tab = 'people'
+    }
+
+    const { is_authenticated } = user
+
+    if(is_authenticated) {
+      history.push(`/search/${tab}?q=${encodeURIComponent(params.q)}`)
+    } else {
+      history.push(`/ug/search/${tab}?q=${encodeURIComponent(params.q)}`)
+    }
   }
 
   return (
@@ -81,16 +107,20 @@ const Search = (props) => {
           onChange={onChange}
           className={classes.tabContainer}
         >
-          <Tab disableTouchRipple className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple className={classes.tabs} label="People" />
+          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="People" />
         </Tabs>
       </div>
       <React.Fragment>
-          {renderRoutes(route.routes)}
-        </React.Fragment>
+        {renderRoutes(route.routes)}
+      </React.Fragment>
     </React.Fragment>
   )
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
@@ -98,4 +128,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(Search)
+export default connect(mapStateToProps, mapDispatchToProps)(Search)
