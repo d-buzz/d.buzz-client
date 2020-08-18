@@ -80,6 +80,7 @@ import {
   fetchDiscussions,
   searchPostTags,
   searchPostAuthor,
+  searchPeople,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
@@ -529,7 +530,9 @@ function* searchRequest(payload, meta) {
       results = yield call(searchPostTags, query)
     }
 
-    console.log({ results })
+    const profile = yield call(searchPeople, query)
+
+    results.people = profile.reputations
 
     yield put(searchSuccess(results, meta))
   } catch(error) {

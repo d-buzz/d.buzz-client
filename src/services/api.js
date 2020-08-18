@@ -70,14 +70,17 @@ export const searchPeople = (username) => {
       if (err) {
         reject(err)
       }else {
-        data.forEeach((item, index) => {
-          data[index].author = item.account
-        })
 
-        if(data.length !== 0) {
-          const getProfiledata = mapFetchProfile(data)
-          await Promise.all([getProfiledata])
+        if(data.reputations.length !== 0) {
+          data.reputations.forEach((item, index) => {
+            let score = item.reputation ? formatter.reputation(item.reputation) : 25
+            if(!score || score < 25) {
+              score = 25
+            }
+            data.reputations[index].repscore = score
+          })
         }
+
         resolve(data)
       }
     })
