@@ -46,15 +46,11 @@ export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
     params = { "tag": `${appConfig.TAG}`, limit: 5, ...params,}
 
-    console.log({ params2: params })
-
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
         reject(err)
       }else {
-        console.log({ result2: data })
         const result = data.filter((item) => invokeFilter(item))
-        console.log({ resul3: result })
 
         if(result.length !== 0) {
           const getProfiledata = mapFetchProfile(result)
@@ -63,6 +59,29 @@ export const callBridge = async(method, params) => {
         resolve(result)
       }
     })
+  })
+}
+
+export const searchPeople = (username) => {
+  return new Promise((resolve, reject) => {
+    const params = { account_lower_bound: username, limit: 30 }
+
+    api.call('reputation_api.get_account_reputations', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        data.forEeach((item, index) => {
+          data[index].author = item.account
+        })
+
+        if(data.length !== 0) {
+          const getProfiledata = mapFetchProfile(data)
+          await Promise.all([getProfiledata])
+        }
+        resolve(data)
+      }
+    })
+
   })
 }
 
@@ -767,6 +786,7 @@ export const createPermlink = (title) => {
 
   return permlink
 }
+
 
 export const searchPostTags = (tag) => {
   return new Promise(async(resolve, reject) => {
