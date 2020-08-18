@@ -36,6 +36,10 @@ const useStyles = createUseStyles({
     },
     '& input.form-control': {
       borderRadius: '50px 50px',
+      fontSize: 14,
+    },
+    '& label': {
+      fontSize: 14,
     }
   }
 })
