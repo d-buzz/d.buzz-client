@@ -9,7 +9,7 @@ const AuthGuard = (props) => {
   const { is_authenticated } = user
 
   const isUnguardedRoute = () => {
-    return (pathname === '/login' || pathname.match(/^(\/ug)/g))
+    return (pathname.match(/^(\/login)/g) || pathname.match(/^(\/ug)/g))
   }
 
   return (
