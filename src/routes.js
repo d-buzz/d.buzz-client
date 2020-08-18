@@ -56,6 +56,22 @@ const routes =  [
         component: Notification,
       },
       {
+        path: '/ug/search',
+        component: Search,
+        routes: [
+          {
+            path: '/ug/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/ug/search/people',
+            exact: true,
+            component: SearchPeople,
+          },
+        ]
+      },
+      {
         path: '/search',
         component: Search,
         routes: [

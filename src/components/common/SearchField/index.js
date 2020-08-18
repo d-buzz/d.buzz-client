@@ -5,6 +5,7 @@ import {
   RoundedField,
   SearchIcon,
 } from 'components/elements'
+import { connect } from 'react-redux'
 
 const useStyles = createUseStyles({
   search: {
@@ -35,11 +36,13 @@ const SearchTips = ({ show, className }) => {
 }
 
 const SearchField = (props) => {
-  const { disableTips = false, iconTop = -2, defaultValue } = props
+  const { disableTips = false, iconTop = -2, defaultValue, user } = props
   const [openTips, setOpenTips] = useState(false)
   const [search, setSearch] = useState(defaultValue)
   const classes = useStyles()
   const history = useHistory()
+  const { is_authenticated } = user
+
 
   const onMouseEnter = () => {
     setOpenTips(true)
@@ -51,7 +54,14 @@ const SearchField = (props) => {
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
-      history.replace(`/search/posts?q=${encodeURIComponent(search)}`)
+      let link = ''
+      if(is_authenticated) {
+        link = '/search'
+      } else {
+        link = '/ug/search'
+      }
+      link += `/posts?q=${encodeURIComponent(search)}`
+      history.replace(link)
     }
   }
 
@@ -79,4 +89,8 @@ const SearchField = (props) => {
   )
 }
 
-export default SearchField
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(SearchField)

@@ -4,13 +4,11 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import {
   BrandIcon,
-  SearchIcon,
-  RoundedField,
   ContainedButton,
   IconButton,
   BackArrowIcon,
 } from 'components/elements'
-import { LoginModal } from 'components'
+import { LoginModal, SearchField } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 
@@ -79,12 +77,7 @@ const AppBar = () => {
           </Link>
         </Navbar.Brand>
         <Nav className="mr-auto">
-          <RoundedField
-            style={{ height: 35 }}
-            icon={<SearchIcon top={-2} />}
-            placeholder="Search D.Buzz"
-            className={classes.search}
-          />
+          <SearchField disableTips={true} />
         </Nav>
         <ContainedButton onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
         <ContainedButton style={{ marginLeft: 5 }} fontSize={15} label="Sign up" className={classes.button} />
