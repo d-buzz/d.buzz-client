@@ -4,7 +4,6 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
 import FormControl from 'react-bootstrap/FormControl'
 import FormCheck from 'react-bootstrap/FormCheck'
-import { useHistory } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
@@ -61,7 +60,6 @@ const LoginModal = (props) => {
   const [password, setPassword] = useState()
   const [useKeychain, setUseKeychain] = useState(false)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
-  const history = useHistory()
 
   const onChange = (e) => {
     const { target } = e
