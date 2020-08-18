@@ -20,7 +20,7 @@ const Login = () => {
     <React.Fragment>
       <div className={classes.trendingWrapper}>
         <div>
-          <h5 style={{ fontWeight: 'bold', marginLeft: 10, }}>Explore</h5>
+          <h5 style={{ fontWeight: 'bold', marginLeft: 10, }}>Trending</h5>
         </div>
         <Trending unguardedLinks={true} />
       </div>
