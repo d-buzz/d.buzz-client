@@ -28,10 +28,10 @@ const ListGroup = (props) => {
     <div style={{ backgroundColor: '#f5f8fa', borderRadius: '10px 10px' }}>
       <div className={classes.wrapper}>
         <div className={classes.labelWrapper}>
-          <label className={classes.label}>{ label }</label>
+          <label className={classes.label}>{label}</label>
         </div>
       </div>
-      { children }
+      {children}
       <br />
     </div>
   )
