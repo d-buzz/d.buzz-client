@@ -44,17 +44,28 @@ const useStyles = createUseStyles({
   }
 })
 
-
-
 const SideBarRight = (props) => {
-  const { items, loading, hideSearchBar = false } = props
+  const { user, items, loading, hideSearchBar = false } = props
   const classes = useStyles()
   const location = useLocation()
   const { pathname } = location
   let isInSearchRoute = false
+  const { is_authenticated } = user
 
   if(pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
+  }
+
+  const linkGenerator = (tag) => {
+    let link = ''
+
+    if(!is_authenticated) {
+      link = '/ug'
+    }
+
+    link += `/tags?q=${tag}`
+
+    return link
   }
 
 
@@ -64,7 +75,7 @@ const SideBarRight = (props) => {
       <div style={{ paddingTop: 5, }}>
         <ListGroup label="Trends for you">
           {items.slice(0, 5).map((item) => (
-            <ListAction href={`/tags?q=${item.name}`} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
           ))}
           <HashtagLoader loading={loading} />
         </ListGroup>
@@ -83,6 +94,7 @@ const SideBarRight = (props) => {
 }
 
 const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
   loading: pending(state, 'GET_TRENDING_TAGS_REQUEST'),
   items: state.posts.get('tags'),
 })
