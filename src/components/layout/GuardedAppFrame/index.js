@@ -124,8 +124,8 @@ const GuardedAppFrame = (props) => {
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
-      history.replace(`/search/posts?q=${encodeURIComponent(search)}`)
       clearSearchPosts()
+      history.replace(`/search/posts?q=${encodeURIComponent(search)}`)
       searchRequest(search)
     }
   }

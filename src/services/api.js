@@ -781,6 +781,7 @@ export const searchPostTags = (tag) => {
       // console.log({ data })
       if(data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results)
+        data.results = data.results.filter((item) => item.body.length <= 280)
         await Promise.all([getProfiledata])
       }
 
@@ -805,6 +806,7 @@ export const searchPostAuthor = (author) => {
       if(data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results)
         await Promise.all([getProfiledata])
+        data.results = data.results.filter((item) => item.body.length <= 280)
       }
 
       resolve(data)

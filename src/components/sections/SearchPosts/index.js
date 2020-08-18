@@ -47,7 +47,7 @@ const SearchPosts = (props) => {
             body={item.body}
             upvotes={item.total_votes}
             replyCount={item.children}
-            meta={{ app: item.app, tags: item.tags }}
+            meta={{ app: item.app, tags: item.tags || [] }}
             payout={item.payout}
             profile={item.profile}
             payoutAt={item.payout_at}
