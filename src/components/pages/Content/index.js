@@ -130,6 +130,10 @@ const Content = (props) => {
     } catch(e) {
       if(Object.keys(json_metadata).length !== 0 && json_metadata.constructor === Object) {
         app = json_metadata.app.split('/')[0]
+
+        if(json_metadata.hasOwnProperty('tags')) {
+          meta.tags = json_metadata.tags
+        }
       }
     }
   }
