@@ -19,7 +19,7 @@ import { useHistory } from 'react-router-dom'
 
 const useStyle = createUseStyles({
   row: {
-    width: '98%',
+    width: '95%',
     margin: '0 auto',
     paddingTop: 20,
     marginBottom: 10,
@@ -46,7 +46,7 @@ const useStyle = createUseStyles({
   },
   right: {
     height: 'max-content',
-    width: 500,
+    width: 480,
   },
   name: {
     fontWeight: 'bold',
