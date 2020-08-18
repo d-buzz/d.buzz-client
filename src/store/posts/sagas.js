@@ -79,6 +79,7 @@ import {
   generateUnfollowOperation,
   fetchDiscussions,
   searchPostTags,
+  searchPostAuthor,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
@@ -518,29 +519,19 @@ function* unfollowRequest(payload, meta) {
 function* searchRequest(payload, meta) {
   try {
     let { query } = payload
-    let type = 'full'
-
-    if(`${query}`.match(/^@/g)) {
-      type = 'author'
-    }
-
-    if(`${query}`.match(/^#/g)) {
-      type = 'tag'
-    }
-
-    console.log({ query })
-
     let results = []
 
-    console.log({ type })
-
-    if(type === 'tag') {
-      query =  `${query}`.replace('#', '')
-      // results = yield call(searchPostTags, query)
+    if(`${query}`.match(/^@/g)) {
+      query = `${query}`.replace('@', '')
+      results = yield call(searchPostAuthor, query)
+    }else if(`${query}`.match(/^#/g)) {
+      query = `${query}`.replace('#', '')
+      results = yield call(searchPostTags, query)
     }
 
     console.log({ results })
 
+    yield put(searchSuccess(results, meta))
   } catch(error) {
     yield put(searchFailure(error, meta))
   }
@@ -595,11 +586,11 @@ function* watchFollowRequest({ payload, meta }) {
   yield call(followRequest, payload, meta)
 }
 
-function* watchUnfollowRequest({ payload, meta}) {
+function* watchUnfollowRequest({ payload, meta }) {
   yield call(unfollowRequest, payload, meta)
 }
 
-function* watchSearchRequest({ payload, meta}) {
+function* watchSearchRequest({ payload, meta }) {
   yield call(searchRequest, payload, meta)
 }
 

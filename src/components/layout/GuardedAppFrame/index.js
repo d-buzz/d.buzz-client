@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
@@ -10,7 +10,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
-import { searchRequest } from 'store/posts/actions'
+import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -70,12 +70,12 @@ const useStyles = createUseStyles({
 })
 
 const GuardedAppFrame = (props) => {
-  const { route, pathname, searchRequest } = props
+  const { route, pathname, searchRequest, clearSearchPosts } = props
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
-  const params = queryString.parse(location.search)
-  const [search, setSearch] = useState()
+  let params = queryString.parse(location.search) || ''
+  const [search, setSearch] = useState(params.q)
 
   let title = 'Home'
 
@@ -116,11 +116,6 @@ const GuardedAppFrame = (props) => {
     }
   }
 
-  useEffect(() => {
-    setSearch(params.q)
-    console.log({ q: params.q })
-  }, [params])
-
   const onChange = (e) => {
     const { target } = e
     const { value } = target
@@ -129,6 +124,8 @@ const GuardedAppFrame = (props) => {
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
+      history.replace(`/search/posts?q=${encodeURIComponent(search)}`)
+      clearSearchPosts()
       searchRequest(search)
     }
   }
@@ -204,6 +201,7 @@ const GuardedAppFrame = (props) => {
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     searchRequest,
+    clearSearchPosts,
   }, dispatch)
 })
 

@@ -26,6 +26,8 @@ import {
   SET_HAS_BEEN_FOLLOWED_RECENTLY,
   SET_HAS_BEEN_UNFOLLOWED_RECENTLY,
   SET_PAGE_FROM,
+  SEARCH_SUCCESS,
+  CLEAR_SEARCH_POSTS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -53,6 +55,7 @@ const defaultState = fromJS({
   hasBeenRecentlyFollowed: [],
   hasBeenRecentlyUnfollowed: [],
   pageFrom: '',
+  search: {},
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -111,6 +114,10 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('hasBeenRecentlyUnfollowed', payload)
     case SET_PAGE_FROM:
       return state.set('pageFrom', payload)
+    case SEARCH_SUCCESS:
+      return state.set('search', payload)
+    case CLEAR_SEARCH_POSTS:
+      return state.set('search', {})
     default:
       return state
   }

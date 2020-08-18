@@ -6,6 +6,7 @@ import { anchorTop } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import queryString from 'query-string'
+import { renderRoutes } from 'react-router-config'
 import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 
@@ -55,11 +56,9 @@ const useStyles = createUseStyles({
 const Search = (props) => {
   const [index, setIndex] = useState(0)
   const classes = useStyles()
-  const { searchRequest } = props
+  const { searchRequest, route } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
-
-  console.log({ params })
 
   useEffect(() => {
     anchorTop()
@@ -86,6 +85,9 @@ const Search = (props) => {
           <Tab disableTouchRipple className={classes.tabs} label="People" />
         </Tabs>
       </div>
+      <React.Fragment>
+          {renderRoutes(route.routes)}
+        </React.Fragment>
     </React.Fragment>
   )
 }

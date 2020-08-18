@@ -51,7 +51,7 @@ const SearchField = (props) => {
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
-      history.replace(`/search?q=${encodeURIComponent(search)}`)
+      history.replace(`/search/posts?q=${encodeURIComponent(search)}`)
     }
   }
 

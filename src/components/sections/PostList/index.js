@@ -138,8 +138,6 @@ const PostList = (props) => {
     highlightTag = null,
   } = props
 
-  console.log({ created })
-
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)
 

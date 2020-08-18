@@ -13,6 +13,7 @@ import {
   Notification,
   Tags,
   Search,
+  SearchPosts,
 } from 'components'
 
 const routes =  [
@@ -50,8 +51,20 @@ const routes =  [
         component: Notification,
       },
       {
-        path: '/search',
+        path: '/search/posts',
         component: Search,
+        routes: [
+          {
+            path: '/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/search/people',
+            exact: true,
+            component: AccountPosts,
+          },
+        ]
       },
       {
         path: '/tags',

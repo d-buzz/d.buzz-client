@@ -447,3 +447,9 @@ export const searchFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const CLEAR_SEARCH_POSTS = 'CLEAR_SEARCH_POSTS'
+
+export const clearSearchPosts = () => ({
+  type: CLEAR_SEARCH_POSTS,
+})
