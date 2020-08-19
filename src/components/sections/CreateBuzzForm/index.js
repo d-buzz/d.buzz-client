@@ -80,6 +80,11 @@ const useStyles = createUseStyles({
       border: '1px solid #ccd6dd',
       borderRadius: '10px 10px',
     },
+  },
+  note: {
+    fontSize: 14,
+    fontFamily: 'Segoe-Bold',
+    color: '#d32f2f',
   }
 })
 
@@ -204,6 +209,11 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {!tags.length === 0 && (
+            <div style={{ width: '100%' }}>
+              <label className={classes.note}>Please add atleast 1 tag</label>
+            </div>
+          )}
           {!publishing &&(
             <div style={{ width: '100%' }}>
               <ReactTags
