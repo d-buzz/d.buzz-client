@@ -81,6 +81,7 @@ import {
   searchPostTags,
   searchPostAuthor,
   searchPeople,
+  searchPostGeneral,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
@@ -530,6 +531,8 @@ function* searchRequest(payload, meta) {
     }else if(`${query}`.match(/^#/g)) {
       query = `${query}`.replace('#', '')
       results = yield call(searchPostTags, query)
+    } else {
+      results = yield call(searchPostGeneral, query)
     }
 
     const profile = yield call(searchPeople, query)

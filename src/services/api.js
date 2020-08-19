@@ -847,3 +847,28 @@ export const searchPostAuthor = (author) => {
   })
 }
 
+export const searchPostGeneral = (query) => {
+  return new Promise(async(resolve, reject) => {
+    const body = { query }
+
+    axios({
+      method: 'POST',
+      url: `${searchUrl}/query`,
+      data: body,
+    }).then(async(result) => {
+      const data = result.data
+
+      if(data.results.length !== 0) {
+        const getProfiledata = mapFetchProfile(data.results)
+        await Promise.all([getProfiledata])
+        data.results = data.results.filter((item) => item.body.length <= 280)
+      }
+
+      resolve(data)
+    }).catch((error) => {
+      reject(error)
+    })
+
+  })
+}
+
