@@ -313,7 +313,7 @@ function* fileUploadRequest(payload, meta) {
 
 function* publishPostRequest(payload, meta) {
   try {
-    const { body } = payload
+    const { body, tags } = payload
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
@@ -323,7 +323,7 @@ function* publishPostRequest(payload, meta) {
       title = `${title.substr(0, 70)} ...`
     }
 
-    const operations = yield call(generatePostOperations, username, title, body)
+    const operations = yield call(generatePostOperations, username, title, body, tags)
 
     let success = false
     const comment_options = operations[1]
@@ -346,6 +346,8 @@ function* publishPostRequest(payload, meta) {
 
       success = result.success
     }
+
+    console.log({ operations })
 
     const data = {
       success,

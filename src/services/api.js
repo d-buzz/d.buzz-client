@@ -680,9 +680,9 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
   })
 }
 
-export const generatePostOperations = (account, title, body) => {
+export const generatePostOperations = (account, title, body, tags) => {
 
-  const json_metadata = createMeta()
+  const json_metadata = createMeta(tags)
 
   let permlink = createPermlink(title)
 
@@ -773,10 +773,13 @@ export const slug = (text) => {
   return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 })
 }
 
-export const createMeta = () => {
+export const createMeta = (tags) => {
+
+  let uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
+
   const meta = {
     app: 'hiveph/v1.0.0-dev',
-    tags: [`${appConfig.TAG}`, 'thisisatest', 'anothertestpost', 'unreleasedapp']
+    tags: uniqueTags
   }
 
   return JSON.stringify(meta)
