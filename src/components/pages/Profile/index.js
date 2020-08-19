@@ -10,6 +10,7 @@ import {
   Avatar,
   ContainedButton,
 } from 'components/elements'
+import { NotificationBox } from 'components'
 import {
   getProfileRequest,
   getAccountPostsRequest,
@@ -24,6 +25,8 @@ import {
   clearAccountFollowing,
 } from 'store/profile/actions'
 import {
+  followRequest,
+  unfollowRequest,
   setPageFrom
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
@@ -135,14 +138,53 @@ const Profile = (props) => {
     clearAccountFollowing,
     setPageFrom,
     user,
+    followRequest,
+    unfollowRequest,
+    loadingFollow,
+    recentFollows,
+    recentUnfollows,
   } = props
 
   const history = useHistory()
   const location = useLocation()
   const { pathname } = location
+  const { username: loginuser } = user
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [message, setMessage] = useState('')
+  const [severity, setSeverity] = useState('success')
+  const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
+  const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
+
+  const checkIfRecentlyFollowed = () => {
+    if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
+      const hasBeenFollowed = recentFollows.filter((item) => item === username).length
+
+      if(hasBeenFollowed) {
+        setHasRecentlyFollowed(true)
+        setHasRecentlyUnfollowed(false)
+      }
+    }
+  }
+
+  const checkIfRecentlyUnfollowed = () => {
+    if(Array.isArray(recentUnfollows) && recentUnfollows.length !== 0) {
+      const hasBeenUnfollowed = recentUnfollows.filter((item) => item === username).length
+
+      if(hasBeenUnfollowed) {
+        setHasRecentlyUnfollowed(true)
+        setHasRecentlyFollowed(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkIfRecentlyFollowed()
+    checkIfRecentlyUnfollowed()
+  // eslint-disable-next-line
+  }, [recentFollows, recentUnfollows, loading])
 
   const onChange = (e, index) => {
     setIndex(index)
@@ -216,6 +258,38 @@ const Profile = (props) => {
   const { cover, name, about, website } = getProfileMetaData(profile)
   const { reputation = 0, isFollowed } = profile
 
+  const followUser = () => {
+    followRequest(username).then((result) => {
+      setShowSnackbar(true)
+      if(result) {
+        setMessage(`Successfully followed @${username}`)
+        setHasRecentlyFollowed(true)
+        setHasRecentlyUnfollowed(false)
+      } else {
+        setMessage(`Failed following @${username}`)
+        setSeverity('error')
+      }
+    })
+  }
+
+  const unfollowUser = () => {
+    unfollowRequest(username).then((result) => {
+      setShowSnackbar(true)
+      if(result) {
+        setMessage(`Successfully Unfollowed @${username}`)
+        setHasRecentlyFollowed(false)
+        setHasRecentlyUnfollowed(true)
+      } else {
+        setMessage(`Failed Unfollowing @${username}`)
+        setSeverity('error')
+      }
+    })
+  }
+
+  const handleSnackBarClose = () => {
+    setShowSnackbar(false)
+  }
+
   return (
     <React.Fragment>
       <ProfileSkeleton loading={loading} />
@@ -232,18 +306,28 @@ const Profile = (props) => {
                   </div>
                 </Col>
                 <Col>
-                  {!isFollowed && (
+                  {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
                     <ContainedButton
-                      className={classes.walletButton}
+                      fontSize={14}
+                      loading={loadingFollow}
+                      disabled={loading}
+                      style={{ float: 'right', marginTop: 5, }}
                       transparent={true}
                       label="Follow"
+                      className={classes.button}
+                      onClick={followUser}
                     />
                   )}
-                  {isFollowed && (
+                  {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
                     <ContainedButton
-                      className={classes.walletButton}
+                      fontSize={14}
+                      loading={loadingFollow}
+                      disabled={loading}
+                      style={{ float: 'right', marginTop: 5, }}
                       transparent={true}
                       label="Unfollow"
+                      className={classes.button}
+                      onClick={unfollowUser}
                     />
                   )}
                 </Col>
@@ -309,6 +393,12 @@ const Profile = (props) => {
         <React.Fragment>
           {renderRoutes(route.routes, { author: username })}
         </React.Fragment>
+        <NotificationBox
+          show={showSnackbar}
+          message={message}
+          severity={severity}
+          onClose={handleSnackBarClose}
+        />
     </React.Fragment>
   )
 }
@@ -318,6 +408,9 @@ const mapStateToProps = (state) => ({
   profile: state.profile.get('profile'),
   isVisited: state.profile.get('isProfileVisited'),
   user: state.auth.get('user'),
+  loadingFollow: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
+  recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
+  recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -334,6 +427,8 @@ const mapDispatchToProps = (dispatch) => ({
     clearAccountFollowers,
     clearAccountFollowing,
     setPageFrom,
+    followRequest,
+    unfollowRequest,
   }, dispatch)
 })
 
