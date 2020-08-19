@@ -222,6 +222,7 @@ const CreateBuzzForm = (props) => {
                 handleAddition={handleAddition}
                 handleDrag={handleDrag}
                 delimiters={delimiters}
+                autofocus={false}
               />
             </div>
           )}

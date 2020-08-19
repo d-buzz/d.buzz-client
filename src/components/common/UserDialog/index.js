@@ -198,7 +198,7 @@ const UserDialog = (props) => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        disableScrollLock
+        disableScrollLock={!is_authenticated}
         PaperProps={{ onMouseEnter, onMouseLeave }}
         onClose={onMouseLeave}
       >
