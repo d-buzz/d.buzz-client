@@ -245,24 +245,26 @@ const UserDialog = (props) => {
                 </Col>
               </Row>
               <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <label className={classes.name} style={{ color: 'black' }}>
-                    <Link
-                      to={authorLink}
-                      style={{ color: 'black' }}
-                    >
-                      {name ? name : `${author}`}
-                    </Link>&nbsp;<Chip  size="small" label={reputation} />
-                  </label>
-                  <p className={classNames(classes.paragraph, classes.username)}>
-                    {`@${author}`}
-                  </p>
-                  <p className={classes.paragraph}>
-                    {about}
-                  </p>
-                  <p className={classNames(classes.paragraph, classes.followWrapper)}>
-                    <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
-                  </p>
+                <Col style={{ paddingRight: 0 }}>
+                  <div style={{ width: '100%' }}>
+                    <label className={classes.name} style={{ color: 'black' }}>
+                      <Link
+                        to={authorLink}
+                        style={{ color: 'black' }}
+                      >
+                        {name ? name : `${author}`}
+                      </Link>&nbsp;<Chip  size="small" label={reputation} />
+                    </label>
+                    <p className={classNames(classes.paragraph, classes.username)}>
+                      {`@${author}`}
+                    </p>
+                    <p className={classes.paragraph}>
+                      {about}
+                    </p>
+                    <p className={classNames(classes.paragraph, classes.followWrapper)}>
+                      <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
+                    </p>
+                  </div>
                 </Col>
               </Row>
             </div>
