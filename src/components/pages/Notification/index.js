@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { Avatar, HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
+import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 const useStyle = createUseStyles({
@@ -20,9 +21,17 @@ const useStyle = createUseStyles({
       cusor: 'pointer',
     },
   },
+  unread: {
+    backgroundColor: '#ffebee !important',
+    '& label': {
+      color: '#e53935 !important',
+    },
+  },
   wrapper: {
     width: '100%',
     overflow: 'hidden',
+    fontFamily: 'Segoe-Bold',
+    fontSize: 14,
     borderBottom: '1px solid #e6ecf0',
     '& a': {
       color: 'black',
@@ -99,6 +108,8 @@ const useStyle = createUseStyles({
       textDecoration: 'none !important',
     },
     '& span': {
+      fontSize: 14,
+      fontFamily: 'Segoe-Bold',
       textDecoration: 'none !important',
       '&:hover': {
         textDecoration: 'none !important'
@@ -135,9 +146,9 @@ const Notification = (props) => {
 
   return (
     <React.Fragment>
-      {notifications.map((item) => (
+      {notifications.map((item, index) => (
         <React.Fragment>
-          <div className={classes.wrapper}>
+          <div className={classNames(classes.wrapper, index < 3 ? classes.unread : '')}>
             <div className={classes.row}>
               <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
                 <Row>
