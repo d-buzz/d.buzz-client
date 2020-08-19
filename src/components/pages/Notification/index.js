@@ -120,7 +120,7 @@ const useStyle = createUseStyles({
 
 
 const Notification = (props) => {
-  const { notifications, loading } = props
+  const { notifications, loading, count } = props
 
   const classes = useStyle()
 
@@ -148,7 +148,7 @@ const Notification = (props) => {
     <React.Fragment>
       {notifications.map((item, index) => (
         <React.Fragment>
-          <div className={classNames(classes.wrapper, index < 3 ? classes.unread : '')}>
+          <div className={classNames(classes.wrapper, index < count.unread ? classes.unread : '')}>
             <div className={classes.row}>
               <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
                 <Row>
@@ -194,6 +194,7 @@ const Notification = (props) => {
 
 const mapStateToProps = (state) => ({
   notifications: state.polling.get('notifications'),
+  count: state.polling.get('count'),
   loading: pending(state, 'POLL_NOTIF_REQUEST'),
 })
 
