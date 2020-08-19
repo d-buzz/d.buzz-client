@@ -17,6 +17,7 @@ import { uploadFileRequest, publishPostRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { WithContext as ReactTags } from 'react-tag-input'
 
 
 const useStyles = createUseStyles({
@@ -82,12 +83,19 @@ const useStyles = createUseStyles({
   }
 })
 
+const KeyCodes = {
+  comma: 188,
+  enter: 13,
+}
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
 const CreateBuzzForm = (props) => {
   const classes = useStyles()
   const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
   const [content, setContent] = useState('')
+  const [tags, setTags] = useState([])
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState()
   const [severity, setSeverity] = useState('success')
@@ -119,6 +127,7 @@ const CreateBuzzForm = (props) => {
   const onChange = (e) => {
     const { target } = e
     const { value } = target
+
     setContent(value)
   }
 
@@ -155,6 +164,30 @@ const CreateBuzzForm = (props) => {
     })
   }
 
+  const handleDelete = (index) => {
+    const tagsArray = tags
+    tagsArray.splice(index, 1)
+    setTags(tagsArray)
+  }
+
+  const handleAddition = (tag) => {
+    tag.id = tag.id.split(" ").join("")
+    tag.text = tag.text.split(" ").join("")
+    setTags([...tags, tag])
+  }
+
+  const handleDrag = (tag, currPos, newPos) => {
+    const tagsArray = [...tags]
+    const newTags = tagsArray.slice()
+
+    newTags.splice(currPos, 1)
+    newTags.splice(newPos, 0, tag)
+
+    setTags(newTags)
+  }
+
+  console.log({ tags })
+
   return (
     <div className={containerClass}>
       <div className={classes.row}>
@@ -171,6 +204,18 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {!publishing &&(
+            <div style={{ width: '100%' }}>
+              <ReactTags
+                placeholder="Add tags"
+                tags={tags}
+                handleDelete={handleDelete}
+                handleAddition={handleAddition}
+                handleDrag={handleDrag}
+                delimiters={delimiters}
+              />
+            </div>
+          )}
           {loading && (
             <div style={{ width: '100%'}}>
               <Box  position="relative" display="inline-flex">
