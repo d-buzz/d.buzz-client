@@ -8,6 +8,7 @@ import Chip from '@material-ui/core/Chip'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
+  ContainedButton,
 } from 'components/elements'
 import {
   getProfileRequest,
@@ -213,7 +214,7 @@ const Profile = (props) => {
   }
 
   const { cover, name, about, website } = getProfileMetaData(profile)
-  const { reputation = 0 } = profile
+  const { reputation = 0, isFollowed } = profile
 
   return (
     <React.Fragment>
@@ -231,11 +232,20 @@ const Profile = (props) => {
                   </div>
                 </Col>
                 <Col>
-                  {/* <ContainedButton
-                    className={classes.walletButton}
-                    transparent={true}
-                    label="Followed"
-                  /> */}
+                  {!isFollowed && (
+                    <ContainedButton
+                      className={classes.walletButton}
+                      transparent={true}
+                      label="Follow"
+                    />
+                  )}
+                  {isFollowed && (
+                    <ContainedButton
+                      className={classes.walletButton}
+                      transparent={true}
+                      label="Unfollow"
+                    />
+                  )}
                 </Col>
               </Row>
             </div>
