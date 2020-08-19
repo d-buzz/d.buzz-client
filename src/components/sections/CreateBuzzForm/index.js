@@ -69,6 +69,7 @@ const useStyles = createUseStyles({
     color: '#e53935',
   },
   previewContainer: {
+    paddingTop: 10,
     width: '100%',
     height: 'max-content',
     paddingBottom: 10,
