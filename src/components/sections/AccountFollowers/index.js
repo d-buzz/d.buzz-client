@@ -114,7 +114,11 @@ const AccountFollowers = (props) => {
     getFollowersRequest,
     author,
     last,
+    user,
   } = props
+
+  const { is_authenticated } = user
+
   const history = useHistory()
 
   const getName = (profile) => {
@@ -129,7 +133,11 @@ const AccountFollowers = (props) => {
 
   const handleClickFollower = (name) => () => {
     setProfileIsVisited(false)
-    history.replace(`/@${name}/t/buzz`)
+    if(is_authenticated) {
+      history.replace(`/@${name}/t/buzz`)
+    } else {
+      history.replace(`/ug/@${name}/t/buzz`)
+    }
   }
 
   const loadMorePosts = () => {
@@ -183,6 +191,7 @@ const AccountFollowers = (props) => {
 }
 
 const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
   items: state.profile.get('followers'),
   loading: pending(state, 'GET_FOLLOWERS_REQUEST'),
   last: state.profile.get('lastFollower'),
