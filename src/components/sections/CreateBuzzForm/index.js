@@ -154,7 +154,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickPublishPost = () => {
-    publishPostRequest(content)
+    publishPostRequest(content, tags)
       .then((data) => {
         if(data.success) {
           const { author, permlink } = data
@@ -169,10 +169,8 @@ const CreateBuzzForm = (props) => {
     })
   }
 
-  const handleDelete = (index) => {
-    const tagsArray = tags
-    tagsArray.splice(index, 1)
-    setTags(tagsArray)
+  const handleDelete = (i) => {
+    setTags(tags.filter((tag, index) => index !== i))
   }
 
   const handleAddition = (tag) => {
@@ -209,7 +207,7 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
-          {!tags.length === 0 && (
+          {tags.length === 0 && (
             <div style={{ width: '100%' }}>
               <label className={classes.note}>Please add atleast 1 tag</label>
             </div>
@@ -244,7 +242,7 @@ const CreateBuzzForm = (props) => {
           {!publishing && (
             <React.Fragment>
               <ContainedButton
-                disabled={loading || publishing || content.length === 0}
+                disabled={loading || publishing || content.length === 0 || tags.length === 0}
                 label="Buzz it"
                 className={classes.float}
                 onClick={handleClickPublishPost}

@@ -260,9 +260,9 @@ export const PUBLISH_POST_REQUEST = 'PUBLISH_POST_REQUEST'
 export const PUBLISH_POST_SUCCESS = 'PUBLISH_POST_SUCCESS'
 export const PUBLISH_POST_FAILURE = 'PUBLISH_POST_FAILURE'
 
-export const publishPostRequest = (body) => ({
+export const publishPostRequest = (body, tags) => ({
   type: PUBLISH_POST_REQUEST,
-  payload: { body },
+  payload: { body, tags },
   meta: {
     thunk: true,
   },
