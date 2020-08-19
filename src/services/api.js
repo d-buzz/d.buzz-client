@@ -78,7 +78,11 @@ export const searchPeople = (username) => {
               score = 25
             }
             data.reputations[index].repscore = score
+            data.reputations[index].author = item.account
           })
+
+          const getProfiledata = mapFetchProfile(data.reputations)
+          await Promise.all([getProfiledata])
         }
 
         resolve(data)

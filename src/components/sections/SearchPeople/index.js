@@ -7,6 +7,7 @@ import { Avatar } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { pending } from 'redux-saga-thunk'
 import { Link } from 'react-router-dom'
+import { getProfileMetaData } from 'services/helper'
 import { AvatarlistSkeleton } from 'components'
 
 const useStyle = createUseStyles({
@@ -103,6 +104,11 @@ const SearchPeople = (props) => {
   const classes = useStyle()
   const { items, loading } = props
 
+  const getAbout = (profile) => {
+    const { about } = getProfileMetaData(profile)
+    return about
+  }
+
   return (
     <React.Fragment>
       {(items.people || []).map((item) => (
@@ -119,11 +125,13 @@ const SearchPeople = (props) => {
                     <div className={classes.right}>
                       <div className={classes.content}>
                         <p className={classes.name}>
-                          @{item.account}
+                          @{item.account} <Chip  size="small" label={item.repscore} />
                         </p>
-                        <p className={classes.username}>
-                          <Chip  size="small" label={item.repscore} />
-                        </p>
+                        <div className={classes.content}>
+                          <label className={classes.username}>
+                            {getAbout(item.profile)}
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </Col>

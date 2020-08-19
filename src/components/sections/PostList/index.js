@@ -213,14 +213,14 @@ const PostList = (props) => {
                 <div className={classes.content}>
                   <label className={classes.name}>
                     {!disableProfileLink && (
-                        <Link
-                          ref={popoverAnchor}
-                          to={authorLink}
-                          onMouseEnter={openPopOver}
-                          onMouseLeave={closePopOver}
-                        >
-                          {name ? name : `${author}`}
-                        </Link>
+                      <Link
+                        ref={popoverAnchor}
+                        to={authorLink}
+                        onMouseEnter={openPopOver}
+                        onMouseLeave={closePopOver}
+                      >
+                        {name ? name : `${author}`}
+                      </Link>
                     )}
                     {disableProfileLink && (<span>{name ? name : `@${author}`}</span>)}
                   </label>
