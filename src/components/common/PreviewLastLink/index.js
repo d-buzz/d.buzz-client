@@ -32,7 +32,7 @@ const PreviewLastLink = ({ className, content }) => {
         <div className={className}>
           <ReactTinyLink
             proxyUrl="http://167.71.204.127:8080"
-            width="95%"
+            width="100%"
             borderRadius="50px 50px"
             cardSize="small"
             showGraphic={true}

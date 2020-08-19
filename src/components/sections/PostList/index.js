@@ -208,7 +208,7 @@ const PostList = (props) => {
                 <Avatar author={author} />
               </div>
             </Col>
-            <Col xs="auto">
+            <Col xs="auto" style={{ paddingLeft: 5, }}>
               <div className={classes.right}>
                 <div className={classes.content}>
                   <label className={classes.name}>

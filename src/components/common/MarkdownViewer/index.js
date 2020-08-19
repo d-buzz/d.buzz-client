@@ -53,12 +53,12 @@ const useStyles = createUseStyles({
   minified: {
     '& iframe': {
       height: 300,
-      width: '95%',
+      width: '100%',
       border: '1px solid #ccd6dd',
     },
     '& img': {
       height: 300,
-      width: '95%',
+      width: '100%',
       objectFit: 'cover',
       marginTop: 5,
       border: '1px solid #ccd6dd',
@@ -77,13 +77,13 @@ const useStyles = createUseStyles({
   },
   modalAssets: {
     '& iframe': {
-      height: 300,
-      width: 520,
+      height: 288,
+      width: 550,
       border: '1px solid #ccd6dd',
     },
     '& img': {
-      height: 300,
-      width: 520,
+      height: 288,
+      width: 550,
       objectFit: 'cover',
       marginTop: 5,
       border: '1px solid #ccd6dd',
