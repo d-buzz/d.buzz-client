@@ -66,7 +66,7 @@ const AppBar = () => {
     <Navbar fixed="top" className={classes.nav}>
       <Container className={classes.container}>
         <Navbar.Brand>
-          {pathname !== '/login' && (
+          {pathname !== '/ug' && (
             <React.Fragment>
               <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
               &nbsp;
