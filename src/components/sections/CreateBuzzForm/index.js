@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, publishPostRequest } from 'store/posts/actions'
+import { uploadFileRequest, publishPostRequest, setPageFrom, } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -114,6 +114,7 @@ const CreateBuzzForm = (props) => {
     publishing,
     modal = false,
     hideModalCallback = () => {},
+    setPageFrom,
   } = props
 
   const history = useHistory()
@@ -157,6 +158,7 @@ const CreateBuzzForm = (props) => {
     publishPostRequest(content, tags)
       .then((data) => {
         if(data.success) {
+          setPageFrom(null)
           const { author, permlink } = data
           setShowSnackbar(true)
           hideModalCallback()
@@ -290,6 +292,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     uploadFileRequest,
     publishPostRequest,
+    setPageFrom,
   }, dispatch)
 })
 
