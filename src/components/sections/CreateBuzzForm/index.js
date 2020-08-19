@@ -189,8 +189,6 @@ const CreateBuzzForm = (props) => {
     setTags(newTags)
   }
 
-  console.log({ tags })
-
   return (
     <div className={containerClass}>
       <div className={classes.row}>
