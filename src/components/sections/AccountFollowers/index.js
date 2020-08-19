@@ -37,7 +37,7 @@ const useStyle = createUseStyles({
     '&:hover': {
       backgroundColor: '#f5f8fa',
     },
-    cursor: 'pointer',
+    cursor: 'pointer !important',
   },
   inline: {
     display: 'inline-block',
@@ -50,6 +50,7 @@ const useStyle = createUseStyles({
   right: {
     height: 'max-content',
     width: '98%',
+    cursor: 'pointer',
   },
   name: {
     fontWeight: 'bold',
@@ -65,6 +66,7 @@ const useStyle = createUseStyles({
     marginTop: 0,
     marginBottom: 0,
     paddingBottom: 0,
+    cursor: 'pointer',
   },
   post: {
     color: '#14171a',
