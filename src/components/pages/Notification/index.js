@@ -22,7 +22,6 @@ const useStyle = createUseStyles({
     },
   },
   unread: {
-    backgroundColor: '#ffebee !important',
     '& label': {
       color: '#e53935 !important',
     },
@@ -139,7 +138,6 @@ const Notification = (props) => {
     } else {
       link = `/${split[0]}/t/buzz`
     }
-
 
     return link
   }
