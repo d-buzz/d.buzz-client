@@ -57,7 +57,6 @@ const Tags = (props) => {
       {results.map((item) => (
         <PostList
           searchListMode={true}
-          title={item.title}
           profileRef="tags"
           active_votes={item.total_votes}
           author={item.author}

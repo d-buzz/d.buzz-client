@@ -80,7 +80,6 @@ const Feeds = (props) => {
       >
         {items.map((item) => (
           <PostList
-            title={item.title}
             profileRef="home"
             active_votes={item.active_votes}
             author={item.author}
