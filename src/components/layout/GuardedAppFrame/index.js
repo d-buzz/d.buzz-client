@@ -11,9 +11,11 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
+import { ContainedButton } from 'components/elements'
 import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+
 
 const useStyles = createUseStyles({
   main: {
@@ -66,7 +68,11 @@ const useStyles = createUseStyles({
   searchWrapper: {
     padding: 0,
     margin: 0,
-  }
+  },
+  walletButton: {
+    marginTop: 5,
+    float: 'right',
+  },
 })
 
 const GuardedAppFrame = (props) => {
@@ -169,6 +175,17 @@ const GuardedAppFrame = (props) => {
                         onChange={onChange}
                         onKeyDown={handleSearchKey}
                         placeholder="You can use @username or #tag to simplify your query"
+                      />
+                    </div>
+                  )}
+                  {title === 'Notifications' && (
+                    <div style={{ width: '100%' }}>
+                      <ContainedButton
+                        fontSize={12}
+                        style={{ float: 'right', marginTop: 5, }}
+                        transparent={true}
+                        label="Mark all as read"
+                        className={classes.walletButton}
                       />
                     </div>
                   )}

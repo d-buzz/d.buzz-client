@@ -184,6 +184,15 @@ export const clearAccountFollowing = () => ({
   type: CLEAR_ACCOUNT_FOLLOWING,
 })
 
+export const CLEAR_NOTIFICATIONS_REQUEST = 'CEAR_NOTIFICATIONS_REQUEST'
+
+export const clearNotificationsRequest = () => ({
+  type: CLEAR_NOTIFICATIONS_REQUEST,
+  meta: {
+    thunk: true,
+  },
+})
+
 
 
 

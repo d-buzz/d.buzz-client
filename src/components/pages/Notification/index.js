@@ -167,7 +167,7 @@ const Notification = (props) => {
                       </div>
                     </div>
                   </Col>
-                  <Col xs="auto">
+                  {/* <Col xs="auto">
                     <Chip
                       className={classes.chips}
                       style={{ border: '1px solid #e53935', marginTop: -5 }}
@@ -176,7 +176,7 @@ const Notification = (props) => {
                       color="secondary"
                       variant="outlined"
                     />
-                  </Col>
+                  </Col> */}
                 </Row>
               </Link>
             </div>
