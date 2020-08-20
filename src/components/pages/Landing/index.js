@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Trending } from 'components'
 import { createUseStyles } from 'react-jss'
+import { clearSearchPosts } from 'store/posts/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles({
   trendingWrapper: {
@@ -14,8 +17,15 @@ const useStyles = createUseStyles({
   }
 })
 
-const Landing = () => {
+const Landing = (props) => {
   const classes = useStyles()
+  const { clearSearchPosts } = props
+
+  useEffect(() => {
+    clearSearchPosts()
+    // eslint-disable-next-line
+  }, [])
+
   return (
     <React.Fragment>
       <div className={classes.trendingWrapper}>
@@ -28,4 +38,10 @@ const Landing = () => {
   )
 }
 
-export default Landing
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    clearSearchPosts,
+  }, dispatch)
+})
+
+export default connect(null, mapDispatchToProps)(Landing)

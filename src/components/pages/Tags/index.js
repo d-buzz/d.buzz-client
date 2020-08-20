@@ -6,6 +6,7 @@ import {
   setTagsIsVisited,
   setPageFrom,
   clearLastSearchTag,
+  clearSearchPosts,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { PostList } from 'components'
@@ -23,11 +24,17 @@ const Tags = (props) => {
     visited,
     clearLastSearchTag,
     setPageFrom,
+    clearSearchPosts,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
   const tag = params.q
   const [results, setResults] = useState([])
+
+  useEffect(() => {
+    clearSearchPosts()
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     setPageFrom(null)
@@ -93,6 +100,7 @@ const mapDispatchToProps = (dispatch) => ({
     setTagsIsVisited,
     clearLastSearchTag,
     setPageFrom,
+    clearSearchPosts,
   }, dispatch)
 })
 
