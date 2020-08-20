@@ -38,7 +38,6 @@ const SearchPosts = (props) => {
         {full.slice(0, index).map((item) => (
           <PostList
             searchListMode={true}
-            title={item.title}
             profileRef="SearchPosts"
             active_votes={item.total_votes}
             author={item.author}
