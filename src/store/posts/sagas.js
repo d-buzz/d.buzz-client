@@ -373,6 +373,8 @@ function* publishReplyRequest(payload, meta) {
     let success = false
     const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
 
+    console.log({ operation })
+
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
@@ -406,6 +408,7 @@ function* publishReplyRequest(payload, meta) {
 
     yield put(publishReplySuccess(data, meta))
   } catch(error) {
+    console.log({ error })
     yield put(publishReplyFailure(error, meta))
   }
 }

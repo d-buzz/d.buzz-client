@@ -777,7 +777,7 @@ export const slug = (text) => {
   return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 })
 }
 
-export const createMeta = (tags) => {
+export const createMeta = (tags = []) => {
 
   let uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
