@@ -664,7 +664,7 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
 
   const json_metadata = createMeta()
   let permlink = createPermlink(body.substring(0, 100))
-
+  permlink = `re-${permlink}`
   return new Promise((resolve) => {
 
     const op_comment = [[
