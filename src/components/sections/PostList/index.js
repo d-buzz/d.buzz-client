@@ -136,6 +136,7 @@ const PostList = (props) => {
     profileRef = null,
     payoutAt = null,
     highlightTag = null,
+    title = null,
   } = props
 
   let { disableProfileLink = false  } = props
@@ -229,6 +230,7 @@ const PostList = (props) => {
                     {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
                   <div onClick={handleOpenContent(author, permlink)}>
+                    {title && (<h6>{title}</h6>)}
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
