@@ -13,6 +13,7 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
+import moment from 'moment'
 
 const searchUrl = 'http://127.0.0.1:3030/api/v1/search'
 
@@ -597,6 +598,28 @@ export const keychainUpvote = (username, permlink, author, weight) => {
         resolve(response)
       }
     )
+  })
+}
+
+export const generateClearNotificationOperation = (username) => {
+  return new Promise((resolve) => {
+
+    const now = moment().format('YYYY-MM-DDT00:00:00')
+    let json = JSON.stringify(["setLastRead",{"date":`${now}`}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [username],
+          'id': 'notify',
+           json,
+        }
+      ]
+    ]
+
+    resolve(operation)
   })
 }
 

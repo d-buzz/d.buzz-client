@@ -184,13 +184,27 @@ export const clearAccountFollowing = () => ({
   type: CLEAR_ACCOUNT_FOLLOWING,
 })
 
-export const CLEAR_NOTIFICATIONS_REQUEST = 'CEAR_NOTIFICATIONS_REQUEST'
+export const CLEAR_NOTIFICATIONS_REQUEST = 'CLEAR_NOTIFICATIONS_REQUEST'
+export const CLEAR_NOTIFICATIONS_SUCCESS = 'CLEAR_NOTIFICATIONS_SUCCESS'
+export const CLEAR_NOTIFICATIONS_FAILURE = 'CLEAR_NOTIFICATIONS_FAILURE'
 
 export const clearNotificationsRequest = () => ({
   type: CLEAR_NOTIFICATIONS_REQUEST,
   meta: {
     thunk: true,
   },
+})
+
+export const clearNotificationsSuccess = (response, meta) => ({
+  type: CLEAR_NOTIFICATIONS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const clearNotificationsFailure = (error, meta) => ({
+  type: CLEAR_NOTIFICATIONS_FAILURE,
+  payload: error,
+  meta,
 })
 
 

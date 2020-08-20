@@ -2,6 +2,9 @@ import {
   POLL_NOTIF_SUCCESS,
   POLL_NOTIF_COUNT,
 } from './actions'
+import {
+  CLEAR_NOTIFICATIONS_SUCCESS
+} from '../profile/actions'
 import { fromJS } from 'immutable'
 
 const defaultState = fromJS({
@@ -14,6 +17,8 @@ export const polling = (state = defaultState, { type, payload }) => {
     case POLL_NOTIF_SUCCESS:
       return state.set('notifications', payload)
     case POLL_NOTIF_COUNT:
+      return state.set('count', payload)
+    case CLEAR_NOTIFICATIONS_SUCCESS:
       return state.set('count', payload)
     default:
       return state

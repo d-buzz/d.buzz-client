@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { SideBarLeft, SideBarRight, SearchField } from 'components'
+import { SideBarLeft, SideBarRight, SearchField, NotificationBox } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
@@ -10,11 +10,13 @@ import Navbar from 'react-bootstrap/Navbar'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
+import { clearNotificationsRequest } from 'store/profile/actions'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { pending } from 'redux-saga-thunk'
 
 
 const useStyles = createUseStyles({
@@ -76,12 +78,22 @@ const useStyles = createUseStyles({
 })
 
 const GuardedAppFrame = (props) => {
-  const { route, pathname, searchRequest, clearSearchPosts } = props
+  const {
+    route,
+    pathname,
+    searchRequest,
+    clearSearchPosts,
+    clearNotificationsRequest,
+    loading,
+  } = props
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
   let params = queryString.parse(location.search) || ''
   const [search, setSearch] = useState(params.q)
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [message, setMessage] = useState()
+  const [severity, setSeverity] = useState('success')
 
   let title = 'Home'
 
@@ -136,6 +148,23 @@ const GuardedAppFrame = (props) => {
     }
   }
 
+  const handleSnackBarClose = () => {
+    setShowSnackbar(false)
+  }
+
+  const handleClearNotification = () => {
+    clearNotificationsRequest()
+      .then(result => {
+        setShowSnackbar(true)
+        if(result.success) {
+          setMessage('Successfully marked all your notifications as read')
+        } else {
+          setSeverity('error')
+          setMessage('Failed marking all notifications as read')
+        }
+      })
+  }
+
   return (
     <React.Fragment>
       <Row>
@@ -185,7 +214,10 @@ const GuardedAppFrame = (props) => {
                         style={{ float: 'right', marginTop: 5, }}
                         transparent={true}
                         label="Mark all as read"
+                        loading={loading}
+                        disabled={loading}
                         className={classes.walletButton}
+                        onClick={handleClearNotification}
                       />
                     </div>
                   )}
@@ -211,15 +243,26 @@ const GuardedAppFrame = (props) => {
           </div>
         </Col>
       </Row>
+      <NotificationBox
+        show={showSnackbar}
+        message={message}
+        severity={severity}
+        onClose={handleSnackBarClose}
+      />
     </React.Fragment>
   )
 }
+
+const mapStateToProps = (state) => ({
+  loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
+})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     searchRequest,
     clearSearchPosts,
+    clearNotificationsRequest,
   }, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(GuardedAppFrame)
+export default connect(mapStateToProps, mapDispatchToProps)(GuardedAppFrame)

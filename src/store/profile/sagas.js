@@ -23,13 +23,21 @@ import {
   getFollowingSuccess,
   getFollowingFailure,
   setLastFollowing,
+
+  CLEAR_NOTIFICATIONS_REQUEST,
+  clearNotificationsSuccess,
+  clearNotificationsFailure
 } from './actions'
 
 import {
+  extractLoginData,
   fetchProfile,
   fetchAccountPosts,
   fetchFollowers,
   fetchFollowing,
+  broadcastOperation,
+  broadcastKeychainOperation,
+  generateClearNotificationOperation,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
@@ -146,6 +154,44 @@ function* getFollowingRequest(payload, meta) {
   }
 }
 
+function* clearNotificationRequest(meta) {
+  try {
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+    const operation = yield call(generateClearNotificationOperation, username)
+
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+
+    let old = yield select(state => state.polling.get('count'))
+
+    if(success) {
+      old = {
+        success: true,
+        lastread: '',
+        unread: 0,
+      }
+    } else {
+      old.success = success
+    }
+
+    yield put(clearNotificationsSuccess(old, meta))
+  } catch(error) {
+    yield put(clearNotificationsFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -166,10 +212,15 @@ function* watchGetFollowingRequest({ payload, meta }) {
   yield call(getFollowingRequest, payload, meta)
 }
 
+function* watchClearNotificationRequest({ meta }) {
+  yield call(clearNotificationRequest, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
   yield takeEvery(GET_ACCOUNT_REPLIES_REQUEST, watchGetAccountRepliesRequest)
   yield takeEvery(GET_FOLLOWERS_REQUEST, watchGetFollowersRequest)
   yield takeEvery(GET_FOLLOWING_REQUEST, watchGetFollowingRequest)
+  yield takeEvery(CLEAR_NOTIFICATIONS_REQUEST, watchClearNotificationRequest)
 }
