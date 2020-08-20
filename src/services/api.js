@@ -15,7 +15,7 @@ import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
 import moment from 'moment'
 
-const searchUrl = 'http://127.0.0.1:3030/api/v1/search'
+const searchUrl = `${appConfig.SEARCH_API}/search`
 
 const endpoints = [
   'https://api.openhive.network',
