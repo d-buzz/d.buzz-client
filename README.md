@@ -14,3 +14,7 @@ All development will be on the `dev` branch, `master` branch will only be update
 ### TODO
 
 1. Create CI/CD workflow
+
+### Versioning
+
+https://semver.org/
