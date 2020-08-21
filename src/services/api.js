@@ -732,7 +732,7 @@ export const generatePostOperations = (account, title, body, tags) => {
 
     operations.push(op_comment)
 
-    const max_accepted_payout = '1000000.000 HBD'
+    const max_accepted_payout = '1.000 HBD'
 
     const op_comment_options = [
       'comment_options',
@@ -740,7 +740,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'author': account,
         permlink,
         'max_accepted_payout': max_accepted_payout,
-        'percent_steem_dollars': 10000,
+        'percent_steem_dollars': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         'extensions': []
@@ -805,7 +805,7 @@ export const createMeta = (tags = []) => {
   let uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
   const meta = {
-    app: 'hiveph/v1.0.0-dev',
+    app: 'dBuzz/v1.0.0',
     tags: uniqueTags
   }
 
