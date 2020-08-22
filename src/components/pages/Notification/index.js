@@ -22,8 +22,15 @@ const useStyle = createUseStyles({
     },
   },
   unread: {
+    backgroundColor: '#ff726f',
     '& label': {
-      color: '#e53935 !important',
+      color: 'white',
+    },
+    '&:hover': {
+      backgroundColor: '#fee7e6 !important',
+      '& label': {
+        color: 'black !important',
+      }
     },
   },
   wrapper: {
