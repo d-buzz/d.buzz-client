@@ -23,12 +23,13 @@ const renderer = new DefaultRenderer({
 
 const useStyles = createUseStyles({
   markdown: {
-    wordBreak: 'break-all !important',
+    wordBreak: 'break-word !important',
     '& a': {
       wordWrap: 'break-word',
       color: '#d32f2f !important',
     },
     '& p': {
+      wordWrap: 'break-word',
       fontSize: 14,
     },
     fontSize: '14 !important',

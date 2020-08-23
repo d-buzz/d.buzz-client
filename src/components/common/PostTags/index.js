@@ -7,7 +7,7 @@ import { Link, useHistory } from 'react-router-dom'
 const useStyle = createUseStyles({
   tags: {
     wordWrap: 'break-word',
-    width: 'calc(100% - 60px)',
+    width: '100%',
     height: 'max-content',
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
@@ -15,6 +15,7 @@ const useStyle = createUseStyles({
   default: {
     marginRight: 5,
     color: '#d32f2f !important',
+    whiteSpace: 'no-wrap !important',
   },
   highlighted: {
     backgroundColor: '#d32f2f',
