@@ -12,6 +12,8 @@ import {
   NotificationBox,
   UserDialog,
 } from 'components'
+import { clearAppendReply } from 'store/posts/actions'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { getAuthorName } from 'services/helper'
@@ -120,7 +122,13 @@ const countReplies = async (replies = []) => {
 }
 
 const ReplyList = (props) => {
-  let { replies, expectedCount, user, append } = props
+  let {
+    replies,
+    expectedCount,
+    user,
+    append
+  } = props
+  const { clearAppendReply } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
@@ -180,6 +188,9 @@ const ReplyList = (props) => {
         const combine = `${prefix}${rep}`
         // eslint-disable-next-line
         eval(combine)
+
+        // clear appended reply
+        clearAppendReply()
 
         iterableState[firstIndex] = first
         setRepliesState(iterableState)
@@ -355,4 +366,10 @@ const mapStateToProps = (state) => ({
   append: state.posts.get('appendReply'),
 })
 
-export default connect(mapStateToProps)(ReplyList)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    clearAppendReply,
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReplyList)

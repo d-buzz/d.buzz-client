@@ -28,6 +28,7 @@ import {
   SET_PAGE_FROM,
   SEARCH_SUCCESS,
   CLEAR_SEARCH_POSTS,
+  CLEAR_APPEND_REPLY,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -118,6 +119,8 @@ export const posts = (state = defaultState, { type, payload }) => {
       return state.set('search', payload)
     case CLEAR_SEARCH_POSTS:
       return state.set('search', {})
+    case CLEAR_APPEND_REPLY:
+      return state.set('appendReply', {})
     default:
       return state
   }
