@@ -1,8 +1,10 @@
-version: 2.1
-working_directory: /tmp/dbuzz-client
-docker:
-  - image: circleci/node:10.18
+version: 2
 jobs:
- steps:
-  - checkout
-         
+  build:
+    docker: 
+      - image: node:14.7.0
+    working_directory: /tmp/dbuzz-client
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build
