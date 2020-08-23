@@ -86,7 +86,7 @@ const SideBarRight = (props) => {
           <a href="/terms">Privacy Policy</a>
           <a href="/terms">Cookies</a>
           <a href="/terms">About</a> <br/ >
-          <label>&copy; D.Buzz, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+          <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
         </div>
       </div>
     </React.Fragment>
