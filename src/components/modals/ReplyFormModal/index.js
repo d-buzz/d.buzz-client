@@ -191,7 +191,13 @@ const ReplyFormModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal show={show && !replyDone} onHide={onHide} dialogClassName={classes.modal}>
+      <Modal
+        backdrop='static'
+        keyboard={false}
+        show={show && !replyDone}
+        onHide={onHide}
+        dialogClassName={classes.modal}
+      >
         <div className="container">
           <ModalBody className={classes.modalBody}>
             <div style={{ width: '100%'}}>
