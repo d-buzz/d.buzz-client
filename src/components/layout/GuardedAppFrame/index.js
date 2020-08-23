@@ -17,6 +17,7 @@ import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { useLastLocation } from 'react-router-last-location'
 
 
 const useStyles = createUseStyles({
@@ -89,11 +90,13 @@ const GuardedAppFrame = (props) => {
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
+  const lastLocation = useLastLocation()
   let params = queryString.parse(location.search) || ''
   const [search, setSearch] = useState(params.q)
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState()
   const [severity, setSeverity] = useState('success')
+
 
   let title = 'Home'
 
@@ -125,12 +128,11 @@ const GuardedAppFrame = (props) => {
     title = 'Search'
   }
 
-
   const handleClickBackButton = () => {
-    try {
-      history.goBack()
-    } catch(e) {
+    if(!lastLocation) {
       history.replace('/')
+    } else {
+      history.goBack()
     }
   }
 

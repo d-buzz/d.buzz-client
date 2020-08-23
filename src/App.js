@@ -3,17 +3,20 @@ import routes from './routes'
 import ScrollMemory from 'react-router-scroll-memory'
 import { withRouter } from 'react-router'
 import { Init, AuthGuard } from 'components'
-import { renderRoutes } from "react-router-config"
+import { renderRoutes } from 'react-router-config'
+import { LastLocationProvider } from 'react-router-last-location'
 
 const App = () => {
   return (
     <React.Fragment>
-      <Init>
-        <ScrollMemory />
-        <AuthGuard>
-          {renderRoutes(routes)}
-        </AuthGuard>
-      </Init>
+      <LastLocationProvider>
+        <Init>
+          <ScrollMemory />
+          <AuthGuard>
+            {renderRoutes(routes)}
+          </AuthGuard>
+        </Init>
+      </LastLocationProvider>
     </React.Fragment>
   )
 }
