@@ -28,7 +28,13 @@ const BuzzFormModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal show={show} onHide={onHide} dialogClassName={classes.modal}>
+      <Modal
+        backdrop="static"
+        keyboard={false}
+        show={show}
+        onHide={onHide}
+        dialogClassName={classes.modal}
+      >
         <ModalBody className={classes.modalBody}>
           <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5, }} onClick={onHide}>
             <CloseIcon />
