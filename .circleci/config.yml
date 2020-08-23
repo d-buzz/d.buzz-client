@@ -11,5 +11,5 @@ jobs:
       - checkout
       - run: npm install
       - run: npm run build
-  discord:
-      - webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+      - discord:
+          webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
