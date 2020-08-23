@@ -197,12 +197,19 @@ const PostActions = (props) => {
     setShowSlider(false)
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
-      .then(() => {
+      .then(({ success }) => {
         setShowSnackBar(true)
-        setVote(vote + 1)
-        setUpvoted(true)
-        setLoading(false)
-        setMessage(`Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+        if(success) {
+          setVote(vote + 1)
+          setUpvoted(true)
+          setLoading(false)
+          setMessage(`Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+        } else {
+          setUpvoted(false)
+          setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
+          setSeverity('error')
+          setLoading(false)
+        }
       })
       .catch(() => {
         setUpvoted(false)

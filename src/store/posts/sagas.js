@@ -217,10 +217,14 @@ function* upvoteRequest(payload, meta) {
     if(is_authenticated) {
       if(useKeychain) {
         try {
-          yield call(keychainUpvote, username, permlink, author, weight)
-          yield put(upvoteSuccess(meta))
+          const result = yield call(keychainUpvote, username, permlink, author, weight)
+          if(result.success) {
+            yield put(upvoteSuccess({ success: true }, meta))
+          } else {
+            yield put(upvoteFailure({ success: false }, meta))
+          }
         } catch(error) {
-          yield put(upvoteFailure(error, meta))
+          yield put(upvoteFailure({ success: true, error }, meta))
         }
       } else {
         let { login_data } = user
@@ -228,14 +232,14 @@ function* upvoteRequest(payload, meta) {
         const wif = login_data[1]
 
         yield call(broadcastVote, wif, username, author, permlink, weight)
-        yield put(upvoteSuccess(meta))
+        yield put(upvoteSuccess({ success: true }, meta))
       }
     } else {
-      yield put(upvoteFailure('Unauthenticated', meta))
+      yield put(upvoteFailure({ success: true, error: 'No authentication' }, meta))
     }
 
   } catch(error) {
-    yield put(upvoteFailure(error, meta))
+    yield put(upvoteFailure({ success: true, error }, meta))
   }
 }
 
