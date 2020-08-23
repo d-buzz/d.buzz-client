@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SideBarLeft, SideBarRight, SearchField, NotificationBox } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
@@ -166,6 +166,12 @@ const GuardedAppFrame = (props) => {
         }
       })
   }
+
+  useEffect(() => {
+    if(typeof params === 'object') {
+      setSearch(params.q)
+    }
+  }, [params])
 
   return (
     <React.Fragment>
