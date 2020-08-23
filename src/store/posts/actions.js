@@ -453,3 +453,10 @@ export const CLEAR_SEARCH_POSTS = 'CLEAR_SEARCH_POSTS'
 export const clearSearchPosts = () => ({
   type: CLEAR_SEARCH_POSTS,
 })
+
+
+export const CLEAR_APPEND_REPLY = 'CLEAR_APPEND_REPLY'
+
+export const clearAppendReply = () => ({
+  type: CLEAR_APPEND_REPLY,
+})
