@@ -12,6 +12,7 @@ import {
   NotificationBox,
   UserDialog,
 } from 'components'
+import classNames from 'classnames'
 import { clearAppendReply } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -55,6 +56,7 @@ const useStyles = createUseStyles({
     paddingBottom: 0,
     marginBottom: 0,
     fontSize: 14,
+    width: 'max-content',
   },
   username: {
     color: '#657786',
@@ -112,7 +114,7 @@ const useStyles = createUseStyles({
     },
   },
   inner: {
-    width: '98%',
+    width: '95%',
     margin: '0 auto',
   }
 })
@@ -323,13 +325,11 @@ const ReplyList = (props) => {
                     <Link
                       ref={popoverAnchor}
                       to={`${authorLink}?ref=replies`}
-                      className={classes.link}
+                      className={classNames(classes.link, classes.name)}
                       onMouseEnter={openPopOver}
                       onMouseLeave={closePopOver}
                     >
-                      <p className={classes.name}>
-                        {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
-                      </p>
+                      {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
                     </Link>
                     <label className={classes.username}>
                       @{author} &bull;&nbsp;
@@ -380,7 +380,7 @@ const ReplyList = (props) => {
     <React.Fragment>
       {(expectedCount !== replyCounter) && (
         <center>
-          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f' }}>
+          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f', paddingBottom: 10, }}>
             Some replies may not appear because it exceeds 280 characters
           </p>
         </center>
