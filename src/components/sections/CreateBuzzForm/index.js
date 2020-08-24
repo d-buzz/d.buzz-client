@@ -150,7 +150,7 @@ const CreateBuzzForm = (props) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((images) => {
       const lastImage = images[images.length-1]
-      const contentAppend = `${content} ${lastImage}`
+      const contentAppend = `${content} <br /> ${lastImage}`
       setContent(contentAppend)
     })
   }
@@ -214,7 +214,7 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {!publishing &&(
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', paddingBottom: 5, }}>
               <ReactTags
                 placeholder="Add tags"
                 tags={tags}
@@ -227,7 +227,7 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {loading && (
-            <div style={{ width: '100%'}}>
+            <div style={{ width: '100%', paddingTop: 5 }}>
               <Box  position="relative" display="inline-flex">
                 <HashtagLoader top={0} size={20} loading={loading} />&nbsp;
                 <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;

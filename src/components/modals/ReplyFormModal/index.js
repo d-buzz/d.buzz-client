@@ -165,7 +165,7 @@ const ReplyFormModal = (props) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((images) => {
       const lastImage = images[images.length-1]
-      const contentAppend = `${content} ${lastImage}`
+      const contentAppend = `${content} <br /> ${lastImage}`
       setContent(contentAppend)
     })
   }
