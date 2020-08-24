@@ -18,6 +18,7 @@ const PreviewLastLink = ({ className, content }) => {
           && !link.includes('app.dapplr.in')
           && !link.includes('pbs.twimg.com')
           && link.match( /^[https][http]/)
+          && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
         isValidUrl = true
