@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
-import { getContentRequest, getRepliesRequest, clearReplies } from 'store/posts/actions'
+import {
+  getContentRequest,
+  getRepliesRequest,
+  clearReplies,
+  setPageFrom
+} from 'store/posts/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar } from 'components/elements'
 import {
@@ -69,13 +74,24 @@ const useStyles = createUseStyles({
       color: 'black',
     },
   },
+  context: {
+    minHeight: 120,
+    width: '100%',
+    backgroundColor: '#f5f8fa',
+    paddingBottom: 10,
+    borderRadius: '16px 16px',
+    marginBottom: 20,
+    fontFamily: 'Segoe-Bold',
+  },
   contextWrapper: {
     width: '95%',
     height: '100%',
     margin: '0 auto',
     '& a': {
       color: '#d32f2f',
-    }
+    },
+    paddingTop: 10,
+    paddingBottom: 2,
   }
 })
 
@@ -90,6 +106,7 @@ const Content = (props) => {
     clearReplies,
     user = {},
     replies,
+    setPageFrom,
   } = props
 
   const { username, permlink } = match.params
@@ -167,6 +184,7 @@ const Content = (props) => {
   }
 
   useEffect(() => {
+    setPageFrom(null)
     anchorTop()
     clearReplies()
     getContentRequest(username, permlink)
@@ -201,22 +219,13 @@ const Content = (props) => {
                 {depth !== 0 && (
                   <Row>
                     <Col>
-                      <div
-                        style={{
-                          height: 120,
-                          width: '100%',
-                          backgroundColor: '#f5f8fa',
-                          paddingBottom: 10,
-                          borderRadius: '16px 16px',
-                          marginBottom: 20,
-                        }}
-                      >
+                      <div className={classes.context}>
                         <div className={classes.contextWrapper}>
                           <h6 style={{ paddingTop: 5, }}>You are viewing a single comment's thread from:</h6>
                           <h5>RE: {root_title}</h5>
                           <ul>
                             <li><Link to={`/@${root_author}/c/${root_permlink}`}>View the full context</Link></li>
-                            <li><Link to={`/@${parent_author}/c/${parent_permlink}`}>View the diect parent</Link></li>
+                            <li><Link to={`/@${parent_author}/c/${parent_permlink}`}>View the direct parent</Link></li>
                           </ul>
                         </div>
                       </div>
@@ -318,6 +327,7 @@ const mapDispatchToProps = (dispatch) => ({
     getContentRequest,
     getRepliesRequest,
     clearReplies,
+    setPageFrom,
   }, dispatch)
 })
 
