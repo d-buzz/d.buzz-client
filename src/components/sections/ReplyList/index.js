@@ -116,7 +116,16 @@ const useStyles = createUseStyles({
   inner: {
     width: '95%',
     margin: '0 auto',
-  }
+  },
+  hideNote: {
+    fontSize: 14,
+    width: '98%',
+    margin: '0 auto',
+    marginTop: 10,
+    color: '#d32f2f',
+    paddingBottom: 10,
+    fontFamily: 'Segoe-Bold',
+  },
 })
 
 const countReplies = async (replies = []) => {
@@ -380,7 +389,7 @@ const ReplyList = (props) => {
     <React.Fragment>
       {(expectedCount !== replyCounter) && (
         <center>
-          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f', paddingBottom: 10, }}>
+          <p className={classes.hideNote}>
             Some replies may not appear because it exceeds 280 characters
           </p>
         </center>
