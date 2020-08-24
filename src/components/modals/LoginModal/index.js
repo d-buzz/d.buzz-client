@@ -96,6 +96,14 @@ const LoginModal = (props) => {
       })
   }
 
+  const onKeyDown = (e) => {
+    if(e.key === 'Enter') {
+      if((username.trim() !== '' && useKeychain) || (username.trim() !== '' && !useKeychain && `${password}`.trim() !== '')) {
+        handleClickLogin()
+      }
+    }
+  }
+
   return (
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
@@ -109,7 +117,14 @@ const LoginModal = (props) => {
             </center>
           </div>
           <FormLabel className={classes.label}>Username</FormLabel>
-          <FormControl disabled={loading} name="username" type="text" value={username} onChange={onChange} />
+          <FormControl
+            disabled={loading}
+            name="username"
+            type="text"
+            value={username}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+          />
           <FormSpacer />
           {!useKeychain && (
             <React.Fragment>
@@ -120,6 +135,7 @@ const LoginModal = (props) => {
                 type="password"
                 value={password}
                 onChange={onChange}
+                onKeyDown={onKeyDown}
               />
               <FormSpacer />
             </React.Fragment>

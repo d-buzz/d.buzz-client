@@ -1,7 +1,22 @@
 import React, { useEffect } from 'react'
 import { Trending } from 'components'
 import { createUseStyles } from 'react-jss'
-import { clearSearchPosts } from 'store/posts/actions'
+import {
+  clearSearchPosts,
+  clearLastSearchTag,
+  clearTrendingPosts,
+  clearLatestPosts,
+  clearTagsPost,
+  clearHomePosts,
+  setHomeIsVisited,
+  setTrendingIsVisited,
+  setLatestIsVisited,
+  setTagsIsVisited
+} from 'store/posts/actions'
+import {
+  clearAccountPosts,
+  clearAccountReplies,
+} from 'store/profile/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -19,10 +34,34 @@ const useStyles = createUseStyles({
 
 const Landing = (props) => {
   const classes = useStyles()
-  const { clearSearchPosts } = props
+  const {
+    clearSearchPosts,
+    clearLastSearchTag,
+    clearTrendingPosts,
+    clearLatestPosts,
+    clearTagsPost,
+    clearHomePosts,
+    setHomeIsVisited,
+    setTrendingIsVisited,
+    setLatestIsVisited,
+    setTagsIsVisited,
+    clearAccountPosts,
+    clearAccountReplies,
+   } = props
 
   useEffect(() => {
     clearSearchPosts()
+    clearLastSearchTag()
+    clearTrendingPosts()
+    clearLatestPosts()
+    clearTagsPost()
+    clearHomePosts()
+    clearAccountPosts()
+    clearAccountReplies()
+    setHomeIsVisited(false)
+    setTrendingIsVisited(false)
+    setLatestIsVisited(false)
+    setTagsIsVisited(false)
     // eslint-disable-next-line
   }, [])
 
@@ -41,6 +80,17 @@ const Landing = (props) => {
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearSearchPosts,
+    clearLastSearchTag,
+    clearTrendingPosts,
+    clearLatestPosts,
+    clearTagsPost,
+    clearHomePosts,
+    setHomeIsVisited,
+    setTrendingIsVisited,
+    setLatestIsVisited,
+    setTagsIsVisited,
+    clearAccountPosts,
+    clearAccountReplies,
   }, dispatch)
 })
 
