@@ -75,11 +75,10 @@ const useStyles = createUseStyles({
     paddingBottom: 10,
     '& img': {
       border: '1px solid #ccd6dd',
-      borderRadius: '10px 10px',
+      borderRadius: '16px 16px',
     },
     '& iframe': {
-      border: '1px solid #ccd6dd',
-      borderRadius: '10px 10px',
+      borderRadius: '16px 16px',
     },
   },
   note: {

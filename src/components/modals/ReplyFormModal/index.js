@@ -86,11 +86,9 @@ const useStyles = createUseStyles({
     wordBreak: 'break-all !important',
     paddingBottom: 10,
     '& img': {
-      border: '1px solid #ccd6dd',
       borderRadius: '10px 10px',
     },
     '& iframe': {
-      border: '1px solid #ccd6dd',
       borderRadius: '10px 10px',
       width: '100% !important',
     },
