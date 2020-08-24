@@ -24,7 +24,6 @@ const useStyles = createUseStyles({
   row: {
     width: '100%',
     paddingTop: 20,
-    marginBottom: 10,
     '&:hover': {
       backgroundColor: '#f5f8fa',
     },
@@ -309,7 +308,7 @@ const ReplyList = (props) => {
       <React.Fragment>
         <div className={classes.row}>
           <div className={classes.inner}>
-            <Row>
+            <Row style={{ paddingBottom: 0, marginBottom: 0, }}>
               <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent(author, permlink)}>
                 <div className={classes.left}>
                   <Avatar author={author} />
