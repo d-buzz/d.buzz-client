@@ -205,7 +205,7 @@ const PostList = (props) => {
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left}>
+              <div className={classes.left} onClick={handleOpenContent(author, permlink)}>
                 <Avatar author={author} />
               </div>
             </Col>
