@@ -17,15 +17,18 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { getAuthorName } from 'services/helper'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 
 const useStyles = createUseStyles({
   row: {
-    width: '98%',
-    margin: '0 auto',
+    width: '100%',
     paddingTop: 20,
     marginBottom: 10,
+    '&:hover': {
+      backgroundColor: '#f5f8fa',
+    },
+    cursor: 'pointer',
   },
   wrapper: {
     width: '100%',
@@ -109,6 +112,10 @@ const useStyles = createUseStyles({
       textDecoration: 'underline !important',
     },
   },
+  inner: {
+    width: '98%',
+    margin: '0 auto',
+  }
 })
 
 const countReplies = async (replies = []) => {
@@ -136,6 +143,7 @@ const ReplyList = (props) => {
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState('')
   const [severity, setSeverity] = useState('error')
+  const history = useHistory()
 
   const handleSnackBarClose = () => {
     setShowSnackbar(false)
@@ -267,64 +275,96 @@ const ReplyList = (props) => {
       setOpen(false)
     }
 
+    const generateLink = (author, permlink) =>  {
+      let link = ''
+       if(!is_authenticated) {
+         link = '/ug'
+       }
+
+       link += `/@${author}/c/${permlink}`
+
+       return link
+     }
+
+    const handleOpenContent = (author, permlink) => (e) => {
+      const { target } = e
+      let { href } = target
+      const hostname = window.location.hostname
+
+      e.preventDefault()
+      if(href && !href.includes(hostname)) {
+        window.open(href, '_blank')
+      } else {
+        if(!href) {
+          history.push(generateLink(author, permlink))
+        } else {
+          const split = href.split('/')
+          href = `/${split[3]}`
+          history.push(href)
+        }
+      }
+    }
+
     return (
       <React.Fragment>
         <div className={classes.row}>
-          <Row>
-            <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left}>
-                <Avatar author={author} />
-                {replies.length !== 0 && (
-                  <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
-                )}
-              </div>
-            </Col>
-            <Col>
-              <div className={classes.right}>
-                <div className={classes.content}>
-                  <Link
-                    ref={popoverAnchor}
-                    to={`${authorLink}?ref=replies`}
-                    className={classes.link}
-                    onMouseEnter={openPopOver}
-                    onMouseLeave={closePopOver}
-                  >
-                    <p className={classes.name}>
-                      {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
-                    </p>
-                  </Link>
-                  <label className={classes.username}>
-                    @{author} &bull;&nbsp;
-                    {moment(`${created}Z`).local().fromNow()}
-                  </label>
-                  <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
-                  <MarkdownViewer minifyAssets={false} content={body} />
-                  <PostTags meta={meta} />
+          <div className={classes.inner}>
+            <Row>
+              <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent(author, permlink)}>
+                <div className={classes.left}>
+                  <Avatar author={author} />
+                  {replies.length !== 0 && (
+                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
+                  )}
                 </div>
-                <div className={classes.actionWrapper}>
-                  <PostActions
-                    treeHistory={treeHistory}
-                    body={body}
-                    hasUpvoted={hasUpvoted}
-                    author={author}
-                    permlink={permlink}
-                    voteCount={active_votes.length}
-                    replyCount={replyCount}
-                    payout={payout}
-                    payoutAt={payout_at}
-                    replyRef="replies"
-                  />
+              </Col>
+              <Col>
+                <div className={classes.right}>
+                  <div className={classes.content} onClick={handleOpenContent(author, permlink)}>
+                    <Link
+                      ref={popoverAnchor}
+                      to={`${authorLink}?ref=replies`}
+                      className={classes.link}
+                      onMouseEnter={openPopOver}
+                      onMouseLeave={closePopOver}
+                    >
+                      <p className={classes.name}>
+                        {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
+                      </p>
+                    </Link>
+                    <label className={classes.username}>
+                      @{author} &bull;&nbsp;
+                      {moment(`${created}Z`).local().fromNow()}
+                    </label>
+                    <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    <MarkdownViewer minifyAssets={false} content={body} />
+                    <PostTags meta={meta} />
+                  </div>
+                  <div className={classes.actionWrapper}>
+                    <PostActions
+                      treeHistory={treeHistory}
+                      body={body}
+                      hasUpvoted={hasUpvoted}
+                      author={author}
+                      permlink={permlink}
+                      voteCount={active_votes.length}
+                      replyCount={replyCount}
+                      payout={payout}
+                      payoutAt={payout_at}
+                      replyRef="replies"
+                    />
+                  </div>
                 </div>
-              </div>
-            </Col>
-            <UserDialog
-              open={open}
-              anchorEl={popoverAnchor.current}
-              onMouseEnter={openPopOver}
-              onMouseLeave={closePopOver}
-              profile={profile}
-            />
-          </Row>
+              </Col>
+              <UserDialog
+                open={open}
+                anchorEl={popoverAnchor.current}
+                onMouseEnter={openPopOver}
+                onMouseLeave={closePopOver}
+                profile={profile}
+              />
+            </Row>
+          </div>
         </div>
         {replies.length !== 0 && (
           <React.Fragment>
