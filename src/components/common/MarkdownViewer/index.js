@@ -4,6 +4,7 @@ import markdownLinkExtractor from 'markdown-link-extractor'
 import classNames from 'classnames'
 import { PreviewLastLink } from 'components'
 import { createUseStyles } from 'react-jss'
+import { TwitterTweetEmbed } from 'react-twitter-embed'
 
 const renderer = new DefaultRenderer({
   baseUrl: "https://d.buzz/",
@@ -122,12 +123,47 @@ const prepareImages = (content) => {
   return body
 }
 
+const prepareTwitterEmbeds = (content) => {
+  let body = content
+
+  const links = markdownLinkExtractor(content)
+
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+      const match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
+
+      if(match) {
+        const id = match[2]
+        body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(e) { }
+  })
+  return body
+}
+
+const render = (content, style, markdownClass, assetClass) => {
+
+  if(content.includes(':twitter:')) {
+    const splitTwitter = content.split(':')
+    return <TwitterTweetEmbed tweetId={splitTwitter[2]} />
+  } else {
+    // render normally
+    return <div
+      style={style}
+      className={classNames(markdownClass, assetClass)}
+      dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
+    />
+  }
+
+}
+
 const MarkdownViewer = (props) => {
   const classes = useStyles()
   let { content = '', minifyAssets = true, onModal = false } = props
   const original = content
   content = prepareImages(content)
-  content = renderer.render(content)
+  content = prepareTwitterEmbeds(content)
 
   let assetClass = classes.minified
   let style = {}
@@ -140,14 +176,13 @@ const MarkdownViewer = (props) => {
     style = { width: 520 }
   }
 
+  const splitContent = content.split(`~~~~~~.^.~~~`)
 
   return (
     <React.Fragment>
-      <div
-        style={style}
-        className={classNames(classes.markdown, assetClass)}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      {splitContent.map((item) => (
+        render(item, style, classes.markdown, assetClass)
+      ))}
       <PreviewLastLink className={classes.preview} content={original} />
     </React.Fragment>
   )
