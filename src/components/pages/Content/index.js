@@ -209,6 +209,18 @@ const Content = (props) => {
     setOpen(false)
   }
 
+  const generateParentLinks = (author, permlink) => {
+    let link = `/@${author}`
+
+    if(!is_authenticated) {
+      link = `/ug${link}`
+    }
+
+    link = `${link}/c/${permlink}`
+
+    return link
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && (
@@ -224,8 +236,8 @@ const Content = (props) => {
                           <h6 style={{ paddingTop: 5, }}>You are viewing a single comment's thread from:</h6>
                           <h5>RE: {root_title}</h5>
                           <ul>
-                            <li><Link to={`/@${root_author}/c/${root_permlink}`}>View the full context</Link></li>
-                            <li><Link to={`/@${parent_author}/c/${parent_permlink}`}>View the direct parent</Link></li>
+                            <li><Link to={generateParentLinks(root_author, root_permlink)}>View the full context</Link></li>
+                            <li><Link to={generateParentLinks(parent_author, parent_permlink)}>View the direct parent</Link></li>
                           </ul>
                         </div>
                       </div>
