@@ -69,6 +69,14 @@ const useStyles = createUseStyles({
       color: 'black',
     },
   },
+  contextWrapper: {
+    width: '95%',
+    height: '100%',
+    margin: '0 auto',
+    '& a': {
+      color: '#d32f2f',
+    }
+  }
 })
 
 const Content = (props) => {
@@ -98,6 +106,12 @@ const Content = (props) => {
     active_votes,
     profile = {},
     cashout_time,
+    depth,
+    root_author,
+    root_title,
+    root_permlink,
+    parent_author,
+    parent_permlink,
   } = content || ''
 
   let meta = {}
@@ -158,7 +172,8 @@ const Content = (props) => {
     getContentRequest(username, permlink)
     getRepliesRequest(username, permlink)
   // eslint-disable-next-line
-  }, [])
+  }, [permlink])
+
 
   const generateAuthorLink = () => {
     let link = `/@${author}`
@@ -183,6 +198,31 @@ const Content = (props) => {
             <div className={classes.wrapper}>
               <br />
               <React.Fragment>
+                {depth !== 0 && (
+                  <Row>
+                    <Col>
+                      <div
+                        style={{
+                          height: 120,
+                          width: '100%',
+                          backgroundColor: '#f5f8fa',
+                          paddingBottom: 10,
+                          borderRadius: '16px 16px',
+                          marginBottom: 20,
+                        }}
+                      >
+                        <div className={classes.contextWrapper}>
+                          <h6 style={{ paddingTop: 5, }}>You are viewing a single comment's thread from:</h6>
+                          <h5>RE: {root_title}</h5>
+                          <ul>
+                            <li><Link to={`/@${root_author}/c/${root_permlink}`}>View the full context</Link></li>
+                            <li><Link to={`/@${parent_author}/c/${parent_permlink}`}>View the diect parent</Link></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                )}
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <Avatar author={author} />
