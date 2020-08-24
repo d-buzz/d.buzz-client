@@ -188,7 +188,11 @@ const Content = (props) => {
     anchorTop()
     clearReplies()
     getContentRequest(username, permlink)
-    getRepliesRequest(username, permlink)
+      .then(({ children }) => {
+        if(children !== 0) {
+          getRepliesRequest(username, permlink)
+        }
+      })
   // eslint-disable-next-line
   }, [permlink])
 
