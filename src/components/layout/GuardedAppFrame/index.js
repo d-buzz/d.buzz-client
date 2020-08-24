@@ -86,6 +86,7 @@ const GuardedAppFrame = (props) => {
     clearSearchPosts,
     clearNotificationsRequest,
     loading,
+    count,
   } = props
   const classes = useStyles()
   const history = useHistory()
@@ -215,7 +216,7 @@ const GuardedAppFrame = (props) => {
                       />
                     </div>
                   )}
-                  {title === 'Notifications' && (
+                  {title === 'Notifications' && count.unread !== 0 && (
                     <div style={{ width: '100%' }}>
                       <ContainedButton
                         fontSize={12}
@@ -263,6 +264,7 @@ const GuardedAppFrame = (props) => {
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
+  count: state.polling.get('count')
 })
 
 const mapDispatchToProps = (dispatch) => ({
