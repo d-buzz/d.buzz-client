@@ -159,7 +159,7 @@ function* clearNotificationRequest(meta) {
     const user = yield select(state => state.auth.get('user'))
     const notifications = yield select(state => state.polling.get('notifications'))
     const { username, useKeychain } = user
-    const lastNotification = notifications[notifications.length-1]
+    const lastNotification = notifications[0]
 
     const operation = yield call(generateClearNotificationOperation, username, lastNotification)
 
