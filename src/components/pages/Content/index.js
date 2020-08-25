@@ -4,7 +4,6 @@ import {
   getContentRequest,
   getRepliesRequest,
   clearReplies,
-  setPageFrom
 } from 'store/posts/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar } from 'components/elements'
@@ -106,7 +105,6 @@ const Content = (props) => {
     clearReplies,
     user = {},
     replies,
-    setPageFrom,
   } = props
 
   const { username, permlink } = match.params
@@ -184,7 +182,6 @@ const Content = (props) => {
   }
 
   useEffect(() => {
-    setPageFrom(null)
     anchorTop()
     clearReplies()
     getContentRequest(username, permlink)
@@ -343,7 +340,6 @@ const mapDispatchToProps = (dispatch) => ({
     getContentRequest,
     getRepliesRequest,
     clearReplies,
-    setPageFrom,
   }, dispatch)
 })
 

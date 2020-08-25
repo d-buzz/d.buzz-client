@@ -129,7 +129,6 @@ function* getContentRequest(payload, meta) {
 
         data = filtered[0]
       }
-
     }
     yield put(getContentSuccess(data, meta))
   } catch(error) {

@@ -13,7 +13,7 @@ import {
   UserDialog,
 } from 'components'
 import classNames from 'classnames'
-import { clearAppendReply } from 'store/posts/actions'
+import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -143,7 +143,8 @@ const ReplyList = (props) => {
     replies,
     expectedCount,
     user,
-    append
+    append,
+    setPageFrom,
   } = props
   const { clearAppendReply } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
@@ -306,6 +307,7 @@ const ReplyList = (props) => {
         window.open(href, '_blank')
       } else {
         if(!href) {
+          setPageFrom(null)
           history.push(generateLink(author, permlink))
         } else {
           const split = href.split('/')
@@ -417,6 +419,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearAppendReply,
+    setPageFrom,
   }, dispatch)
 })
 
