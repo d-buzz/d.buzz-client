@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
 // import Chip from '@material-ui/core/Chip'
+import { setPageFrom } from 'store/posts/actions'
 import { Link } from 'react-router-dom'
 import { Avatar, HashtagLoader } from 'components/elements'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
+import { bindActionCreators } from 'redux'
 
 const useStyle = createUseStyles({
   row: {
@@ -126,9 +128,19 @@ const useStyle = createUseStyles({
 
 
 const Notification = (props) => {
-  const { notifications, loading, count } = props
+  const {
+    notifications,
+    loading,
+    count,
+    setPageFrom
+  } = props
 
   const classes = useStyle()
+
+  useEffect(() => {
+    setPageFrom(null)
+    // eslint-disable-next-line
+  }, [])
 
   const actionAuthor = (msg) => {
     const author = msg.split(' ')[0]
@@ -203,4 +215,10 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'POLL_NOTIF_REQUEST'),
 })
 
-export default connect(mapStateToProps)(Notification)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setPageFrom,
+  }, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)
