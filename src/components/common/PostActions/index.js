@@ -116,8 +116,12 @@ const useStyles = createUseStyles({
     fontSize: 14,
   },
   chip: {
-    border: '1px solid #e53935',
-    marginTop: -5,
+    border: 'none !important',
+    float: 'right !important',
+    '& span': {
+      fontFamily: 'Segoe-Bold',
+      marginTop: -5,
+    }
   },
   sliderWrapper: {
     width: '98%',
