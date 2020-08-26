@@ -15,6 +15,7 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearAppendReply,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -45,6 +46,7 @@ const Feeds = (props) => {
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
+    clearAppendReply,
   } = props
 
   useEffect(() => {
@@ -58,12 +60,13 @@ const Feeds = (props) => {
       setTrendingIsVisited(false)
       setLatestIsVisited(false)
     }
+    clearTagsPost()
+    clearAppendReply()
     clearSearchPosts()
     clearLastSearchTag()
-    clearTagsPost()
-    setTagsIsVisited(false)
     clearAccountPosts()
     clearAccountReplies()
+    setTagsIsVisited(false)
     setProfileIsVisited(false)
     //eslint-disable-next-line
   }, [])
@@ -125,7 +128,8 @@ const mapDispatchToProps = (dispatch) => ({
     setTagsIsVisited,
     setPageFrom,
     clearLastSearchTag,
-    clearSearchPosts
+    clearSearchPosts,
+    clearAppendReply
   }, dispatch)
 })
 

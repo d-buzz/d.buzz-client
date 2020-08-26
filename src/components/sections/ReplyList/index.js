@@ -204,12 +204,12 @@ const ReplyList = (props) => {
            rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
         }
 
+        // clear appended reply
+        clearAppendReply()
+
         const combine = `${prefix}${rep}`
         // eslint-disable-next-line
         eval(combine)
-
-        // clear appended reply
-        clearAppendReply()
 
         iterableState[firstIndex] = first
         setRepliesState(iterableState)

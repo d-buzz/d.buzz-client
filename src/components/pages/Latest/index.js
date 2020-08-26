@@ -14,6 +14,7 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearAppendReply,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -45,6 +46,7 @@ const Latest = (props) => {
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
+    clearAppendReply,
   } = props
 
   useEffect(() => {
@@ -58,6 +60,7 @@ const Latest = (props) => {
       setHomeIsVisited(false)
       setTrendingIsVisited(false)
     }
+    clearAppendReply()
     clearSearchPosts()
     clearLastSearchTag()
     clearAccountPosts()
@@ -125,6 +128,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
+    clearAppendReply,
   }, dispatch)
 })
 

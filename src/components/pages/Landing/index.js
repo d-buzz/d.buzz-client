@@ -11,7 +11,8 @@ import {
   setHomeIsVisited,
   setTrendingIsVisited,
   setLatestIsVisited,
-  setTagsIsVisited
+  setTagsIsVisited,
+  clearAppendReply
 } from 'store/posts/actions'
 import {
   clearAccountPosts,
@@ -47,9 +48,11 @@ const Landing = (props) => {
     setTagsIsVisited,
     clearAccountPosts,
     clearAccountReplies,
+    clearAppendReply,
    } = props
 
   useEffect(() => {
+    clearAppendReply()
     clearSearchPosts()
     clearLastSearchTag()
     clearTrendingPosts()
@@ -91,6 +94,7 @@ const mapDispatchToProps = (dispatch) => ({
     setTagsIsVisited,
     clearAccountPosts,
     clearAccountReplies,
+    clearAppendReply,
   }, dispatch)
 })
 
