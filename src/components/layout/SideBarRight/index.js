@@ -9,7 +9,7 @@ import {
   HashtagLoader,
 } from 'components/elements'
 import { SearchField } from 'components'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   search: {
@@ -82,7 +82,7 @@ const SideBarRight = (props) => {
       </div>
       <div className={classes.footer}>
         <div className={classes.inner}>
-          <a href="/terms">Terms</a>
+          <Link to="/org/en/tos">Terms</Link>
           <a href="/terms">Privacy Policy</a>
           <a href="/terms">Cookies</a>
           <a href="/terms">About</a> <br/ >
