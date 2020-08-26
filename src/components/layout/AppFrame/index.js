@@ -1,7 +1,7 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
-import { AppBar, GuardedAppFrame, UnguardedAppFrame } from 'components'
+import { AppBar, GuardedAppFrame, UnguardedAppFrame, OrganizationAppFrame, OrganizationAppBar } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 
@@ -29,6 +29,13 @@ const useStyles = createUseStyles({
       },
     },
   },
+  organizationContainer: {
+    '@media (min-width: 1100px)': {
+      '&.container': {
+        maxWidth: '1250px',
+      },
+    },
+  }
 })
 
 const AppFrame = (props) => {
@@ -36,8 +43,13 @@ const AppFrame = (props) => {
   const { route } = props
   const { pathname } = useLocation()
 
+  const organizationRoutes = (pathname.match(/^\/org/))
   let containerClass = classes.guardedContainer
   const unGuardedRoute = (pathname.match(/^\/login/) || pathname.match(/^\/ug/))
+  
+  if(organizationRoutes) {
+    containerClass = classes.organizationContainer
+  }
 
   if(unGuardedRoute) {
     containerClass = classes.unGuardedContainer
@@ -46,12 +58,16 @@ const AppFrame = (props) => {
   return(
     <React.Fragment>
       {unGuardedRoute && (<AppBar />)}
+      {organizationRoutes && (<OrganizationAppBar />)}
       <Container className={containerClass}>
         <StickyContainer>
-          {!unGuardedRoute && (
+          {organizationRoutes && (
+            <OrganizationAppFrame pathname={pathname} route={route} />
+          )}
+          {!unGuardedRoute && !organizationRoutes && (
             <GuardedAppFrame pathname={pathname} route={route} />
           )}
-          {unGuardedRoute && (
+          {unGuardedRoute && !organizationRoutes && (
             <UnguardedAppFrame route={route} />
           )}
         </StickyContainer>

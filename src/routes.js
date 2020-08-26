@@ -1,5 +1,6 @@
 import {
   AppFrame,
+  TermsConditions,
   Home,
   Trending,
   Profile,
@@ -25,6 +26,11 @@ const routes =  [
         path: '/',
         exact: true,
         component: Home
+      },
+      {
+        path: '/org/en/tos',
+        exact: true,
+        component: TermsConditions,
       },
       {
         path: '/ug',

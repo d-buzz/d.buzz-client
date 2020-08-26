@@ -24,14 +24,14 @@ const useStyle = createUseStyles({
     },
   },
   unread: {
-    backgroundColor: '#ff726f',
+    backgroundColor: '#fee7e6',
     '& label': {
-      color: 'white',
+      color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#fee7e6 !important',
+      backgroundColor: '#f83541 !important',
       '& label': {
-        color: 'black !important',
+        color: 'white !important',
       }
     },
   },
