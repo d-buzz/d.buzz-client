@@ -3,7 +3,7 @@ import { getTrendingTagsRequest } from 'store/posts/actions'
 import { getSavedUserRequest } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { BrandIcon, HashtagLoader } from 'components/elements'
+import { BrandIcon, Spinner } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
@@ -19,7 +19,7 @@ const SplashScreen = () => {
 
   return (
     <div className={classes.wrapper}>
-      <HashtagLoader
+      <Spinner
         size={35}
         loading={true}
         style={{

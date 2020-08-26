@@ -5,7 +5,7 @@ import moment from 'moment'
 // import Chip from '@material-ui/core/Chip'
 import { setPageFrom } from 'store/posts/actions'
 import { Link } from 'react-router-dom'
-import { Avatar, HashtagLoader } from 'components/elements'
+import { Avatar, Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
@@ -204,7 +204,7 @@ const Notification = (props) => {
       ))}
       {(!loading && notifications.length === 0) &&
         (<center><br/><h6>You have no notifications</h6></center>)}
-      <HashtagLoader loading={loading} />
+      <Spinner loading={loading} />
     </React.Fragment>
   )
 }

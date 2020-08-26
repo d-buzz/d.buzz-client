@@ -6,7 +6,7 @@ import {
   ContainedButton,
   Avatar,
   UploadIcon,
-  HashtagLoader,
+  Spinner,
 } from 'components/elements'
 import { MarkdownViewer, NotificationBox } from 'components'
 import Box from '@material-ui/core/Box'
@@ -85,6 +85,12 @@ const useStyles = createUseStyles({
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
     color: '#d32f2f',
+  },
+  actionLabels: {
+    fontFamily: 'Segoe-Bold',
+    fontSize: 14,
+    color: '#e53935',
+    paddingTop: 2,
   }
 })
 
@@ -149,8 +155,10 @@ const CreateBuzzForm = (props) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((images) => {
       const lastImage = images[images.length-1]
-      const contentAppend = `${content} <br /> ${lastImage}`
-      setContent(contentAppend)
+      if(lastImage !== undefined) {
+        const contentAppend = `${content} <br /> ${lastImage}`
+        setContent(contentAppend)
+      }
     })
   }
 
@@ -201,8 +209,8 @@ const CreateBuzzForm = (props) => {
           {publishing && (
             <div style={{ width: '100%', paddingTop: 10, }}>
               <Box  position="relative" display="inline-flex">
-                <HashtagLoader top={0} size={20} loading={publishing} />&nbsp;
-                <label style={{ marginTop: -3 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
+                <Spinner top={0} size={20} loading={publishing} />&nbsp;
+                <label className={classes.actionLabels}>broadcasting your buzz to the network, please wait ...</label>&nbsp;
               </Box>
             </div>
           )}
@@ -223,8 +231,8 @@ const CreateBuzzForm = (props) => {
           {loading && (
             <div style={{ width: '100%', paddingTop: 5 }}>
               <Box  position="relative" display="inline-flex">
-                <HashtagLoader top={0} size={20} loading={loading} />&nbsp;
-                <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
+                <Spinner top={-10} size={20} loading={loading} />&nbsp;
+                <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
               </Box>
             </div>
           )}

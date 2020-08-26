@@ -6,7 +6,7 @@ import { pending } from 'redux-saga-thunk'
 import {
   ListGroup,
   ListAction,
-  HashtagLoader,
+  Spinner,
 } from 'components/elements'
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
@@ -77,7 +77,7 @@ const SideBarRight = (props) => {
           {items.slice(0, 5).map((item) => (
             <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
           ))}
-          <HashtagLoader loading={loading} />
+          <Spinner size={50} loading={loading} />
         </ListGroup>
       </div>
       <div className={classes.footer}>
