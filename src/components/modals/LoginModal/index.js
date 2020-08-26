@@ -7,7 +7,7 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
-import { HashtagLoader } from 'components/elements'
+import { Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -158,7 +158,7 @@ const LoginModal = (props) => {
               />
             )}
             {loading && (
-              <HashtagLoader loading={true} />
+              <Spinner size={40} loading={true} />
             )}
           </center>
         </ModalBody>

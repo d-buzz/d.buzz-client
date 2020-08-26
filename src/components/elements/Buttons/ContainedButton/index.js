@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { HashtagLoader } from 'components/elements'
+import { Spinner } from 'components/elements'
 import classNames from 'classnames'
 
 const useStyles = createUseStyles({
@@ -90,7 +90,7 @@ const ContainedButton = (props) => {
       <center>
         <label style={{ fontSize: fontSize, ...labelStyle }}>
           {!loading && label}
-          {loading && (<HashtagLoader size={20} top={5} loading={true} />)}
+          {loading && (<Spinner size={20} top={5} loading={true} />)}
         </label>
       </center>
     </div>

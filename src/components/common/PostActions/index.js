@@ -6,7 +6,7 @@ import {
   HiveIcon,
   ContainedButton,
   HeartIconRed,
-  HashtagLoader,
+  Spinner,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -279,7 +279,7 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
+                  icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
                   hideStats={hideStats}
                   onClick={handleClickShowSlider}
                   stat={(

@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
-import { HashtagLoader, CloseIcon } from 'components/elements'
+import { Spinner, CloseIcon } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -118,6 +118,12 @@ const useStyles = createUseStyles({
   loadState: {
     width: '100%',
     paddingTop: 10,
+  },
+  actionLabels: {
+    fontFamily: 'Segoe-Bold',
+    fontSize: 14,
+    color: '#e53935',
+    paddingTop: 2,
   }
 })
 
@@ -163,8 +169,10 @@ const ReplyFormModal = (props) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((images) => {
       const lastImage = images[images.length-1]
-      const contentAppend = `${content} <br /> ${lastImage}`
-      setContent(contentAppend)
+      if(lastImage !== undefined) {
+        const contentAppend = `${content} <br /> ${lastImage}`
+        setContent(contentAppend)
+      }
     })
   }
 
@@ -217,8 +225,8 @@ const ReplyFormModal = (props) => {
               {loading && (
                 <div className={classes.loadState}>
                   <Box  position="relative" display="inline-flex">
-                    <HashtagLoader top={0} size={20} loading={true} />&nbsp;
-                    <label style={{ marginTop: -3 }}>Broadcasting your reply to the network, please wait ...</label>&nbsp;
+                    <Spinner top={0} size={20} loading={true} />&nbsp;
+                    <label className={classes.actionLabels}>broadcasting your reply to the network, please wait ...</label>&nbsp;
                   </Box>
                 </div>
               )}
@@ -236,8 +244,8 @@ const ReplyFormModal = (props) => {
               {uploading && (
                 <div style={{ width: '100%'}}>
                   <Box  position="relative" display="inline-flex">
-                    <HashtagLoader top={0} size={20} loading={uploading} />&nbsp;
-                    <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
+                    <Spinner top={0} size={20} loading={uploading} />&nbsp;
+                    <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
                   </Box>
                 </div>
               )}
