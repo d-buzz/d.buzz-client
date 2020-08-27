@@ -11,9 +11,10 @@ All development will be on the `dev` branch, `master` branch will only be update
 4. Changes will be deployed to `development` server
 5. Approve changes on `development` server will be deployed to `production`
 
-### TODO
+### CI/CD
 
-1. Create CI/CD workflow
+1. Fleek - IPFS
+2. CircleCI
 
 ### Versioning
 
