@@ -16,6 +16,7 @@ import {
   Search,
   SearchPosts,
   SearchPeople,
+  PrivacyPolicy,
 } from 'components'
 
 const routes =  [
@@ -31,6 +32,11 @@ const routes =  [
         path: '/org/en/tos',
         exact: true,
         component: TermsConditions,
+      },
+      {
+        path: '/org/en/privacy',
+        exact: true,
+        component: PrivacyPolicy,
       },
       {
         path: '/ug',
