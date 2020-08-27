@@ -6,7 +6,7 @@ import {
   OrgIcon
 } from 'components/elements'
 import { createUseStyles } from 'react-jss'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   nav: {
@@ -40,7 +40,19 @@ const useStyles = createUseStyles({
 
 const OrganizationAppBar = () => {
   const classes = useStyles()
+  const { pathname } = useLocation()
 
+  const termsOfService = (pathname.match(/^\/org\/en\/tos/))
+  const privacyPolicy = (pathname.match(/^\/org\/en\/privacy/))
+
+  let title = ''
+  if(termsOfService) {
+    title = 'Terms of Service'
+  } else if(privacyPolicy) {
+    title = 'Privacy Policy'
+  }
+
+  
   return (
     <React.Fragment>
       <Navbar fixed="top" className={classes.nav}>
@@ -51,7 +63,7 @@ const OrganizationAppBar = () => {
           </Link>
           &nbsp;&nbsp;
           <span>
-            Terms of Service
+           {title}
           </span>
         </Navbar.Brand>
         <div style={{marginRight: '-205px'}}>
@@ -68,7 +80,7 @@ const OrganizationAppBar = () => {
             lineHeight: '1em',
             padding: '132px 180px 96px 180px'
           }}>
-            D.BUZZ Terms of Services
+            D.BUZZ &nbsp; {title}
           </div>
         </Container>
       </div>
