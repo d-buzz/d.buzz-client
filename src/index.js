@@ -5,7 +5,7 @@ import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
 } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
