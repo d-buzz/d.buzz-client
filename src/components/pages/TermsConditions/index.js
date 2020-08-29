@@ -538,7 +538,7 @@ const TermsConditions = () => {
                   <div >
                     <h2>CONTACT US</h2>
                   </div>
-                  <div >
+                  <div style={{paddingBottom: 300}}>
                     <p>
                       In order to resolve a complaint regarding the Site or to receive further information regarding use of the Site, please contact us at: 
                     </p>
