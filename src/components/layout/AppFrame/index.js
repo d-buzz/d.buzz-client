@@ -1,7 +1,7 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
-import { AppBar, GuardedAppFrame, UnguardedAppFrame, OrganizationAppFrame, OrganizationAppBar } from 'components'
+import { AppBar, GuardedAppFrame, UnguardedAppFrame, OrganizationAppFrame, OrganizationAppBar, OrganizationFooter } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 
@@ -33,6 +33,7 @@ const useStyles = createUseStyles({
     '@media (min-width: 1100px)': {
       '&.container': {
         maxWidth: '1250px',
+        paddingBottom: 25,
       },
     },
   }
@@ -72,6 +73,7 @@ const AppFrame = (props) => {
           )}
         </StickyContainer>
       </Container>
+      {organizationRoutes && (<OrganizationFooter />)}
     </React.Fragment>
   )
 }
