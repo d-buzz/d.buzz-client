@@ -44,7 +44,7 @@ const useStyles = createUseStyles({
 })
 
 const OrganizationFooter = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <React.Fragment>
