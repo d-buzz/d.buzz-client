@@ -44,7 +44,7 @@ const useStyles = createUseStyles({
 })
 
 const OrganizationFooter = () => {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -52,7 +52,7 @@ const OrganizationFooter = () => {
         <Container className={classes.container}>
           <div className={classes.inner}>
             <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
-            <Link to="/org/en/tos">Terms</Link>;
+            <Link to="/org/en/tos">Terms</Link>
             <Link to="/org/en/privacy">Privacy Policy</Link>
             <Link to="/org/en/disclaimer">Disclaimer</Link>
           </div>
