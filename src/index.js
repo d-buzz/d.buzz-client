@@ -4,17 +4,16 @@ import App from './App'
 import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
-import {
-  HashRouter as Router,
-} from 'react-router-dom'
+import IpfsRouter from 'ipfs-react-router'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
 
+
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <IpfsRouter>
       <App />
-    </Router>
+    </IpfsRouter>
   </Provider>,
   document.getElementById('root')
 )

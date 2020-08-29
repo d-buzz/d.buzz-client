@@ -17,6 +17,7 @@
     "classnames": "^2.2.6",
     "hive-content-renderer": "^1.0.3",
     "immutable": "^4.0.0-rc.12",
+    "ipfs-react-router": "^0.2.2",
     "javascript-time-ago": "^2.0.13",
     "markdown-link-extractor": "^1.2.3",
     "moment": "^2.27.0",
