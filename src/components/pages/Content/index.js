@@ -308,7 +308,7 @@ const Content = (props) => {
             </div>
           </React.Fragment>
       )}
-      {!loadingReplies && !loadingContent && (
+      {!loadingReplies && !loadingContent && replyCount !== 0 && (
         <ReplyList replies={replies} expectedCount={replyCount} />
       )}
       <ContentSkeleton loading={loadingContent} />
