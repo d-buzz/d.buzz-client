@@ -174,19 +174,24 @@ const PostList = (props) => {
 
   const handleOpenContent = (author, permlink) => (e) => {
     const { target } = e
+
     let { href } = target
+
     const hostname = window.location.hostname
 
     e.preventDefault()
-    if(href && !href.includes(hostname)) {
-      window.open(href, '_blank')
-    } else {
-      if(!href) {
-        history.push(generateLink(author, permlink))
+
+    if(target.className !== 'sc-bdVaJa cjGBmU react_tinylink_card_media') {
+      if(href && !href.includes(hostname)) {
+        window.open(href, '_blank')
       } else {
-        const split = href.split('/')
-        href = `/${split[3]}`
-        history.push(href)
+        if(!href) {
+          history.push(generateLink(author, permlink))
+        } else {
+          const split = href.split('/')
+          href = `/${split[3]}`
+          history.push(href)
+        }
       }
     }
   }

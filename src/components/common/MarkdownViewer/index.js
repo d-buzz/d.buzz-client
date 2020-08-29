@@ -104,8 +104,6 @@ const prepareImages = (content) => {
     try {
       link = link.replace(/&amp;/g, '&')
 
-      console.log({ link })
-
       if(link !== '') {
 
         if((link.includes('images.hive.blog') && link.includes('.webp'))) {
