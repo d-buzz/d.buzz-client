@@ -18,7 +18,7 @@ const NotificationBox = (props) => {
         variant="outlined"
         onClose={onClose}
         severity={severity}
-        style={{ maxWidth: 300, wordBreak: 'break-all' }}
+        style={{ maxWidth: 300, wordBreak: 'break-word' }}
       >
         <AlertTitle>{`${severity.charAt(0).toUpperCase()}${severity.slice(1)}`}</AlertTitle>
         {message}
