@@ -28,6 +28,7 @@ const PreviewLastLink = ({ className, content }) => {
   }
 
   const onClick = (e) => {
+    e.stopPropagation()
     e.preventDefault()
     window.open(url)
   }
