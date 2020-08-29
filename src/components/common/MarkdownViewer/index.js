@@ -104,6 +104,8 @@ const prepareImages = (content) => {
     try {
       link = link.replace(/&amp;/g, '&')
 
+      console.log({ link })
+
       if(link !== '') {
 
         if((link.includes('images.hive.blog') && link.includes('.webp'))) {
@@ -112,10 +114,11 @@ const prepareImages = (content) => {
           (
             link.includes('dapplr-images')
             || (link.includes('//') && `${link}`.substring(0, 2) === '//')
-            || (link.includes('pbs.twimg.com') && link.includes('format=jpg'))
           ) && (!link.includes('images.hive.blog') && !link.includes('facebook.com'))
         ) {
           body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
+        } else if((link.includes('pbs.twimg.com') && link.includes('format=jpg'))) {
+          body = body.replace(`![](${link})`, `![](https://images.hive.blog/0x0/${link})`)
         }
       }
     } catch(e) { }
