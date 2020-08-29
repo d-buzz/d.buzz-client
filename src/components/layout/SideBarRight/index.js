@@ -82,9 +82,9 @@ const SideBarRight = (props) => {
       </div>
       <div className={classes.footer}>
         <div className={classes.inner}>
-          <Link to="/org/en/tos" target='_blank'>Terms</Link>
-          <Link to="/org/en/privacy" target='_blank'>Privacy Policy</Link>
-          <Link to="/org/en/disclaimer" target='_blank'>Disclaimer</Link>
+          <Link to="/org/en/tos">Terms</Link>
+          <Link to="/org/en/privacy">Privacy Policy</Link>
+          <Link to="/org/en/disclaimer">Disclaimer</Link>
           <a href="/terms">About</a> <br/ >
           <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
         </div>
