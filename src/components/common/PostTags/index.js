@@ -6,16 +6,21 @@ import { Link, useHistory } from 'react-router-dom'
 
 const useStyle = createUseStyles({
   tags: {
-    wordWrap: 'break-word',
+    wordBreak: 'break-word !important',
     width: '100%',
     height: 'max-content',
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
+    '& a': {
+      display: 'inline-block',
+      whiteSpace: 'nowrap',
+    }
   },
   default: {
     marginRight: 5,
     color: '#d32f2f !important',
-    whiteSpace: 'no-wrap !important',
+    wordBreak: 'break-word !important',
+    whiteSpace: 'nowrap',
   },
   highlighted: {
     backgroundColor: '#d32f2f',
@@ -64,15 +69,17 @@ const PostTags = (props) => {
 
   return (
     <div className={classes.tags} onClick={prevent}>
-      {tags.map((tag, index) => (
-        <Link
-          onClick={onClick(generateTagsLink(tag))}
-          key={`${tag}~${index}~${Math.random(0,100)}`}
-          className={classNames(classes.default, `${highlightTag}`.toLowerCase() === `${tag}`.toLowerCase() ? classes.highlighted : '')}
-        >
-          #{tag}
-        </Link>
-      ))}
+      <div style={{ width: '95%', wordBreak: 'break-word' }}>
+        {tags.map((tag, index) => (
+          <Link
+            onClick={onClick(generateTagsLink(tag))}
+            key={`${tag}~${index}~${Math.random(0,100)}`}
+            className={classNames(classes.default, `${highlightTag}`.toLowerCase() === `${tag}`.toLowerCase() ? classes.highlighted : '')}
+          >
+            {`#${tag}`}
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }
