@@ -27,10 +27,16 @@ const PreviewLastLink = ({ className, content }) => {
     }
   }
 
+  const onClick = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    window.open(url)
+  }
+
   return (
     <React.Fragment>
       {isValidUrl ? (
-        <div className={className}>
+        <div className={className} onClick={onClick}>
           <ReactTinyLink
             proxyUrl="http://167.71.204.127:8080"
             width="100%"
