@@ -25,10 +25,10 @@ const endpoints = [
   'https://rpc.esteem.app',
   'https://hived.privex.io',
   'https://techcoderx.com',
-  'https://rpc.esteem.app'
+  'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://rpc.esteem.app' })
+api.setOptions({ url: 'https://api.hive.blog' })
 
 config.set('alternative_api_endpoints', endpoints)
 
