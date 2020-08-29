@@ -33,6 +33,9 @@ const useStyles = createUseStyles({
   inner: {
     width: '95%',
     margin: '0 auto',
+    whiteSpace: 'nowrap !important',
+    '& a': {
+    },
   },
   searchTips: {
     fontSize: 14,
