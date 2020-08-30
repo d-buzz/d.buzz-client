@@ -13,6 +13,7 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
+import fleekStorage from '@fleekhq/fleek-storage-js'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 
@@ -895,3 +896,12 @@ export const searchPostGeneral = (query) => {
   })
 }
 
+export const uploadIpfsFile = async(file) => {
+  const uploadFile = fleekStorage.upload({
+    apikey: 'kDIjG6Nc83HtLzF52FzFVQ==',
+    apiSecret: 'ofL5tqp+batriXKYzrsqzEtNhW9R4L8I0e9GnO1xyqc=',
+    data: file,
+  })
+
+  console.log(uploadFile)
+}
