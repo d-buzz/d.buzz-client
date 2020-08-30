@@ -14,8 +14,13 @@ input:focus, textarea:focus, select:focus{
   outline: none;
 }
 
-.pull-right > a  {
+.pull-right {
   float: right!important;
+  height: max-content !important;
+}
+
+.pull-right img {
+  height: auto !important;
 }
 
 .pull-right:after {
