@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { searchRequest } from 'store/posts/actions'
+import {
+  searchRequest,
+  setPageFrom,
+} from 'store/posts/actions'
 import { anchorTop } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
@@ -56,7 +59,7 @@ const useStyles = createUseStyles({
 const Search = (props) => {
   const [index, setIndex] = useState(0)
   const classes = useStyles()
-  const { searchRequest, route, user } = props
+  const { searchRequest, setPageFrom, route, user } = props
   const location = useLocation()
   const { pathname } = location
   const params = queryString.parse(location.search)
@@ -65,6 +68,7 @@ const Search = (props) => {
   useEffect(() => {
     anchorTop()
     searchRequest(params.q)
+    setPageFrom(null)
   // eslint-disable-next-line
   }, [])
 
@@ -125,6 +129,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     searchRequest,
+    setPageFrom,
   }, dispatch)
 })
 
