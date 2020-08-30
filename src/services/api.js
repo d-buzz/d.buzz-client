@@ -40,7 +40,7 @@ export const hashBuffer = (buffer) => {
 }
 
 const invokeFilter = (item) => {
-  return (item.body.length <= 280 && item.community === `${appConfig.TAG}`)
+  return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
 export const callBridge = async(method, params) => {
@@ -206,7 +206,7 @@ export const getCommunityRole = async(observer) => {
 }
 
 // get_account_posts doesn't use tag
-export const fetchAccountPosts = (account, start_permlink = '', start_author = '', sort = 'posts') => {
+export const fetchAccountPosts = (account, start_permlink = null, start_author = null, sort = 'posts') => {
   return new Promise((resolve, reject) => {
     const params = {
       sort,
@@ -214,8 +214,11 @@ export const fetchAccountPosts = (account, start_permlink = '', start_author = '
       observer: account,
       start_author: start_author || account,
       start_permlink,
-      limit: 5,
+      limit: 30,
     }
+
+    console.log({ params })
+
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
       if(err) {
@@ -232,7 +235,7 @@ export const fetchAccountPosts = (account, start_permlink = '', start_author = '
             if(profileVisited.length !== 0) {
               profile.push(profileVisited[0])
             } else {
-              profile = await fetchProfile([account])
+              profile = await fetchProfile([account], false)
             }
 
             posts.map((item) => (
@@ -240,7 +243,7 @@ export const fetchAccountPosts = (account, start_permlink = '', start_author = '
             ))
 
           } else {
-            const getProfiledata = mapFetchProfile(posts)
+            const getProfiledata = mapFetchProfile(posts, false)
             await Promise.all([getProfiledata])
           }
 
@@ -346,7 +349,7 @@ export const isFollowing = (follower, following) => {
   })
 }
 
-export const fetchProfile = (username) => {
+export const fetchProfile = (username, checkFollow = true) => {
   const user = JSON.parse(localStorage.getItem('user'))
 
   return new Promise((resolve, reject) => {
@@ -361,16 +364,23 @@ export const fetchProfile = (username) => {
           }
 
           result[index].reputation = score
-          const follow_count = await fetchFollowCount(item.name)
-          result[index].follow_count = follow_count
 
-          let isFollowed = false
+          if(checkFollow) {
 
-          if(user) {
-            isFollowed = await isFollowing(user.username, item.name)
+            console.log('checking follow')
+
+            const follow_count = await fetchFollowCount(item.name)
+            result[index].follow_count = follow_count
+
+            let isFollowed = false
+
+            if(user) {
+              isFollowed = await isFollowing(user.username, item.name)
+            }
+
+            result[index].isFollowed = isFollowed
           }
 
-          result[index].isFollowed = isFollowed
           visited.push(result[index])
 
           if(index === result.length - 1) {
@@ -384,7 +394,7 @@ export const fetchProfile = (username) => {
   })
 }
 
-export const mapFetchProfile = (data) => {
+export const mapFetchProfile = (data, checkFollow = true) => {
   return new Promise(async(resolve, reject) => {
     try {
       let count = 0
@@ -402,7 +412,7 @@ export const mapFetchProfile = (data) => {
       let profilesFetch = []
 
       if(uniqueAuthors.length !== 0) {
-        profilesFetch = await fetchProfile(uniqueAuthors)
+        profilesFetch = await fetchProfile(uniqueAuthors, checkFollow)
       }
 
       profiles = [...profiles, ...profilesFetch]
@@ -834,7 +844,7 @@ export const searchPostTags = (tag) => {
       const data = result.data
       // console.log({ data })
       if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results)
+        const getProfiledata = mapFetchProfile(data.results, false)
         data.results = data.results.filter((item) => item.body.length <= 280)
         await Promise.all([getProfiledata])
       }
@@ -858,7 +868,7 @@ export const searchPostAuthor = (author) => {
       const data = result.data
 
       if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results)
+        const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         data.results = data.results.filter((item) => item.body.length <= 280)
       }
@@ -883,7 +893,7 @@ export const searchPostGeneral = (query) => {
       const data = result.data
 
       if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results)
+        const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         data.results = data.results.filter((item) => item.body.length <= 280)
       }
