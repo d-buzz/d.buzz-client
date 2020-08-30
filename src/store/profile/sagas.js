@@ -54,27 +54,15 @@ function* getProfileRequest(payload, meta) {
 function* getAccountPostRequest(payload, meta) {
   try{
     const { username, start_permlink, start_author } = payload
-
     const old = yield select(state => state.profile.get('posts'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
 
-    const oldPermlink = Array.isArray(old) && old.length !== 0 ? old[old.length-1].permlink : ''
-    const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
+    data = [...old, ...data]
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
 
-    if((oldPermlink !== newPermlink)) {
-
-      if(old.length !== 0) {
-        if((old[old.length-1].permlink === data[0].permlink)) {
-          data.splice(0, 1)
-        }
-      }
-
-      data = [...old, ...data]
-      yield put(setLastAccountPosts(data[data.length-1]))
-    } else {
-      yield put(setLastAccountPosts([]))
-    }
-
+    yield put(setLastAccountPosts(data[data.length-1]))
     yield put(getAccountPostsSuccess(data, meta))
   } catch(error) {
     yield put(getAccountPostsFailure(error, meta))
@@ -84,28 +72,15 @@ function* getAccountPostRequest(payload, meta) {
 function* getAccountRepliesRequest(payload, meta) {
   try {
     const { username, start_permlink, start_author } = payload
-
     const old = yield select(state => state.profile.get('replies'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'replies')
 
-    const oldPermlink = Array.isArray(old) && old.length ? old[old.length-1].permlink : ''
-    const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
-
-    if(old.length !== 0 && data.length !== 0) {
-      if((old[old.length-1].permlink === data[0].permlink)) {
-        data.splice(0, 1)
-      }
-    }
-
-    if((oldPermlink !== newPermlink)) {
-      yield put(setLastAccountReply(data[data.length-1]))
-    } else {
-      data = []
-      yield put(setLastAccountReply([]))
-    }
-
     data = [...old, ...data]
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
 
+    yield put(setLastAccountReply(data[data.length-1]))
     yield put(getAccountRepliesSuccess(data, meta))
   } catch(error) {
     yield put(getAccountRepliesFailure(error, meta))
@@ -116,16 +91,13 @@ function* getFollowersRequest(payload, meta) {
   try {
     const { username, start_follower } = payload
     const old = yield select(state => state.profile.get('followers'))
-
-
     let data = yield call(fetchFollowers, username, start_follower)
-
-    if(old.length !== 0 && data.length !== 0) {
-      old.splice(old.length-1, 1)
-    }
 
     data = [...old, ...data]
 
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['follower']).indexOf(obj['follower']) === pos
+    })
 
     yield put(setLastFollower(data[data.length-1]))
     yield put(getFollowersSuccess(data, meta))
@@ -137,15 +109,14 @@ function* getFollowersRequest(payload, meta) {
 function* getFollowingRequest(payload, meta) {
   try {
     const { username, start_following } = payload
-
     const old = yield select(state => state.profile.get('following'))
     let data = yield call(fetchFollowing, username, start_following)
 
-    if(old.length !== 0 && data.length !== 0) {
-      old.splice(old.length-1, 1)
-    }
-
     data = [...old, ...data]
+
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['following']).indexOf(obj['following']) === pos
+    })
 
     yield put(setLastFollowing(data[data.length-1]))
     yield put(getFollowingSuccess(data, meta))

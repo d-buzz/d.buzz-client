@@ -139,7 +139,7 @@ const PostList = (props) => {
     title = null,
   } = props
 
-  let { disableProfileLink = false  } = props
+  let { disableProfileLink = false, disableUserMenu = false  } = props
 
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)
@@ -222,8 +222,8 @@ const PostList = (props) => {
                       <Link
                         ref={popoverAnchor}
                         to={authorLink}
-                        onMouseEnter={openPopOver}
-                        onMouseLeave={closePopOver}
+                        onMouseEnter={!disableUserMenu ? openPopOver : () => {}}
+                        onMouseLeave={!disableUserMenu ? closePopOver : () => {}}
                       >
                         {name ? name : `${author}`}
                       </Link>
