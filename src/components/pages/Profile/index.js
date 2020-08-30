@@ -213,7 +213,7 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
-    setPageFrom('profile')
+    setPageFrom(null)
     const params = queryString.parse(location.search)
 
     if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
