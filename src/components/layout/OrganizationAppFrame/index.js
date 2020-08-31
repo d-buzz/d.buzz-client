@@ -4,7 +4,7 @@ import { renderRoutes } from 'react-router-config'
 const OrganizationAppFrame = (props) => {
   const { 
     route,
-   } = props
+  } = props
 
   return (
     <React.Fragment>

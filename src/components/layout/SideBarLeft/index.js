@@ -240,12 +240,12 @@ const SideBarLeft = (props) => {
                 />
               )}
               <ContainedButton
-                 style={{ height: 45 }}
-                 fontSize={14}
-                 label="Buzz"
-                 labelStyle={{ paddingTop: 10 }}
-                 className={classes.sideBarButton}
-                 onClick={handleClickBuzz}
+                style={{ height: 45 }}
+                fontSize={14}
+                label="Buzz"
+                labelStyle={{ paddingTop: 10 }}
+                className={classes.sideBarButton}
+                onClick={handleClickBuzz}
               />
             </div>
             <div className={classes.bottom}>

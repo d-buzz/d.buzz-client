@@ -31,7 +31,7 @@ const AccountPosts = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-      {items.map((item) => (
+        {items.map((item) => (
           <PostList
             disableProfileLink={true}
             ignoreUsername={true}

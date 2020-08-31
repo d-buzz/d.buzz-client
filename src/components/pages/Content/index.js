@@ -225,88 +225,88 @@ const Content = (props) => {
   return (
     <React.Fragment>
       {!loadingContent && (
-          <React.Fragment>
-            <div className={classes.wrapper}>
-              <br />
-              <React.Fragment>
-                {depth !== 0 && (
-                  <Row>
-                    <Col>
-                      <div className={classes.context}>
-                        <div className={classes.contextWrapper}>
-                          <h6 style={{ paddingTop: 5 }}>You are viewing a single comment's thread from:</h6>
-                          <h5>RE: {root_title}</h5>
-                          <ul>
-                            <li><Link to={generateParentLinks(root_author, root_permlink)}>View the full context</Link></li>
-                            <li><Link to={generateParentLinks(parent_author, parent_permlink)}>View the direct parent</Link></li>
-                          </ul>
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                )}
+        <React.Fragment>
+          <div className={classes.wrapper}>
+            <br />
+            <React.Fragment>
+              {depth !== 0 && (
                 <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <Avatar author={author} />
-                  </Col>
-                  <Col style={{ paddingLeft: 10 }}>
-                    <div style={{ marginTop: 2 }}>
-                      <Link
-                        ref={popoverAnchor}
-                        to={generateAuthorLink}
-                        className={classes.link}
-                        onMouseEnter={openPopOver}
-                        onMouseLeave={closePopOver}
-                      >
-                        <p className={classes.name}>
-                          {name ? name : `@${author}`}
-                        </p>
-                      </Link>
-                      <br />
-                      <p className={classes.username}>@{author}</p>
+                  <Col>
+                    <div className={classes.context}>
+                      <div className={classes.contextWrapper}>
+                        <h6 style={{ paddingTop: 5 }}>You are viewing a single comment's thread from:</h6>
+                        <h5>RE: {root_title}</h5>
+                        <ul>
+                          <li><Link to={generateParentLinks(root_author, root_permlink)}>View the full context</Link></li>
+                          <li><Link to={generateParentLinks(parent_author, parent_permlink)}>View the direct parent</Link></li>
+                        </ul>
+                      </div>
                     </div>
                   </Col>
                 </Row>
-                <MarkdownViewer content={body} minifyAssets={false} />
-                <PostTags meta={meta} />
-                <div style={{ marginTop: 10 }}>
-                  <label className={classes.meta}>
-                    {moment(`${created}Z`).local().format('LTS • \nLL')}
-                    {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
-                  </label>
-                </div>
-              </React.Fragment>
-            </div>
-            <div className={classes.wrapper}>
+              )}
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <Avatar author={author} />
+                </Col>
+                <Col style={{ paddingLeft: 10 }}>
+                  <div style={{ marginTop: 2 }}>
+                    <Link
+                      ref={popoverAnchor}
+                      to={generateAuthorLink}
+                      className={classes.link}
+                      onMouseEnter={openPopOver}
+                      onMouseLeave={closePopOver}
+                    >
+                      <p className={classes.name}>
+                        {name ? name : `@${author}`}
+                      </p>
+                    </Link>
+                    <br />
+                    <p className={classes.username}>@{author}</p>
+                  </div>
+                </Col>
+              </Row>
+              <MarkdownViewer content={body} minifyAssets={false} />
+              <PostTags meta={meta} />
+              <div style={{ marginTop: 10 }}>
+                <label className={classes.meta}>
+                  {moment(`${created}Z`).local().format('LTS • \nLL')}
+                  {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
+                </label>
+              </div>
+            </React.Fragment>
+          </div>
+          <div className={classes.wrapper}>
+            <Row>
+              <Col>
+                <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
+                <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
+              </Col>
+            </Row>
+          </div>
+          <div className={classes.full}>
+            <div className={classes.inner}>
               <Row>
                 <Col>
-                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
-                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
+                  <PostActions
+                    disableExtraPadding={true}
+                    body={body}
+                    author={username}
+                    permlink={permlink}
+                    hasUpvoted={hasUpvoted}
+                    hideStats={true}
+                    voteCount={upvotes}
+                    replyCount={replyCount}
+                    payout={payout}
+                    payoutAt={payout_at}
+                    replyRef="content"
+                  />
                 </Col>
               </Row>
             </div>
-            <div className={classes.full}>
-              <div className={classes.inner}>
-                <Row>
-                  <Col>
-                    <PostActions
-                      disableExtraPadding={true}
-                      body={body}
-                      author={username}
-                      permlink={permlink}
-                      hasUpvoted={hasUpvoted}
-                      hideStats={true}
-                      voteCount={upvotes}
-                      replyCount={replyCount}
-                      payout={payout}
-                      payoutAt={payout_at}
-                      replyRef="content"
-                    />
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </React.Fragment>
+          </div>
+        </React.Fragment>
       )}
       {!loadingReplies && !loadingContent && replyCount !== 0 && (
         <ReplyList replies={replies} expectedCount={replyCount} />

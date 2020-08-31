@@ -49,7 +49,7 @@ const Landing = (props) => {
     clearAccountPosts,
     clearAccountReplies,
     clearAppendReply,
-   } = props
+  } = props
 
   useEffect(() => {
     clearAppendReply()

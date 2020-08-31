@@ -205,8 +205,8 @@ const UserDialog = (props) => {
         onClose={onMouseLeave}
       >
         <div className={classes.wrapper}>
-        <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5 }}>
-          <div className={classes.row}>
+          <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5 }}>
+            <div className={classes.row}>
               <Row>
                 <Col xs="auto" style={{ paddingRight: 0 }}>
                   <div className={classes.left}>

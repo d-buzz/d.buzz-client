@@ -120,7 +120,7 @@ const ReplylistSkeleton = ({ loading }) => {
                         </p>
                       </Link>
                       <label className={classes.username}>
-                          <Skeleton height={10} width={120} />
+                        <Skeleton height={10} width={120} />
                       </label>
                       <Skeleton count={2} height={10} />
                     </div>

@@ -176,7 +176,7 @@ const CreateBuzzForm = (props) => {
           setSeverity('error')
           setMessage('You failed publishing a post')
         }
-    })
+      })
   }
 
   const handleDelete = (i) => {

@@ -162,7 +162,7 @@ const PostList = (props) => {
   const { name } = getProfileMetaData(profile)
 
   const generateLink = (author, permlink) =>  {
-   let link = ''
+    let link = ''
     if(unguardedLinks) {
       link = '/ug'
     }

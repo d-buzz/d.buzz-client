@@ -252,9 +252,9 @@ function* fileUploadRequest(payload, meta) {
     if(is_authenticated) {
       let data
 
-    if(file) {
-      const reader = new FileReader()
-      data = yield new Promise((resolve) => {
+      if(file) {
+        const reader = new FileReader()
+        data = yield new Promise((resolve) => {
           reader.addEventListener('load', () => {
             const result = new Buffer(reader.result, 'binary')
             resolve(result)
@@ -274,14 +274,14 @@ function* fileUploadRequest(payload, meta) {
 
       if(useKeychain) {
         const response = yield new Promise(resolve => {
-            window.hive_keychain.requestSignBuffer(
-                username,
-                JSON.stringify(buf),
-                'Posting',
-                response => {
-                    resolve(response)
-                },
-            )
+          window.hive_keychain.requestSignBuffer(
+            username,
+            JSON.stringify(buf),
+            'Posting',
+            response => {
+              resolve(response)
+            },
+          )
         })
 
         if (response.success) {

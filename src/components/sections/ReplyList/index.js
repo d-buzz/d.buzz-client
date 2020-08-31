@@ -201,7 +201,7 @@ const ReplyList = (props) => {
             }
           })
         } else {
-           rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
+          rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
         }
 
         // clear appended reply
@@ -253,7 +253,7 @@ const ReplyList = (props) => {
       'json_metadata' in profile
       && profile.json_metadata.includes('"name":')
       && profile.json_metadata.includes('"profile":')
-      ) {
+    ) {
       profile_json_metadata = profile.json_metadata
     }
 
@@ -261,7 +261,7 @@ const ReplyList = (props) => {
       'posting_metadata' in profile
       && profile.posting_metadata.includes('"name":')
       && profile.posting_metadata.includes('"profile":')
-      ) {
+    ) {
       profile_posting_metadata = profile.posting_metadata
     }
 
@@ -288,14 +288,14 @@ const ReplyList = (props) => {
 
     const generateLink = (author, permlink) =>  {
       let link = ''
-       if(!is_authenticated) {
-         link = '/ug'
-       }
+      if(!is_authenticated) {
+        link = '/ug'
+      }
 
-       link += `/@${author}/c/${permlink}`
+      link += `/@${author}/c/${permlink}`
 
-       return link
-     }
+      return link
+    }
 
     const handleOpenContent = (author, permlink) => (e) => {
       const { target } = e

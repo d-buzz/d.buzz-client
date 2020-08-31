@@ -59,20 +59,20 @@ const OrganizationAppBar = () => {
   return (
     <React.Fragment>
       <Navbar fixed="top" className={classes.nav}>
-      <Container className={classes.container}>
-        <Navbar.Brand>
-          <Link to="/">
-            <OrgIcon height={25} top={-15} style={{marginLeft: '-239'}} />
-          </Link>
+        <Container className={classes.container}>
+          <Navbar.Brand>
+            <Link to="/">
+              <OrgIcon height={25} top={-15} style={{marginLeft: '-239'}} />
+            </Link>
           &nbsp;&nbsp;
-          <span>
-           {title}
-          </span>
-        </Navbar.Brand>
-        <div style={{marginRight: '-205px'}}>
-          <Button style={{borderRadius: '20px', paddingLeft: 15}} variant="outline-light">Download: D.BUZZ User Agreement</Button>
-        </div>
-      </Container>
+            <span>
+              {title}
+            </span>
+          </Navbar.Brand>
+          <div style={{marginRight: '-205px'}}>
+            <Button style={{borderRadius: '20px', paddingLeft: 15}} variant="outline-light">Download: D.BUZZ User Agreement</Button>
+          </div>
+        </Container>
       </Navbar>
       <div className={classes.heroSection}>
         <Container style={{overflowX: 'hidden', overflowY: 'auto'}}>

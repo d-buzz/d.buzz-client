@@ -295,9 +295,9 @@ export const fetchReplies = (author, permlink) => {
       return Promise.map(replies, async(reply) => {
         const getActiveVotes = new Promise((resolve) => {
           api.getActiveVotesAsync(reply.author, reply.permlink)
-          .then((active_votes) => {
-            resolve(active_votes)
-          })
+            .then((active_votes) => {
+              resolve(active_votes)
+            })
         })
 
         const active_votes = await Promise.all([getActiveVotes])
@@ -313,9 +313,9 @@ export const fetchReplies = (author, permlink) => {
           return reply
         }
       })
-  }).catch((error) => {
-    reject(error)
-  })
+    }).catch((error) => {
+      reject(error)
+    })
 }
 
 export const fetchProfile2 = (username) => {
@@ -443,29 +443,29 @@ export const generateWif = (username, password, role) => {
 
 export const fetchFeedHistory = () => {
   return api.getFeedHistoryAsync()
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const fetchRewardFund = (username) => {
   return api.getRewardFundAsync(username)
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const wifToPublic = (privWif) => {
@@ -623,7 +623,7 @@ export const generateClearNotificationOperation = (username, lastNotification) =
           'required_auths': [],
           'required_posting_auths': [username],
           'id': 'notify',
-           json,
+          json,
         },
       ],
     ]
@@ -643,7 +643,7 @@ export const generateFollowOperation = (follower, following) => {
           'required_auths': [],
           'required_posting_auths': [follower],
           'id': 'follow',
-           json,
+          json,
         },
       ],
     ]
@@ -663,7 +663,7 @@ export const generateUnfollowOperation = (follower, following) => {
           'required_auths': [],
           'required_posting_auths': [follower],
           'id': 'follow',
-           json,
+          json,
         },
       ],
     ]

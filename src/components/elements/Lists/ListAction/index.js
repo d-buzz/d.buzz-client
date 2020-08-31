@@ -49,8 +49,8 @@ const ListAction = (props) => {
       <div className={classes.wrapper}>
         <Link to={href} className={classes.linkWrapper}>
           <div className={classes.inner}>
-              <label className={classes.label}>{label}</label> <br />
-              <label className={classes.subLabel}>{subLabel}</label>
+            <label className={classes.label}>{label}</label> <br />
+            <label className={classes.subLabel}>{subLabel}</label>
           </div>
         </Link>
       </div>

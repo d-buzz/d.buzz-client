@@ -79,7 +79,7 @@ const ContentSkeleton = ({ loading }) => {
                     </Link>
                     <br />
                     <p className={classes.username}>
-                        <Skeleton height={10} width={120} />
+                      <Skeleton height={10} width={120} />
                     </p>
                   </div>
                 </Col>
