@@ -12,6 +12,12 @@ All development will be on the ```dev``` branch, ```master``` branch will only b
 4. Changes will be deployed to ```development``` server
 5. Approve changes on ```development``` server will be deployed to ```production```
 
+### Test
+
+Perform lint test
+
+1. ```npm run lint```
+
 ### CI/CD
 
 1. Fleek - IPFS

@@ -92,7 +92,7 @@ const GuardedAppFrame = (props) => {
   const history = useHistory()
   const location = useLocation()
   const lastLocation = useLastLocation()
-  let params = queryString.parse(location.search) || ''
+  const params = queryString.parse(location.search) || ''
   const [search, setSearch] = useState(params.q)
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState()
@@ -179,13 +179,13 @@ const GuardedAppFrame = (props) => {
       <Row>
         <Col xs="auto" className={classes.clearPadding}>
           <div style={{ width: 270 }}>
-          <Sticky>
-            {({ style }) => (
-              <div style={{...style}}>
-                <SideBarLeft/>
-              </div>
-            )}
-          </Sticky>
+            <Sticky>
+              {({ style }) => (
+                <div style={{...style}}>
+                  <SideBarLeft/>
+                </div>
+              )}
+            </Sticky>
           </div>
         </Col>
         <Col xs="auto" className={classes.clearPadding}>
@@ -220,7 +220,7 @@ const GuardedAppFrame = (props) => {
                     <div style={{ width: '100%' }}>
                       <ContainedButton
                         fontSize={12}
-                        style={{ float: 'right', marginTop: 5, }}
+                        style={{ float: 'right', marginTop: 5 }}
                         transparent={true}
                         label="Mark all as read"
                         loading={loading}
@@ -264,7 +264,7 @@ const GuardedAppFrame = (props) => {
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
-  count: state.polling.get('count')
+  count: state.polling.get('count'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -272,7 +272,7 @@ const mapDispatchToProps = (dispatch) => ({
     searchRequest,
     clearSearchPosts,
     clearNotificationsRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GuardedAppFrame)

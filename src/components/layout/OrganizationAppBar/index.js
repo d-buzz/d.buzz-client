@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import {
-  OrgIcon
+  OrgIcon,
 } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { Link, useLocation } from 'react-router-dom'
@@ -34,8 +34,8 @@ const useStyles = createUseStyles({
     backgroundSize: '85%',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: '45% 73%',
-    backgroundImage: `url("./../../dbuzz.png")`
-  }
+    backgroundImage: `url("./../../dbuzz.png")`,
+  },
 })
 
 const OrganizationAppBar = () => {
@@ -59,20 +59,20 @@ const OrganizationAppBar = () => {
   return (
     <React.Fragment>
       <Navbar fixed="top" className={classes.nav}>
-      <Container className={classes.container}>
-        <Navbar.Brand>
-          <Link to="/">
-            <OrgIcon height={25} top={-15} style={{marginLeft: '-239'}} />
-          </Link>
+        <Container className={classes.container}>
+          <Navbar.Brand>
+            <Link to="/">
+              <OrgIcon height={25} top={-15} style={{marginLeft: '-239'}} />
+            </Link>
           &nbsp;&nbsp;
-          <span>
-           {title}
-          </span>
-        </Navbar.Brand>
-        <div style={{marginRight: '-205px'}}>
-          <Button style={{borderRadius: '20px', paddingLeft: 15}} variant="outline-light">Download: D.BUZZ User Agreement</Button>
-        </div>
-      </Container>
+            <span>
+              {title}
+            </span>
+          </Navbar.Brand>
+          <div style={{marginRight: '-205px'}}>
+            <Button style={{borderRadius: '20px', paddingLeft: 15}} variant="outline-light">Download: D.BUZZ User Agreement</Button>
+          </div>
+        </Container>
       </Navbar>
       <div className={classes.heroSection}>
         <Container style={{overflowX: 'hidden', overflowY: 'auto'}}>
@@ -81,7 +81,7 @@ const OrganizationAppBar = () => {
             fontSize: '96px',
             color: 'white',
             lineHeight: '1em',
-            padding: '132px 180px 96px 180px'
+            padding: '132px 180px 96px 180px',
           }}>
             D.BUZZ &nbsp; {title}
           </div>

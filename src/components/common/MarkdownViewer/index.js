@@ -50,7 +50,7 @@ const useStyles = createUseStyles({
         textDecoration: 'none !important',
         color: 'black',
       },
-    }
+    },
   },
   minified: {
     '& iframe': {
@@ -90,7 +90,7 @@ const useStyles = createUseStyles({
       marginTop: 5,
       border: '1px solid #ccd6dd',
     },
-  }
+  },
 })
 
 // prepare images that are currently not supported on hive-content-renderer
@@ -161,7 +161,8 @@ const render = (content, style, markdownClass, assetClass) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  let { content = '', minifyAssets = true, onModal = false } = props
+  const {  minifyAssets = true, onModal = false  } = props
+  let { content = '' } = props
   const original = content
   content = prepareImages(content)
   content = prepareTwitterEmbeds(content)

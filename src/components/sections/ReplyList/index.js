@@ -95,7 +95,7 @@ const useStyles = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -141,6 +141,8 @@ const countReplies = async (replies = []) => {
 const ReplyList = (props) => {
   let {
     replies,
+  } = props
+  const {
     expectedCount,
     user,
     append,
@@ -187,10 +189,10 @@ const ReplyList = (props) => {
         const firstIndex = tree[0]
         tree.splice(0, 1)
 
-        let iterableState = [...repliesState]
+        const iterableState = [...repliesState]
         const first = iterableState[firstIndex]
 
-        let prefix = 'first'
+        const prefix = 'first'
         let rep = ''
 
         if(tree.length !== 0 ) {
@@ -201,7 +203,7 @@ const ReplyList = (props) => {
             }
           })
         } else {
-           rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
+          rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
         }
 
         // clear appended reply
@@ -253,7 +255,7 @@ const ReplyList = (props) => {
       'json_metadata' in profile
       && profile.json_metadata.includes('"name":')
       && profile.json_metadata.includes('"profile":')
-      ) {
+    ) {
       profile_json_metadata = profile.json_metadata
     }
 
@@ -261,7 +263,7 @@ const ReplyList = (props) => {
       'posting_metadata' in profile
       && profile.posting_metadata.includes('"name":')
       && profile.posting_metadata.includes('"profile":')
-      ) {
+    ) {
       profile_posting_metadata = profile.posting_metadata
     }
 
@@ -288,14 +290,14 @@ const ReplyList = (props) => {
 
     const generateLink = (author, permlink) =>  {
       let link = ''
-       if(!is_authenticated) {
-         link = '/ug'
-       }
+      if(!is_authenticated) {
+        link = '/ug'
+      }
 
-       link += `/@${author}/c/${permlink}`
+      link += `/@${author}/c/${permlink}`
 
-       return link
-     }
+      return link
+    }
 
     const handleOpenContent = (author, permlink) => (e) => {
       const { target } = e
@@ -321,12 +323,12 @@ const ReplyList = (props) => {
       <React.Fragment>
         <div className={classes.row}>
           <div className={classes.inner}>
-            <Row style={{ paddingBottom: 0, marginBottom: 0, }}>
+            <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
               <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent(author, permlink)}>
                 <div className={classes.left}>
                   <Avatar author={author} />
                   {replies.length !== 0 && (
-                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
+                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1 }} />
                   )}
                 </div>
               </Col>
@@ -346,7 +348,7 @@ const ReplyList = (props) => {
                       @{author} &bull;&nbsp;
                       {moment(`${created}Z`).local().fromNow()}
                     </label>
-                    <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    <p style={{ marginTop: -10, fontSize: 14 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                     <MarkdownViewer minifyAssets={false} content={body} />
                     <PostTags meta={meta} />
                   </div>
@@ -420,7 +422,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearAppendReply,
     setPageFrom,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReplyList)

@@ -7,7 +7,7 @@ const AuthGuard = (props) => {
   const location = useLocation()
   const { pathname } = location
   const { is_authenticated } = user
-  
+
   const isFreeRoute = ()  => {
     return pathname.match(/^(\/org)/g)
   }
@@ -19,10 +19,10 @@ const AuthGuard = (props) => {
   return (
     <React.Fragment>
       {isUnguardedRoute() && is_authenticated && !isFreeRoute() && (
-        <Redirect to={{ pathname: '/', }} />
+        <Redirect to={{ pathname: '/' }} />
       )}
       {!isUnguardedRoute() && !is_authenticated && !isFreeRoute() && (
-        <Redirect to={{ pathname: '/ug', }} />
+        <Redirect to={{ pathname: '/ug' }} />
       )}
       {children}
     </React.Fragment>

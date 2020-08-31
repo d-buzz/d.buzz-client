@@ -27,7 +27,7 @@ const PrettoSlider = withStyles({
     height: 5,
     '& .MuiSlider-markLabel': {
       fontSize: 12,
-    }
+    },
   },
   thumb: {
     height: 15,
@@ -121,15 +121,15 @@ const useStyles = createUseStyles({
     '& span': {
       fontFamily: 'Segoe-Bold',
       marginTop: -5,
-    }
+    },
   },
   sliderWrapper: {
     width: '98%',
-    paddingRight: 30
-  }
+    paddingRight: 30,
+  },
 })
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false, }) => {
+const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
   return (
     <div className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
       <div className={inlineClass}>
@@ -160,7 +160,7 @@ const PostActions = (props) => {
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
-    disableExtraPadding = false
+    disableExtraPadding = false,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -258,7 +258,7 @@ const PostActions = (props) => {
                   icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
                   hideStats={hideStats}
                   stat={(
-                    <label style={{ marginLeft: 5, }}>
+                    <label style={{ marginLeft: 5 }}>
                       {vote}
                     </label>
                   )}
@@ -273,7 +273,7 @@ const PostActions = (props) => {
                   disabled={!is_authenticated}
                   onClick={handleClickShowSlider}
                   stat={(
-                    <label style={{ marginLeft: 5, }}>
+                    <label style={{ marginLeft: 5 }}>
                       {vote}
                     </label>
                   )}
@@ -287,7 +287,7 @@ const PostActions = (props) => {
                   hideStats={hideStats}
                   onClick={handleClickShowSlider}
                   stat={(
-                    <label style={{ marginLeft: 5, }}>
+                    <label style={{ marginLeft: 5 }}>
                       {voteCount}
                     </label>
                   )}
@@ -303,7 +303,7 @@ const PostActions = (props) => {
                 disabled={!is_authenticated}
                 onClick={handleClickReply(author, permlink)}
                 stat={(
-                  <label style={{ marginLeft: 5, }}>
+                  <label style={{ marginLeft: 5 }}>
                     {replyStateCount}
                   </label>
                 )}
@@ -318,9 +318,9 @@ const PostActions = (props) => {
                   <Chip
                     className={classes.chip}
                     size='small'
-                    icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
+                    icon={<HiveIcon style={{ paddingLeft: 5 }}/>}
                     label={(
-                      <span style={{ color: '#e53935', fontSize: 14, }}>
+                      <span style={{ color: '#e53935', fontSize: 14 }}>
                         ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
                         {payoutAt ? getPayoutDate(payoutAt) : ''}
                       </span>
@@ -386,7 +386,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     upvoteRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostActions)

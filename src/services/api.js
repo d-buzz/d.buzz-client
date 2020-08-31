@@ -44,7 +44,7 @@ const invokeFilter = (item) => {
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params,}
+    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params }
 
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
@@ -53,7 +53,7 @@ export const callBridge = async(method, params) => {
         const result = data.filter((item) => invokeFilter(item))
 
         if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result)
+          const getProfiledata = mapFetchProfile(result, false)
           await Promise.all([getProfiledata])
         }
         resolve(result)
@@ -102,11 +102,11 @@ export const fetchDiscussions = (author, permlink) => {
         reject(err)
       } else {
 
-        let authors = []
+        const authors = []
         let profile = []
 
         const arr = Object.values(data)
-        let uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
+        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
         uniqueAuthors.forEach((item) => {
           if(!authors.includes(item)) {
@@ -128,7 +128,7 @@ export const fetchDiscussions = (author, permlink) => {
 
         const getChildren = (reply) => {
           const { replies } = reply
-          let children = []
+          const children = []
 
           replies.forEach(async(item) => {
 
@@ -295,9 +295,9 @@ export const fetchReplies = (author, permlink) => {
       return Promise.map(replies, async(reply) => {
         const getActiveVotes = new Promise((resolve) => {
           api.getActiveVotesAsync(reply.author, reply.permlink)
-          .then((active_votes) => {
-            resolve(active_votes)
-          })
+            .then((active_votes) => {
+              resolve(active_votes)
+            })
         })
 
         const active_votes = await Promise.all([getActiveVotes])
@@ -313,9 +313,9 @@ export const fetchReplies = (author, permlink) => {
           return reply
         }
       })
-  }).catch((error) => {
-    reject(error)
-  })
+    }).catch((error) => {
+      reject(error)
+    })
 }
 
 export const fetchProfile2 = (username) => {
@@ -397,7 +397,7 @@ export const mapFetchProfile = (data, checkFollow = true) => {
   return new Promise(async(resolve, reject) => {
     try {
       let count = 0
-      let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
+      const uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
       let profiles = []
 
       uniqueAuthors.forEach((item, index) => {
@@ -443,29 +443,29 @@ export const generateWif = (username, password, role) => {
 
 export const fetchFeedHistory = () => {
   return api.getFeedHistoryAsync()
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const fetchRewardFund = (username) => {
   return api.getRewardFundAsync(username)
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const wifToPublic = (privWif) => {
@@ -478,7 +478,7 @@ export const generateKeys = (username, password, role) => {
 
 export const packLoginData = (username, password) => {
   return new Buffer(
-    `${username}\t${password}`
+    `${username}\t${password}`,
   ).toString('hex')
 }
 
@@ -591,7 +591,7 @@ export const keychainSignIn = (username) => {
       'Posting',
       response => {
         resolve(response)
-      }
+      },
     )
   })
 }
@@ -605,7 +605,7 @@ export const keychainUpvote = (username, permlink, author, weight) => {
       weight,
       response => {
         resolve(response)
-      }
+      },
     )
   })
 }
@@ -614,7 +614,7 @@ export const generateClearNotificationOperation = (username, lastNotification) =
   return new Promise((resolve) => {
 
     const date = lastNotification.date
-    let json = JSON.stringify(["setLastRead",{ date }])
+    const json = JSON.stringify(["setLastRead",{ date }])
 
     const operation = [
       [
@@ -623,9 +623,9 @@ export const generateClearNotificationOperation = (username, lastNotification) =
           'required_auths': [],
           'required_posting_auths': [username],
           'id': 'notify',
-           json,
-        }
-      ]
+          json,
+        },
+      ],
     ]
 
     resolve(operation)
@@ -634,7 +634,7 @@ export const generateClearNotificationOperation = (username, lastNotification) =
 
 export const generateFollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
 
     const operation = [
       [
@@ -643,9 +643,9 @@ export const generateFollowOperation = (follower, following) => {
           'required_auths': [],
           'required_posting_auths': [follower],
           'id': 'follow',
-           json,
-        }
-      ]
+          json,
+        },
+      ],
     ]
 
     resolve(operation)
@@ -654,7 +654,7 @@ export const generateFollowOperation = (follower, following) => {
 
 export const generateUnfollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
 
     const operation = [
       [
@@ -663,9 +663,9 @@ export const generateUnfollowOperation = (follower, following) => {
           'required_auths': [],
           'required_posting_auths': [follower],
           'id': 'follow',
-           json,
-        }
-      ]
+          json,
+        },
+      ],
     ]
 
     resolve(operation)
@@ -674,7 +674,7 @@ export const generateUnfollowOperation = (follower, following) => {
 
 export const generateSubscribeOperation = (username) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
+    const json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
 
     const operation = [
       [
@@ -684,8 +684,8 @@ export const generateSubscribeOperation = (username) => {
           'required_posting_auths': [username],
           'id': 'community',
           json,
-        }
-      ]
+        },
+      ],
     ]
 
     resolve(operation)
@@ -709,7 +709,7 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
         parent_permlink,
         permlink,
         json_metadata,
-      }
+      },
     ]]
 
     resolve(op_comment)
@@ -720,7 +720,7 @@ export const generatePostOperations = (account, title, body, tags) => {
 
   const json_metadata = createMeta(tags)
 
-  let permlink = createPermlink(title)
+  const permlink = createPermlink(title)
 
   const operations = []
 
@@ -736,7 +736,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'parent_permlink': `${appConfig.TAG}`,
         permlink,
         json_metadata,
-      }
+      },
     ]
 
     operations.push(op_comment)
@@ -752,8 +752,8 @@ export const generatePostOperations = (account, title, body, tags) => {
         'percent_steem_dollars': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
-        'extensions': []
-      }
+        'extensions': [],
+      },
     ]
 
     operations.push(op_comment_options)
@@ -775,7 +775,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
         } else {
           resolve(response)
         }
-      }
+      },
     )
   })
 }
@@ -800,7 +800,7 @@ export const broadcastOperation = (operations, keys) => {
             result,
           })
         }
-      }
+      },
     )
   })
 }
@@ -811,12 +811,12 @@ export const slug = (text) => {
 
 export const createMeta = (tags = []) => {
 
-  let uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
+  const uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
   const meta = {
     app: 'dBuzz/v1.0.0',
     // app: 'hiveph/v1.0.0',
-    tags: uniqueTags
+    tags: uniqueTags,
   }
 
   return JSON.stringify(meta)

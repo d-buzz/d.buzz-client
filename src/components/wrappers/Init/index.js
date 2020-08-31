@@ -74,7 +74,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getTrendingTagsRequest,
     getSavedUserRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(null, mapDispatchToProps)(Init)

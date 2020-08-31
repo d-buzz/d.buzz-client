@@ -74,7 +74,7 @@ const useStyles = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -106,7 +106,7 @@ const ReplylistSkeleton = ({ loading }) => {
                 <Col xs="auto" style={{ paddingRight: 0 }}>
                   <div className={classes.left}>
                     <Skeleton circle={true} height={50} width={50} />
-                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#eee', backgroundImage: 'linear-gradient( 90deg,#eee,#f5f5f5,#eee )', height: '100%', flexGrow: 1, }} />
+                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#eee', backgroundImage: 'linear-gradient( 90deg,#eee,#f5f5f5,#eee )', height: '100%', flexGrow: 1 }} />
                   </div>
                 </Col>
                 <Col>
@@ -120,7 +120,7 @@ const ReplylistSkeleton = ({ loading }) => {
                         </p>
                       </Link>
                       <label className={classes.username}>
-                          <Skeleton height={10} width={120} />
+                        <Skeleton height={10} width={120} />
                       </label>
                       <Skeleton count={2} height={10} />
                     </div>

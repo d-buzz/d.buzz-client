@@ -88,7 +88,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -112,36 +112,36 @@ const SearchPeople = (props) => {
   return (
     <React.Fragment>
       {(items.people || []).map((item) => (
-          <div className={classes.wrapper}>
-            <div className={classes.row}>
-              <Link to={`/@${item.account}`}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Avatar author={item.account} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <p className={classes.name}>
+        <div className={classes.wrapper}>
+          <div className={classes.row}>
+            <Link to={`/@${item.account}`}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={item.account} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <p className={classes.name}>
                           @{item.account} <Chip  size="small" label={item.repscore} />
-                        </p>
-                        <div className={classes.content}>
-                          <label className={classes.username}>
-                            {getAbout(item.profile)}
-                          </label>
-                        </div>
+                      </p>
+                      <div className={classes.content}>
+                        <label className={classes.username}>
+                          {getAbout(item.profile)}
+                        </label>
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </Link>
-            </div>
+                  </div>
+                </Col>
+              </Row>
+            </Link>
           </div>
-        ))}
-        <AvatarlistSkeleton loading={loading} />
-        {(!loading && (items.people || []).length === 0) &&
+        </div>
+      ))}
+      <AvatarlistSkeleton loading={loading} />
+      {(!loading && (items.people || []).length === 0) &&
           (<center><br/><h6>No people found with that username</h6></center>)}
     </React.Fragment>
   )

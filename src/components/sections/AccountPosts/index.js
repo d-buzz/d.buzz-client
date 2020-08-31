@@ -31,7 +31,7 @@ const AccountPosts = (props) => {
         next={loadMorePosts}
         hasMore={true}
       >
-      {items.map((item) => (
+        {items.map((item) => (
           <PostList
             disableProfileLink={true}
             ignoreUsername={true}
@@ -67,7 +67,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getAccountPostsRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPosts)

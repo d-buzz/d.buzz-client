@@ -12,16 +12,16 @@ const SidebarRightSkeleton = ({ loading }) => {
         <React.Fragment>
           <div>
             <ListGroup label="Trends for you">
-                <Skeleton height={50} />
-                <br />
-                <Skeleton height={50} />
-                <br />
-                <Skeleton height={50} />
-                <br />
-                <Skeleton height={50} />
-                <br />
-                <Skeleton height={50} />
-                <br />
+              <Skeleton height={50} />
+              <br />
+              <Skeleton height={50} />
+              <br />
+              <Skeleton height={50} />
+              <br />
+              <Skeleton height={50} />
+              <br />
+              <Skeleton height={50} />
+              <br />
             </ListGroup>
           </div>
         </React.Fragment>

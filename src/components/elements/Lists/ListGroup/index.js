@@ -17,7 +17,7 @@ const useStyles = createUseStyles({
     fontWeight: 'bold',
     fontSize: 18,
     fontFamily: 'Segoe-Bold',
-  }
+  },
 })
 
 const ListGroup = (props) => {

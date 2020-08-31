@@ -11,6 +11,12 @@
         "children": true
       }
     ],
-    "semi": [2, "never"]
+    "semi": [2, "never"],
+    "comma-dangle": ["error", "always-multiline"],
+    "indent": ["error", 2],
+    "prefer-const": ["error", {
+      "destructuring": "any",
+      "ignoreReadBeforeAssign": false
+    }]
   }
 }

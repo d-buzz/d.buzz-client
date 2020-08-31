@@ -83,7 +83,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -97,14 +97,14 @@ const useStyle = createUseStyles({
     pointerEvents: 'none',
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   paper: {
     pointerEvents: "auto",
     padding: 2,
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   button: {
     width: 85,
@@ -139,7 +139,7 @@ const PostList = (props) => {
     title = null,
   } = props
 
-  let { disableProfileLink = false, disableUserMenu = false  } = props
+  const { disableProfileLink = false, disableUserMenu = false  } = props
 
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)
@@ -162,7 +162,7 @@ const PostList = (props) => {
   const { name } = getProfileMetaData(profile)
 
   const generateLink = (author, permlink) =>  {
-   let link = ''
+    let link = ''
     if(unguardedLinks) {
       link = '/ug'
     }
@@ -214,7 +214,7 @@ const PostList = (props) => {
                 <Avatar author={author} />
               </div>
             </Col>
-            <Col xs="auto" style={{ paddingLeft: 5, }}>
+            <Col xs="auto" style={{ paddingLeft: 5 }}>
               <div className={classes.right}>
                 <div className={classes.content}>
                   <label className={classes.name}>

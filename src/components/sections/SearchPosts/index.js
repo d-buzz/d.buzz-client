@@ -52,7 +52,7 @@ const SearchPosts = (props) => {
             payoutAt={item.payout_at}
             highlightTag={`${query}`.replace('#', '')}
             disableUserMenu={true}
-          />)
+          />),
         )}
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />

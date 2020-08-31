@@ -77,7 +77,7 @@ const Tags = (props) => {
           profile={item.profile}
           payoutAt={item.payout_at}
           highlightTag={tag}
-        />)
+        />),
       )}
       <PostlistSkeleton loading={loading} />
       {(!loading && results.length === 0) &&
@@ -90,7 +90,7 @@ const mapStateToProps = (state) => ({
   items: state.posts.get('searchTag'),
   last: state.posts.get('lastSearchTag'),
   loading: pending(state, 'GET_SEARCH_TAG_REQUEST'),
-  visited: state.posts.get('isTagsVisited')
+  visited: state.posts.get('isTagsVisited'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -101,7 +101,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     setPageFrom,
     clearSearchPosts,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tags)
