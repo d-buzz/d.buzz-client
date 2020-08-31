@@ -66,4 +66,3 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state
   }
 }
-
