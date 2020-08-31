@@ -337,8 +337,8 @@ const ReplyList = (props) => {
                       ref={popoverAnchor}
                       to={`${authorLink}?ref=replies`}
                       className={classNames(classes.link, classes.name)}
-                      onMouseEnter={openPopOver}
-                      onMouseLeave={closePopOver}
+                      // onMouseEnter={openPopOver}
+                      // onMouseLeave={closePopOver}
                     >
                       {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
                     </Link>

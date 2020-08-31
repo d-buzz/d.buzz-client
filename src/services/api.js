@@ -121,7 +121,7 @@ export const fetchDiscussions = (author, permlink) => {
         })
 
         if(authors.length !== 0 ) {
-          const info = await fetchProfile(authors)
+          const info = await fetchProfile(authors, false)
           profile = [ ...profile, ...info]
         }
 

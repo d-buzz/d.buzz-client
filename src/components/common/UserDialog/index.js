@@ -40,7 +40,7 @@ const useStyles = createUseStyles({
     margin: 0,
     width: '97%',
     fontSize: 14,
-    wordBreak: 'break-all',
+    wordBreak: 'break-word',
   },
   popover: {
     pointerEvents: 'none',
