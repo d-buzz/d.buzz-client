@@ -6,7 +6,7 @@ const useStyles = createUseStyles({
   loader: {
     width: 'max-content',
     margin: '0 auto',
-  }
+  },
 })
 
 const Spinner = ({ loading, top = 30, size, style = {} }) => {

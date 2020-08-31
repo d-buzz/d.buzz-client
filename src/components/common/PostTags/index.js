@@ -14,7 +14,7 @@ const useStyle = createUseStyles({
     '& a': {
       display: 'inline-block',
       whiteSpace: 'nowrap',
-    }
+    },
   },
   default: {
     marginRight: 5,

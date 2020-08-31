@@ -59,7 +59,7 @@ import {
 
   SEARCH_REQUEST,
   searchSuccess,
-  searchFailure
+  searchFailure,
 } from './actions'
 
 import {
@@ -155,7 +155,7 @@ function* getTrendingPostsRequest(payload, meta) {
   const method = 'get_ranked_posts'
 
   try {
-    let old = yield select(state => state.posts.get('trending'))
+    const old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -174,7 +174,7 @@ function* getHomePostsRequest(payload, meta) {
   const method = 'get_ranked_posts'
 
   try {
-    let old = yield select(state => state.posts.get('home'))
+    const old = yield select(state => state.posts.get('home'))
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -193,7 +193,7 @@ function* getLatestPostsRequest(payload, meta) {
   const method = 'get_ranked_posts'
 
   try {
-    let old = yield select(state => state.posts.get('latest'))
+    const old = yield select(state => state.posts.get('latest'))
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -252,9 +252,9 @@ function* fileUploadRequest(payload, meta) {
     if(is_authenticated) {
       let data
 
-    if(file) {
-      const reader = new FileReader()
-      data = yield new Promise((resolve) => {
+      if(file) {
+        const reader = new FileReader()
+        data = yield new Promise((resolve) => {
           reader.addEventListener('load', () => {
             const result = new Buffer(reader.result, 'binary')
             resolve(result)
@@ -274,14 +274,14 @@ function* fileUploadRequest(payload, meta) {
 
       if(useKeychain) {
         const response = yield new Promise(resolve => {
-            window.hive_keychain.requestSignBuffer(
-                username,
-                JSON.stringify(buf),
-                'Posting',
-                response => {
-                    resolve(response)
-                }
-            )
+          window.hive_keychain.requestSignBuffer(
+            username,
+            JSON.stringify(buf),
+            'Posting',
+            response => {
+              resolve(response)
+            },
+          )
         })
 
         if (response.success) {
@@ -331,7 +331,7 @@ function* publishPostRequest(payload, meta) {
 
     let success = false
     const comment_options = operations[1]
-    let permlink = comment_options[1].permlink
+    const permlink = comment_options[1].permlink
 
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operations)
@@ -399,7 +399,7 @@ function* publishReplyRequest(payload, meta) {
         ref,
         author: parent_author,
         permlink: parent_permlink,
-        treeHistory
+        treeHistory,
       }
       replyData = reply
     }

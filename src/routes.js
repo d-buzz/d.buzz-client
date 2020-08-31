@@ -27,7 +27,7 @@ const routes =  [
       {
         path: '/',
         exact: true,
-        component: Home
+        component: Home,
       },
       {
         path: '/org/en/tos',
@@ -87,7 +87,7 @@ const routes =  [
             exact: true,
             component: SearchPeople,
           },
-        ]
+        ],
       },
       {
         path: '/search',
@@ -103,7 +103,7 @@ const routes =  [
             exact: true,
             component: SearchPeople,
           },
-        ]
+        ],
       },
       {
         path: '/tags',
@@ -142,8 +142,8 @@ const routes =  [
             path: '/ug/@:username/t/following',
             exact: true,
             component: AccountFollowing,
-          }
-        ]
+          },
+        ],
       },
       {
         path: '/@:username',
@@ -173,10 +173,10 @@ const routes =  [
             path: '/@:username/t/following',
             exact: true,
             component: AccountFollowing,
-          }
-        ]
+          },
+        ],
       },
-    ]
+    ],
   },
 ]
 

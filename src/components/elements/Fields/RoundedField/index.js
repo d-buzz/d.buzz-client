@@ -25,7 +25,7 @@ const useStyles = createUseStyles({
   iconWrapper: {
     paddingLeft: 15,
     paddingRight: 10,
-  }
+  },
 })
 
 const IconWrapper = ({ children, className }) => {

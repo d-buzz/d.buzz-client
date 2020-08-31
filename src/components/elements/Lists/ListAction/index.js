@@ -16,7 +16,7 @@ const useStyles = createUseStyles({
     transitionProperty: 'background-color',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.03)',
-    }
+    },
   },
   label: {
     paddingTop: 10,
@@ -36,8 +36,8 @@ const useStyles = createUseStyles({
     },
     '& label': {
       cursor: 'pointer',
-    }
-  }
+    },
+  },
 })
 
 const ListAction = (props) => {
@@ -49,8 +49,8 @@ const ListAction = (props) => {
       <div className={classes.wrapper}>
         <Link to={href} className={classes.linkWrapper}>
           <div className={classes.inner}>
-              <label className={classes.label}>{label}</label> <br />
-              <label className={classes.subLabel}>{subLabel}</label>
+            <label className={classes.label}>{label}</label> <br />
+            <label className={classes.subLabel}>{subLabel}</label>
           </div>
         </Link>
       </div>

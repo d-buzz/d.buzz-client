@@ -10,13 +10,13 @@ const useStyles = createUseStyles({
     paddintTop: 400,
     display: 'block',
     '& li': {
-      listStyleType: 'none'
+      listStyleType: 'none',
     },
     '& a': {
       color: '#f83541',
       fontFamily: 'Segoe-Bold',
       fontSize: 14,
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
     '& h2': {
       fontFamily: 'Segoe-Bold',
@@ -27,15 +27,15 @@ const useStyles = createUseStyles({
     },
     '& i': {
       fontSize: 14,
-    }
+    },
   },
   hero: {
     paddingTop: 100,
-    textAlign: 'justify'
+    textAlign: 'justify',
   },
   outsideWrapper: {
-    paddingTop: 50
-  }
+    paddingTop: 50,
+  },
 })
 
 const Disclaimer = () => {
@@ -54,7 +54,7 @@ const Disclaimer = () => {
                       'section-2', 
                       'section-3', 
                       'section-4', 
-                      'section-5'
+                      'section-5',
                     ]} currentClassName="is-current">
                       <li><a href="#section-1">1. WEBSITE DISCLAIMER</a></li>
                       <li><a href="#section-2">2. EXTERNAL LINKS DISCLAIMER</a></li>

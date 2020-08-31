@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, publishPostRequest, setPageFrom, } from 'store/posts/actions'
+import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -91,7 +91,7 @@ const useStyles = createUseStyles({
     fontSize: 14,
     color: '#e53935',
     paddingTop: 2,
-  }
+  },
 })
 
 const KeyCodes = {
@@ -176,7 +176,7 @@ const CreateBuzzForm = (props) => {
           setSeverity('error')
           setMessage('You failed publishing a post')
         }
-    })
+      })
   }
 
   const handleDelete = (i) => {
@@ -207,7 +207,7 @@ const CreateBuzzForm = (props) => {
         </div>
         <div className={classNames(classes.inline, classes.right)}>
           {publishing && (
-            <div style={{ width: '100%', paddingTop: 10, }}>
+            <div style={{ width: '100%', paddingTop: 10 }}>
               <Box  position="relative" display="inline-flex">
                 <Spinner top={0} size={20} loading={publishing} />&nbsp;
                 <label className={classes.actionLabels}>broadcasting your buzz to the network, please wait ...</label>&nbsp;
@@ -216,7 +216,7 @@ const CreateBuzzForm = (props) => {
           )}
           {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           {!publishing &&(
-            <div style={{ width: '100%', paddingBottom: 5, }}>
+            <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
                 placeholder="Add tags"
                 tags={tags}
@@ -261,7 +261,7 @@ const CreateBuzzForm = (props) => {
               <IconButton size="medium" onClick={handleFileSelect}>
                 <UploadIcon />
               </IconButton>
-              <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
+              <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
                     circle: classes.circle,
@@ -297,7 +297,7 @@ const mapDispatchToProps = (dispatch) => ({
     uploadFileRequest,
     publishPostRequest,
     setPageFrom,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBuzzForm)

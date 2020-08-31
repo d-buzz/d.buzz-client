@@ -12,7 +12,7 @@ import {
   setTrendingIsVisited,
   setLatestIsVisited,
   setTagsIsVisited,
-  clearAppendReply
+  clearAppendReply,
 } from 'store/posts/actions'
 import {
   clearAccountPosts,
@@ -30,7 +30,7 @@ const useStyles = createUseStyles({
   headerWrapper: {
     width: '98%',
     margin: '0 auto',
-  }
+  },
 })
 
 const Landing = (props) => {
@@ -49,7 +49,7 @@ const Landing = (props) => {
     clearAccountPosts,
     clearAccountReplies,
     clearAppendReply,
-   } = props
+  } = props
 
   useEffect(() => {
     clearAppendReply()
@@ -72,7 +72,7 @@ const Landing = (props) => {
     <React.Fragment>
       <div className={classes.trendingWrapper}>
         <div>
-          <h5 style={{ fontWeight: 'bold', marginLeft: 10, }}>Trending</h5>
+          <h5 style={{ fontWeight: 'bold', marginLeft: 10 }}>Trending</h5>
         </div>
         <Trending unguardedLinks={true} />
       </div>
@@ -95,7 +95,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAccountPosts,
     clearAccountReplies,
     clearAppendReply,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(null, mapDispatchToProps)(Landing)

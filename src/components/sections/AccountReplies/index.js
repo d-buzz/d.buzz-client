@@ -67,7 +67,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getAccountRepliesRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountReplies)

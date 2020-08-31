@@ -26,7 +26,7 @@ import {
 
   CLEAR_NOTIFICATIONS_REQUEST,
   clearNotificationsSuccess,
-  clearNotificationsFailure
+  clearNotificationsFailure,
 } from './actions'
 
 import {

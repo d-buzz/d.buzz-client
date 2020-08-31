@@ -129,8 +129,8 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
-    clearAppendReply
-  }, dispatch)
+    clearAppendReply,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Feeds)

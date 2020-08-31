@@ -70,7 +70,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -84,14 +84,14 @@ const useStyle = createUseStyles({
     pointerEvents: 'none',
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   paper: {
     pointerEvents: "auto",
     padding: 2,
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   button: {
     width: 85,

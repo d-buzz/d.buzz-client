@@ -14,11 +14,11 @@ const useStyles = createUseStyles({
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
-    }
+    },
   },
   modalBody: {
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
   },
 })
 
@@ -36,7 +36,7 @@ const BuzzFormModal = (props) => {
         dialogClassName={classes.modal}
       >
         <ModalBody className={classes.modalBody}>
-          <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5, }} onClick={onHide}>
+          <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={onHide}>
             <CloseIcon />
           </IconButton>
           <CreateBuzzForm modal={true} hideModalCallback={onHide} />

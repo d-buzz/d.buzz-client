@@ -32,7 +32,7 @@ const useStyle = createUseStyles({
       backgroundColor: '#f83541 !important',
       '& label': {
         color: 'white !important',
-      }
+      },
     },
   },
   wrapper: {
@@ -101,7 +101,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -120,10 +120,10 @@ const useStyle = createUseStyles({
       fontFamily: 'Segoe-Bold',
       textDecoration: 'none !important',
       '&:hover': {
-        textDecoration: 'none !important'
-      }
-    }
-  }
+        textDecoration: 'none !important',
+      },
+    },
+  },
 })
 
 
@@ -132,7 +132,7 @@ const Notification = (props) => {
     notifications,
     loading,
     count,
-    setPageFrom
+    setPageFrom,
   } = props
 
   const classes = useStyle()
@@ -218,7 +218,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setPageFrom,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notification)

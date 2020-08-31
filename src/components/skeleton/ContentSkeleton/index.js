@@ -68,8 +68,8 @@ const ContentSkeleton = ({ loading }) => {
                 <Col xs="auto" style={{ paddingRight: 0 }}>
                   <Skeleton circle={true} height={50} width={50} />
                 </Col>
-                <Col style={{ paddingLeft: 10, }}>
-                  <div style={{ marginTop: 2, }}>
+                <Col style={{ paddingLeft: 10 }}>
+                  <div style={{ marginTop: 2 }}>
                     <Link
                       className={classes.link}
                     >
@@ -79,7 +79,7 @@ const ContentSkeleton = ({ loading }) => {
                     </Link>
                     <br />
                     <p className={classes.username}>
-                        <Skeleton height={10} width={120} />
+                      <Skeleton height={10} width={120} />
                     </p>
                   </div>
                 </Col>

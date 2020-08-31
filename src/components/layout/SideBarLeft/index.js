@@ -17,7 +17,7 @@ import {
   Avatar,
 } from 'components/elements'
 import {
-  BuzzFormModal
+  BuzzFormModal,
 } from 'components'
 import Badge from '@material-ui/core/Badge'
 import { Link } from 'react-router-dom'
@@ -40,7 +40,7 @@ const useStyles = createUseStyles({
       textDecoration: 'none',
       padding: 6,
       '&:hover': {
-        color: '#e53935'
+        color: '#e53935',
       },
     },
     '&:hover': {
@@ -54,7 +54,7 @@ const useStyles = createUseStyles({
         '& path': {
           stroke: '#e53935',
         },
-      }
+      },
     },
   },
   activeItem: {
@@ -67,7 +67,7 @@ const useStyles = createUseStyles({
       '& path': {
         stroke: '#e53935',
       },
-    }
+    },
   },
   navLinkContainer: {
     marginTop: 20,
@@ -85,7 +85,7 @@ const useStyles = createUseStyles({
     transitionProperty: 'background-color',
     '&:hover': {
       backgroundColor: '#e6ecf0',
-    }
+    },
   },
   inline: {
     display: 'inline-block',
@@ -99,7 +99,7 @@ const useStyles = createUseStyles({
   sideBarButton: {
     width: '120%',
     marginBottom: 10,
-  }
+  },
 })
 
 
@@ -168,17 +168,17 @@ const SideBarLeft = (props) => {
     {
       name: 'Trending',
       path: '/trending',
-      icon: <TrendingIcon top={-5} />
+      icon: <TrendingIcon top={-5} />,
     },
     {
       name: 'Latest',
       path: '/latest',
-      icon: <LatestIcon top={-5} />
+      icon: <LatestIcon top={-5} />,
     },
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>
+      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>,
     },
     {
       name: 'Profile',
@@ -240,12 +240,12 @@ const SideBarLeft = (props) => {
                 />
               )}
               <ContainedButton
-                 style={{ height: 45 }}
-                 fontSize={14}
-                 label="Buzz"
-                 labelStyle={{ paddingTop: 10 }}
-                 className={classes.sideBarButton}
-                 onClick={handleClickBuzz}
+                style={{ height: 45 }}
+                fontSize={14}
+                label="Buzz"
+                labelStyle={{ paddingTop: 10 }}
+                className={classes.sideBarButton}
+                onClick={handleClickBuzz}
               />
             </div>
             <div className={classes.bottom}>
@@ -253,7 +253,7 @@ const SideBarLeft = (props) => {
                 <Row>
                   <Col xs="auto">
                     <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
-                      <div style={{ display: 'inline-flex', top: '50%', bottom: '50%', }}>
+                      <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
                         <Avatar author={username} />
                       </div>
                     </div>
@@ -261,8 +261,8 @@ const SideBarLeft = (props) => {
                   <Col style={{ paddingLeft: 5 }}>
                     <Row style={{ padding: 0 }}>
                       <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13, }}>Logout</p>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12, }}>@{username}</p>
+                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13 }}>Logout</p>
+                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12 }}>@{username}</p>
                       </Col>
                       <Col style={{ padding: 0 }}>
                         <AiOutlinePoweroff style={{ fontSize: 25, marginTop: 16 }} />
@@ -291,7 +291,7 @@ const mapDispatchToProps = (dispatch) => ({
     signoutUserRequest,
     subscribeRequest,
     pollNotifRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBarLeft)

@@ -51,7 +51,7 @@ const useStyles = createUseStyles({
   title: {
     display: 'inline-block',
     marginLeft: 5,
-  }
+  },
 })
 
 const UnguardedAppFrame = (props) => {
@@ -71,7 +71,7 @@ const UnguardedAppFrame = (props) => {
         <Col xs={4}>
           <Sticky>
             {({ style }) => (
-              <div style={{ ...style, paddingTop: 60, }}>
+              <div style={{ ...style, paddingTop: 60 }}>
                 <SideBarRight hideSearchBar={true} />
               </div>
             )}

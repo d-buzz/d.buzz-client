@@ -9,7 +9,7 @@ import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
 import {
   setProfileIsVisited,
-  getFollowersRequest
+  getFollowersRequest,
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
@@ -93,7 +93,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -201,7 +201,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setProfileIsVisited,
     getFollowersRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountFollowers)

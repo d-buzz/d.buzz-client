@@ -12,15 +12,15 @@ const defaultState = fromJS({
 
 export const auth = (state = defaultState, { type, payload }) => {
   switch (type) {
-    case AUTHENTICATE_USER_SUCCESS:
-      return state.set('user', payload)
-    case GET_SAVED_USER_SUCCESS:
-      return state.set('user', payload)
-    case SIGNOUT_USER_SUCCESS:
-      return state.set('user', payload)
-    case SUBSCRIBE_SUCCESS:
-      return state.setIn(['user', 'is_subscribe'], payload)
-    default:
-      return state
+  case AUTHENTICATE_USER_SUCCESS:
+    return state.set('user', payload)
+  case GET_SAVED_USER_SUCCESS:
+    return state.set('user', payload)
+  case SIGNOUT_USER_SUCCESS:
+    return state.set('user', payload)
+  case SUBSCRIBE_SUCCESS:
+    return state.setIn(['user', 'is_subscribe'], payload)
+  default:
+    return state
   }
 }

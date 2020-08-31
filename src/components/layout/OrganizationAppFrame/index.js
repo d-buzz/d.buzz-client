@@ -3,8 +3,8 @@ import { renderRoutes } from 'react-router-config'
 
 const OrganizationAppFrame = (props) => {
   const { 
-    route
-   } = props
+    route,
+  } = props
 
   return (
     <React.Fragment>

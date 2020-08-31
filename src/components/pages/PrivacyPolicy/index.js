@@ -10,13 +10,13 @@ const useStyles = createUseStyles({
     paddintTop: 400,
     display: 'block',
     '& li': {
-      listStyleType: 'none'
+      listStyleType: 'none',
     },
     '& a': {
       color: '#f83541',
       fontFamily: 'Segoe-Bold',
       fontSize: 14,
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
     '& h2': {
       fontFamily: 'Segoe-Bold',
@@ -27,15 +27,15 @@ const useStyles = createUseStyles({
     },
     '& i': {
       fontSize: 14,
-    }
+    },
   },
   hero: {
     paddingTop: 100,
-    textAlign: 'justify'
+    textAlign: 'justify',
   },
   outsideWrapper: {
-    paddingTop: 50
-  }
+    paddingTop: 50,
+  },
 })
 
 const PrivacyPolicy = () => {
@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
                       'section-12',
                       'section-13',
                       'section-14',
-                      'section-15'
+                      'section-15',
                     ]} currentClassName="is-current">
                       <li><a href="#section-1">1. WHAT INFORMATION DO WE COLLECT?</a></li>
                       <li><a href="#section-2">2. HOW DO WE USE YOUR INFORMATION?</a></li>
