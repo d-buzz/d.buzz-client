@@ -748,7 +748,7 @@ export const generatePostOperations = (account, title, body, tags) => {
       {
         'author': account,
         permlink,
-        'max_accepted_payout': max_accepted_payout,
+        max_accepted_payout,
         'percent_steem_dollars': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,

@@ -3,9 +3,10 @@ import { Avatar, TextArea, ContainedButton, UploadIcon } from 'components/elemen
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
-import stripHtml from 'string-strip-html'
 import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
 import { Spinner, CloseIcon } from 'components/elements'
@@ -53,15 +54,10 @@ const useStyles = createUseStyles({
     verticalAlign: 'top !important',
   },
   left: {
-    width: 'max-content', display:
-    'inline-block',
-    verticalAlign: 'top',
+    width: 'max-content',
+    height: '100%',
   },
   right: {
-    width: 520,
-    display: 'inline-block',
-    marginLeft: 5,
-    paddingLeft: 5,
     verticalAlign: 'top',
   },
   username: {
@@ -98,7 +94,6 @@ const useStyles = createUseStyles({
     paddingRight: 0,
   },
   avatar: {
-    width: '60',
     paddingRight: 0,
     marginRight: 0,
   },
@@ -106,8 +101,9 @@ const useStyles = createUseStyles({
     margin: '0 auto',
     width: 2,
     backgroundColor: '#dc354561',
-    height: 60,
-    flexGrow: 1,
+    flex: 1,
+    height: '100%',
+    flexBasis: 46,
   },
   bodyContainer: {
     minHeight: 70,
@@ -212,80 +208,96 @@ const ReplyFormModal = (props) => {
               </IconButton>
             </div>
             <hr />
-            <div className={classes.left}>
-              <Avatar author={author} className={classes.avatar}/>
-              <div className={classes.thread} />
-              <Avatar author={username} className={classes.avatar} />
-            </div>
-            <div className={classes.right}>
-              <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
-              <div className={classes.bodyContainer}>
-                <p style={{ paddingBottom: 0 }}>{stripHtml(`${`${body}`.substring(0, 180)} ${`${body}`.length > 180  ? '...' : ''}`)}</p>
-              </div>
-              {loading && (
-                <div className={classes.loadState}>
-                  <Box  position="relative" display="inline-flex">
-                    <Spinner top={0} size={20} loading={true} />&nbsp;
-                    <label className={classes.actionLabels}>broadcasting your reply to the network, please wait ...</label>&nbsp;
-                  </Box>
+            <Row>
+              <Col xs="auto">
+                <div className={classes.left}>
+                  <Avatar author={author} className={classes.avatar}/>
+                  <div className={classes.thread} />
                 </div>
-              )}
-              {!loading && (
-                <TextArea
-                  minRows={3}
-                  maxlength="280"
-                  label="Buzz your reply"
-                  value={content}
-                  onKeyUp={handleOnChange}
-                  onKeyDown={handleOnChange}
-                  onChange={handleOnChange}
-                />
-              )}
-              {uploading && (
-                <div style={{ width: '100%'}}>
-                  <Box  position="relative" display="inline-flex">
-                    <Spinner top={0} size={20} loading={uploading} />&nbsp;
-                    <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
-                  </Box>
+              </Col>
+              <Col style={{ padding: 0 }}>
+                <div className={classes.right}>
+                  <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
+                  <div className={classes.previewContainer}>
+                    <MarkdownViewer content={body} minifyAssets={true} onModal={true}/>
+                  </div>
                 </div>
-              )}
-              <br />
-              {content.length !== 0 && (
-                <div className={classes.previewContainer}>
-                  <h6>Reply preview</h6>
-                  <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
-                  <hr />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="auto">
+                <div className={classes.left}>
+                  <Avatar author={username} className={classes.avatar} />
                 </div>
-              )}
-              <div style={{ width: '100%' }}>
-                <input
-                  type='file'
-                  accept='image/*'
-                  ref={inputRef}
-                  onChange={handleFileSelectChange}
-                  style={{ display: 'none' }}
-                />
-                <IconButton size="medium" onClick={handleFileSelect}>
-                  <UploadIcon />
-                </IconButton>
-                <ContainedButton
-                  label="Reply"
-                  style={{ width: 70 }}
-                  className={classes.float}
-                  onClick={handleSubmitReply}
-                  disabled={loading}
-                />
-                <CircularProgress
-                  style={{ float: 'right', marginRight: 5, marginTop: 15 }}
-                  classes={{
-                    circle: classes.circle,
-                  }}
-                  size={30}
-                  value={wordCount}
-                  variant="static"
-                />
-              </div>
-            </div>
+              </Col>
+              <Col style={{ padding: 0 }}>
+                <div className={classes.right}>
+                  {loading && (
+                    <div className={classes.loadState}>
+                      <Box  position="relative" display="inline-flex">
+                        <Spinner top={0} size={20} loading={true} />&nbsp;
+                        <label className={classes.actionLabels}>broadcasting your reply to the network, please wait ...</label>&nbsp;
+                      </Box>
+                    </div>
+                  )}
+                  {!loading && (
+                    <TextArea
+                      minRows={3}
+                      maxlength="280"
+                      label="Buzz your reply"
+                      value={content}
+                      onKeyUp={handleOnChange}
+                      onKeyDown={handleOnChange}
+                      onChange={handleOnChange}
+                    />
+                  )}
+                  {uploading && (
+                    <div style={{ width: '100%'}}>
+                      <Box  position="relative" display="inline-flex">
+                        <Spinner top={0} size={20} loading={uploading} />&nbsp;
+                        <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
+                      </Box>
+                    </div>
+                  )}
+                  <br />
+                  {content.length !== 0 && (
+                    <div className={classes.previewContainer}>
+                      <h6>Reply preview</h6>
+                      <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                      <hr />
+                    </div>
+                  )}
+                  <div style={{ width: '100%' }}>
+                    <input
+                      type='file'
+                      accept='image/*'
+                      ref={inputRef}
+                      onChange={handleFileSelectChange}
+                      style={{ display: 'none' }}
+                    />
+                    <IconButton size="medium" onClick={handleFileSelect}>
+                      <UploadIcon />
+                    </IconButton>
+                    <ContainedButton
+                      label="Reply"
+                      style={{ width: 70 }}
+                      className={classes.float}
+                      onClick={handleSubmitReply}
+                      disabled={loading}
+                    />
+                    <CircularProgress
+                      style={{ float: 'right', marginRight: 5, marginTop: 15 }}
+                      classes={{
+                        circle: classes.circle,
+                      }}
+                      size={30}
+                      value={wordCount}
+                      variant="static"
+                    />
+                  </div>
+                </div>
+              </Col>
+            </Row>
           </ModalBody>
         </div>
       </Modal>
