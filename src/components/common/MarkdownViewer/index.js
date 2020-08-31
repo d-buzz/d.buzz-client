@@ -1,5 +1,5 @@
 import React from 'react'
-import DefaultRenderer from "hive-content-renderer"
+import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import classNames from 'classnames'
 import { PreviewLastLink } from 'components'
@@ -16,7 +16,7 @@ const renderer = new DefaultRenderer({
   ipfsPrefix: "https://images.hive.blog/0x0/",
   assetsWidth: 640,
   assetsHeight: 480,
-  imageProxyFn: (url) => url,
+  imageProxyFn: (url) => `https://images.hive.blog/0x0/${url}`,
   usertagUrlFn: (account) => "/@" + account,
   hashtagUrlFn: (hashtag) => `/tags?q=${hashtag}`,
   isLinkSafeFn: (url) => true,
