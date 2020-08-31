@@ -267,7 +267,7 @@ const Content = (props) => {
                   </div>
                 </Col>
               </Row>
-              <MarkdownViewer content={body} minifyAssets={false} />
+              {body && (<MarkdownViewer content={body} minifyAssets={false} />)}
               <PostTags meta={meta} />
               <div style={{ marginTop: 10 }}>
                 <label className={classes.meta}>
