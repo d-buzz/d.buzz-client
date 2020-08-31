@@ -141,6 +141,8 @@ const countReplies = async (replies = []) => {
 const ReplyList = (props) => {
   let {
     replies,
+  } = props
+  const {
     expectedCount,
     user,
     append,
@@ -187,10 +189,10 @@ const ReplyList = (props) => {
         const firstIndex = tree[0]
         tree.splice(0, 1)
 
-        let iterableState = [...repliesState]
+        const iterableState = [...repliesState]
         const first = iterableState[firstIndex]
 
-        let prefix = 'first'
+        const prefix = 'first'
         let rep = ''
 
         if(tree.length !== 0 ) {

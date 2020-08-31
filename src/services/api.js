@@ -102,11 +102,11 @@ export const fetchDiscussions = (author, permlink) => {
         reject(err)
       } else {
 
-        let authors = []
+        const authors = []
         let profile = []
 
         const arr = Object.values(data)
-        let uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
+        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
         uniqueAuthors.forEach((item) => {
           if(!authors.includes(item)) {
@@ -128,7 +128,7 @@ export const fetchDiscussions = (author, permlink) => {
 
         const getChildren = (reply) => {
           const { replies } = reply
-          let children = []
+          const children = []
 
           replies.forEach(async(item) => {
 
@@ -397,7 +397,7 @@ export const mapFetchProfile = (data, checkFollow = true) => {
   return new Promise(async(resolve, reject) => {
     try {
       let count = 0
-      let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
+      const uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
       let profiles = []
 
       uniqueAuthors.forEach((item, index) => {
@@ -614,7 +614,7 @@ export const generateClearNotificationOperation = (username, lastNotification) =
   return new Promise((resolve) => {
 
     const date = lastNotification.date
-    let json = JSON.stringify(["setLastRead",{ date }])
+    const json = JSON.stringify(["setLastRead",{ date }])
 
     const operation = [
       [
@@ -634,7 +634,7 @@ export const generateClearNotificationOperation = (username, lastNotification) =
 
 export const generateFollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
 
     const operation = [
       [
@@ -654,7 +654,7 @@ export const generateFollowOperation = (follower, following) => {
 
 export const generateUnfollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
 
     const operation = [
       [
@@ -674,7 +674,7 @@ export const generateUnfollowOperation = (follower, following) => {
 
 export const generateSubscribeOperation = (username) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
+    const json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
 
     const operation = [
       [
@@ -720,7 +720,7 @@ export const generatePostOperations = (account, title, body, tags) => {
 
   const json_metadata = createMeta(tags)
 
-  let permlink = createPermlink(title)
+  const permlink = createPermlink(title)
 
   const operations = []
 
@@ -811,7 +811,7 @@ export const slug = (text) => {
 
 export const createMeta = (tags = []) => {
 
-  let uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
+  const uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
   const meta = {
     app: 'dBuzz/v1.0.0',

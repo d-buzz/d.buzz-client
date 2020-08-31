@@ -32,7 +32,7 @@ import {
 
 function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
-  let user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
+  const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
   try {
     if(useKeychain) {
@@ -89,7 +89,7 @@ function* getSavedUserRequest(meta) {
 }
 
 function* signoutUserRequest(meta) {
-  let user = { username: '', useKeychain: false, is_authenticated: false }
+  const user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     yield call([localStorage, localStorage.clear])
     yield put(signoutUserSuccess(user, meta))

@@ -161,7 +161,8 @@ const render = (content, style, markdownClass, assetClass) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  let { content = '', minifyAssets = true, onModal = false } = props
+  const {  minifyAssets = true, onModal = false  } = props
+  let { content = '' } = props
   const original = content
   content = prepareImages(content)
   content = prepareTwitterEmbeds(content)

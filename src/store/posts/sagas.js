@@ -155,7 +155,7 @@ function* getTrendingPostsRequest(payload, meta) {
   const method = 'get_ranked_posts'
 
   try {
-    let old = yield select(state => state.posts.get('trending'))
+    const old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -174,7 +174,7 @@ function* getHomePostsRequest(payload, meta) {
   const method = 'get_ranked_posts'
 
   try {
-    let old = yield select(state => state.posts.get('home'))
+    const old = yield select(state => state.posts.get('home'))
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -193,7 +193,7 @@ function* getLatestPostsRequest(payload, meta) {
   const method = 'get_ranked_posts'
 
   try {
-    let old = yield select(state => state.posts.get('latest'))
+    const old = yield select(state => state.posts.get('latest'))
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
@@ -331,7 +331,7 @@ function* publishPostRequest(payload, meta) {
 
     let success = false
     const comment_options = operations[1]
-    let permlink = comment_options[1].permlink
+    const permlink = comment_options[1].permlink
 
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operations)

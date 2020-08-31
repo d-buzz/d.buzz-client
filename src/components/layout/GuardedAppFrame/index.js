@@ -92,7 +92,7 @@ const GuardedAppFrame = (props) => {
   const history = useHistory()
   const location = useLocation()
   const lastLocation = useLastLocation()
-  let params = queryString.parse(location.search) || ''
+  const params = queryString.parse(location.search) || ''
   const [search, setSearch] = useState(params.q)
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState()

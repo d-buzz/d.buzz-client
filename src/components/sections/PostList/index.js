@@ -139,7 +139,7 @@ const PostList = (props) => {
     title = null,
   } = props
 
-  let { disableProfileLink = false, disableUserMenu = false  } = props
+  const { disableProfileLink = false, disableUserMenu = false  } = props
 
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)
