@@ -10,6 +10,8 @@ jobs:
     working_directory: /tmp/dbuzz-client
     steps:
       - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
       - run: npm install
       - run: npm run lint
       - run: npm run build
