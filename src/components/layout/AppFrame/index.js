@@ -36,7 +36,7 @@ const useStyles = createUseStyles({
         paddingBottom: 25,
       },
     },
-  }
+  },
 })
 
 const AppFrame = (props) => {

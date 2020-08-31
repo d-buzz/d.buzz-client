@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
     },
     '&:hover': {
       backgroundColor: '#b71c1c',
-    }
+    },
   },
   transparentButton: {
     border: '1px solid #e61c34',
@@ -39,7 +39,7 @@ const useStyles = createUseStyles({
     },
     '&:hover': {
       backgroundColor: '#b71c1c1c',
-    }
+    },
   },
   disabledButton: {
     backgroundColor: '#d0cfcf',
@@ -57,7 +57,7 @@ const useStyles = createUseStyles({
     },
     '&:hover': {
       backgroundColor: '#d0cfcf',
-    }
+    },
   },
 })
 
@@ -72,7 +72,7 @@ const ContainedButton = (props) => {
     onClick = () => {},
     disabled = false,
     loading = false,
-    labelStyle = {}
+    labelStyle = {},
   } = props
 
   let buttonClass = classes.button

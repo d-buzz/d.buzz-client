@@ -127,7 +127,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
-  },dispatch)
+  },dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Trending)

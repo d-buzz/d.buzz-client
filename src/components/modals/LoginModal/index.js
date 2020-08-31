@@ -22,7 +22,7 @@ const useStyles = createUseStyles({
   checkBox: {
     '&input': {
       cusor: 'pointer',
-    }
+    },
   },
   label: {
     fontFamily: 'Segoe-Bold',
@@ -40,8 +40,8 @@ const useStyles = createUseStyles({
     },
     '& label': {
       fontSize: 14,
-    }
-  }
+    },
+  },
 })
 
 const FormSpacer = () => {
@@ -174,7 +174,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     authenticateUserRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginModal)

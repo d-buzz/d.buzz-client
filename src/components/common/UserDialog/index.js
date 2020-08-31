@@ -49,7 +49,7 @@ const useStyles = createUseStyles({
     },
     '& div.MuiPopover-paper': {
       borderRadius: '20px 20px !important',
-    }
+    },
   },
   paper: {
     pointerEvents: "auto",
@@ -59,7 +59,7 @@ const useStyles = createUseStyles({
     },
     '&:hover': {
       overflowY: 'overlay',
-    }
+    },
   },
   wrapper: {
     width: 300,
@@ -67,7 +67,7 @@ const useStyles = createUseStyles({
   },
   followWrapper: {
     width: '100%',
-  }
+  },
 })
 
 const UserDialog = (props) => {
@@ -86,6 +86,8 @@ const UserDialog = (props) => {
     recentUnfollows,
     user,
   } = props
+
+
 
   const { username, is_authenticated } = user
   const { name, about } = getProfileMetaData(profile)
@@ -203,7 +205,7 @@ const UserDialog = (props) => {
         onClose={onMouseLeave}
       >
         <div className={classes.wrapper}>
-        <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5, }}>
+        <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5 }}>
           <div className={classes.row}>
               <Row>
                 <Col xs="auto" style={{ paddingRight: 0 }}>
@@ -220,7 +222,7 @@ const UserDialog = (props) => {
                             fontSize={14}
                             loading={loading}
                             disabled={loading}
-                            style={{ float: 'right', marginTop: 5, }}
+                            style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
@@ -232,7 +234,7 @@ const UserDialog = (props) => {
                             fontSize={14}
                             loading={loading}
                             disabled={loading}
-                            style={{ float: 'right', marginTop: 5, }}
+                            style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Unfollow"
                             className={classes.button}
@@ -292,7 +294,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     followRequest,
     unfollowRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDialog)

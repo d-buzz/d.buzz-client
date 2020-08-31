@@ -50,7 +50,7 @@ const useStyles = createUseStyles({
         textDecoration: 'none !important',
         color: 'black',
       },
-    }
+    },
   },
   minified: {
     '& iframe': {
@@ -90,7 +90,7 @@ const useStyles = createUseStyles({
       marginTop: 5,
       border: '1px solid #ccd6dd',
     },
-  }
+  },
 })
 
 // prepare images that are currently not supported on hive-content-renderer

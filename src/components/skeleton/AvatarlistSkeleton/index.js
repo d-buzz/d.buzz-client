@@ -79,7 +79,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',

@@ -59,7 +59,7 @@ import {
 
   SEARCH_REQUEST,
   searchSuccess,
-  searchFailure
+  searchFailure,
 } from './actions'
 
 import {
@@ -280,7 +280,7 @@ function* fileUploadRequest(payload, meta) {
                 'Posting',
                 response => {
                     resolve(response)
-                }
+                },
             )
         })
 
@@ -399,7 +399,7 @@ function* publishReplyRequest(payload, meta) {
         ref,
         author: parent_author,
         permlink: parent_permlink,
-        treeHistory
+        treeHistory,
       }
       replyData = reply
     }

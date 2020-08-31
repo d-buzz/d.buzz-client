@@ -16,7 +16,7 @@ const useStyles = createUseStyles({
     transitionProperty: 'background-color',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.03)',
-    }
+    },
   },
   label: {
     paddingTop: 10,
@@ -36,8 +36,8 @@ const useStyles = createUseStyles({
     },
     '& label': {
       cursor: 'pointer',
-    }
-  }
+    },
+  },
 })
 
 const ListAction = (props) => {

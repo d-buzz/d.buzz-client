@@ -91,7 +91,7 @@ const useStyles = createUseStyles({
     },
     paddingTop: 10,
     paddingBottom: 2,
-  }
+  },
 })
 
 const Content = (props) => {
@@ -234,7 +234,7 @@ const Content = (props) => {
                     <Col>
                       <div className={classes.context}>
                         <div className={classes.contextWrapper}>
-                          <h6 style={{ paddingTop: 5, }}>You are viewing a single comment's thread from:</h6>
+                          <h6 style={{ paddingTop: 5 }}>You are viewing a single comment's thread from:</h6>
                           <h5>RE: {root_title}</h5>
                           <ul>
                             <li><Link to={generateParentLinks(root_author, root_permlink)}>View the full context</Link></li>
@@ -249,8 +249,8 @@ const Content = (props) => {
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <Avatar author={author} />
                   </Col>
-                  <Col style={{ paddingLeft: 10, }}>
-                    <div style={{ marginTop: 2, }}>
+                  <Col style={{ paddingLeft: 10 }}>
+                    <div style={{ marginTop: 2 }}>
                       <Link
                         ref={popoverAnchor}
                         to={generateAuthorLink}
@@ -340,7 +340,7 @@ const mapDispatchToProps = (dispatch) => ({
     getContentRequest,
     getRepliesRequest,
     clearReplies,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Content)

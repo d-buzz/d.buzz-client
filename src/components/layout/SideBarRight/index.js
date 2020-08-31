@@ -28,7 +28,7 @@ const useStyles = createUseStyles({
     '& label': {
       color: '#657786',
       fontSize: 14,
-    }
+    },
   },
   inner: {
     width: '95%',
@@ -41,8 +41,8 @@ const useStyles = createUseStyles({
     '& span': {
       color: '#d32f2f',
       fontWeight: 400,
-    }
-  }
+    },
+  },
 })
 
 const SideBarRight = (props) => {
@@ -73,7 +73,7 @@ const SideBarRight = (props) => {
   return (
     <React.Fragment>
       {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
-      <div style={{ paddingTop: 5, }}>
+      <div style={{ paddingTop: 5 }}>
         <ListGroup label="Trends for you">
           {items.slice(0, 5).map((item) => (
             <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />

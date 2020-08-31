@@ -27,7 +27,7 @@ import {
 import {
   followRequest,
   unfollowRequest,
-  setPageFrom
+  setPageFrom,
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -49,7 +49,7 @@ const useStyles = createUseStyles({
       width: '100%',
       objectFit: 'cover',
       overFlow: 'hidden',
-    }
+    },
   },
   avatar: {
     marginTop: -70,
@@ -63,7 +63,7 @@ const useStyles = createUseStyles({
     fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
-    fontFamily: 'Segoe-Bold !important'
+    fontFamily: 'Segoe-Bold !important',
   },
   userName: {
     fontSize: 16,
@@ -73,7 +73,7 @@ const useStyles = createUseStyles({
   wrapper: {
     width: '95%',
     margin: '0 auto',
-    height: 'max-content'
+    height: 'max-content',
   },
   paragraph: {
     padding: 0,
@@ -106,16 +106,16 @@ const useStyles = createUseStyles({
       '& span': {
         color: '#e53935',
       },
-    }
+    },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
-    }
+    },
   },
   weblink: {
-    color: '#d32f2f'
-  }
+    color: '#d32f2f',
+  },
 })
 
 const Profile = (props) => {
@@ -311,7 +311,7 @@ const Profile = (props) => {
                       fontSize={14}
                       loading={loadingFollow}
                       disabled={loading}
-                      style={{ float: 'right', marginTop: 5, }}
+                      style={{ float: 'right', marginTop: 5 }}
                       transparent={true}
                       label="Follow"
                       className={classes.button}
@@ -323,7 +323,7 @@ const Profile = (props) => {
                       fontSize={14}
                       loading={loadingFollow}
                       disabled={loading}
-                      style={{ float: 'right', marginTop: 5, }}
+                      style={{ float: 'right', marginTop: 5 }}
                       transparent={true}
                       label="Unfollow"
                       className={classes.button}
@@ -429,7 +429,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     followRequest,
     unfollowRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

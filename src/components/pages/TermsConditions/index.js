@@ -10,13 +10,13 @@ const useStyles = createUseStyles({
     paddintTop: 400,
     display: 'block',
     '& li': {
-      listStyleType: 'none'
+      listStyleType: 'none',
     },
     '& a': {
       color: '#f83541',
       fontFamily: 'Segoe-Bold',
       fontSize: 14,
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
     '& h2': {
       fontFamily: 'Segoe-Bold',
@@ -27,12 +27,12 @@ const useStyles = createUseStyles({
     },
     '& i': {
       fontSize: 14,
-    }
+    },
   },
   hero: {
     paddingTop: 100,
-    textAlign: 'justify'
-  }
+    textAlign: 'justify',
+  },
 })
 
 const TermsConditions = () => {
@@ -73,7 +73,7 @@ const TermsConditions = () => {
                       'section-24',
                       'section-25',
                       'section-26',
-                      'section-27'
+                      'section-27',
                     ]} currentClassName="is-current">
                       <li><a href="#section-1">1. AGREEMENT TO TERMS</a></li>
                       <li><a href="#section-2">2. INTELLECTUAL PROPERTY RIGHTS</a></li>

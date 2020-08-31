@@ -7,7 +7,7 @@ import {
 } from './actions'
 import {
   getAccountNotifications,
-  getUnreadNotificationsCount
+  getUnreadNotificationsCount,
 } from 'services/api'
 
 const POLLING_DELAY = 30000

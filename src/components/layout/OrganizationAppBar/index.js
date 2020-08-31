@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import {
-  OrgIcon
+  OrgIcon,
 } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { Link, useLocation } from 'react-router-dom'
@@ -34,8 +34,8 @@ const useStyles = createUseStyles({
     backgroundSize: '85%',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: '45% 73%',
-    backgroundImage: `url("./../../dbuzz.png")`
-  }
+    backgroundImage: `url("./../../dbuzz.png")`,
+  },
 })
 
 const OrganizationAppBar = () => {
@@ -81,7 +81,7 @@ const OrganizationAppBar = () => {
             fontSize: '96px',
             color: 'white',
             lineHeight: '1em',
-            padding: '132px 180px 96px 180px'
+            padding: '132px 180px 96px 180px',
           }}>
             D.BUZZ &nbsp; {title}
           </div>

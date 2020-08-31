@@ -44,7 +44,7 @@ const invokeFilter = (item) => {
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params,}
+    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params }
 
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
@@ -53,7 +53,7 @@ export const callBridge = async(method, params) => {
         const result = data.filter((item) => invokeFilter(item))
 
         if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result)
+          const getProfiledata = mapFetchProfile(result, false)
           await Promise.all([getProfiledata])
         }
         resolve(result)
@@ -478,7 +478,7 @@ export const generateKeys = (username, password, role) => {
 
 export const packLoginData = (username, password) => {
   return new Buffer(
-    `${username}\t${password}`
+    `${username}\t${password}`,
   ).toString('hex')
 }
 
@@ -591,7 +591,7 @@ export const keychainSignIn = (username) => {
       'Posting',
       response => {
         resolve(response)
-      }
+      },
     )
   })
 }
@@ -605,7 +605,7 @@ export const keychainUpvote = (username, permlink, author, weight) => {
       weight,
       response => {
         resolve(response)
-      }
+      },
     )
   })
 }
@@ -624,8 +624,8 @@ export const generateClearNotificationOperation = (username, lastNotification) =
           'required_posting_auths': [username],
           'id': 'notify',
            json,
-        }
-      ]
+        },
+      ],
     ]
 
     resolve(operation)
@@ -644,8 +644,8 @@ export const generateFollowOperation = (follower, following) => {
           'required_posting_auths': [follower],
           'id': 'follow',
            json,
-        }
-      ]
+        },
+      ],
     ]
 
     resolve(operation)
@@ -664,8 +664,8 @@ export const generateUnfollowOperation = (follower, following) => {
           'required_posting_auths': [follower],
           'id': 'follow',
            json,
-        }
-      ]
+        },
+      ],
     ]
 
     resolve(operation)
@@ -684,8 +684,8 @@ export const generateSubscribeOperation = (username) => {
           'required_posting_auths': [username],
           'id': 'community',
           json,
-        }
-      ]
+        },
+      ],
     ]
 
     resolve(operation)
@@ -709,7 +709,7 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
         parent_permlink,
         permlink,
         json_metadata,
-      }
+      },
     ]]
 
     resolve(op_comment)
@@ -736,7 +736,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'parent_permlink': `${appConfig.TAG}`,
         permlink,
         json_metadata,
-      }
+      },
     ]
 
     operations.push(op_comment)
@@ -752,8 +752,8 @@ export const generatePostOperations = (account, title, body, tags) => {
         'percent_steem_dollars': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
-        'extensions': []
-      }
+        'extensions': [],
+      },
     ]
 
     operations.push(op_comment_options)
@@ -775,7 +775,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
         } else {
           resolve(response)
         }
-      }
+      },
     )
   })
 }
@@ -800,7 +800,7 @@ export const broadcastOperation = (operations, keys) => {
             result,
           })
         }
-      }
+      },
     )
   })
 }
@@ -816,7 +816,7 @@ export const createMeta = (tags = []) => {
   const meta = {
     app: 'dBuzz/v1.0.0',
     // app: 'hiveph/v1.0.0',
-    tags: uniqueTags
+    tags: uniqueTags,
   }
 
   return JSON.stringify(meta)

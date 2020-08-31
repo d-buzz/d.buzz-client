@@ -95,7 +95,7 @@ const useStyles = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -321,12 +321,12 @@ const ReplyList = (props) => {
       <React.Fragment>
         <div className={classes.row}>
           <div className={classes.inner}>
-            <Row style={{ paddingBottom: 0, marginBottom: 0, }}>
+            <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
               <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent(author, permlink)}>
                 <div className={classes.left}>
                   <Avatar author={author} />
                   {replies.length !== 0 && (
-                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
+                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1 }} />
                   )}
                 </div>
               </Col>
@@ -346,7 +346,7 @@ const ReplyList = (props) => {
                       @{author} &bull;&nbsp;
                       {moment(`${created}Z`).local().fromNow()}
                     </label>
-                    <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    <p style={{ marginTop: -10, fontSize: 14 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                     <MarkdownViewer minifyAssets={false} content={body} />
                     <PostTags meta={meta} />
                   </div>
@@ -420,7 +420,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearAppendReply,
     setPageFrom,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReplyList)

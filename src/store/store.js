@@ -10,7 +10,7 @@ const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOO
 export default createStore( 
   rootReducer, 
   {}, 
-  composeEnhancers(middleWare)
+  composeEnhancers(middleWare),
 )
 
 sagaMiddleWare.run(rootSaga)

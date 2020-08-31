@@ -67,7 +67,7 @@ export const getSavedUserFailure = (error, meta) => ({
   payload: error,
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const SUBSCRIBE_REQUEST = 'SUBSCRIBE_REQUEST'

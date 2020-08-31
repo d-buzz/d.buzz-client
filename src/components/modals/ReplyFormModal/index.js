@@ -22,13 +22,13 @@ const useStyles = createUseStyles({
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
-    }
+    },
   },
   inner: {
     width: '99%',
     minHeight: 250,
     margin: '0 auto !important',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   name: {
     fontWeight: 'bold',
@@ -55,14 +55,14 @@ const useStyles = createUseStyles({
   left: {
     width: 'max-content', display:
     'inline-block',
-    verticalAlign: 'top'
+    verticalAlign: 'top',
   },
   right: {
     width: 520,
     display: 'inline-block',
     marginLeft: 5,
     paddingLeft: 5,
-    verticalAlign: 'top'
+    verticalAlign: 'top',
   },
   username: {
     color: '#657786',
@@ -95,12 +95,12 @@ const useStyles = createUseStyles({
   },
   modalBody: {
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
   },
   avatar: {
     width: '60',
     paddingRight: 0,
-    marginRight: 0
+    marginRight: 0,
   },
   thread: {
     margin: '0 auto',
@@ -124,7 +124,7 @@ const useStyles = createUseStyles({
     fontSize: 14,
     color: '#e53935',
     paddingTop: 2,
-  }
+  },
 })
 
 const ReplyFormModal = (props) => {
@@ -276,7 +276,7 @@ const ReplyFormModal = (props) => {
                   disabled={loading}
                 />
                 <CircularProgress
-                  style={{ float: 'right', marginRight: 5, marginTop: 15, }}
+                  style={{ float: 'right', marginRight: 5, marginTop: 15 }}
                   classes={{
                     circle: classes.circle,
                   }}
@@ -296,14 +296,14 @@ const ReplyFormModal = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'PUBLISH_REPLY_REQUEST'),
-  uploading: pending(state, 'UPLOAD_FILE_REQUEST')
+  uploading: pending(state, 'UPLOAD_FILE_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     publishReplyRequest,
     uploadFileRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReplyFormModal)

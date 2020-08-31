@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
           stroke: '#e53935',
         },
       },
-    }
+    },
   },
   icon: {
     cursor: 'pointer',
@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
       position: 'relative',
       margin: '0 auto',
     },
-  }
+  },
 })
 
 const IconWrapper = ({ className, children }) => {

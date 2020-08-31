@@ -32,7 +32,7 @@ import {
 
 function* authenticateUserRequest(payload, meta) {
   const { username, password, useKeychain } = payload
-  let user = { username, useKeychain, is_authenticated: false, is_subscribe: false,  }
+  let user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
   try {
     if(useKeychain) {

@@ -33,15 +33,15 @@ const useStyles = createUseStyles({
       '& span': {
         color: '#e53935',
       },
-    }
+    },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
-    }
+    },
   },
   weblink: {
-    color: '#d32f2f'
+    color: '#d32f2f',
   },
   topContainer: {
     borderBottom: '1px solid #e6ecf0',
@@ -52,7 +52,7 @@ const useStyles = createUseStyles({
         color: '#d32f2f',
         fontWeight: 400,
       },
-    }
+    },
   },
 })
 
@@ -130,7 +130,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     searchRequest,
     setPageFrom,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)

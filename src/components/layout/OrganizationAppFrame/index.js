@@ -3,7 +3,7 @@ import { renderRoutes } from 'react-router-config'
 
 const OrganizationAppFrame = (props) => {
   const { 
-    route
+    route,
    } = props
 
   return (

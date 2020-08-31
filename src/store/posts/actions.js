@@ -7,7 +7,7 @@ export const upvoteRequest = (author, permlink, percentage) => ({
   payload: { author, permlink, percentage },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const upvoteSuccess = (response, meta) => ({
@@ -31,7 +31,7 @@ export const getHomePostsRequest = (start_permlink = '', start_author = '') => (
   payload: { start_permlink, start_author },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getHomePostsSuccess = (response, meta) => ({
@@ -148,7 +148,7 @@ export const getContentRequest = (author, permlink) => ({
   payload: { author, permlink },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getContentSuccess = (response, meta) => ({
@@ -171,7 +171,7 @@ export const getTrendingTagsRequest = () => ({
   type: GET_TRENDING_TAGS_REQUEST,
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getTrendingTagsSuccess = (response, meta) => ({
@@ -434,7 +434,7 @@ export const searchRequest = (query) => ({
   payload: { query },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const searchSuccess = (response, meta) => ({
@@ -460,4 +460,16 @@ export const CLEAR_APPEND_REPLY = 'CLEAR_APPEND_REPLY'
 
 export const clearAppendReply = () => ({
   type: CLEAR_APPEND_REPLY,
+})
+
+export const GET_FOLLOW_DETAILS_REQUEST = 'GET_FOLLOW_DETAILS_REQUEST'
+export const GET_FOLLOW_DETAILS_SUCCESS = 'GET_FOLLOW_DETAILS_SUCCESS'
+export const GET_FOLLOW_DETAILS_FAILURE = 'GET_FOLLOW_DETAILS_FAILURE'
+
+export const getFollowDetailsRequest = ({ name }) => ({
+  type: GET_FOLLOW_DETAILS_REQUEST,
+  payload: { name },
+  meta: {
+    thunk: true,
+  },
 })

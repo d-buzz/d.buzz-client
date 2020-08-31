@@ -19,8 +19,8 @@ const useStyles = createUseStyles({
     '& span': {
       color: '#d32f2f',
       fontWeight: 400,
-    }
-  }
+    },
+  },
 })
 
 const SearchTips = ({ show, className }) => {

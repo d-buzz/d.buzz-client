@@ -220,7 +220,7 @@ const GuardedAppFrame = (props) => {
                     <div style={{ width: '100%' }}>
                       <ContainedButton
                         fontSize={12}
-                        style={{ float: 'right', marginTop: 5, }}
+                        style={{ float: 'right', marginTop: 5 }}
                         transparent={true}
                         label="Mark all as read"
                         loading={loading}
@@ -264,7 +264,7 @@ const GuardedAppFrame = (props) => {
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
-  count: state.polling.get('count')
+  count: state.polling.get('count'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -272,7 +272,7 @@ const mapDispatchToProps = (dispatch) => ({
     searchRequest,
     clearSearchPosts,
     clearNotificationsRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GuardedAppFrame)

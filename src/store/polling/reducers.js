@@ -3,7 +3,7 @@ import {
   POLL_NOTIF_COUNT,
 } from './actions'
 import {
-  CLEAR_NOTIFICATIONS_SUCCESS
+  CLEAR_NOTIFICATIONS_SUCCESS,
 } from '../profile/actions'
 import { fromJS } from 'immutable'
 
