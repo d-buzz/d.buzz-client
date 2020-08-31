@@ -9,4 +9,3 @@ const LogoutIcon = ({ height = 20, top = 0, style = {}}) => {
 }
 
 export default LogoutIcon
-

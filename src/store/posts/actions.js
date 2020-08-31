@@ -466,10 +466,22 @@ export const GET_FOLLOW_DETAILS_REQUEST = 'GET_FOLLOW_DETAILS_REQUEST'
 export const GET_FOLLOW_DETAILS_SUCCESS = 'GET_FOLLOW_DETAILS_SUCCESS'
 export const GET_FOLLOW_DETAILS_FAILURE = 'GET_FOLLOW_DETAILS_FAILURE'
 
-export const getFollowDetailsRequest = ({ name }) => ({
+export const getFollowDetailsRequest = (name) => ({
   type: GET_FOLLOW_DETAILS_REQUEST,
   payload: { name },
   meta: {
     thunk: true,
   },
+})
+
+export const getFollowDetailsSuccess = (response, meta) => ({
+  type: GET_FOLLOW_DETAILS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getFollowDetailsFailure = (error, meta) => ({
+  type: GET_FOLLOW_DETAILS_FAILURE,
+  payload: error,
+  meta,
 })

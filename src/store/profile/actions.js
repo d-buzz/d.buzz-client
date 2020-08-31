@@ -206,7 +206,3 @@ export const clearNotificationsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
-
-
-
-

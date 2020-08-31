@@ -904,4 +904,3 @@ export const searchPostGeneral = (query) => {
 
   })
 }
-
