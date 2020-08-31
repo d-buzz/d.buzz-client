@@ -167,6 +167,9 @@ const MarkdownViewer = (props) => {
   content = prepareImages(content)
   content = prepareTwitterEmbeds(content)
 
+  console.log({ content })
+
+
   let assetClass = classes.minified
   let style = {}
 
@@ -178,7 +181,10 @@ const MarkdownViewer = (props) => {
     style = { width: 520 }
   }
 
-  const splitContent = content.split(`~~~~~~.^.~~~`)
+  let splitContent = content.split(`~~~~~~.^.~~~`)
+
+  splitContent = splitContent.filter((item) => item !== '')
+
 
   return (
     <React.Fragment>
