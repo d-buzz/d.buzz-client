@@ -13,7 +13,8 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
-import fleekStorage from '@fleekhq/fleek-storage-js'
+import fs from 'fs'
+import fleek from '@fleekhq/fleek-storage-js'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 
@@ -45,7 +46,7 @@ const invokeFilter = (item) => {
 
 export const callBridge = async(method, params) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params }
+    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
 
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
@@ -54,7 +55,7 @@ export const callBridge = async(method, params) => {
         const result = data.filter((item) => invokeFilter(item))
 
         if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result, false)
+          const getProfiledata = mapFetchProfile(result)
           await Promise.all([getProfiledata])
         }
         resolve(result)
@@ -121,7 +122,7 @@ export const fetchDiscussions = (author, permlink) => {
         })
 
         if(authors.length !== 0 ) {
-          const info = await fetchProfile(authors, false)
+          const info = await fetchProfile(authors)
           profile = [ ...profile, ...info]
         }
 
@@ -569,16 +570,6 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
   })
 }
 
-export const uploadImage = (url, formData) => {
-  return new Promise((resolve, reject) => {
-    axios.post(`${url}`,formData).then((result) => {
-      resolve(result)
-    }).catch((error) => {
-      reject(error)
-    })
-  })
-}
-
 // keychain apis
 
 export const keychainSignIn = (username) => {
@@ -906,12 +897,22 @@ export const searchPostGeneral = (query) => {
   })
 }
 
-export const uploadIpfsFile = async(file) => {
-  const uploadFile = fleekStorage.upload({
-    apikey: 'kDIjG6Nc83HtLzF52FzFVQ==',
-    apiSecret: 'ofL5tqp+batriXKYzrsqzEtNhW9R4L8I0e9GnO1xyqc=',
-    data: file,
+export const uploadIpfsImage = async(data, name) => {
+  console.log({data})
+  return new Promise(async(resolve, reject) => {
+    try{
+      const dataFile = {
+        apiKey: appConfig.API_KEY,
+        apiSecret: appConfig.API_SECRET,
+        key: name,
+        data,
+      }
+      console.log({dataFile})
+      const result = await fleek.upload(dataFile)
+      resolve(result)
+    } catch (error) {
+      console.log({error})
+      reject(error)
+    }
   })
-
-  console.log(uploadFile)
-}
+} 
