@@ -13,7 +13,6 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
-import fs from 'fs'
 import fleek from '@fleekhq/fleek-storage-js'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
@@ -740,7 +739,7 @@ export const generatePostOperations = (account, title, body, tags) => {
       {
         'author': account,
         permlink,
-        'max_accepted_payout': max_accepted_payout,
+        max_accepted_payout,
         'percent_steem_dollars': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,

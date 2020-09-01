@@ -39,4 +39,3 @@ function* watchPollingTasks() {
 export default function* sagas() {
   yield takeLatest(POLL_NOTIF_REQUEST, watchPollingTasks)
 }
-

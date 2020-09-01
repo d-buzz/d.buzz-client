@@ -88,7 +88,6 @@ const UserDialog = (props) => {
   } = props
 
 
-
   const { username, is_authenticated } = user
   const { name, about } = getProfileMetaData(profile)
   const { reputation = 0, name: author, isFollowed } = profile
