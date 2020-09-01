@@ -896,14 +896,16 @@ export const searchPostGeneral = (query) => {
   })
 }
 
-export const uploadIpfsImage = async(data, name) => {
-  console.log({data})
+export const uploadIpfsImage = async(data) => {
+  const date = new Date()
+  const timestamp = date.getTime()
+
   return new Promise(async(resolve, reject) => {
     try{
       const dataFile = {
         apiKey: appConfig.API_KEY,
         apiSecret: appConfig.API_SECRET,
-        key: name,
+        key:`file-${timestamp}`,
         data,
       }
       console.log({dataFile})

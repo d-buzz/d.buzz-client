@@ -247,7 +247,6 @@ function* fileUploadRequest(payload, meta) {
     const old = yield select(state => state.posts.get('images'))
     const { is_authenticated } = user
     const { file } = payload
-    const { name } = file
 
     if(is_authenticated) {
 
@@ -266,7 +265,7 @@ function* fileUploadRequest(payload, meta) {
       const formData = new FormData()
       formData.append('file', file)
       
-      const result = yield call(uploadIpfsImage, data, name)
+      const result = yield call(uploadIpfsImage, data)
       console.log({result})
 
       let images = []
@@ -275,8 +274,9 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      console.log({ test: result.publicUrl})
-      images.push(result.publicUrl)
+      const ipfsHash = result.hash
+      const postUrl = `https://ipfs.io/ipfs/${ipfsHash}`
+      images.push(postUrl)
 
       yield put(uploadFileSuccess(images, meta))
     } else {
