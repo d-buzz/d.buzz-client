@@ -905,7 +905,7 @@ export const uploadIpfsImage = async(data) => {
       const dataFile = {
         apiKey: appConfig.API_KEY,
         apiSecret: appConfig.API_SECRET,
-        key:`file-${timestamp}`,
+        key:`dbuzz/file-${timestamp}`,
         data,
       }
       console.log({dataFile})
@@ -916,4 +916,4 @@ export const uploadIpfsImage = async(data) => {
       reject(error)
     }
   })
-} 
+}
