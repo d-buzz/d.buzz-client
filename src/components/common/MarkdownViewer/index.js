@@ -167,9 +167,6 @@ const MarkdownViewer = (props) => {
   // content = prepareImages(content)
   content = prepareTwitterEmbeds(content)
 
-  console.log({ content })
-
-
   let assetClass = classes.minified
   let style = {}
 

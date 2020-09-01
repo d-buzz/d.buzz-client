@@ -54,7 +54,7 @@ export const callBridge = async(method, params) => {
         const result = data.filter((item) => invokeFilter(item))
 
         if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result)
+          const getProfiledata = mapFetchProfile(result, false)
           await Promise.all([getProfiledata])
         }
         resolve(result)
@@ -217,8 +217,6 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       limit: 30,
     }
 
-    console.log({ params })
-
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
       if(err) {
@@ -366,8 +364,6 @@ export const fetchProfile = (username, checkFollow = true) => {
           result[index].reputation = score
 
           if(checkFollow) {
-
-            console.log('checking follow')
 
             const follow_count = await fetchFollowCount(item.name)
             result[index].follow_count = follow_count
@@ -520,7 +516,6 @@ export const fetchFollowers = (following, start_follower = '', limit = 10) => {
         }
       })
       .catch((error) => {
-        console.log({ error })
         reject(error)
       })
 
@@ -832,7 +827,6 @@ export const searchPostTags = (tag) => {
       data: body,
     }).then(async(result) => {
       const data = result.data
-      // console.log({ data })
       if(data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results, false)
         data.results = data.results.filter((item) => item.body.length <= 280)
@@ -908,11 +902,9 @@ export const uploadIpfsImage = async(data) => {
         key:`dbuzz/file-${timestamp}`,
         data,
       }
-      console.log({dataFile})
       const result = await fleek.upload(dataFile)
       resolve(result)
     } catch (error) {
-      console.log({error})
       reject(error)
     }
   })

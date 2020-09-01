@@ -4,11 +4,12 @@ import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
 import Chip from '@material-ui/core/Chip'
 import Popover from '@material-ui/core/Popover'
+import Skeleton from 'react-loading-skeleton'
 import { ContainedButton, Avatar } from 'components/elements'
 import { Link } from 'react-router-dom'
 import { getProfileMetaData } from 'services/helper'
 import { createUseStyles } from 'react-jss'
-import { followRequest, unfollowRequest } from 'store/posts/actions'
+import { followRequest, unfollowRequest, getFollowDetailsRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
@@ -85,31 +86,43 @@ const UserDialog = (props) => {
     unfollowRequest,
     recentUnfollows,
     user,
+    getFollowDetailsRequest,
+    detailsFetching,
   } = props
-
 
   const { username, is_authenticated } = user
   const { name, about } = getProfileMetaData(profile)
-  const { reputation = 0, name: author, isFollowed } = profile
+  const { reputation = 0, name: author } = profile
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState('')
   const [severity, setSeverity] = useState('success')
+  const [followerCount, setFollowerCount] = useState(0)
+  const [followingCount, setFollowingCount] = useState(0)
+  const [isFollowed, setIsFollowed] = useState(false)
+
+  const fetchFollowInformation = () => {
+    getFollowDetailsRequest(author)
+      .then(({ isFollowed: followed, count }) => {
+        setFollowerCount(count.follower_count)
+        setFollowingCount(count.following_count)
+        setIsFollowed(followed)
+      })
+  }
 
   useEffect(() => {
     checkIfRecentlyFollowed()
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
-  let following_count = 0
-  let follower_count = 0
-
-  if(profile.follow_count) {
-    follower_count = profile.follow_count.follower_count
-    following_count = profile.follow_count.following_count
-  }
+  useEffect(() => {
+    if(open) {
+      fetchFollowInformation()
+    }
+    // eslint-disable-next-line
+  }, [open])
 
   let authorLink = `/@${author}?ref=card`
 
@@ -219,8 +232,8 @@ const UserDialog = (props) => {
                         {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
                           <ContainedButton
                             fontSize={14}
-                            loading={loading}
-                            disabled={loading}
+                            loading={loading || detailsFetching}
+                            disabled={loading || detailsFetching}
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Follow"
@@ -231,8 +244,8 @@ const UserDialog = (props) => {
                         {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
                           <ContainedButton
                             fontSize={14}
-                            loading={loading}
-                            disabled={loading}
+                            loading={loading || detailsFetching}
+                            disabled={loading || detailsFetching}
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Unfollow"
@@ -262,9 +275,16 @@ const UserDialog = (props) => {
                     <p className={classes.paragraph}>
                       {about}
                     </p>
-                    <p className={classNames(classes.paragraph, classes.followWrapper)}>
-                      <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
-                    </p>
+                    {!detailsFetching && (
+                      <p className={classNames(classes.paragraph, classes.followWrapper)}>
+                        <b>{followingCount}</b> Following &nbsp; <b>{followerCount}</b> Follower
+                      </p>
+                    )}
+                    {detailsFetching && (
+                      <p className={classNames(classes.paragraph, classes.followWrapper)}>
+                        <Skeleton height={10} width={30} /> Following &nbsp; <Skeleton height={10} width={30} /> Follower
+                      </p>
+                    )}
                   </div>
                 </Col>
               </Row>
@@ -285,6 +305,7 @@ const UserDialog = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
+  detailsFetching: pending(state, 'GET_FOLLOW_DETAILS_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
   recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
 })
@@ -293,6 +314,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     followRequest,
     unfollowRequest,
+    getFollowDetailsRequest,
   }, dispatch),
 })
 
