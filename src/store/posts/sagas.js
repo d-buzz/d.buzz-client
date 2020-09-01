@@ -60,6 +60,10 @@ import {
   SEARCH_REQUEST,
   searchSuccess,
   searchFailure,
+
+  GET_FOLLOW_DETAILS_REQUEST,
+  getFollowDetailsSuccess,
+  getFollowDetailsFailure,
 } from './actions'
 
 import {
@@ -82,6 +86,8 @@ import {
   searchPeople,
   searchPostGeneral,
   uploadIpfsImage,
+  fetchFollowCount,
+  isFollowing,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 
@@ -264,9 +270,8 @@ function* fileUploadRequest(payload, meta) {
 
       const formData = new FormData()
       formData.append('file', file)
-      
+
       const result = yield call(uploadIpfsImage, data)
-      console.log({result})
 
       let images = []
 
@@ -323,8 +328,6 @@ function* publishPostRequest(payload, meta) {
       success = result.success
     }
 
-    console.log({ operations })
-
     const data = {
       success,
       author: username,
@@ -347,8 +350,6 @@ function* publishReplyRequest(payload, meta) {
 
     let success = false
     const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
-
-    console.log({ operation })
 
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
@@ -383,7 +384,6 @@ function* publishReplyRequest(payload, meta) {
 
     yield put(publishReplySuccess(data, meta))
   } catch(error) {
-    console.log({ error })
     yield put(publishReplyFailure(error, meta))
   }
 }
@@ -514,7 +514,6 @@ function* searchRequest(payload, meta) {
     }
 
     const profile = yield call(searchPeople, query)
-
     results.people = profile.reputations
 
     yield put(searchSuccess(results, meta))
@@ -523,6 +522,24 @@ function* searchRequest(payload, meta) {
   }
 }
 
+function* getFollowDetailsRequest(payload, meta) {
+  try {
+    const { name } = payload
+    const user = yield select(state => state.auth.get('user'))
+    const { is_authenticated, username } = user
+    const count = yield call(fetchFollowCount, name)
+
+    let isFollowed = false
+
+    if(is_authenticated) {
+      isFollowed = yield call(isFollowing, username, name)
+    }
+
+    yield put(getFollowDetailsSuccess({ isFollowed, count }, meta))
+  } catch(error) {
+    yield put(getFollowDetailsFailure(error, meta))
+  }
+}
 
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
@@ -580,6 +597,10 @@ function* watchSearchRequest({ payload, meta }) {
   yield call(searchRequest, payload, meta)
 }
 
+function* watchGetFollowDetailsRequest({ payload, meta }) {
+  yield call(getFollowDetailsRequest, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -596,4 +617,5 @@ export default function* sagas() {
   yield takeEvery(FOLLOW_REQUEST, watchFollowRequest)
   yield takeEvery(UNFOLLOW_REQUEST, watchUnfollowRequest)
   yield takeEvery(SEARCH_REQUEST, watchSearchRequest)
+  yield takeEvery(GET_FOLLOW_DETAILS_REQUEST, watchGetFollowDetailsRequest)
 }
