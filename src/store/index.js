@@ -11,7 +11,6 @@ import * as authSagas from './auth/sagas'
 import * as profileSagas from './profile/sagas'
 import * as pollSagas from './polling/sagas'
 
-
 export const rootReducer = combineReducers({
   thunk: thunkReducer,
   posts,

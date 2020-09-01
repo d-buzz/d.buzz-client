@@ -70,7 +70,6 @@ import {
   extractLoginData,
   broadcastVote,
   keychainUpvote,
-  uploadImage,
   generatePostOperations,
   broadcastOperation,
   broadcastKeychainOperation,
@@ -82,9 +81,9 @@ import {
   searchPostAuthor,
   searchPeople,
   searchPostGeneral,
+  uploadIpfsImage,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
-import { Signature, hash } from '@hiveio/hive-js/lib/auth/ecc'
 
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
@@ -246,12 +245,13 @@ function* fileUploadRequest(payload, meta) {
   try {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
-    const { username, is_authenticated, useKeychain } = user
+    const { is_authenticated } = user
     const { file } = payload
+    const { name } = file
 
     if(is_authenticated) {
-      let data
 
+      let data
       if(file) {
         const reader = new FileReader()
         data = yield new Promise((resolve) => {
@@ -265,38 +265,9 @@ function* fileUploadRequest(payload, meta) {
 
       const formData = new FormData()
       formData.append('file', file)
-
-      const prefix = new Buffer('ImageSigningChallenge')
-      const buf = Buffer.concat([prefix, data])
-      const bufSha = hash.sha256(buf)
-
-      let sig
-
-      if(useKeychain) {
-        const response = yield new Promise(resolve => {
-          window.hive_keychain.requestSignBuffer(
-            username,
-            JSON.stringify(buf),
-            'Posting',
-            response => {
-              resolve(response)
-            },
-          )
-        })
-
-        if (response.success) {
-          sig = response.result
-        }
-
-      } else {
-        let { login_data } = user
-        login_data = extractLoginData(login_data)
-        const wif = login_data[1]
-        sig = Signature.signBufferSha256(bufSha, wif).toHex()
-      }
-
-      const postUrl = `https://images.hive.blog/${username}/${sig}`
-      const result = yield call(uploadImage, postUrl, formData)
+      
+      const result = yield call(uploadIpfsImage, data, name)
+      console.log({result})
 
       let images = []
 
@@ -304,7 +275,8 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      images.push(result.data.url)
+      console.log({ test: result.publicUrl})
+      images.push(result.publicUrl)
 
       yield put(uploadFileSuccess(images, meta))
     } else {
