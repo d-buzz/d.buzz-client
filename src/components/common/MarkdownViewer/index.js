@@ -94,35 +94,35 @@ const useStyles = createUseStyles({
 })
 
 // prepare images that are currently not supported on hive-content-renderer
-const prepareImages = (content) => {
-  let body = content
+// const prepareImages = (content) => {
+//   let body = content
 
-  body = body.replace(/(!\[Uploading image)/g, '![](https://images.hive.blog/640x0/)')
-  const links = markdownLinkExtractor(content)
+//   body = body.replace(/(!\[Uploading image)/g, '![](https://images.hive.blog/640x0/)')
+//   const links = markdownLinkExtractor(content)
 
-  links.forEach((link) => {
-    try {
-      link = link.replace(/&amp;/g, '&')
+//   links.forEach((link) => {
+//     try {
+//       link = link.replace(/&amp;/g, '&')
 
-      if(link !== '') {
+//       if(link !== '') {
 
-        if((link.includes('images.hive.blog') && link.includes('.webp'))) {
-          body = body.replace(link, `![](${link})`)
-        } else if (
-          (
-            link.includes('dapplr-images')
-            || (link.includes('//') && `${link}`.substring(0, 2) === '//')
-          ) && (!link.includes('images.hive.blog') && !link.includes('facebook.com'))
-        ) {
-          body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
-        } else if((link.includes('pbs.twimg.com') && link.includes('format=jpg'))) {
-          body = body.replace(`![](${link})`, `![](https://images.hive.blog/0x0/${link})`)
-        }
-      }
-    } catch(e) { }
-  })
-  return body
-}
+//         if((link.includes('images.hive.blog') && link.includes('.webp'))) {
+//           body = body.replace(link, `![](${link})`)
+//         } else if (
+//           (
+//             link.includes('dapplr-images')
+//             || (link.includes('//') && `${link}`.substring(0, 2) === '//')
+//           ) && (!link.includes('images.hive.blog') && !link.includes('facebook.com'))
+//         ) {
+//           body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
+//         } else if((link.includes('pbs.twimg.com') && link.includes('format=jpg'))) {
+//           body = body.replace(`![](${link})`, `![](https://images.hive.blog/0x0/${link})`)
+//         }
+//       }
+//     } catch(e) { }
+//   })
+//   return body
+// }
 
 const prepareTwitterEmbeds = (content) => {
   let body = content
@@ -164,7 +164,7 @@ const MarkdownViewer = (props) => {
   const {  minifyAssets = true, onModal = false  } = props
   let { content = '' } = props
   const original = content
-  content = prepareImages(content)
+  // content = prepareImages(content)
   content = prepareTwitterEmbeds(content)
 
   console.log({ content })
