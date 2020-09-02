@@ -18,6 +18,30 @@ const night = {
           },
         },
       },
+      bottom: {
+        wrapper: {
+          backgroundColor: 'rgb(29, 161, 242, 0.1)',
+          '&:hover': {
+            backgroundColor: 'rgb(29 56 78)',
+          },
+        },
+      },
+      logout: {
+        label: {
+          color: 'white',
+        },
+        username: {
+          color: 'rgb(136, 153, 166)',
+        },
+        icon: {
+          '& svg': {
+            '& path': {
+              stroke: 'white !important',
+              fill: 'white !important',
+            },
+          },
+        },
+      },
     },
   },
 }
@@ -25,7 +49,7 @@ const night = {
 const light = {
   background: {
     primary: 'white',
-    secondary: 'black',
+    secondary: 'white',
   },
   left: {
     sidebar: {
@@ -38,6 +62,30 @@ const light = {
           '& svg': {
             '& path': {
               stroke: 'black',
+            },
+          },
+        },
+      },
+      bottom: {
+        wrapper: {
+          backgroundColor: '#f5f8fa',
+          '&:hover': {
+            backgroundColor: '#e6ecf0',
+          },
+        },
+      },
+      logout: {
+        label: {
+          color: 'black',
+        },
+        username: {
+          color: 'black',
+        },
+        icon: {
+          '& svg': {
+            '& path': {
+              stroke: 'black',
+              fill: 'black !important',
             },
           },
         },

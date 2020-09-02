@@ -18,6 +18,7 @@ import {
   ContainedButton,
   Avatar,
   SunMoonIcon,
+  PowerIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
@@ -26,7 +27,6 @@ import {
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { AiOutlinePoweroff } from 'react-icons/ai'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 import { pollNotifRequest } from 'store/polling/actions'
@@ -84,13 +84,9 @@ const useStyles = createUseStyles(theme => ({
     width: '90%',
     borderRadius: '50px 50px',
     cursor: 'pointer',
-    // backgroundColor: '#f5f8fa',
-    backgroundColor: 'rgb(29, 161, 242, 0.1)',
+    ...theme.left.sidebar.bottom.wrapper,
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
-    '&:hover': {
-      backgroundColor: '#e6ecf0',
-    },
   },
   inline: {
     display: 'inline-block',
@@ -104,6 +100,25 @@ const useStyles = createUseStyles(theme => ({
   sideBarButton: {
     width: '120%',
     marginBottom: 10,
+  },
+  logoutLabel: {
+    fontWeight: 'bold',
+    margin: 0,
+    padding: 0,
+    paddingLeft: 5,
+    fontSize: 13,
+    color: theme.left.sidebar.logout.label.color,
+  },
+  logoutUsername: {
+    fontWeight: 'bold',
+    margin: 0,
+    padding: 0,
+    paddingLeft: 5,
+    fontSize: 12,
+    color: theme.left.sidebar.logout.username.color,
+  },
+  logoutIcon: {
+    ...theme.left.sidebar.logout.icon,
   },
 }))
 
@@ -283,11 +298,11 @@ const SideBarLeft = (props) => {
                   <Col style={{ paddingLeft: 5 }}>
                     <Row style={{ padding: 0 }}>
                       <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13 }}>Logout</p>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12 }}>@{username}</p>
+                        <p className={classes.logoutLabel}>Logout</p>
+                        <p className={classes.logoutUsername}>@{username}</p>
                       </Col>
-                      <Col style={{ padding: 0 }}>
-                        <AiOutlinePoweroff style={{ fontSize: 25, marginTop: 16 }} />
+                      <Col style={{ padding: 0 }} className={classes.logoutIcon}>
+                        <PowerIcon top={12} />
                       </Col>
                     </Row>
                   </Col>
