@@ -92,6 +92,9 @@ const useStyles = createUseStyles({
     color: '#e53935',
     paddingTop: 2,
   },
+  disabled: {
+    backgroundColor: 'lightgray !important',
+  },
 })
 
 const KeyCodes = {
@@ -258,7 +261,15 @@ const CreateBuzzForm = (props) => {
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <IconButton size="medium" onClick={handleFileSelect}>
+              <IconButton 
+                size="medium" 
+                onClick={handleFileSelect}
+                disabled={content.length >= 280}
+                classes={{
+                  root: classes.root,
+                  disabled: classes.disabled,
+                }}
+              >
                 <UploadIcon />
               </IconButton>
               <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
