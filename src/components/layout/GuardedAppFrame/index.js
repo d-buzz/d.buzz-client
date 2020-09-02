@@ -20,11 +20,11 @@ import { pending } from 'redux-saga-thunk'
 import { useLastLocation } from 'react-router-last-location'
 
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   main: {
     minHeight: '100vh',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
   },
   inner: {
     width: '98%',
@@ -76,7 +76,7 @@ const useStyles = createUseStyles({
     marginTop: 5,
     float: 'right',
   },
-})
+}))
 
 const GuardedAppFrame = (props) => {
   const {

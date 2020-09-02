@@ -4,7 +4,7 @@ const night = {
     secondary: '#192734',
   },
   border: {
-    primary: 'rgb(56, 68, 77)',
+    primary: '1px solid rgb(56, 68, 77)',
   },
   left: {
     sidebar: {
@@ -53,6 +53,9 @@ const light = {
   background: {
     primary: 'white',
     secondary: 'white',
+  },
+  border: {
+    primary: '1px solid #e6ecf0',
   },
   left: {
     sidebar: {
