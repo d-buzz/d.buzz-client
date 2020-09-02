@@ -5,7 +5,9 @@ const ThemeProvider = (props) => {
 
   return (
     <React.Fragment>
-      {children}
+      <div>
+        {children}
+      </div>
     </React.Fragment>
   )
 }

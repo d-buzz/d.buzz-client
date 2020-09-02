@@ -10,14 +10,14 @@ const App = () => {
   return (
     <React.Fragment>
       <LastLocationProvider>
-        <Init>
-          <ThemeProvider>
+        <ThemeProvider>
+          <Init>
             <ScrollMemory />
             <AuthGuard>
               {renderRoutes(routes)}
             </AuthGuard>
-          </ThemeProvider>
-        </Init>
+          </Init>
+        </ThemeProvider>
       </LastLocationProvider>
     </React.Fragment>
   )

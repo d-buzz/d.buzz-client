@@ -19,6 +19,7 @@ import {
 } from 'components/elements'
 import {
   BuzzFormModal,
+  ThemeModal,
 } from 'components'
 import Badge from '@material-ui/core/Badge'
 import { Link } from 'react-router-dom'
@@ -132,6 +133,7 @@ const NavLinkWrapper = (props) => {
     textClass,
     iconClass,
     activeClass,
+    onClick = () => {},
   } = props
 
 
@@ -140,7 +142,7 @@ const NavLinkWrapper = (props) => {
   }
 
   return (
-    <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+    <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
       <IconWrapper className={iconClass}>{icon}</IconWrapper> <Link to={path}>{name}</Link>
     </div>
   )
@@ -157,8 +159,38 @@ const SideBarLeft = (props) => {
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
+  const [openTheme, setOpenTheme] = useState(false)
   const classes = useStyles()
   const location = useLocation()
+
+  const showThemeModal = () => {
+    setOpenTheme(true)
+  }
+
+  useEffect(() => {
+    pollNotifRequest()
+    // eslint-disable-next-line
+  }, [])
+
+  const handleClickLogout = () => {
+    signoutUserRequest()
+  }
+
+  const handleClickSubscribe = () => {
+    subscribeRequest()
+  }
+
+  const handleClickBuzz = () => {
+    setOpen(true)
+  }
+
+  const onHide = () => {
+    setOpen(false)
+  }
+
+  const onHideTheme = () => {
+    setOpenTheme(false)
+  }
 
   const NavLinks = [
     {
@@ -188,31 +220,10 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Display',
-      path: `/@${username}/t/buzz?ref=nav`,
       icon: <SunMoonIcon top={-5} />,
+      onClick: showThemeModal,
     },
   ]
-
-  useEffect(() => {
-    pollNotifRequest()
-    // eslint-disable-next-line
-  }, [])
-
-  const handleClickLogout = () => {
-    signoutUserRequest()
-  }
-
-  const handleClickSubscribe = () => {
-    subscribeRequest()
-  }
-
-  const handleClickBuzz = () => {
-    setOpen(true)
-  }
-
-  const onHide = () => {
-    setOpen(false)
-  }
 
   return (
     <React.Fragment>
@@ -281,7 +292,8 @@ const SideBarLeft = (props) => {
           </LinkContainer>
         </Nav>
       </div>
-      <BuzzFormModal show={open}  onHide={onHide} />
+      <BuzzFormModal show={open}  onHide={onHide} />\
+      <ThemeModal show={openTheme} onHide={onHideTheme} />
     </React.Fragment>
   )
 }
