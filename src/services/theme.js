@@ -8,6 +8,7 @@ const night = {
       },
     },
   },
+  secondaryBackground: '#192734',
 }
 
 const light = {

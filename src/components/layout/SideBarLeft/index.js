@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom'
 import {
   HomeIcon,
   BrandIcon,
+  BrandIconDark,
   TrendingIcon,
   LatestIcon,
   NotificationsIcon,
@@ -157,6 +158,7 @@ const SideBarLeft = (props) => {
     loading,
     pollNotifRequest,
     count = 0,
+    theme,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -233,7 +235,8 @@ const SideBarLeft = (props) => {
           <LinkContainer >
             <NavbarBrand href="/">
               <div style={{ marginLeft: 15, marginRight: 15 }}>
-                <BrandIcon />
+                {theme.mode === 'light' && (<BrandIcon />)}
+                {theme.mode === 'night' && (<BrandIconDark />)}
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>
@@ -303,6 +306,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'SUBSCRIBE_REQUEST'),
   count: state.polling.get('count'),
+  theme: state.settings.get('theme'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
