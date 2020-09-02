@@ -44,3 +44,10 @@ export const getSavedThemeFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const GENERATE_STYLES = 'GENERATE_STYLES'
+
+export const generateStyles = (theme) => ({
+  type: GENERATE_STYLES,
+  payload: theme,
+})

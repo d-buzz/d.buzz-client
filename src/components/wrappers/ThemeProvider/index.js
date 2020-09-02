@@ -1,30 +1,36 @@
-import React, { useEffect } from 'react'
-import { getSavedThemeRequest } from 'store/settings/actions'
+import React from 'react'
+import { getSavedThemeRequest, generateStyles } from 'store/settings/actions'
+import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 const ThemeProvider = (props) => {
-  const { children, getSavedThemeRequest } = props
+  const {
+    children,
+    themeStyles,
+  } = props
 
-  useEffect(() => {
-    getSavedThemeRequest()
-    // eslint-disable-next-line
-  }, [])
+  const useStyles = createUseStyles(themeStyles)
+  const classes = useStyles()
 
   return (
     <React.Fragment>
-      <div>
+      <div className={classes.bgColor}>
         {children}
       </div>
     </React.Fragment>
   )
 }
 
+const mapStateToProps = (state) => ({
+  themeStyles: state.settings.get('themeStyles'),
+})
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getSavedThemeRequest,
+    generateStyles,
   }, dispatch),
 })
 
-
-export default connect(null, mapDispatchToProps)(ThemeProvider)
+export default connect(mapStateToProps, mapDispatchToProps)(ThemeProvider)
