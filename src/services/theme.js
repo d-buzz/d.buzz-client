@@ -3,6 +3,9 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  border: {
+    primary: 'rgb(56, 68, 77)',
+  },
   left: {
     sidebar: {
       items: {
