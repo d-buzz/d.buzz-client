@@ -264,7 +264,7 @@ const CreateBuzzForm = (props) => {
               <IconButton 
                 size="medium" 
                 onClick={handleFileSelect}
-                disabled={content.length >= 193}
+                disabled={(content.length + 88) > 280}
                 classes={{
                   root: classes.root,
                   disabled: classes.disabled,
