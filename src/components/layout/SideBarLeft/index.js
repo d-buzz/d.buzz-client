@@ -15,6 +15,7 @@ import {
   ProfileIcon,
   ContainedButton,
   Avatar,
+  SunMoonIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
@@ -184,6 +185,11 @@ const SideBarLeft = (props) => {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
       icon: <ProfileIcon top={-5} />,
+    },
+    {
+      name: 'Display',
+      path: `/@${username}/t/buzz?ref=nav`,
+      icon: <SunMoonIcon top={-5} />,
     },
   ]
 
