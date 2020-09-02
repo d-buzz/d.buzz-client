@@ -30,15 +30,16 @@ import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   items: {
     fontFamily: 'Segoe-Bold',
     width: 'max-content',
     fontSize: 18,
     padding: 8,
     marginBottom: 15,
+    ...theme.leftSideBarIcons,
     '& a': {
-      color: 'black',
+      color: theme.leftSidebarItemsColor,
       textDecoration: 'none',
       padding: 6,
       '&:hover': {
@@ -102,7 +103,7 @@ const useStyles = createUseStyles({
     width: '120%',
     marginBottom: 10,
   },
-})
+}))
 
 
 const LinkContainer = ({ children }) => {
