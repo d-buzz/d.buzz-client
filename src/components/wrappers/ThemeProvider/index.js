@@ -1,36 +1,25 @@
 import React from 'react'
-import { getSavedThemeRequest, generateStyles } from 'store/settings/actions'
-import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { ThemeProvider as Provider } from 'react-jss'
 
 const ThemeProvider = (props) => {
   const {
     children,
-    themeStyles,
+    theme,
   } = props
 
-  const useStyles = createUseStyles(themeStyles)
-  const classes = useStyles()
 
   return (
     <React.Fragment>
-      <div className={classes.bgColor}>
+      <Provider theme={theme}>
         {children}
-      </div>
+      </Provider>
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
-  themeStyles: state.settings.get('themeStyles'),
+  theme: state.settings.get('themeStyles'),
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    getSavedThemeRequest,
-    generateStyles,
-  }, dispatch),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ThemeProvider)
+export default connect(mapStateToProps)(ThemeProvider)

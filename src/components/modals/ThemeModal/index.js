@@ -4,7 +4,8 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import classNames from 'classnames'
-import { setThemeRequest } from 'store/settings/actions'
+import { getTheme } from 'services/theme'
+import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -81,11 +82,16 @@ const ThemeModal = (props) => {
     show,
     onHide,
     setThemeRequest,
+    generateStyles,
   } = props
   const classes = useStyles()
 
   const handleClickSetTheme = (mode) => () => {
     setThemeRequest(mode)
+      .then(({ mode }) => {
+        const theme = getTheme(mode)
+        generateStyles(theme)
+      })
   }
 
   return (
@@ -135,6 +141,7 @@ const ThemeModal = (props) => {
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setThemeRequest,
+    generateStyles,
   }, dispatch),
 })
 

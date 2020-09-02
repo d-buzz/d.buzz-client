@@ -5,6 +5,22 @@ import { withRouter } from 'react-router'
 import { Init, AuthGuard, ThemeLoader } from 'components'
 import { renderRoutes } from 'react-router-config'
 import { LastLocationProvider } from 'react-router-last-location'
+import { createUseStyles } from 'react-jss'
+
+const useStyles = createUseStyles(theme => ({
+  wrapper: {
+    backgroundColor: theme.primaryBackground,
+  },
+}))
+
+const AppWrapper = ({ children }) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.wrapper}>
+      {children}
+    </div>
+  )
+}
 
 const App = () => {
   return (
@@ -14,7 +30,9 @@ const App = () => {
           <Init>
             <ScrollMemory />
             <AuthGuard>
-              {renderRoutes(routes)}
+              <AppWrapper>
+                {renderRoutes(routes)}
+              </AppWrapper>
             </AuthGuard>
           </Init>
         </ThemeLoader>
