@@ -1,23 +1,46 @@
 const night = {
-  primaryBackground: 'rgb(21, 32, 43)',
-  leftSidebarItemsColor: 'white',
-  leftSideBarIcons: {
-    '& svg': {
-      '& path': {
-        stroke: 'white',
+  background: {
+    primary: 'rgb(21, 32, 43)',
+    secondary: '#192734',
+  },
+  left: {
+    sidebar: {
+      items: {
+        color: 'white',
+        hover: {
+          backgroundColor: '#ffebee1a',
+        },
+        icons: {
+          '& svg': {
+            '& path': {
+              stroke: 'white',
+            },
+          },
+        },
       },
     },
   },
-  secondaryBackground: '#192734',
 }
 
 const light = {
-  primaryBackground: 'white',
-  leftSidebarItemsColor: 'black',
-  leftSideBarIcons: {
-    '& svg': {
-      '& path': {
-        stroke: 'black',
+  background: {
+    primary: 'white',
+    secondary: 'black',
+  },
+  left: {
+    sidebar: {
+      items: {
+        color: 'black',
+        hover: {
+          backgroundColor: '#ffebee',
+        },
+        icons: {
+          '& svg': {
+            '& path': {
+              stroke: 'black',
+            },
+          },
+        },
       },
     },
   },

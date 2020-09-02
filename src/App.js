@@ -9,7 +9,7 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
-    backgroundColor: theme.primaryBackground,
+    backgroundColor: theme.background.primary,
   },
 }))
 

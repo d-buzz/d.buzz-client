@@ -4,6 +4,7 @@ import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
+import Badge from '@material-ui/core/Badge'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import {
@@ -22,7 +23,6 @@ import {
   BuzzFormModal,
   ThemeModal,
 } from 'components'
-import Badge from '@material-ui/core/Badge'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -38,9 +38,9 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 18,
     padding: 8,
     marginBottom: 15,
-    ...theme.leftSideBarIcons,
+    ...theme.left.sidebar.items.icons,
     '& a': {
-      color: theme.leftSidebarItemsColor,
+      color: theme.left.sidebar.items.color,
       textDecoration: 'none',
       padding: 6,
       '&:hover': {
@@ -48,7 +48,7 @@ const useStyles = createUseStyles(theme => ({
       },
     },
     '&:hover': {
-      backgroundColor: '#ffebee',
+      ...theme.left.sidebar.items.hover,
       borderRadius: '50px 50px',
       cursor: 'pointer',
       '& a': {
@@ -84,7 +84,8 @@ const useStyles = createUseStyles(theme => ({
     width: '90%',
     borderRadius: '50px 50px',
     cursor: 'pointer',
-    backgroundColor: '#f5f8fa',
+    // backgroundColor: '#f5f8fa',
+    backgroundColor: 'rgb(29, 161, 242, 0.1)',
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
     '&:hover': {
