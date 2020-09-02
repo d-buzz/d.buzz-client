@@ -292,7 +292,7 @@ const SideBarLeft = (props) => {
           </LinkContainer>
         </Nav>
       </div>
-      <BuzzFormModal show={open}  onHide={onHide} />\
+      <BuzzFormModal show={open}  onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
     </React.Fragment>
   )

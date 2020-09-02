@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { getSavedThemeRequest } from 'store/settings/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const ThemeProvider = (props) => {
-  const { children } = props
+  const { children, getSavedThemeRequest } = props
+
+  useEffect(() => {
+    getSavedThemeRequest()
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <React.Fragment>
@@ -12,4 +20,11 @@ const ThemeProvider = (props) => {
   )
 }
 
-export default ThemeProvider
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    getSavedThemeRequest,
+  }, dispatch),
+})
+
+
+export default connect(null, mapDispatchToProps)(ThemeProvider)

@@ -2,8 +2,11 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { ContainedButton } from 'components/elements'
-import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
+import classNames from 'classnames'
+import { setThemeRequest } from 'store/settings/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles({
   modal: {
@@ -68,9 +71,22 @@ const useStyles = createUseStyles({
   },
 })
 
+const THEME = {
+  LIGHT: 'light',
+  NIGHT: 'night',
+}
+
 const ThemeModal = (props) => {
-  const { show, onHide } = props
+  const {
+    show,
+    onHide,
+    setThemeRequest,
+  } = props
   const classes = useStyles()
+
+  const handleClickSetTheme = (mode) => () => {
+    setThemeRequest(mode)
+  }
 
   return (
     <React.Fragment>
@@ -83,13 +99,19 @@ const ThemeModal = (props) => {
             <label className={classes.notes}>
               Display settings affect all of your Dbuzz accounts on this browser. These settings are only visible to you.
             </label>
-            <div className={classNames(classes.button, classes.darkModeButton)}>
+            <div
+              onClick={handleClickSetTheme(THEME.NIGHT)}
+              className={classNames(classes.button, classes.darkModeButton)}
+            >
               <center>
                 <label>Night Mode</label>
                 <label>Reduce brightness of your screen</label>
               </center>
             </div>
-            <div className={classNames(classes.button, classes.ligthModeButton)}>
+            <div
+              onClick={handleClickSetTheme(THEME.LIGHT)}
+              className={classNames(classes.button, classes.ligthModeButton)}
+            >
               <center>
                 <label>Light Mode</label>
                 <label>Default Theme</label>
@@ -110,4 +132,10 @@ const ThemeModal = (props) => {
   )
 }
 
-export default ThemeModal
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setThemeRequest,
+  }, dispatch),
+})
+
+export default connect(null, mapDispatchToProps)(ThemeModal)
