@@ -3,6 +3,14 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  icon: {
+    '& svg': {
+      '& path': {
+        stroke: 'white',
+        fill: 'white',
+      },
+    },
+  },
   font: {
     color: 'white',
   },
@@ -16,6 +24,11 @@ const night = {
     borderBottom: '1px solid rgb(56, 68, 77)',
     '&::placeholder': {
       color: 'white',
+    },
+  },
+  search: {
+    background: {
+      backgroundColor: 'rgb(37, 51, 65)',
     },
   },
   navbar: {
@@ -91,6 +104,14 @@ const light = {
     primary: 'white',
     secondary: 'white',
   },
+  icon: {
+    '& svg': {
+      '& path': {
+        stroke: 'black',
+        fill: 'black',
+      },
+    },
+  },
   font: {
     color: 'black',
   },
@@ -104,6 +125,11 @@ const light = {
     borderBottom: '1px solid #e6ecf0',
     '&::placeholder': {
       color: 'black',
+    },
+  },
+  search: {
+    background: {
+      backgroundColor: '#e6ecf0',
     },
   },
   navbar: {
