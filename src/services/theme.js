@@ -8,6 +8,15 @@ const night = {
   },
   border: {
     primary: '1px solid rgb(56, 68, 77)',
+    thick: '10px solid rgb(37, 51, 65)',
+  },
+  textArea: {
+    backgroundColor: 'rgb(21, 32, 43)',
+    color: 'white',
+    borderBottom: '1px solid rgb(56, 68, 77)',
+    '&::placeholder': {
+      color: 'white',
+    },
   },
   navbar: {
     icon: {
@@ -24,7 +33,7 @@ const night = {
       items: {
         color: 'white',
         hover: {
-          backgroundColor: '#ffebee1a',
+          backgroundColor: '#172e3f',
         },
         icons: {
           '& svg': {
@@ -72,6 +81,15 @@ const light = {
   },
   border: {
     primary: '1px solid #e6ecf0',
+    thick: '10px solid #e6ecf0',
+  },
+  textArea: {
+    backgroundColor: 'white',
+    color: 'black',
+    borderBottom: '1px solid #e6ecf0',
+    '&::placeholder': {
+      color: 'black',
+    },
   },
   navbar: {
     icon: {

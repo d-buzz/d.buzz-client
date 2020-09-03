@@ -20,10 +20,10 @@ import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
 
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   container: {
     width: '100%',
-    borderBottom: '10px solid #e6ecf0',
+    borderBottom: theme.border.thick,
   },
   containerModal: {
     width: '100%',
@@ -95,7 +95,7 @@ const useStyles = createUseStyles({
   disabled: {
     backgroundColor: 'lightgray !important',
   },
-})
+}))
 
 const KeyCodes = {
   comma: 188,
@@ -218,7 +218,7 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
-          {!publishing &&(
+          {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
                 placeholder="Add tags"
@@ -261,8 +261,8 @@ const CreateBuzzForm = (props) => {
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <IconButton 
-                size="medium" 
+              <IconButton
+                size="medium"
                 onClick={handleFileSelect}
                 disabled={(content.length + 88) > 280}
                 classes={{
@@ -280,7 +280,7 @@ const CreateBuzzForm = (props) => {
                   size={30}
                   value={wordCount}
                   variant="static"
-                />      
+                />
               </Box>
             </React.Fragment>
           )}
