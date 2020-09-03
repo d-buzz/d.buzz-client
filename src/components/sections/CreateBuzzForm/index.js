@@ -95,6 +95,14 @@ const useStyles = createUseStyles(theme => ({
   disabled: {
     backgroundColor: 'lightgray !important',
   },
+  previewTitle: {
+    ...theme.preview.title,
+  },
+  separator: {
+    height: 0,
+    width: '100%',
+    border: theme.border.primary,
+  },
 }))
 
 const KeyCodes = {
@@ -241,9 +249,9 @@ const CreateBuzzForm = (props) => {
           )}
           {content.length !== 0 && (
             <div className={classes.previewContainer}>
-              <h6>Buzz preview</h6>
+              <h6 className={classes.previewTitle}>Buzz preview</h6>
               <MarkdownViewer content={content} minifyAssets={false}/>
-              <hr />
+              <div className={classes.separator} />
             </div>
           )}
           {!publishing && (

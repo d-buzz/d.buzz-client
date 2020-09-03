@@ -42,7 +42,7 @@ const useStyles = createUseStyles({
     },
   },
   disabledButton: {
-    backgroundColor: '#d0cfcf',
+    backgroundColor: '#f55d5d85',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'mouse',
@@ -54,9 +54,6 @@ const useStyles = createUseStyles({
       whiteSpace: 'nowrap',
       color: 'white',
       fontFamily: 'Segoe-Bold',
-    },
-    '&:hover': {
-      backgroundColor: '#d0cfcf',
     },
   },
 })

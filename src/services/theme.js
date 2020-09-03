@@ -28,6 +28,21 @@ const night = {
       },
     },
   },
+  preview: {
+    title: {
+      color: 'white',
+    },
+  },
+  markdown: {
+    paragraph: {
+      color: 'white !important',
+    },
+  },
+  postList: {
+    hover: {
+      backgroundColor: 'rgb(25, 39, 52)',
+    },
+  },
   left: {
     sidebar: {
       items: {
@@ -99,6 +114,16 @@ const light = {
           fill: 'black',
         },
       },
+    },
+  },
+  preview: {
+    title: {
+      color: 'black',
+    },
+  },
+  markdown: {
+    paragraph: {
+      color: 'black',
     },
   },
   left: {
