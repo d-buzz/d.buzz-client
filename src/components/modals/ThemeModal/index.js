@@ -110,8 +110,8 @@ const ThemeModal = (props) => {
               className={classNames(classes.button, classes.darkModeButton)}
             >
               <center>
-                <label>Night Mode</label>
-                <label>Reduce brightness of your screen</label>
+                <label>Nightshade Mode</label>
+                <label>Dark and Shady, reduced brightness</label>
               </center>
             </div>
             <div
@@ -119,8 +119,8 @@ const ThemeModal = (props) => {
               className={classNames(classes.button, classes.ligthModeButton)}
             >
               <center>
-                <label>Light Mode</label>
-                <label>Default Theme</label>
+                <label>Daylight Mode</label>
+                <label>Light and bright, default theme</label>
               </center>
             </div>
           </div>

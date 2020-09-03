@@ -3,8 +3,21 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  font: {
+    color: 'white',
+  },
   border: {
     primary: '1px solid rgb(56, 68, 77)',
+  },
+  navbar: {
+    icon: {
+      '& svg': {
+        '& path': {
+          stroke: 'white',
+          fill: 'white',
+        },
+      },
+    },
   },
   left: {
     sidebar: {
@@ -54,8 +67,21 @@ const light = {
     primary: 'white',
     secondary: 'white',
   },
+  font: {
+    color: 'black',
+  },
   border: {
     primary: '1px solid #e6ecf0',
+  },
+  navbar: {
+    icon: {
+      '& svg': {
+        '& path': {
+          stroke: 'black',
+          fill: 'black',
+        },
+      },
+    },
   },
   left: {
     sidebar: {

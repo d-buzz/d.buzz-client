@@ -45,13 +45,19 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   nav: {
-    borderBottom: '1px solid #e6ecf0',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
-    backgroundColor: 'white',
+    borderBottom: theme.border.primary,
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
+    backgroundColor: theme.background.primary,
     zIndex: 2,
     overflow: 'hidden',
     width: '100%',
+  },
+  navTitle: {
+    fontFamily: 'Roboto, sans-serif',
+    display: 'inline-block',
+    verticalAlign: 'top',
+    ...theme.navbar.icon,
   },
   trendingWrapper: {
     width: '100%',
@@ -67,6 +73,7 @@ const useStyles = createUseStyles(theme => ({
     marginLeft: 5,
     fontFamily: 'Segoe-Bold',
     fontSize: 18,
+    color: theme.font.color,
   },
   searchWrapper: {
     padding: 0,
@@ -193,7 +200,7 @@ const GuardedAppFrame = (props) => {
             <Sticky>
               {({ style }) => (
                 <Navbar style={style} className={classes.nav}>
-                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif', display: 'inline-block', verticalAlign: 'top' }}>
+                  <Navbar.Brand className={classes.navTitle}>
                     {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                       <IconButton onClick={handleClickBackButton} size="small">
                         <BackArrowIcon />
