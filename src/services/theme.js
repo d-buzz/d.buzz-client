@@ -97,6 +97,14 @@ const night = {
       },
     },
   },
+  right: {
+    list: {
+      background: 'rgb(25, 39, 52)',
+      hover: {
+        backgroundColor: 'rgb(56, 68, 77)',
+      },
+    },
+  },
 }
 
 const light = {
@@ -195,6 +203,14 @@ const light = {
             },
           },
         },
+      },
+    },
+  },
+  right: {
+    list: {
+      background: '#f5f8fa',
+      hover: {
+        backgroundColor: 'rgba(0, 0, 0, 0.03)',
       },
     },
   },
