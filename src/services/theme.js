@@ -126,6 +126,11 @@ const light = {
       color: 'black',
     },
   },
+  postList: {
+    hover: {
+      backgroundColor: '#f5f8fa',
+    },
+  },
   left: {
     sidebar: {
       items: {
