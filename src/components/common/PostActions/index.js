@@ -27,6 +27,7 @@ const PrettoSlider = withStyles({
     height: 5,
     '& .MuiSlider-markLabel': {
       fontSize: 12,
+      color: '#d32f2f',
     },
   },
   thumb: {
@@ -101,7 +102,10 @@ const marks = [
   },
 ]
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+  icon: {
+    ...theme.icon,
+  },
   inline: {
     display: 'inline-block',
     verticalAlign: 'top',
@@ -127,7 +131,7 @@ const useStyles = createUseStyles({
     width: '98%',
     paddingRight: 30,
   },
-})
+}))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
   return (
@@ -267,7 +271,7 @@ const PostActions = (props) => {
               {!loading && !upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
+                  inlineClass={classNames(classes.inline, classes.icon)}
                   icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
                   hideStats={hideStats}
                   disabled={!is_authenticated}
@@ -282,7 +286,7 @@ const PostActions = (props) => {
               {loading && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
+                  inlineClass={classNames(classes.inline, classes.icon)}
                   icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
                   hideStats={hideStats}
                   onClick={handleClickShowSlider}
@@ -297,7 +301,7 @@ const PostActions = (props) => {
             <Col>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
-                inlineClass={classes.inline}
+                inlineClass={classNames(classes.inline, classes.icon)}
                 icon={<IconButton size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
                 hideStats={hideStats}
                 disabled={!is_authenticated}
