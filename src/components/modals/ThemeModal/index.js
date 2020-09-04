@@ -63,6 +63,14 @@ const useStyles = createUseStyles(theme => ({
       display: 'block',
     },
   },
+  grayModeButton: {
+    backgroundColor: '#2f3136',
+    '& label': {
+      fontSize: 14,
+      color: 'white',
+      display: 'block',
+    },
+  },
   notes: {
     fontSize: 14,
     ...theme.font,
@@ -130,6 +138,15 @@ const ThemeModal = (props) => {
               <center>
                 <label>Daylight Mode</label>
                 <label>Light and bright, default theme</label>
+              </center>
+            </div>
+            <div
+              onClick={handleClickSetTheme(THEME.NIGHT)}
+              className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
+            >
+              <center>
+                <label>Graywall Mode</label>
+                <label>Dark and Gray, reduced brightness</label>
               </center>
             </div>
           </div>

@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -15,7 +15,7 @@ const useStyle = createUseStyles({
     width: '100%',
     overflow: 'hidden',
     minHeight: 150,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
@@ -104,7 +104,7 @@ const useStyle = createUseStyles({
   skeleton: {
     color: 'red',
   },
-})
+}))
 
 const PostlistSkeleton = ({ loading }) => {
   const classes = useStyle()
