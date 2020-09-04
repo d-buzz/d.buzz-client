@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
 import { Link } from 'react-router-dom'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
   },
   wrapper: {
     width: '100%',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     overflow: 'hidden',
     '& a': {
       color: 'black',
@@ -91,7 +91,7 @@ const useStyles = createUseStyles({
       textDecoration: 'underline !important',
     },
   },
-})
+}))
 
 const ReplylistSkeleton = ({ loading }) => {
   const classes = useStyles()
