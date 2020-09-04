@@ -6,7 +6,7 @@ const night = {
   dialog: {
     user: {
       boxShadow: 'rgba(136, 153, 166, 0.2) 0px 0px 15px, rgba(136, 153, 166, 0.15) 0px 0px 3px 1px !important',
-      color: 'rgb(255, 255, 255) !important',
+      color: 'rgb(255 255 255 / 88%) !important',
       '& a': {
         color: 'rgb(255, 255, 255)',
       },
@@ -64,7 +64,7 @@ const night = {
   },
   markdown: {
     paragraph: {
-      color: 'rgb(255, 255, 255) !important',
+      color: 'rgb(255 255 255 / 88%) !important',
     },
   },
   postList: {
@@ -131,6 +131,14 @@ const light = {
   background: {
     primary: 'white',
     secondary: 'white',
+  },
+  dialog: {
+    user: {
+      color: 'black !important',
+      '& a': {
+        color: 'black',
+      },
+    },
   },
   icon: {
     '& svg': {
