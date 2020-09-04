@@ -136,6 +136,9 @@ const light = {
     primary: 'white',
     secondary: 'white',
   },
+  nav: {
+    background: 'white',
+  },
   dialog: {
     user: {
       color: 'black !important',
