@@ -108,7 +108,7 @@ const night = {
     list: {
       background: 'rgb(25, 39, 52)',
       hover: {
-        backgroundColor: 'rgb(56, 68, 77)',
+        backgroundColor: 'rgb(56 68 77 / 31%)',
       },
     },
   },

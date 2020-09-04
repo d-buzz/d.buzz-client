@@ -9,13 +9,17 @@ import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   modal: {
     '& div.modal-content': {
+      backgroundColor: theme.background.primary,
       borderRadius: '15px 15px !important',
       border: 'none',
       width: 400,
       margin: '0 auto',
+      '& h6': {
+        ...theme.font,
+      },
     },
     '& input.form-control': {
       borderRadius: '50px 50px',
@@ -31,46 +35,47 @@ const useStyles = createUseStyles({
     marginBottom: 15,
     borderRadius: '5px 5px',
     cursor: 'pointer',
-    lineHeight: '0.8',
+    lineHeight: 0.8,
+    border: '3px solid #e6ecf0',
     '& :first-child': {
       paddingTop: 5,
     },
     '& label': {
       cursor: 'pointer',
     },
+    '&:hover': {
+      border: '3px solid #e61c34',
+    },
   },
   darkModeButton: {
-    backgroundColor: 'rgb(59, 59, 59)',
+    backgroundColor: 'rgb(21, 32, 43)',
     '& label': {
       fontSize: 14,
       color: 'white',
       display: 'block',
     },
-    '&:hover': {
-      backgroundColor: 'rgb(33, 32, 32) !important',
-    },
   },
   ligthModeButton: {
     backgroundColor: 'rgb(255, 255, 255)',
-    border: '2px solid #e6ecf0',
     '& label': {
       fontSize: 14,
       color: 'black',
       display: 'block',
     },
-    '&:hover': {
-      backgroundColor: 'whiteSmoke !important',
-    },
   },
   notes: {
     fontSize: 14,
+    ...theme.font,
   },
   closeButton: {
     marginTop: 15,
     width: 100,
     height: 35,
   },
-})
+  active: {
+    border: '3px solid #e61c34',
+  },
+}))
 
 const THEME = {
   LIGHT: 'light',
@@ -83,7 +88,9 @@ const ThemeModal = (props) => {
     onHide,
     setThemeRequest,
     generateStyles,
+    theme,
   } = props
+  const { mode } = theme
   const classes = useStyles()
 
   const handleClickSetTheme = (mode) => () => {
@@ -102,12 +109,14 @@ const ThemeModal = (props) => {
             <center>
               <h6>Customize your view</h6>
             </center>
-            <label className={classes.notes}>
-              Display settings affect all of your Dbuzz accounts on this browser. These settings are only visible to you.
-            </label>
+            <center>
+              <label className={classes.notes}>
+                Display settings affect all of your Dbuzz accounts on this browser. These settings are only visible to you.
+              </label>
+            </center>
             <div
               onClick={handleClickSetTheme(THEME.NIGHT)}
-              className={classNames(classes.button, classes.darkModeButton)}
+              className={classNames(classes.button, classes.darkModeButton, mode === 'night' ? classes.active : '')}
             >
               <center>
                 <label>Nightshade Mode</label>
@@ -116,7 +125,7 @@ const ThemeModal = (props) => {
             </div>
             <div
               onClick={handleClickSetTheme(THEME.LIGHT)}
-              className={classNames(classes.button, classes.ligthModeButton)}
+              className={classNames(classes.button, classes.ligthModeButton, mode === 'light' ? classes.active : '')}
             >
               <center>
                 <label>Daylight Mode</label>
@@ -138,6 +147,10 @@ const ThemeModal = (props) => {
   )
 }
 
+const mapStateToProps = (state) => ({
+  theme: state.settings.get('theme'),
+})
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setThemeRequest,
@@ -145,4 +158,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(ThemeModal)
+export default connect(mapStateToProps, mapDispatchToProps)(ThemeModal)
