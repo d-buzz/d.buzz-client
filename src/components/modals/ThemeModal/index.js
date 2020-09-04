@@ -140,7 +140,7 @@ const ThemeModal = (props) => {
                 <label>Light and bright, default theme</label>
               </center>
             </div>
-            <div
+            {/* <div
               onClick={handleClickSetTheme(THEME.NIGHT)}
               className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
             >
@@ -148,7 +148,7 @@ const ThemeModal = (props) => {
                 <label>Graywall Mode</label>
                 <label>Dark and Gray, reduced brightness</label>
               </center>
-            </div>
+            </div> */}
           </div>
           <center>
             <ContainedButton
