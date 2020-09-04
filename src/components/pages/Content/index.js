@@ -23,12 +23,12 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 import { ContentSkeleton, ReplylistSkeleton } from 'components'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   wrapper: {
     width: '95%',
     margin: '0 auto',
     marginTop: 0,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& img': {
       borderRadius: '15px 15px',
     },
@@ -39,7 +39,7 @@ const useStyles = createUseStyles({
   full: {
     width: '100%',
     marginTop: 5,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
   },
   inner: {
     width: '95%',
@@ -51,6 +51,7 @@ const useStyles = createUseStyles({
     paddingBottom: 0,
     marginBottom: 0,
     fontSize: 14,
+    ...theme.font,
   },
   username: {
     marginTop: -30,
@@ -64,7 +65,7 @@ const useStyles = createUseStyles({
     marginRight: 15,
   },
   strong: {
-    color: 'black !important',
+    ...theme.font,
   },
   link: {
     color: 'black',
@@ -92,7 +93,7 @@ const useStyles = createUseStyles({
     paddingTop: 10,
     paddingBottom: 2,
   },
-})
+}))
 
 const Content = (props) => {
   const {
