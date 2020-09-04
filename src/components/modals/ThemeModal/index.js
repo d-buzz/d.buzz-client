@@ -64,7 +64,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   grayModeButton: {
-    backgroundColor: '#2f3136',
+    backgroundColor: '#18191a',
     '& label': {
       fontSize: 14,
       color: 'white',

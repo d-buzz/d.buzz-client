@@ -3,6 +3,15 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  dialog: {
+    user: {
+      boxShadow: 'rgba(136, 153, 166, 0.2) 0px 0px 15px, rgba(136, 153, 166, 0.15) 0px 0px 3px 1px !important',
+      color: 'rgb(255, 255, 255) !important',
+      '& a': {
+        color: 'rgb(255, 255, 255)',
+      },
+    },
+  },
   icon: {
     '& svg': {
       '& path': {
