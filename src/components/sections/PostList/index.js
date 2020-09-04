@@ -117,6 +117,9 @@ const useStyle = createUseStyles(theme => ({
     padding: 0,
     margin: 0,
   },
+  spanName: {
+    ...theme.font,
+  },
 }))
 
 
@@ -230,7 +233,7 @@ const PostList = (props) => {
                         {name ? name : `${author}`}
                       </Link>
                     )}
-                    {disableProfileLink && (<span>{name ? name : `@${author}`}</span>)}
+                    {disableProfileLink && (<span className={classes.spanName}>{name ? name : `@${author}`}</span>)}
                   </label>
                   <label className={classes.username}>
                     {`@${author}`} &bull;&nbsp;
