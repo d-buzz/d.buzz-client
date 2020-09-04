@@ -2,7 +2,7 @@ import React from 'react'
 import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import classNames from 'classnames'
-import { PreviewLastLink } from 'components'
+import { PreviewLastLink, UrlVideoEmbed } from 'components'
 import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
 
@@ -143,11 +143,39 @@ const prepareTwitterEmbeds = (content) => {
   return body
 }
 
+const prepareThreeSpeakEmbeds = (content) => {
+  let body = content 
+
+  const links = markdownLinkExtractor(content)
+
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+      const match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i) 
+      console.log({match})
+
+      if(match) {
+        const id = match[1]
+        body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
+        console.log({body})
+      }
+    } catch(error) {
+      console.log(error)
+    }
+  })
+  return body
+}
+
+
 const render = (content, style, markdownClass, assetClass) => {
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
     return <TwitterTweetEmbed tweetId={splitTwitter[2]} />
+  } else if(content.includes(':threespeak:')) {
+    const splitThreeSpeak = content.split(':')
+    const url = `https://3speak.online/embed?v=${splitThreeSpeak[2]}`
+    return <UrlVideoEmbed url={url} />
   } else {
     // render normally
     return <div
@@ -165,7 +193,23 @@ const MarkdownViewer = (props) => {
   let { content = '' } = props
   const original = content
   // content = prepareImages(content)
-  content = prepareTwitterEmbeds(content)
+  
+  const links = markdownLinkExtractor(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+
+      if(link.includes('twitter.com')) {
+        content = prepareTwitterEmbeds(content)
+      } else if(link.includes('3speak.online')) {
+        content = prepareThreeSpeakEmbeds(content)
+      }
+      
+    } catch(error) {
+      console.log(error)
+    }
+  })
 
   let assetClass = classes.minified
   let style = {}
@@ -177,8 +221,9 @@ const MarkdownViewer = (props) => {
   if(onModal) {
     style = { width: 520 }
   }
-
+  
   let splitContent = content.split(`~~~~~~.^.~~~`)
+  console.log({splitContent})
 
   splitContent = splitContent.filter((item) => item !== '')
 
