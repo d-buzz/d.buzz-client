@@ -107,6 +107,9 @@ const useStyles = createUseStyles(theme => ({
     ...theme.icon,
     ...theme.font,
   },
+  spinner: {
+    ...theme.font,
+  },
   inline: {
     display: 'inline-block',
     verticalAlign: 'top',
@@ -290,7 +293,7 @@ const PostActions = (props) => {
               {loading && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
-                  inlineClass={classNames(classes.inline, classes.icon)}
+                  inlineClass={classNames(classes.inline, classes.spinner)}
                   icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
                   hideStats={hideStats}
                   onClick={handleClickShowSlider}
