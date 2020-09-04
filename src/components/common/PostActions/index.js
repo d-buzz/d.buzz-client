@@ -105,6 +105,7 @@ const marks = [
 const useStyles = createUseStyles(theme => ({
   icon: {
     ...theme.icon,
+    ...theme.font,
   },
   inline: {
     display: 'inline-block',
@@ -130,6 +131,9 @@ const useStyles = createUseStyles(theme => ({
   sliderWrapper: {
     width: '98%',
     paddingRight: 30,
+  },
+  iconButton: {
+    ...theme.iconButton.hover,
   },
 }))
 
@@ -272,7 +276,7 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
-                  icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
+                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
                   hideStats={hideStats}
                   disabled={!is_authenticated}
                   onClick={handleClickShowSlider}
@@ -302,7 +306,7 @@ const PostActions = (props) => {
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classNames(classes.inline, classes.icon)}
-                icon={<IconButton size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
+                icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
                 hideStats={hideStats}
                 disabled={!is_authenticated}
                 onClick={handleClickReply(author, permlink)}

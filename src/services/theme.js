@@ -11,8 +11,15 @@ const night = {
       },
     },
   },
+  iconButton: {
+    hover: {
+      '&:hover': {
+        backgroundColor: 'rgb(29 56 78) !important',
+      },
+    },
+  },
   font: {
-    color: 'white',
+    color: 'rgb(255, 255, 255)',
   },
   border: {
     primary: '1px solid rgb(56, 68, 77)',
@@ -48,7 +55,7 @@ const night = {
   },
   markdown: {
     paragraph: {
-      color: 'white !important',
+      color: 'rgb(255, 255, 255) !important',
     },
   },
   postList: {
@@ -119,6 +126,9 @@ const light = {
         fill: 'black',
       },
     },
+  },
+  iconButton: {
+    hover: { },
   },
   font: {
     color: 'black',
