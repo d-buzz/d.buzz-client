@@ -20,7 +20,7 @@ const useStyle = createUseStyles(theme => ({
       color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer',
   },
