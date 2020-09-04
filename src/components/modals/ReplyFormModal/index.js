@@ -70,7 +70,7 @@ const useStyles = createUseStyles(theme => ({
   },
   float: {
     float: 'right',
-    marginRight: 5,
+    marginRight: 10,
     marginTop: 10,
   },
   circle: {
