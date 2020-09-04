@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import {
   BrandIcon,
+  BrandIconDark,
   ContainedButton,
   IconButton,
   BackArrowIcon,
@@ -11,12 +12,13 @@ import {
 import { LoginModal, SearchField } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   nav: {
     height: 55,
-    backgroundColor: 'white',
-    borderBottom: '1px solid rgb(204, 214, 221)',
+    backgroundColor: theme.nav.background,
+    borderBottom: theme.border.primary,
   },
   search: {
     width: 350,
@@ -41,9 +43,11 @@ const useStyles = createUseStyles({
       },
     },
   },
-})
+}))
 
-const AppBar = () => {
+const AppBar = (props) => {
+  const { theme } = props
+  const { mode } = theme
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const location = useLocation()
@@ -73,7 +77,8 @@ const AppBar = () => {
             </React.Fragment>
           )}
           <Link to="/">
-            <BrandIcon height={30} top={-15} />
+            {mode === 'light' && (<BrandIcon height={30} top={-15} />)}
+            {mode === 'night' && (<BrandIconDark height={30} top={-15} />)}
           </Link>
         </Navbar.Brand>
         <Nav className="mr-auto">
@@ -87,4 +92,8 @@ const AppBar = () => {
   )
 }
 
-export default AppBar
+const mapStateToProps = (state) => ({
+  theme: state.settings.get('theme'),
+})
+
+export default connect(mapStateToProps)(AppBar)

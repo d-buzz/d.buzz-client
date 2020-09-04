@@ -3,6 +3,9 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  nav: {
+    background: 'rgb(25, 39, 52)',
+  },
   dialog: {
     user: {
       boxShadow: 'rgba(136, 153, 166, 0.2) 0px 0px 15px, rgba(136, 153, 166, 0.15) 0px 0px 3px 1px !important',
