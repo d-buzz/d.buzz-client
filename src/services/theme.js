@@ -112,6 +112,10 @@ const night = {
       },
     },
   },
+  skeleton: {
+    color: '#172e3f',
+    highlight: 'rgb(56 68 77 / 31%)',
+  },
 }
 
 const light = {
@@ -224,6 +228,7 @@ const light = {
       },
     },
   },
+  skeleton: { },
 }
 
 export const getTheme = (mode) => {

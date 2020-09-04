@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { ThemeProvider as Provider } from 'react-jss'
+import { SkeletonTheme } from 'react-loading-skeleton'
 
 const ThemeProvider = (props) => {
   const {
@@ -12,7 +13,9 @@ const ThemeProvider = (props) => {
   return (
     <React.Fragment>
       <Provider theme={theme}>
-        {children}
+        <SkeletonTheme color={theme.skeleton.color} highlightColor={theme.skeleton.highlight}>
+          {children}
+        </SkeletonTheme>
       </Provider>
     </React.Fragment>
   )

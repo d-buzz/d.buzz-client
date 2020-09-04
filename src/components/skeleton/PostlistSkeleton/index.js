@@ -101,6 +101,9 @@ const useStyle = createUseStyles({
     padding: 0,
     margin: 0,
   },
+  skeleton: {
+    color: 'red',
+  },
 })
 
 const PostlistSkeleton = ({ loading }) => {
