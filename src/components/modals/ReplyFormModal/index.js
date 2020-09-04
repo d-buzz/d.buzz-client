@@ -15,11 +15,11 @@ import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   modal: {
     width: 630,
-    backgroundColor: 'none',
     '& div.modal-content': {
+      backgroundColor: theme.background.primary,
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
@@ -59,6 +59,7 @@ const useStyles = createUseStyles({
   },
   right: {
     verticalAlign: 'top',
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -121,7 +122,10 @@ const useStyles = createUseStyles({
     color: '#e53935',
     paddingTop: 2,
   },
-})
+  break: {
+    backgroundColor: theme.border.background,
+  },
+}))
 
 const ReplyFormModal = (props) => {
   const classes = useStyles()
@@ -202,12 +206,12 @@ const ReplyFormModal = (props) => {
       >
         <div className="container">
           <ModalBody className={classes.modalBody}>
-            <div style={{ width: '100%'}}>
+            <div style={{ width: '100%' }}>
               <IconButton style={{ marginTop: -5 }} onClick={onHide}>
                 <CloseIcon />
               </IconButton>
             </div>
-            <hr />
+            <hr className={classes.break} />
             <Row>
               <Col xs="auto">
                 <div className={classes.left}>

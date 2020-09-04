@@ -33,6 +33,7 @@ const night = {
   border: {
     primary: '1px solid rgb(56, 68, 77)',
     thick: '10px solid rgb(37, 51, 65)',
+    background: 'rgb(56, 68, 77)',
   },
   textArea: {
     backgroundColor: 'rgb(21, 32, 43)',
@@ -157,6 +158,7 @@ const light = {
   border: {
     primary: '1px solid #e6ecf0',
     thick: '10px solid #e6ecf0',
+    background: 'black',
   },
   textArea: {
     backgroundColor: 'white',
