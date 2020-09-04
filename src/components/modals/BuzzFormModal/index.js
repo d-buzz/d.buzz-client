@@ -6,11 +6,11 @@ import { CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { CreateBuzzForm } from 'components'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   modal: {
     width: 630,
-    backgroundColor: 'none',
     '& div.modal-content': {
+      backgroundColor: theme.background.primary,
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
     paddingLeft: 0,
     paddingRight: 0,
   },
-})
+}))
 
 const BuzzFormModal = (props) => {
   const { show, onHide } = props

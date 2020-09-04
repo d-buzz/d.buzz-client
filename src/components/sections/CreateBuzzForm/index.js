@@ -27,7 +27,7 @@ const useStyles = createUseStyles(theme => ({
   },
   containerModal: {
     width: '100%',
-    borderTop: '1px solid #e6ecf0',
+    borderTop: theme.border.primary,
   },
   row: {
     width: '98%',
