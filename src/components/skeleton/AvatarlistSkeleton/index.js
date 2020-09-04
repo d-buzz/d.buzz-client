@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Skeleton from 'react-loading-skeleton'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -18,12 +18,12 @@ const useStyle = createUseStyles({
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer',
   },
@@ -89,7 +89,7 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-})
+}))
 
 const AvatarlistSkeleton = ({ loading = false }) => {
   const classes = useStyle()
