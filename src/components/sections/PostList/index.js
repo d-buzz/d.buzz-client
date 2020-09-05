@@ -17,7 +17,7 @@ import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '95%',
     margin: '0 auto',
@@ -27,12 +27,12 @@ const useStyle = createUseStyles({
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer',
   },
@@ -54,6 +54,9 @@ const useStyle = createUseStyles({
     paddingBottom: 0,
     marginBottom: 0,
     fontSize: 14,
+    '& a': {
+      color: theme.font.color,
+    },
   },
   username: {
     color: '#657786',
@@ -114,7 +117,10 @@ const useStyle = createUseStyles({
     padding: 0,
     margin: 0,
   },
-})
+  spanName: {
+    ...theme.font,
+  },
+}))
 
 
 const PostList = (props) => {
@@ -143,7 +149,6 @@ const PostList = (props) => {
 
   const [open, setOpen] = useState(false)
   const popoverAnchor = useRef(null)
-
 
   let hasUpvoted = false
   const history = useHistory()
@@ -228,7 +233,7 @@ const PostList = (props) => {
                         {name ? name : `${author}`}
                       </Link>
                     )}
-                    {disableProfileLink && (<span>{name ? name : `@${author}`}</span>)}
+                    {disableProfileLink && (<span className={classes.spanName}>{name ? name : `@${author}`}</span>)}
                   </label>
                   <label className={classes.username}>
                     {`@${author}`} &bull;&nbsp;

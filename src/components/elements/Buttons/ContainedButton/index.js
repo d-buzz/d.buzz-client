@@ -42,7 +42,7 @@ const useStyles = createUseStyles({
     },
   },
   disabledButton: {
-    backgroundColor: '#d0cfcf',
+    backgroundColor: '#f55d5d85',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'mouse',
@@ -55,8 +55,20 @@ const useStyles = createUseStyles({
       color: 'white',
       fontFamily: 'Segoe-Bold',
     },
-    '&:hover': {
-      backgroundColor: '#d0cfcf',
+  },
+  disabledButtonTransparent: {
+    border: '1px solid #e61c34',
+    borderRadius: '50px 50px',
+    width: 'max-content',
+    cursor: 'mouse',
+    '& label': {
+      cursor: 'mouse',
+      paddingTop: 5,
+      paddingLeft: 15,
+      paddingRight: 15,
+      whiteSpace: 'nowrap',
+      color: 'white',
+      fontFamily: 'Segoe-Bold',
     },
   },
 })
@@ -83,6 +95,9 @@ const ContainedButton = (props) => {
 
   if(disabled) {
     buttonClass = classes.disabledButton
+    if(transparent) {
+      buttonClass = classes.disabledButtonTransparent
+    }
   }
 
   return (
@@ -90,7 +105,7 @@ const ContainedButton = (props) => {
       <center>
         <label style={{ fontSize: fontSize, ...labelStyle }}>
           {!loading && label}
-          {loading && (<Spinner size={20} top={5} loading={true} />)}
+          {loading && (<Spinner size={20} top={4} loading={true} />)}
         </label>
       </center>
     </div>

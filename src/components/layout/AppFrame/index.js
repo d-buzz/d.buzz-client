@@ -47,7 +47,7 @@ const AppFrame = (props) => {
   const organizationRoutes = (pathname.match(/^\/org/))
   let containerClass = classes.guardedContainer
   const unGuardedRoute = (pathname.match(/^\/login/) || pathname.match(/^\/ug/))
-  
+
   if(organizationRoutes) {
     containerClass = classes.organizationContainer
   }

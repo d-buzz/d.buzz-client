@@ -2,7 +2,7 @@ import React from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { createUseStyles } from 'react-jss'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   field: {
     fontSize: 15,
     resize: 'none',
@@ -10,11 +10,11 @@ const useStyles = createUseStyles({
     '&:focus': {
       outline: 'none',
     },
-    paddingTop: 5,
     border: 'none',
-    borderBottom: '1px solid #e6ecf0',
+    paddingTop: 5,
+    ...theme.textArea,
   },
-})
+}))
 
 const TextArea = (props) => {
   const classes = useStyles()

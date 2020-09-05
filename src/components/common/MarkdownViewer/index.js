@@ -22,9 +22,10 @@ const renderer = new DefaultRenderer({
   isLinkSafeFn: (url) => true,
 })
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   markdown: {
     wordBreak: 'break-word !important',
+    ...theme.markdown.paragraph,
     '& a': {
       wordWrap: 'break-word',
       color: '#d32f2f !important',
@@ -44,11 +45,15 @@ const useStyles = createUseStyles({
     },
     '& a': {
       borderRadius: '10px 10px',
+      border: theme.border.primary,
       boxShadow: 'none',
-      color: 'black !important',
+      backgroundColor: `${theme.background.primary} !important`,
+      '& p': {
+        ...theme.markdown.paragraph,
+      },
       '&:hover': {
         textDecoration: 'none !important',
-        color: 'black',
+        ...theme.markdown.paragraph,
       },
     },
   },
@@ -56,25 +61,25 @@ const useStyles = createUseStyles({
     '& iframe': {
       height: 300,
       width: '100%',
-      border: '1px solid #ccd6dd',
+      border: theme.border.primary,
     },
     '& img': {
       height: 300,
       width: '100%',
       objectFit: 'cover',
       marginTop: 5,
-      border: '1px solid #ccd6dd',
+      border: theme.border.primary,
     },
   },
   full: {
     '& iframe': {
       width: '100%',
-      border: '1px solid #ccd6dd',
+      border: theme.border.primary,
     },
     '& img': {
       width: '100%',
       marginTop: 5,
-      border: '1px solid #ccd6dd',
+      border: theme.border.primary,
     },
   },
   modalAssets: {
@@ -91,38 +96,7 @@ const useStyles = createUseStyles({
       border: '1px solid #ccd6dd',
     },
   },
-})
-
-// prepare images that are currently not supported on hive-content-renderer
-// const prepareImages = (content) => {
-//   let body = content
-
-//   body = body.replace(/(!\[Uploading image)/g, '![](https://images.hive.blog/640x0/)')
-//   const links = markdownLinkExtractor(content)
-
-//   links.forEach((link) => {
-//     try {
-//       link = link.replace(/&amp;/g, '&')
-
-//       if(link !== '') {
-
-//         if((link.includes('images.hive.blog') && link.includes('.webp'))) {
-//           body = body.replace(link, `![](${link})`)
-//         } else if (
-//           (
-//             link.includes('dapplr-images')
-//             || (link.includes('//') && `${link}`.substring(0, 2) === '//')
-//           ) && (!link.includes('images.hive.blog') && !link.includes('facebook.com'))
-//         ) {
-//           body = body.replace(link, `![](https://images.hive.blog/0x0/${link})`)
-//         } else if((link.includes('pbs.twimg.com') && link.includes('format=jpg'))) {
-//           body = body.replace(`![](${link})`, `![](https://images.hive.blog/0x0/${link})`)
-//         }
-//       }
-//     } catch(e) { }
-//   })
-//   return body
-// }
+}))
 
 const prepareTwitterEmbeds = (content) => {
   let body = content
