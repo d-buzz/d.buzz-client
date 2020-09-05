@@ -77,7 +77,7 @@ const useStyles = createUseStyles(theme => ({
   context: {
     minHeight: 120,
     width: '100%',
-    backgroundColor: '#f5f8fa',
+    ...theme.context.view,
     paddingBottom: 10,
     borderRadius: '16px 16px',
     marginBottom: 20,

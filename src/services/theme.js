@@ -3,6 +3,12 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  context: {
+    view: {
+      backgroundColor: 'rgb(25, 39, 52)',
+      color: 'rgb(255, 255, 255)',
+    },
+  },
   nav: {
     background: 'rgb(25, 39, 52)',
   },
@@ -135,6 +141,12 @@ const light = {
   background: {
     primary: 'white',
     secondary: 'white',
+  },
+  context: {
+    view: {
+      backgroundColor: '#f5f8fa',
+      color: 'black',
+    },
   },
   nav: {
     background: 'white',
