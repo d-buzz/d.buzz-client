@@ -9,15 +9,6 @@ const useStyles = createUseStyles({
   wrapper: {
     paddintTop: 400,
     display: 'block',
-    '& li': {
-      listStyleType: 'none',
-    },
-    '& a': {
-      color: '#f83541',
-      fontFamily: 'Segoe-Bold',
-      fontSize: 14,
-      textDecoration: 'none',
-    },
     '& h2': {
       fontFamily: 'Segoe-Bold',
       fontSize: 18, 
@@ -32,6 +23,24 @@ const useStyles = createUseStyles({
   hero: {
     paddingTop: 100,
     textAlign: 'justify',
+  },
+  sideWrapper: {
+    width: '100%', 
+    paddingTop: 100, 
+    maxHeight: 700, 
+    overflow: 'auto',
+    '& li': {
+      listStyleType: 'none',
+    },
+    '& a': {
+      color: '#f83541',
+      fontFamily: 'Segoe-Bold',
+      fontSize: 14,
+      textDecoration: 'none',
+    },
+  },
+  currentLink: {
+    borderBottom: '5px solid #FF625E',
   },
   outsideWrapper: {
     paddingTop: 50,
@@ -48,14 +57,14 @@ const Disclaimer = () => {
             <Sticky>
               {({ style }) => (
                 <div style={{...style}}>
-                  <div style={{width: '100%', paddingTop: 100, maxHeight: 700, overflow: 'auto'}}>
+                  <div className={classes.sideWrapper}>
                     <Scrollspy items={[
                       'section-1', 
                       'section-2', 
                       'section-3', 
                       'section-4', 
                       'section-5',
-                    ]} currentClassName="is-current">
+                    ]} currentClassName={classes.currentLink}>
                       <li><a href="#section-1">1. WEBSITE DISCLAIMER</a></li>
                       <li><a href="#section-2">2. EXTERNAL LINKS DISCLAIMER</a></li>
                       <li><a href="#section-3">3. PROFESSIONAL DISCLAIMER</a></li>
@@ -70,7 +79,7 @@ const Disclaimer = () => {
           </Col>
           <Col xs={8}>
             <div>
-              <section className="section" id="section-1">
+              <section id="section-1">
                 <div className={classes.hero}>
                   <div >
                     <h2>WEBSITE DISCLAIMER</h2>
@@ -82,7 +91,7 @@ const Disclaimer = () => {
                   </div>
                 </div>
               </section>
-              <section className="section" id="section-2">
+              <section id="section-2">
                 <div className={classes.hero}>
                   <div >
                     <h2>EXTERNAL LINKS DISCLAIMER</h2>
@@ -94,7 +103,7 @@ const Disclaimer = () => {
                   </div>
                 </div>
               </section>
-              <section className="section" id="section-3">
+              <section id="section-3">
                 <div className={classes.hero}>
                   <div >
                     <h2>PROFESSIONAL DISCLAIMER</h2>
@@ -106,7 +115,7 @@ const Disclaimer = () => {
                   </div>
                 </div>
               </section>
-              <section className="section" id="section-4">
+              <section id="section-4">
                 <div className={classes.hero}>
                   <div >
                     <h2>AFFILIATES DISCLAIMER</h2>
@@ -118,7 +127,7 @@ const Disclaimer = () => {
                   </div>
                 </div>
               </section>
-              <section className="section" id="section-5">
+              <section id="section-5">
                 <div className={classes.hero}>
                   <div >
                     <h2>TESTIMONIALS DISCLAIMER</h2>
