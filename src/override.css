@@ -47,6 +47,7 @@ div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
   font-size: 12px;
   width: 100%;
   border: 1px solid #eee;
+  border-radius: 2px;
   padding: 0 4px;
 }
 

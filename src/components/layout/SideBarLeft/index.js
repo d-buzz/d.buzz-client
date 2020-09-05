@@ -4,39 +4,43 @@ import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
+import Badge from '@material-ui/core/Badge'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import {
   HomeIcon,
   BrandIcon,
+  BrandIconDark,
   TrendingIcon,
   LatestIcon,
   NotificationsIcon,
   ProfileIcon,
   ContainedButton,
   Avatar,
+  SunMoonIcon,
+  PowerIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
+  ThemeModal,
 } from 'components'
-import Badge from '@material-ui/core/Badge'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { AiOutlinePoweroff } from 'react-icons/ai'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   items: {
     fontFamily: 'Segoe-Bold',
     width: 'max-content',
     fontSize: 18,
     padding: 8,
     marginBottom: 15,
+    ...theme.left.sidebar.items.icons,
     '& a': {
-      color: 'black',
+      color: theme.left.sidebar.items.color,
       textDecoration: 'none',
       padding: 6,
       '&:hover': {
@@ -44,7 +48,7 @@ const useStyles = createUseStyles({
       },
     },
     '&:hover': {
-      backgroundColor: '#ffebee',
+      ...theme.left.sidebar.items.hover,
       borderRadius: '50px 50px',
       cursor: 'pointer',
       '& a': {
@@ -80,12 +84,9 @@ const useStyles = createUseStyles({
     width: '90%',
     borderRadius: '50px 50px',
     cursor: 'pointer',
-    backgroundColor: '#f5f8fa',
+    ...theme.left.sidebar.bottom.wrapper,
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
-    '&:hover': {
-      backgroundColor: '#e6ecf0',
-    },
   },
   inline: {
     display: 'inline-block',
@@ -100,7 +101,26 @@ const useStyles = createUseStyles({
     width: '120%',
     marginBottom: 10,
   },
-})
+  logoutLabel: {
+    fontWeight: 'bold',
+    margin: 0,
+    padding: 0,
+    paddingLeft: 5,
+    fontSize: 13,
+    color: theme.left.sidebar.logout.label.color,
+  },
+  logoutUsername: {
+    fontWeight: 'bold',
+    margin: 0,
+    padding: 0,
+    paddingLeft: 5,
+    fontSize: 12,
+    color: theme.left.sidebar.logout.username.color,
+  },
+  logoutIcon: {
+    ...theme.left.sidebar.logout.icon,
+  },
+}))
 
 
 const LinkContainer = ({ children }) => {
@@ -131,6 +151,7 @@ const NavLinkWrapper = (props) => {
     textClass,
     iconClass,
     activeClass,
+    onClick = () => {},
   } = props
 
 
@@ -139,7 +160,7 @@ const NavLinkWrapper = (props) => {
   }
 
   return (
-    <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+    <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
       <IconWrapper className={iconClass}>{icon}</IconWrapper> <Link to={path}>{name}</Link>
     </div>
   )
@@ -153,11 +174,42 @@ const SideBarLeft = (props) => {
     loading,
     pollNotifRequest,
     count = 0,
+    theme,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
+  const [openTheme, setOpenTheme] = useState(false)
   const classes = useStyles()
   const location = useLocation()
+
+  const showThemeModal = () => {
+    setOpenTheme(true)
+  }
+
+  useEffect(() => {
+    pollNotifRequest()
+    // eslint-disable-next-line
+  }, [])
+
+  const handleClickLogout = () => {
+    signoutUserRequest()
+  }
+
+  const handleClickSubscribe = () => {
+    subscribeRequest()
+  }
+
+  const handleClickBuzz = () => {
+    setOpen(true)
+  }
+
+  const onHide = () => {
+    setOpen(false)
+  }
+
+  const onHideTheme = () => {
+    setOpenTheme(false)
+  }
 
   const NavLinks = [
     {
@@ -185,28 +237,12 @@ const SideBarLeft = (props) => {
       path: `/@${username}/t/buzz?ref=nav`,
       icon: <ProfileIcon top={-5} />,
     },
+    {
+      name: 'Display',
+      icon: <SunMoonIcon top={-5} />,
+      onClick: showThemeModal,
+    },
   ]
-
-  useEffect(() => {
-    pollNotifRequest()
-    // eslint-disable-next-line
-  }, [])
-
-  const handleClickLogout = () => {
-    signoutUserRequest()
-  }
-
-  const handleClickSubscribe = () => {
-    subscribeRequest()
-  }
-
-  const handleClickBuzz = () => {
-    setOpen(true)
-  }
-
-  const onHide = () => {
-    setOpen(false)
-  }
 
   return (
     <React.Fragment>
@@ -215,7 +251,8 @@ const SideBarLeft = (props) => {
           <LinkContainer >
             <NavbarBrand href="/">
               <div style={{ marginLeft: 15, marginRight: 15 }}>
-                <BrandIcon />
+                {theme.mode === 'light' && (<BrandIcon />)}
+                {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>
@@ -261,11 +298,11 @@ const SideBarLeft = (props) => {
                   <Col style={{ paddingLeft: 5 }}>
                     <Row style={{ padding: 0 }}>
                       <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13 }}>Logout</p>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12 }}>@{username}</p>
+                        <p className={classes.logoutLabel}>Logout</p>
+                        <p className={classes.logoutUsername}>@{username}</p>
                       </Col>
-                      <Col style={{ padding: 0 }}>
-                        <AiOutlinePoweroff style={{ fontSize: 25, marginTop: 16 }} />
+                      <Col style={{ padding: 0 }} className={classes.logoutIcon}>
+                        <PowerIcon top={12} />
                       </Col>
                     </Row>
                   </Col>
@@ -276,6 +313,7 @@ const SideBarLeft = (props) => {
         </Nav>
       </div>
       <BuzzFormModal show={open}  onHide={onHide} />
+      <ThemeModal show={openTheme} onHide={onHideTheme} />
     </React.Fragment>
   )
 }
@@ -284,6 +322,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'SUBSCRIBE_REQUEST'),
   count: state.polling.get('count'),
+  theme: state.settings.get('theme'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

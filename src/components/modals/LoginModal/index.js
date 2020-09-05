@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   loginButton: {
     marginTop: 15,
     width: 100,
@@ -26,6 +26,7 @@ const useStyles = createUseStyles({
   },
   label: {
     fontFamily: 'Segoe-Bold',
+    ...theme.font,
   },
   modal: {
     '& div.modal-content': {
@@ -33,16 +34,20 @@ const useStyles = createUseStyles({
       border: 'none',
       width: 400,
       margin: '0 auto',
+      backgroundColor: theme.background.primary,
     },
     '& input.form-control': {
       borderRadius: '50px 50px',
       fontSize: 14,
+      ...theme.search.background,
+      ...theme.font,
     },
     '& label': {
       fontSize: 14,
+      ...theme.font,
     },
   },
-})
+}))
 
 const FormSpacer = () => {
   return (

@@ -2,7 +2,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { Link } from 'react-router-dom'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   inner: {
     cursor: 'pointer',
     width: '95%',
@@ -11,14 +11,15 @@ const useStyles = createUseStyles({
   wrapper: {
     cursor: 'pointer',
     widt: '100%',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
     '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.03)',
+      ...theme.right.list.hover,
     },
   },
   label: {
+    color: theme.font.color,
     paddingTop: 10,
     fontWeight: 'bold',
     fontSize: 14,
@@ -38,7 +39,7 @@ const useStyles = createUseStyles({
       cursor: 'pointer',
     },
   },
-})
+}))
 
 const ListAction = (props) => {
   const classes = useStyles()

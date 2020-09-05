@@ -21,18 +21,18 @@ import { getAuthorName } from 'services/helper'
 import { Link, useHistory } from 'react-router-dom'
 
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   row: {
     width: '100%',
     paddingTop: 20,
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer',
   },
   wrapper: {
     width: '100%',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     overflow: 'hidden',
     '& a': {
       color: 'black',
@@ -57,6 +57,15 @@ const useStyles = createUseStyles({
     marginBottom: 0,
     fontSize: 14,
     width: 'max-content',
+    color: `${theme.font.color} !important`,
+    '& a': {
+      ...theme.font,
+    },
+  },
+  note: {
+    marginTop: -10,
+    fontSize: 14,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -106,10 +115,10 @@ const useStyles = createUseStyles({
     },
   },
   link: {
-    color: 'black !important',
+    ...theme.font,
     fontSize: 14,
     '&:hover': {
-      color: 'black',
+      color: theme.font.color,
       textDecoration: 'underline !important',
     },
   },
@@ -126,7 +135,7 @@ const useStyles = createUseStyles({
     paddingBottom: 10,
     fontFamily: 'Segoe-Bold',
   },
-})
+}))
 
 const countReplies = async (replies = []) => {
   let counter = 0
@@ -348,7 +357,7 @@ const ReplyList = (props) => {
                       @{author} &bull;&nbsp;
                       {moment(`${created}Z`).local().fromNow()}
                     </label>
-                    <p style={{ marginTop: -10, fontSize: 14 }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                     <MarkdownViewer minifyAssets={false} content={body} />
                     <PostTags meta={meta} />
                   </div>

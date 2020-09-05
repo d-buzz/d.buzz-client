@@ -15,7 +15,7 @@ import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
 import { NotificationBox } from 'components'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   left: {
     height: '100%',
     width: 50,
@@ -31,6 +31,7 @@ const useStyles = createUseStyles({
     paddingRight: 5,
     paddingBottom: 0,
     marginBottom: 0,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -53,6 +54,7 @@ const useStyles = createUseStyles({
     },
   },
   paper: {
+    backgroundColor: `${theme.background.primary} !important`,
     pointerEvents: "auto",
     padding: 2,
     '& :after': {
@@ -61,6 +63,7 @@ const useStyles = createUseStyles({
     '&:hover': {
       overflowY: 'overlay',
     },
+    ...theme.dialog.user,
   },
   wrapper: {
     width: 300,
@@ -69,7 +72,7 @@ const useStyles = createUseStyles({
   followWrapper: {
     width: '100%',
   },
-})
+}))
 
 const UserDialog = (props) => {
   const classes = useStyles()
@@ -261,10 +264,9 @@ const UserDialog = (props) => {
               <Row>
                 <Col style={{ paddingRight: 0 }}>
                   <div style={{ width: '100%' }}>
-                    <label className={classes.name} style={{ color: 'black' }}>
+                    <label className={classes.name}>
                       <Link
                         to={authorLink}
-                        style={{ color: 'black' }}
                       >
                         {name ? name : `${author}`}
                       </Link>&nbsp;<Chip  size="small" label={reputation} />

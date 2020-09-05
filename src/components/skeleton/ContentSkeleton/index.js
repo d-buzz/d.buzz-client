@@ -5,12 +5,12 @@ import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
 import { Link } from 'react-router-dom'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   wrapper: {
     height: 200,
     width: '95%',
     margin: '0 auto',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& img': {
       borderRadius: '15px 15px',
     },
@@ -21,7 +21,7 @@ const useStyles = createUseStyles({
   full: {
     width: '100%',
     marginTop: 5,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
   },
   inner: {
     width: '95%',
@@ -52,7 +52,7 @@ const useStyles = createUseStyles({
       color: 'black',
     },
   },
-})
+}))
 
 const ContentSkeleton = ({ loading }) => {
   const classes = useStyles()

@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   field: {
     padding: 5,
     paddingLeft: 5,
@@ -14,10 +14,14 @@ const useStyles = createUseStyles({
     '&:focus': {
       outline: 'none',
     },
+    '&::placeholder': {
+      color: theme.font.color,
+    },
+    color: theme.font.color,
   },
   round: {
     borderRadius: '50px 50px',
-    border: '1px solid #e6ecf0',
+    border: theme.border.primary,
   },
   inline: {
     display: 'inline',
@@ -25,8 +29,9 @@ const useStyles = createUseStyles({
   iconWrapper: {
     paddingLeft: 15,
     paddingRight: 10,
+    ...theme.icon,
   },
-})
+}))
 
 const IconWrapper = ({ children, className }) => {
   return (
