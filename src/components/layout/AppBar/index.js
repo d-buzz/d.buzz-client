@@ -6,9 +6,9 @@ import {
   BrandIcon,
   BrandIconDark,
   ContainedButton,
-  IconButton,
   BackArrowIcon,
 } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
 import { LoginModal, SearchField } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
@@ -43,6 +43,10 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  backButton: {
+    display: 'inline-block',
+    ...theme.icon,
+  },
 }))
 
 const AppBar = (props) => {
@@ -72,7 +76,9 @@ const AppBar = (props) => {
         <Navbar.Brand>
           {pathname !== '/ug' && (
             <React.Fragment>
-              <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
+              <IconButton className={classes.backButton} onClick={handleClickBackButton} size="small">
+                <BackArrowIcon />
+              </IconButton>
               &nbsp;
             </React.Fragment>
           )}
