@@ -252,7 +252,7 @@ const SideBarLeft = (props) => {
             <NavbarBrand href="/">
               <div style={{ marginLeft: 15, marginRight: 15 }}>
                 {theme.mode === 'light' && (<BrandIcon />)}
-                {theme.mode === 'night' && (<BrandIconDark />)}
+                {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>

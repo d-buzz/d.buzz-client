@@ -88,6 +88,7 @@ const useStyles = createUseStyles(theme => ({
 const THEME = {
   LIGHT: 'light',
   NIGHT: 'night',
+  GRAY: 'gray',
 }
 
 const ThemeModal = (props) => {
@@ -127,7 +128,7 @@ const ThemeModal = (props) => {
               className={classNames(classes.button, classes.darkModeButton, mode === 'night' ? classes.active : '')}
             >
               <center>
-                <label>Nightshade Mode</label>
+                <label>Nightshade</label>
                 <label>Dark and Shady, reduced brightness</label>
               </center>
             </div>
@@ -136,16 +137,16 @@ const ThemeModal = (props) => {
               className={classNames(classes.button, classes.ligthModeButton, mode === 'light' ? classes.active : '')}
             >
               <center>
-                <label>Daylight Mode</label>
+                <label>Daylight</label>
                 <label>Light and bright, default theme</label>
               </center>
             </div>
             <div
-              onClick={handleClickSetTheme(THEME.NIGHT)}
+              onClick={handleClickSetTheme(THEME.GRAY)}
               className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
             >
               <center>
-                <label>Graywall Mode</label>
+                <label>Shadow Gray</label>
                 <label>Dark and Gray, reduced brightness</label>
               </center>
             </div>

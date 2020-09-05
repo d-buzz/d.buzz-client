@@ -84,7 +84,7 @@ const AppBar = (props) => {
           )}
           <Link to="/">
             {mode === 'light' && (<BrandIcon height={30} top={-15} />)}
-            {mode === 'night' && (<BrandIconDark height={30} top={-15} />)}
+            {(mode === 'night' || mode === 'gray') && (<BrandIconDark height={30} top={-15} />)}
           </Link>
         </Navbar.Brand>
         <Nav className="mr-auto">
