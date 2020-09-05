@@ -6,11 +6,11 @@ import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
 import { renderRoutes } from 'react-router-config'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   main: {
     minHeight: '100vh',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
   },
   inner: {
     width: '98%',
@@ -52,7 +52,7 @@ const useStyles = createUseStyles({
     display: 'inline-block',
     marginLeft: 5,
   },
-})
+}))
 
 const UnguardedAppFrame = (props) => {
   const { route } = props

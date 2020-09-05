@@ -91,7 +91,7 @@ function* getSavedUserRequest(meta) {
 function* signoutUserRequest(meta) {
   const user = { username: '', useKeychain: false, is_authenticated: false }
   try {
-    yield call([localStorage, localStorage.clear])
+    yield call([localStorage, localStorage.removeItem], 'user')
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
     yield put(signoutUserFailure(error, meta))

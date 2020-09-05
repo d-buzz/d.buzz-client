@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton } from 'components'
 
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -30,12 +30,9 @@ const useStyle = createUseStyles({
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    borderBottom: '1px solid #e6ecf0',
-    '& a': {
-      color: 'black',
-    },
+    borderBottom: theme.border.primary,
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer !important',
   },
@@ -59,6 +56,7 @@ const useStyle = createUseStyles({
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -82,6 +80,9 @@ const useStyle = createUseStyles({
       borderRadius: '15px 15px',
     },
     cursor: 'pointer',
+    '& label': {
+      ...theme.font,
+    },
   },
   actionWrapper: {
     paddingTop: 10,
@@ -103,7 +104,7 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-})
+}))
 
 const AccountFollowers = (props) => {
   const classes = useStyle()

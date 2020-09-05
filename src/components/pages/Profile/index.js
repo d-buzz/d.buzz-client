@@ -38,7 +38,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 import { ProfileSkeleton } from 'components'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   cover: {
     height: 270,
     width: '100%',
@@ -64,11 +64,13 @@ const useStyles = createUseStyles({
     fontWeight: 'bold',
     padding: 0,
     fontFamily: 'Segoe-Bold !important',
+    ...theme.font,
   },
   userName: {
     fontSize: 16,
     padding: 0,
     marginTop: -20,
+    ...theme.font,
   },
   wrapper: {
     width: '95%',
@@ -79,18 +81,20 @@ const useStyles = createUseStyles({
     padding: 0,
     margin: 0,
     fontSize: 14,
+    ...theme.font,
   },
   spacer: {
     width: '100%',
     height: 20,
   },
   descriptionContainer: {
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
+    ...theme.font,
   },
   tabs: {
     textTransform: 'none !important',
     '&:hover': {
-      backgroundColor: '#ffebee',
+      ...theme.left.sidebar.items.hover,
       '& span': {
         color: '#e53935',
       },
@@ -99,6 +103,7 @@ const useStyles = createUseStyles({
       backgroundColor: '#ffebee',
     },
     '& span': {
+      ...theme.font,
       fontWeight: 'bold',
       fontFamily: 'Segoe-Bold',
     },
@@ -116,7 +121,7 @@ const useStyles = createUseStyles({
   weblink: {
     color: '#d32f2f',
   },
-})
+}))
 
 const Profile = (props) => {
   const {

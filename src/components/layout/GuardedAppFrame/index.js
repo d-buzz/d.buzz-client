@@ -20,11 +20,11 @@ import { pending } from 'redux-saga-thunk'
 import { useLastLocation } from 'react-router-last-location'
 
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   main: {
     minHeight: '100vh',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
   },
   inner: {
     width: '98%',
@@ -45,13 +45,19 @@ const useStyles = createUseStyles({
     },
   },
   nav: {
-    borderBottom: '1px solid #e6ecf0',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
-    backgroundColor: 'white',
+    borderBottom: theme.border.primary,
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
+    backgroundColor: theme.background.primary,
     zIndex: 2,
     overflow: 'hidden',
     width: '100%',
+  },
+  navTitle: {
+    fontFamily: 'Roboto, sans-serif',
+    display: 'inline-block',
+    verticalAlign: 'top',
+    ...theme.navbar.icon,
   },
   trendingWrapper: {
     width: '100%',
@@ -67,6 +73,7 @@ const useStyles = createUseStyles({
     marginLeft: 5,
     fontFamily: 'Segoe-Bold',
     fontSize: 18,
+    color: theme.font.color,
   },
   searchWrapper: {
     padding: 0,
@@ -76,7 +83,7 @@ const useStyles = createUseStyles({
     marginTop: 5,
     float: 'right',
   },
-})
+}))
 
 const GuardedAppFrame = (props) => {
   const {
@@ -193,7 +200,7 @@ const GuardedAppFrame = (props) => {
             <Sticky>
               {({ style }) => (
                 <Navbar style={style} className={classes.nav}>
-                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif', display: 'inline-block', verticalAlign: 'top' }}>
+                  <Navbar.Brand className={classes.navTitle}>
                     {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                       <IconButton onClick={handleClickBackButton} size="small">
                         <BackArrowIcon />

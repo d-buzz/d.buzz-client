@@ -12,7 +12,7 @@ import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -40,12 +40,12 @@ const useStyle = createUseStyles({
     overflow: 'hidden',
     fontFamily: 'Segoe-Bold',
     fontSize: 14,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer !important',
   },
@@ -124,7 +124,7 @@ const useStyle = createUseStyles({
       },
     },
   },
-})
+}))
 
 
 const Notification = (props) => {
