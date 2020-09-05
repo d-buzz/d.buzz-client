@@ -36,7 +36,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '5px 5px',
     cursor: 'pointer',
     lineHeight: 0.8,
-    border: '3px solid #e6ecf0',
+    border: `3px solid ${theme.background.primary}`,
     '& :first-child': {
       paddingTop: 5,
     },
@@ -64,7 +64,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   grayModeButton: {
-    backgroundColor: '#18191a',
+    backgroundColor: '#36393f',
     '& label': {
       fontSize: 14,
       color: 'white',
@@ -140,7 +140,7 @@ const ThemeModal = (props) => {
                 <label>Light and bright, default theme</label>
               </center>
             </div>
-            {/* <div
+            <div
               onClick={handleClickSetTheme(THEME.NIGHT)}
               className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
             >
@@ -148,7 +148,7 @@ const ThemeModal = (props) => {
                 <label>Graywall Mode</label>
                 <label>Dark and Gray, reduced brightness</label>
               </center>
-            </div> */}
+            </div>
           </div>
           <center>
             <ContainedButton
