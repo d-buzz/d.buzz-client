@@ -5,7 +5,7 @@ import { Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   wrapper: {
     paddintTop: 400,
     display: 'block',
@@ -31,18 +31,26 @@ const useStyles = createUseStyles({
     overflow: 'auto',
     '& li': {
       listStyleType: 'none',
+      paddingBottom: 5,
     },
     '& a': {
-      color: '#f83541',
+      ...theme.font,
       fontFamily: 'Segoe-Bold',
       fontSize: 14,
       textDecoration: 'none',
+      paddingLeft: 10, 
     },
   },
   currentLink: {
-    borderBottom: '5px solid #FF625E',
+    borderLeft: '5px solid #FF625E',
+    '& a': {
+      color: '#f83541 !important',
+    },
   },
-})
+  innerWrapper: {
+    ...theme.font,
+  },
+}))
 
 const TermsConditions = () => {
   const classes = useStyles()
@@ -84,33 +92,33 @@ const TermsConditions = () => {
                       'section-26',
                       'section-27',
                     ]} currentClassName={classes.currentLink}>
-                      <li><a href="#section-1">1. AGREEMENT TO TERMS</a></li>
-                      <li><a href="#section-2">2. INTELLECTUAL PROPERTY RIGHTS</a></li>
-                      <li><a href="#section-3">3. USER REPRESENTATIONS</a></li>
-                      <li><a href="#section-4">4. PROHIBITED ACTIVITIES</a></li>
-                      <li><a href="#section-5">5. USER GENERATED CONTRIBUTIONS</a></li>
-                      <li><a href="#section-6">6. CONTRIBUTION LICENSE</a></li>
-                      <li><a href="#section-7">7. GUIDELINES FOR REVIEWS</a></li>
-                      <li><a href="#section-8">8. MOBILE APPLICATION LICENSE</a></li>
-                      <li><a href="#section-9">9. SUBMISSIONS</a></li>
-                      <li><a href="#section-10">10. THIRD-PARTY WEBSITE AND CONTENT</a></li>
-                      <li><a href="#section-11">11. ADVERTISERS</a></li>
-                      <li><a href="#section-12">12. SITE MANAGEMENT</a></li>
-                      <li><a href="#section-13">13. PRIVACY POLICY</a></li>
-                      <li><a href="#section-14">14. COPYRIGHT INFRINGEMENTS</a></li>
-                      <li><a href="#section-15">15. TERM AND TERMINATION</a></li>
-                      <li><a href="#section-16">16. MODIFICATIONS AND INTERRUPTIONS</a></li>
-                      <li><a href="#section-17">17. GOVERNING LAW</a></li>
-                      <li><a href="#section-18">18. DISPUTE RESOLUTION</a></li>
-                      <li><a href="#section-19">19. CORRECTIONS</a></li>
-                      <li><a href="#section-20">20. DISCLAIMER</a></li>
-                      <li><a href="#section-21">21. LIMITATIONS OF LIABILITY</a></li>
-                      <li><a href="#section-22">22. INDEMNIFICATION</a></li>
-                      <li><a href="#section-23">23. USER DATA</a></li>
-                      <li><a href="#section-24">24. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES</a></li>
-                      <li><a href="#section-26">25. CALIFORNIA USERS AND RESIDENTS</a></li>
-                      <li><a href="#section-27">26. MISCELLANEOUS</a></li>
-                      <li><a href="#section-28">27. CONTACT US </a></li>
+                      <li><a href="#section-1">AGREEMENT TO TERMS</a></li>
+                      <li><a href="#section-2">INTELLECTUAL PROPERTY RIGHTS</a></li>
+                      <li><a href="#section-3">USER REPRESENTATIONS</a></li>
+                      <li><a href="#section-4">PROHIBITED ACTIVITIES</a></li>
+                      <li><a href="#section-5">USER GENERATED CONTRIBUTIONS</a></li>
+                      <li><a href="#section-6">CONTRIBUTION LICENSE</a></li>
+                      <li><a href="#section-7">GUIDELINES FOR REVIEWS</a></li>
+                      <li><a href="#section-8">MOBILE APPLICATION LICENSE</a></li>
+                      <li><a href="#section-9">SUBMISSIONS</a></li>
+                      <li><a href="#section-10">THIRD-PARTY WEBSITE AND CONTENT</a></li>
+                      <li><a href="#section-11">ADVERTISERS</a></li>
+                      <li><a href="#section-12">SITE MANAGEMENT</a></li>
+                      <li><a href="#section-13">PRIVACY POLICY</a></li>
+                      <li><a href="#section-14">COPYRIGHT INFRINGEMENTS</a></li>
+                      <li><a href="#section-15">TERM AND TERMINATION</a></li>
+                      <li><a href="#section-16">MODIFICATIONS AND INTERRUPTIONS</a></li>
+                      <li><a href="#section-17">GOVERNING LAW</a></li>
+                      <li><a href="#section-18">DISPUTE RESOLUTION</a></li>
+                      <li><a href="#section-19">CORRECTIONS</a></li>
+                      <li><a href="#section-20">DISCLAIMER</a></li>
+                      <li><a href="#section-21">LIMITATIONS OF LIABILITY</a></li>
+                      <li><a href="#section-22">INDEMNIFICATION</a></li>
+                      <li><a href="#section-23">USER DATA</a></li>
+                      <li><a href="#section-24">ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES</a></li>
+                      <li><a href="#section-26">CALIFORNIA USERS AND RESIDENTS</a></li>
+                      <li><a href="#section-27">MISCELLANEOUS</a></li>
+                      <li><a href="#section-28">CONTACT US </a></li>
                     </Scrollspy>
                   </div>
                 </div>
@@ -119,7 +127,7 @@ const TermsConditions = () => {
             </Sticky>
           </Col>
           <Col xs={8}>
-            <div>
+            <div className={classes.innerWrapper}>
               <section id="section-1">
                 <div className={classes.hero}>
                   <div>
@@ -353,7 +361,7 @@ const TermsConditions = () => {
                   </div>
                   <div>
                     <p>
-                      We care about data privacy and security. By using the Site, you agree to be bound by our Privacy Policy posted on the Site, which is incorporated into these Terms of Use. Please be advised the Site is hosted in __________. If you access the Site from any other region of the world with laws or other requirements governing personal data collection, use, or disclosure that differ from applicable laws in __________, then through your continued use of the Site, you are transferring your data to __________, and you agree to have your data transferred to and processed in __________. Further, we do not knowingly accept, request, or solicit information from children or knowingly market to children. Therefore, in accordance with the U.S. Children’s Online Privacy Protection Act, if we receive actual knowledge that anyone under the age of 13 has provided personal information to us without the requisite and verifiable parental consent, we will delete that information from the Site as quickly as is reasonably practical.
+                      We care about data privacy and security. By using the Site, you agree to be bound by our Privacy Policy posted on the Site, which is incorporated into these Terms of Use. Please be advised the Site is hosted in <a href="d.buzz">D.buzz</a>. If you access the Site from any other region of the world with laws or other requirements governing personal data collection, use, or disclosure that differ from applicable laws in all countries, then through your continued use of the Site, you are transferring your data to D.Buzz, and you agree to have your data transferred to and processed in D.Buzz. Further, we do not knowingly accept, request, or solicit information from children or knowingly market to children. Therefore, in accordance with the U.S. Children’s Online Privacy Protection Act, if we receive actual knowledge that anyone under the age of 13 has provided personal information to us without the requisite and verifiable parental consent, we will delete that information from the Site as quickly as is reasonably practical.
                     </p>
                   </div>
                 </div>
@@ -556,7 +564,7 @@ const TermsConditions = () => {
                         D.Buzz <br />
                         Davao City <br />
                         Philippines <br />
-                        Phone: __________ <br />
+                        {/* Phone: __________ <br /> */}
                         buzz@d.buzz
                       </p>
                     </ol>
