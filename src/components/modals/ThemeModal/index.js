@@ -146,7 +146,7 @@ const ThemeModal = (props) => {
               className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
             >
               <center>
-                <label>Shadow Gray</label>
+                <label>Granite</label>
                 <label>Dark and Gray, reduced brightness</label>
               </center>
             </div>
