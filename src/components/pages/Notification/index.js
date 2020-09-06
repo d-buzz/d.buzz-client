@@ -24,16 +24,7 @@ const useStyle = createUseStyles(theme => ({
     },
   },
   unread: {
-    backgroundColor: '#fee7e6',
-    '& label': {
-      color: 'black',
-    },
-    '&:hover': {
-      backgroundColor: '#f83541 !important',
-      '& label': {
-        color: 'white !important',
-      },
-    },
+    ...theme.unread,
   },
   wrapper: {
     width: '100%',
