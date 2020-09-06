@@ -165,6 +165,10 @@ const Content = (props) => {
         }
       }
     }
+
+    if(app === 'dBuzz') {
+      app = 'D.Buzz'
+    }
   }
 
   if(active_votes) {
