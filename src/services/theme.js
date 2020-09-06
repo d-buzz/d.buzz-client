@@ -3,6 +3,18 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  unread: {
+    backgroundColor: '#1c2841',
+    '& label': {
+      color: 'white',
+    },
+    '&:hover': {
+      backgroundColor: '#233251 !important',
+      '& label': {
+        color: '#f83541 !important',
+      },
+    },
+  },
   context: {
     view: {
       backgroundColor: 'rgb(25, 39, 52)',
@@ -142,6 +154,18 @@ const light = {
     primary: 'white',
     secondary: 'white',
   },
+  unread: {
+    backgroundColor: '#ffe2dd',
+    '& label': {
+      color: 'black',
+    },
+    '&:hover': {
+      backgroundColor: '#f83541 !important',
+      '& label': {
+        color: 'white !important',
+      },
+    },
+  },
   context: {
     view: {
       backgroundColor: '#f5f8fa',
@@ -272,6 +296,18 @@ const gray = {
   background: {
     primary: '#202225',
     secondary: '#192734',
+  },
+  unread: {
+    backgroundColor: '#2a3439',
+    '& label': {
+      color: 'white',
+    },
+    '&:hover': {
+      backgroundColor: '#354147 !important',
+      '& label': {
+        color: '#f83541 !important',
+      },
+    },
   },
   context: {
     view: {
