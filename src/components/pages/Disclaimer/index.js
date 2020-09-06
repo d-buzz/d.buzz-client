@@ -5,7 +5,7 @@ import { Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   wrapper: {
     paddintTop: 400,
     display: 'block',
@@ -31,21 +31,26 @@ const useStyles = createUseStyles({
     overflow: 'auto',
     '& li': {
       listStyleType: 'none',
+      paddingBottom: 5,
     },
     '& a': {
-      color: '#f83541',
+      ...theme.font,
       fontFamily: 'Segoe-Bold',
       fontSize: 14,
       textDecoration: 'none',
+      paddingLeft: 10, 
     },
   },
   currentLink: {
-    borderBottom: '5px solid #FF625E',
+    borderLeft: '5px solid #FF625E',
+    '& a': {
+      color: '#f83541 !important',
+    },
   },
-  outsideWrapper: {
-    paddingTop: 50,
+  innerWrapper: {
+    ...theme.font,
   },
-})
+}))
 
 const Disclaimer = () => {
   const classes = useStyles()
@@ -78,7 +83,7 @@ const Disclaimer = () => {
             </Sticky>
           </Col>
           <Col xs={8}>
-            <div>
+            <div className={classes.innerWrapper}>
               <section id="section-1">
                 <div className={classes.hero}>
                   <div >
