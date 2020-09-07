@@ -37,12 +37,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '14 !important',
   },
   preview: {
-    paddingBottom: 5,
-    '&.react_tinylink_card_content_wrapper': {
-      '&:hover': {
-        backgroundColor: 'rgba(0, 0, 0, 0.03)',
-      },
-    },
+    marginBottom: 10,
     '& a': {
       borderRadius: '10px 10px',
       border: theme.border.primary,

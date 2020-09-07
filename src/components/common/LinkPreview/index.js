@@ -149,7 +149,6 @@ const LinkPreview = (props) => {
           </div>
         </div>
       ) : ''}
-      <br />
     </React.Fragment>
   )
 }

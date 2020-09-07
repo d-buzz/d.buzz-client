@@ -83,6 +83,9 @@ const night = {
     title: {
       color: 'white',
     },
+    hover: {
+      color: 'rgb(22 45 64 / 63%)',
+    },
   },
   markdown: {
     paragraph: {
@@ -228,6 +231,9 @@ const light = {
   preview: {
     title: {
       color: 'black',
+    },
+    hover: {
+      color: '#e6ecf0',
     },
   },
   markdown: {
