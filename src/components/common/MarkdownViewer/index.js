@@ -38,19 +38,6 @@ const useStyles = createUseStyles(theme => ({
   },
   preview: {
     marginBottom: 10,
-    '& a': {
-      borderRadius: '10px 10px',
-      border: theme.border.primary,
-      boxShadow: 'none',
-      backgroundColor: `${theme.background.primary} !important`,
-      '& p': {
-        ...theme.markdown.paragraph,
-      },
-      '&:hover': {
-        textDecoration: 'none !important',
-        ...theme.markdown.paragraph,
-      },
-    },
   },
   minified: {
     '& iframe': {

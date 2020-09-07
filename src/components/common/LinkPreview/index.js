@@ -13,6 +13,7 @@ const useStyles = createUseStyles(theme => ({
     border: theme.border.primary,
     borderRadius: '15px 15px',
     display: 'flex',
+    marginBottom: 10,
     '&:hover': {
       backgroundColor: theme.preview.hover.color,
     },
@@ -27,6 +28,7 @@ const useStyles = createUseStyles(theme => ({
       height: 130,
       width: '100%',
       objectFit: 'cover',
+      border: 'none !important',
       borderRadius: '15px 0px 0px 15px !important',
     },
   },
@@ -57,6 +59,7 @@ const useStyles = createUseStyles(theme => ({
 const LinkPreview = (props) => {
   const { getLinkMetaRequest, content } = props
   const [loading, setLoading] = useState(true)
+  const [noShow, setNoShow] = useState(false)
   const [meta, setMeta] = useState()
   const classes = useStyles()
 
@@ -112,6 +115,10 @@ const LinkPreview = (props) => {
       title = `${title.substring(0, 60)}...`
     }
 
+    if(title === '') {
+      setNoShow(true)
+    }
+
     return title
   }
 
@@ -135,7 +142,7 @@ const LinkPreview = (props) => {
 
   return (
     <React.Fragment>
-      {isValidUrl && !loading ? (
+      {isValidUrl && !loading && !noShow ? (
         <div className={classes.wrapper} onClick={onClick}>
           <div className={classes.left}>
             <img alt="preview-img" src={getImage()} />
