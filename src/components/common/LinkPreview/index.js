@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import markdownLinkExtractor from 'markdown-link-extractor'
+import { LinkPreviewSkeleton } from 'components'
 import { getLinkMetaRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -162,6 +163,7 @@ const LinkPreview = (props) => {
           </div>
         </div>
       ) : ''}
+      {loading && (<LinkPreviewSkeleton />)}
     </React.Fragment>
   )
 }
