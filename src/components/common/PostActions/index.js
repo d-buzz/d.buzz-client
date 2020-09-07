@@ -114,6 +114,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'inline-block',
     verticalAlign: 'top',
     fontSize: 14,
+    ...theme.font,
   },
   actionWrapperSpace: {
     paddingRight: 30,
