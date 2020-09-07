@@ -485,3 +485,27 @@ export const getFollowDetailsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const GET_LINK_META_REQUEST = 'GET_LINK_META_REQUEST'
+export const GET_LINK_META_SUCCESS = 'GET_LINK_META_SUCCESS'
+export const GET_LINK_META_FAILURE = 'GET_LINK_META_FAILURE'
+
+export const getLinkMetaRequest = (url) => ({
+  type: GET_LINK_META_REQUEST,
+  payload: { url },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getLinkMetaSuccess = (response, meta) => ({
+  type: GET_LINK_META_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getLinkMetaFailure = (error, meta) => ({
+  type: GET_LINK_META_FAILURE,
+  payload: error,
+  meta,
+})
