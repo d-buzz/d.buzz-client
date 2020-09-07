@@ -115,7 +115,7 @@ const LinkPreview = (props) => {
       title = `${title.substring(0, 60)}...`
     }
 
-    if(title === '') {
+    if(title=== null) {
       setNoShow(true)
     }
 
@@ -137,7 +137,13 @@ const LinkPreview = (props) => {
   }
 
   const getImage = () => {
-    return meta.image || './no-img.png'
+    let image = meta.image
+
+    if(!image.includes('https') || !image.includes('http') || image === '') {
+      image = './no-img.png'
+    }
+
+    return image
   }
 
   return (
