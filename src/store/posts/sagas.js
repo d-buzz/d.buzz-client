@@ -64,6 +64,10 @@ import {
   GET_FOLLOW_DETAILS_REQUEST,
   getFollowDetailsSuccess,
   getFollowDetailsFailure,
+
+  GET_LINK_META_REQUEST,
+  getLinkMetaSuccess,
+  getLinkMetaFailure,
 } from './actions'
 
 import {
@@ -88,6 +92,7 @@ import {
   uploadIpfsImage,
   fetchFollowCount,
   isFollowing,
+  getLinkMeta,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 
@@ -541,6 +546,19 @@ function* getFollowDetailsRequest(payload, meta) {
   }
 }
 
+function* getLinkMetaRequest(payload, meta) {
+  try {
+    const { url } = payload
+    const data = yield call(getLinkMeta, url)
+
+    yield put(getLinkMetaSuccess(data, meta))
+    //
+  } catch(error) {
+    console.log({ error })
+    yield put(getLinkMetaFailure(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -601,6 +619,9 @@ function* watchGetFollowDetailsRequest({ payload, meta }) {
   yield call(getFollowDetailsRequest, payload, meta)
 }
 
+function* watchGetLinkMetaRequest({ payload, meta }) {
+  yield call(getLinkMetaRequest, payload, meta)
+}
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -618,4 +639,5 @@ export default function* sagas() {
   yield takeEvery(UNFOLLOW_REQUEST, watchUnfollowRequest)
   yield takeEvery(SEARCH_REQUEST, watchSearchRequest)
   yield takeEvery(GET_FOLLOW_DETAILS_REQUEST, watchGetFollowDetailsRequest)
+  yield takeEvery(GET_LINK_META_REQUEST, watchGetLinkMetaRequest)
 }

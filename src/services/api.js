@@ -16,6 +16,7 @@ import stripHtml from 'string-strip-html'
 import fleek from '@fleekhq/fleek-storage-js'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
+const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 
 const endpoints = [
   'https://api.openhive.network',
@@ -907,5 +908,22 @@ export const uploadIpfsImage = async(data) => {
     } catch (error) {
       reject(error)
     }
+  })
+}
+
+export const getLinkMeta = (url) => {
+  return new Promise(async(resolve, reject) => {
+
+    console.log({ url: `${scrapeUrl}?url=${url}` })
+
+    axios.get(`${scrapeUrl}?url=${url}`)
+      .then(function (result) {
+        const data = result.data
+        resolve(data)
+      })
+      .catch(function (error) {
+        console.log({ error })
+        reject(error)
+      })
   })
 }

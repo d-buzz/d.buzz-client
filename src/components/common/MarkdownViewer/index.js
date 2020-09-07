@@ -2,7 +2,7 @@ import React from 'react'
 import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import classNames from 'classnames'
-import { PreviewLastLink, UrlVideoEmbed } from 'components'
+import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
 
@@ -118,14 +118,14 @@ const prepareTwitterEmbeds = (content) => {
 }
 
 const prepareThreeSpeakEmbeds = (content) => {
-  let body = content 
+  let body = content
 
   const links = markdownLinkExtractor(content)
 
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
-      const match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i) 
+      const match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
       console.log({match})
 
       if(match) {
@@ -167,9 +167,9 @@ const MarkdownViewer = (props) => {
   let { content = '' } = props
   const original = content
   // content = prepareImages(content)
-  
+
   const links = markdownLinkExtractor(content)
-  
+
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
@@ -179,10 +179,8 @@ const MarkdownViewer = (props) => {
       } else if(link.includes('3speak.online')) {
         content = prepareThreeSpeakEmbeds(content)
       }
-      
-    } catch(error) {
-      console.log(error)
-    }
+
+    } catch(error) { }
   })
 
   let assetClass = classes.minified
@@ -195,9 +193,8 @@ const MarkdownViewer = (props) => {
   if(onModal) {
     style = { width: 520 }
   }
-  
+
   let splitContent = content.split(`~~~~~~.^.~~~`)
-  console.log({splitContent})
 
   splitContent = splitContent.filter((item) => item !== '')
 
@@ -207,7 +204,7 @@ const MarkdownViewer = (props) => {
       {splitContent.map((item) => (
         render(item, style, classes.markdown, assetClass)
       ))}
-      <PreviewLastLink className={classes.preview} content={original} />
+      <LinkPreview content={original} />
     </React.Fragment>
   )
 }

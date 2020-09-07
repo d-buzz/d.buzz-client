@@ -377,6 +377,9 @@ const gray = {
     title: {
       color: 'white',
     },
+    hover: {
+      color: '#282a2d',
+    },
   },
   markdown: {
     paragraph: {
