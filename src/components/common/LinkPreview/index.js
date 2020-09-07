@@ -163,7 +163,7 @@ const LinkPreview = (props) => {
           </div>
         </div>
       ) : ''}
-      {loading && (<LinkPreviewSkeleton />)}
+      {isValidUrl && loading && !noShow && (<LinkPreviewSkeleton />)}
     </React.Fragment>
   )
 }
