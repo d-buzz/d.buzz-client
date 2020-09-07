@@ -140,7 +140,7 @@ const LinkPreview = (props) => {
   const getImage = () => {
     let image = meta.image
 
-    if(!image.includes('https') || !image.includes('http') || image === '') {
+    if(!`${image}`.includes('https') || !`${image}`.includes('http') || image === '') {
       image = './no-img.png'
     }
 
