@@ -413,9 +413,12 @@ const ReplyList = (props) => {
         </div>
       ))}
       <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
+        // show={showSnackbar}
+        show={true}
+        message={'chuy ko nga tawo, dato pajud, AWEESOSMENESSS ISS WITH ME'}
+        severity={'success'}
+        // message={message}
+        // severity={severity}
         onClose={handleSnackBarClose}
       />
     </React.Fragment>
