@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import { useLastLocation } from 'react-router-last-location'
-
+import { useWindowDimensions } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -83,6 +83,9 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 5,
     float: 'right',
   },
+  sideBarLeftContainer: {
+    width: 270,
+  },
 }))
 
 const GuardedAppFrame = (props) => {
@@ -104,6 +107,20 @@ const GuardedAppFrame = (props) => {
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [message, setMessage] = useState()
   const [severity, setSeverity] = useState('success')
+  const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
+  const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
+  const { width } = useWindowDimensions()
+
+  useEffect(() => {
+    console.log({ width })
+    if(width >= 1290) {
+      setSideBarLeftWidth(270)
+      setSideBarRightWidth(350)
+    } else if(width >= 1000 && width < 1290) {
+      setSideBarLeftWidth(240)
+      setSideBarRightWidth(300)
+    }
+  }, [width])
 
 
   let title = 'Home'
@@ -185,7 +202,7 @@ const GuardedAppFrame = (props) => {
     <React.Fragment>
       <Row>
         <Col xs="auto" className={classes.clearPadding}>
-          <div style={{ width: 270 }}>
+          <div style={{ width: sideBarLeftWidth }}>
             <Sticky>
               {({ style }) => (
                 <div style={{...style}}>
@@ -248,7 +265,7 @@ const GuardedAppFrame = (props) => {
           </div>
         </Col>
         <Col xs={3}>
-          <div style={{ width: 350 }}>
+          <div style={{ width: sideBarRightWidth }}>
             <Sticky>
               {({ style }) => (
                 <div style={style}>

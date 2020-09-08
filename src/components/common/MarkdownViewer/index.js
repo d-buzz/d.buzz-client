@@ -108,16 +108,12 @@ const prepareThreeSpeakEmbeds = (content) => {
     try {
       link = link.replace(/&amp;/g, '&')
       const match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
-      console.log({match})
 
       if(match) {
         const id = match[1]
         body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
-        console.log({body})
       }
-    } catch(error) {
-      console.log(error)
-    }
+    } catch(error) { }
   })
   return body
 }

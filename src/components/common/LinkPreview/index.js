@@ -101,7 +101,6 @@ const LinkPreview = (props) => {
       setLoading(true)
       getLinkMetaRequest(url)
         .then((data) => {
-          console.log({ data })
           setMeta(data)
           setLoading(false)
         })

@@ -17,6 +17,7 @@ const useStyles = createUseStyles({
   },
   guardedContainer: {
     '@media (min-width: 1250px)': {
+      margin: '0 auto !important',
       '&.container': {
         maxWidth: '1250px',
       },
@@ -24,6 +25,7 @@ const useStyles = createUseStyles({
   },
   unGuardedContainer: {
     '@media (min-width: 1100px)': {
+      margin: '0 auto !important',
       '&.container': {
         maxWidth: '900px',
       },
@@ -31,6 +33,7 @@ const useStyles = createUseStyles({
   },
   organizationContainer: {
     '@media (min-width: 1100px)': {
+      margin: '0 auto !important',
       '&.container': {
         maxWidth: '1250px',
         paddingBottom: 25,

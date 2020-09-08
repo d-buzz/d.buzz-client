@@ -914,15 +914,12 @@ export const uploadIpfsImage = async(data) => {
 export const getLinkMeta = (url) => {
   return new Promise(async(resolve, reject) => {
 
-    console.log({ url: `${scrapeUrl}?url=${url}` })
-
     axios.get(`${scrapeUrl}?url=${url}`)
       .then(function (result) {
         const data = result.data
         resolve(data)
       })
       .catch(function (error) {
-        console.log({ error })
         reject(error)
       })
   })
