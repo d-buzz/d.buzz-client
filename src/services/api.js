@@ -508,7 +508,7 @@ export const fetchFollowers = (following, start_follower = '', limit = 10) => {
             resolve([])
           }
 
-          const getProfiledata = mapFetchProfile(result)
+          const getProfiledata = mapFetchProfile(result, false)
           await Promise.all([getProfiledata])
 
           resolve(result)
@@ -540,7 +540,7 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
             let profile = []
 
             if(profileVisited.length === 0) {
-              profile = await fetchProfile([item.following])
+              profile = await fetchProfile([item.following], false)
               visited.push(profile[0])
             } else {
               profile.push(profileVisited[0])
