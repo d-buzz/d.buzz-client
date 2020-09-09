@@ -16,10 +16,19 @@ const useStyles = createUseStyles({
     margin: '0 auto',
   },
   guardedContainer: {
+    width: 'max-content',
     '@media (min-width: 1250px)': {
       margin: '0 auto !important',
       '&.container': {
+        margin: '0 auto',
         maxWidth: 'max-content',
+      },
+    },
+    '@media (max-width: 768px)': {
+      margin: '0 auto !important',
+      '&.container': {
+        margin: '0 auto',
+        minWidth: 'max-content',
       },
     },
   },

@@ -112,6 +112,7 @@ const night = {
         },
         icons: {
           '& svg': {
+            paddingTop: -10,
             '& path': {
               stroke: 'white',
             },

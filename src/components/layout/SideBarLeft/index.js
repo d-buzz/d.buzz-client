@@ -64,6 +64,29 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  minifyItems: {
+    textAlign: 'left',
+    marginBottom: 15,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
+      '&:hover': {
+        color: '#e53935',
+      },
+    },
+    '&:hover': {
+      cursor: 'pointer',
+      '& a': {
+        color: '#e53935',
+      },
+      '& svg': {
+        '& path': {
+          stroke: '#e53935',
+        },
+      },
+    },
+  },
   activeItem: {
     borderRadius: '50px 50px',
     cursor: 'pointer',
@@ -128,9 +151,6 @@ const useStyles = createUseStyles(theme => ({
   logoutIcon: {
     ...theme.left.sidebar.logout.icon,
   },
-  sideBarButtonMinifyWrapper: {
-    marginLeft: 10,
-  },
   buzzButton: {
     backgroundColor: '#e53935 !important',
     '&:hover': {
@@ -171,6 +191,7 @@ const NavLinkWrapper = (props) => {
     textClass,
     iconClass,
     activeClass,
+    minifyItemsClass,
     minify,
     onClick = () => {},
   } = props
@@ -181,12 +202,25 @@ const NavLinkWrapper = (props) => {
   }
 
   return (
-    <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-      <Link to={path}>
-        <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
-        {!minify && name}
-      </Link>
-    </div>
+    <React.Fragment>
+      {!minify && (
+        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+          <Link to={path}>
+            <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
+            {name}
+          </Link>
+        </div>
+      )}
+      {minify && (
+        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
+          <IconButton
+            size="medium"
+          >
+            {icon}
+          </IconButton>
+        </div>
+      )}
+    </React.Fragment>
   )
 }
 
@@ -240,31 +274,31 @@ const SideBarLeft = (props) => {
     {
       name: 'Home',
       path: '/',
-      icon: <HomeIcon top={-5} />,
+      icon: <HomeIcon />,
     },
     {
       name: 'Trending',
       path: '/trending',
-      icon: <TrendingIcon top={-5} />,
+      icon: <TrendingIcon />,
     },
     {
       name: 'Latest',
       path: '/latest',
-      icon: <LatestIcon top={-5} />,
+      icon: <LatestIcon  />,
     },
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>,
+      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
-      icon: <ProfileIcon top={-5} />,
+      icon: <ProfileIcon />,
     },
     {
       name: 'Display',
-      icon: <SunMoonIcon top={-5} />,
+      icon: <SunMoonIcon />,
       onClick: showThemeModal,
     },
   ]
@@ -275,7 +309,7 @@ const SideBarLeft = (props) => {
         <Nav className="flex-row">
           <LinkContainer >
             <NavbarBrand href="/">
-              <div style={{ paddingTop: 10, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 10 }) }}>
+              <div style={{ paddingTop: 10, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
                 {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
                 {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
                 {minify && (<CircularBrandIcon />)}
@@ -285,6 +319,7 @@ const SideBarLeft = (props) => {
               {NavLinks.map((item) => (
                 <NavLinkWrapper
                   minify={minify}
+                  minifyItemsClass={classes.minifyItems}
                   key={`${item.path}-side`}
                   {...item}
                   textClass={classes.items}
@@ -316,7 +351,6 @@ const SideBarLeft = (props) => {
               {minify && (
                 <IconButton
                   size="medium"
-                  style={{ marginLeft: 10 }}
                   classes={{
                     root: classes.buzzButton,
                   }}
@@ -358,7 +392,6 @@ const SideBarLeft = (props) => {
               <div className={classes.bottomMinify}>
                 <IconButton
                   size="medium"
-                  style={{ marginLeft: 10 }}
                   classes={{
                     root: classes.logoutButtonMinify,
                   }}

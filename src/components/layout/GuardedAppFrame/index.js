@@ -26,24 +26,6 @@ const useStyles = createUseStyles(theme => ({
     borderLeft: theme.border.primary,
     borderRight: theme.border.primary,
   },
-  inner: {
-    width: '98%',
-    margin: '0 auto',
-  },
-  guardedContainer: {
-    '@media (min-width: 1200px)': {
-      '&.container': {
-        maxWidth: '1300px',
-      },
-    },
-  },
-  unGuardedContainer: {
-    '@media (min-width: 1200px)': {
-      '&.container': {
-        maxWidth: '1100px',
-      },
-    },
-  },
   nav: {
     borderBottom: theme.border.primary,
     borderLeft: theme.border.primary,
@@ -83,9 +65,6 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 5,
     float: 'right',
   },
-  sideBarLeftContainer: {
-    width: 270,
-  },
 }))
 
 const GuardedAppFrame = (props) => {
@@ -109,6 +88,7 @@ const GuardedAppFrame = (props) => {
   const [severity, setSeverity] = useState('success')
   const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
   const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
+  const [mainContainerWidth, setMainContainerWidth] = useState(595)
   const [minify, setMinify] = useState(false)
   const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
@@ -117,19 +97,26 @@ const GuardedAppFrame = (props) => {
     console.log({ width })
     if(width >= 1366) {
       setMinify(false)
+      setMainContainerWidth(595)
       setHideSideBarRight(false)
       setSideBarLeftWidth(270)
       setSideBarRightWidth(350)
     } else if(width >= 1026 && width < 1366) {
       setMinify(true)
+      setMainContainerWidth(595)
       setHideSideBarRight(false)
-      setSideBarLeftWidth(80)
+      setSideBarLeftWidth(60)
       setSideBarRightWidth(300)
+    } else if(width >=706 && width < 1026) {
+      setMinify(true)
+      setMainContainerWidth(595)
+      setHideSideBarRight(true)
+      setSideBarLeftWidth(60)
     } else {
       setMinify(true)
-      setHideSideBarRight(true)
-      setSideBarLeftWidth(80)
-      setSideBarRightWidth(0)
+      setSideBarLeftWidth(60)
+      console.log({ diff: width - 95 })
+      setMainContainerWidth(width-95)
     }
   }, [width])
 
@@ -211,7 +198,7 @@ const GuardedAppFrame = (props) => {
 
   return (
     <React.Fragment>
-      <Row>
+      <Row style={{ padding: 0, margin: 0 }}>
         <Col xs="auto" className={classes.clearPadding}>
           <div style={{ width: sideBarLeftWidth }}>
             <Sticky>
@@ -224,7 +211,7 @@ const GuardedAppFrame = (props) => {
           </div>
         </Col>
         <Col xs="auto" className={classes.clearPadding}>
-          <div style={{ width: 595 }}>
+          <div style={{ width: mainContainerWidth }}>
             <Sticky>
               {({ style }) => (
                 <Navbar style={style} className={classes.nav}>
