@@ -20,7 +20,9 @@ import {
   SunMoonIcon,
   PowerIcon,
   CircularBrandIcon,
+  BuzzIcon,
 } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
 import {
   BuzzFormModal,
   ThemeModal,
@@ -89,6 +91,11 @@ const useStyles = createUseStyles(theme => ({
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
   },
+  bottomMinify: {
+    position: 'absolute',
+    bottom: 15,
+    ...theme.left.sidebar.bottom.wrapperMinify,
+  },
   inline: {
     display: 'inline-block',
   },
@@ -120,6 +127,15 @@ const useStyles = createUseStyles(theme => ({
   },
   logoutIcon: {
     ...theme.left.sidebar.logout.icon,
+  },
+  buzzButton: {
+    backgroundColor: '#e53935 !important',
+    '&:hover': {
+      backgroundColor: '#b71c1c !important',
+    },
+  },
+  logoutButtonMinify: {
+    ...theme.left.sidebar.bottom.wrapper,
   },
 }))
 
@@ -294,6 +310,18 @@ const SideBarLeft = (props) => {
                   onClick={handleClickBuzz}
                 />
               )}
+              {minify && (
+                <IconButton
+                  size="medium"
+                  style={{ marginLeft: 5 }}
+                  classes={{
+                    root: classes.buzzButton,
+                  }}
+                  onClick={handleClickBuzz}
+                >
+                  <BuzzIcon />
+                </IconButton>
+              )}
             </div>
             {!minify && (
               <div className={classes.bottom}>
@@ -321,6 +349,20 @@ const SideBarLeft = (props) => {
                     </React.Fragment>
                   </Row>
                 </div>
+              </div>
+            )}
+            {minify && (
+              <div className={classes.bottomMinify}>
+                <IconButton
+                  size="medium"
+                  style={{ marginLeft: 5 }}
+                  classes={{
+                    root: classes.logoutButtonMinify,
+                  }}
+                  onClick={handleClickLogout}
+                >
+                  <PowerIcon top={0} />
+                </IconButton>
               </div>
             )}
           </LinkContainer>
