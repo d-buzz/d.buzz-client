@@ -128,6 +128,9 @@ const useStyles = createUseStyles(theme => ({
   logoutIcon: {
     ...theme.left.sidebar.logout.icon,
   },
+  sideBarButtonMinifyWrapper: {
+    marginLeft: 10,
+  },
   buzzButton: {
     backgroundColor: '#e53935 !important',
     '&:hover': {
@@ -313,7 +316,7 @@ const SideBarLeft = (props) => {
               {minify && (
                 <IconButton
                   size="medium"
-                  style={{ marginLeft: 5 }}
+                  style={{ marginLeft: 10 }}
                   classes={{
                     root: classes.buzzButton,
                   }}
@@ -355,7 +358,7 @@ const SideBarLeft = (props) => {
               <div className={classes.bottomMinify}>
                 <IconButton
                   size="medium"
-                  style={{ marginLeft: 5 }}
+                  style={{ marginLeft: 10 }}
                   classes={{
                     root: classes.logoutButtonMinify,
                   }}
