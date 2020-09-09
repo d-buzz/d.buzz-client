@@ -99,3 +99,9 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   font-family: 'Segoe-Bold';
   src: url('fonts/Segoe-Bold.woff');
 }
+
+a[rel="nofollow noopener"]::after {
+  height: 5px;
+  content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEASURBVHgB5ZPhkcIgEIV3iff/OjgbCMEKTivQDrQD7UBL0ArUSowVSMQCYgc2gOvimJkYiYr6z28mw/Agb5bHAvB1YHmyjeMBCPFf1qy1y9Zul26UUhHR8MbheFxLYxbFtFFeI8S2AOiXtQhx7caW1tootQei8dU/QrjBb1gQZxl6da0nRspfQBxCDQIC4GM3EbF7b8/Ths7sh2hFAE3+cq5y5tvXeMXMInY405wzPXCmf8EV8qZe1czpLlNbU+mZTMqFSRLyrik1cpXCA546siPRelrVXN/aKMq54rTQgm65Cgox52a/6tu3DH183NCbYd3FBBtyJikxEMLlrX8xJwaQX9VVF9daAAAAAElFTkSuQmCC');
+  margin: 0px 3px 0px 5px;
+}

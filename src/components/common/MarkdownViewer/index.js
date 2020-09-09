@@ -19,7 +19,7 @@ const renderer = new DefaultRenderer({
   imageProxyFn: (url) => `https://images.hive.blog/0x0/${url}`,
   usertagUrlFn: (account) => "/@" + account,
   hashtagUrlFn: (hashtag) => `/tags?q=${hashtag}`,
-  isLinkSafeFn: (url) => true,
+  isLinkSafeFn: (url) => url.match(/^\//g),
 })
 
 const useStyles = createUseStyles(theme => ({
