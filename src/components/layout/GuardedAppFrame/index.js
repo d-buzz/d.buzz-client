@@ -105,7 +105,7 @@ const GuardedAppFrame = (props) => {
       setMinify(true)
       setMainContainerWidth(595)
       setHideSideBarRight(false)
-      setSideBarLeftWidth(60)
+      setSideBarLeftWidth(55)
       setSideBarRightWidth(300)
     } else if(width >=706 && width < 1026) {
       setMinify(true)
@@ -114,9 +114,8 @@ const GuardedAppFrame = (props) => {
       setSideBarLeftWidth(60)
     } else {
       setMinify(true)
-      setSideBarLeftWidth(60)
-      console.log({ diff: width - 95 })
-      setMainContainerWidth(width-95)
+      setSideBarLeftWidth(55)
+      setMainContainerWidth(width-100)
     }
   }, [width])
 
