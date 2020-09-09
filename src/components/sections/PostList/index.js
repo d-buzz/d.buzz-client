@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -16,6 +16,7 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
+import { useWindowDimensions } from 'services/helper'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -46,7 +47,6 @@ const useStyle = createUseStyles(theme => ({
   },
   right: {
     height: 'max-content',
-    width: 480,
   },
   name: {
     fontWeight: 'bold',
@@ -146,9 +146,21 @@ const PostList = (props) => {
   } = props
 
   const { disableProfileLink = false, disableUserMenu = false  } = props
+  const { width } = useWindowDimensions()
 
   const [open, setOpen] = useState(false)
+  const [rightWidth, setRightWidth] = useState(480)
   const popoverAnchor = useRef(null)
+
+
+  useEffect(() => {
+    if(width >= 676) {
+      setRightWidth(480)
+    } else {
+      console.log({ diff: width-200 })
+      setRightWidth(width-200)
+    }
+  }, [width])
 
   let hasUpvoted = false
   const history = useHistory()
@@ -220,7 +232,7 @@ const PostList = (props) => {
               </div>
             </Col>
             <Col xs="auto" style={{ paddingLeft: 5 }}>
-              <div className={classes.right}>
+              <div className={classes.right} style={{ width: rightWidth }}>
                 <div className={classes.content}>
                   <label className={classes.name}>
                     {!disableProfileLink && (
