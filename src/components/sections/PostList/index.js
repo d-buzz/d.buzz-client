@@ -43,7 +43,6 @@ const useStyle = createUseStyles(theme => ({
   },
   left: {
     height: '100%',
-    width: 60,
   },
   right: {
     height: 'max-content',
@@ -150,15 +149,21 @@ const PostList = (props) => {
 
   const [open, setOpen] = useState(false)
   const [rightWidth, setRightWidth] = useState(480)
+  const [avatarSize, setAvatarSize] = useState(50)
+  const [leftWidth, setLeftWidth] = useState(60)
   const popoverAnchor = useRef(null)
 
 
   useEffect(() => {
     if(width >= 676) {
+      setAvatarSize(50)
+      setLeftWidth(60)
       setRightWidth(480)
     } else {
       console.log({ diff: width-200 })
-      setRightWidth(width-200)
+      setLeftWidth(50)
+      setAvatarSize(45)
+      setRightWidth(width-190)
     }
   }, [width])
 
@@ -227,8 +232,8 @@ const PostList = (props) => {
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left} onClick={handleOpenContent(author, permlink)}>
-                <Avatar author={author} />
+              <div style={{ width: leftWidth }} className={classes.left} onClick={handleOpenContent(author, permlink)}>
+                <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
             <Col xs="auto" style={{ paddingLeft: 5 }}>
