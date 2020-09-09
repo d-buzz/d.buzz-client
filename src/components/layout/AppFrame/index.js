@@ -19,7 +19,7 @@ const useStyles = createUseStyles({
     '@media (min-width: 1250px)': {
       margin: '0 auto !important',
       '&.container': {
-        maxWidth: '1250px',
+        maxWidth: 'max-content',
       },
     },
   },

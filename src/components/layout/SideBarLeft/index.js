@@ -19,6 +19,7 @@ import {
   Avatar,
   SunMoonIcon,
   PowerIcon,
+  CircularBrandIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
@@ -133,9 +134,9 @@ const LinkContainer = ({ children }) => {
   )
 }
 
-const IconWrapper = ({ children, className }) => {
+const IconWrapper = ({ children, className, style = {} }) => {
   return (
-    <div style={{ paddingLeft: 5, paddingRight: 10 }} className={className}>
+    <div style={{ paddingLeft: 5, paddingRight: 10, ...style }} className={className}>
       {children}
     </div>
   )
@@ -151,6 +152,7 @@ const NavLinkWrapper = (props) => {
     textClass,
     iconClass,
     activeClass,
+    minify,
     onClick = () => {},
   } = props
 
@@ -161,7 +163,10 @@ const NavLinkWrapper = (props) => {
 
   return (
     <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-      <IconWrapper className={iconClass}>{icon}</IconWrapper> <Link to={path}>{name}</Link>
+      <Link to={path}>
+        <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
+        {!minify && name}
+      </Link>
     </div>
   )
 }
@@ -175,6 +180,7 @@ const SideBarLeft = (props) => {
     pollNotifRequest,
     count = 0,
     theme,
+    minify,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -250,14 +256,16 @@ const SideBarLeft = (props) => {
         <Nav className="flex-row">
           <LinkContainer >
             <NavbarBrand href="/">
-              <div style={{ marginLeft: 15, marginRight: 15 }}>
-                {theme.mode === 'light' && (<BrandIcon />)}
-                {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
+              <div style={{ paddingTop: 10, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 10 }) }}>
+                {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
+                {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
+                {minify && (<CircularBrandIcon />)}
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>
               {NavLinks.map((item) => (
                 <NavLinkWrapper
+                  minify={minify}
                   key={`${item.path}-side`}
                   {...item}
                   textClass={classes.items}
@@ -276,39 +284,45 @@ const SideBarLeft = (props) => {
                   onClick={handleClickSubscribe}
                 />
               )}
-              <ContainedButton
-                style={{ height: 45 }}
-                fontSize={14}
-                label="Buzz"
-                labelStyle={{ paddingTop: 10 }}
-                className={classes.sideBarButton}
-                onClick={handleClickBuzz}
-              />
+              {!minify && (
+                <ContainedButton
+                  style={{ height: 45 }}
+                  fontSize={14}
+                  label="Buzz"
+                  labelStyle={{ paddingTop: 10 }}
+                  className={classes.sideBarButton}
+                  onClick={handleClickBuzz}
+                />
+              )}
             </div>
-            <div className={classes.bottom}>
-              <div className={classes.avatarWrapper} onClick={handleClickLogout}>
-                <Row>
-                  <Col xs="auto">
-                    <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
-                      <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
-                        <Avatar author={username} />
-                      </div>
-                    </div>
-                  </Col>
-                  <Col style={{ paddingLeft: 5 }}>
-                    <Row style={{ padding: 0 }}>
-                      <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                        <p className={classes.logoutLabel}>Logout</p>
-                        <p className={classes.logoutUsername}>@{username}</p>
+            {!minify && (
+              <div className={classes.bottom}>
+                <div className={classes.avatarWrapper} onClick={handleClickLogout}>
+                  <Row>
+                    <React.Fragment>
+                      <Col xs="auto">
+                        <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
+                          <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
+                            <Avatar author={username} />
+                          </div>
+                        </div>
                       </Col>
-                      <Col style={{ padding: 0 }} className={classes.logoutIcon}>
-                        <PowerIcon top={12} />
+                      <Col style={{ paddingLeft: 5 }}>
+                        <Row style={{ padding: 0 }}>
+                          <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
+                            <p className={classes.logoutLabel}>Logout</p>
+                            <p className={classes.logoutUsername}>@{username}</p>
+                          </Col>
+                          <Col style={{ padding: 0 }} className={classes.logoutIcon}>
+                            <PowerIcon top={12} />
+                          </Col>
+                        </Row>
                       </Col>
-                    </Row>
-                  </Col>
-                </Row>
+                    </React.Fragment>
+                  </Row>
+                </div>
               </div>
-            </div>
+            )}
           </LinkContainer>
         </Nav>
       </div>

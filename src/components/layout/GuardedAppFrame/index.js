@@ -109,15 +109,18 @@ const GuardedAppFrame = (props) => {
   const [severity, setSeverity] = useState('success')
   const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
   const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
+  const [minify, setMinify] = useState(false)
   const { width } = useWindowDimensions()
 
   useEffect(() => {
     console.log({ width })
-    if(width >= 1290) {
+    if(width >= 1366) {
+      setMinify(false)
       setSideBarLeftWidth(270)
       setSideBarRightWidth(350)
-    } else if(width >= 1000 && width < 1290) {
-      setSideBarLeftWidth(240)
+    } else {
+      setMinify(true)
+      setSideBarLeftWidth(80)
       setSideBarRightWidth(300)
     }
   }, [width])
@@ -206,7 +209,7 @@ const GuardedAppFrame = (props) => {
             <Sticky>
               {({ style }) => (
                 <div style={{...style}}>
-                  <SideBarLeft/>
+                  <SideBarLeft minify={minify} />
                 </div>
               )}
             </Sticky>
