@@ -40,17 +40,33 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: 10,
   },
   minified: {
-    '& iframe': {
-      height: 300,
-      width: '100%',
-      border: theme.border.primary,
+    '@media (min-width: 1250px)': {
+      '& img': {
+        height: 300,
+        width: '100%',
+        objectFit: 'cover',
+        marginTop: 5,
+        border: theme.border.primary,
+      },
+      '& iframe': {
+        height: 300,
+        width: '100%',
+        border: theme.border.primary,
+      },
     },
-    '& img': {
-      height: 300,
-      width: '100%',
-      objectFit: 'cover',
-      marginTop: 5,
-      border: theme.border.primary,
+    '@media (max-width: 768px)': {
+      '& img': {
+        height: 190,
+        width: '100%',
+        objectFit: 'cover',
+        marginTop: 5,
+        border: theme.border.primary,
+      },
+      '& iframe': {
+        height: 190,
+        width: '100%',
+        border: theme.border.primary,
+      },
     },
   },
   full: {

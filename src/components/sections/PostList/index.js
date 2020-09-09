@@ -163,7 +163,7 @@ const PostList = (props) => {
       console.log({ diff: width-200 })
       setLeftWidth(50)
       setAvatarSize(45)
-      setRightWidth(width-190)
+      setRightWidth(width-180)
     }
   }, [width])
 
