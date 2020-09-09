@@ -213,11 +213,13 @@ const NavLinkWrapper = (props) => {
       )}
       {minify && (
         <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
-          <IconButton
-            size="medium"
-          >
-            {icon}
-          </IconButton>
+          <Link to={path}>
+            <IconButton
+              size="medium"
+            >
+              {icon}
+            </IconButton>
+          </Link>
         </div>
       )}
     </React.Fragment>
