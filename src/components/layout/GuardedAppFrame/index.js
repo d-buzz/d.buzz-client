@@ -110,18 +110,26 @@ const GuardedAppFrame = (props) => {
   const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
   const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
   const [minify, setMinify] = useState(false)
+  const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
 
   useEffect(() => {
     console.log({ width })
     if(width >= 1366) {
       setMinify(false)
+      setHideSideBarRight(false)
       setSideBarLeftWidth(270)
       setSideBarRightWidth(350)
-    } else {
+    } else if(width >= 1026 && width < 1366) {
       setMinify(true)
+      setHideSideBarRight(false)
       setSideBarLeftWidth(80)
       setSideBarRightWidth(300)
+    } else {
+      setMinify(true)
+      setHideSideBarRight(true)
+      setSideBarLeftWidth(80)
+      setSideBarRightWidth(0)
     }
   }, [width])
 
@@ -267,17 +275,19 @@ const GuardedAppFrame = (props) => {
             </div>
           </div>
         </Col>
-        <Col xs={3}>
-          <div style={{ width: sideBarRightWidth }}>
-            <Sticky>
-              {({ style }) => (
-                <div style={style}>
-                  <SideBarRight hideSearchBar={false} />
-                </div>
-              )}
-            </Sticky>
-          </div>
-        </Col>
+        {!hideSideBarRight && (
+          <Col xs="auto">
+            <div style={{ width: sideBarRightWidth }}>
+              <Sticky>
+                {({ style }) => (
+                  <div style={style}>
+                    <SideBarRight hideSearchBar={false} />
+                  </div>
+                )}
+              </Sticky>
+            </div>
+          </Col>
+        )}
       </Row>
       <NotificationBox
         show={showSnackbar}
