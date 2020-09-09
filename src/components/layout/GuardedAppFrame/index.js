@@ -115,6 +115,7 @@ const GuardedAppFrame = (props) => {
     } else {
       setMinify(true)
       setSideBarLeftWidth(55)
+      setHideSideBarRight(true)
       setMainContainerWidth(width-100)
     }
   }, [width])
