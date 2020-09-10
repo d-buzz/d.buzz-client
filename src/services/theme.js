@@ -222,7 +222,7 @@ const light = {
   border: {
     primary: '1px solid #e6ecf0',
     thick: '10px solid #e6ecf0',
-    background: 'black',
+    background: '#e6ecf0',
   },
   textArea: {
     backgroundColor: 'white',
