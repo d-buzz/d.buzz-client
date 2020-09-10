@@ -163,8 +163,13 @@ const PostList = (props) => {
       console.log({ diff: width-200 })
       setLeftWidth(50)
       setAvatarSize(45)
-      setRightWidth(width-180)
+      if(!unguardedLinks) {
+        setRightWidth(width-180)
+      } else {
+        setRightWidth(width-120)
+      }
     }
+    // eslint-disable-next-line
   }, [width])
 
   let hasUpvoted = false
