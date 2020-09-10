@@ -127,7 +127,7 @@ const prepareThreeSpeakEmbeds = (content) => {
 }
 
 
-const render = (content, style, markdownClass, assetClass) => {
+const render = (content, markdownClass, assetClass) => {
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
@@ -139,7 +139,6 @@ const render = (content, style, markdownClass, assetClass) => {
   } else {
     // render normally
     return <div
-      style={style}
       className={classNames(markdownClass, assetClass)}
       dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
     />
@@ -149,7 +148,9 @@ const render = (content, style, markdownClass, assetClass) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  const {  minifyAssets = true, onModal = false  } = props
+  const {
+    minifyAssets = true,
+  } = props
   let { content = '' } = props
   const original = content
   // content = prepareImages(content)
@@ -170,15 +171,11 @@ const MarkdownViewer = (props) => {
   })
 
   let assetClass = classes.minified
-  let style = {}
 
   if(!minifyAssets) {
     assetClass = classes.full
   }
 
-  if(onModal) {
-    style = { width: 520 }
-  }
 
   let splitContent = content.split(`~~~~~~.^.~~~`)
 
@@ -188,7 +185,7 @@ const MarkdownViewer = (props) => {
   return (
     <React.Fragment>
       {splitContent.map((item) => (
-        render(item, style, classes.markdown, assetClass)
+        render(item, classes.markdown, assetClass)
       ))}
       <LinkPreview content={original} />
     </React.Fragment>

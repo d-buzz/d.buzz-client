@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
+import classNames from 'classnames'
 import { MarkdownViewer } from 'components'
 import { Spinner, CloseIcon } from 'components/elements'
 import { connect } from 'react-redux'
@@ -23,6 +24,16 @@ const useStyles = createUseStyles(theme => ({
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
+      '& div.right-content': {
+        width: '98% !important',
+      },
+    },
+    '@media (max-width: 900px)': {
+      width: '97% !important',
+      '& div.modal-content': {
+        margin: '0 auto',
+        width: '97% !important',
+      },
     },
   },
   inner: {
@@ -58,6 +69,7 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
   },
   right: {
+    width: 'inherit !important',
     verticalAlign: 'top',
     ...theme.font,
   },
@@ -78,7 +90,7 @@ const useStyles = createUseStyles(theme => ({
     color: '#e53935',
   },
   previewContainer: {
-    width: 520,
+    width: '100%',
     height: 'max-content',
     wordBreak: 'break-all !important',
     paddingBottom: 10,
@@ -220,7 +232,7 @@ const ReplyFormModal = (props) => {
                 </div>
               </Col>
               <Col style={{ padding: 0 }}>
-                <div className={classes.right}>
+                <div className={classNames('right-content', classes.right)}>
                   <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
                   <div className={classes.previewContainer}>
                     <MarkdownViewer content={body} minifyAssets={true} onModal={true}/>
@@ -235,7 +247,7 @@ const ReplyFormModal = (props) => {
                 </div>
               </Col>
               <Col style={{ padding: 0 }}>
-                <div className={classes.right}>
+                <div className={classNames('right-content', classes.right)}>
                   {loading && (
                     <div className={classes.loadState}>
                       <Box  position="relative" display="inline-flex">
@@ -246,6 +258,7 @@ const ReplyFormModal = (props) => {
                   )}
                   {!loading && (
                     <TextArea
+                      style={{ width: '100%' }}
                       minRows={3}
                       maxlength="280"
                       label="Buzz your reply"
