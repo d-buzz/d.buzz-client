@@ -308,7 +308,7 @@ const ReplyList = (props) => {
       return link
     }
 
-    const handleOpenContent = (author, permlink) => (e) => {
+    const handleOpenContent = (e) => {
       const { target } = e
       let { href } = target
       const hostname = window.location.hostname
@@ -333,7 +333,7 @@ const ReplyList = (props) => {
         <div className={classes.row}>
           <div className={classes.inner}>
             <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-              <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent(author, permlink)}>
+              <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent}>
                 <div className={classes.left}>
                   <Avatar author={author} />
                   {replies.length !== 0 && (
@@ -343,7 +343,7 @@ const ReplyList = (props) => {
               </Col>
               <Col>
                 <div className={classes.right}>
-                  <div className={classes.content} onClick={handleOpenContent(author, permlink)}>
+                  <div className={classes.content} onClick={handleOpenContent}>
                     <Link
                       ref={popoverAnchor}
                       to={`${authorLink}?ref=replies`}
