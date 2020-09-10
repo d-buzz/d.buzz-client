@@ -8,7 +8,7 @@ import {
   OrganizationAppFrame,
   OrganizationAppBar,
   OrganizationFooter,
-  MobileAppFrame
+  MobileAppFrame,
 } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'

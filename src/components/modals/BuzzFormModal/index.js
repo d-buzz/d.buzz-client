@@ -15,6 +15,12 @@ const useStyles = createUseStyles(theme => ({
       borderRadius: '20px 20px !important',
       border: 'none',
     },
+    '@media (max-width: 900px)': {
+      width: '98% !important',
+      '& div.modal-content': {
+        width: '98% !important',
+      },
+    },
   },
   modalBody: {
     paddingLeft: 0,
