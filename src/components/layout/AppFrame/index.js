@@ -1,9 +1,18 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
-import { AppBar, GuardedAppFrame, UnguardedAppFrame, OrganizationAppFrame, OrganizationAppBar, OrganizationFooter } from 'components'
+import {
+  AppBar,
+  GuardedAppFrame,
+  UnguardedAppFrame,
+  OrganizationAppFrame,
+  OrganizationAppBar,
+  OrganizationFooter,
+  MobileAppFrame
+} from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 
 const useStyles = createUseStyles({
   main: {
@@ -72,19 +81,22 @@ const AppFrame = (props) => {
     <React.Fragment>
       {unGuardedRoute && (<AppBar />)}
       {organizationRoutes && (<OrganizationAppBar />)}
-      <Container className={containerClass}>
-        <StickyContainer>
-          {organizationRoutes && (
-            <OrganizationAppFrame pathname={pathname} route={route} />
-          )}
-          {!unGuardedRoute && !organizationRoutes && (
-            <GuardedAppFrame pathname={pathname} route={route} />
-          )}
-          {unGuardedRoute && !organizationRoutes && (
-            <UnguardedAppFrame route={route} />
-          )}
-        </StickyContainer>
-      </Container>
+      {!isMobile && (
+        <Container className={containerClass}>
+          <StickyContainer>
+            {organizationRoutes && (
+              <OrganizationAppFrame pathname={pathname} route={route} />
+            )}
+            {!unGuardedRoute && !organizationRoutes && (
+              <GuardedAppFrame pathname={pathname} route={route} />
+            )}
+            {unGuardedRoute && !organizationRoutes && (
+              <UnguardedAppFrame route={route} />
+            )}
+          </StickyContainer>
+        </Container>
+      )}
+      {isMobile && (<MobileAppFrame />)}
       {organizationRoutes && (<OrganizationFooter />)}
     </React.Fragment>
   )
