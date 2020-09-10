@@ -19,6 +19,7 @@ import { useHistory } from 'react-router-dom'
 import { useWindowDimensions } from 'services/helper'
 import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
+import classNames from 'classnames'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -202,7 +203,7 @@ const PostList = (props) => {
     return link
   }
 
-  const handleOpenContent = (author, permlink) => (e) => {
+  const handleOpenContent = (e) => {
     const { target } = e
     let { href } = target
     const hostname = window.location.hostname
@@ -213,7 +214,8 @@ const PostList = (props) => {
     } else {
       if(!href) {
         setPageFrom(null)
-        history.push(generateLink(author, permlink))
+        const link = generateLink(author, permlink)
+        history.push(link)
       } else {
         const split = href.split('/')
         href = `/${split[3]}`
@@ -236,12 +238,12 @@ const PostList = (props) => {
         <div className={classes.row}>
           <Row>
             <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div style={{ width: leftWidth }} className={classes.left} onClick={handleOpenContent(author, permlink)}>
+              <div style={{ width: leftWidth }} className={classes.left} onClick={handleOpenContent}>
                 <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
             <Col xs="auto" style={{ paddingLeft: 5 }}>
-              <div className={classes.right} style={{ width: rightWidth }}>
+              <div className={classNames('right-content', classes.right)} style={{ width: rightWidth }}>
                 <div className={classes.content}>
                   <label className={classes.name}>
                     {!disableProfileLink && (
@@ -260,7 +262,7 @@ const PostList = (props) => {
                     {`@${author}`} &bull;&nbsp;
                     {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <div onClick={handleOpenContent(author, permlink)}>
+                  <div onClick={handleOpenContent}>
                     {title && (<h6>{title}</h6>)}
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
