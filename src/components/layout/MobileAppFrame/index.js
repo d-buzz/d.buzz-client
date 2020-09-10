@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
 import { renderRoutes } from 'react-router-config'
 import IconButton from '@material-ui/core/IconButton'
-import { useLocation } from 'react-router-dom'
 import { useLastLocation } from 'react-router-last-location'
 import { createUseStyles } from 'react-jss'
 
@@ -94,16 +93,16 @@ const MobileAppFrame = (props) => {
   }
 
   const handleClickBackButton = () => {
-    if(!lastLocation) {
-      history.replace('/')
-    } else {
-      history.goBack()
-    }
+    // if(!lastLocation) {
+    //   history.replace('/')
+    // } else {
+    history.goBack()
+    // }
   }
 
   return (
     <React.Fragment>
-      <div>
+      <div style={{ minHeight: '100vh' }}>
         <Navbar className={classes.nav}>
           <Navbar.Brand className={classes.navTitle}>
             {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (

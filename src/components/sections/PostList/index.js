@@ -168,7 +168,7 @@ const PostList = (props) => {
       setLeftWidth(50)
       setAvatarSize(45)
       if(!unguardedLinks) {
-        setRightWidth(width-180)
+        setRightWidth(width-200)
       } else {
         setRightWidth(width-120)
       }
