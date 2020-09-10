@@ -14,6 +14,7 @@ import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 
+
 const useStyles = createUseStyles({
   main: {
     minHeight: '100vh',
@@ -96,7 +97,7 @@ const AppFrame = (props) => {
           </StickyContainer>
         </Container>
       )}
-      {isMobile && (<MobileAppFrame />)}
+      {isMobile && (<MobileAppFrame pathname={pathname} route={route} />)}
       {organizationRoutes && (<OrganizationFooter />)}
     </React.Fragment>
   )

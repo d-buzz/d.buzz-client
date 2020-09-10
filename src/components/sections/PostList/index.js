@@ -17,6 +17,8 @@ import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
 import { useWindowDimensions } from 'services/helper'
+import { setPageFrom } from 'store/posts/actions'
+import { bindActionCreators } from 'redux'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -125,6 +127,7 @@ const useStyle = createUseStyles(theme => ({
 const PostList = (props) => {
   const classes = useStyle()
   const {
+    setPageFrom,
     searchListMode = false,
     author,
     permlink,
@@ -201,24 +204,20 @@ const PostList = (props) => {
 
   const handleOpenContent = (author, permlink) => (e) => {
     const { target } = e
-
     let { href } = target
-
     const hostname = window.location.hostname
 
     e.preventDefault()
-
-    if(target.className !== 'sc-bdVaJa cjGBmU react_tinylink_card_media') {
-      if(href && !href.includes(hostname)) {
-        window.open(href, '_blank')
+    if(href && !href.includes(hostname)) {
+      window.open(href, '_blank')
+    } else {
+      if(!href) {
+        setPageFrom(null)
+        history.push(generateLink(author, permlink))
       } else {
-        if(!href) {
-          history.push(generateLink(author, permlink))
-        } else {
-          const split = href.split('/')
-          href = `/${split[3]}`
-          history.push(href)
-        }
+        const split = href.split('/')
+        href = `/${split[3]}`
+        history.push(href)
       }
     }
   }
@@ -299,4 +298,11 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(PostList)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setPageFrom,
+  }, dispatch),
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostList)

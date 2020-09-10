@@ -31,6 +31,7 @@
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^3.0.2",
     "react-dom": "^16.13.1",
+    "react-fastclick": "^3.0.2",
     "react-float-anchor": "^3.4.0",
     "react-icons": "^3.10.0",
     "react-infinite-scroll-component": "^5.0.5",
@@ -49,6 +50,7 @@
     "react-spinners": "^0.9.0",
     "react-sticky": "^6.0.3",
     "react-tag-input": "^6.2.1",
+    "react-tap-or-click": "^0.2.1",
     "react-textarea-autosize": "^8.2.0",
     "react-time-ago": "^6.0.0",
     "react-tiny-link": "^3.5.0",
@@ -63,7 +65,7 @@
     "uuid": "^8.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --host=172.168.88.6",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
