@@ -7,6 +7,7 @@ import { auth } from './auth/reducers'
 import { profile } from './profile/reducers'
 import { polling } from './polling/reducers'
 import { settings } from './settings/reducers'
+import { interfaces } from './interface/reducers'
 import * as postSagas from './posts/sagas'
 import * as authSagas from './auth/sagas'
 import * as profileSagas from './profile/sagas'
@@ -20,6 +21,7 @@ export const rootReducer = combineReducers({
   profile,
   polling,
   settings,
+  interfaces,
 })
 
 export function* rootSaga() {
