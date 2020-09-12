@@ -194,7 +194,7 @@ const ReplyFormModal = (props) => {
         setAuthor('')
         setPermlink('')
         setBody('')
-        setTreeHistory('')
+        setTreeHistory(0)
       }
       setOpen(modalOpen)
     }
@@ -212,7 +212,22 @@ const ReplyFormModal = (props) => {
   }
 
   const handleFileSelect = () => {
-    inputRef.current.click()
+    const target = document.getElementById('file-upload-reply')
+
+    const touch = new Touch({
+      identifier: "124",
+      target: target,
+    })
+
+    const touchEvent = new TouchEvent("touchstart", {
+      touches: [touch],
+      view: window,
+      cancelable: true,
+      bubbles: true,
+    })
+
+    target.dispatchEvent(touchEvent)
+    target.click()
   }
 
   const handleFileSelectChange = (event) => {
@@ -317,10 +332,12 @@ const ReplyFormModal = (props) => {
                   )}
                   <div style={{ width: '100%' }}>
                     <input
+                      id="file-upload-reply"
                       type='file'
                       accept='image/*'
                       ref={inputRef}
                       onChange={handleFileSelectChange}
+                      multiple={false}
                       style={{ display: 'none' }}
                     />
                     <IconButton size="medium" onClick={handleFileSelect}>
