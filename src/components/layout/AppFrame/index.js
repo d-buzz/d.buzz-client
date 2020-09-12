@@ -9,6 +9,8 @@ import {
   OrganizationAppBar,
   OrganizationFooter,
   MobileAppFrame,
+  ReplyFormModal,
+  NotificationBox,
 } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
@@ -99,6 +101,8 @@ const AppFrame = (props) => {
       )}
       {isMobile && (<MobileAppFrame pathname={pathname} route={route} />)}
       {organizationRoutes && (<OrganizationFooter />)}
+      <ReplyFormModal />
+      <NotificationBox />
     </React.Fragment>
   )
 }
