@@ -10,15 +10,16 @@ import {
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Chip from '@material-ui/core/Chip'
+import moment from 'moment'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
-import { ReplyFormModal, NotificationBox } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
-import moment from 'moment'
+import { openReplyModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
-import Chip from '@material-ui/core/Chip'
 import { bindActionCreators } from 'redux'
 
 const PrettoSlider = withStyles({
@@ -173,19 +174,17 @@ const PostActions = (props) => {
     treeHistory = 0,
     payoutAt = null,
     disableExtraPadding = false,
+    openReplyModal,
+    broadcastNotification,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
   const [vote, setVote] = useState(voteCount)
-  const [replyStateCount, setReplyStateCount] = useState(replyCount)
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
-  const [showSnackbar, setShowSnackBar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
+
   const { is_authenticated } = user
-  const [open, setOpen] = useState(false)
 
   let extraPadding = { paddingTop: 10 }
 
@@ -193,9 +192,6 @@ const PostActions = (props) => {
     extraPadding = {}
   }
 
-  const handleSnackBarClose = () => {
-    setShowSnackBar(false)
-  }
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
@@ -209,48 +205,33 @@ const PostActions = (props) => {
     setSliderValue(value)
   }
 
-  const handleClickUpvote = (author, permlink) => () => {
+  const handleClickUpvote = () => {
     setShowSlider(false)
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
       .then(({ success }) => {
-        setShowSnackBar(true)
         if(success) {
           setVote(vote + 1)
           setUpvoted(true)
           setLoading(false)
-          setMessage(`Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+          broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
         } else {
           setUpvoted(false)
-          setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
-          setSeverity('error')
+          broadcastNotification('error', `Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
           setLoading(false)
         }
       })
       .catch(() => {
         setUpvoted(false)
-        setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
-        setSeverity('error')
+        broadcastNotification('error', `Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
         setLoading(false)
       })
   }
 
-  const handleClickReply = (author, permlink) => () => {
-    setOpen(true)
+  const handleClickReply = () => {
+    openReplyModal(author, permlink, body, treeHistory, replyRef)
   }
 
-  const handleOnClose = () => {
-    setOpen(false)
-  }
-
-  const onReplyDone = ({ message, severity }) => {
-    if(severity === 'success') {
-      setReplyStateCount(replyStateCount+1)
-    }
-    setShowSnackBar(true)
-    setMessage(message)
-    setSeverity(severity)
-  }
 
   const getPayoutDate = (date) => {
     const semantic =  moment(`${date}Z`).local().fromNow()
@@ -313,10 +294,10 @@ const PostActions = (props) => {
                 icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
                 hideStats={hideStats}
                 disabled={!is_authenticated}
-                onClick={handleClickReply(author, permlink)}
+                onClick={handleClickReply}
                 stat={(
                   <label style={{ marginLeft: 5 }}>
-                    {replyStateCount}
+                    {replyCount}
                   </label>
                 )}
               />
@@ -350,7 +331,7 @@ const PostActions = (props) => {
         <div className={classes.sliderWrapper}>
           <Row>
             <Col xs="auto">
-              <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
+              <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
             </Col>
             <Col style={{ paddingLeft: 0 }}>
               <ContainedButton
@@ -371,22 +352,6 @@ const PostActions = (props) => {
           </div>
         </div>
       )}
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
-      <ReplyFormModal
-        treeHistory={treeHistory}
-        body={body}
-        show={open}
-        onHide={handleOnClose}
-        author={author}
-        permlink={permlink}
-        replyRef={replyRef}
-        onReplyDone={onReplyDone}
-      />
     </React.Fragment>
   )
 }
@@ -398,6 +363,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     upvoteRequest,
+    openReplyModal,
+    broadcastNotification,
   }, dispatch),
 })
 
