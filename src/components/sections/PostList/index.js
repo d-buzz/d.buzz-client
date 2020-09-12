@@ -9,8 +9,8 @@ import {
   MarkdownViewer,
   PostTags,
   PostActions,
-  UserDialog,
 } from 'components'
+import { openUserDialog, closeUserDialog } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -19,8 +19,8 @@ import { useHistory } from 'react-router-dom'
 import { useWindowDimensions } from 'services/helper'
 import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
-import classNames from 'classnames'
 import { isMobile } from 'react-device-detect'
+import classNames from 'classnames'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -152,12 +152,14 @@ const PostList = (props) => {
     payoutAt = null,
     highlightTag = null,
     title = null,
+    disableProfileLink = false,
+    disableUserMenu = false,
+    openUserDialog,
+    closeUserDialog,
   } = props
 
-  const { disableProfileLink = false, disableUserMenu = false  } = props
   const { width } = useWindowDimensions()
 
-  const [open, setOpen] = useState(false)
   const [rightWidth, setRightWidth] = useState({ width: isMobile ? width-90 : 480 })
   const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
   const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
@@ -232,11 +234,11 @@ const PostList = (props) => {
   }
 
   const openPopOver = (e) => {
-    setOpen(true)
+    openUserDialog(popoverAnchor.current, profile)
   }
 
   const closePopOver = (e) => {
-    setOpen(false)
+    closeUserDialog()
   }
 
   return (
@@ -292,13 +294,6 @@ const PostList = (props) => {
           </Row>
         </div>
       </div>
-      {/* <UserDialog
-        open={open}
-        anchorEl={popoverAnchor.current}
-        onMouseEnter={openPopOver}
-        onMouseLeave={closePopOver}
-        profile={profile}
-      /> */}
     </React.Fragment>
   )
 }
@@ -310,6 +305,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setPageFrom,
+    openUserDialog,
+    closeUserDialog,
   }, dispatch),
 })
 

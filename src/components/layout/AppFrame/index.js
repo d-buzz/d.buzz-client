@@ -11,6 +11,7 @@ import {
   MobileAppFrame,
   ReplyFormModal,
   NotificationBox,
+  UserDialog,
 } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
@@ -97,6 +98,7 @@ const AppFrame = (props) => {
               <UnguardedAppFrame route={route} />
             )}
           </StickyContainer>
+          <UserDialog />
         </Container>
       )}
       {isMobile && (<MobileAppFrame pathname={pathname} route={route} />)}

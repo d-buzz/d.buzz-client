@@ -26,6 +26,13 @@ const useStyles = createUseStyles(theme => ({
     width: '98%',
     fontSize: 14,
   },
+  inner: {
+    height: '100%',
+    width: '95%',
+    margin: '0 auto',
+    marginTop: 5,
+    marginBottom: 5,
+  },
   name: {
     fontWeight: 'bold',
     paddingRight: 5,
@@ -72,16 +79,14 @@ const useStyles = createUseStyles(theme => ({
   followWrapper: {
     width: '100%',
   },
+  fullWidth: {
+    width: '100%',
+  },
 }))
 
 const UserDialog = (props) => {
   const classes = useStyles()
   const {
-    open,
-    anchorEl,
-    onMouseEnter,
-    onMouseLeave,
-    profile,
     loading,
     unguardedLinks,
     followRequest,
@@ -92,17 +97,25 @@ const UserDialog = (props) => {
     getFollowDetailsRequest,
     detailsFetching,
     broadcastNotification,
+    userDialogData,
   } = props
 
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState('')
+  const [about, setAbout] = useState('')
+  const [reputation, setReputation] = useState(0)
+  const [anchorEl, setAnchor] = useState(null)
+  const [author, setAuthor] = useState('')
   const { username, is_authenticated } = user
-  const { name, about } = getProfileMetaData(profile)
-  const { reputation = 0, name: author } = profile
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
   const [followerCount, setFollowerCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowed, setIsFollowed] = useState(false)
+
+  const followButtonStyle = { float: 'right', marginTop: 5 }
+  const zeroPaddingRight = { paddingRight: 0 }
 
   const fetchFollowInformation = () => {
     getFollowDetailsRequest(author)
@@ -112,6 +125,24 @@ const UserDialog = (props) => {
         setIsFollowed(followed)
       })
   }
+
+  useEffect(() => {
+    if(userDialogData.hasOwnProperty('open') && typeof userDialogData === 'object') {
+      const { open } = userDialogData
+      if(open) {
+        const { profile, anchorEl } = userDialogData
+        const { name, about } = getProfileMetaData(profile)
+        const { reputation = 0, name: author } = profile
+        setAnchor(anchorEl)
+        console.log({ anchorEl })
+        setName(name)
+        setAbout(about)
+        setReputation(reputation)
+        setAuthor(author)
+      }
+      setOpen(open)
+    }
+  }, [userDialogData])
 
   useEffect(() => {
     checkIfRecentlyFollowed()
@@ -124,6 +155,14 @@ const UserDialog = (props) => {
     }
     // eslint-disable-next-line
   }, [open])
+
+  const onMouseEnter = () => {
+    setOpen(true)
+  }
+
+  const onMouseLeave = () => {
+    setOpen(false)
+  }
 
   let authorLink = `/@${author}?ref=card`
 
@@ -210,10 +249,10 @@ const UserDialog = (props) => {
         onClose={onMouseLeave}
       >
         <div className={classes.wrapper}>
-          <div style={{ height: '100%', width: '95%', margin: '0 auto', marginTop: 5, marginBottom: 5 }}>
+          <div className={classes.inner}>
             <div className={classes.row}>
               <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
+                <Col xs="auto" style={zeroPaddingRight}>
                   <div className={classes.left}>
                     <Avatar author={author} />
                   </div>
@@ -227,7 +266,7 @@ const UserDialog = (props) => {
                             fontSize={14}
                             loading={loading || detailsFetching}
                             disabled={loading || detailsFetching}
-                            style={{ float: 'right', marginTop: 5 }}
+                            style={followButtonStyle}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
@@ -239,7 +278,7 @@ const UserDialog = (props) => {
                             fontSize={14}
                             loading={loading || detailsFetching}
                             disabled={loading || detailsFetching}
-                            style={{ float: 'right', marginTop: 5 }}
+                            style={followButtonStyle}
                             transparent={true}
                             label="Unfollow"
                             className={classes.button}
@@ -252,8 +291,8 @@ const UserDialog = (props) => {
                 </Col>
               </Row>
               <Row>
-                <Col style={{ paddingRight: 0 }}>
-                  <div style={{ width: '100%' }}>
+                <Col style={zeroPaddingRight}>
+                  <div className={classes.fullWidth}>
                     <label className={classes.name}>
                       <Link
                         to={authorLink}
@@ -291,6 +330,7 @@ const UserDialog = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
+  userDialogData: state.interfaces.get('userDialogData'),
   detailsFetching: pending(state, 'GET_FOLLOW_DETAILS_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
   recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),

@@ -9,9 +9,8 @@ import {
   MarkdownViewer,
   PostTags,
   PostActions,
-  NotificationBox,
-  UserDialog,
 } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
 import classNames from 'classnames'
 import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
@@ -156,20 +155,14 @@ const ReplyList = (props) => {
     user,
     append,
     setPageFrom,
+    broadcastNotification,
   } = props
   const { clearAppendReply } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState('')
-  const [severity, setSeverity] = useState('error')
   const history = useHistory()
-
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
 
   useEffect(() => {
     countReplies(replies)
@@ -224,9 +217,7 @@ const ReplyList = (props) => {
 
         iterableState[firstIndex] = first
         setRepliesState(iterableState)
-        setShowSnackbar(true)
-        setSeverity('success')
-        setMessage(`Succesfully replied to @${root_author}/${root_permlink}`)
+        broadcastNotification('success', `Succesfully replied to @${root_author}/${root_permlink}`)
       }
     }
   // eslint-disable-next-line
@@ -286,16 +277,7 @@ const ReplyList = (props) => {
       authorLink = `/ug${authorLink}`
     }
 
-    const [open, setOpen] = useState(false)
     const popoverAnchor = useRef(null)
-
-    const openPopOver = (e) => {
-      setOpen(true)
-    }
-
-    const closePopOver = (e) => {
-      setOpen(false)
-    }
 
     const generateLink = (author, permlink) =>  {
       let link = ''
@@ -348,8 +330,6 @@ const ReplyList = (props) => {
                       ref={popoverAnchor}
                       to={`${authorLink}?ref=replies`}
                       className={classNames(classes.link, classes.name)}
-                      // onMouseEnter={openPopOver}
-                      // onMouseLeave={closePopOver}
                     >
                       {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
                     </Link>
@@ -377,13 +357,6 @@ const ReplyList = (props) => {
                   </div>
                 </div>
               </Col>
-              <UserDialog
-                open={open}
-                anchorEl={popoverAnchor.current}
-                onMouseEnter={openPopOver}
-                onMouseLeave={closePopOver}
-                profile={profile}
-              />
             </Row>
           </div>
         </div>
@@ -412,12 +385,6 @@ const ReplyList = (props) => {
           <RenderReplies reply={reply} treeHistory={index} />
         </div>
       ))}
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }
@@ -431,6 +398,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearAppendReply,
     setPageFrom,
+    broadcastNotification,
   }, dispatch),
 })
 
