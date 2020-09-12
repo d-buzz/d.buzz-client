@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { getProfileMetaData } from 'services/helper'
 import { AvatarlistSkeleton } from 'components'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '95%',
     margin: '0 auto',
@@ -98,7 +98,12 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-})
+  searchWrapper: {
+    '& h6': {
+      ...theme.font,
+    },
+  },
+}))
 
 const SearchPeople = (props) => {
   const classes = useStyle()
@@ -142,7 +147,7 @@ const SearchPeople = (props) => {
       ))}
       <AvatarlistSkeleton loading={loading} />
       {(!loading && (items.people || []).length === 0) &&
-          (<center><br/><h6>No people found with that username</h6></center>)}
+          (<center><br/><div className={classes.searchWrapper}><h6>No people found with that username</h6></div></center>)}
     </React.Fragment>
   )
 }
