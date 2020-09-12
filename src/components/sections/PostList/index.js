@@ -224,6 +224,8 @@ const PostList = (props) => {
       if(!href) {
         // setPageFrom(null)
         const link = generateLink(author, permlink)
+        history.entries = []
+        history.index = -1
         history.push(link)
       } else {
         const split = href.split('/')
