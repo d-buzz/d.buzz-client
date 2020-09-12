@@ -255,7 +255,7 @@ const PostList = (props) => {
               <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {!disableProfileLink && (
+                    {!disableProfileLink && !isMobile && (
                       <Link
                         ref={popoverAnchor}
                         to={authorLink}

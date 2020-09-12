@@ -209,6 +209,13 @@ export const setLatestIsVisited = (visited = true) => ({
 })
 
 // clear stores
+
+export const CLEAR_CONTENT = 'CLEAR_CONTENT'
+
+export const clearContent = () => ({
+  type: CLEAR_CONTENT,
+})
+
 export const CLEAR_HOME_POSTS  = 'CLEAR_HOME_POSTS'
 
 export const clearHomePosts = () => ({

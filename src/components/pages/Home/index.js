@@ -16,6 +16,7 @@ import {
   clearLastSearchTag,
   clearSearchPosts,
   clearAppendReply,
+  clearContent,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -47,6 +48,7 @@ const Feeds = React.memo((props) => {
     clearLastSearchTag,
     clearSearchPosts,
     clearAppendReply,
+    clearContent,
   } = props
 
   useEffect(() => {
@@ -66,6 +68,7 @@ const Feeds = React.memo((props) => {
     clearLastSearchTag()
     clearAccountPosts()
     clearAccountReplies()
+    clearContent()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
     //eslint-disable-next-line
@@ -130,6 +133,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     clearSearchPosts,
     clearAppendReply,
+    clearContent,
   }, dispatch),
 })
 

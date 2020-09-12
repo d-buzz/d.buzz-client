@@ -232,7 +232,6 @@ const PostActions = (props) => {
     openReplyModal(author, permlink, body, treeHistory, replyRef)
   }
 
-
   const getPayoutDate = (date) => {
     const semantic =  moment(`${date}Z`).local().fromNow()
     return semantic !== '51 years ago' ? semantic : ''
