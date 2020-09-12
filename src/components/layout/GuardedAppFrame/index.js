@@ -94,7 +94,6 @@ const GuardedAppFrame = (props) => {
   const { width } = useWindowDimensions()
 
   useEffect(() => {
-    console.log({ width })
     if(width >= 1366) {
       setMinify(false)
       setMainContainerWidth(595)
