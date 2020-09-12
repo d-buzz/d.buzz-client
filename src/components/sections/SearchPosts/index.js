@@ -6,8 +6,18 @@ import { pending } from 'redux-saga-thunk'
 import { PostlistSkeleton } from 'components'
 import { useLocation } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { createUseStyles } from 'react-jss'
+
+const useStyles = createUseStyles(theme => ({
+  searchWrapper: {
+    '& h6': {
+      ...theme.font,
+    },
+  },
+}))
 
 const SearchPosts = (props) => {
+  const classes = useStyles()
   const {
     items,
     loading,
@@ -57,7 +67,7 @@ const SearchPosts = (props) => {
       </InfiniteScroll>
       <PostlistSkeleton loading={loading} />
       {(!loading && full.length === 0) &&
-        (<center><br/><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>{query}</span></h6></center>)}
+        (<center><br/><div className={classes.searchWrapper}><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>{query}</span></h6></div></center>)}
     </React.Fragment>
   )
 }
