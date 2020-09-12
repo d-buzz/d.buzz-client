@@ -154,7 +154,22 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleFileSelect = () => {
-    inputRef.current.click()
+    const target = document.getElementById('file-upload')
+
+    const touch = new Touch({
+      identifier: "123",
+      target: target,
+    })
+
+    const touchEvent = new TouchEvent("touchstart", {
+      touches: [touch],
+      view: window,
+      cancelable: true,
+      bubbles: true,
+    })
+
+    target.dispatchEvent(touchEvent)
+    target.click()
   }
 
   const handleFileSelectChange = (event) => {
@@ -256,23 +271,27 @@ const CreateBuzzForm = (props) => {
                 onClick={handleClickPublishPost}
               />
               <input
+                id="file-upload"
                 type='file'
                 accept='image/*'
+                multiple={false}
                 ref={inputRef}
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <IconButton
-                size="medium"
-                onClick={handleFileSelect}
-                disabled={(content.length + 88) > 280}
-                classes={{
-                  root: classes.root,
-                  disabled: classes.disabled,
-                }}
-              >
-                <UploadIcon />
-              </IconButton>
+              <label for="file-upload">
+                <IconButton
+                  size="medium"
+                  onClick={handleFileSelect}
+                  disabled={(content.length + 88) > 280}
+                  classes={{
+                    root: classes.root,
+                    disabled: classes.disabled,
+                  }}
+                >
+                  <UploadIcon />
+                </IconButton>
+              </label>
               <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
