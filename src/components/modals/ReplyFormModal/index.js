@@ -138,6 +138,9 @@ const useStyles = createUseStyles(theme => ({
   break: {
     backgroundColor: theme.border.background,
   },
+  actionWrapper: {
+    width: '100%',
+  },
 }))
 
 const ReplyFormModal = (props) => {
@@ -166,6 +169,12 @@ const ReplyFormModal = (props) => {
   const [body, setBody] = useState('')
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
+
+  const textAreaStyle = { width: '100%' }
+  const zeroPadding = { padding: 0 }
+  const iconButtonStyle = { marginTop: -5 }
+  const inputFile = { display: 'none' }
+  const replyButtonStyle = { width: 70 }
 
 
   useEffect(() => {
@@ -264,8 +273,8 @@ const ReplyFormModal = (props) => {
       >
         <div className="container">
           <ModalBody className={classes.modalBody}>
-            <div style={{ width: '100%' }}>
-              <IconButton style={{ marginTop: -5 }} onClick={onHide}>
+            <div className={classes.actionWrapper}>
+              <IconButton style={iconButtonStyle} onClick={onHide}>
                 <CloseIcon />
               </IconButton>
             </div>
@@ -277,7 +286,7 @@ const ReplyFormModal = (props) => {
                   <div className={classes.thread} />
                 </div>
               </Col>
-              <Col style={{ padding: 0 }}>
+              <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
                   <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
                   <div className={classes.previewContainer}>
@@ -292,7 +301,7 @@ const ReplyFormModal = (props) => {
                   <Avatar author={username} className={classes.avatar} />
                 </div>
               </Col>
-              <Col style={{ padding: 0 }}>
+              <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
                   {loading && (
                     <div className={classes.loadState}>
@@ -304,7 +313,7 @@ const ReplyFormModal = (props) => {
                   )}
                   {!loading && (
                     <TextArea
-                      style={{ width: '100%' }}
+                      style={textAreaStyle}
                       minRows={3}
                       maxlength="280"
                       label="Buzz your reply"
@@ -315,7 +324,7 @@ const ReplyFormModal = (props) => {
                     />
                   )}
                   {uploading && (
-                    <div style={{ width: '100%'}}>
+                    <div className={classes.actionWrapper}>
                       <Box  position="relative" display="inline-flex">
                         <Spinner top={0} size={20} loading={uploading} />&nbsp;
                         <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
@@ -330,7 +339,7 @@ const ReplyFormModal = (props) => {
                       <hr />
                     </div>
                   )}
-                  <div style={{ width: '100%' }}>
+                  <div className={classes.actionWrapper}>
                     <input
                       id="file-upload-reply"
                       type='file'
@@ -338,14 +347,14 @@ const ReplyFormModal = (props) => {
                       ref={inputRef}
                       onChange={handleFileSelectChange}
                       multiple={false}
-                      style={{ display: 'none' }}
+                      style={inputFile}
                     />
                     <IconButton size="medium" onClick={handleFileSelect}>
                       <UploadIcon />
                     </IconButton>
                     <ContainedButton
                       label="Reply"
-                      style={{ width: 70 }}
+                      style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleSubmitReply}
                       disabled={loading}
