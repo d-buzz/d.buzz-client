@@ -10,8 +10,6 @@ import { createUseStyles } from 'react-jss'
 const useStyles = createUseStyles(theme => ({
   main: {
     minHeight: '100vh',
-    borderLeft: theme.border.primary,
-    borderRight: theme.border.primary,
   },
   nav: {
     borderBottom: theme.border.primary,
@@ -93,16 +91,16 @@ const MobileAppFrame = (props) => {
   }
 
   const handleClickBackButton = () => {
-    // if(!lastLocation) {
-    //   history.replace('/')
-    // } else {
-    history.goBack()
-    // }
+    if(!lastLocation) {
+      history.replace('/')
+    } else {
+      history.goBack()
+    }
   }
 
   return (
     <React.Fragment>
-      <div style={{ minHeight: '100vh' }}>
+      <div className={classes.main}>
         <Navbar className={classes.nav}>
           <Navbar.Brand className={classes.navTitle}>
             {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (

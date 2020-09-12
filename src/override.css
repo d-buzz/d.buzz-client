@@ -1,5 +1,5 @@
 html {
-  touch-action: manipulation;
+  touch-action: none;
 }
 
 @media (min-width: 768px){

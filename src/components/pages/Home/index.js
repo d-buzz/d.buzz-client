@@ -26,7 +26,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { anchorTop } from 'services/helper'
 import { PostlistSkeleton } from 'components'
 
-const Feeds = (props) => {
+const Feeds = React.memo((props) => {
   const {
     last,
     loading,
@@ -104,7 +104,7 @@ const Feeds = (props) => {
       <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
-}
+})
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_HOME_POSTS_REQUEST'),

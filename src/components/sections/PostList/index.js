@@ -20,6 +20,7 @@ import { useWindowDimensions } from 'services/helper'
 import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import classNames from 'classnames'
+import { isMobile } from 'react-device-detect'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -159,19 +160,25 @@ const PostList = (props) => {
 
 
   useEffect(() => {
-    if(width >= 676) {
-      setAvatarSize(50)
-      setLeftWidth(60)
-      setRightWidth(480)
+    if(!isMobile) {
+      if(width >= 676) {
+        setAvatarSize(50)
+        setLeftWidth(60)
+        setRightWidth(480)
+      } else {
+        console.log({ diff: width-200 })
+        setLeftWidth(50)
+        setAvatarSize(45)
+        if(!unguardedLinks) {
+          setRightWidth(width-200)
+        } else {
+          setRightWidth(width-120)
+        }
+      }
     } else {
-      console.log({ diff: width-200 })
       setLeftWidth(50)
       setAvatarSize(45)
-      if(!unguardedLinks) {
-        setRightWidth(width-200)
-      } else {
-        setRightWidth(width-120)
-      }
+      setRightWidth(width-90)
     }
     // eslint-disable-next-line
   }, [width])
