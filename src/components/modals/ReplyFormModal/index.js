@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton'
 import classNames from 'classnames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
-import { broadcastNotification } from 'store/interface/actions'
+import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
 import { MarkdownViewer } from 'components'
 import { Spinner, CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
@@ -147,6 +147,7 @@ const ReplyFormModal = (props) => {
     loading,
     uploading,
     modalData,
+    closeReplyModal,
     broadcastNotification,
     publishReplyRequest,
     uploadFileRequest,
@@ -201,6 +202,7 @@ const ReplyFormModal = (props) => {
 
   const onHide = () => {
     setOpen(false)
+    closeReplyModal()
   }
 
   const handleOnChange = (e) => {
@@ -363,6 +365,7 @@ const mapDispatchToProps = (dispatch) => ({
     publishReplyRequest,
     uploadFileRequest,
     broadcastNotification,
+    closeReplyModal,
   }, dispatch),
 })
 
