@@ -123,13 +123,18 @@ const useStyle = createUseStyles(theme => ({
   spanName: {
     ...theme.font,
   },
+  colLeft: {
+    paddingRight: 0,
+  },
+  colRight: {
+    paddingLeft: 5,
+  },
 }))
 
 
 const PostList = (props) => {
   const classes = useStyle()
   const {
-    setPageFrom,
     searchListMode = false,
     author,
     permlink,
@@ -153,9 +158,9 @@ const PostList = (props) => {
   const { width } = useWindowDimensions()
 
   const [open, setOpen] = useState(false)
-  const [rightWidth, setRightWidth] = useState(480)
-  const [avatarSize, setAvatarSize] = useState(50)
-  const [leftWidth, setLeftWidth] = useState(60)
+  const [rightWidth, setRightWidth] = useState({ width: isMobile ? width-90 : 480 })
+  const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
+  const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
   const popoverAnchor = useRef(null)
 
 
@@ -163,22 +168,17 @@ const PostList = (props) => {
     if(!isMobile) {
       if(width >= 676) {
         setAvatarSize(50)
-        setLeftWidth(60)
-        setRightWidth(480)
+        setLeftWidth({ width:60 })
+        setRightWidth({ width:480 })
       } else {
-        console.log({ diff: width-200 })
-        setLeftWidth(50)
+        setLeftWidth({ width: 50 })
         setAvatarSize(45)
         if(!unguardedLinks) {
-          setRightWidth(width-200)
+          setRightWidth({ width: width-200 })
         } else {
-          setRightWidth(width-120)
+          setRightWidth({ width: width-120 })
         }
       }
-    } else {
-      setLeftWidth(50)
-      setAvatarSize(45)
-      setRightWidth(width-90)
     }
     // eslint-disable-next-line
   }, [width])
@@ -220,7 +220,7 @@ const PostList = (props) => {
       window.open(href, '_blank')
     } else {
       if(!href) {
-        setPageFrom(null)
+        // setPageFrom(null)
         const link = generateLink(author, permlink)
         history.push(link)
       } else {
@@ -244,13 +244,13 @@ const PostList = (props) => {
       <div className={classes.wrapper}>
         <div className={classes.row}>
           <Row>
-            <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div style={{ width: leftWidth }} className={classes.left} onClick={handleOpenContent}>
+            <Col xs="auto" className={classes.colLeft}>
+              <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
                 <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
-            <Col xs="auto" style={{ paddingLeft: 5 }}>
-              <div className={classNames('right-content', classes.right)} style={{ width: rightWidth }}>
+            <Col xs="auto" className={classes.colRight}>
+              <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
                     {!disableProfileLink && (
@@ -292,13 +292,13 @@ const PostList = (props) => {
           </Row>
         </div>
       </div>
-      <UserDialog
+      {/* <UserDialog
         open={open}
         anchorEl={popoverAnchor.current}
         onMouseEnter={openPopOver}
         onMouseLeave={closePopOver}
         profile={profile}
-      />
+      /> */}
     </React.Fragment>
   )
 }
