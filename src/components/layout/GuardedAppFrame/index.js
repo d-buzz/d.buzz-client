@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SideBarLeft, SideBarRight, SearchField, NotificationBox } from 'components'
+import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
 import { clearNotificationsRequest } from 'store/profile/actions'
+import { broadcastNotification } from 'store/interface/actions'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { useLocation } from 'react-router-dom'
@@ -74,6 +75,7 @@ const GuardedAppFrame = (props) => {
     searchRequest,
     clearSearchPosts,
     clearNotificationsRequest,
+    broadcastNotification,
     loading,
     count,
   } = props
@@ -83,9 +85,6 @@ const GuardedAppFrame = (props) => {
   const lastLocation = useLastLocation()
   const params = queryString.parse(location.search) || ''
   const [search, setSearch] = useState(params.q)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
   const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
   const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
   const [mainContainerWidth, setMainContainerWidth] = useState(595)
@@ -172,19 +171,14 @@ const GuardedAppFrame = (props) => {
     }
   }
 
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
 
   const handleClearNotification = () => {
     clearNotificationsRequest()
       .then(result => {
-        setShowSnackbar(true)
         if(result.success) {
-          setMessage('Successfully marked all your notifications as read')
+          broadcastNotification('success', 'Successfully marked all your notifications as read')
         } else {
-          setSeverity('error')
-          setMessage('Failed marking all notifications as read')
+          broadcastNotification('error', 'Failed marking all notifications as read')
         }
       })
   }
@@ -275,12 +269,6 @@ const GuardedAppFrame = (props) => {
           </Col>
         )}
       </Row>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }
@@ -295,6 +283,7 @@ const mapDispatchToProps = (dispatch) => ({
     searchRequest,
     clearSearchPosts,
     clearNotificationsRequest,
+    broadcastNotification,
   }, dispatch),
 })
 

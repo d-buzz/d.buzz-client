@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton'
 import classNames from 'classnames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
+import { broadcastNotification } from 'store/interface/actions'
 import { MarkdownViewer } from 'components'
 import { Spinner, CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
@@ -146,7 +147,7 @@ const ReplyFormModal = (props) => {
     loading,
     uploading,
     modalData,
-    onReplyDone,
+    broadcastNotification,
     publishReplyRequest,
     uploadFileRequest,
   } = props
@@ -182,21 +183,19 @@ const ReplyFormModal = (props) => {
           replyRef,
           treeHistory,
         } = modalData
-
         setReplyRef(replyRef)
-        setOpen(modalOpen)
         setAuthor(author)
         setPermlink(permlink)
         setBody(content)
         setTreeHistory(treeHistory)
       } else {
         setReplyRef('')
-        setOpen(false)
         setAuthor('')
         setPermlink('')
         setBody('')
         setTreeHistory('')
       }
+      setOpen(modalOpen)
     }
   }, [modalData])
 
@@ -229,16 +228,10 @@ const ReplyFormModal = (props) => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
       .then(({ success }) => {
         if(success) {
-          onReplyDone({
-            message: `Succesfully replied to @${author}/${permlink}`,
-            severity: 'success',
-          })
+          broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
           setReplyDone(true)
         } else {
-          onReplyDone({
-            message: `Failed reply to @${author}/${permlink}`,
-            severity: 'error',
-          })
+          broadcastNotification('error', `Failed reply to @${author}/${permlink}`)
         }
       })
   }
@@ -369,6 +362,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     publishReplyRequest,
     uploadFileRequest,
+    broadcastNotification,
   }, dispatch),
 })
 

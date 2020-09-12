@@ -13,7 +13,7 @@ import { followRequest, unfollowRequest, getFollowDetailsRequest } from 'store/p
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
-import { NotificationBox } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
 
 const useStyles = createUseStyles(theme => ({
   left: {
@@ -91,6 +91,7 @@ const UserDialog = (props) => {
     user,
     getFollowDetailsRequest,
     detailsFetching,
+    broadcastNotification,
   } = props
 
   const { username, is_authenticated } = user
@@ -99,9 +100,6 @@ const UserDialog = (props) => {
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState('')
-  const [severity, setSeverity] = useState('success')
   const [followerCount, setFollowerCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowed, setIsFollowed] = useState(false)
@@ -158,14 +156,12 @@ const UserDialog = (props) => {
   const followUser = () => {
     setShouldStayOpen(true)
     followRequest(author).then((result) => {
-      setShowSnackbar(true)
       if(result) {
-        setMessage(`Successfully followed @${author}`)
+        broadcastNotification('success', `Successfully followed @${author}`)
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
       } else {
-        setMessage(`Failed following @${author}`)
-        setSeverity('error')
+        broadcastNotification('error', `Failed following @${author}`)
       }
       setShouldStayOpen(false)
     })
@@ -174,21 +170,15 @@ const UserDialog = (props) => {
   const unfollowUser = () => {
     setShouldStayOpen(true)
     unfollowRequest(author).then((result) => {
-      setShowSnackbar(true)
       if(result) {
-        setMessage(`Successfully Unfollowed @${author}`)
+        broadcastNotification('success', `Successfully Unfollowed @${author}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
       } else {
-        setMessage(`Failed Unfollowing @${author}`)
-        setSeverity('error')
+        broadcastNotification('error', `Failed Unfollowing @${author}`)
       }
       setShouldStayOpen(false)
     })
-  }
-
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
   }
 
   useEffect(() => {
@@ -294,12 +284,6 @@ const UserDialog = (props) => {
           </div>
         </div>
       </Popover>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }
@@ -317,6 +301,7 @@ const mapDispatchToProps = (dispatch) => ({
     followRequest,
     unfollowRequest,
     getFollowDetailsRequest,
+    broadcastNotification,
   }, dispatch),
 })
 
