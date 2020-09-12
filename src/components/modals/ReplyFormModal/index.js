@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Avatar, TextArea, ContainedButton, UploadIcon } from 'components/elements'
+import Box from '@material-ui/core/Box'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
-import Box from '@material-ui/core/Box'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import classNames from 'classnames'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { MarkdownViewer } from 'components'
 import { Spinner, CloseIcon } from 'components/elements'
-import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles(theme => ({
@@ -142,30 +142,67 @@ const useStyles = createUseStyles(theme => ({
 const ReplyFormModal = (props) => {
   const classes = useStyles()
   const {
-    show,
-    onHide = () => {},
-    author,
-    permlink,
-    body = '',
     user,
-    publishReplyRequest,
-    replyRef,
-    treeHistory,
     loading,
-    onReplyDone,
-    uploadFileRequest,
     uploading,
+    modalData,
+    onReplyDone,
+    publishReplyRequest,
+    uploadFileRequest,
   } = props
+
+  const CircularProgressStyle = { float: 'right', marginRight: 5, marginTop: 15 }
 
   const { username } = user
   const inputRef = useRef(null)
   const [content, setContent] = useState('')
+  const [open, setOpen] = useState(false)
+  const [replyRef, setReplyRef] = useState('')
+  const [treeHistory, setTreeHistory] = useState(0)
+  const [author, setAuthor] = useState('')
+  const [permlink, setPermlink] = useState('')
+  const [body, setBody] = useState('')
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
+
 
   useEffect(() => {
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content])
+
+  useEffect(() => {
+    if(modalData.hasOwnProperty('open') && typeof modalData === 'object') {
+      const { open: modalOpen } = modalData
+      setContent('')
+      if(modalOpen) {
+        const {
+          content,
+          author,
+          permlink,
+          replyRef,
+          treeHistory,
+        } = modalData
+
+        setReplyRef(replyRef)
+        setOpen(modalOpen)
+        setAuthor(author)
+        setPermlink(permlink)
+        setBody(content)
+        setTreeHistory(treeHistory)
+      } else {
+        setReplyRef('')
+        setOpen(false)
+        setAuthor('')
+        setPermlink('')
+        setBody('')
+        setTreeHistory('')
+      }
+    }
+  }, [modalData])
+
+  const onHide = () => {
+    setOpen(false)
+  }
 
   const handleOnChange = (e) => {
     const { target } = e
@@ -187,7 +224,6 @@ const ReplyFormModal = (props) => {
       }
     })
   }
-
 
   const handleSubmitReply = () => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
@@ -212,7 +248,7 @@ const ReplyFormModal = (props) => {
       <Modal
         backdrop='static'
         keyboard={false}
-        show={show && !replyDone}
+        show={open && !replyDone}
         onHide={onHide}
         dialogClassName={classes.modal}
       >
@@ -303,7 +339,7 @@ const ReplyFormModal = (props) => {
                       disabled={loading}
                     />
                     <CircularProgress
-                      style={{ float: 'right', marginRight: 5, marginTop: 15 }}
+                      style={CircularProgressStyle}
                       classes={{
                         circle: classes.circle,
                       }}
@@ -324,6 +360,7 @@ const ReplyFormModal = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  modalData: state.interfaces.get('replyModalData'),
   loading: pending(state, 'PUBLISH_REPLY_REQUEST'),
   uploading: pending(state, 'UPLOAD_FILE_REQUEST'),
 })
