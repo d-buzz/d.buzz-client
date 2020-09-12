@@ -270,6 +270,7 @@ const ReplyFormModal = (props) => {
         show={open && !replyDone}
         onHide={onHide}
         dialogClassName={classes.modal}
+        animation={false}
       >
         <div className="container">
           <ModalBody className={classes.modalBody}>
