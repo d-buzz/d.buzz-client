@@ -15,6 +15,7 @@ import {
   clearLastSearchTag,
   clearSearchPosts,
   clearAppendReply,
+  clearReplies,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -47,6 +48,7 @@ const Latest = (props) => {
     clearLastSearchTag,
     clearSearchPosts,
     clearAppendReply,
+    clearReplies,
   } = props
 
   useEffect(() => {
@@ -66,6 +68,7 @@ const Latest = (props) => {
     clearAccountPosts()
     clearAccountReplies()
     clearTagsPost()
+    clearReplies()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
     //eslint-disable-next-line
@@ -129,6 +132,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     clearSearchPosts,
     clearAppendReply,
+    clearReplies,
   }, dispatch),
 })
 
