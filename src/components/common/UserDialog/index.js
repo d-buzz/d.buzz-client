@@ -84,7 +84,7 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const UserDialog = (props) => {
+const UserDialog = React.memo((props) => {
   const classes = useStyles()
   const {
     loading,
@@ -156,11 +156,11 @@ const UserDialog = (props) => {
   }, [])
 
   useEffect(() => {
-    if(open) {
+    if(open && author !== '' && author !== null) {
       fetchFollowInformation()
     }
     // eslint-disable-next-line
-  }, [open])
+  }, [open, author])
 
   const onMouseEnter = () => {
     setOpen(true)
@@ -332,7 +332,7 @@ const UserDialog = (props) => {
       </Popover>
     </React.Fragment>
   )
-}
+})
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
