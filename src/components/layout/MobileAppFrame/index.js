@@ -4,8 +4,13 @@ import React from 'react'
 // import { BackArrowIcon } from 'components/elements'
 // import { renderRoutes } from 'react-router-config'
 // import IconButton from '@material-ui/core/IconButton'
-import { ContainedButton } from 'components/elements'
 // import { useLastLocation } from 'react-router-last-location'
+import { connect } from 'react-redux'
+import {
+  BrandIcon,
+  BrandIconDark,
+  ContainedButton,
+} from 'components/elements'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
@@ -51,10 +56,14 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 5,
     float: 'right',
   },
+  notes: {
+    ...theme.font,
+  },
 }))
 
 const MobileAppFrame = (props) => {
 
+  const { theme } = props
   // const { pathname, route } = props
   const classes = useStyles()
 
@@ -121,7 +130,9 @@ const MobileAppFrame = (props) => {
         </React.Fragment> */}
         <div style={{ width: '98%', margin: '0 auto', marginTop: 20 }}>
           <center>
-            <h6 style={{ color: 'white', paddingBottom: 5 }}>Hello there, mobile view is not yet available for this version</h6>
+            {theme.mode === 'light' &&  (<BrandIcon />)}
+            {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
+            <h6 style={{ paddingTop: 10 }} className={classes.notes}>Hello there, mobile view is not yet available for this version</h6>
           </center>
           <iframe
             title="giphy"
@@ -133,7 +144,7 @@ const MobileAppFrame = (props) => {
             allowFullScreen>
           </iframe>
           <center>
-            <h6 style={{ color: 'white', paddingBottom: 5 }}>You can view it on mobile by following the link below</h6>
+            <h6 className={classes.notes}>You can view it on mobile by following the link below</h6>
             <ContainedButton
               style={{ height: 45 }}
               fontSize={14}
@@ -149,4 +160,8 @@ const MobileAppFrame = (props) => {
   )
 }
 
-export default MobileAppFrame
+const mapStateToProps = (state) => ({
+  theme: state.settings.get('theme'),
+})
+
+export default connect(mapStateToProps)(MobileAppFrame)
