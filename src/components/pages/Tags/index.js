@@ -7,6 +7,7 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearReplies,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { PostList } from 'components'
@@ -33,6 +34,7 @@ const Tags = (props) => {
     clearLastSearchTag,
     setPageFrom,
     clearSearchPosts,
+    clearReplies,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
@@ -59,6 +61,7 @@ const Tags = (props) => {
       clearTagsPost()
       getSearchTagsRequest(tag)
     }
+    clearReplies()
   // eslint-disable-next-line
   }, [tag])
 
@@ -109,6 +112,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     setPageFrom,
     clearSearchPosts,
+    clearReplies,
   }, dispatch),
 })
 

@@ -314,6 +314,7 @@ const PostActions = (props) => {
                     label={(
                       <span style={{ color: '#e53935', fontSize: 14 }}>
                         ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
+                        {!payout ? '0.00 in 7 days' : ''}&nbsp;
                         {payoutAt ? getPayoutDate(payoutAt) : ''}
                       </span>
                     )}
