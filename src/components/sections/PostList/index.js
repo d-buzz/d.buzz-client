@@ -166,6 +166,7 @@ const PostList = (props) => {
   const [rightWidth, setRightWidth] = useState({ width: isMobile ? width-90 : 480 })
   const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
   const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
+  const [delayHandler, setDelayHandler] = useState(null)
   const popoverAnchor = useRef(null)
 
 
@@ -239,7 +240,13 @@ const PostList = (props) => {
   }
 
   const openPopOver = (e) => {
-    openUserDialog(popoverAnchor.current, profile)
+    setDelayHandler(setTimeout(() => {
+      openUserDialog(popoverAnchor.current, profile)
+    }, 500))
+  }
+
+  const closePopOver = () => {
+    clearTimeout(delayHandler)
   }
 
   return (
@@ -261,6 +268,7 @@ const PostList = (props) => {
                         ref={popoverAnchor}
                         to={authorLink}
                         onMouseEnter={!disableUserMenu ? openPopOver : () => {}}
+                        onMouseLeave={!disableUserMenu ? closePopOver: () => {}}
                       >
                         {name ? name : `${author}`}
                       </Link>
