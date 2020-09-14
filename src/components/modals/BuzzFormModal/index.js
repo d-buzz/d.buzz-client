@@ -42,6 +42,7 @@ const BuzzFormModal = (props) => {
         show={show}
         onHide={onHide}
         dialogClassName={classes.modal}
+        animation={false}
       >
         <ModalBody className={classes.modalBody}>
           <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={onHide}>
