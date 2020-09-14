@@ -176,6 +176,7 @@ const PostActions = (props) => {
     disableExtraPadding = false,
     openReplyModal,
     broadcastNotification,
+    disableUpvote = false,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -260,9 +261,9 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
-                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
+                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
                   hideStats={hideStats}
-                  disabled={!is_authenticated}
+                  disabled={!is_authenticated || disableUpvote}
                   onClick={handleClickShowSlider}
                   stat={(
                     <label style={{ marginLeft: 5 }}>

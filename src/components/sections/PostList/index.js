@@ -157,6 +157,7 @@ const PostList = (props) => {
     title = null,
     disableProfileLink = false,
     disableUserMenu = false,
+    disableUpvote = false,
     openUserDialog,
   } = props
 
@@ -278,6 +279,7 @@ const PostList = (props) => {
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    disableUpvote={disableUpvote}
                     body={body}
                     hasUpvoted={hasUpvoted}
                     author={author}

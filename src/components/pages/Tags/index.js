@@ -74,6 +74,7 @@ const Tags = (props) => {
     <React.Fragment>
       {results.map((item) => (
         <PostList
+          disableUpvote={true}
           searchListMode={true}
           profileRef="tags"
           active_votes={item.total_votes}
