@@ -86,7 +86,7 @@ const FollowButton = (props) => {
     user,
   } = props
 
-  const { username } = user
+  const { username, is_authenticated } = user
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -105,7 +105,7 @@ const FollowButton = (props) => {
   }
 
   useEffect(() => {
-    if(author && username) {
+    if(author && username && author !== '' && username !== '' && is_authenticated) {
       fetchFollowInformation()
     }
     // eslint-disable-next-line
@@ -169,7 +169,7 @@ const FollowButton = (props) => {
 
   return (
     <React.Fragment>
-      {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
+      {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && is_authenticated && (
         <ContainedButton
           fontSize={14}
           loading={loading || detailsFetching}
@@ -181,7 +181,7 @@ const FollowButton = (props) => {
           onClick={followUser}
         />
       )}
-      {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
+      {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && is_authenticated && (
         <ContainedButton
           fontSize={14}
           loading={loading || detailsFetching}

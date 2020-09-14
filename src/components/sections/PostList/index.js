@@ -29,6 +29,9 @@ const useStyle = createUseStyles(theme => ({
     paddingTop: 20,
     marginBottom: 10,
   },
+  title: {
+    ...theme.font,
+  },
   wrapper: {
     width: '100%',
     overflow: 'hidden',
@@ -268,7 +271,7 @@ const PostList = (props) => {
                     {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
                   <div onClick={handleOpenContent}>
-                    {title && (<h6>{title}</h6>)}
+                    {title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
