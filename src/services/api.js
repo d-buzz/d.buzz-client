@@ -348,7 +348,7 @@ export const isFollowing = (follower, following) => {
   })
 }
 
-export const fetchProfile = (username, checkFollow = true) => {
+export const fetchProfile = (username, checkFollow = false) => {
   const user = JSON.parse(localStorage.getItem('user'))
 
   return new Promise((resolve, reject) => {
@@ -386,12 +386,13 @@ export const fetchProfile = (username, checkFollow = true) => {
         })
 
       }).catch((error) => {
+        console.log({ error })
         reject(error)
       })
   })
 }
 
-export const mapFetchProfile = (data, checkFollow = true) => {
+export const mapFetchProfile = (data, checkFollow = false) => {
   return new Promise(async(resolve, reject) => {
     try {
       let count = 0
@@ -914,15 +915,12 @@ export const uploadIpfsImage = async(data) => {
 export const getLinkMeta = (url) => {
   return new Promise(async(resolve, reject) => {
 
-    console.log({ url: `${scrapeUrl}?url=${url}` })
-
     axios.get(`${scrapeUrl}?url=${url}`)
       .then(function (result) {
         const data = result.data
         resolve(data)
       })
       .catch(function (error) {
-        console.log({ error })
         reject(error)
       })
   })

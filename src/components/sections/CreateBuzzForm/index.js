@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
+import Box from '@material-ui/core/Box'
+import IconButton from '@material-ui/core/IconButton'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { createUseStyles } from 'react-jss'
 import {
   TextArea,
@@ -8,10 +11,8 @@ import {
   UploadIcon,
   Spinner,
 } from 'components/elements'
-import { MarkdownViewer, NotificationBox } from 'components'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import { broadcastNotification } from 'store/interface/actions'
+import { MarkdownViewer } from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -118,9 +119,6 @@ const CreateBuzzForm = (props) => {
   const [wordCount, setWordCount] = useState(0)
   const [content, setContent] = useState('')
   const [tags, setTags] = useState([])
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
 
   const {
     user,
@@ -131,6 +129,7 @@ const CreateBuzzForm = (props) => {
     publishing,
     modal = false,
     hideModalCallback = () => {},
+    broadcastNotification,
     setPageFrom,
   } = props
 
@@ -154,12 +153,23 @@ const CreateBuzzForm = (props) => {
     setContent(value)
   }
 
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
-
   const handleFileSelect = () => {
-    inputRef.current.click()
+    const target = document.getElementById('file-upload')
+
+    const touch = new Touch({
+      identifier: "123",
+      target: target,
+    })
+
+    const touchEvent = new TouchEvent("touchstart", {
+      touches: [touch],
+      view: window,
+      cancelable: true,
+      bubbles: true,
+    })
+
+    target.dispatchEvent(touchEvent)
+    target.click()
   }
 
   const handleFileSelectChange = (event) => {
@@ -179,13 +189,11 @@ const CreateBuzzForm = (props) => {
         if(data.success) {
           setPageFrom(null)
           const { author, permlink } = data
-          setShowSnackbar(true)
           hideModalCallback()
-          setMessage('You successfully published a post')
+          broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
-          setSeverity('error')
-          setMessage('You failed publishing a post')
+          broadcastNotification('error', 'You failed publishing a post')
         }
       })
   }
@@ -263,23 +271,27 @@ const CreateBuzzForm = (props) => {
                 onClick={handleClickPublishPost}
               />
               <input
+                id="file-upload"
                 type='file'
                 accept='image/*'
+                multiple={false}
                 ref={inputRef}
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <IconButton
-                size="medium"
-                onClick={handleFileSelect}
-                disabled={(content.length + 88) > 280}
-                classes={{
-                  root: classes.root,
-                  disabled: classes.disabled,
-                }}
-              >
-                <UploadIcon />
-              </IconButton>
+              <label for="file-upload">
+                <IconButton
+                  size="medium"
+                  onClick={handleFileSelect}
+                  disabled={(content.length + 88) > 280}
+                  classes={{
+                    root: classes.root,
+                    disabled: classes.disabled,
+                  }}
+                >
+                  <UploadIcon />
+                </IconButton>
+              </label>
               <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
@@ -294,12 +306,6 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </div>
   )
 }
@@ -316,6 +322,7 @@ const mapDispatchToProps = (dispatch) => ({
     uploadFileRequest,
     publishPostRequest,
     setPageFrom,
+    broadcastNotification,
   }, dispatch),
 })
 

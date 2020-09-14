@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Avatar, TextArea, ContainedButton, UploadIcon } from 'components/elements'
+import Box from '@material-ui/core/Box'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
-import Box from '@material-ui/core/Box'
+import classNames from 'classnames'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
+import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
 import { MarkdownViewer } from 'components'
 import { Spinner, CloseIcon } from 'components/elements'
-import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles(theme => ({
@@ -23,6 +25,16 @@ const useStyles = createUseStyles(theme => ({
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
+      '& div.right-content': {
+        width: '98% !important',
+      },
+    },
+    '@media (max-width: 900px)': {
+      width: '97% !important',
+      '& div.modal-content': {
+        margin: '0 auto',
+        width: '97% !important',
+      },
     },
   },
   inner: {
@@ -58,6 +70,7 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
   },
   right: {
+    width: 'inherit !important',
     verticalAlign: 'top',
     ...theme.font,
   },
@@ -78,7 +91,7 @@ const useStyles = createUseStyles(theme => ({
     color: '#e53935',
   },
   previewContainer: {
-    width: 520,
+    width: '100%',
     height: 'max-content',
     wordBreak: 'break-all !important',
     paddingBottom: 10,
@@ -125,35 +138,81 @@ const useStyles = createUseStyles(theme => ({
   break: {
     backgroundColor: theme.border.background,
   },
+  actionWrapper: {
+    width: '100%',
+  },
 }))
 
 const ReplyFormModal = (props) => {
   const classes = useStyles()
   const {
-    show,
-    onHide = () => {},
-    author,
-    permlink,
-    body = '',
     user,
-    publishReplyRequest,
-    replyRef,
-    treeHistory,
     loading,
-    onReplyDone,
-    uploadFileRequest,
     uploading,
+    modalData,
+    closeReplyModal,
+    broadcastNotification,
+    publishReplyRequest,
+    uploadFileRequest,
   } = props
+
+  const CircularProgressStyle = { float: 'right', marginRight: 5, marginTop: 15 }
 
   const { username } = user
   const inputRef = useRef(null)
   const [content, setContent] = useState('')
+  const [open, setOpen] = useState(false)
+  const [replyRef, setReplyRef] = useState('')
+  const [treeHistory, setTreeHistory] = useState(0)
+  const [author, setAuthor] = useState('')
+  const [permlink, setPermlink] = useState('')
+  const [body, setBody] = useState('')
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
+
+  const textAreaStyle = { width: '100%' }
+  const zeroPadding = { padding: 0 }
+  const iconButtonStyle = { marginTop: -5 }
+  const inputFile = { display: 'none' }
+  const replyButtonStyle = { width: 70 }
+
 
   useEffect(() => {
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content])
+
+  useEffect(() => {
+    if(modalData.hasOwnProperty('open') && typeof modalData === 'object') {
+      const { open: modalOpen } = modalData
+      setContent('')
+      if(modalOpen) {
+        const {
+          content,
+          author,
+          permlink,
+          replyRef,
+          treeHistory,
+        } = modalData
+        setReplyRef(replyRef)
+        setAuthor(author)
+        setPermlink(permlink)
+        setBody(content)
+        setTreeHistory(treeHistory)
+      } else {
+        setReplyRef('')
+        setAuthor('')
+        setPermlink('')
+        setBody('')
+        setTreeHistory(0)
+      }
+      setOpen(modalOpen)
+    }
+  }, [modalData])
+
+  const onHide = () => {
+    setOpen(false)
+    closeReplyModal()
+  }
 
   const handleOnChange = (e) => {
     const { target } = e
@@ -162,7 +221,22 @@ const ReplyFormModal = (props) => {
   }
 
   const handleFileSelect = () => {
-    inputRef.current.click()
+    const target = document.getElementById('file-upload-reply')
+
+    const touch = new Touch({
+      identifier: "124",
+      target: target,
+    })
+
+    const touchEvent = new TouchEvent("touchstart", {
+      touches: [touch],
+      view: window,
+      cancelable: true,
+      bubbles: true,
+    })
+
+    target.dispatchEvent(touchEvent)
+    target.click()
   }
 
   const handleFileSelectChange = (event) => {
@@ -176,21 +250,14 @@ const ReplyFormModal = (props) => {
     })
   }
 
-
   const handleSubmitReply = () => {
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
       .then(({ success }) => {
         if(success) {
-          onReplyDone({
-            message: `Succesfully replied to @${author}/${permlink}`,
-            severity: 'success',
-          })
+          broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
           setReplyDone(true)
         } else {
-          onReplyDone({
-            message: `Failed reply to @${author}/${permlink}`,
-            severity: 'error',
-          })
+          broadcastNotification('error', `Failed reply to @${author}/${permlink}`)
         }
       })
   }
@@ -200,14 +267,15 @@ const ReplyFormModal = (props) => {
       <Modal
         backdrop='static'
         keyboard={false}
-        show={show && !replyDone}
+        show={open && !replyDone}
         onHide={onHide}
         dialogClassName={classes.modal}
+        animation={false}
       >
         <div className="container">
           <ModalBody className={classes.modalBody}>
-            <div style={{ width: '100%' }}>
-              <IconButton style={{ marginTop: -5 }} onClick={onHide}>
+            <div className={classes.actionWrapper}>
+              <IconButton style={iconButtonStyle} onClick={onHide}>
                 <CloseIcon />
               </IconButton>
             </div>
@@ -219,8 +287,8 @@ const ReplyFormModal = (props) => {
                   <div className={classes.thread} />
                 </div>
               </Col>
-              <Col style={{ padding: 0 }}>
-                <div className={classes.right}>
+              <Col style={zeroPadding}>
+                <div className={classNames('right-content', classes.right)}>
                   <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
                   <div className={classes.previewContainer}>
                     <MarkdownViewer content={body} minifyAssets={true} onModal={true}/>
@@ -234,8 +302,8 @@ const ReplyFormModal = (props) => {
                   <Avatar author={username} className={classes.avatar} />
                 </div>
               </Col>
-              <Col style={{ padding: 0 }}>
-                <div className={classes.right}>
+              <Col style={zeroPadding}>
+                <div className={classNames('right-content', classes.right)}>
                   {loading && (
                     <div className={classes.loadState}>
                       <Box  position="relative" display="inline-flex">
@@ -246,6 +314,7 @@ const ReplyFormModal = (props) => {
                   )}
                   {!loading && (
                     <TextArea
+                      style={textAreaStyle}
                       minRows={3}
                       maxlength="280"
                       label="Buzz your reply"
@@ -256,7 +325,7 @@ const ReplyFormModal = (props) => {
                     />
                   )}
                   {uploading && (
-                    <div style={{ width: '100%'}}>
+                    <div className={classes.actionWrapper}>
                       <Box  position="relative" display="inline-flex">
                         <Spinner top={0} size={20} loading={uploading} />&nbsp;
                         <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
@@ -271,26 +340,28 @@ const ReplyFormModal = (props) => {
                       <hr />
                     </div>
                   )}
-                  <div style={{ width: '100%' }}>
+                  <div className={classes.actionWrapper}>
                     <input
+                      id="file-upload-reply"
                       type='file'
                       accept='image/*'
                       ref={inputRef}
                       onChange={handleFileSelectChange}
-                      style={{ display: 'none' }}
+                      multiple={false}
+                      style={inputFile}
                     />
                     <IconButton size="medium" onClick={handleFileSelect}>
                       <UploadIcon />
                     </IconButton>
                     <ContainedButton
                       label="Reply"
-                      style={{ width: 70 }}
+                      style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleSubmitReply}
                       disabled={loading}
                     />
                     <CircularProgress
-                      style={{ float: 'right', marginRight: 5, marginTop: 15 }}
+                      style={CircularProgressStyle}
                       classes={{
                         circle: classes.circle,
                       }}
@@ -311,6 +382,7 @@ const ReplyFormModal = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  modalData: state.interfaces.get('replyModalData'),
   loading: pending(state, 'PUBLISH_REPLY_REQUEST'),
   uploading: pending(state, 'UPLOAD_FILE_REQUEST'),
 })
@@ -319,6 +391,8 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     publishReplyRequest,
     uploadFileRequest,
+    broadcastNotification,
+    closeReplyModal,
   }, dispatch),
 })
 

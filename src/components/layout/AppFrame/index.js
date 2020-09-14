@@ -1,9 +1,22 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
-import { AppBar, GuardedAppFrame, UnguardedAppFrame, OrganizationAppFrame, OrganizationAppBar, OrganizationFooter } from 'components'
+import {
+  AppBar,
+  GuardedAppFrame,
+  UnguardedAppFrame,
+  OrganizationAppFrame,
+  OrganizationAppBar,
+  OrganizationFooter,
+  MobileAppFrame,
+  ReplyFormModal,
+  NotificationBox,
+  UserDialog,
+} from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
+
 
 const useStyles = createUseStyles({
   main: {
@@ -16,14 +29,25 @@ const useStyles = createUseStyles({
     margin: '0 auto',
   },
   guardedContainer: {
+    width: 'max-content',
     '@media (min-width: 1250px)': {
+      margin: '0 auto !important',
       '&.container': {
-        maxWidth: '1250px',
+        margin: '0 auto',
+        maxWidth: 'max-content',
+      },
+    },
+    '@media (max-width: 768px)': {
+      margin: '0 auto !important',
+      '&.container': {
+        margin: '0 auto',
+        minWidth: 'max-content',
       },
     },
   },
   unGuardedContainer: {
     '@media (min-width: 1100px)': {
+      margin: '0 auto !important',
       '&.container': {
         maxWidth: '900px',
       },
@@ -31,6 +55,7 @@ const useStyles = createUseStyles({
   },
   organizationContainer: {
     '@media (min-width: 1100px)': {
+      margin: '0 auto !important',
       '&.container': {
         maxWidth: '1250px',
         paddingBottom: 25,
@@ -60,20 +85,26 @@ const AppFrame = (props) => {
     <React.Fragment>
       {unGuardedRoute && (<AppBar />)}
       {organizationRoutes && (<OrganizationAppBar />)}
-      <Container className={containerClass}>
-        <StickyContainer>
-          {organizationRoutes && (
-            <OrganizationAppFrame pathname={pathname} route={route} />
-          )}
-          {!unGuardedRoute && !organizationRoutes && (
-            <GuardedAppFrame pathname={pathname} route={route} />
-          )}
-          {unGuardedRoute && !organizationRoutes && (
-            <UnguardedAppFrame route={route} />
-          )}
-        </StickyContainer>
-      </Container>
+      {!isMobile && (
+        <Container className={containerClass}>
+          <StickyContainer>
+            {organizationRoutes && (
+              <OrganizationAppFrame pathname={pathname} route={route} />
+            )}
+            {!unGuardedRoute && !organizationRoutes && (
+              <GuardedAppFrame pathname={pathname} route={route} />
+            )}
+            {unGuardedRoute && !organizationRoutes && (
+              <UnguardedAppFrame route={route} />
+            )}
+          </StickyContainer>
+          <UserDialog />
+        </Container>
+      )}
+      {isMobile && (<MobileAppFrame pathname={pathname} route={route} />)}
       {organizationRoutes && (<OrganizationFooter />)}
+      <ReplyFormModal />
+      <NotificationBox />
     </React.Fragment>
   )
 }

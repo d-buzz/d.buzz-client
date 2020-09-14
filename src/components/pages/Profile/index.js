@@ -10,7 +10,7 @@ import {
   Avatar,
   ContainedButton,
 } from 'components/elements'
-import { NotificationBox } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
 import {
   getProfileRequest,
   getAccountPostsRequest,
@@ -148,6 +148,7 @@ const Profile = (props) => {
     loadingFollow,
     recentFollows,
     recentUnfollows,
+    broadcastNotification,
   } = props
 
   const history = useHistory()
@@ -157,9 +158,6 @@ const Profile = (props) => {
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState('')
-  const [severity, setSeverity] = useState('success')
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
 
@@ -265,34 +263,26 @@ const Profile = (props) => {
 
   const followUser = () => {
     followRequest(username).then((result) => {
-      setShowSnackbar(true)
       if(result) {
-        setMessage(`Successfully followed @${username}`)
+        broadcastNotification('success', `Successfully followed @${username}`)
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
       } else {
-        setMessage(`Failed following @${username}`)
-        setSeverity('error')
+        broadcastNotification('error', `Failed following @${username}`)
       }
     })
   }
 
   const unfollowUser = () => {
     unfollowRequest(username).then((result) => {
-      setShowSnackbar(true)
       if(result) {
-        setMessage(`Successfully Unfollowed @${username}`)
+        broadcastNotification('success', `Successfully Unfollowed @${username}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
       } else {
-        setMessage(`Failed Unfollowing @${username}`)
-        setSeverity('error')
+        broadcastNotification('error', `Failed Unfollowing @${username}`)
       }
     })
-  }
-
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
   }
 
   return (
@@ -398,12 +388,6 @@ const Profile = (props) => {
       <React.Fragment>
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }
@@ -434,6 +418,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     followRequest,
     unfollowRequest,
+    broadcastNotification,
   }, dispatch),
 })
 

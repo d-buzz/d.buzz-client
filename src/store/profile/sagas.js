@@ -43,7 +43,7 @@ import {
 function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
-    const profile = yield call(fetchProfile, [username])
+    const profile = yield call(fetchProfile, [username], true)
 
     yield put(getProfileSuccess(profile[0], meta))
   } catch(error) {

@@ -101,7 +101,9 @@ const LinkPreview = (props) => {
       setLoading(true)
       getLinkMetaRequest(url)
         .then((data) => {
-          console.log({ data })
+          if(!data.hasOwnProperty('title')) {
+            setNoShow(true)
+          }
           setMeta(data)
           setLoading(false)
         })
@@ -116,7 +118,7 @@ const LinkPreview = (props) => {
       title = `${title.substring(0, 60)}...`
     }
 
-    if(title=== null) {
+    if(title=== null || title === '') {
       setNoShow(true)
     }
 
@@ -141,7 +143,14 @@ const LinkPreview = (props) => {
     let image = meta.image
 
     if(!`${image}`.includes('https') || !`${image}`.includes('http') || image === '') {
-      image = './no-img.png'
+      image = `${window.location.origin}/no-img.png`
+    }
+
+    console.log({ image })
+
+    if(image.match(/^\//g)) {
+      const parser = document.createElement('a')
+      image = `${parser.origin}${meta.image}`
     }
 
     return image

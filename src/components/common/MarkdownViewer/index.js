@@ -19,7 +19,7 @@ const renderer = new DefaultRenderer({
   imageProxyFn: (url) => `https://images.hive.blog/0x0/${url}`,
   usertagUrlFn: (account) => "/@" + account,
   hashtagUrlFn: (hashtag) => `/tags?q=${hashtag}`,
-  isLinkSafeFn: (url) => true,
+  isLinkSafeFn: (url) => url.match(/^\//g),
 })
 
 const useStyles = createUseStyles(theme => ({
@@ -40,17 +40,25 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: 10,
   },
   minified: {
-    '& iframe': {
-      height: 300,
-      width: '100%',
-      border: theme.border.primary,
-    },
     '& img': {
       height: 300,
       width: '100%',
       objectFit: 'cover',
       marginTop: 5,
       border: theme.border.primary,
+    },
+    '& iframe': {
+      height: 300,
+      width: '100%',
+      border: theme.border.primary,
+    },
+    '@media (max-width: 768px)': {
+      '& img': {
+        height: '190px !important',
+      },
+      '& iframe': {
+        height: '190px !important',
+      },
     },
   },
   full: {
@@ -108,22 +116,18 @@ const prepareThreeSpeakEmbeds = (content) => {
     try {
       link = link.replace(/&amp;/g, '&')
       const match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
-      console.log({match})
 
       if(match) {
         const id = match[1]
         body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
-        console.log({body})
       }
-    } catch(error) {
-      console.log(error)
-    }
+    } catch(error) { }
   })
   return body
 }
 
 
-const render = (content, style, markdownClass, assetClass) => {
+const render = (content, markdownClass, assetClass) => {
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
@@ -135,7 +139,6 @@ const render = (content, style, markdownClass, assetClass) => {
   } else {
     // render normally
     return <div
-      style={style}
       className={classNames(markdownClass, assetClass)}
       dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
     />
@@ -145,7 +148,9 @@ const render = (content, style, markdownClass, assetClass) => {
 
 const MarkdownViewer = (props) => {
   const classes = useStyles()
-  const {  minifyAssets = true, onModal = false  } = props
+  const {
+    minifyAssets = true,
+  } = props
   let { content = '' } = props
   const original = content
   // content = prepareImages(content)
@@ -166,15 +171,11 @@ const MarkdownViewer = (props) => {
   })
 
   let assetClass = classes.minified
-  let style = {}
 
   if(!minifyAssets) {
     assetClass = classes.full
   }
 
-  if(onModal) {
-    style = { width: 520 }
-  }
 
   let splitContent = content.split(`~~~~~~.^.~~~`)
 
@@ -184,7 +185,7 @@ const MarkdownViewer = (props) => {
   return (
     <React.Fragment>
       {splitContent.map((item) => (
-        render(item, style, classes.markdown, assetClass)
+        render(item, classes.markdown, assetClass)
       ))}
       <LinkPreview content={original} />
     </React.Fragment>

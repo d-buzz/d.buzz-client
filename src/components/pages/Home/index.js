@@ -16,6 +16,7 @@ import {
   clearLastSearchTag,
   clearSearchPosts,
   clearAppendReply,
+  clearContent,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -26,7 +27,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { anchorTop } from 'services/helper'
 import { PostlistSkeleton } from 'components'
 
-const Feeds = (props) => {
+const Feeds = React.memo((props) => {
   const {
     last,
     loading,
@@ -47,6 +48,7 @@ const Feeds = (props) => {
     clearLastSearchTag,
     clearSearchPosts,
     clearAppendReply,
+    clearContent,
   } = props
 
   useEffect(() => {
@@ -66,6 +68,7 @@ const Feeds = (props) => {
     clearLastSearchTag()
     clearAccountPosts()
     clearAccountReplies()
+    clearContent()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
     //eslint-disable-next-line
@@ -104,7 +107,7 @@ const Feeds = (props) => {
       <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
-}
+})
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_HOME_POSTS_REQUEST'),
@@ -130,6 +133,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     clearSearchPosts,
     clearAppendReply,
+    clearContent,
   }, dispatch),
 })
 

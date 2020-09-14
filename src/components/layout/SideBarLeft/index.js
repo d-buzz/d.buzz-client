@@ -19,7 +19,10 @@ import {
   Avatar,
   SunMoonIcon,
   PowerIcon,
+  CircularBrandIcon,
+  BuzzIcon,
 } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
 import {
   BuzzFormModal,
   ThemeModal,
@@ -61,6 +64,29 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  minifyItems: {
+    textAlign: 'left',
+    marginBottom: 15,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
+      '&:hover': {
+        color: '#e53935',
+      },
+    },
+    '&:hover': {
+      cursor: 'pointer',
+      '& a': {
+        color: '#e53935',
+      },
+      '& svg': {
+        '& path': {
+          stroke: '#e53935',
+        },
+      },
+    },
+  },
   activeItem: {
     borderRadius: '50px 50px',
     cursor: 'pointer',
@@ -87,6 +113,11 @@ const useStyles = createUseStyles(theme => ({
     ...theme.left.sidebar.bottom.wrapper,
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
+  },
+  bottomMinify: {
+    position: 'absolute',
+    bottom: 15,
+    ...theme.left.sidebar.bottom.wrapperMinify,
   },
   inline: {
     display: 'inline-block',
@@ -120,6 +151,15 @@ const useStyles = createUseStyles(theme => ({
   logoutIcon: {
     ...theme.left.sidebar.logout.icon,
   },
+  buzzButton: {
+    backgroundColor: '#e53935 !important',
+    '&:hover': {
+      backgroundColor: '#b71c1c !important',
+    },
+  },
+  logoutButtonMinify: {
+    ...theme.left.sidebar.bottom.wrapper,
+  },
 }))
 
 
@@ -133,9 +173,9 @@ const LinkContainer = ({ children }) => {
   )
 }
 
-const IconWrapper = ({ children, className }) => {
+const IconWrapper = ({ children, className, style = {} }) => {
   return (
-    <div style={{ paddingLeft: 5, paddingRight: 10 }} className={className}>
+    <div style={{ paddingLeft: 5, paddingRight: 10, ...style }} className={className}>
       {children}
     </div>
   )
@@ -151,6 +191,8 @@ const NavLinkWrapper = (props) => {
     textClass,
     iconClass,
     activeClass,
+    minifyItemsClass,
+    minify,
     onClick = () => {},
   } = props
 
@@ -160,9 +202,27 @@ const NavLinkWrapper = (props) => {
   }
 
   return (
-    <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-      <IconWrapper className={iconClass}>{icon}</IconWrapper> <Link to={path}>{name}</Link>
-    </div>
+    <React.Fragment>
+      {!minify && (
+        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+          <Link to={path}>
+            <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
+            {name}
+          </Link>
+        </div>
+      )}
+      {minify && (
+        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
+          <Link to={path}>
+            <IconButton
+              size="medium"
+            >
+              {icon}
+            </IconButton>
+          </Link>
+        </div>
+      )}
+    </React.Fragment>
   )
 }
 
@@ -175,6 +235,7 @@ const SideBarLeft = (props) => {
     pollNotifRequest,
     count = 0,
     theme,
+    minify,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -215,31 +276,31 @@ const SideBarLeft = (props) => {
     {
       name: 'Home',
       path: '/',
-      icon: <HomeIcon top={-5} />,
+      icon: <HomeIcon />,
     },
     {
       name: 'Trending',
       path: '/trending',
-      icon: <TrendingIcon top={-5} />,
+      icon: <TrendingIcon />,
     },
     {
       name: 'Latest',
       path: '/latest',
-      icon: <LatestIcon top={-5} />,
+      icon: <LatestIcon  />,
     },
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>,
+      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
-      icon: <ProfileIcon top={-5} />,
+      icon: <ProfileIcon />,
     },
     {
       name: 'Display',
-      icon: <SunMoonIcon top={-5} />,
+      icon: <SunMoonIcon />,
       onClick: showThemeModal,
     },
   ]
@@ -250,14 +311,17 @@ const SideBarLeft = (props) => {
         <Nav className="flex-row">
           <LinkContainer >
             <NavbarBrand href="/">
-              <div style={{ marginLeft: 15, marginRight: 15 }}>
-                {theme.mode === 'light' && (<BrandIcon />)}
-                {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
+              <div style={{ paddingTop: 10, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
+                {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
+                {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
+                {minify && (<CircularBrandIcon />)}
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>
               {NavLinks.map((item) => (
                 <NavLinkWrapper
+                  minify={minify}
+                  minifyItemsClass={classes.minifyItems}
                   key={`${item.path}-side`}
                   {...item}
                   textClass={classes.items}
@@ -276,39 +340,69 @@ const SideBarLeft = (props) => {
                   onClick={handleClickSubscribe}
                 />
               )}
-              <ContainedButton
-                style={{ height: 45 }}
-                fontSize={14}
-                label="Buzz"
-                labelStyle={{ paddingTop: 10 }}
-                className={classes.sideBarButton}
-                onClick={handleClickBuzz}
-              />
+              {!minify && (
+                <ContainedButton
+                  style={{ height: 45 }}
+                  fontSize={14}
+                  label="Buzz"
+                  labelStyle={{ paddingTop: 10 }}
+                  className={classes.sideBarButton}
+                  onClick={handleClickBuzz}
+                />
+              )}
+              {minify && (
+                <IconButton
+                  size="medium"
+                  classes={{
+                    root: classes.buzzButton,
+                  }}
+                  onClick={handleClickBuzz}
+                >
+                  <BuzzIcon />
+                </IconButton>
+              )}
             </div>
-            <div className={classes.bottom}>
-              <div className={classes.avatarWrapper} onClick={handleClickLogout}>
-                <Row>
-                  <Col xs="auto">
-                    <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
-                      <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
-                        <Avatar author={username} />
-                      </div>
-                    </div>
-                  </Col>
-                  <Col style={{ paddingLeft: 5 }}>
-                    <Row style={{ padding: 0 }}>
-                      <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                        <p className={classes.logoutLabel}>Logout</p>
-                        <p className={classes.logoutUsername}>@{username}</p>
+            {!minify && (
+              <div className={classes.bottom}>
+                <div className={classes.avatarWrapper} onClick={handleClickLogout}>
+                  <Row>
+                    <React.Fragment>
+                      <Col xs="auto">
+                        <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
+                          <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
+                            <Avatar author={username} />
+                          </div>
+                        </div>
                       </Col>
-                      <Col style={{ padding: 0 }} className={classes.logoutIcon}>
-                        <PowerIcon top={12} />
+                      <Col style={{ paddingLeft: 5 }}>
+                        <Row style={{ padding: 0 }}>
+                          <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
+                            <p className={classes.logoutLabel}>Logout</p>
+                            <p className={classes.logoutUsername}>@{username}</p>
+                          </Col>
+                          <Col style={{ padding: 0 }} className={classes.logoutIcon}>
+                            <PowerIcon top={12} />
+                          </Col>
+                        </Row>
                       </Col>
-                    </Row>
-                  </Col>
-                </Row>
+                    </React.Fragment>
+                  </Row>
+                </div>
               </div>
-            </div>
+            )}
+            {minify && (
+              <div className={classes.bottomMinify}>
+                <IconButton
+                  size="medium"
+                  classes={{
+                    root: classes.logoutButtonMinify,
+                  }}
+                  onClick={handleClickLogout}
+                >
+                  <PowerIcon top={0} />
+                </IconButton>
+              </div>
+            )}
           </LinkContainer>
         </Nav>
       </div>

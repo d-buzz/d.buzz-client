@@ -112,6 +112,7 @@ const night = {
         },
         icons: {
           '& svg': {
+            paddingTop: -10,
             '& path': {
               stroke: 'white',
             },
@@ -120,9 +121,17 @@ const night = {
       },
       bottom: {
         wrapper: {
-          backgroundColor: 'rgb(29, 161, 242, 0.1)',
+          backgroundColor: 'rgb(29, 161, 242, 0.1) !important',
           '&:hover': {
             backgroundColor: 'rgb(29 56 78)',
+          },
+        },
+        wrapperMinify: {
+          '& svg': {
+            '& path': {
+              stroke: 'white',
+              fill: 'white',
+            },
           },
         },
       },
@@ -213,7 +222,7 @@ const light = {
   border: {
     primary: '1px solid #e6ecf0',
     thick: '10px solid #e6ecf0',
-    background: 'black',
+    background: '#e6ecf0',
   },
   textArea: {
     backgroundColor: 'white',
@@ -273,9 +282,17 @@ const light = {
       },
       bottom: {
         wrapper: {
-          backgroundColor: '#f5f8fa',
+          backgroundColor: '#f5f8fa !important',
           '&:hover': {
-            backgroundColor: '#e6ecf0',
+            backgroundColor: '#e6ecf0 !important',
+          },
+        },
+        wrapperMinify: {
+          '& svg': {
+            '& path': {
+              stroke: 'black',
+              fill: 'black',
+            },
           },
         },
       },
@@ -430,9 +447,17 @@ const gray = {
       },
       bottom: {
         wrapper: {
-          backgroundColor: '#36393f80',
+          backgroundColor: '#36393f80 !important',
           '&:hover': {
-            backgroundColor: '#36393fed',
+            backgroundColor: '#36393fed !important',
+          },
+        },
+        wrapperMinify: {
+          '& svg': {
+            '& path': {
+              stroke: 'white',
+              fill: 'white',
+            },
           },
         },
       },

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -9,13 +9,18 @@ import {
   MarkdownViewer,
   PostTags,
   PostActions,
-  UserDialog,
 } from 'components'
+import { openUserDialog } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
+import { useWindowDimensions } from 'services/helper'
+import { setPageFrom } from 'store/posts/actions'
+import { bindActionCreators } from 'redux'
+import { isMobile } from 'react-device-detect'
+import classNames from 'classnames'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -23,6 +28,9 @@ const useStyle = createUseStyles(theme => ({
     margin: '0 auto',
     paddingTop: 20,
     marginBottom: 10,
+  },
+  title: {
+    ...theme.font,
   },
   wrapper: {
     width: '100%',
@@ -42,11 +50,9 @@ const useStyle = createUseStyles(theme => ({
   },
   left: {
     height: '100%',
-    width: 60,
   },
   right: {
     height: 'max-content',
-    width: 480,
   },
   name: {
     fontWeight: 'bold',
@@ -120,6 +126,12 @@ const useStyle = createUseStyles(theme => ({
   spanName: {
     ...theme.font,
   },
+  colLeft: {
+    paddingRight: 0,
+  },
+  colRight: {
+    paddingLeft: 5,
+  },
 }))
 
 
@@ -143,12 +155,37 @@ const PostList = (props) => {
     payoutAt = null,
     highlightTag = null,
     title = null,
+    disableProfileLink = false,
+    disableUserMenu = false,
+    openUserDialog,
   } = props
 
-  const { disableProfileLink = false, disableUserMenu = false  } = props
+  const { width } = useWindowDimensions()
 
-  const [open, setOpen] = useState(false)
+  const [rightWidth, setRightWidth] = useState({ width: isMobile ? width-90 : 480 })
+  const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
+  const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
   const popoverAnchor = useRef(null)
+
+
+  useEffect(() => {
+    if(!isMobile) {
+      if(width >= 676) {
+        setAvatarSize(50)
+        setLeftWidth({ width:60 })
+        setRightWidth({ width:480 })
+      } else {
+        setLeftWidth({ width: 50 })
+        setAvatarSize(45)
+        if(!unguardedLinks) {
+          setRightWidth({ width: width-200 })
+        } else {
+          setRightWidth({ width: width-120 })
+        }
+      }
+    }
+    // eslint-disable-next-line
+  }, [width])
 
   let hasUpvoted = false
   const history = useHistory()
@@ -177,36 +214,31 @@ const PostList = (props) => {
     return link
   }
 
-  const handleOpenContent = (author, permlink) => (e) => {
+  const handleOpenContent = (e) => {
     const { target } = e
-
     let { href } = target
-
     const hostname = window.location.hostname
 
     e.preventDefault()
-
-    if(target.className !== 'sc-bdVaJa cjGBmU react_tinylink_card_media') {
-      if(href && !href.includes(hostname)) {
-        window.open(href, '_blank')
+    if(href && !href.includes(hostname)) {
+      window.open(href, '_blank')
+    } else {
+      if(!href) {
+        // setPageFrom(null)
+        const link = generateLink(author, permlink)
+        history.entries = []
+        history.index = -1
+        history.push(link)
       } else {
-        if(!href) {
-          history.push(generateLink(author, permlink))
-        } else {
-          const split = href.split('/')
-          href = `/${split[3]}`
-          history.push(href)
-        }
+        const split = href.split('/')
+        href = `/${split[3]}`
+        history.push(href)
       }
     }
   }
 
   const openPopOver = (e) => {
-    setOpen(true)
-  }
-
-  const closePopOver = (e) => {
-    setOpen(false)
+    openUserDialog(popoverAnchor.current, profile)
   }
 
   return (
@@ -214,21 +246,20 @@ const PostList = (props) => {
       <div className={classes.wrapper}>
         <div className={classes.row}>
           <Row>
-            <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left} onClick={handleOpenContent(author, permlink)}>
-                <Avatar author={author} />
+            <Col xs="auto" className={classes.colLeft}>
+              <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
+                <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
-            <Col xs="auto" style={{ paddingLeft: 5 }}>
-              <div className={classes.right}>
+            <Col xs="auto" className={classes.colRight}>
+              <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {!disableProfileLink && (
+                    {!disableProfileLink && !isMobile && (
                       <Link
                         ref={popoverAnchor}
                         to={authorLink}
                         onMouseEnter={!disableUserMenu ? openPopOver : () => {}}
-                        onMouseLeave={!disableUserMenu ? closePopOver : () => {}}
                       >
                         {name ? name : `${author}`}
                       </Link>
@@ -239,8 +270,8 @@ const PostList = (props) => {
                     {`@${author}`} &bull;&nbsp;
                     {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <div onClick={handleOpenContent(author, permlink)}>
-                    {title && (<h6>{title}</h6>)}
+                  <div onClick={handleOpenContent}>
+                    {title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
@@ -262,13 +293,6 @@ const PostList = (props) => {
           </Row>
         </div>
       </div>
-      <UserDialog
-        open={open}
-        anchorEl={popoverAnchor.current}
-        onMouseEnter={openPopOver}
-        onMouseLeave={closePopOver}
-        profile={profile}
-      />
     </React.Fragment>
   )
 }
@@ -277,4 +301,12 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(PostList)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setPageFrom,
+    openUserDialog,
+  }, dispatch),
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostList)

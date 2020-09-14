@@ -13,7 +13,7 @@ import {
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, FollowButton } from 'components'
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -103,6 +103,9 @@ const useStyle = createUseStyles(theme => ({
       color: '#d32f2f',
     },
   },
+  followButtonContainer: {
+    width: 80,
+  },
 }))
 
 const AccountFollowing = (props) => {
@@ -117,6 +120,7 @@ const AccountFollowing = (props) => {
     user,
   } = props
 
+  const zeroPadding = { paddingRight: 0 }
   const { is_authenticated } = user
 
   const history = useHistory()
@@ -157,7 +161,7 @@ const AccountFollowing = (props) => {
           <div className={classes.wrapper}>
             <div className={classes.row} onClick={handleClickFollowing(item.following)}>
               <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
+                <Col xs="auto" style={zeroPadding}>
                   <div className={classes.left}>
                     <Avatar author={item.following} />
                   </div>
@@ -177,6 +181,13 @@ const AccountFollowing = (props) => {
                         {getAbout(item.profile)}
                       </label>
                     </div>
+                  </div>
+                </Col>
+                <Col xs="auto">
+                  <div className={classes.followButtonContainer}>
+                    <FollowButton
+                      author={item.profile.name}
+                    />
                   </div>
                 </Col>
               </Row>

@@ -18,6 +18,7 @@ const ThemeLoader = (props) => {
     getSavedThemeRequest()
       .then(({ mode }) => {
         const theme = getTheme(mode)
+        document.body.style.backgroundColor = theme.background.primary
         generateStyles(theme)
         setLoaded(true)
       })

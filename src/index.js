@@ -5,9 +5,11 @@ import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
 import IpfsRouter from 'ipfs-react-router'
+import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
 
+initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>

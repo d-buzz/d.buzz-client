@@ -126,7 +126,7 @@ const Content = (props) => {
     root_author,
     root_title,
     root_permlink,
-    parent_author,
+    parent_author = null,
     parent_permlink,
   } = content || ''
 
@@ -229,12 +229,12 @@ const Content = (props) => {
 
   return (
     <React.Fragment>
-      {!loadingContent && (
+      {!loadingContent && author && (
         <React.Fragment>
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
-              {depth !== 0 && (
+              {depth !== 0 && parent_author !== null && (
                 <Row>
                   <Col>
                     <div className={classes.context}>

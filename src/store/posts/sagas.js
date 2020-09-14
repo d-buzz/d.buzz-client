@@ -554,7 +554,6 @@ function* getLinkMetaRequest(payload, meta) {
     yield put(getLinkMetaSuccess(data, meta))
     //
   } catch(error) {
-    console.log({ error })
     yield put(getLinkMetaFailure(error, meta))
   }
 }

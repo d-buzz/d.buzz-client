@@ -13,7 +13,7 @@ import { renderRoutes } from 'react-router-config'
 import { bindActionCreators } from 'redux'
 import { useHistory, useLocation } from 'react-router-dom'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   tabs: {
     textTransform: 'none !important',
     '&:hover': {
@@ -28,6 +28,7 @@ const useStyles = createUseStyles({
     '& span': {
       fontFamily: 'Segoe-Bold',
       fontWeight: 'bold',
+      ...theme.font,
     },
     '&.Mui-selected': {
       '& span': {
@@ -44,7 +45,7 @@ const useStyles = createUseStyles({
     color: '#d32f2f',
   },
   topContainer: {
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& label': {
       fontFamily: 'Segoe-Bold',
       paddingTop: 5,
@@ -54,7 +55,7 @@ const useStyles = createUseStyles({
       },
     },
   },
-})
+}))
 
 const Search = (props) => {
   const [index, setIndex] = useState(0)
