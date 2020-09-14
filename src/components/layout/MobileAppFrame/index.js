@@ -133,7 +133,9 @@ const MobileAppFrame = (props) => {
           <center>
             {theme.mode === 'light' &&  (<BrandIcon />)}
             {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
-            <h6 style={{ paddingTop: 10 }} className={classes.notes}>Hello there, mobile view is not yet available for this version</h6>
+            <h6 style={{ paddingTop: 10 }} className={classes.notes}>
+              Hello there, mobile view is still underway for this version
+            </h6>
           </center>
           <iframe
             title="giphy"
@@ -145,7 +147,7 @@ const MobileAppFrame = (props) => {
             allowFullScreen>
           </iframe>
           <center>
-            <h6 className={classes.notes}>You can view it on mobile by following the link below</h6>
+            <h6 className={classes.notes}>meanwhile you can still view the application on mobile by following the link below</h6>
             <ContainedButton
               style={{ height: 45 }}
               fontSize={14}
