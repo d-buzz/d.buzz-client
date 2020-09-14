@@ -11,6 +11,7 @@ import {
   BrandIconDark,
   ContainedButton,
 } from 'components/elements'
+import config from 'config'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
@@ -153,6 +154,8 @@ const MobileAppFrame = (props) => {
               labelStyle={{ paddingTop: 10 }}
               onClick={openRedirect}
             />
+            <br />
+            <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
           </center>
         </div>
       </div>
