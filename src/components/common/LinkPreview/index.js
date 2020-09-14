@@ -118,7 +118,7 @@ const LinkPreview = (props) => {
       title = `${title.substring(0, 60)}...`
     }
 
-    if(title=== null) {
+    if(title=== null || title === '') {
       setNoShow(true)
     }
 
