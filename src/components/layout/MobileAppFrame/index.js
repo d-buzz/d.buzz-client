@@ -99,6 +99,10 @@ const MobileAppFrame = (props) => {
   //   }
   // }
 
+  const openRedirect = () => {
+    window.open("https://d.buzz/", "_self")
+  }
+
   return (
     <React.Fragment>
       <div className={classes.main}>
@@ -136,6 +140,7 @@ const MobileAppFrame = (props) => {
               transparent={true}
               label="Take me to the main site"
               labelStyle={{ paddingTop: 10 }}
+              onClick={openRedirect}
             />
           </center>
         </div>
