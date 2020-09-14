@@ -13,7 +13,7 @@ import { followRequest, unfollowRequest, getFollowDetailsRequest } from 'store/p
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { bindActionCreators} from 'redux'
-import { broadcastNotification } from 'store/interface/actions'
+import { broadcastNotification, closeUserDialog } from 'store/interface/actions'
 
 const useStyles = createUseStyles(theme => ({
   left: {
@@ -98,6 +98,7 @@ const UserDialog = (props) => {
     detailsFetching,
     broadcastNotification,
     userDialogData,
+    closeUserDialog,
   } = props
 
   const [open, setOpen] = useState(false)
@@ -167,6 +168,7 @@ const UserDialog = (props) => {
 
   const onMouseLeave = () => {
     setOpen(false)
+    closeUserDialog()
   }
 
   let authorLink = `/@${author}?ref=card`
@@ -347,6 +349,7 @@ const mapDispatchToProps = (dispatch) => ({
     unfollowRequest,
     getFollowDetailsRequest,
     broadcastNotification,
+    closeUserDialog,
   }, dispatch),
 })
 
