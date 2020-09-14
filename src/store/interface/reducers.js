@@ -18,13 +18,13 @@ export const interfaces = (state = defaultState, { type, payload }) => {
   case OPEN_REPLY_MODAL:
     return state.set('replyModalData', payload)
   case CLOSE_REPLY_MODAL:
-    return state.set('replyModalData', { open: false })
+    return state.set('replyModalData', payload)
   case BROADCAST_NOTIFICATION:
     return state.set('notificationBoxData', payload)
   case OPEN_USER_DIALOG:
     return state.set('userDialogData', payload)
   case CLOSE_USER_DIALOG:
-    return state.set('userDialogData', {})
+    return state.set('userDialogData', payload)
   default:
     return state
   }

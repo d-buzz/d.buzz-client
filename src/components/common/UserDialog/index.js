@@ -62,7 +62,7 @@ const useStyles = createUseStyles(theme => ({
   },
   paper: {
     backgroundColor: `${theme.background.primary} !important`,
-    pointerEvents: "auto",
+    pointerEvents: 'auto',
     padding: 2,
     '& :after': {
       border: '1px solid red',
@@ -134,11 +134,16 @@ const UserDialog = (props) => {
         const { name, about } = getProfileMetaData(profile)
         const { reputation = 0, name: author } = profile
         setAnchor(anchorEl)
-        console.log({ anchorEl })
         setName(name)
         setAbout(about)
         setReputation(reputation)
         setAuthor(author)
+      } else {
+        setAnchor(null)
+        setName('')
+        setAbout('')
+        setReputation(0)
+        setAuthor('')
       }
       setOpen(open)
     }
@@ -234,10 +239,10 @@ const UserDialog = (props) => {
         classes={{
           paper: classes.paper,
         }}
-        open={open | shouldStayOpen}
+        open={open || shouldStayOpen}
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: 'top',
           horizontal: 'left',
         }}
         transformOrigin={{

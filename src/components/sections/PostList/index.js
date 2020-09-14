@@ -10,7 +10,7 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openUserDialog, closeUserDialog } from 'store/interface/actions'
+import { openUserDialog } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -155,7 +155,6 @@ const PostList = (props) => {
     disableProfileLink = false,
     disableUserMenu = false,
     openUserDialog,
-    closeUserDialog,
   } = props
 
   const { width } = useWindowDimensions()
@@ -239,10 +238,6 @@ const PostList = (props) => {
     openUserDialog(popoverAnchor.current, profile)
   }
 
-  const closePopOver = (e) => {
-    closeUserDialog()
-  }
-
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -262,7 +257,6 @@ const PostList = (props) => {
                         ref={popoverAnchor}
                         to={authorLink}
                         onMouseEnter={!disableUserMenu ? openPopOver : () => {}}
-                        onMouseLeave={!disableUserMenu ? closePopOver : () => {}}
                       >
                         {name ? name : `${author}`}
                       </Link>
@@ -308,7 +302,6 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setPageFrom,
     openUserDialog,
-    closeUserDialog,
   }, dispatch),
 })
 
