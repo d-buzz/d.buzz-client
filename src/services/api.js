@@ -349,8 +349,6 @@ export const isFollowing = (follower, following) => {
 }
 
 export const fetchProfile = (username, checkFollow = false) => {
-  const user = JSON.parse(localStorage.getItem('user'))
-
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
       .then(async(result) => {
@@ -369,13 +367,10 @@ export const fetchProfile = (username, checkFollow = false) => {
             const follow_count = await fetchFollowCount(item.name)
             result[index].follow_count = follow_count
 
-            let isFollowed = false
-
-            if(user) {
-              isFollowed = await isFollowing(user.username, item.name)
-            }
+            const isFollowed = await isFollowing(username, item.name)
 
             result[index].isFollowed = isFollowed
+
           }
 
           visited.push(result[index])
