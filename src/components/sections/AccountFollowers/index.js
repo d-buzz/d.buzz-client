@@ -13,7 +13,7 @@ import {
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, FollowButton } from 'components'
 
 
 const useStyle = createUseStyles(theme => ({
@@ -104,6 +104,9 @@ const useStyle = createUseStyles(theme => ({
       color: '#d32f2f',
     },
   },
+  followButtonContainer: {
+    width: 80,
+  },
 }))
 
 const AccountFollowers = (props) => {
@@ -177,6 +180,13 @@ const AccountFollowers = (props) => {
                         {getAbout(item.profile)}
                       </label>
                     </div>
+                  </div>
+                </Col>
+                <Col xs="auto">
+                  <div className={classes.followButtonContainer}>
+                    <FollowButton
+                      author={item.profile.name}
+                    />
                   </div>
                 </Col>
               </Row>
