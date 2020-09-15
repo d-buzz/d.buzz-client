@@ -26,7 +26,7 @@ export const GET_HOME_POSTS_REQUEST = 'GET_HOME_POSTS_REQUEST'
 export const GET_HOME_POSTS_SUCCESS = 'GET_HOME_POSTS_SUCCESS'
 export const GET_HOME_POSTS_FAILURE = 'GET_HOME_POSTS_FAILURE'
 
-export const getHomePostsRequest = (start_permlink = '', start_author = '') => ({
+export const getHomePostsRequest = (start_permlink = null, start_author = null) => ({
   type: GET_HOME_POSTS_REQUEST,
   payload: { start_permlink, start_author },
   meta: {

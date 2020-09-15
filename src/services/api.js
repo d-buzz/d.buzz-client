@@ -44,9 +44,12 @@ const invokeFilter = (item) => {
   return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
-export const callBridge = async(method, params) => {
+export const callBridge = async(method, params, appendParams = true) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
+
+    if(appendParams) {
+      params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
+    }
 
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
