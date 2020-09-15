@@ -19,7 +19,7 @@ const AuthGuard = (props) => {
   return (
     <React.Fragment>
       {isUnguardedRoute() && is_authenticated && !isFreeRoute() && (
-        <Redirect to={{ pathname: '/' }} />
+        <Redirect to={{ pathname: '/latest' }} />
       )}
       {!isUnguardedRoute() && !is_authenticated && !isFreeRoute() && (
         <Redirect to={{ pathname: '/ug' }} />
