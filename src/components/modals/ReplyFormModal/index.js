@@ -185,6 +185,7 @@ const ReplyFormModal = (props) => {
     if(modalData.hasOwnProperty('open') && typeof modalData === 'object') {
       const { open: modalOpen } = modalData
       setContent('')
+      setReplyDone(false)
       if(modalOpen) {
         const {
           content,
@@ -256,6 +257,7 @@ const ReplyFormModal = (props) => {
         if(success) {
           broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
           setReplyDone(true)
+          closeReplyModal()
         } else {
           broadcastNotification('error', `Failed reply to @${author}/${permlink}`)
         }
