@@ -55,7 +55,7 @@ const night = {
     },
   },
   font: {
-    color: 'rgb(255, 255, 255)',
+    color: 'rgb(255, 255, 255) !important',
   },
   border: {
     primary: '1px solid rgb(56, 68, 77)',
@@ -217,7 +217,7 @@ const light = {
     hover: { },
   },
   font: {
-    color: 'black',
+    color: 'black !important',
   },
   border: {
     primary: '1px solid #e6ecf0',
@@ -382,7 +382,7 @@ const gray = {
     },
   },
   font: {
-    color: 'rgb(255, 255, 255)',
+    color: 'rgb(255, 255, 255) !important',
   },
   border: {
     primary: '1px solid #2f3136',

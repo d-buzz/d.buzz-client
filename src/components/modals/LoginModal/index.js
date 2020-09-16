@@ -3,7 +3,6 @@ import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
 import FormControl from 'react-bootstrap/FormControl'
-import FormCheck from 'react-bootstrap/FormCheck'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
@@ -12,17 +11,20 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
+import { hasCompatibleKeychain } from 'services/helper'
+import Form from 'react-bootstrap/Form'
+import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
+import Button from '@material-ui/core/Button'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
     marginTop: 15,
     width: 100,
     height: 35,
+    cursor: 'pointer',
   },
   checkBox: {
-    '&input': {
-      cusor: 'pointer',
-    },
+    cursor: 'pointer',
   },
   label: {
     fontFamily: 'Segoe-Bold',
@@ -47,6 +49,14 @@ const useStyles = createUseStyles(theme => ({
       ...theme.font,
     },
   },
+  browserExtension: {
+    borderColor: 'red !important',
+    ...theme.font,
+    '&:hover': {
+      color: '#e61b33 !important',
+      backgroundColor: 'pink !important',
+    },
+  },
 }))
 
 const FormSpacer = () => {
@@ -68,6 +78,7 @@ const LoginModal = (props) => {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const [useKeychain, setUseKeychain] = useState(false)
+  const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
 
   const onChange = (e) => {
@@ -82,13 +93,15 @@ const LoginModal = (props) => {
     setHasAuthenticationError(false)
   }
 
-  const onCheckBoxChanged = (e) => {
+  const handleClickCheckbox = (e) => {
     const { target } = e
-    const { name, checked } = target
+    const { name } = target
 
     if(name === 'keychain') {
-      if(checked) { setPassword('') }
-      setUseKeychain(checked)
+      const isCompatible = hasCompatibleKeychain() ? true: false
+      setHasInstalledKeychain(isCompatible)
+      setUseKeychain(!useKeychain)
+      setPassword('') 
     }
   }
 
@@ -145,13 +158,63 @@ const LoginModal = (props) => {
               <FormSpacer />
             </React.Fragment>
           )}
-          <FormCheck
-            name="keychain"
-            type="checkbox"
-            label="Use hivekeychain"
-            className={classNames(classes.checkBox, classes.label)}
-            onChange={onCheckBoxChanged}
-          />
+          {hasInstalledKeychain && (
+            <React.Fragment>
+              <span >
+                <Form.Check
+                  id="checkbox"
+                  type="checkbox"
+                  name="keychain"
+                  label="Login with Hive Keychain"
+                  className={classNames(classes.checkBox, classes.label)}
+                  onClick={handleClickCheckbox}
+                />
+              </span>
+            </React.Fragment>
+          )}
+          {!hasInstalledKeychain && (
+            <React.Fragment>
+              <span >
+                <Form.Check
+                  id="checkbox"
+                  type="checkbox"
+                  name="keychain"
+                  label="Login with Hive Keychain"
+                  className={classNames(classes.checkBox, classes.label)}
+                  onClick={handleClickCheckbox}
+                />
+              </span>
+              <FormSpacer />
+              {useKeychain && (
+                <React.Fragment>
+                  <center><h6 className={classes.label}>Install Hive Keychain</h6>
+                    <Button  
+                      classes={{root: classes.browserExtension}}
+                      style={{borderRadius: 50}}
+                      variant="outlined" 
+                      startIcon={<FaChrome />}  
+                      href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en" 
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Chrome
+                    </Button>
+                    <Button 
+                      classes={{root: classes.browserExtension}}
+                      variant="outlined" 
+                      style={{borderRadius: 50, marginLeft: 15}}
+                      startIcon={<FaFirefoxBrowser />} 
+                      href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/" 
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Firefox
+                    </Button>
+                  </center>
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          )}
           <center>
             {!loading && (
               <ContainedButton
@@ -159,6 +222,7 @@ const LoginModal = (props) => {
                 transparent={true}
                 className={classes.loginButton}
                 fontSize={15}
+                disabled={(!useKeychain && (`${username}`.trim() !== '' || `${password}`.trim() !== '')) || (`${username}`.trim() !== '' && useKeychain) || (useKeychain && !hasInstalledKeychain)}
                 label="Submit"
               />
             )}

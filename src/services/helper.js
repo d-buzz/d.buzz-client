@@ -155,3 +155,12 @@ export const useWindowDimensions = () => {
 
   return windowDimensions
 }
+
+export function hasCompatibleKeychain() {
+  return (
+    window.hive_keychain &&
+    window.hive_keychain.requestSignBuffer &&
+    window.hive_keychain.requestBroadcast &&
+    window.hive_keychain.requestSignedCall
+  )
+}
