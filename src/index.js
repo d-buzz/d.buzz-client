@@ -4,10 +4,10 @@ import App from './App'
 import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
-// import IpfsRouter from 'ipfs-react-router'
-import {
-  HashRouter as Router,
-} from 'react-router-dom'
+import IpfsRouter from 'ipfs-react-router'
+// import {
+//  HashRouter as Router,
+// } from 'react-router-dom'
 import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
