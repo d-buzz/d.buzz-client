@@ -19,6 +19,7 @@ import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
+import { isMobile } from 'react-device-detect'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -155,20 +156,22 @@ const CreateBuzzForm = (props) => {
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload')
-
-    const touch = new Touch({
-      identifier: "123",
-      target: target,
-    })
-
-    const touchEvent = new TouchEvent("touchstart", {
-      touches: [touch],
-      view: window,
-      cancelable: true,
-      bubbles: true,
-    })
-
-    target.dispatchEvent(touchEvent)
+    if (isMobile) {
+      const touch = new Touch({
+        identifier: "123",
+        target: target,
+      })
+  
+      const touchEvent = new TouchEvent("touchstart", {
+        touches: [touch],
+        view: window,
+        cancelable: true,
+        bubbles: true,
+      })
+  
+      target.dispatchEvent(touchEvent)
+      target.click()
+    }
     target.click()
   }
 
