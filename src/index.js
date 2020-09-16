@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
 // import IpfsRouter from 'ipfs-react-router'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
 } from 'react-router-dom'
 import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
