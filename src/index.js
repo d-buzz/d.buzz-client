@@ -4,9 +4,11 @@ import App from './App'
 import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
-import { 
-  IpfsRouter as Router, 
-} from 'ipfs-react-router'
+import { Route, Switch } from 'react-router-dom'
+import IpfsRouter from 'ipfs-react-router'
+// import { 
+//   IpfsRouter as Router, 
+// } from 'ipfs-react-router'
 // import {
 //  HashRouter as Router,
 // } from 'react-router-dom'
@@ -18,8 +20,12 @@ initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
-      <App />
+    <IpfsRouter>
+        <Switch>
+          <Route exact path="/">
+            <App />
+          </Route>
+        </Switch>
     </Router>
   </Provider>,
   document.getElementById('root'),
