@@ -26,7 +26,7 @@ ReactDOM.render(
             <App />
           </Route>
         </Switch>
-    </Router>
+    </IpfsRouter>
   </Provider>,
   document.getElementById('root'),
 )
