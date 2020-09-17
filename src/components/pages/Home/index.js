@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import { CreateBuzzForm } from 'components'
+import { CreateBuzzForm, InfiniteList } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -25,7 +25,6 @@ import {
   clearAccountReplies,
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
-import { PostlistSkeleton, InfiniteList } from 'components'
 
 
 const Feeds = React.memo((props) => {
@@ -86,8 +85,7 @@ const Feeds = React.memo((props) => {
   return (
     <React.Fragment>
       <CreateBuzzForm />
-      <InfiniteList items={items} onScroll={loadMorePosts} />
-      <PostlistSkeleton loading={loading} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
 })

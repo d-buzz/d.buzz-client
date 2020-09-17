@@ -7,7 +7,8 @@ import {
   AutoSizer,
   WindowScroller,
 } from 'react-virtualized'
-import { PostList } from 'components'
+import { PostList, PostlistSkeleton } from 'components'
+
 
 class InfiniteList extends Component {
   constructor() {
@@ -19,7 +20,7 @@ class InfiniteList extends Component {
   }
 
   render() {
-    const { onScroll, items } = this.props
+    const { onScroll, items, loading } = this.props
 
     const isRowLoaded = ({ index }) => {
       return !!items[index]
@@ -92,6 +93,7 @@ class InfiniteList extends Component {
             </WindowScroller>
           )}
         </InfiniteLoader>
+        <PostlistSkeleton loading={loading} />
       </React.Fragment>
     )
   }
