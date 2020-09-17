@@ -1,6 +1,6 @@
-html {
+/* html {
   touch-action: manipulation;
-}
+} */
 
 @media (min-width: 768px){
   .container{
