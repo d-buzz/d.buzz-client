@@ -25,8 +25,14 @@ import {
   clearAccountReplies,
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { DVL } from "react-dynamic-virtual-list"
 import { anchorTop } from 'services/helper'
-import { PostlistSkeleton } from 'components'
+import { PostlistSkeleton, InfiniteList } from 'components'
+import AutoSizer from "react-virtualized-auto-sizer"
+// import { VirtualScrollList } from 'dynamic-virtual-scroll/VirtualScrollList.es5.js'
+// import VirtualScroller from 'virtual-scroller/react'
+// import {Virtual} from 'react-virtual-dynamic-list'
+import { Virtuoso } from 'react-virtuoso'
 
 const Feeds = React.memo((props) => {
   const {
@@ -77,15 +83,78 @@ const Feeds = React.memo((props) => {
     //eslint-disable-next-line
   }, [])
 
-  const loadMorePosts = () => {
+  const loadMorePosts =  () => {
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
+    // eslint-disable-next-line
+  }
+
+  const renderItem = (index) => {
+    return (
+      <React.Fragment>
+        <div style={{ minHeight: '100px' }}>
+          <PostList
+            profileRef="home"
+            active_votes={items[index].active_votes}
+            author={items[index].author}
+            permlink={items[index].permlink}
+            created={items[index].created}
+            body={items[index].body}
+            upvotes={items[index].active_votes.length}
+            replyCount={items[index].children}
+            meta={items[index].json_metadata}
+            payout={items[index].payout}
+            profile={items[index].profile}
+            payoutAt={items[index].payout_at}
+          />
+        </div>
+      </React.Fragment>
+    )
+
+    // return (
+    //   <React.Fragment>
+    //     <PostList
+    //       profileRef="home"
+    //       active_votes={item.active_votes}
+    //       author={item.author}
+    //       permlink={item.permlink}
+    //       created={item.created}
+    //       body={item.body}
+    //       upvotes={item.active_votes.length}
+    //       replyCount={item.children}
+    //       meta={item.json_metadata}
+    //       payout={item.payout}
+    //       profile={item.profile}
+    //       payoutAt={item.payout_at}
+    //     />
+    //   </React.Fragment>
+    // )
+  }
+
+  const List = (index) => {
+    // return <div>{JSON.stringify(item)}</div>
+    return (
+      <PostList
+        profileRef="home"
+        active_votes={items[index].active_votes}
+        author={items[index].author}
+        permlink={items[index].permlink}
+        created={items[index].created}
+        body={items[index].body}
+        upvotes={items[index].active_votes.length}
+        replyCount={items[index].children}
+        meta={items[index].json_metadata}
+        payout={items[index].payout}
+        profile={items[index].profile}
+        payoutAt={items[index].payout_at}
+      />
+    )
   }
 
   return (
     <React.Fragment>
       <CreateBuzzForm />
-      <InfiniteScroll
+      {/* <InfiniteScroll
         dataLength={items.length || 0}
         next={loadMorePosts}
         hasMore={true}
@@ -106,7 +175,8 @@ const Feeds = React.memo((props) => {
             payoutAt={item.payout_at}
           />
         ))}
-      </InfiniteScroll>
+      </InfiniteScroll> */}
+      <InfiniteList />
       <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )

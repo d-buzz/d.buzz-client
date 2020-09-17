@@ -83,7 +83,7 @@ const AppFrame = (props) => {
 
   return(
     <React.Fragment>
-      {unGuardedRoute && !isMobile && (<AppBar />)}
+      {unGuardedRoute && (<AppBar />)}
       {organizationRoutes && (<OrganizationAppBar />)}
       {!isMobile && (
         <Container className={containerClass}>

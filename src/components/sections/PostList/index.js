@@ -135,7 +135,7 @@ const useStyle = createUseStyles(theme => ({
 }))
 
 
-const PostList = (props) => {
+const PostList = React.memo((props) => {
   const classes = useStyle()
   const {
     searchListMode = false,
@@ -305,7 +305,7 @@ const PostList = (props) => {
       </div>
     </React.Fragment>
   )
-}
+})
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
