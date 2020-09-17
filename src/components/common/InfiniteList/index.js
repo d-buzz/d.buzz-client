@@ -58,7 +58,7 @@ class InfiniteList extends React.Component {
     }
 
     return (
-      <div className="InfinteList">
+      <React.Fragment>
         <InfiniteLoader
           isRowLoaded={isRowLoaded}
           loadMoreRows={onScroll}
@@ -95,7 +95,7 @@ class InfiniteList extends React.Component {
             </WindowScroller>
           )}
         </InfiniteLoader>
-      </div>
+      </React.Fragment>
     )
   }
 }
