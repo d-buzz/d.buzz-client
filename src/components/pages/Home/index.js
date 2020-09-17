@@ -176,7 +176,7 @@ const Feeds = React.memo((props) => {
           />
         ))}
       </InfiniteScroll> */}
-      <InfiniteList />
+      <InfiniteList items={items} onScroll={loadMorePosts} />
       <PostlistSkeleton loading={loading} />
     </React.Fragment>
   )
