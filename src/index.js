@@ -4,7 +4,8 @@ import App from './App'
 import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
-import { IpfsRouter as Router 
+import { 
+  IpfsRouter as Router, 
 } from 'ipfs-react-router'
 // import {
 //  HashRouter as Router,
