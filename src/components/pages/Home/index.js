@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { CreateBuzzForm } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -77,11 +77,11 @@ const Feeds = React.memo((props) => {
     //eslint-disable-next-line
   }, [])
 
-  const loadMorePosts =  () => {
+  const loadMorePosts =  useCallback(() => {
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
-  }
+  }, [last])
 
   return (
     <React.Fragment>

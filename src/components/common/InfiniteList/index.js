@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
   List,
   CellMeasurer,
@@ -9,9 +9,8 @@ import {
 } from 'react-virtualized'
 import { PostList } from 'components'
 
-
-class InfiniteList extends React.Component {
-  constructor(props) {
+class InfiniteList extends Component {
+  constructor() {
     super()
     this.cellMeasurerCache = new CellMeasurerCache({
       fixedWidth: true,
@@ -37,7 +36,6 @@ class InfiniteList extends React.Component {
           rowIndex={index}
         >
           <div style={style}>
-            {/* <h4 style={{ color: 'white' }}>{index}</h4> */}
             <PostList
               profileRef="home"
               active_votes={items[index].active_votes}
