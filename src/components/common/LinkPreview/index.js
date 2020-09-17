@@ -146,8 +146,6 @@ const LinkPreview = (props) => {
       image = `${window.location.origin}/no-img.png`
     }
 
-    console.log({ image })
-
     if(image.match(/^\//g)) {
       const parser = document.createElement('a')
       image = `${parser.origin}${meta.image}`

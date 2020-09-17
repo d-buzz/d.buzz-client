@@ -26,7 +26,6 @@ class InfiniteList extends Component {
     }
 
     const rowRenderer = ({ index, parent, key, style }) => {
-      console.log({ index })
       return (
         <CellMeasurer
           key={key}
