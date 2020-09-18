@@ -115,7 +115,7 @@ const prepareThreeSpeakEmbeds = (content) => {
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
-      const match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
+      const match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
 
       if(match) {
         const id = match[1]
@@ -134,7 +134,7 @@ const render = (content, markdownClass, assetClass) => {
     return <TwitterTweetEmbed tweetId={splitTwitter[2]} />
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
-    const url = `https://3speak.online/embed?v=${splitThreeSpeak[2]}`
+    const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
     return <UrlVideoEmbed url={url} />
   } else {
     // render normally
@@ -163,7 +163,7 @@ const MarkdownViewer = (props) => {
 
       if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
-      } else if(link.includes('3speak.online')) {
+      } else if(link.includes('3speak.co')) {
         content = prepareThreeSpeakEmbeds(content)
       }
 
