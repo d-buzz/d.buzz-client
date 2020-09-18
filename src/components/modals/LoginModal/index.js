@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
 import FormControl from 'react-bootstrap/FormControl'
+import FormCheck from 'react-bootstrap/FormCheck'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
@@ -12,7 +13,6 @@ import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { hasCompatibleKeychain } from 'services/helper'
-import Form from 'react-bootstrap/Form'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import Button from '@material-ui/core/Button'
 
@@ -95,17 +95,24 @@ const LoginModal = (props) => {
 
   const handleClickCheckbox = (e) => {
     const { target } = e
-    const { name } = target
+    const { name, checked } = target
 
     if(name === 'keychain') {
-      const isCompatible = hasCompatibleKeychain() ? true: false
-      setHasInstalledKeychain(isCompatible)
-      setUseKeychain(!useKeychain)
-      setPassword('') 
+      if(checked) {
+        const isCompatible = hasCompatibleKeychain() ? true : false
+        setHasInstalledKeychain(isCompatible)
+        setPassword('') 
+      }
+      setUseKeychain(checked)
+      console.log({useKeychain})
+      console.log({checked})
     }
   }
 
   const handleClickLogin = () => {
+    console.log({useKeychain})
+    console.log({username})
+    console.log({password})
     authenticateUserRequest(username, password, useKeychain)
       .then(({ is_authenticated }) => {
         if(!is_authenticated) {
@@ -115,11 +122,11 @@ const LoginModal = (props) => {
   }
 
   const onKeyDown = (e) => {
-    if(e.key === 'Enter') {
-      if((username.trim() !== '' && useKeychain) || (username.trim() !== '' && !useKeychain && `${password}`.trim() !== '')) {
-        handleClickLogin()
-      }
-    }
+    // if(e.key === 'Enter') {
+    //   if() {
+    //     handleClickLogin()
+    //   }
+    // }
   }
 
   return (
@@ -161,13 +168,14 @@ const LoginModal = (props) => {
           {hasInstalledKeychain && (
             <React.Fragment>
               <span >
-                <Form.Check
-                  id="checkbox"
+                <FormCheck
+                  id="default-checkbox"
                   type="checkbox"
                   name="keychain"
+                  checked={useKeychain}
                   label="Login with Hive Keychain"
                   className={classNames(classes.checkBox, classes.label)}
-                  onClick={handleClickCheckbox}
+                  onChange={handleClickCheckbox}
                 />
               </span>
             </React.Fragment>
@@ -175,13 +183,14 @@ const LoginModal = (props) => {
           {!hasInstalledKeychain && (
             <React.Fragment>
               <span >
-                <Form.Check
+                <FormCheck
                   id="checkbox"
                   type="checkbox"
                   name="keychain"
+                  checked={useKeychain}
                   label="Login with Hive Keychain"
                   className={classNames(classes.checkBox, classes.label)}
-                  onClick={handleClickCheckbox}
+                  onChange={handleClickCheckbox}
                 />
               </span>
               <FormSpacer />
@@ -222,7 +231,7 @@ const LoginModal = (props) => {
                 transparent={true}
                 className={classes.loginButton}
                 fontSize={15}
-                disabled={(!useKeychain && (`${username}`.trim() !== '' || `${password}`.trim() !== '')) || (`${username}`.trim() !== '' && useKeychain) || (useKeychain && !hasInstalledKeychain)}
+                disabled={(!useKeychain && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined)) || (useKeychain && (`${username}`.trim() === '' || username === undefined))}
                 label="Submit"
               />
             )}
