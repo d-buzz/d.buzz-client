@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import {
   List,
   CellMeasurer,
@@ -10,13 +10,18 @@ import {
 import { PostList, PostlistSkeleton } from 'components'
 
 
-class InfiniteList extends Component {
+class InfiniteList extends PureComponent {
   constructor() {
     super()
     this.cellMeasurerCache = new CellMeasurerCache({
       fixedWidth: true,
       defaultHeight: 100,
     })
+  }
+
+  componentDidMount() { //Really important !!
+    this.cellMeasurerCache.clearAll() //Clear the cache if row heights are recompute to be sure there are no "blank spaces" (some row are erased)
+    this.listRef && this.listRef.recomputeRowHeights()
   }
 
   render() {

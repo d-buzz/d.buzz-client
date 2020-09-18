@@ -11,7 +11,7 @@ import {
 } from './actions'
 
 function* getSavedThemeRequest(payload, meta) {
-  let theme = { mode: 'light' }
+  let theme = { mode: 'gray' }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'theme')
     saved = JSON.parse(saved)
