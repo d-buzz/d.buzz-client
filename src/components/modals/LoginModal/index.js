@@ -118,13 +118,19 @@ const LoginModal = (props) => {
         }
       })
   }
+  
+  const isDisabled = () => {
+    return ((!useKeychain && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined)) 
+      || (useKeychain && (`${username}`.trim() === '' || username === undefined))
+    )
+  }
 
   const onKeyDown = (e) => {
-    // if(e.key === 'Enter') {
-    //   if() {
-    //     handleClickLogin()
-    //   }
-    // }
+    if(e.key === 'Enter') {
+      if(!isDisabled()) {
+        handleClickLogin()
+      }
+    }
   }
 
   return (
@@ -229,7 +235,7 @@ const LoginModal = (props) => {
                 transparent={true}
                 className={classes.loginButton}
                 fontSize={15}
-                disabled={(!useKeychain && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined)) || (useKeychain && (`${username}`.trim() === '' || username === undefined))}
+                disabled={isDisabled()}
                 label="Submit"
               />
             )}
