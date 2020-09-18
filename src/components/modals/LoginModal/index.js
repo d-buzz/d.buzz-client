@@ -141,7 +141,7 @@ const LoginModal = (props) => {
             <center>
               <h6 className={classes.label}>Hi there, welcome back!</h6>
               {hasAuthenticationError && (
-                <label style={{ color: 'red' }}>Authentication failed, please check credentials and retry again</label>
+                <span style={{ color: 'red' }}>Authentication failed, please check credentials and retry again.</span>
               )}
             </center>
           </div>
