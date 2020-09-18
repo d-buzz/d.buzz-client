@@ -115,8 +115,13 @@ const prepareThreeSpeakEmbeds = (content) => {
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
-      const match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
-
+      let match = ''
+      if(link.includes('3speak.online/watch?v')) {
+        match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
+      } else {
+        match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i) 
+      }
+      
       if(match) {
         const id = match[1]
         body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
@@ -163,7 +168,7 @@ const MarkdownViewer = (props) => {
 
       if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
-      } else if(link.includes('3speak.co')) {
+      } else if(link.includes('3speak.co') || link.includes('3speak.online')) {
         content = prepareThreeSpeakEmbeds(content)
       }
 

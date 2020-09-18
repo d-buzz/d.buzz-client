@@ -16,6 +16,7 @@ const PreviewLastLink = ({ className, content }) => {
           && !link.includes('files.peakd')
           && !link.includes('youtube.com/watch?v=')
           && !link.includes('3speak.co/watch?v')
+          && !link.includes('3speak.online/watch?v')
           && !link.includes('app.dapplr.in')
           && !link.includes('pbs.twimg.com')
           && !link.includes('ipfs.io')
