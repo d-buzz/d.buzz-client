@@ -19,13 +19,13 @@ class InfiniteList extends PureComponent {
     })
   }
 
-  componentDidMount() { //Really important !!
-    this.cellMeasurerCache.clearAll() //Clear the cache if row heights are recompute to be sure there are no "blank spaces" (some row are erased)
+  componentDidMount() {
+    this.cellMeasurerCache.clearAll()
     this.listRef && this.listRef.recomputeRowHeights()
   }
 
   render() {
-    const { onScroll, items, loading } = this.props
+    const { onScroll, items, loading, unguardedLinks } = this.props
 
     const isRowLoaded = ({ index }) => {
       return !!items[index]
@@ -42,6 +42,7 @@ class InfiniteList extends PureComponent {
         >
           <div style={style}>
             <PostList
+              unguardedLinks={unguardedLinks}
               profileRef="home"
               active_votes={items[index].active_votes}
               author={items[index].author}
