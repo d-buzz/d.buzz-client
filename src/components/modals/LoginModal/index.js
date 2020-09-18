@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
-import FormControl from 'react-bootstrap/FormControl'
 import FormCheck from 'react-bootstrap/FormCheck'
+import FormControl from 'react-bootstrap/FormControl'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
@@ -104,8 +104,6 @@ const LoginModal = (props) => {
         setPassword('') 
       }
       setUseKeychain(checked)
-      console.log({useKeychain})
-      console.log({checked})
     }
   }
 
