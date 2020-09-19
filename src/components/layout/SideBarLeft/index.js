@@ -311,7 +311,7 @@ const SideBarLeft = (props) => {
         <Nav className="flex-row">
           <LinkContainer >
             <NavbarBrand href="/">
-              <div style={{ paddingTop: 10, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
+              <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
                 {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
                 {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
                 {minify && (<CircularBrandIcon />)}
