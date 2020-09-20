@@ -114,7 +114,7 @@ class InfiniteList extends PureComponent {
                           registerChild(el)
                         }}
                         isScrolling={isScrolling}
-                        scrollToAlignment="start"
+                        scrollToAlignment="center"
                         scrollToIndex={scrollToIndex}
                         onScroll={onChildScroll}
                         scrollTop={scrollTop}
