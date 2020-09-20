@@ -5,7 +5,7 @@ import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
 // import { Route, Switch } from 'react-router-dom'
-import IpfsRouter from 'ipfs-react-router'
+// import IpfsRouter from 'ipfs-react-router'
 // import {
 //   IpfsRouter as Router,
 // } from 'ipfs-react-router'
