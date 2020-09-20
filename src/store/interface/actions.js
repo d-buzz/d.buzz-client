@@ -30,3 +30,16 @@ export const closeUserDialog = () => ({
   type: CLOSE_USER_DIALOG,
   payload: { open: false },
 })
+
+export const SAVE_SCROLL_INDEX = 'SAVE_SCROLL_INDEX'
+
+export const saveScrollIndex = (index) => ({
+  type: SAVE_SCROLL_INDEX,
+  payload: index,
+})
+
+export const CLEAR_SCROLL_INDEX = 'CLEAR_SCROLL_INDEX'
+
+export const clearScrollIndex = () => ({
+  type: CLEAR_SCROLL_INDEX,
+})

@@ -24,6 +24,7 @@ import {
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
+import { clearScrollIndex } from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
 
 
@@ -50,12 +51,15 @@ const Feeds = React.memo((props) => {
     clearAppendReply,
     clearContent,
     clearReplies,
+    clearScrollIndex,
+    index,
   } = props
 
   useEffect(() => {
     setPageFrom('home')
     if(!isHomeVisited) {
       anchorTop()
+      clearScrollIndex()
       clearTrendingPosts()
       clearLatestPosts()
       getHomePostsRequest()
@@ -77,6 +81,7 @@ const Feeds = React.memo((props) => {
   }, [])
 
   const loadMorePosts =  useCallback(() => {
+    clearScrollIndex()
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -85,7 +90,7 @@ const Feeds = React.memo((props) => {
   return (
     <React.Fragment>
       <CreateBuzzForm />
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} scrollToIndex={index} />
     </React.Fragment>
   )
 })
@@ -95,6 +100,7 @@ const mapStateToProps = (state) => ({
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
   last: state.posts.get('lastHome'),
+  index: state.interfaces.get('scrollIndex'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -116,6 +122,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAppendReply,
     clearContent,
     clearReplies,
+    clearScrollIndex,
   }, dispatch),
 })
 

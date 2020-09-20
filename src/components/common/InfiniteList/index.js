@@ -20,12 +20,27 @@ class InfiniteList extends PureComponent {
   }
 
   componentDidMount() {
-    this.cellMeasurerCache.clearAll()
-    this.listRef && this.listRef.recomputeRowHeights()
+    // this.cellMeasurerCache.clearAll()
+    if (this.props.scrollToIndex < 0) {
+      return
+    }
+
+    const initial_top = this.listRef.getOffsetForRow({
+      alignment: 'start',
+      index: this.props.scrollToIndex,
+    })
+
+    console.log({ initial_top })
+
+    window.scrollTo(0, initial_top+80)
+    // this.listRef.scrollToRow(this.props.scrollToIndex)
   }
 
+
   render() {
-    const { onScroll, items, loading, unguardedLinks } = this.props
+    const { onScroll, items, loading, unguardedLinks, scrollToIndex } = this.props
+
+    console.log({ scrollToIndex })
 
     const isRowLoaded = ({ index }) => {
       return !!items[index]
@@ -55,6 +70,7 @@ class InfiniteList extends PureComponent {
               payout={items[index].payout}
               profile={items[index].profile}
               payoutAt={items[index].payout_at}
+              scrollIndex={index}
             />
           </div>
         </CellMeasurer>
@@ -74,26 +90,31 @@ class InfiniteList extends PureComponent {
             <WindowScroller>
               {({height, isScrolling, registerChild, onChildScroll, scrollTop}) => (
                 <AutoSizer disableHeight>
-                  {({ width }) => (
-                    <List
-                      rowCount={items.length || 0}
-                      autoHeight
-                      width={width}
-                      height={height}
-                      rowHeight={this.cellMeasurerCache.rowHeight}
-                      rowRenderer={rowRenderer}
-                      deferredMeasurementCache={this.cellMeasurerCache}
-                      overscanRowCount={2}
-                      onRowsRendered={onRowsRendered}
-                      ref={el => {
-                        this.listRef = el
-                        registerChild(el)
-                      }}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                    />
-                  )}
+                  {({ width }) => {
+                    return (
+                      <List
+                        rowCount={items.length || 0}
+                        autoHeight
+                        width={width}
+                        height={height}
+                        rowHeight={this.cellMeasurerCache.rowHeight}
+                        rowRenderer={rowRenderer}
+                        deferredMeasurementCache={this.cellMeasurerCache}
+                        overscanRowCount={2}
+                        onRowsRendered={onRowsRendered}
+                        ref={el => {
+                          this.listRef = el
+                          registerChild(el)
+                        }}
+                        isScrolling={isScrolling}
+                        onScroll={onChildScroll}
+                        scrollTop={scrollTop}
+                        scrollToIndex={scrollToIndex}
+                        scrollToAlignment="center"
+                        style={{ outline: 'none' }}
+                      />
+                    )
+                  }}
                 </AutoSizer>
               )}
             </WindowScroller>
