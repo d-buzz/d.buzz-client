@@ -58,7 +58,7 @@
     "react-tiny-link": "^3.5.0",
     "react-twitter-embed": "^3.0.3",
     "react-virtual-dynamic-list": "^0.5.13",
-    "react-virtualized": "^9.22.2",
+    "react-virtualized": "^9.18.5",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-virtuoso": "^0.20.0",
     "recompose": "^0.30.0",

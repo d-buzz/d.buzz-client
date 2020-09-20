@@ -101,13 +101,11 @@ const MobileAppFrame = (props) => {
   }
 
   const handleClickBackButton = () => {
-    history.goBack()
-    // history.replace('/')
-    // if(!lastLocation) {
-    //   history.replace('/')
-    // } else {
-    //   history.goBack()
-    // }
+    if(!lastLocation) {
+      history.replace('/')
+    } else {
+      history.goBack()
+    }
   }
 
   const openRedirect = () => {

@@ -21,24 +21,31 @@ class InfiniteList extends PureComponent {
 
   componentDidMount() {
     // this.cellMeasurerCache.clearAll()
-    if (this.props.scrollToIndex < 0) {
-      return
-    }
+    // if (this.props.scrollToIndex < 0) {
+    //   return
+    // }
 
-    const initial_top = this.listRef.getOffsetForRow({
-      alignment: 'start',
-      index: this.props.scrollToIndex,
-    })
+    // const initial_top = this.listRef.getOffsetForRow({
+    //   alignment: 'start',
+    //   index: this.props.scrollToIndex,
+    // })
 
-    console.log({ initial_top })
+    // console.log({ initial_top })
 
-    window.scrollTo(0, initial_top+80)
+    // window.scrollTo(0, initial_top-100)
     // this.listRef.scrollToRow(this.props.scrollToIndex)
   }
 
 
   render() {
-    const { onScroll, items, loading, unguardedLinks, scrollToIndex } = this.props
+    const {
+      onScroll,
+      items,
+      loading,
+      unguardedLinks,
+      scrollToIndex,
+      clearIndex,
+    } = this.props
 
     console.log({ scrollToIndex })
 
@@ -87,7 +94,7 @@ class InfiniteList extends PureComponent {
           threshold={2}
         >
           {({ onRowsRendered }) => (
-            <WindowScroller>
+            <WindowScroller onScroll={clearIndex}>
               {({height, isScrolling, registerChild, onChildScroll, scrollTop}) => (
                 <AutoSizer disableHeight>
                   {({ width }) => {
@@ -107,10 +114,10 @@ class InfiniteList extends PureComponent {
                           registerChild(el)
                         }}
                         isScrolling={isScrolling}
+                        scrollToAlignment="start"
+                        scrollToIndex={scrollToIndex}
                         onScroll={onChildScroll}
                         scrollTop={scrollTop}
-                        scrollToIndex={scrollToIndex}
-                        scrollToAlignment="center"
                         style={{ outline: 'none' }}
                       />
                     )

@@ -87,10 +87,14 @@ const Feeds = React.memo((props) => {
     // eslint-disable-next-line
   }, [last])
 
+  const clearIndexOnScroll = () => {
+    clearScrollIndex()
+  }
+
   return (
     <React.Fragment>
       <CreateBuzzForm />
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} scrollToIndex={index} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} clearIndex={clearIndexOnScroll} scrollToIndex={index} />
     </React.Fragment>
   )
 })

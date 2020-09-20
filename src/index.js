@@ -9,10 +9,10 @@ import IpfsRouter from 'ipfs-react-router'
 // import {
 //   IpfsRouter as Router,
 // } from 'ipfs-react-router'
-// import {
-//  HashRouter as Router,
-// } from 'react-router-dom'
-import ScrollMemory from 'react-router-scroll-memory'
+import {
+  HashRouter as Router,
+} from 'react-router-dom'
+// import ScrollMemory from 'react-router-scroll-memory'
 // import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
@@ -29,10 +29,10 @@ import './override.css'
 
 ReactDOM.render(
   <Provider store={store}>
-    <IpfsRouter>
-      <ScrollMemory />
+    <Router>
+      {/* <ScrollMemory /> */}
       <App />
-    </IpfsRouter>
+    </Router>
   </Provider>,
   document.getElementById('root'),
 )
