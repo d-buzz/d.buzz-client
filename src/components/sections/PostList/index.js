@@ -10,7 +10,7 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openUserDialog } from 'store/interface/actions'
+import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -21,6 +21,20 @@ import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
+
+const addHover = (theme) => {
+  let style = {
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+  }
+
+  if(isMobile) {
+    style = {}
+  }
+
+  return style
+}
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -39,9 +53,7 @@ const useStyle = createUseStyles(theme => ({
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      ...theme.postList.hover,
-    },
+    ...addHover(theme),
     cursor: 'pointer',
   },
   inline: {
@@ -135,7 +147,7 @@ const useStyle = createUseStyles(theme => ({
 }))
 
 
-const PostList = (props) => {
+const PostList = React.memo((props) => {
   const classes = useStyle()
   const {
     searchListMode = false,
@@ -159,6 +171,8 @@ const PostList = (props) => {
     disableUserMenu = false,
     disableUpvote = false,
     openUserDialog,
+    saveScrollIndex,
+    scrollIndex,
   } = props
 
   const { width } = useWindowDimensions()
@@ -228,8 +242,9 @@ const PostList = (props) => {
       if(!href) {
         // setPageFrom(null)
         const link = generateLink(author, permlink)
-        history.entries = []
-        history.index = -1
+        saveScrollIndex(scrollIndex)
+        // history.entries = []
+        // history.index = -1
         history.push(link)
       } else {
         const split = href.split('/')
@@ -305,7 +320,7 @@ const PostList = (props) => {
       </div>
     </React.Fragment>
   )
-}
+})
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
@@ -315,6 +330,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setPageFrom,
     openUserDialog,
+    saveScrollIndex,
   }, dispatch),
 })
 

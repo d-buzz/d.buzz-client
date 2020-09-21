@@ -151,7 +151,7 @@ const render = (content, markdownClass, assetClass) => {
 
 }
 
-const MarkdownViewer = (props) => {
+const MarkdownViewer = React.memo((props) => {
   const classes = useStyles()
   const {
     minifyAssets = true,
@@ -195,6 +195,6 @@ const MarkdownViewer = (props) => {
       <LinkPreview content={original} />
     </React.Fragment>
   )
-}
+})
 
 export default MarkdownViewer

@@ -1,6 +1,5 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import routes from './routes'
-import ScrollMemory from 'react-router-scroll-memory'
 import { withRouter } from 'react-router'
 import { Init, AuthGuard, ThemeLoader } from 'components'
 import { renderRoutes } from 'react-router-config'
@@ -26,20 +25,17 @@ const AppWrapper = ({ children }) => {
 const App = () => {
   return (
     <React.Fragment>
-      <Suspense fallback={<div>Loading...</div>}>
-        <LastLocationProvider>
-          <ThemeLoader>
-            <Init>
-              <ScrollMemory />
-              <AuthGuard>
-                <AppWrapper>
-                  {renderRoutes(routes)}
-                </AppWrapper>
-              </AuthGuard>
-            </Init>
-          </ThemeLoader>
-        </LastLocationProvider>
-      </Suspense>
+      <LastLocationProvider>
+        <ThemeLoader>
+          <Init>
+            <AuthGuard>
+              <AppWrapper>
+                {renderRoutes(routes)}
+              </AppWrapper>
+            </AuthGuard>
+          </Init>
+        </ThemeLoader>
+      </LastLocationProvider>
     </React.Fragment>
   )
 }

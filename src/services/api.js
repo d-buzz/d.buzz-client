@@ -389,7 +389,6 @@ export const fetchProfile = (username, checkFollow = false) => {
         })
 
       }).catch((error) => {
-        console.log({ error })
         reject(error)
       })
   })

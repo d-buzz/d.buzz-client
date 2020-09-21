@@ -201,10 +201,8 @@ function* getHomePostsRequest(payload, meta) {
   const user = yield select(state => state.auth.get('user'))
   const { username: account } = user
 
-  const params = {sort: 'feed', account, limit: 21, start_permlink, start_author }
+  const params = {sort: 'feed', account, limit: 50, start_permlink, start_author }
   const method = 'get_account_posts'
-
-  console.log({ params })
 
   try {
     const old = yield select(state => state.posts.get('home'))
@@ -218,7 +216,6 @@ function* getHomePostsRequest(payload, meta) {
     yield put(setHomeLastPost(data[data.length-1]))
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getHomePostsFailure(error, meta))
   }
 }

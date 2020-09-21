@@ -4,35 +4,21 @@ import App from './App'
 import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
-// import { Route, Switch } from 'react-router-dom'
-import IpfsRouter from 'ipfs-react-router'
-// import {
-//   IpfsRouter as Router,
-// } from 'ipfs-react-router'
-// import {
-//  HashRouter as Router,
-// } from 'react-router-dom'
-import ScrollMemory from 'react-router-scroll-memory'
-// import initReactFastclick from 'react-fastclick'
+import {
+  HashRouter as Router,
+} from 'react-router-dom'
+import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
 
-// const history = createBrowserHistory()
-
-// const settings = {
-//   disableAutoScrollRestoration: true,
-//   restorePageStateOnPop: true,
-//   smoothScroll: true,
-// }
-
-// wrapHistory(history, settings)
+initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
-    <IpfsRouter>
-      <ScrollMemory />
+    <Router>
+      {/* <ScrollMemory /> */}
       <App />
-    </IpfsRouter>
+    </Router>
   </Provider>,
   document.getElementById('root'),
 )

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { PostList, CreateBuzzForm } from 'components'
+import React, { useEffect, useCallback } from 'react'
+import { CreateBuzzForm, InfiniteList } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -24,9 +24,9 @@ import {
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import { clearScrollIndex } from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
-import { PostlistSkeleton } from 'components'
+
 
 const Feeds = React.memo((props) => {
   const {
@@ -51,12 +51,15 @@ const Feeds = React.memo((props) => {
     clearAppendReply,
     clearContent,
     clearReplies,
+    clearScrollIndex,
+    index,
   } = props
 
   useEffect(() => {
     setPageFrom('home')
     if(!isHomeVisited) {
       anchorTop()
+      clearScrollIndex()
       clearTrendingPosts()
       clearLatestPosts()
       getHomePostsRequest()
@@ -77,37 +80,21 @@ const Feeds = React.memo((props) => {
     //eslint-disable-next-line
   }, [])
 
-  const loadMorePosts = () => {
+  const loadMorePosts =  useCallback(() => {
+    clearScrollIndex()
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
+    // eslint-disable-next-line
+  }, [last])
+
+  const clearIndexOnScroll = () => {
+    clearScrollIndex()
   }
 
   return (
     <React.Fragment>
       <CreateBuzzForm />
-      <InfiniteScroll
-        dataLength={items.length || 0}
-        next={loadMorePosts}
-        hasMore={true}
-      >
-        {items.map((item) => (
-          <PostList
-            profileRef="home"
-            active_votes={item.active_votes}
-            author={item.author}
-            permlink={item.permlink}
-            created={item.created}
-            body={item.body}
-            upvotes={item.active_votes.length}
-            replyCount={item.children}
-            meta={item.json_metadata}
-            payout={item.payout}
-            profile={item.profile}
-            payoutAt={item.payout_at}
-          />
-        ))}
-      </InfiniteScroll>
-      <PostlistSkeleton loading={loading} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} clearIndex={clearIndexOnScroll} scrollToIndex={index} />
     </React.Fragment>
   )
 })
@@ -117,6 +104,7 @@ const mapStateToProps = (state) => ({
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
   last: state.posts.get('lastHome'),
+  index: state.interfaces.get('scrollIndex'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -138,6 +126,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAppendReply,
     clearContent,
     clearReplies,
+    clearScrollIndex,
   }, dispatch),
 })
 
