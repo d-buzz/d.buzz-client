@@ -40,7 +40,7 @@ export const hashBuffer = (buffer) => {
   return hash.sha256(buffer)
 }
 
-const invokeFilter = (item) => {
+export const invokeFilter = (item) => {
   return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 

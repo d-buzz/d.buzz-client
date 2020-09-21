@@ -93,6 +93,7 @@ import {
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
+  invokeFilter,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 
@@ -209,6 +210,7 @@ function* getHomePostsRequest(payload, meta) {
     let data = yield call(callBridge, method, params, false)
 
     data = [...old, ...data]
+    data = data.filter(item => invokeFilter(item))
     data = data.filter((obj, pos, arr) => {
       return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
     })
