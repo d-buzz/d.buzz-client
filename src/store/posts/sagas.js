@@ -93,6 +93,7 @@ import {
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
+  invokeFilter,
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 
@@ -214,6 +215,9 @@ function* getHomePostsRequest(payload, meta) {
     })
 
     yield put(setHomeLastPost(data[data.length-1]))
+
+    data = data.filter(item => invokeFilter(item))
+
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
     yield put(getHomePostsFailure(error, meta))
