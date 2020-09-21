@@ -25,8 +25,15 @@ const useStyles = createUseStyles(theme => ({
   avatarWrapper: {
     width: '100%',
   },
-  nav: {
+  navTop: {
     borderBottom: theme.border.primary,
+    backgroundColor: theme.background.primary,
+    zIndex: 2,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  navBottom: {
+    borderTop: theme.border.primary,
     backgroundColor: theme.background.primary,
     zIndex: 2,
     overflow: 'hidden',
@@ -153,23 +160,37 @@ const MobileAppFrame = (props) => {
     setOpen(false)
   }
 
+  const NavigationTop = () => {
+    return (
+      <Navbar className={classes.navTop} fixed="top">
+        <Navbar.Brand className={classes.navTitle}>
+          {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+            <IconButton onClick={handleClickBackButton} size="small">
+              <BackArrowIcon />
+            </IconButton>
+          )}
+          {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+        </Navbar.Brand>
+        {is_authenticated &&
+        (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
+      </Navbar>
+    )
+  }
+
+  const NavigationBottom = () => {
+    return (
+      <Navbar className={classes.navBottom} fixed="bottom">
+        <div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>
+      </Navbar>
+    )
+  }
+
   return (
     <React.Fragment>
       <div className={classes.main}>
         {!config.DISABLE_MOBILE && (
           <React.Fragment>
-            <Navbar className={classes.nav} fixed="top">
-              <Navbar.Brand className={classes.navTitle}>
-                {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                  <IconButton onClick={handleClickBackButton} size="small">
-                    <BackArrowIcon />
-                  </IconButton>
-                )}
-                {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
-              </Navbar.Brand>
-              {is_authenticated &&
-              (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
-            </Navbar>
+            <NavigationTop />
             <React.Fragment>
               <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
                 <BuzzIcon />
@@ -178,6 +199,7 @@ const MobileAppFrame = (props) => {
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>
+            <NavigationBottom />
             <BuzzFormModal show={open}  onHide={handleCloseModal} />
           </React.Fragment>
         )}
