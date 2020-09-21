@@ -8,6 +8,9 @@ import {
   WindowScroller,
 } from 'react-virtualized'
 import { PostList, PostlistSkeleton } from 'components'
+import { clearScrollIndex } from 'store/interface/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 
 class InfiniteList extends PureComponent {
@@ -19,38 +22,24 @@ class InfiniteList extends PureComponent {
     })
   }
 
-  componentDidMount() {
-    // this.cellMeasurerCache.clearAll()
-    // if (this.props.scrollToIndex < 0) {
-    //   return
-    // }
-
-    // const initial_top = this.listRef.getOffsetForRow({
-    //   alignment: 'start',
-    //   index: this.props.scrollToIndex,
-    // })
-
-    // console.log({ initial_top })
-
-    // window.scrollTo(0, initial_top-100)
-    // this.listRef.scrollToRow(this.props.scrollToIndex)
-  }
-
-
   render() {
     const {
       onScroll,
       items,
       loading,
       unguardedLinks,
+      clearScrollIndex,
       scrollToIndex,
-      clearIndex,
     } = this.props
 
-    console.log({ scrollToIndex })
+    const clearOutlineStyle = { outline: 'none' }
 
     const isRowLoaded = ({ index }) => {
       return !!items[index]
+    }
+
+    const clearScrollPosition = () => {
+      clearScrollIndex()
     }
 
     const rowRenderer = ({ index, parent, key, style }) => {
@@ -94,7 +83,7 @@ class InfiniteList extends PureComponent {
           threshold={2}
         >
           {({ onRowsRendered }) => (
-            <WindowScroller onScroll={clearIndex}>
+            <WindowScroller onScroll={clearScrollPosition}>
               {({height, isScrolling, registerChild, onChildScroll, scrollTop}) => (
                 <AutoSizer disableHeight>
                   {({ width }) => {
@@ -118,7 +107,7 @@ class InfiniteList extends PureComponent {
                         scrollToIndex={scrollToIndex}
                         onScroll={onChildScroll}
                         scrollTop={scrollTop}
-                        style={{ outline: 'none' }}
+                        style={clearOutlineStyle}
                       />
                     )
                   }}
@@ -133,4 +122,14 @@ class InfiniteList extends PureComponent {
   }
 }
 
-export default InfiniteList
+const mapStateToProps = (state) => ({
+  scrollToIndex: state.interfaces.get('scrollIndex'),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    clearScrollIndex,
+  }, dispatch),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(InfiniteList)

@@ -35,6 +35,7 @@ import { anchorTop, getProfileMetaData } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
+import { clearScrollIndex } from 'store/interface/actions'
 import queryString from 'query-string'
 import { ProfileSkeleton } from 'components'
 
@@ -149,6 +150,7 @@ const Profile = (props) => {
     recentFollows,
     recentUnfollows,
     broadcastNotification,
+    clearScrollIndex,
   } = props
 
   const history = useHistory()
@@ -221,6 +223,7 @@ const Profile = (props) => {
 
     if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
       anchorTop()
+      clearScrollIndex()
       clearProfile()
       clearAccountPosts()
       clearAccountReplies()
@@ -419,6 +422,7 @@ const mapDispatchToProps = (dispatch) => ({
     followRequest,
     unfollowRequest,
     broadcastNotification,
+    clearScrollIndex,
   }, dispatch),
 })
 
