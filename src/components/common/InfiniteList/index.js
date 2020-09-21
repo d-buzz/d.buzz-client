@@ -28,8 +28,8 @@ class InfiniteList extends PureComponent {
       items,
       loading,
       unguardedLinks,
-      scrollToIndex,
       clearScrollIndex,
+      scrollToIndex,
     } = this.props
 
     const clearOutlineStyle = { outline: 'none' }
@@ -122,10 +122,14 @@ class InfiniteList extends PureComponent {
   }
 }
 
+const mapStateToProps = (state) => ({
+  scrollToIndex: state.interfaces.get('scrollIndex'),
+})
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearScrollIndex,
   }, dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(InfiniteList)
+export default connect(mapStateToProps, mapDispatchToProps)(InfiniteList)

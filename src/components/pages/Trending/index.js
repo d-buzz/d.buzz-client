@@ -22,6 +22,7 @@ import {
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
 import { InfiniteList } from 'components'
+import { clearScrollIndex } from 'store/interface/actions'
 
 const Trending = (props) => {
   const {
@@ -44,12 +45,14 @@ const Trending = (props) => {
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
+    clearScrollIndex,
   } = props
 
   useEffect(() => {
     setPageFrom('trending')
     if(!isVisited) {
       anchorTop()
+      clearScrollIndex()
       clearHomePosts()
       clearLatestPosts()
       getTrendingPostsRequest()
@@ -103,6 +106,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
+    clearScrollIndex,
   },dispatch),
 })
 

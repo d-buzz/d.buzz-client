@@ -52,7 +52,6 @@ const Feeds = React.memo((props) => {
     clearContent,
     clearReplies,
     clearScrollIndex,
-    index,
   } = props
 
   useEffect(() => {
@@ -81,7 +80,6 @@ const Feeds = React.memo((props) => {
   }, [])
 
   const loadMorePosts =  useCallback(() => {
-    clearScrollIndex()
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -90,7 +88,7 @@ const Feeds = React.memo((props) => {
   return (
     <React.Fragment>
       <CreateBuzzForm />
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} scrollToIndex={index} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
 })
@@ -100,7 +98,6 @@ const mapStateToProps = (state) => ({
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
   last: state.posts.get('lastHome'),
-  index: state.interfaces.get('scrollIndex'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
