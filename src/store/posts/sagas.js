@@ -210,12 +210,14 @@ function* getHomePostsRequest(payload, meta) {
     let data = yield call(callBridge, method, params, false)
 
     data = [...old, ...data]
-    data = data.filter(item => invokeFilter(item))
     data = data.filter((obj, pos, arr) => {
       return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
     })
 
     yield put(setHomeLastPost(data[data.length-1]))
+
+    data = data.filter(item => invokeFilter(item))
+
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
     yield put(getHomePostsFailure(error, meta))
