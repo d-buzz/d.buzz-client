@@ -17,7 +17,9 @@ const useStyles = createUseStyles(theme => ({
   tabs: {
     textTransform: 'none !important',
     '&:hover': {
-      backgroundColor: '#ffebee',
+      backgroundColor: {
+        ...theme.textArea,
+      },
       '& span': {
         color: '#e53935',
       },
