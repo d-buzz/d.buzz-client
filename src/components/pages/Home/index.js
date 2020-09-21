@@ -26,6 +26,7 @@ import {
 } from 'store/profile/actions'
 import { clearScrollIndex } from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
+import { isMobile } from 'react-device-detect'
 
 
 const Feeds = React.memo((props) => {
@@ -87,7 +88,7 @@ const Feeds = React.memo((props) => {
 
   return (
     <React.Fragment>
-      <CreateBuzzForm />
+      {!isMobile && (<CreateBuzzForm />)}
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )

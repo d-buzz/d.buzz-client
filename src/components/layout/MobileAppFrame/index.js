@@ -10,13 +10,14 @@ import {
   BrandIcon,
   BrandIconDark,
   ContainedButton,
+  Avatar,
 } from 'components/elements'
 import config from 'config'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   main: {
-    minHeight: '100vh',
+    marginTop: 55,
   },
   nav: {
     borderBottom: theme.border.primary,
@@ -64,7 +65,13 @@ const useStyles = createUseStyles(theme => ({
 
 const MobileAppFrame = (props) => {
 
-  const { pathname, route, theme } = props
+  const {
+    pathname,
+    route,
+    theme,
+    user,
+  } = props
+  const { is_authenticated, username } = user
   const classes = useStyles()
 
   const history = useHistory()
@@ -117,7 +124,7 @@ const MobileAppFrame = (props) => {
       <div className={classes.main}>
         {!config.DISABLE_MOBILE && (
           <React.Fragment>
-            <Navbar className={classes.nav}>
+            <Navbar className={classes.nav} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                   <IconButton onClick={handleClickBackButton} size="small">
@@ -126,9 +133,12 @@ const MobileAppFrame = (props) => {
                 )}
                 {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
               </Navbar.Brand>
+              {is_authenticated && (<div style={{ width: '100%' }}><Avatar style={{ float: 'right' }} height={35} author={username} /></div>)}
             </Navbar>
             <React.Fragment>
-              {renderRoutes(route.routes)}
+              <div className={classes.main}>
+                {renderRoutes(route.routes)}
+              </div>
             </React.Fragment>
           </React.Fragment>
         )}
@@ -173,6 +183,7 @@ const MobileAppFrame = (props) => {
 }
 
 const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
   theme: state.settings.get('theme'),
 })
 
