@@ -1,5 +1,4 @@
 import React from 'react'
-import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
@@ -70,9 +69,6 @@ const ListLink = (props) => {
             <img alt="preview-img" src={imagePath} />
             <label className={classes.title}>{title}</label>
             <label className={classes.label}>{label}</label>
-            <div className={classes.followButton}>
-              <ContainedButton label="follow" fontSize={14} transparent={true} target="_blank" href={href}/>
-            </div>
           </div>
         </a>
       </div>
