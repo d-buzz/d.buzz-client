@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import { useHistory } from 'react-router-dom'
-import { BackArrowIcon } from 'components/elements'
 import { renderRoutes } from 'react-router-config'
 import IconButton from '@material-ui/core/IconButton'
 import { useLastLocation } from 'react-router-last-location'
@@ -12,7 +11,9 @@ import {
   ContainedButton,
   Avatar,
   BuzzIcon,
+  BackArrowIcon,
 } from 'components/elements'
+import { BuzzFormModal } from 'components'
 import config from 'config'
 import Fab from '@material-ui/core/Fab'
 import { createUseStyles } from 'react-jss'
@@ -88,6 +89,8 @@ const MobileAppFrame = (props) => {
   const history = useHistory()
   const lastLocation = useLastLocation()
 
+  const [open, setOpen] = useState(false)
+
   let title = 'Home'
 
   if(pathname.match(/(\/c\/)/)) {
@@ -142,6 +145,14 @@ const MobileAppFrame = (props) => {
 
   const avatarStyle = { float: 'right' }
 
+  const handleOpenBuzzModal = () => {
+    setOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setOpen(false)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.main}>
@@ -159,13 +170,14 @@ const MobileAppFrame = (props) => {
               {is_authenticated && (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
             </Navbar>
             <React.Fragment>
-              <Fab size="medium" color="secondary" aria-label="add" style={floatStyle}>
+              <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
                 <BuzzIcon />
               </Fab>
               <div className={classes.main}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>
+            <BuzzFormModal show={open}  onHide={handleCloseModal} />
           </React.Fragment>
         )}
         {config.DISABLE_MOBILE && (
