@@ -3,17 +3,27 @@ import Navbar from 'react-bootstrap/Navbar'
 import { useHistory } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import IconButton from '@material-ui/core/IconButton'
+import Nav from 'react-bootstrap/Nav'
+import Badge from '@material-ui/core/Badge'
+import classNames from 'classnames'
 import { useLastLocation } from 'react-router-last-location'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import {
+  BackArrowIcon,
+  HomeIcon,
   BrandIcon,
   BrandIconDark,
+  TrendingIcon,
+  LatestIcon,
+  NotificationsIcon,
+  ProfileIcon,
   ContainedButton,
   Avatar,
   BuzzIcon,
-  BackArrowIcon,
 } from 'components/elements'
 import { BuzzFormModal } from 'components'
+import { useLocation } from 'react-router-dom'
 import config from 'config'
 import Fab from '@material-ui/core/Fab'
 import { createUseStyles } from 'react-jss'
@@ -24,6 +34,28 @@ const useStyles = createUseStyles(theme => ({
   },
   avatarWrapper: {
     width: '100%',
+  },
+  minifyItems: {
+    textAlign: 'left',
+    width: 60,
+    marginBottom: 5,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
+    },
+  },
+  activeItem: {
+    borderRadius: '50px 50px',
+    cursor: 'pointer',
+    '& a': {
+      color: '#e53935',
+    },
+    '& svg': {
+      '& path': {
+        stroke: '#e53935',
+      },
+    },
   },
   navTop: {
     borderBottom: theme.border.primary,
@@ -152,6 +184,40 @@ const MobileAppFrame = (props) => {
 
   const avatarStyle = { float: 'right' }
 
+  const NavLinks = [
+    {
+      name: 'Home',
+      path: '/',
+      icon: <HomeIcon />,
+    },
+    {
+      name: 'Trending',
+      path: '/trending',
+      icon: <TrendingIcon />,
+    },
+    {
+      name: 'Latest',
+      path: '/latest',
+      icon: <LatestIcon  />,
+    },
+    {
+      name: 'Notifications',
+      path: `/notifications`,
+      icon: <Badge badgeContent={7} color="secondary"><NotificationsIcon /></Badge>,
+    },
+    {
+      name: 'Profile',
+      path: `/@${username}/t/buzz?ref=nav`,
+      icon: <ProfileIcon />,
+    },
+  ]
+
+  const location = useLocation()
+
+  const isActivePath = (path, current) => {
+    return path === current
+  }
+
   const handleOpenBuzzModal = () => {
     setOpen(true)
   }
@@ -180,8 +246,28 @@ const MobileAppFrame = (props) => {
   const NavigationBottom = () => {
     return (
       <Navbar className={classes.navBottom} fixed="bottom">
-        <div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>
+        <div style={{ width: '100%' }}>
+          <Nav className="justify-content-center">
+            {NavLinks.map((item) => (
+              <NavLinkWrapper item={item} active={location.pathname} />
+            ))}
+          </Nav>
+        </div>
       </Navbar>
+    )
+  }
+
+  const NavLinkWrapper = ({ item, active }) => {
+    return (
+      <div className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '' )}>
+        <Link to={item.path}>
+          <IconButton
+            size="medium"
+          >
+            {item.icon}
+          </IconButton>
+        </Link>
+      </div>
     )
   }
 
