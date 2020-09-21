@@ -11,18 +11,21 @@ import {
   BrandIconDark,
   ContainedButton,
   Avatar,
+  BuzzIcon,
 } from 'components/elements'
 import config from 'config'
+import Fab from '@material-ui/core/Fab'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 55,
   },
+  avatarWrapper: {
+    width: '100%',
+  },
   nav: {
     borderBottom: theme.border.primary,
-    borderLeft: theme.border.primary,
-    borderRight: theme.border.primary,
     backgroundColor: theme.background.primary,
     zIndex: 2,
     overflow: 'hidden',
@@ -60,6 +63,14 @@ const useStyles = createUseStyles(theme => ({
   },
   notes: {
     ...theme.font,
+  },
+  fab: {
+    margin: 0,
+    top: 'auto',
+    left: 20,
+    bottom: 20,
+    right: 'auto',
+    position: 'absolute',
   },
 }))
 
@@ -119,6 +130,18 @@ const MobileAppFrame = (props) => {
     window.open("https://d.buzz/", "_self")
   }
 
+  const floatStyle = {margin: 0,
+    top: 'auto',
+    right: 20,
+    bottom: 100,
+    left: 'auto',
+    position: 'fixed',
+    zIndex: 500,
+    backgroundColor: '#e61c34',
+  }
+
+  const avatarStyle = { float: 'right' }
+
   return (
     <React.Fragment>
       <div className={classes.main}>
@@ -133,9 +156,12 @@ const MobileAppFrame = (props) => {
                 )}
                 {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
               </Navbar.Brand>
-              {is_authenticated && (<div style={{ width: '100%' }}><Avatar style={{ float: 'right' }} height={35} author={username} /></div>)}
+              {is_authenticated && (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
             </Navbar>
             <React.Fragment>
+              <Fab size="medium" color="secondary" aria-label="add" style={floatStyle}>
+                <BuzzIcon />
+              </Fab>
               <div className={classes.main}>
                 {renderRoutes(route.routes)}
               </div>
