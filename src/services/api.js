@@ -55,7 +55,15 @@ export const callBridge = async(method, params, appendParams = true) => {
       if (err) {
         reject(err)
       }else {
-        const result = data.filter((item) => invokeFilter(item))
+        let lastResult = []
+
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
+        }
+
+        let result = data.filter((item) => invokeFilter(item))
+
+        result = [...result, ...lastResult]
 
         if(result.length !== 0) {
           const getProfiledata = mapFetchProfile(result, false)
