@@ -167,7 +167,8 @@ const MobileAppFrame = (props) => {
                 )}
                 {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
               </Navbar.Brand>
-              {is_authenticated && (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
+              {is_authenticated &&
+              (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
             </Navbar>
             <React.Fragment>
               <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
