@@ -6,6 +6,7 @@ import { pending } from 'redux-saga-thunk'
 import {
   ListGroup,
   ListAction,
+  ListLink,
   Spinner,
 } from 'components/elements'
 import { SearchField } from 'components'
@@ -69,6 +70,26 @@ const SideBarRight = (props) => {
     return link
   }
 
+  const SocialMediaLinks = [
+    {
+      name: 'Discord',
+      label: 'dbuzzAPP',
+      imagePath: `${window.location.origin}/discord.png`,
+      url: 'https://discord.gg/kCZGPs7',
+    },
+    // {
+    //   name: 'Facebook',
+    //   label: 'dbuzzAPP',
+    //   imagePath: `${window.location.origin}/facebook.png`,
+    //   url: 'https://www.facebook.com/dbuzzapp/',
+    // },
+    // {
+    //   name: 'Twitter',
+    //   label: 'dbuzzAPP',
+    //   imagePath: `${window.location.origin}/twitter.png`,
+    //   url: 'https://twitter.com/dbuzzAPP',
+    // },
+  ]
 
   return (
     <React.Fragment>
@@ -79,6 +100,13 @@ const SideBarRight = (props) => {
             <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
           ))}
           <Spinner size={50} loading={loading} />
+        </ListGroup>
+      </div>
+      <div style={{ paddingTop: 15 }}>
+        <ListGroup label="Catch us on">
+          {SocialMediaLinks.map((item) => (
+            <ListLink key={`${item.name}-links`} title={item.name} label={`@${item.label}`} imagePath={item.imagePath} href={item.url} />
+          ))}
         </ListGroup>
       </div>
       <div className={classes.footer}>
