@@ -42,6 +42,11 @@ class InfiniteList extends PureComponent {
       clearScrollIndex()
     }
 
+    const recomputeRowIndex = (index) => {
+      this.cellMeasurerCache.clearAll()
+      this.listRef.recomputeRowHeights(index)
+    }
+
     const rowRenderer = ({ index, parent, key, style }) => {
       return (
         <CellMeasurer
@@ -67,6 +72,7 @@ class InfiniteList extends PureComponent {
               profile={items[index].profile}
               payoutAt={items[index].payout_at}
               scrollIndex={index}
+              recomputeRowIndex={recomputeRowIndex}
             />
           </div>
         </CellMeasurer>

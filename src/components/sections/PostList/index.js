@@ -173,6 +173,7 @@ const PostList = React.memo((props) => {
     openUserDialog,
     saveScrollIndex,
     scrollIndex,
+    recomputeRowIndex = () => {},
   } = props
 
   const { width } = useWindowDimensions()
@@ -310,7 +311,9 @@ const PostList = React.memo((props) => {
                     voteCount={upvotes}
                     replyCount={replyCount}
                     payout={`${payout}`}
+                    recomputeRowIndex={recomputeRowIndex}
                     payoutAt={payoutAt}
+                    scrollIndex={scrollIndex}
                   />
                 </div>
               </div>
