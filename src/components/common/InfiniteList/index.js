@@ -43,7 +43,7 @@ class InfiniteList extends PureComponent {
     }
 
     const recomputeRowIndex = (index) => {
-      this.cellMeasurerCache.clearAll()
+      this.cellMeasurerCache.clear(index, 0)
       this.listRef.recomputeRowHeights(index)
     }
 
