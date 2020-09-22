@@ -40,7 +40,7 @@ export const hashBuffer = (buffer) => {
   return hash.sha256(buffer)
 }
 
-const invokeFilter = (item) => {
+export const invokeFilter = (item) => {
   return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
@@ -55,7 +55,15 @@ export const callBridge = async(method, params, appendParams = true) => {
       if (err) {
         reject(err)
       }else {
-        const result = data.filter((item) => invokeFilter(item))
+        let lastResult = []
+
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
+        }
+
+        let result = data.filter((item) => invokeFilter(item))
+
+        result = [...result, ...lastResult]
 
         if(result.length !== 0) {
           const getProfiledata = mapFetchProfile(result, false)
