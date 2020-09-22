@@ -32,7 +32,7 @@ const useStyle = createUseStyles(theme => ({
       color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.right.list.hover,
     },
     cursor: 'pointer',
   },
@@ -55,6 +55,7 @@ const useStyle = createUseStyles(theme => ({
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
+    ...theme.font,
   },
   username: {
     color: '#657786',
