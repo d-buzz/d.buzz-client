@@ -177,6 +177,8 @@ const PostActions = (props) => {
     openReplyModal,
     broadcastNotification,
     disableUpvote = false,
+    scrollIndex,
+    recomputeRowIndex,
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -196,10 +198,12 @@ const PostActions = (props) => {
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
+    recomputeRowIndex(scrollIndex)
   }
 
   const handleClickHideSlider = () => {
     setShowSlider(false)
+    recomputeRowIndex(scrollIndex)
   }
 
   const handleChange = (e, value) => {
