@@ -171,6 +171,10 @@ function* getTrendingPostsRequest(payload, meta) {
 
     data = [...old, ...data]
 
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
+
     yield put(setTrendingLastPost(data[data.length-1]))
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
@@ -235,6 +239,10 @@ function* getLatestPostsRequest(payload, meta) {
     let data = yield call(callBridge, method, params)
 
     data = [...old, ...data]
+
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
 
     yield put(setLatestLastPost(data[data.length-1]))
     yield put(getLatestPostsSuccess(data, meta))
