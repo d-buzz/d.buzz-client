@@ -11,6 +11,7 @@ import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 
 const addHover = (theme) => {
@@ -142,6 +143,7 @@ const Notification = (props) => {
   const classes = useStyle()
 
   useEffect(() => {
+    anchorTop()
     setPageFrom(null)
     // eslint-disable-next-line
   }, [])
