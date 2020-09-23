@@ -6,7 +6,7 @@ const config = {
   API_KEY: 'ixc0LdVDyuWarUhdt9ix3w==',
   API_SECRET: 'D4e7pwZphykKWsG0ElancXSzDmDEqImeC9yenZMMfVo=',
   BUCKET: 'nathansenn-team-bucket.storage.fleek.co',
-  DISABLE_MOBILE: true,
+  DISABLE_MOBILE: false,
 }
 
 export default config

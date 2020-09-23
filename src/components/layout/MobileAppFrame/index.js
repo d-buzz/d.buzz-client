@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import { useHistory } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
@@ -9,6 +9,7 @@ import classNames from 'classnames'
 import { useLastLocation } from 'react-router-last-location'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { pollNotifRequest } from 'store/polling/actions'
 import {
   BackArrowIcon,
   HomeIcon,
@@ -27,6 +28,7 @@ import { useLocation } from 'react-router-dom'
 import config from 'config'
 import Fab from '@material-ui/core/Fab'
 import { createUseStyles } from 'react-jss'
+import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -121,6 +123,7 @@ const MobileAppFrame = (props) => {
     route,
     theme,
     user,
+    pollNotifRequest,
   } = props
   const { is_authenticated, username } = user
   const classes = useStyles()
@@ -271,6 +274,13 @@ const MobileAppFrame = (props) => {
     )
   }
 
+  useEffect(() => {
+    if(is_authenticated) {
+      pollNotifRequest()
+    }
+  // eslint-disable-next-line
+  }, [])
+
   return (
     <React.Fragment>
       <div className={classes.main}>
@@ -334,4 +344,10 @@ const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
 })
 
-export default connect(mapStateToProps)(MobileAppFrame)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    pollNotifRequest,
+  }, dispatch),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MobileAppFrame)
