@@ -212,6 +212,7 @@ const PostActions = (props) => {
   }
 
   const handleClickUpvote = () => {
+    recomputeRowIndex(scrollIndex)
     setShowSlider(false)
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
