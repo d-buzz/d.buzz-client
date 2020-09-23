@@ -4,10 +4,10 @@ import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
+import { isMobile } from 'react-device-detect'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
-    maxWidth: 300,
     wordBreak: 'break-word',
     ...theme.notification,
   },
@@ -23,7 +23,13 @@ const NotificationBox = (props) => {
   const [severity, setSeverity] = useState('success')
   const { notificationBoxData } = props
 
-  const snackBarStyle = { maxWidth: 300 }
+  let snackBarStyle = { maxWidth: 300 }
+  let anchorOrigin = { vertical: 'bottom', horizontal: 'right' }
+
+  if(isMobile) {
+    anchorOrigin = { vertical: 'top', horizontal: 'right' }
+    snackBarStyle = {}
+  }
 
   useEffect(() => {
     if(notificationBoxData.hasOwnProperty('open') && typeof notificationBoxData === 'object') {
@@ -46,7 +52,7 @@ const NotificationBox = (props) => {
 
   return (
     <Snackbar
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      anchorOrigin={anchorOrigin}
       style={snackBarStyle}
       open={open}
       autoHideDuration={6000}
