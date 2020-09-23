@@ -128,6 +128,7 @@ const MobileAppFrame = (props) => {
     theme,
     user,
     pollNotifRequest,
+    count = 0,
   } = props
   const { is_authenticated, username } = user
   const classes = useStyles()
@@ -210,7 +211,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: <Badge badgeContent={7} color="secondary"><NotificationsIcon /></Badge>,
+      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
       name: 'Profile',
@@ -347,6 +348,7 @@ const MobileAppFrame = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   theme: state.settings.get('theme'),
+  count: state.polling.get('count'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
