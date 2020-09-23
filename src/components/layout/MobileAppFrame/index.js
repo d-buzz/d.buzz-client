@@ -114,6 +114,10 @@ const useStyles = createUseStyles(theme => ({
     right: 'auto',
     position: 'absolute',
   },
+  separator: {
+    height: 200,
+    widt: '100%',
+  },
 }))
 
 const MobileAppFrame = (props) => {
@@ -295,6 +299,7 @@ const MobileAppFrame = (props) => {
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>
+            <div className={classes.separator}></div>
             <NavigationBottom />
             <BuzzFormModal show={open}  onHide={handleCloseModal} />
           </React.Fragment>
