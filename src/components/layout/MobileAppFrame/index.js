@@ -29,9 +29,12 @@ import config from 'config'
 import Fab from '@material-ui/core/Fab'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { clearNotificationsRequest } from 'store/profile/actions'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { broadcastNotification } from 'store/interface/actions'
 import { signoutUserRequest } from 'store/auth/actions'
+import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -62,6 +65,10 @@ const useStyles = createUseStyles(theme => ({
         stroke: '#e53935',
       },
     },
+  },
+  walletButton: {
+    marginTop: 5,
+    float: 'right',
   },
   navTop: {
     borderBottom: theme.border.primary,
@@ -105,10 +112,6 @@ const useStyles = createUseStyles(theme => ({
     padding: 0,
     margin: 0,
   },
-  walletButton: {
-    marginTop: 5,
-    float: 'right',
-  },
   notes: {
     ...theme.font,
   },
@@ -136,6 +139,9 @@ const MobileAppFrame = (props) => {
     pollNotifRequest,
     count = 0,
     signoutUserRequest,
+    loading,
+    broadcastNotification,
+    clearNotificationsRequest,
   } = props
   const { is_authenticated, username } = user
   const avatarRef = React.useRef()
@@ -251,6 +257,17 @@ const MobileAppFrame = (props) => {
     setOpenAvatarMenu(false)
   }
 
+  const handleClearNotification = () => {
+    clearNotificationsRequest()
+      .then(result => {
+        if(result.success) {
+          broadcastNotification('success', 'Successfully marked all your notifications as read')
+        } else {
+          broadcastNotification('error', 'Failed marking all notifications as read')
+        }
+      })
+  }
+
   const NavigationTop = () => {
     return (
       <Navbar className={classes.navTop} fixed="top">
@@ -261,6 +278,18 @@ const MobileAppFrame = (props) => {
             </IconButton>
           )}
           {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+          {title === 'Notifications' && count.unread !== 0 && (
+            <ContainedButton
+              fontSize={12}
+              style={{ marginTop: -3 }}
+              transparent={true}
+              label="Unread"
+              loading={loading}
+              disabled={loading}
+              className={classes.walletButton}
+              onClick={handleClearNotification}
+            />
+          )}
         </Navbar.Brand>
         {is_authenticated &&
         (<div className={classes.avatarWrapper}><span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span></div>)}
@@ -387,12 +416,15 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   theme: state.settings.get('theme'),
   count: state.polling.get('count'),
+  loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     pollNotifRequest,
     signoutUserRequest,
+    broadcastNotification,
+    clearNotificationsRequest,
   }, dispatch),
 })
 
