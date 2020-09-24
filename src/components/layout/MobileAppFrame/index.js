@@ -31,10 +31,15 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { signoutUserRequest } from 'store/auth/actions'
 
 const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 55,
+  },
+  avatarMenuWrapper: {
+    backgroundColor: `${theme.background.primary} !important`,
+    ...theme.font,
   },
   minifyItems: {
     textAlign: 'left',
@@ -130,6 +135,7 @@ const MobileAppFrame = (props) => {
     user,
     pollNotifRequest,
     count = 0,
+    signoutUserRequest,
   } = props
   const { is_authenticated, username } = user
   const avatarRef = React.useRef()
@@ -297,11 +303,17 @@ const MobileAppFrame = (props) => {
         keepMounted
         open={openAvatarMenu}
         onClose={handleCloseAvatar}
+        classes={{ root: classes.avatarMenuWrapper }}
       >
-        <MenuItem onClick={handleCloseAvatar}>Profile</MenuItem>
-        <MenuItem onClick={handleCloseAvatar}>Logout</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
+        <MenuItem onClick={handleClickSignout}>Logout</MenuItem>
       </Menu>
     )
+  }
+
+  const handleClickSignout = () => {
+    handleCloseAvatar()
+    signoutUserRequest()
   }
 
   useEffect(() => {
@@ -380,6 +392,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     pollNotifRequest,
+    signoutUserRequest,
   }, dispatch),
 })
 
