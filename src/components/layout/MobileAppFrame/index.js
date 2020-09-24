@@ -339,7 +339,7 @@ const MobileAppFrame = (props) => {
               </div>
             </React.Fragment>
             <div className={classes.separator}></div>
-            <NavigationBottom />
+            {is_authenticated && (<NavigationBottom />)}
             <BuzzFormModal show={open}  onHide={handleCloseModal} />
           </React.Fragment>
         )}
