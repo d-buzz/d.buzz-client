@@ -359,9 +359,11 @@ const MobileAppFrame = (props) => {
           <React.Fragment>
             <NavigationTop />
             <React.Fragment>
-              <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
-                <BuzzIcon />
-              </Fab>
+              {is_authenticated && (
+                <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
+                  <BuzzIcon />
+                </Fab>
+              )}
               <AvatarMenu />
               <div className={classes.main}>
                 {renderRoutes(route.routes)}
