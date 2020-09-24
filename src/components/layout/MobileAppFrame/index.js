@@ -27,15 +27,14 @@ import { BuzzFormModal } from 'components'
 import { useLocation } from 'react-router-dom'
 import config from 'config'
 import Fab from '@material-ui/core/Fab'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 55,
-  },
-  avatarWrapper: {
-    width: '100%',
   },
   minifyItems: {
     textAlign: 'left',
@@ -65,6 +64,7 @@ const useStyles = createUseStyles(theme => ({
     zIndex: 2,
     overflow: 'hidden',
     width: '100%',
+    display: 'flex',
   },
   navBottom: {
     borderTop: theme.border.primary,
@@ -78,6 +78,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'inline-block',
     verticalAlign: 'top',
     ...theme.navbar.icon,
+    flexGrow: 1,
   },
   trendingWrapper: {
     width: '100%',
@@ -131,6 +132,9 @@ const MobileAppFrame = (props) => {
     count = 0,
   } = props
   const { is_authenticated, username } = user
+  const [menuRef, setMenuRef] = useState(null)
+  const avatarRef = React.useRef()
+  const [openAvatarMenu, setOpenAvatarMenu] = useState(false)
   const classes = useStyles()
 
   const history = useHistory()
@@ -190,7 +194,7 @@ const MobileAppFrame = (props) => {
     backgroundColor: '#e61c34',
   }
 
-  const avatarStyle = { float: 'right' }
+  // const avatarStyle = { float: 'right' }
 
   const NavLinks = [
     {
@@ -234,6 +238,17 @@ const MobileAppFrame = (props) => {
     setOpen(false)
   }
 
+  const handleClickAvatar = () => {
+    // setMenuRef(e.currentTarget)
+    // console.log(e.currentTarget)
+    setOpenAvatarMenu(true)
+  }
+
+  const handleCloseAvatar = () => {
+    setMenuRef(null)
+    setOpenAvatarMenu(false)
+  }
+
   const NavigationTop = () => {
     return (
       <Navbar className={classes.navTop} fixed="top">
@@ -246,7 +261,7 @@ const MobileAppFrame = (props) => {
           {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
         </Navbar.Brand>
         {is_authenticated &&
-        (<div className={classes.avatarWrapper}><Avatar style={avatarStyle} height={35} author={username} /></div>)}
+        (<div className={classes.avatarWrapper}><span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span></div>)}
       </Navbar>
     )
   }
@@ -279,6 +294,20 @@ const MobileAppFrame = (props) => {
     )
   }
 
+  const AvatarMenu = () => {
+    return (
+      <Menu
+        anchorEl={() => avatarRef.current}
+        keepMounted
+        open={openAvatarMenu}
+        onClose={handleCloseAvatar}
+      >
+        <MenuItem onClick={handleCloseAvatar}>Profile</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>Logout</MenuItem>
+      </Menu>
+    )
+  }
+
   useEffect(() => {
     if(is_authenticated) {
       pollNotifRequest()
@@ -296,6 +325,7 @@ const MobileAppFrame = (props) => {
               <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
                 <BuzzIcon />
               </Fab>
+              <AvatarMenu />
               <div className={classes.main}>
                 {renderRoutes(route.routes)}
               </div>
