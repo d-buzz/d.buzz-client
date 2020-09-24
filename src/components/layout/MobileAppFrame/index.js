@@ -132,7 +132,6 @@ const MobileAppFrame = (props) => {
     count = 0,
   } = props
   const { is_authenticated, username } = user
-  const [menuRef, setMenuRef] = useState(null)
   const avatarRef = React.useRef()
   const [openAvatarMenu, setOpenAvatarMenu] = useState(false)
   const classes = useStyles()
@@ -239,13 +238,10 @@ const MobileAppFrame = (props) => {
   }
 
   const handleClickAvatar = () => {
-    // setMenuRef(e.currentTarget)
-    // console.log(e.currentTarget)
     setOpenAvatarMenu(true)
   }
 
   const handleCloseAvatar = () => {
-    setMenuRef(null)
     setOpenAvatarMenu(false)
   }
 
