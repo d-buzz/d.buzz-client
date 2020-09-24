@@ -15,6 +15,7 @@ import classNames from 'classnames'
 import { hasCompatibleKeychain } from 'services/helper'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import Button from '@material-ui/core/Button'
+import { isMobile } from 'react-device-detect'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
@@ -101,7 +102,7 @@ const LoginModal = (props) => {
       if(checked) {
         const isCompatible = hasCompatibleKeychain() ? true : false
         setHasInstalledKeychain(isCompatible)
-        setPassword('') 
+        setPassword('')
       }
       setUseKeychain(checked)
     }
@@ -118,9 +119,9 @@ const LoginModal = (props) => {
         }
       })
   }
-  
+
   const isDisabled = () => {
-    return ((!useKeychain && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined)) 
+    return ((!useKeychain && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined))
       || (useKeychain && (`${username}`.trim() === '' || username === undefined))
     )
   }
@@ -184,7 +185,7 @@ const LoginModal = (props) => {
               </span>
             </React.Fragment>
           )}
-          {!hasInstalledKeychain && (
+          {!hasInstalledKeychain && !isMobile && (
             <React.Fragment>
               <span >
                 <FormCheck
@@ -201,23 +202,23 @@ const LoginModal = (props) => {
               {useKeychain && (
                 <React.Fragment>
                   <center><h6 className={classes.label}>Install Hive Keychain</h6>
-                    <Button  
+                    <Button
                       classes={{root: classes.browserExtension}}
                       style={{borderRadius: 50}}
-                      variant="outlined" 
-                      startIcon={<FaChrome />}  
-                      href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en" 
+                      variant="outlined"
+                      startIcon={<FaChrome />}
+                      href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en"
                       rel="noopener noreferrer"
                       target="_blank"
                     >
                       Chrome
                     </Button>
-                    <Button 
+                    <Button
                       classes={{root: classes.browserExtension}}
-                      variant="outlined" 
+                      variant="outlined"
                       style={{borderRadius: 50, marginLeft: 15}}
-                      startIcon={<FaFirefoxBrowser />} 
-                      href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/" 
+                      startIcon={<FaFirefoxBrowser />}
+                      href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/"
                       rel="noopener noreferrer"
                       target="_blank"
                     >
