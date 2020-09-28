@@ -22,8 +22,9 @@ import {
   ContainedButton,
   Avatar,
   BuzzIcon,
+  SunMoonIcon,
 } from 'components/elements'
-import { BuzzFormModal } from 'components'
+import { BuzzFormModal, ThemeModal } from 'components'
 import { useLocation } from 'react-router-dom'
 import config from 'config'
 import Fab from '@material-ui/core/Fab'
@@ -146,6 +147,7 @@ const MobileAppFrame = (props) => {
   const { is_authenticated, username } = user
   const avatarRef = React.useRef()
   const [openAvatarMenu, setOpenAvatarMenu] = useState(false)
+  const [openTheme, setOpenTheme] = useState(false)
   const classes = useStyles()
 
   const history = useHistory()
@@ -154,6 +156,10 @@ const MobileAppFrame = (props) => {
   const [open, setOpen] = useState(false)
 
   let title = 'Home'
+
+  const showThemeModal = () => {
+    setOpenTheme(true)
+  }
 
   if(pathname.match(/(\/c\/)/)) {
     title = 'Buzz'
@@ -233,6 +239,12 @@ const MobileAppFrame = (props) => {
       path: `/@${username}/t/buzz?ref=nav`,
       icon: <ProfileIcon />,
     },
+    {
+      name: 'Display',
+      icon: <SunMoonIcon />,
+      onClick: showThemeModal,
+      type: 'action',
+    },
   ]
 
   const location = useLocation()
@@ -255,6 +267,10 @@ const MobileAppFrame = (props) => {
 
   const handleCloseAvatar = () => {
     setOpenAvatarMenu(false)
+  }
+
+  const onHideTheme = () => {
+    setOpenTheme(false)
   }
 
   const handleClearNotification = () => {
@@ -313,7 +329,7 @@ const MobileAppFrame = (props) => {
 
   const NavLinkWrapper = ({ item, active }) => {
     return (
-      <div className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '' )}>
+      <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '' )}>
         <Link to={item.path}>
           <IconButton
             size="medium"
@@ -410,6 +426,7 @@ const MobileAppFrame = (props) => {
           </React.Fragment>
         )}
       </div>
+      <ThemeModal show={openTheme} onHide={onHideTheme} />
     </React.Fragment>
   )
 }
