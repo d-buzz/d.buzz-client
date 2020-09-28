@@ -21,6 +21,7 @@
     "ipfs-react-router": "^0.2.2",
     "javascript-time-ago": "^2.0.13",
     "markdown-link-extractor": "^1.2.3",
+    "material-ui-popup-state": "^1.6.1",
     "moment": "^2.27.0",
     "oaf-react-router": "^2.1.1",
     "query-string": "^6.13.1",

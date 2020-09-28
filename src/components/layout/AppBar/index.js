@@ -90,7 +90,7 @@ const AppBar = (props) => {
         <Nav className="mr-auto">
           <SearchField disableTips={true} />
         </Nav>
-        <ContainedButton onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
+        <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
         <ContainedButton style={{ marginLeft: 5 }} fontSize={15} label="Sign up" className={classes.button} />
       </Container>
       <LoginModal show={open} onHide={handleClickCloseLoginModal} />

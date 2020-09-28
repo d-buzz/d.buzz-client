@@ -5,6 +5,7 @@ import { getLinkMetaRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createUseStyles } from 'react-jss'
+import { isMobile } from 'react-device-detect'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -116,8 +117,14 @@ const LinkPreview = (props) => {
   const getTitle = () => {
     let title = meta.title
 
-    if(`${title}`.length > 60) {
-      title = `${title.substring(0, 60)}...`
+    let maxLength = 60
+
+    if(isMobile) {
+      maxLength = 35
+    }
+
+    if(`${title}`.length > maxLength) {
+      title = `${title.substring(0, maxLength)}...`
     }
 
     if(title=== null || title === '') {
@@ -130,8 +137,14 @@ const LinkPreview = (props) => {
   const getDescription = () => {
     let description = meta.description
 
-    if(`${description}`.length > 75) {
-      description = `${description.substring(0, 75)}...`
+    let maxLength = 75
+
+    if(isMobile) {
+      maxLength = 45
+    }
+
+    if(`${description}`.length > maxLength) {
+      description = `${description.substring(0, maxLength)}...`
     }
 
     return description

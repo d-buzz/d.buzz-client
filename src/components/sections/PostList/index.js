@@ -279,12 +279,12 @@ const PostList = React.memo((props) => {
               <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {!disableProfileLink && !isMobile && (
+                    {!disableProfileLink && (
                       <Link
                         ref={popoverAnchor}
                         to={authorLink}
-                        onMouseEnter={!disableUserMenu ? openPopOver : () => {}}
-                        onMouseLeave={!disableUserMenu ? closePopOver: () => {}}
+                        onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
+                        onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
                       >
                         {name ? name : `${author}`}
                       </Link>
