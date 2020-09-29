@@ -299,7 +299,7 @@ const MobileAppFrame = (props) => {
               fontSize={12}
               style={{ marginTop: -3 }}
               transparent={true}
-              label="Unread"
+              label="Clear"
               loading={loading}
               disabled={loading}
               className={classes.walletButton}
