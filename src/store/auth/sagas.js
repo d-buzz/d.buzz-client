@@ -31,12 +31,14 @@ import {
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
-  const { username, password, useKeychain } = payload
+  const { password, useKeychain } = payload
+  let { username } = payload
+  username = `${username}`.toLowerCase()
   const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
   try {
     if(useKeychain) {
-      const data = yield call(keychainSignIn, `${username}`.toLocaleLowerCase())
+      const data = yield call(keychainSignIn, username)
       if(data.success) {
         user.is_authenticated = true
       }
