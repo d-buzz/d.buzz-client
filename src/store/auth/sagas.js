@@ -36,7 +36,7 @@ function* authenticateUserRequest(payload, meta) {
 
   try {
     if(useKeychain) {
-      const data = yield call(keychainSignIn, username)
+      const data = yield call(keychainSignIn, `${username}`.toLocaleLowerCase())
       if(data.success) {
         user.is_authenticated = true
       }
