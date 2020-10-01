@@ -119,9 +119,9 @@ const prepareThreeSpeakEmbeds = (content) => {
       if(link.includes('3speak.online/watch?v')) {
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
       } else {
-        match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i) 
+        match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
       }
-      
+
       if(match) {
         const id = match[1]
         body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
@@ -155,6 +155,8 @@ const MarkdownViewer = React.memo((props) => {
   const classes = useStyles()
   const {
     minifyAssets = true,
+    scrollIndex = -1,
+    recomputeRowIndex = () => {},
   } = props
   let { content = '' } = props
   const original = content
@@ -192,7 +194,7 @@ const MarkdownViewer = React.memo((props) => {
       {splitContent.map((item) => (
         render(item, classes.markdown, assetClass)
       ))}
-      <LinkPreview content={original} />
+      <LinkPreview content={original} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex} />
     </React.Fragment>
   )
 })
