@@ -30,9 +30,11 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://anyx.io' })
+api.setOptions({ url: 'https://beta.openhive.network/' })
 
 config.set('alternative_api_endpoints', endpoints)
+config.set('rebranded_api', true)
+broadcast.updateOperations()
 
 const visited = []
 
