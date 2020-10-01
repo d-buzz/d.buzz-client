@@ -70,6 +70,11 @@ const AppBar = (props) => {
     setOpen(false)
   }
 
+  const handleClickSignup = () => {
+    const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login', '_blank')
+    win.focus()
+  }
+
   return (
     <Navbar fixed="top" className={classes.nav}>
       <Container className={classes.container}>
@@ -91,7 +96,7 @@ const AppBar = (props) => {
           <SearchField disableTips={true} />
         </Nav>
         <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
-        <ContainedButton style={{ marginLeft: 5 }} fontSize={15} label="Sign up" className={classes.button} />
+        <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickSignup} fontSize={15} label="Sign up" className={classes.button} />
       </Container>
       <LoginModal show={open} onHide={handleClickCloseLoginModal} />
     </Navbar>
