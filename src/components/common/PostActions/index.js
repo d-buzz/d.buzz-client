@@ -21,6 +21,7 @@ import { upvoteRequest } from 'store/posts/actions'
 import { openReplyModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { isMobile } from 'react-device-detect'
 
 const PrettoSlider = withStyles({
   root: {
@@ -177,6 +178,8 @@ const PostActions = (props) => {
     openReplyModal,
     broadcastNotification,
     disableUpvote = false,
+    scrollIndex = 0,
+    recomputeRowIndex = () => {},
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
@@ -196,10 +199,16 @@ const PostActions = (props) => {
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
+    if(replyRef === 'list') {
+      recomputeRowIndex(scrollIndex)
+    }
   }
 
   const handleClickHideSlider = () => {
     setShowSlider(false)
+    if(replyRef === 'list') {
+      recomputeRowIndex(scrollIndex)
+    }
   }
 
   const handleChange = (e, value) => {
@@ -207,6 +216,9 @@ const PostActions = (props) => {
   }
 
   const handleClickUpvote = () => {
+    if(replyRef === 'list') {
+      recomputeRowIndex(scrollIndex)
+    }
     setShowSlider(false)
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
@@ -243,7 +255,7 @@ const PostActions = (props) => {
       {!showSlider && (
         <div>
           <Row style={{ width: '100%', ...extraPadding }}>
-            <Col>
+            <Col xs={!isMobile ? 0 : 4}>
               {!loading && upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
@@ -287,7 +299,7 @@ const PostActions = (props) => {
                 />
               )}
             </Col>
-            <Col>
+            <Col xs={!isMobile ? 0 : 4}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classNames(classes.inline, classes.icon)}
@@ -302,7 +314,7 @@ const PostActions = (props) => {
                 )}
               />
             </Col>
-            <Col xs="auto">
+            <Col xs={!isMobile ? 'auto' : 4}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
@@ -316,7 +328,7 @@ const PostActions = (props) => {
                       <span style={{ color: '#e53935', fontSize: 14 }}>
                         ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
                         {!payout ? '0.00 in 7 days' : ''}&nbsp;
-                        {payoutAt ? getPayoutDate(payoutAt) : ''}
+                        {!isMobile && payoutAt ? getPayoutDate(payoutAt) : ''}
                       </span>
                     )}
                     color="secondary"

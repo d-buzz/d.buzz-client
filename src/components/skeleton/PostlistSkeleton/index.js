@@ -2,7 +2,22 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { isMobile } from 'react-device-detect'
 import { createUseStyles } from 'react-jss'
+
+const addHover = (theme) => {
+  let style = {
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+  }
+
+  if(isMobile) {
+    style = {}
+  }
+
+  return style
+}
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -19,9 +34,7 @@ const useStyle = createUseStyles(theme => ({
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      ...theme.postList.hover,
-    },
+    ...addHover(theme),
     cursor: 'pointer',
   },
   inline: {

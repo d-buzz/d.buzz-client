@@ -31,7 +31,9 @@ import {
 } from 'services/api'
 
 function* authenticateUserRequest(payload, meta) {
-  const { username, password, useKeychain } = payload
+  const { password, useKeychain } = payload
+  let { username } = payload
+  username = `${username}`.toLowerCase()
   const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
   try {

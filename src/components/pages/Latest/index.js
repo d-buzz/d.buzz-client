@@ -24,6 +24,7 @@ import {
 import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
 import { InfiniteList } from 'components'
+import { clearScrollIndex } from 'store/interface/actions'
 
 const Latest = (props) => {
   const {
@@ -47,6 +48,7 @@ const Latest = (props) => {
     clearSearchPosts,
     clearAppendReply,
     clearReplies,
+    clearScrollIndex,
   } = props
 
   useEffect(() => {
@@ -54,6 +56,7 @@ const Latest = (props) => {
     if(!isVisited) {
       anchorTop()
       clearHomePosts()
+      clearScrollIndex()
       clearTrendingPosts()
       setLatestIsVisited()
       getLatestPostsRequest()
@@ -111,6 +114,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearSearchPosts,
     clearAppendReply,
     clearReplies,
+    clearScrollIndex,
   }, dispatch),
 })
 

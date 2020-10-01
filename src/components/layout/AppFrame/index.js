@@ -102,7 +102,6 @@ const AppFrame = (props) => {
         </Container>
       )}
       {isMobile && (<MobileAppFrame pathname={pathname} route={route} />)}
-      {isMobile && (<div></div>)}
       {organizationRoutes && (<OrganizationFooter />)}
       <ReplyFormModal />
       <NotificationBox />

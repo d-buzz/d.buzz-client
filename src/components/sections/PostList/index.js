@@ -173,6 +173,7 @@ const PostList = React.memo((props) => {
     openUserDialog,
     saveScrollIndex,
     scrollIndex,
+    recomputeRowIndex = () => {},
   } = props
 
   const { width } = useWindowDimensions()
@@ -278,12 +279,12 @@ const PostList = React.memo((props) => {
               <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {!disableProfileLink && !isMobile && (
+                    {!disableProfileLink && (
                       <Link
                         ref={popoverAnchor}
                         to={authorLink}
-                        onMouseEnter={!disableUserMenu ? openPopOver : () => {}}
-                        onMouseLeave={!disableUserMenu ? closePopOver: () => {}}
+                        onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
+                        onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
                       >
                         {name ? name : `${author}`}
                       </Link>
@@ -310,7 +311,9 @@ const PostList = React.memo((props) => {
                     voteCount={upvotes}
                     replyCount={replyCount}
                     payout={`${payout}`}
+                    recomputeRowIndex={recomputeRowIndex}
                     payoutAt={payoutAt}
+                    scrollIndex={scrollIndex}
                   />
                 </div>
               </div>

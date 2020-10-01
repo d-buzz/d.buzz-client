@@ -11,6 +11,22 @@ import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
+import { anchorTop } from 'services/helper'
+import { isMobile } from 'react-device-detect'
+
+const addHover = (theme) => {
+  let style = {
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+  }
+
+  if(isMobile) {
+    style = {}
+  }
+
+  return style
+}
 
 const useStyle = createUseStyles(theme => ({
   row: {
@@ -35,9 +51,7 @@ const useStyle = createUseStyles(theme => ({
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      ...theme.postList.hover,
-    },
+    ...addHover(theme),
     cursor: 'pointer !important',
   },
   inline: {
@@ -129,6 +143,7 @@ const Notification = (props) => {
   const classes = useStyle()
 
   useEffect(() => {
+    anchorTop()
     setPageFrom(null)
     // eslint-disable-next-line
   }, [])
