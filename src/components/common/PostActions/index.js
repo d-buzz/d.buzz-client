@@ -145,7 +145,7 @@ const useStyles = createUseStyles(theme => ({
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
   return (
-    <div className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
+    <div style={{ whiteSpace: 'nowrap' }} className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
       <div className={inlineClass}>
         {icon}
       </div>
