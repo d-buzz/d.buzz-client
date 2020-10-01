@@ -297,7 +297,7 @@ const PostList = React.memo((props) => {
                   </label>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
-                    <MarkdownViewer content={body}/>
+                    <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
                 </div>

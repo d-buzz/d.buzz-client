@@ -59,7 +59,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const LinkPreview = (props) => {
-  const { getLinkMetaRequest, content } = props
+  const { getLinkMetaRequest, content, scrollIndex = -1, recomputeRowIndex } = props
   const [loading, setLoading] = useState(true)
   const [noShow, setNoShow] = useState(false)
   const [meta, setMeta] = useState()
@@ -113,6 +113,13 @@ const LinkPreview = (props) => {
     }
   // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if(noShow) {
+      recomputeRowIndex(scrollIndex)
+    }
+    // eslint-disable-next-line
+  }, [noShow])
 
   const getTitle = () => {
     let title = meta.title
