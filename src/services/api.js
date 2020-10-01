@@ -345,7 +345,7 @@ export const fetchProfile2 = (username) => {
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
-    api.call('follow_api.get_followers', params, async(err, data) => {
+    api.call('condenser_api.get_followers', params, async(err, data) => {
       if (err) {
         reject(err)
       }else {
