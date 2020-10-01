@@ -19,7 +19,7 @@ const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 
 const endpoints = [
-  'https://api.openhive.network',
+  'https://api.opennetwork',
   'https://api.hive.blog',
   'https://api.hivekings.com',
   'https://api.pharesim.me',
@@ -30,9 +30,11 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://anyx.io' })
+api.setOptions({ url: 'https://beta.openhive.network' })
 
 config.set('alternative_api_endpoints', endpoints)
+config.set('rebranded_api', true)
+broadcast.updateOperations()
 
 const visited = []
 
