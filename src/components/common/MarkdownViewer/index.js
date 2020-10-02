@@ -132,11 +132,11 @@ const prepareThreeSpeakEmbeds = (content) => {
 }
 
 
-const render = (content, markdownClass, assetClass) => {
+const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
-    return <TwitterTweetEmbed tweetId={splitTwitter[2]} />
+    return <TwitterTweetEmbed tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} />
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
@@ -192,7 +192,7 @@ const MarkdownViewer = React.memo((props) => {
   return (
     <React.Fragment>
       {splitContent.map((item) => (
-        render(item, classes.markdown, assetClass)
+        render(item, classes.markdown, assetClass, scrollIndex, recomputeRowIndex)
       ))}
       <LinkPreview content={original} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex} />
     </React.Fragment>
