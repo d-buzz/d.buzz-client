@@ -111,7 +111,7 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-
+    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
@@ -471,6 +471,7 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
+  api.setOptions({ url: 'https://anyx.io' })
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
     .then((result) => {
       return result
@@ -781,6 +782,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys) => {
+  api.setOptions({ url: 'https://anyx.io' })
   return new Promise((resolve, reject) => {
     broadcast.send(
       {

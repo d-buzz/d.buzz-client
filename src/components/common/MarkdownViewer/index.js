@@ -119,9 +119,9 @@ const prepareThreeSpeakEmbeds = (content) => {
       if(link.includes('3speak.online/watch?v')) {
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
       } else {
-        match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i) 
+        match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
       }
-      
+
       if(match) {
         const id = match[1]
         body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
@@ -132,11 +132,11 @@ const prepareThreeSpeakEmbeds = (content) => {
 }
 
 
-const render = (content, markdownClass, assetClass) => {
+const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
-    return <TwitterTweetEmbed tweetId={splitTwitter[2]} />
+    return <TwitterTweetEmbed tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} />
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
@@ -155,6 +155,8 @@ const MarkdownViewer = React.memo((props) => {
   const classes = useStyles()
   const {
     minifyAssets = true,
+    scrollIndex = -1,
+    recomputeRowIndex = () => {},
   } = props
   let { content = '' } = props
   const original = content
@@ -190,9 +192,9 @@ const MarkdownViewer = React.memo((props) => {
   return (
     <React.Fragment>
       {splitContent.map((item) => (
-        render(item, classes.markdown, assetClass)
+        render(item, classes.markdown, assetClass, scrollIndex, recomputeRowIndex)
       ))}
-      <LinkPreview content={original} />
+      <LinkPreview content={original} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex} />
     </React.Fragment>
   )
 })

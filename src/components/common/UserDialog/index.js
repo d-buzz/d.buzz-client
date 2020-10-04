@@ -167,8 +167,10 @@ const UserDialog = React.memo((props) => {
   }
 
   const onMouseLeave = () => {
-    setOpen(false)
-    closeUserDialog()
+    if(!loading) {
+      setOpen(false)
+      closeUserDialog()
+    }
   }
 
   let authorLink = `/@${author}?ref=card`

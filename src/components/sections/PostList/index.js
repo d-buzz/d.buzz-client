@@ -285,6 +285,7 @@ const PostList = React.memo((props) => {
                         to={authorLink}
                         onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
                         onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
+                        onClick={closePopOver}
                       >
                         {name ? name : `${author}`}
                       </Link>
@@ -297,7 +298,7 @@ const PostList = React.memo((props) => {
                   </label>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
-                    <MarkdownViewer content={body}/>
+                    <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
                 </div>

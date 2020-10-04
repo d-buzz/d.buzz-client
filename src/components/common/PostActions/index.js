@@ -121,6 +121,7 @@ const useStyles = createUseStyles(theme => ({
   actionWrapperSpace: {
     paddingRight: 30,
     fontSize: 14,
+    whiteSpace: 'nowrap',
   },
   button: {
     height: 33,
@@ -327,7 +328,8 @@ const PostActions = (props) => {
                     label={(
                       <span style={{ color: '#e53935', fontSize: 14 }}>
                         ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
-                        {!payout ? '0.00 in 7 days' : ''}&nbsp;
+                        {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
+                        {!payout && isMobile ? '0.00' : ''}&nbsp;
                         {!isMobile && payoutAt ? getPayoutDate(payoutAt) : ''}
                       </span>
                     )}
