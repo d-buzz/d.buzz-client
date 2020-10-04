@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://api.hive.blog' })
+api.setOptions({ url: 'https://anyx.io' })
 
 config.set('alternative_api_endpoints', endpoints)
 
@@ -109,7 +109,7 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-
+    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
@@ -779,6 +779,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys) => {
+  api.setOptions({ url: 'https://anyx.io' })
   return new Promise((resolve, reject) => {
     broadcast.send(
       {
