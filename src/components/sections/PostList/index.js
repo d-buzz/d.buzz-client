@@ -285,6 +285,7 @@ const PostList = React.memo((props) => {
                         to={authorLink}
                         onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
                         onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
+                        onClick={closePopOver}
                       >
                         {name ? name : `${author}`}
                       </Link>
