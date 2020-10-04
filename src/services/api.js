@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://anyx.io' })
+api.setOptions({ url: 'https://api.hive.blog' })
 
 config.set('alternative_api_endpoints', endpoints)
 
