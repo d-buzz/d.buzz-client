@@ -231,7 +231,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       start_permlink,
       limit: 30,
     }
-
+    api.setOptions({ url: 'https://api.hive.blog' })
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
       if(err) {
@@ -263,7 +263,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
         } else {
           posts = []
         }
-
+        api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(posts)
       }
     })
@@ -301,6 +301,7 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
+  api.setOptions({ url: 'https://api.hive.blog' })
   return api.getContentRepliesAsync(author, permlink)
     .then(async(replies) => {
       if(replies.length !== 0) {
