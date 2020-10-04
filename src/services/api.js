@@ -173,6 +173,7 @@ export const fetchDiscussions = (author, permlink) => {
 
         let replies = parent.replies
         replies = replies.reverse()
+        api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(replies)
       }
     })
@@ -302,7 +303,6 @@ export const fetchContent = (author, permlink) => {
 export const fetchReplies = (author, permlink) => {
   return api.getContentRepliesAsync(author, permlink)
     .then(async(replies) => {
-
       if(replies.length !== 0) {
         const getProfiledata = mapFetchProfile(replies)
         await Promise.all([getProfiledata])
@@ -475,6 +475,8 @@ export const fetchRewardFund = (username) => {
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   // api.setOptions({ url: 'https://anyx.io' })
+  config.set('rebranded_api', true)
+  broadcast.updateOperations()
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
     .then((result) => {
       return result
