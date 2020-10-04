@@ -469,6 +469,7 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
+  api.setOptions({ url: 'https://anyx.io' })
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
     .then((result) => {
       return result
