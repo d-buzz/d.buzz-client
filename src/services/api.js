@@ -283,11 +283,14 @@ export const fetchTrendingTags = () => {
 }
 
 export const fetchContent = (author, permlink) => {
+  console.log({author, permlink})
   return new Promise((resolve, reject) => {
+    api.setOptions({ url: 'https://api.hive.blog' })
     api.getContentAsync(author, permlink)
       .then(async(result) => {
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
+        api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(result)
       })
       .catch((error) => {
@@ -471,7 +474,7 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
-  api.setOptions({ url: 'https://anyx.io' })
+  // api.setOptions({ url: 'https://anyx.io' })
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
     .then((result) => {
       return result
@@ -750,7 +753,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_steem_dollars': 5000,
+        'percent_hbd': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         'extensions': [],
@@ -782,7 +785,10 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys) => {
-  api.setOptions({ url: 'https://anyx.io' })
+  console.log({operations: JSON.stringify(operations)})
+  // api.setOptions({ url: 'https://anyx.io' })
+  config.set('rebranded_api', true)
+  broadcast.updateOperations()
   return new Promise((resolve, reject) => {
     broadcast.send(
       {
@@ -792,6 +798,7 @@ export const broadcastOperation = (operations, keys) => {
       keys,
       (error, result) => {
         if(error) {
+          console.log({error})
           reject({
             success: false,
             error,
