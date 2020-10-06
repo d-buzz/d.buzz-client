@@ -111,7 +111,6 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
@@ -173,7 +172,6 @@ export const fetchDiscussions = (author, permlink) => {
 
         let replies = parent.replies
         replies = replies.reverse()
-        api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(replies)
       }
     })
@@ -286,15 +284,16 @@ export const fetchTrendingTags = () => {
 export const fetchContent = (author, permlink) => {
   console.log({author, permlink})
   return new Promise((resolve, reject) => {
-    api.setOptions({ url: 'https://api.hive.blog' })
+    // api.setOptions({ url: 'https://api.hive.blog' })
     api.getContentAsync(author, permlink)
       .then(async(result) => {
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
-        api.setOptions({ url: 'https://beta.openhive.network' })
+        // api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(result)
       })
       .catch((error) => {
+        console.log({error})
         reject(error)
       })
   })
