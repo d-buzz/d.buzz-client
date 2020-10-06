@@ -891,6 +891,34 @@ export const searchPostGeneral = (query) => {
   })
 }
 
+export const checkIfImage = (url) => {
+  return new Promise(async(resolve, reject) => {
+    const requestUrl = `https://images.hive.blog/p/${url}`
+    console.log({ requestUrl })
+
+    // fetch(requestUrl)
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     console.log({data})
+    //     resolve(data)
+    //   })
+    //   .catch(error => {
+    //     console.log({ error })
+    //   })
+    axios.get(requestUrl, { headers: {
+      'Access-Control-Allow-Origin': '*',
+    }})
+      .then(function (result) {
+        const data = result.data
+        resolve(data)
+      })
+      .catch(function (error) {
+        console.log({ error })
+        resolve(error)
+      })
+  })
+}
+
 export const uploadIpfsImage = async(data) => {
   const date = new Date()
   const timestamp = date.getTime()
