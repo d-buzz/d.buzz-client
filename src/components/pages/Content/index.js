@@ -21,7 +21,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { ContentSkeleton, ReplylistSkeleton } from 'components'
+import { ContentSkeleton, ReplylistSkeleton, HelmetGenerator } from 'components'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -231,6 +231,7 @@ const Content = (props) => {
     <React.Fragment>
       {!loadingContent && author && (
         <React.Fragment>
+          <HelmetGenerator content={body} />
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>

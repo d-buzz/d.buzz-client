@@ -329,19 +329,6 @@ export const fetchReplies = (author, permlink) => {
     })
 }
 
-export const fetchProfile2 = (username) => {
-  return api.getAccountsAsync([username])
-    .then(async(result) => {
-      const repscore = result[0].reputation
-      result[0].reputation = repscore ? formatter.reputation(repscore) : 25
-      const follow_count = await fetchFollowCount(username)
-      result[0].follow_count = follow_count
-      return result
-    }).catch((error) => {
-      return error
-    })
-}
-
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
