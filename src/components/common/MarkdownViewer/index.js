@@ -96,7 +96,19 @@ const prepareTwitterEmbeds = (content) => {
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
-      const match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
+      let match = ''
+      let id = ''
+
+      if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)) {
+        match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
+        id = match[2]
+        if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+          match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+          id = match[2]
+          id = id.slice(0, -2)
+        }
+        body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+      }
 
       if(match) {
         const id = match[2]

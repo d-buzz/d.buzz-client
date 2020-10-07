@@ -3,6 +3,7 @@ import { CreateBuzzForm, InfiniteList } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { createUseStyles } from 'react-jss'
 import {
   getHomePostsRequest,
   setHomeIsVisited,
@@ -28,6 +29,13 @@ import { clearScrollIndex } from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 
+const useStyles = createUseStyles({
+  wrapper: {
+    color: '#e53934',
+    paddingLeft: '22%',
+    paddingTop: '5%',
+  },
+})
 
 const Feeds = React.memo((props) => {
   const {
@@ -54,6 +62,7 @@ const Feeds = React.memo((props) => {
     clearReplies,
     clearScrollIndex,
   } = props
+  const classes = useStyles()
 
   useEffect(() => {
     setPageFrom('home')
@@ -89,6 +98,11 @@ const Feeds = React.memo((props) => {
   return (
     <React.Fragment>
       {!isMobile && (<CreateBuzzForm />)}
+      {(items.length === 0) && (
+        <React.Fragment>
+          <h5 className={classes.wrapper}> Looks like there is no buzzes here yet</h5>
+        </React.Fragment>
+      )}
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
