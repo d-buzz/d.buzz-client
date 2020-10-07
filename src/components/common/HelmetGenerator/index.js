@@ -9,6 +9,7 @@ const HelmetGenerator = (props) => {
   const { content, user } = props
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
+  const [isLoaded, setIsLoaded] = useState(false)
   const [image, setImage] = useState()
 
   useEffect(() => {
@@ -60,6 +61,10 @@ const HelmetGenerator = (props) => {
     <React.Fragment>
       <Helmet>
         <meta charSet="utf-8" />
+        <title>{title}</title>
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
+        <meta name="image" content={image} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:og:image" content={image} />

@@ -28,9 +28,13 @@ const App = () => {
     <React.Fragment>
       <Helmet>
         <meta charSet="utf-8" />
+        <title>D.Buzz</title>
         <meta property="og:title" content="D.Buzz" />
         <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
         <meta property="og:og:image" content="https://next.d.buzz/dbuzz.svg" />
+        <meta name="title" content="D.Buzz" />
+        <meta name="description" content="D.Buzz | Micro-blogging for HIVE" />
+        <meta name="image" content="https://next.d.buzz/dbuzz.svg"/>
       </Helmet>
       <LastLocationProvider>
         <ThemeLoader>
