@@ -5,6 +5,7 @@ import { Init, AuthGuard, ThemeLoader } from 'components'
 import { renderRoutes } from 'react-router-config'
 import { LastLocationProvider } from 'react-router-last-location'
 import { createUseStyles } from 'react-jss'
+import { Helmet } from 'react-helmet'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -25,6 +26,12 @@ const AppWrapper = ({ children }) => {
 const App = () => {
   return (
     <React.Fragment>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <meta property="og:title" content="D.Buzz" />
+        <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
+        <meta property="og:og:image" content="https://next.d.buzz/dbuzz.svg" />
+      </Helmet>
       <LastLocationProvider>
         <ThemeLoader>
           <Init>

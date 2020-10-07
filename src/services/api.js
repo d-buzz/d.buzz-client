@@ -891,31 +891,26 @@ export const searchPostGeneral = (query) => {
   })
 }
 
-export const checkIfImage = (url) => {
+export const checkIfImage = (links) => {
   return new Promise(async(resolve, reject) => {
-    const requestUrl = `https://images.hive.blog/p/${url}`
-    console.log({ requestUrl })
 
-    // fetch(requestUrl)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     console.log({data})
-    //     resolve(data)
-    //   })
-    //   .catch(error => {
-    //     console.log({ error })
-    //   })
-    axios.get(requestUrl, { headers: {
-      'Access-Control-Allow-Origin': '*',
-    }})
-      .then(function (result) {
-        const data = result.data
-        resolve(data)
-      })
-      .catch(function (error) {
-        console.log({ error })
-        resolve(error)
-      })
+    const params = { links }
+
+    const result = await axios.post(`${scrapeUrl}/generate`, params)
+
+    resolve(result.data)
+
+  //   axios.get(requestUrl, { headers: {
+  //     'Access-Control-Allow-Origin': '*',
+  //   }})
+  //     .then(function (result) {
+  //       const data = result.data
+  //       resolve(data)
+  //     })
+  //     .catch(function (error) {
+  //       console.log({ error })
+  //       resolve(error)
+  //     })
   })
 }
 

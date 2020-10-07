@@ -231,7 +231,7 @@ const Content = (props) => {
     <React.Fragment>
       {!loadingContent && author && (
         <React.Fragment>
-          <HelmetGenerator content={body} />
+          <HelmetGenerator content={body} user={author} />
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
