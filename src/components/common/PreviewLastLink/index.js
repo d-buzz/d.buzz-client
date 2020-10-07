@@ -22,6 +22,7 @@ const PreviewLastLink = ({ className, content }) => {
           && !link.includes('ipfs.io')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
+          && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
           && link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
