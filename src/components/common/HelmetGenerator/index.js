@@ -9,7 +9,6 @@ const HelmetGenerator = (props) => {
   const { content, user } = props
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
-  const [isLoaded, setIsLoaded] = useState(false)
   const [image, setImage] = useState()
 
   useEffect(() => {
