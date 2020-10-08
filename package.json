@@ -51,6 +51,7 @@
     "react-router-scroll-memory": "^2.0.6",
     "react-scripts": "^3.4.3",
     "react-scrollspy": "^3.4.3",
+    "react-snap": "^1.23.0",
     "react-spinners": "^0.9.0",
     "react-sticky": "^6.0.3",
     "react-tag-input": "^6.2.1",
@@ -80,7 +81,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "postbuild": "react-snap"
   },
   "eslintConfig": {
     "extends": "react-app"
