@@ -334,19 +334,6 @@ export const fetchReplies = (author, permlink) => {
     })
 }
 
-export const fetchProfile2 = (username) => {
-  return api.getAccountsAsync([username])
-    .then(async(result) => {
-      const repscore = result[0].reputation
-      result[0].reputation = repscore ? formatter.reputation(repscore) : 25
-      const follow_count = await fetchFollowCount(username)
-      result[0].follow_count = follow_count
-      return result
-    }).catch((error) => {
-      return error
-    })
-}
-
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
@@ -912,6 +899,29 @@ export const searchPostGeneral = (query) => {
       reject(error)
     })
 
+  })
+}
+
+export const checkIfImage = (links) => {
+  return new Promise(async(resolve, reject) => {
+
+    const params = { links }
+
+    const result = await axios.post(`${scrapeUrl}/generate`, params)
+
+    resolve(result.data)
+
+  //   axios.get(requestUrl, { headers: {
+  //     'Access-Control-Allow-Origin': '*',
+  //   }})
+  //     .then(function (result) {
+  //       const data = result.data
+  //       resolve(data)
+  //     })
+  //     .catch(function (error) {
+  //       console.log({ error })
+  //       resolve(error)
+  //     })
   })
 }
 
