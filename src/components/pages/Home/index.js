@@ -98,7 +98,7 @@ const Feeds = React.memo((props) => {
   return (
     <React.Fragment>
       {!isMobile && (<CreateBuzzForm />)}
-      {(items.length === 0) && (
+      {(items.length === 0) && !loading &&(
         <React.Fragment>
           <h5 className={classes.wrapper}> Looks like there is no buzzes here yet</h5>
         </React.Fragment>
