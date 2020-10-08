@@ -67,10 +67,10 @@ export const callBridge = async(method, params, appendParams = true) => {
 
         result = [...result, ...lastResult]
 
-        if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result, false)
-          await Promise.all([getProfiledata])
-        }
+        // if(result.length !== 0) {
+        //   const getProfiledata = mapFetchProfile(result, false)
+        //   await Promise.all([getProfiledata])
+        // }
         resolve(result)
       }
     })

@@ -69,7 +69,6 @@ class InfiniteList extends PureComponent {
               replyCount={items[index].children}
               meta={items[index].json_metadata}
               payout={items[index].payout}
-              profile={items[index].profile}
               payoutAt={items[index].payout_at}
               scrollIndex={index}
               recomputeRowIndex={recomputeRowIndex}

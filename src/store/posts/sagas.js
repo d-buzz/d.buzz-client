@@ -182,25 +182,6 @@ function* getTrendingPostsRequest(payload, meta) {
   }
 }
 
-// function* getHomePostsRequest(payload, meta) {
-//   const { start_permlink, start_author } = payload
-
-//   const params = { sort: 'trending', start_permlink, start_author }
-//   const method = 'get_ranked_posts'
-
-//   try {
-//     const old = yield select(state => state.posts.get('home'))
-//     let data = yield call(callBridge, method, params)
-
-//     data = [...old, ...data]
-
-//     yield put(setHomeLastPost(data[data.length-1]))
-//     yield put(getHomePostsSuccess(data, meta))
-//   } catch(error) {
-//     yield put(getHomePostsFailure(error, meta))
-//   }
-// }
-
 function* getHomePostsRequest(payload, meta) {
   const { start_permlink, start_author } = payload
   const user = yield select(state => state.auth.get('user'))
