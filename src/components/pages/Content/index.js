@@ -16,7 +16,7 @@ import {
 } from 'components'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { anchorTop, getProfileMetaData, calculatePayout } from 'services/helper'
+import { anchorTop, calculatePayout } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
@@ -136,12 +136,12 @@ const Content = (props) => {
   let hasUpvoted = false
   let payout_at = cashout_time
 
-  let payout = calculatePayout(content)
-
   if(!cashout_time) {
     const { payout_at: payday } = content
     payout_at = payday
   }
+
+  let payout = calculatePayout(content)
 
   if(isNaN(payout)) {
     const { payout: pay } = content
@@ -150,7 +150,6 @@ const Content = (props) => {
 
   const { is_authenticated } = user
 
-  const { name } = getProfileMetaData(profile)
 
   if(json_metadata) {
     try{
@@ -265,14 +264,17 @@ const Content = (props) => {
                       onMouseLeave={closePopOver}
                     >
                       <p className={classes.name}>
-                        {name ? name : `@${author}`}
+                        {author}
                       </p>
                     </Link>
                     <br />
-                    <p className={classes.username}>@{author}</p>
+                    <p className={classes.username}>
+                      {moment(`${created}Z`).local().fromNow()}
+                    </p>
                   </div>
                 </Col>
               </Row>
+              <br />
               {body && (<MarkdownViewer content={body} minifyAssets={false} />)}
               <PostTags meta={meta} />
               <div style={{ marginTop: 10 }}>
