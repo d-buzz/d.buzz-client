@@ -21,9 +21,9 @@ export const broadcastNotification = (severity, message) => ({
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG'
 export const CLOSE_USER_DIALOG = 'CLOSE_USER_DIALOG'
 
-export const openUserDialog = (anchorEl, profile) => ({
+export const openUserDialog = (anchorEl, author) => ({
   type: OPEN_USER_DIALOG,
-  payload: { open: true, profile, anchorEl },
+  payload: { open: true, author, anchorEl },
 })
 
 export const closeUserDialog = () => ({

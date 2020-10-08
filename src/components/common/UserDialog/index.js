@@ -7,7 +7,6 @@ import Popover from '@material-ui/core/Popover'
 import Skeleton from 'react-loading-skeleton'
 import { ContainedButton, Avatar } from 'components/elements'
 import { Link } from 'react-router-dom'
-import { getProfileMetaData } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 import { followRequest, unfollowRequest, getFollowDetailsRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
@@ -102,7 +101,6 @@ const UserDialog = React.memo((props) => {
   } = props
 
   const [open, setOpen] = useState(false)
-  const [name, setName] = useState('')
   const [about, setAbout] = useState('')
   const [reputation, setReputation] = useState(0)
   const [anchorEl, setAnchor] = useState(null)
@@ -131,23 +129,18 @@ const UserDialog = React.memo((props) => {
     if(userDialogData.hasOwnProperty('open') && typeof userDialogData === 'object') {
       const { open } = userDialogData
       if(open) {
-        const { profile, anchorEl } = userDialogData
-        const { name, about } = getProfileMetaData(profile)
-        const { reputation = 0, name: author } = profile
+        const { author, anchorEl } = userDialogData
         setAnchor(anchorEl)
-        setName(name)
-        setAbout(about)
-        setReputation(reputation)
         setAuthor(author)
       } else {
         setAnchor(null)
-        setName('')
         setAbout('')
-        setReputation(0)
         setAuthor('')
+        setReputation(0)
       }
       setOpen(open)
     }
+    // eslint-disable-next-line
   }, [userDialogData])
 
   useEffect(() => {
@@ -306,12 +299,9 @@ const UserDialog = React.memo((props) => {
                       <Link
                         to={authorLink}
                       >
-                        {name ? name : `${author}`}
+                        {`@${author}`}
                       </Link>&nbsp;<Chip  size="small" label={reputation} />
                     </label>
-                    <p className={classNames(classes.paragraph, classes.username)}>
-                      {`@${author}`}
-                    </p>
                     <p className={classes.paragraph}>
                       {about}
                     </p>

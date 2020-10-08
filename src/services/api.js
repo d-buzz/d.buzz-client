@@ -67,10 +67,10 @@ export const callBridge = async(method, params, appendParams = true) => {
 
         result = [...result, ...lastResult]
 
-        if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result, false)
-          await Promise.all([getProfiledata])
-        }
+        // if(result.length !== 0) {
+        //   const getProfiledata = mapFetchProfile(result, false)
+        //   await Promise.all([getProfiledata])
+        // }
         resolve(result)
       }
     })
@@ -116,28 +116,6 @@ export const fetchDiscussions = (author, permlink) => {
         reject(err)
       } else {
 
-        const authors = []
-        let profile = []
-
-        const arr = Object.values(data)
-        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
-
-        uniqueAuthors.forEach((item) => {
-          if(!authors.includes(item)) {
-            const profileVisited = visited.filter((prof) => prof.name === item)
-            if(!authors.includes(item) && profileVisited.length === 0) {
-              authors.push(item)
-            } else if(profileVisited.length !== 0) {
-              profile.push(profileVisited[0])
-            }
-          }
-        })
-
-        if(authors.length !== 0 ) {
-          const info = await fetchProfile(authors)
-          profile = [ ...profile, ...info]
-        }
-
         const parent = data[`${author}/${permlink}`]
 
         const getChildren = (reply) => {
@@ -157,9 +135,6 @@ export const fetchDiscussions = (author, permlink) => {
               content.replies = child
             }
 
-            const info = profile.filter((prof) => prof.name === content.author)
-            visited.push(info[0])
-            content.profile = info[0]
             children.push(content)
 
           })

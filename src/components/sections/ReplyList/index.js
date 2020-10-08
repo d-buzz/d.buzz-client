@@ -16,7 +16,6 @@ import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { getAuthorName } from 'services/helper'
 import { Link, useHistory } from 'react-router-dom'
 
 
@@ -134,6 +133,13 @@ const useStyles = createUseStyles(theme => ({
     paddingBottom: 10,
     fontFamily: 'Segoe-Bold',
   },
+  thread: {
+    margin: '0 auto',
+    width: 2,
+    backgroundColor: '#dc354561',
+    height: '100%',
+    flexGrow: 1,
+  },
 }))
 
 const countReplies = async (replies = []) => {
@@ -232,7 +238,6 @@ const ReplyList = (props) => {
       parent_author,
       active_votes,
       children: replyCount,
-      profile = {},
       meta,
       payout_at,
     } = reply
@@ -248,24 +253,6 @@ const ReplyList = (props) => {
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )
 
-    let profile_json_metadata = null
-    let profile_posting_metadata = null
-
-    if(
-      'json_metadata' in profile
-      && profile.json_metadata.includes('"name":')
-      && profile.json_metadata.includes('"profile":')
-    ) {
-      profile_json_metadata = profile.json_metadata
-    }
-
-    if(
-      'posting_metadata' in profile
-      && profile.posting_metadata.includes('"name":')
-      && profile.posting_metadata.includes('"profile":')
-    ) {
-      profile_posting_metadata = profile.posting_metadata
-    }
 
     let hasUpvoted = false
 
@@ -319,7 +306,7 @@ const ReplyList = (props) => {
                 <div className={classes.left}>
                   <Avatar author={author} />
                   {replies.length !== 0 && (
-                    <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1 }} />
+                    <div className={classes.thread} />
                   )}
                 </div>
               </Col>
@@ -331,10 +318,10 @@ const ReplyList = (props) => {
                       to={`${authorLink}?ref=replies`}
                       className={classNames(classes.link, classes.name)}
                     >
-                      {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
+                      {author}
                     </Link>
                     <label className={classes.username}>
-                      @{author} &bull;&nbsp;
+                      &nbsp;&bull;&nbsp;
                       {moment(`${created}Z`).local().fromNow()}
                     </label>
                     <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
