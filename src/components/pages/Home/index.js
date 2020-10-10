@@ -28,14 +28,17 @@ import {
 import { clearScrollIndex } from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
+import { Link } from 'react-router-dom'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   wrapper: {
-    color: '#e53934',
-    paddingLeft: '22%',
+    ...theme.font,
     paddingTop: '5%',
+    '& a': {
+      color: '#e53934 !important',
+    },
   },
-})
+}))
 
 const Feeds = React.memo((props) => {
   const {
@@ -100,7 +103,14 @@ const Feeds = React.memo((props) => {
       {!isMobile && (<CreateBuzzForm />)}
       {(items.length === 0) && !loading && (
         <React.Fragment>
-          <h5 className={classes.wrapper}> Looks like there is no buzzes here yet</h5>
+          <center>
+            <h6 className={classes.wrapper}>
+              Hi there! it looks like you haven't followed anyone yet, <br/>
+              you may start following people by reading the&nbsp;
+              <Link to="/latest">latest</Link> <br /> or <Link to="/trending">trending</Link>&nbsp;
+              buzzes on d.buzz today.
+            </h6>
+          </center>
         </React.Fragment>
       )}
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
