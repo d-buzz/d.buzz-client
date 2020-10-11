@@ -335,7 +335,14 @@ function* fileUploadRequest(payload, meta) {
 
 function* publishPostRequest(payload, meta) {
   try {
-    const { body, tags } = payload
+    const { tags } = payload
+    let { body } = payload
+
+    const posted = 'Posted via'
+    const appName = 'D.buzz'
+    const postedAppend = `<br /> ${posted} ${appName.link("https://next.d.buzz")}`
+
+    body = `${body} ${postedAppend}`
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
@@ -377,6 +384,7 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
+    console.log({error})
     yield put(publishPostFailure(error, meta))
   }
 }
