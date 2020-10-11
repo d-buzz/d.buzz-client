@@ -35,6 +35,7 @@ import {
   fetchAccountPosts,
   fetchFollowers,
   fetchFollowing,
+  fetchEclipseProfile,
   broadcastOperation,
   broadcastKeychainOperation,
   generateClearNotificationOperation,
@@ -44,9 +45,13 @@ function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
     const profile = yield call(fetchProfile, [username], true)
+    const eclipseProfile = yield call(fetchEclipseProfile, username)
+
+    console.log({ eclipseProfile })
 
     yield put(getProfileSuccess(profile[0], meta))
   } catch(error) {
+    console.log({ error })
     yield put(getProfileFailure(error, meta))
   }
 }

@@ -326,6 +326,19 @@ export const isFollowing = (follower, following) => {
   })
 }
 
+export const fetchEclipseProfile = (account) => {
+  return new Promise((resolve, reject) => {
+    const params = {account}
+    api.call('bridge.get_profile', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        resolve(data)
+      }
+    })
+  })
+}
+
 export const fetchProfile = (username, checkFollow = false) => {
   const user = JSON.parse(localStorage.getItem('user'))
 
