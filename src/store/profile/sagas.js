@@ -31,7 +31,7 @@ import {
 
 import {
   extractLoginData,
-  fetchProfile,
+  fetchSingleProfile,
   fetchAccountPosts,
   fetchFollowers,
   fetchFollowing,
@@ -43,10 +43,11 @@ import {
 function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
-    const profile = yield call(fetchProfile, [username], true)
+    const profile = yield call(fetchSingleProfile, username)
 
-    yield put(getProfileSuccess(profile[0], meta))
+    yield put(getProfileSuccess(profile, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getProfileFailure(error, meta))
   }
 }

@@ -31,7 +31,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getProfileMetaData } from 'services/helper'
+import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -253,15 +253,14 @@ const Profile = (props) => {
     }
   }, [pathname])
 
-  let following_count = 0
-  let follower_count = 0
 
-  if(profile.follow_count) {
-    follower_count = profile.follow_count.follower_count
-    following_count = profile.follow_count.following_count
-  }
+  const { metadata, stats } = profile || ''
+  const { profile: profileMeta } = metadata || ''
+  const { name, cover_image, website, about } = profileMeta || ''
+  const { followers, following } = stats || 0
 
-  const { cover, name, about, website } = getProfileMetaData(profile)
+
+  // const { cover, name, about, website } = getProfileMetaData(profile)
   const { reputation = 0, isFollowed } = profile
 
   const followUser = () => {
@@ -294,7 +293,7 @@ const Profile = (props) => {
       {!loading && (
         <React.Fragment>
           <div className={classes.cover}>
-            {cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>)}
+            {cover_image !== '' && (<img src={`https://images.hive.blog/0x0/${cover_image}`} alt="cover"/>)}
           </div>
           <div className={classes.wrapper}>
             <Row>
@@ -366,7 +365,7 @@ const Profile = (props) => {
               <Row>
                 <Col xs="auto">
                   <p className={classes.paragraph}>
-                    <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
+                    <b>{following}</b> Following &nbsp; <b>{followers}</b> Follower
                   </p>
                 </Col>
               </Row>
