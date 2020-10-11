@@ -122,31 +122,6 @@ export const fetchDiscussions = (author, permlink) => {
         reject(err)
       } else {
 
-<<<<<<< HEAD
-=======
-        const authors = []
-        let profile = []
-        
-        const arr = Object.values(data)
-        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
-
-        uniqueAuthors.forEach((item) => {
-          if(!authors.includes(item)) {
-            const profileVisited = visited.filter((prof) => prof.name === item)
-            if(!authors.includes(item) && profileVisited.length === 0) {
-              authors.push(item)
-            } else if(profileVisited.length !== 0) {
-              profile.push(profileVisited[0])
-            }
-          }
-        })
-
-        if(authors.length !== 0 ) {
-          const info = await fetchProfile(authors)
-          profile = [ ...profile, ...info]
-        }
-
->>>>>>> 0d0ba9a7effe21aba84c62c20afcab7bccb3efbd
         const parent = data[`${author}/${permlink}`]
 
         const getChildren = (reply) => {
