@@ -340,7 +340,7 @@ function* publishPostRequest(payload, meta) {
 
     const posted = 'Posted via'
     const appName = 'D.buzz'
-    const postedAppend = `<br /><br /> ${posted} ${appName.link("https://next.d.buzz")}`
+    const postedAppend = `<br /><br /><br /> ${posted} ${appName.link("https://next.d.buzz")}`
 
     body = `${body} ${postedAppend}`
 
