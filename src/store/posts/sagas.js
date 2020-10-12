@@ -416,6 +416,8 @@ function* publishReplyRequest(payload, meta) {
         children: 0,
       }
 
+      reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+
       reply.refMeta = {
         ref,
         author: parent_author,
