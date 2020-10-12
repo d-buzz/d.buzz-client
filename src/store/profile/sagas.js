@@ -38,6 +38,7 @@ import {
   broadcastOperation,
   broadcastKeychainOperation,
   generateClearNotificationOperation,
+  invokeFilter,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
@@ -63,6 +64,8 @@ function* getAccountPostRequest(payload, meta) {
       return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
     })
 
+    data = data.filter(item => invokeFilter(item))
+
     yield put(setLastAccountPosts(data[data.length-1]))
     yield put(getAccountPostsSuccess(data, meta))
   } catch(error) {
@@ -80,6 +83,8 @@ function* getAccountRepliesRequest(payload, meta) {
     data = data.filter((obj, pos, arr) => {
       return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
     })
+
+    data = data.filter(item => invokeFilter(item))
 
     yield put(setLastAccountReply(data[data.length-1]))
     yield put(getAccountRepliesSuccess(data, meta))

@@ -206,44 +206,30 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       sort,
       account,
       observer: account,
-      start_author: start_author || account,
+      start_author: start_author,
       start_permlink,
-      limit: 30,
+      limit: 100,
     }
-    api.setOptions({ url: 'https://api.hive.blog' })
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
       if(err) {
         reject(err)
       }else {
         removeFootNote(data)
+
+        let lastResult = []
+
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
+        }
+
         let posts = data.filter((item) => invokeFilter(item))
 
-        if(posts.length !== 0) {
+        posts = [...posts, ...lastResult]
 
-          if(sort === 'posts') {
-            const profileVisited = visited.filter((profile) => profile.name === account)
-            let profile = []
-
-            if(profileVisited.length !== 0) {
-              profile.push(profileVisited[0])
-            } else {
-              profile = await fetchProfile([account], false)
-            }
-
-            posts.map((item) => (
-              item.profile = profile[0]
-            ))
-
-          } else {
-            const getProfiledata = mapFetchProfile(posts, false)
-            await Promise.all([getProfiledata])
-          }
-
-        } else {
+        if(posts.length === 0) {
           posts = []
         }
-        api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(posts)
       }
     })
@@ -266,13 +252,11 @@ export const fetchTrendingTags = () => {
 export const fetchContent = (author, permlink) => {
   console.log({author, permlink})
   return new Promise((resolve, reject) => {
-    // api.setOptions({ url: 'https://api.hive.blog' })
     api.getContentAsync(author, permlink)
       .then(async(result) => {
         result.body = result.body.replace('<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
-        // api.setOptions({ url: 'https://beta.openhive.network' })
         resolve(result)
       })
       .catch((error) => {
