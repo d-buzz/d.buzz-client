@@ -117,10 +117,6 @@ export const fetchDiscussions = (author, permlink) => {
       if(err) {
         reject(err)
       } else {
-<<<<<<< HEAD
-
-=======
->>>>>>> 7732368f9e5c830b8f0e82556aae44f32684bc5d
         const parent = data[`${author}/${permlink}`]
 
         const getChildren = (reply) => {
