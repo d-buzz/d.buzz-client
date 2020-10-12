@@ -397,9 +397,6 @@ function* publishReplyRequest(payload, meta) {
 
     if(success) {
       const meta = operation[0]
-      // const reply = yield call(fetchContent, username, meta[1].permlink)
-
-      console.log({ meta })
 
       const reply = {
         author: username,

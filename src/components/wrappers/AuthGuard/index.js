@@ -8,8 +8,6 @@ const AuthGuard = (props) => {
   const { pathname } = location
   const { is_authenticated } = user
 
-  console.log({ pathname })
-
   const isFreeRoute = ()  => {
     return pathname.match(/^(\/org)/g)
   }
@@ -19,9 +17,6 @@ const AuthGuard = (props) => {
   }
 
   const isContentRoute = () => {
-    console.log('is content')
-    console.log(`/ug${pathname}`)
-    console.log(pathname.match(/^\/@(.*)\/c\/(.*)/g))
     return pathname.match(/^\/@(.*)\/c\/(.*)/g)
   }
 

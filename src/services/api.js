@@ -244,7 +244,6 @@ export const fetchTrendingTags = () => {
 }
 
 export const fetchContent = (author, permlink) => {
-  console.log({author, permlink})
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
@@ -254,7 +253,6 @@ export const fetchContent = (author, permlink) => {
         resolve(result)
       })
       .catch((error) => {
-        console.log({error})
         reject(error)
       })
   })
@@ -758,7 +756,6 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys) => {
-  console.log({operations: JSON.stringify(operations)})
   config.set('rebranded_api', true)
   broadcast.updateOperations()
   return new Promise((resolve, reject) => {
@@ -770,7 +767,6 @@ export const broadcastOperation = (operations, keys) => {
       keys,
       (error, result) => {
         if(error) {
-          console.log({error})
           reject({
             success: false,
             error,
@@ -893,18 +889,6 @@ export const checkIfImage = (links) => {
     const result = await axios.post(`${scrapeUrl}/generate`, params)
 
     resolve(result.data)
-
-  //   axios.get(requestUrl, { headers: {
-  //     'Access-Control-Allow-Origin': '*',
-  //   }})
-  //     .then(function (result) {
-  //       const data = result.data
-  //       resolve(data)
-  //     })
-  //     .catch(function (error) {
-  //       console.log({ error })
-  //       resolve(error)
-  //     })
   })
 }
 

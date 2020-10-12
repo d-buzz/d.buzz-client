@@ -121,15 +121,11 @@ export const calculatePayout = (data) => {
     payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
   }
 
-  console.log({ payout })
-
   payout = payout.toFixed(2)
 
   if(payout === 0) {
     payout = '0.00'
   }
-
-  console.log({ payout })
 
   return payout
 }
