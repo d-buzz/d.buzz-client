@@ -44,6 +44,10 @@ export const invokeFilter = (item) => {
   return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
+export const removeFootNote = (data) => {
+  return data.forEach(item => item.body = item.body.replace('<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', ''))
+}
+
 export const callBridge = async(method, params, appendParams = true) => {
   return new Promise((resolve, reject) => {
 
@@ -60,6 +64,8 @@ export const callBridge = async(method, params, appendParams = true) => {
         if(data.length !== 0) {
           lastResult = [data[data.length-1]]
         }
+
+        removeFootNote(data)
 
         let result = data.filter((item) => invokeFilter(item))
 
@@ -117,7 +123,7 @@ export const fetchDiscussions = (author, permlink) => {
 
         const authors = []
         let profile = []
-
+        
         const arr = Object.values(data)
         const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
@@ -234,6 +240,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       if(err) {
         reject(err)
       }else {
+        removeFootNote(data)
         let posts = data.filter((item) => invokeFilter(item))
 
         if(posts.length !== 0) {
@@ -284,6 +291,7 @@ export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
+        result.body = result.body.replace('<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
         resolve(result)

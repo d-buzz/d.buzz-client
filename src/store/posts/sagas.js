@@ -338,7 +338,7 @@ function* publishPostRequest(payload, meta) {
     const { tags } = payload
     let { body } = payload
 
-    const footnoteAppend = `<br /><br /><br /> Posted via <a href="https://next.d.buzz"> D.Buzz</a>`
+    const footnoteAppend = '<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
 
     body = `${body} ${footnoteAppend}`
 
