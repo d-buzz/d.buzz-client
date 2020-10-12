@@ -47,7 +47,7 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  return data.forEach(item => item.body = item.body.replace('<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', ''))
+  return data.forEach(item => item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', ''))
 }
 
 export const callBridge = async(method, params, appendParams = true) => {
@@ -117,7 +117,10 @@ export const fetchDiscussions = (author, permlink) => {
       if(err) {
         reject(err)
       } else {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7732368f9e5c830b8f0e82556aae44f32684bc5d
         const parent = data[`${author}/${permlink}`]
 
         const getChildren = (reply) => {
@@ -125,12 +128,13 @@ export const fetchDiscussions = (author, permlink) => {
           const children = []
 
           replies.forEach(async(item) => {
-
             let content = data[item]
 
             if(!content) {
               content = item
             }
+
+            content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
 
             if(content.replies.length !== 0) {
               const child = getChildren(content)
@@ -138,7 +142,6 @@ export const fetchDiscussions = (author, permlink) => {
             }
 
             children.push(content)
-
           })
 
           return children
@@ -154,7 +157,6 @@ export const fetchDiscussions = (author, permlink) => {
     })
   })
 }
-
 
 export const getUnreadNotificationsCount = async(account) => {
   return new Promise((resolve, reject) => {
@@ -250,7 +252,7 @@ export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
-        result.body = result.body.replace('<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+        result.body = result.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
         resolve(result)
