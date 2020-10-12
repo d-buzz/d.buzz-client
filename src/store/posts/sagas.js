@@ -338,11 +338,9 @@ function* publishPostRequest(payload, meta) {
     const { tags } = payload
     let { body } = payload
 
-    const posted = 'Posted via'
-    const appName = 'D.buzz'
-    const postedAppend = `<br /><br /><br /> ${posted} ${appName.link("https://next.d.buzz")}`
+    const footnoteAppend = `<br /><br /><br /> Posted via <a href="https://next.d.buzz"> D.Buzz</a>`
 
-    body = `${body} ${postedAppend}`
+    body = `${body} ${footnoteAppend}`
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
