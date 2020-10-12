@@ -74,7 +74,6 @@ import {
   callBridge,
   fetchContent,
   fetchTrendingTags,
-  fetchProfile,
   extractLoginData,
   broadcastVote,
   keychainUpvote,
@@ -393,9 +392,28 @@ function* publishReplyRequest(payload, meta) {
 
     if(success) {
       const meta = operation[0]
-      const reply = yield call(fetchContent, username, meta[1].permlink)
-      const profile = yield call(fetchProfile, [username])
-      reply.profile = profile[0]
+      // const reply = yield call(fetchContent, username, meta[1].permlink)
+
+      console.log({ meta })
+
+      const reply = {
+        author: username,
+        category: 'hive-193084',
+        permlink: meta[1].permlink,
+        title: meta[1].title,
+        body: meta[1].body,
+        replies: [],
+        total_payout_value: '0.000 HBD',
+        curator_payout_value: '0.000 HBD',
+        pending_payout_value: '0.000 HBD',
+        active_votes: [],
+        parent_author,
+        parent_permlink,
+        root_author: parent_author,
+        root_permlink: parent_permlink,
+        children: 0,
+      }
+
       reply.refMeta = {
         ref,
         author: parent_author,

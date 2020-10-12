@@ -73,10 +73,6 @@ export const callBridge = async(method, params, appendParams = true) => {
 
         result = [...result, ...lastResult]
 
-        // if(result.length !== 0) {
-        //   const getProfiledata = mapFetchProfile(result, false)
-        //   await Promise.all([getProfiledata])
-        // }
         resolve(result)
       }
     })
@@ -765,7 +761,6 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 
 export const broadcastOperation = (operations, keys) => {
   console.log({operations: JSON.stringify(operations)})
-  // api.setOptions({ url: 'https://anyx.io' })
   config.set('rebranded_api', true)
   broadcast.updateOperations()
   return new Promise((resolve, reject) => {
