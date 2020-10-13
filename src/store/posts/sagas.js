@@ -338,7 +338,7 @@ function* publishPostRequest(payload, meta) {
     const { tags } = payload
     let { body } = payload
 
-    const footnoteAppend = '<br /><br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
+    const footnoteAppend = '<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
 
     body = `${body} ${footnoteAppend}`
 
@@ -382,16 +382,21 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    console.log({error})
     yield put(publishPostFailure(error, meta))
   }
 }
 
 function* publishReplyRequest(payload, meta) {
   try {
-    const { parent_author, parent_permlink, body, ref, treeHistory } = payload
+    const { parent_author, parent_permlink, ref, treeHistory } = payload
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
+
+    let { body } = payload
+
+    const footNoteAppend = '<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
+
+    body = `${body} ${footNoteAppend}`
 
     let replyData = {}
 
