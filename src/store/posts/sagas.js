@@ -345,6 +345,8 @@ function* publishPostRequest(payload, meta) {
 
     const operations = yield call(generatePostOperations, username, title, body, tags)
 
+    console.log({ operations })
+
     let success = false
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
@@ -404,7 +406,7 @@ function* publishPostRequest(payload, meta) {
       }
 
       console.log({ content })
-      setContentRedirect(content)
+      yield put(setContentRedirect(content))
     }
 
     const data = {
