@@ -176,6 +176,7 @@ function* getTrendingPostsRequest(payload, meta) {
     })
 
     yield put(setTrendingLastPost(data[data.length-1]))
+    data = data.filter(item => invokeFilter(item))
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
     yield put(getTrendingPostsFailure(error, meta))
@@ -245,6 +246,8 @@ function* getLatestPostsRequest(payload, meta) {
     })
 
     yield put(setLatestLastPost(data[data.length-1]))
+    data = data.filter(item => invokeFilter(item))
+
     yield put(getLatestPostsSuccess(data, meta))
   } catch(error) {
     yield put(getLatestPostsFailure(error, meta))
