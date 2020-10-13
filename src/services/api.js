@@ -113,10 +113,33 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
+    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
       } else {
+        const authors = []	
+        let profile = []	
+
+        const arr = Object.values(data)	
+        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
+
+        uniqueAuthors.forEach((item) => {	
+          if(!authors.includes(item)) {	
+            const profileVisited = visited.filter((prof) => prof.name === item)	
+            if(!authors.includes(item) && profileVisited.length === 0) {	
+              authors.push(item)	
+            } else if(profileVisited.length !== 0) {	
+              profile.push(profileVisited[0])	
+            }	
+          }	
+        })	
+
+        if(authors.length !== 0 ) {	
+          const info = await fetchProfile(authors)	
+          profile = [ ...profile, ...info]	
+        }
+
         const parent = data[`${author}/${permlink}`]
 
         const getChildren = (reply) => {
@@ -137,6 +160,9 @@ export const fetchDiscussions = (author, permlink) => {
               content.replies = child
             }
 
+            const info = profile.filter((prof) => prof.name === content.author)	
+            visited.push(info[0])	
+            content.profile = info[0]
             children.push(content)
           })
 
