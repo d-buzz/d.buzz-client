@@ -370,6 +370,8 @@ function* publishPostRequest(payload, meta) {
       const comment = operations[0]
       const json_metadata = comment[1].json_metadata
 
+      console.log({ comment })
+
       let currentDatetime = moment().toISOString()
       currentDatetime = currentDatetime.replace('Z', '')
 
@@ -401,6 +403,7 @@ function* publishPostRequest(payload, meta) {
         cashout_time,
       }
 
+      console.log({ content })
       setContentRedirect(content)
     }
 
