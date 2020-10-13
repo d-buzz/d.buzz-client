@@ -115,8 +115,6 @@ function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
   const contentRedirect = yield select(state => state.posts.get('contentRedirect'))
 
-  console.log({ contentRedirect })
-
   try {
     let data = {}
 
@@ -156,6 +154,7 @@ function* getContentRequest(payload, meta) {
     setContentRedirect(null)
     yield put(getContentSuccess(data, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getContentFailure(error, meta))
   }
 }
@@ -374,13 +373,18 @@ function* publishPostRequest(payload, meta) {
       let currentDatetime = moment().toISOString()
       currentDatetime = currentDatetime.replace('Z', '')
 
+      let cashout_time = moment().add(7, 'days').toISOString()
+      cashout_time = cashout_time.replace('Z', '')
+
+      console.log({ currentDatetime })
+      console.log({ cashout_time })
 
       const content = {
         author: username,
         category: 'hive-193084',
-        permlink: meta[1].permlink,
-        title: meta[1].title,
-        body: meta[1].body,
+        permlink,
+        title: comment[1].title,
+        body: comment[1].body,
         replies: [],
         total_payout_value: '0.000 HBD',
         curator_payout_value: '0.000 HBD',
@@ -389,11 +393,12 @@ function* publishPostRequest(payload, meta) {
         root_author: "",
         parent_author: "",
         parent_permlink: "hive-190384",
-        root_permlink: meta[1].permlink,
+        root_permlink: permlink,
         root_title: title,
         json_metadata,
         children: 0,
         created: currentDatetime,
+        cashout_time,
       }
 
       setContentRedirect(content)
@@ -407,6 +412,7 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
+    console.log({ error })
     yield put(publishPostFailure(error, meta))
   }
 }
