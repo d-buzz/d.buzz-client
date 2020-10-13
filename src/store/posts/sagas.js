@@ -68,6 +68,8 @@ import {
   GET_LINK_META_REQUEST,
   getLinkMetaSuccess,
   getLinkMetaFailure,
+
+  setContentRedirect,
 } from './actions'
 
 import {
@@ -96,6 +98,8 @@ import {
 } from 'services/api'
 import stripHtml from 'string-strip-html'
 
+import moment from 'moment'
+
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
@@ -109,39 +113,48 @@ function* getRepliesRequest(payload, meta) {
 
 function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
+  const contentRedirect = yield select(state => state.posts.get('contentRedirect'))
+
   try {
     let data = {}
-    const fromPage = yield select(state => state.posts.get('pageFrom'))
-    if(!fromPage) {
-      data = yield call(fetchContent, author, permlink)
-    } else {
 
-      if(fromPage === 'home') {
-        const home = yield select(state => state.posts.get('home'))
-        const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
-        data = filtered[0]
-      } else if(fromPage === 'trending') {
-        const trending = yield select(state => state.posts.get('trending'))
-        const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
-        data = filtered[0]
-      } else if(fromPage === 'latest') {
-        const latest = yield select(state => state.posts.get('latest'))
-        const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
-        data = filtered[0]
-      } else if(fromPage === 'profile') {
-        const profilePosts = yield select(state => state.profile.get('posts'))
-        let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+    if(!contentRedirect) {
+      const fromPage = yield select(state => state.posts.get('pageFrom'))
+      if(!fromPage) {
+        data = yield call(fetchContent, author, permlink)
+      } else {
 
-        if(filtered.length === 0) {
-          const profileReplies = yield select(state => state.profile.get('replies'))
-          filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+        if(fromPage === 'home') {
+          const home = yield select(state => state.posts.get('home'))
+          const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
+          data = filtered[0]
+        } else if(fromPage === 'trending') {
+          const trending = yield select(state => state.posts.get('trending'))
+          const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
+          data = filtered[0]
+        } else if(fromPage === 'latest') {
+          const latest = yield select(state => state.posts.get('latest'))
+          const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
+          data = filtered[0]
+        } else if(fromPage === 'profile') {
+          const profilePosts = yield select(state => state.profile.get('posts'))
+          let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+
+          if(filtered.length === 0) {
+            const profileReplies = yield select(state => state.profile.get('replies'))
+            filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+          }
+
+          data = filtered[0]
         }
-
-        data = filtered[0]
       }
+    } else {
+      data = contentRedirect
     }
+    setContentRedirect(null)
     yield put(getContentSuccess(data, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getContentFailure(error, meta))
   }
 }
@@ -332,6 +345,8 @@ function* publishPostRequest(payload, meta) {
 
     const operations = yield call(generatePostOperations, username, title, body, tags)
 
+    console.log({ operations })
+
     let success = false
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
@@ -343,7 +358,6 @@ function* publishPostRequest(payload, meta) {
       if(!success) {
         yield put(publishPostFailure('Unable to publish post', meta))
       }
-
     } else {
       let { login_data } = user
       login_data = extractLoginData(login_data)
@@ -354,6 +368,47 @@ function* publishPostRequest(payload, meta) {
       success = result.success
     }
 
+    if(success) {
+      const comment = operations[0]
+      const json_metadata = comment[1].json_metadata
+
+      console.log({ comment })
+
+      let currentDatetime = moment().toISOString()
+      currentDatetime = currentDatetime.replace('Z', '')
+
+      let cashout_time = moment().add(7, 'days').toISOString()
+      cashout_time = cashout_time.replace('Z', '')
+
+      console.log({ currentDatetime })
+      console.log({ cashout_time })
+
+      const content = {
+        author: username,
+        category: 'hive-193084',
+        permlink,
+        title: comment[1].title,
+        body: comment[1].body,
+        replies: [],
+        total_payout_value: '0.000 HBD',
+        curator_payout_value: '0.000 HBD',
+        pending_payout_value: '0.000 HBD',
+        active_votes: [],
+        root_author: "",
+        parent_author: "",
+        parent_permlink: "hive-190384",
+        root_permlink: permlink,
+        root_title: title,
+        json_metadata,
+        children: 0,
+        created: currentDatetime,
+        cashout_time,
+      }
+
+      console.log({ content })
+      yield put(setContentRedirect(content))
+    }
+
     const data = {
       success,
       author: username,
@@ -362,6 +417,7 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
+    console.log({ error })
     yield put(publishPostFailure(error, meta))
   }
 }
