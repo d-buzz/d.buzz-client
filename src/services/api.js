@@ -43,7 +43,8 @@ export const hashBuffer = (buffer) => {
 }
 
 export const invokeFilter = (item) => {
-  return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
+  const body = stripHtml(item.body)
+  return (body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
 export const removeFootNote = (data) => {
