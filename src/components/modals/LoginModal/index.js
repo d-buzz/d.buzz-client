@@ -109,9 +109,6 @@ const LoginModal = (props) => {
   }
 
   const handleClickLogin = () => {
-    console.log({useKeychain})
-    console.log({username})
-    console.log({password})
     authenticateUserRequest(username, password, useKeychain)
       .then(({ is_authenticated }) => {
         if(!is_authenticated) {

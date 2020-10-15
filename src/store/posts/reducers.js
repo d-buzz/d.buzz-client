@@ -30,6 +30,8 @@ import {
   CLEAR_SEARCH_POSTS,
   CLEAR_APPEND_REPLY,
   CLEAR_CONTENT,
+  SET_CONTENT_REDIRECT,
+  UNSET_CONTENT_REDIRECT,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -58,6 +60,7 @@ const defaultState = fromJS({
   hasBeenRecentlyUnfollowed: [],
   pageFrom: '',
   search: {},
+  contentRedirect: null,
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -124,6 +127,10 @@ export const posts = (state = defaultState, { type, payload }) => {
     return state.set('appendReply', {})
   case CLEAR_CONTENT:
     return state.set('content', {})
+  case SET_CONTENT_REDIRECT:
+    return state.set('contentRedirect', payload)
+  case UNSET_CONTENT_REDIRECT:
+    return state.set('contentRedirect', null)
   default:
     return state
   }

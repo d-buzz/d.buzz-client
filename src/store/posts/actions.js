@@ -516,3 +516,15 @@ export const getLinkMetaFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_CONTENT_REDIRECT = 'SET_CONTENT_REDIRECT'
+export const UNSET_CONTENT_REDIRECT = 'UNSET_CONTENT_REDIRECT'
+
+export const setContentRedirect = (content) => ({
+  type: SET_CONTENT_REDIRECT,
+  payload: content,
+})
+
+export const unsetContentRedirect = () => ({
+  type: UNSET_CONTENT_REDIRECT,
+})

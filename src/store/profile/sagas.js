@@ -31,21 +31,22 @@ import {
 
 import {
   extractLoginData,
-  fetchProfile,
+  fetchSingleProfile,
   fetchAccountPosts,
   fetchFollowers,
   fetchFollowing,
   broadcastOperation,
   broadcastKeychainOperation,
   generateClearNotificationOperation,
+  invokeFilter,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
-    const profile = yield call(fetchProfile, [username], true)
+    const profile = yield call(fetchSingleProfile, username)
 
-    yield put(getProfileSuccess(profile[0], meta))
+    yield put(getProfileSuccess(profile, meta))
   } catch(error) {
     yield put(getProfileFailure(error, meta))
   }
@@ -61,6 +62,8 @@ function* getAccountPostRequest(payload, meta) {
     data = data.filter((obj, pos, arr) => {
       return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
     })
+
+    data = data.filter(item => invokeFilter(item))
 
     yield put(setLastAccountPosts(data[data.length-1]))
     yield put(getAccountPostsSuccess(data, meta))
@@ -79,6 +82,8 @@ function* getAccountRepliesRequest(payload, meta) {
     data = data.filter((obj, pos, arr) => {
       return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
     })
+
+    data = data.filter(item => invokeFilter(item))
 
     yield put(setLastAccountReply(data[data.length-1]))
     yield put(getAccountRepliesSuccess(data, meta))

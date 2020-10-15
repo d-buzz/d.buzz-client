@@ -14,7 +14,6 @@ import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
 import { useWindowDimensions } from 'services/helper'
 import { setPageFrom } from 'store/posts/actions'
@@ -159,7 +158,6 @@ const PostList = React.memo((props) => {
     replyCount,
     payout,
     meta,
-    profile = {},
     active_votes = [],
     unguardedLinks,
     user = {},
@@ -218,8 +216,6 @@ const PostList = React.memo((props) => {
     hasUpvoted = false
   }
 
-  const { name } = getProfileMetaData(profile)
-
   const generateLink = (author, permlink) =>  {
     let link = ''
     if(unguardedLinks) {
@@ -257,7 +253,7 @@ const PostList = React.memo((props) => {
 
   const openPopOver = (e) => {
     setDelayHandler(setTimeout(() => {
-      openUserDialog(popoverAnchor.current, profile)
+      openUserDialog(popoverAnchor.current, author)
     }, 500))
   }
 
@@ -287,14 +283,13 @@ const PostList = React.memo((props) => {
                         onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
                         onClick={closePopOver}
                       >
-                        {name ? name : `${author}`}
+                        {author}
                       </Link>
                     )}
-                    {disableProfileLink && (<span className={classes.spanName}>{name ? name : `@${author}`}</span>)}
+                    {disableProfileLink && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
-                    {`@${author}`} &bull;&nbsp;
-                    {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
+                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}

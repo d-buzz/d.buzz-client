@@ -30,9 +30,11 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://anyx.io' })
+api.setOptions({ url: 'https://api.openhive.network' })
 
 config.set('alternative_api_endpoints', endpoints)
+config.set('rebranded_api', true)
+broadcast.updateOperations()
 
 const visited = []
 
@@ -41,7 +43,8 @@ export const hashBuffer = (buffer) => {
 }
 
 export const invokeFilter = (item) => {
-  return (item.body.length <= 280 && item.category === `${appConfig.TAG}`)
+  const body = stripHtml(item.body)
+  return (body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
 export const removeFootNote = (data) => {
@@ -71,10 +74,6 @@ export const callBridge = async(method, params, appendParams = true) => {
 
         result = [...result, ...lastResult]
 
-        if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result, false)
-          await Promise.all([getProfiledata])
-        }
         resolve(result)
       }
     })
@@ -120,26 +119,26 @@ export const fetchDiscussions = (author, permlink) => {
       if(err) {
         reject(err)
       } else {
-        const authors = []	
-        let profile = []	
+        const authors = []
+        let profile = []
 
-        const arr = Object.values(data)	
+        const arr = Object.values(data)
         const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
-        uniqueAuthors.forEach((item) => {	
-          if(!authors.includes(item)) {	
-            const profileVisited = visited.filter((prof) => prof.name === item)	
-            if(!authors.includes(item) && profileVisited.length === 0) {	
-              authors.push(item)	
-            } else if(profileVisited.length !== 0) {	
-              profile.push(profileVisited[0])	
-            }	
-          }	
-        })	
+        uniqueAuthors.forEach((item) => {
+          if(!authors.includes(item)) {
+            const profileVisited = visited.filter((prof) => prof.name === item)
+            if(!authors.includes(item) && profileVisited.length === 0) {
+              authors.push(item)
+            } else if(profileVisited.length !== 0) {
+              profile.push(profileVisited[0])
+            }
+          }
+        })
 
-        if(authors.length !== 0 ) {	
-          const info = await fetchProfile(authors)	
-          profile = [ ...profile, ...info]	
+        if(authors.length !== 0 ) {
+          const info = await fetchProfile(authors)
+          profile = [ ...profile, ...info]
         }
 
         const parent = data[`${author}/${permlink}`]
@@ -162,8 +161,8 @@ export const fetchDiscussions = (author, permlink) => {
               content.replies = child
             }
 
-            const info = profile.filter((prof) => prof.name === content.author)	
-            visited.push(info[0])	
+            const info = profile.filter((prof) => prof.name === content.author)
+            visited.push(info[0])
             content.profile = info[0]
             children.push(content)
           })
@@ -228,44 +227,30 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       sort,
       account,
       observer: account,
-      start_author: start_author || account,
+      start_author: start_author,
       start_permlink,
-      limit: 30,
+      limit: 100,
     }
-
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
       if(err) {
         reject(err)
       }else {
         removeFootNote(data)
-        let posts = data.filter((item) => invokeFilter(item))
 
-        if(posts.length !== 0) {
+        let lastResult = []
 
-          if(sort === 'posts') {
-            const profileVisited = visited.filter((profile) => profile.name === account)
-            let profile = []
-
-            if(profileVisited.length !== 0) {
-              profile.push(profileVisited[0])
-            } else {
-              profile = await fetchProfile([account], false)
-            }
-
-            posts.map((item) => (
-              item.profile = profile[0]
-            ))
-
-          } else {
-            const getProfiledata = mapFetchProfile(posts, false)
-            await Promise.all([getProfiledata])
-          }
-
-        } else {
-          posts = []
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
         }
 
+        let posts = data.filter((item) => invokeFilter(item))
+
+        posts = [...posts, ...lastResult]
+
+        if(posts.length === 0) {
+          posts = []
+        }
         resolve(posts)
       }
     })
@@ -301,9 +286,9 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
+  api.setOptions({ url: 'https://api.hive.blog' })
   return api.getContentRepliesAsync(author, permlink)
     .then(async(replies) => {
-
       if(replies.length !== 0) {
         const getProfiledata = mapFetchProfile(replies)
         await Promise.all([getProfiledata])
@@ -338,7 +323,7 @@ export const fetchReplies = (author, permlink) => {
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
-    api.call('follow_api.get_followers', params, async(err, data) => {
+    api.call('condenser_api.get_followers', params, async(err, data) => {
       if (err) {
         reject(err)
       }else {
@@ -347,6 +332,29 @@ export const isFollowing = (follower, following) => {
         } else {
           resolve(false)
         }
+      }
+    })
+  })
+}
+
+export const fetchSingleProfile = (account) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  return new Promise((resolve, reject) => {
+    const params = {account}
+    api.call('bridge.get_profile', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        let isFollowed = false
+
+        if(user) {
+          isFollowed = await isFollowing(user.username, data.name)
+        }
+
+        data.isFollowed = isFollowed
+
+        resolve(data)
       }
     })
   })
@@ -462,7 +470,9 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
-  api.setOptions({ url: 'https://anyx.io' })
+  // api.setOptions({ url: 'https://anyx.io' })
+  config.set('rebranded_api', true)
+  broadcast.updateOperations()
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
     .then((result) => {
       return result
@@ -741,7 +751,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_steem_dollars': 5000,
+        'percent_hbd': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         'extensions': [],
@@ -773,7 +783,8 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys) => {
-  api.setOptions({ url: 'https://anyx.io' })
+  config.set('rebranded_api', true)
+  broadcast.updateOperations()
   return new Promise((resolve, reject) => {
     broadcast.send(
       {
@@ -905,18 +916,6 @@ export const checkIfImage = (links) => {
     const result = await axios.post(`${scrapeUrl}/generate`, params)
 
     resolve(result.data)
-
-  //   axios.get(requestUrl, { headers: {
-  //     'Access-Control-Allow-Origin': '*',
-  //   }})
-  //     .then(function (result) {
-  //       const data = result.data
-  //       resolve(data)
-  //     })
-  //     .catch(function (error) {
-  //       console.log({ error })
-  //       resolve(error)
-  //     })
   })
 }
 
