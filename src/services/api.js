@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://beta.openhive.network' })
+api.setOptions({ url: 'https://api.openhive.network' })
 
 config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)
@@ -118,26 +118,26 @@ export const fetchDiscussions = (author, permlink) => {
       if(err) {
         reject(err)
       } else {
-        const authors = []	
-        let profile = []	
+        const authors = []
+        let profile = []
 
-        const arr = Object.values(data)	
+        const arr = Object.values(data)
         const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
-        uniqueAuthors.forEach((item) => {	
-          if(!authors.includes(item)) {	
-            const profileVisited = visited.filter((prof) => prof.name === item)	
-            if(!authors.includes(item) && profileVisited.length === 0) {	
-              authors.push(item)	
-            } else if(profileVisited.length !== 0) {	
-              profile.push(profileVisited[0])	
-            }	
-          }	
-        })	
+        uniqueAuthors.forEach((item) => {
+          if(!authors.includes(item)) {
+            const profileVisited = visited.filter((prof) => prof.name === item)
+            if(!authors.includes(item) && profileVisited.length === 0) {
+              authors.push(item)
+            } else if(profileVisited.length !== 0) {
+              profile.push(profileVisited[0])
+            }
+          }
+        })
 
-        if(authors.length !== 0 ) {	
-          const info = await fetchProfile(authors)	
-          profile = [ ...profile, ...info]	
+        if(authors.length !== 0 ) {
+          const info = await fetchProfile(authors)
+          profile = [ ...profile, ...info]
         }
 
         const parent = data[`${author}/${permlink}`]
@@ -160,8 +160,8 @@ export const fetchDiscussions = (author, permlink) => {
               content.replies = child
             }
 
-            const info = profile.filter((prof) => prof.name === content.author)	
-            visited.push(info[0])	
+            const info = profile.filter((prof) => prof.name === content.author)
+            visited.push(info[0])
             content.profile = info[0]
             children.push(content)
           })
