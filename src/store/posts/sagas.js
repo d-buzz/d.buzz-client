@@ -70,6 +70,10 @@ import {
   getLinkMetaFailure,
 
   setContentRedirect,
+
+  PUBLISH_UPDATE_REQUEST,
+  publishUpdateSuccess,
+  publishUpdateFailure,
 } from './actions'
 
 import {
@@ -95,7 +99,9 @@ import {
   isFollowing,
   getLinkMeta,
   invokeFilter,
+  generateUpdateOperation,
 } from 'services/api'
+import { createPatch } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
@@ -345,6 +351,7 @@ function* publishPostRequest(payload, meta) {
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
+
     let title = stripHtml(body)
 
     if(title.length > 70) {
@@ -437,7 +444,7 @@ function* publishReplyRequest(payload, meta) {
 
     let { body } = payload
 
-    body = footnote(body) 
+    body = footnote(body)
 
     let replyData = {}
 
@@ -664,6 +671,47 @@ function* getLinkMetaRequest(payload, meta) {
   }
 }
 
+function* publishUpdateRequest(payload, meta) {
+  try {
+    const { permlink, body: altered  } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+
+    const original = yield call(fetchContent, username, permlink)
+    const {
+      parent_author,
+      parent_permlink,
+      author,
+      title,
+      body,
+      json_metadata,
+    } = original
+
+    const patch = createPatch(body.trim(), altered.trim())
+    const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, title, patch, json_metadata)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+
+    yield put(publishUpdateSuccess(success, meta))
+
+  } catch(error) {
+    console.log({ error })
+    yield put(publishUpdateFailure(error, meta))
+  }
+}
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -728,6 +776,10 @@ function* watchGetLinkMetaRequest({ payload, meta }) {
   yield call(getLinkMetaRequest, payload, meta)
 }
 
+function* watchPublishUpdateRequest({ payload, meta }) {
+  yield call(publishUpdateRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
   yield takeEvery(GET_HOME_POSTS_REQUEST, watchGetHomePostsRequest)
@@ -745,4 +797,5 @@ export default function* sagas() {
   yield takeEvery(SEARCH_REQUEST, watchSearchRequest)
   yield takeEvery(GET_FOLLOW_DETAILS_REQUEST, watchGetFollowDetailsRequest)
   yield takeEvery(GET_LINK_META_REQUEST, watchGetLinkMetaRequest)
+  yield takeEvery(PUBLISH_UPDATE_REQUEST, watchPublishUpdateRequest)
 }

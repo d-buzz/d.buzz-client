@@ -694,6 +694,28 @@ export const generateSubscribeOperation = (username) => {
   })
 }
 
+
+export const generateUpdateOperation = (parent_author, parent_permlink, author, permlink, title, body, json_metadata) => {
+
+  return new Promise((resolve) => {
+    const op_comment = [[
+      'comment',
+      {
+        parent_author,
+        parent_permlink,
+        author,
+        permlink,
+        title,
+        body,
+        json_metadata,
+      },
+    ]]
+
+    resolve(op_comment)
+  })
+}
+
+
 export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
 
   const json_metadata = createMeta()

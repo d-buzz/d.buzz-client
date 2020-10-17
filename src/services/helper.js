@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
+import diff_match_patch from 'diff-match-patch'
+const dmp = new diff_match_patch()
 
 export const anchorTop = () => {
   window.scrollTo(0, 0)
+}
+
+export const createPatch = (text1, text2) => {
+  if (!text1 && text1 === '') return undefined
+  const patches = dmp.patch_make(text1, text2)
+  const patch = dmp.patch_toText(patches)
+  return patch
 }
 
 export const getAuthorName = (profileMeta, postingMeta) => {

@@ -16,6 +16,10 @@ import {
   SUBSCRIBE_REQUEST,
   subscribeSuccess,
   subscribeFailure,
+
+  CHECK_HAS_UPDATE_AUTHORITY_REQUEST,
+  checkHasUpdateAuthoritySuccess,
+  checkHasUpdateAuthorityFailure,
 } from './actions'
 
 import {
@@ -137,6 +141,29 @@ function* subscribeRequest(meta) {
   }
 }
 
+function* checkHasUpdateAuthorityRequest(payload, meta) {
+  try {
+    const { author } = payload
+    const user = yield select(state => state.auth.get('user'))
+    let { login_data } = user
+    const { username, useKeychain } = user
+
+    if(useKeychain) {
+      login_data = username
+    } else {
+      login_data = extractLoginData(login_data)
+      login_data = login_data[0]
+    }
+
+    const hasAuthority = author === login_data
+
+    yield put(checkHasUpdateAuthoritySuccess(hasAuthority, meta))
+  } catch (error) {
+    console.log({ error })
+    yield put(checkHasUpdateAuthorityFailure(error, meta))
+  }
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -153,10 +180,14 @@ function* watchSubscribeRequest({ meta }) {
   yield call(subscribeRequest, meta)
 }
 
+function* watchCheckHasUpdateAuthorityRequest({ payload, meta }) {
+  yield call(checkHasUpdateAuthorityRequest, payload, meta)
+}
 
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
+  yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
 }

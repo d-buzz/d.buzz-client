@@ -5,8 +5,11 @@ import {
   getRepliesRequest,
   clearReplies,
 } from 'store/posts/actions'
+import {
+  checkHasUpdateAuthorityRequest,
+} from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
-import { Avatar } from 'components/elements'
+import { Avatar, MoreIcon } from 'components/elements'
 import {
   MarkdownViewer,
   PostTags,
@@ -21,7 +24,15 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { ContentSkeleton, ReplylistSkeleton, HelmetGenerator } from 'components'
+import classNames from 'classnames'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import {
+  ContentSkeleton,
+  ReplylistSkeleton,
+  HelmetGenerator,
+  UpdateFormModal,
+} from 'components'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -93,6 +104,20 @@ const useStyles = createUseStyles(theme => ({
     paddingTop: 10,
     paddingBottom: 2,
   },
+  threeDotWrapper: {
+    height: '100%',
+    width: 'auto',
+  },
+  icon: {
+    ...theme.icon,
+    ...theme.font,
+  },
+  iconCursor: {
+    cursor: 'pointer',
+  },
+  iconButton: {
+    ...theme.iconButton.hover,
+  },
 }))
 
 const Content = (props) => {
@@ -106,12 +131,18 @@ const Content = (props) => {
     clearReplies,
     user = {},
     replies,
+    checkHasUpdateAuthorityRequest,
   } = props
 
   const { username, permlink } = match.params
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [originalContent, setOriginalContent] = useState('')
   const classes = useStyles()
   const [open, setOpen] = useState(false)
+  const [openUpdateForm, setOpenUpdateForm] = useState(false)
+  const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
   const popoverAnchor = useRef(null)
+
 
   const {
     author,
@@ -135,6 +166,42 @@ const Content = (props) => {
   let upvotes = 0
   let hasUpvoted = false
   let payout_at = cashout_time
+
+  useEffect(() => {
+    console.log({ username })
+    checkHasUpdateAuthorityRequest(username)
+      .then((result) => {
+        setHasUpdateAuthority(result)
+      })
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if(body !== '' && body) {
+      setOriginalContent(body)
+    }
+  }, [body])
+
+  const handleClickCloseUpdateForm = () => {
+    setOpenUpdateForm(false)
+  }
+
+  const handleClickOpenUpdateForm = () => {
+    setAnchorEl(null)
+    setOpenUpdateForm(true)
+  }
+
+  const handleClickMore = (e) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const hanldeCloseMore = () => {
+    setAnchorEl(null)
+  }
+
+  const onUpdateSuccess = (body) => {
+    setOriginalContent(body)
+  }
 
   if(!cashout_time) {
     const { payout_at: payday } = content
@@ -275,7 +342,7 @@ const Content = (props) => {
                 </Col>
               </Row>
               <br />
-              {body && (<MarkdownViewer content={body} minifyAssets={false} />)}
+              {body && (<MarkdownViewer content={originalContent} minifyAssets={false} />)}
               <PostTags meta={meta} />
               <div style={{ marginTop: 10 }}>
                 <label className={classes.meta}>
@@ -291,7 +358,25 @@ const Content = (props) => {
                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
+              {hasUpdateAuthority && (
+                <Col xs="auto">
+                  <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
+                    <MoreIcon className={classes.iconCursor} />
+                  </div>
+                </Col>
+              )}
             </Row>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={hanldeCloseMore}
+            >
+              <MenuItem onClick={handleClickOpenUpdateForm}>Update</MenuItem>
+            </Menu>
+            {hasUpdateAuthority && (
+              <UpdateFormModal onSuccess={onUpdateSuccess} author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
+            )}
           </div>
           <div className={classes.full}>
             <div className={classes.inner}>
@@ -348,6 +433,7 @@ const mapDispatchToProps = (dispatch) => ({
     getContentRequest,
     getRepliesRequest,
     clearReplies,
+    checkHasUpdateAuthorityRequest,
   }, dispatch),
 })
 
