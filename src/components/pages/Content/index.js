@@ -371,7 +371,7 @@ const Content = (props) => {
               <MenuItem onClick={handleClickOpenUpdateForm}>Update</MenuItem>
             </Menu>
             {hasUpdateAuthority && (
-              <UpdateFormModal author={author} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
+              <UpdateFormModal author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
             )}
           </div>
           <div className={classes.full}>
