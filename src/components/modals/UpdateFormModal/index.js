@@ -166,7 +166,6 @@ const UpdateFormModal = (props) => {
   const inputRef = useRef(null)
   const [content, setContent] = useState('')
   const [wordCount, setWordCount] = useState(0)
-  const [replyDone, setReplyDone] = useState(false)
 
   const textAreaStyle = { width: '100%' }
   const zeroPadding = { padding: 0 }
@@ -222,23 +221,16 @@ const UpdateFormModal = (props) => {
     })
   }
 
-  const handleSubmitReply = () => {
-    // publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-    //   .then(({ success }) => {
-    //     if(success) {
-    //       broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-    //       setReplyDone(true)
-    //       closeReplyModal()
-    //     } else {
-    //       broadcastNotification('error', `Failed reply to @${author}/${permlink}`)
-    //     }
-    //   })
-  }
 
   const handleClickSubmitUpdate = () => {
     publishUpdateRequest(permlink, content)
-      .then((result) => {
-        console.log({ result })
+      .then((success) => {
+        if(success) {
+          broadcastNotification('success', `Post successfully updated`)
+          onClose()
+        } else {
+          broadcastNotification('error', `Post failed to update`)
+        }
       })
   }
 
@@ -247,7 +239,7 @@ const UpdateFormModal = (props) => {
       <Modal
         backdrop='static'
         keyboard={false}
-        show={open && !replyDone}
+        show={open || loading}
         onHide={onClose}
         dialogClassName={classes.modal}
         animation={false}
