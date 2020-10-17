@@ -199,6 +199,10 @@ const Content = (props) => {
     setAnchorEl(null)
   }
 
+  const onUpdateSuccess = (body) => {
+    setOriginalContent(body)
+  }
+
   if(!cashout_time) {
     const { payout_at: payday } = content
     payout_at = payday
@@ -338,7 +342,7 @@ const Content = (props) => {
                 </Col>
               </Row>
               <br />
-              {body && (<MarkdownViewer content={body} minifyAssets={false} />)}
+              {body && (<MarkdownViewer content={originalContent} minifyAssets={false} />)}
               <PostTags meta={meta} />
               <div style={{ marginTop: 10 }}>
                 <label className={classes.meta}>
@@ -371,7 +375,7 @@ const Content = (props) => {
               <MenuItem onClick={handleClickOpenUpdateForm}>Update</MenuItem>
             </Menu>
             {hasUpdateAuthority && (
-              <UpdateFormModal author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
+              <UpdateFormModal onSuccess={onUpdateSuccess} author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
             )}
           </div>
           <div className={classes.full}>

@@ -147,7 +147,7 @@ const useStyles = createUseStyles(theme => ({
 const UpdateFormModal = (props) => {
   const classes = useStyles()
   const {
-    author,
+    onSuccess,
     body,
     permlink,
     user,
@@ -227,6 +227,7 @@ const UpdateFormModal = (props) => {
       .then((success) => {
         if(success) {
           broadcastNotification('success', `Post successfully updated`)
+          onSuccess(content)
           onClose()
         } else {
           broadcastNotification('error', `Post failed to update`)
