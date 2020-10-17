@@ -32,6 +32,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
+import { setBuzzModalStatus } from 'store/interface/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 
 const useStyles = createUseStyles(theme => ({
@@ -236,6 +237,7 @@ const SideBarLeft = (props) => {
     count = 0,
     theme,
     minify,
+    setBuzzModalStatus,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -261,10 +263,12 @@ const SideBarLeft = (props) => {
   }
 
   const handleClickBuzz = () => {
+    setBuzzModalStatus(true)
     setOpen(true)
   }
 
   const onHide = () => {
+    setBuzzModalStatus(false)
     setOpen(false)
   }
 
@@ -424,6 +428,7 @@ const mapDispatchToProps = (dispatch) => ({
     signoutUserRequest,
     subscribeRequest,
     pollNotifRequest,
+    setBuzzModalStatus,
   }, dispatch),
 })
 

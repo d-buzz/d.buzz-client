@@ -43,3 +43,10 @@ export const CLEAR_SCROLL_INDEX = 'CLEAR_SCROLL_INDEX'
 export const clearScrollIndex = () => ({
   type: CLEAR_SCROLL_INDEX,
 })
+
+export const SET_BUZZ_MODAL_STATUS = 'SET_BUZZ_MODAL_STATUS'
+
+export const setBuzzModalStatus = (status) => ({
+  type: SET_BUZZ_MODAL_STATUS,
+  payload: status,
+})
