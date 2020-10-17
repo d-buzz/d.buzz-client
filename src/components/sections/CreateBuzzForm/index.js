@@ -161,14 +161,14 @@ const CreateBuzzForm = (props) => {
         identifier: "123",
         target: target,
       })
-  
+
       const touchEvent = new TouchEvent("touchstart", {
         touches: [touch],
         view: window,
         cancelable: true,
         bubbles: true,
       })
-  
+
       target.dispatchEvent(touchEvent)
       target.click()
     }
@@ -177,8 +177,8 @@ const CreateBuzzForm = (props) => {
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
-    uploadFileRequest(files).then((images) => {
-      const lastImage = images[images.length-1]
+    uploadFileRequest(files).then((image) => {
+      const lastImage = image[image.length-1]
       if(lastImage !== undefined) {
         const contentAppend = `${content} <br /> ${lastImage}`
         setContent(contentAppend)

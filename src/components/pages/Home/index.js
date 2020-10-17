@@ -64,6 +64,7 @@ const Feeds = React.memo((props) => {
     clearContent,
     clearReplies,
     clearScrollIndex,
+    buzzModalStatus,
   } = props
   const classes = useStyles()
 
@@ -100,7 +101,7 @@ const Feeds = React.memo((props) => {
 
   return (
     <React.Fragment>
-      {!isMobile && (<CreateBuzzForm />)}
+      {!isMobile && !buzzModalStatus && (<CreateBuzzForm />)}
       {(items.length === 0) && !loading && (
         <React.Fragment>
           <center>
@@ -119,6 +120,7 @@ const Feeds = React.memo((props) => {
 })
 
 const mapStateToProps = (state) => ({
+  buzzModalStatus: state.interfaces.get('buzzModalStatus'),
   loading: pending(state, 'GET_HOME_POSTS_REQUEST'),
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
