@@ -187,6 +187,7 @@ const Content = (props) => {
   }
 
   const handleClickOpenUpdateForm = () => {
+    setAnchorEl(null)
     setOpenUpdateForm(true)
   }
 
