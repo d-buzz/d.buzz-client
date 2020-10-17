@@ -340,6 +340,7 @@ function* publishPostRequest(payload, meta) {
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
+
     let title = stripHtml(body)
 
     if(title.length > 70) {

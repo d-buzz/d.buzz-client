@@ -5,6 +5,9 @@ import {
   getRepliesRequest,
   clearReplies,
 } from 'store/posts/actions'
+import {
+  checkHasUpdateAuthorityRequest,
+} from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar, MoreIcon } from 'components/elements'
 import {
@@ -128,6 +131,7 @@ const Content = (props) => {
     clearReplies,
     user = {},
     replies,
+    checkHasUpdateAuthorityRequest,
   } = props
 
   const { username, permlink } = match.params
@@ -136,6 +140,7 @@ const Content = (props) => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const [openUpdateForm, setOpenUpdateForm] = useState(false)
+  const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
   const popoverAnchor = useRef(null)
 
 
@@ -161,6 +166,15 @@ const Content = (props) => {
   let upvotes = 0
   let hasUpvoted = false
   let payout_at = cashout_time
+
+  useEffect(() => {
+    console.log({ username })
+    checkHasUpdateAuthorityRequest(username)
+      .then((result) => {
+        setHasUpdateAuthority(result)
+      })
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     if(body !== '' && body) {
@@ -339,11 +353,13 @@ const Content = (props) => {
                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
-              <Col xs="auto">
-                <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
-                  <MoreIcon className={classes.iconCursor} />
-                </div>
-              </Col>
+              {hasUpdateAuthority && (
+                <Col xs="auto">
+                  <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
+                    <MoreIcon className={classes.iconCursor} />
+                  </div>
+                </Col>
+              )}
             </Row>
             <Menu
               anchorEl={anchorEl}
@@ -410,6 +426,7 @@ const mapDispatchToProps = (dispatch) => ({
     getContentRequest,
     getRepliesRequest,
     clearReplies,
+    checkHasUpdateAuthorityRequest,
   }, dispatch),
 })
 
