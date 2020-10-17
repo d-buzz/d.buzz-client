@@ -100,6 +100,13 @@ import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
 
+const footnote = (body) => {
+  const footnoteAppend = '<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
+  body = `${body} ${footnoteAppend}`
+
+  return body
+}
+
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
@@ -334,9 +341,7 @@ function* publishPostRequest(payload, meta) {
     const { tags } = payload
     let { body } = payload
 
-    const footnoteAppend = '<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
-
-    body = `${body} ${footnoteAppend}`
+    body = footnote(body)
 
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
@@ -409,7 +414,6 @@ function* publishPostRequest(payload, meta) {
         cashout_time,
       }
 
-      console.log({ content })
       yield put(setContentRedirect(content))
     }
 
@@ -434,9 +438,7 @@ function* publishReplyRequest(payload, meta) {
 
     let { body } = payload
 
-    const footNoteAppend = '<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
-
-    body = `${body} ${footNoteAppend}`
+    body = footnote(body) 
 
     let replyData = {}
 
