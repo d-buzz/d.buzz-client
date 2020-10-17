@@ -528,3 +528,27 @@ export const setContentRedirect = (content) => ({
 export const unsetContentRedirect = () => ({
   type: UNSET_CONTENT_REDIRECT,
 })
+
+export const PUBLISH_UPDATE_REQUEST = 'PUBLISH_UPDATE_REQUEST'
+export const PUBLISH_UPDATE_SUCCESS = 'PUBLISH_UPDATE_SUCCESS'
+export const PUBLISH_UPDATE_FAILURE = 'PUBLISH_UPDATE_FAILURE'
+
+export const publishUpdateRequest = (permlink, body) => ({
+  type: PUBLISH_UPDATE_REQUEST,
+  payload: { permlink, body },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const publishUpdateSuccess = (response, meta) => ({
+  type: PUBLISH_UPDATE_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const publishUpdateFailure = (error, meta) => ({
+  type: PUBLISH_UPDATE_FAILURE,
+  payload: error,
+  meta,
+})
