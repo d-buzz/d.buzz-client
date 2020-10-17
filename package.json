@@ -15,6 +15,7 @@
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
+    "diff-match-patch": "^1.0.5",
     "dynamic-virtual-scroll": "^1.0.15",
     "hive-content-renderer": "^1.0.3",
     "immutable": "^4.0.0-rc.12",
