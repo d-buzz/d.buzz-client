@@ -398,12 +398,16 @@ function* publishPostRequest(payload, meta) {
       console.log({ currentDatetime })
       console.log({ cashout_time })
 
+      let body = comment[1].body
+      body = body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+
+
       const content = {
         author: username,
         category: 'hive-193084',
         permlink,
         title: comment[1].title,
-        body: comment[1].body,
+        body: body,
         replies: [],
         total_payout_value: '0.000 HBD',
         curator_payout_value: '0.000 HBD',
