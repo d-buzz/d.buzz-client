@@ -372,7 +372,7 @@ const Content = (props) => {
               open={Boolean(anchorEl)}
               onClose={hanldeCloseMore}
             >
-              <MenuItem onClick={handleClickOpenUpdateForm}>Update</MenuItem>
+              <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
             </Menu>
             {hasUpdateAuthority && (
               <UpdateFormModal onSuccess={onUpdateSuccess} author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />

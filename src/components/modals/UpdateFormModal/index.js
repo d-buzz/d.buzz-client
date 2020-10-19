@@ -226,11 +226,11 @@ const UpdateFormModal = (props) => {
     publishUpdateRequest(permlink, content)
       .then((success) => {
         if(success) {
-          broadcastNotification('success', `Post successfully updated`)
+          broadcastNotification('success', `Post successfully edited`)
           onSuccess(content)
           onClose()
         } else {
-          broadcastNotification('error', `Post failed to update`)
+          broadcastNotification('error', `Post failed to edited`)
         }
       })
   }
