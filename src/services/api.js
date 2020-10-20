@@ -840,7 +840,7 @@ export const createMeta = (tags = []) => {
   const uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
   const meta = {
-    app: 'dBuzz/v1.0.0',
+    app: 'dBuzz/v3.0.0',
     // app: 'hiveph/v1.0.0',
     tags: uniqueTags,
   }
