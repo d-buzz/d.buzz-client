@@ -30,7 +30,7 @@ const App = () => {
         <meta charSet="utf-8" />
         <meta property="og:title" content="D.Buzz" />
         <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
-        <meta property="og:og:image" content="https://next.d.buzz/dbuzz.svg" />
+        <meta property="og:og:image" content="https://d.buzzdbuzz.svg" />
       </Helmet>
       <LastLocationProvider>
         <ThemeLoader>

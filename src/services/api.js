@@ -48,7 +48,7 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  return data.forEach(item => item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', ''))
+  return data.forEach(item => item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', ''))
 }
 
 export const callBridge = async(method, params, appendParams = true) => {
@@ -154,7 +154,7 @@ export const fetchDiscussions = (author, permlink) => {
               content = item
             }
 
-            content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+            content.body = content.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
 
             if(content.replies.length !== 0) {
               const child = getChildren(content)
@@ -274,7 +274,7 @@ export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
-        result.body = result.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+        result.body = result.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
         resolve(result)

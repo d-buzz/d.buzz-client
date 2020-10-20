@@ -107,7 +107,7 @@ import stripHtml from 'string-strip-html'
 import moment from 'moment'
 
 const footnote = (body) => {
-  const footnoteAppend = '<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>'
+  const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
   body = `${body} ${footnoteAppend}`
 
   return body
@@ -399,7 +399,7 @@ function* publishPostRequest(payload, meta) {
       console.log({ cashout_time })
 
       let body = comment[1].body
-      body = body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+      body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
 
 
       const content = {
@@ -488,7 +488,7 @@ function* publishReplyRequest(payload, meta) {
         children: 0,
       }
 
-      reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+      reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
 
       reply.refMeta = {
         ref,
