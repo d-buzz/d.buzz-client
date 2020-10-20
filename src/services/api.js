@@ -48,7 +48,10 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  return data.forEach(item => item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', ''))
+  return data.forEach((item) => {
+    item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+    item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+  })
 }
 
 export const callBridge = async(method, params, appendParams = true) => {
