@@ -13,9 +13,9 @@ import {
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, FollowButton } from 'components'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -29,14 +29,11 @@ const useStyle = createUseStyles({
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    borderBottom: '1px solid #e6ecf0',
-    '& a': {
-      color: 'black',
-    },
+    borderBottom: theme.border.primary,
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
-    cursor: 'pointer',
+    cursor: 'pointer !important',
   },
   inline: {
     display: 'inline-block',
@@ -49,6 +46,7 @@ const useStyle = createUseStyles({
   right: {
     height: 'max-content',
     width: '98%',
+    cursor: 'pointer',
   },
   name: {
     fontWeight: 'bold',
@@ -57,6 +55,7 @@ const useStyle = createUseStyles({
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -64,6 +63,7 @@ const useStyle = createUseStyles({
     marginTop: 0,
     marginBottom: 0,
     paddingBottom: 0,
+    cursor: 'pointer',
   },
   post: {
     color: '#14171a',
@@ -79,6 +79,9 @@ const useStyle = createUseStyles({
       borderRadius: '15px 15px',
     },
     cursor: 'pointer',
+    '& label': {
+      ...theme.font,
+    },
   },
   actionWrapper: {
     paddingTop: 10,
@@ -90,7 +93,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -100,7 +103,10 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-})
+  followButtonContainer: {
+    width: 80,
+  },
+}))
 
 const AccountFollowing = (props) => {
   const classes = useStyle()
@@ -114,6 +120,7 @@ const AccountFollowing = (props) => {
     user,
   } = props
 
+  const zeroPadding = { paddingRight: 0 }
   const { is_authenticated } = user
 
   const history = useHistory()
@@ -154,7 +161,7 @@ const AccountFollowing = (props) => {
           <div className={classes.wrapper}>
             <div className={classes.row} onClick={handleClickFollowing(item.following)}>
               <Row>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
+                <Col xs="auto" style={zeroPadding}>
                   <div className={classes.left}>
                     <Avatar author={item.following} />
                   </div>
@@ -174,6 +181,13 @@ const AccountFollowing = (props) => {
                         {getAbout(item.profile)}
                       </label>
                     </div>
+                  </div>
+                </Col>
+                <Col xs="auto">
+                  <div className={classes.followButtonContainer}>
+                    <FollowButton
+                      author={item.profile.name}
+                    />
                   </div>
                 </Col>
               </Row>
@@ -199,7 +213,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setProfileIsVisited,
     getFollowingRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountFollowing)

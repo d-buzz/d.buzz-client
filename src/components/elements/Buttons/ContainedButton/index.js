@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { HashtagLoader } from 'components/elements'
+import { Spinner } from 'components/elements'
 import classNames from 'classnames'
 
 const useStyles = createUseStyles({
@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
     },
     '&:hover': {
       backgroundColor: '#b71c1c',
-    }
+    },
   },
   transparentButton: {
     border: '1px solid #e61c34',
@@ -39,10 +39,10 @@ const useStyles = createUseStyles({
     },
     '&:hover': {
       backgroundColor: '#b71c1c1c',
-    }
+    },
   },
   disabledButton: {
-    backgroundColor: '#d0cfcf',
+    backgroundColor: '#f55d5d85',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'mouse',
@@ -55,9 +55,21 @@ const useStyles = createUseStyles({
       color: 'white',
       fontFamily: 'Segoe-Bold',
     },
-    '&:hover': {
-      backgroundColor: '#d0cfcf',
-    }
+  },
+  disabledButtonTransparent: {
+    border: '1px solid #e61c34',
+    borderRadius: '50px 50px',
+    width: 'max-content',
+    cursor: 'mouse',
+    '& label': {
+      cursor: 'mouse',
+      paddingTop: 5,
+      paddingLeft: 15,
+      paddingRight: 15,
+      whiteSpace: 'nowrap',
+      color: 'white',
+      fontFamily: 'Segoe-Bold',
+    },
   },
 })
 
@@ -72,7 +84,7 @@ const ContainedButton = (props) => {
     onClick = () => {},
     disabled = false,
     loading = false,
-    labelStyle = {}
+    labelStyle = {},
   } = props
 
   let buttonClass = classes.button
@@ -83,6 +95,9 @@ const ContainedButton = (props) => {
 
   if(disabled) {
     buttonClass = classes.disabledButton
+    if(transparent) {
+      buttonClass = classes.disabledButtonTransparent
+    }
   }
 
   return (
@@ -90,7 +105,7 @@ const ContainedButton = (props) => {
       <center>
         <label style={{ fontSize: fontSize, ...labelStyle }}>
           {!loading && label}
-          {loading && (<HashtagLoader size={20} top={5} loading={true} />)}
+          {loading && (<Spinner size={20} top={4} loading={true} />)}
         </label>
       </center>
     </div>

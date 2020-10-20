@@ -5,23 +5,25 @@ import {
   RoundedField,
   SearchIcon,
 } from 'components/elements'
+import { isMobile } from 'react-device-detect'
 import { connect } from 'react-redux'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   search: {
     marginBottom: 10,
     marginTop: 10,
-    backgroundColor: '#e6ecf0',
+    ...theme.search.background,
   },
   searchTips: {
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
+    color: theme.font.color,
     '& span': {
       color: '#d32f2f',
       fontWeight: 400,
-    }
-  }
-})
+    },
+  },
+}))
 
 const SearchTips = ({ show, className }) => {
   return (
@@ -75,7 +77,7 @@ const SearchField = (props) => {
     <React.Fragment>
       <RoundedField
         icon={<SearchIcon top={iconTop} />}
-        placeholder="Search D.Buzz"
+        placeholder={!isMobile ? 'Search D.Buzz': ''}
         className={classes.search}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

@@ -5,18 +5,22 @@ import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
 } from 'react-router-dom'
+import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
+
+initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
     <Router>
+      {/* <ScrollMemory /> */}
       <App />
     </Router>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 )
 
 // If you want your app to work offline and load faster, you can change

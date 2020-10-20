@@ -67,7 +67,7 @@ export const getSavedUserFailure = (error, meta) => ({
   payload: error,
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const SUBSCRIBE_REQUEST = 'SUBSCRIBE_REQUEST'
@@ -89,6 +89,30 @@ export const subscribeSuccess = (result, meta) => ({
 
 export const subscribeFailure = (error, meta) => ({
   type: SUBSCRIBE_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const CHECK_HAS_UPDATE_AUTHORITY_REQUEST = 'CHECK_HAS_UPDATE_AUTHORITY_REQUEST'
+export const CHECK_HAS_UPDATE_AUTHORITY_SUCCESS = 'CHECK_HAS_UPDATE_AUTHORITY_SUCCESS'
+export const CHECK_HAS_UPDATE_AUTHORITY_FAILURE = 'CHECK_HAS_UPDATE_AUTHORITY_FAILURE'
+
+export const checkHasUpdateAuthorityRequest = (author) => ({
+  type: CHECK_HAS_UPDATE_AUTHORITY_REQUEST,
+  payload: { author },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const checkHasUpdateAuthoritySuccess = (response, meta) => ({
+  type: CHECK_HAS_UPDATE_AUTHORITY_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const checkHasUpdateAuthorityFailure = (error, meta) => ({
+  type: CHECK_HAS_UPDATE_AUTHORITY_FAILURE,
   payload: error,
   meta,
 })

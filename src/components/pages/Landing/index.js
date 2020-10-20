@@ -1,28 +1,76 @@
 import React, { useEffect } from 'react'
 import { Trending } from 'components'
 import { createUseStyles } from 'react-jss'
-import { clearSearchPosts } from 'store/posts/actions'
+import {
+  clearSearchPosts,
+  clearLastSearchTag,
+  clearTrendingPosts,
+  clearLatestPosts,
+  clearTagsPost,
+  clearHomePosts,
+  setHomeIsVisited,
+  setTrendingIsVisited,
+  setLatestIsVisited,
+  setTagsIsVisited,
+  clearAppendReply,
+  clearReplies,
+} from 'store/posts/actions'
+import {
+  clearAccountPosts,
+  clearAccountReplies,
+} from 'store/profile/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+  title: {
+    marginLeft: 10,
+    ...theme.font,
+  },
   trendingWrapper: {
     width: '100%',
     minHeight: '100vh',
-    border: '1px solid #e6ecf0',
   },
   headerWrapper: {
     width: '98%',
     margin: '0 auto',
-  }
-})
+  },
+}))
 
 const Landing = (props) => {
   const classes = useStyles()
-  const { clearSearchPosts } = props
+  const {
+    clearSearchPosts,
+    clearLastSearchTag,
+    clearTrendingPosts,
+    clearLatestPosts,
+    clearTagsPost,
+    clearHomePosts,
+    setHomeIsVisited,
+    setTrendingIsVisited,
+    setLatestIsVisited,
+    setTagsIsVisited,
+    clearAccountPosts,
+    clearAccountReplies,
+    clearAppendReply,
+    clearReplies,
+  } = props
 
   useEffect(() => {
+    clearAppendReply()
     clearSearchPosts()
+    clearLastSearchTag()
+    clearTrendingPosts()
+    clearLatestPosts()
+    clearTagsPost()
+    clearHomePosts()
+    clearAccountPosts()
+    clearAccountReplies()
+    clearReplies()
+    setHomeIsVisited(false)
+    setTrendingIsVisited(false)
+    setLatestIsVisited(false)
+    setTagsIsVisited(false)
     // eslint-disable-next-line
   }, [])
 
@@ -30,7 +78,7 @@ const Landing = (props) => {
     <React.Fragment>
       <div className={classes.trendingWrapper}>
         <div>
-          <h5 style={{ fontWeight: 'bold', marginLeft: 10, }}>Trending</h5>
+          <h5 className={classes.title}>Trending</h5>
         </div>
         <Trending unguardedLinks={true} />
       </div>
@@ -41,7 +89,20 @@ const Landing = (props) => {
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     clearSearchPosts,
-  }, dispatch)
+    clearLastSearchTag,
+    clearTrendingPosts,
+    clearLatestPosts,
+    clearTagsPost,
+    clearHomePosts,
+    setHomeIsVisited,
+    setTrendingIsVisited,
+    setLatestIsVisited,
+    setTagsIsVisited,
+    clearAccountPosts,
+    clearAccountReplies,
+    clearAppendReply,
+    clearReplies,
+  }, dispatch),
 })
 
 export default connect(null, mapDispatchToProps)(Landing)

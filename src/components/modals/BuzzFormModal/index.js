@@ -6,21 +6,29 @@ import { CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { CreateBuzzForm } from 'components'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   modal: {
     width: 630,
-    backgroundColor: 'none',
     '& div.modal-content': {
+      margin: '0 auto',
+      backgroundColor: theme.background.primary,
       width: 630,
       borderRadius: '20px 20px !important',
       border: 'none',
-    }
+    },
+    '@media (max-width: 900px)': {
+      width: '97% !important',
+      '& div.modal-content': {
+        margin: '0 auto',
+        width: '97% !important',
+      },
+    },
   },
   modalBody: {
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
   },
-})
+}))
 
 const BuzzFormModal = (props) => {
   const { show, onHide } = props
@@ -28,9 +36,16 @@ const BuzzFormModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal show={show} onHide={onHide} dialogClassName={classes.modal}>
+      <Modal
+        backdrop="static"
+        keyboard={false}
+        show={show}
+        onHide={onHide}
+        dialogClassName={classes.modal}
+        animation={false}
+      >
         <ModalBody className={classes.modalBody}>
-          <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5, }} onClick={onHide}>
+          <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={onHide}>
             <CloseIcon />
           </IconButton>
           <CreateBuzzForm modal={true} hideModalCallback={onHide} />

@@ -1,5 +1,6 @@
 import {
   AppFrame,
+  TermsConditions,
   Home,
   Trending,
   Profile,
@@ -15,6 +16,8 @@ import {
   Search,
   SearchPosts,
   SearchPeople,
+  PrivacyPolicy,
+  Disclaimer,
 } from 'components'
 
 const routes =  [
@@ -24,7 +27,22 @@ const routes =  [
       {
         path: '/',
         exact: true,
-        component: Home
+        component: Home,
+      },
+      {
+        path: '/org/en/tos',
+        exact: true,
+        component: TermsConditions,
+      },
+      {
+        path: '/org/en/privacy',
+        exact: true,
+        component: PrivacyPolicy,
+      },
+      {
+        path: '/org/en/disclaimer',
+        exact: true,
+        component: Disclaimer,
       },
       {
         path: '/ug',
@@ -69,7 +87,7 @@ const routes =  [
             exact: true,
             component: SearchPeople,
           },
-        ]
+        ],
       },
       {
         path: '/search',
@@ -85,7 +103,7 @@ const routes =  [
             exact: true,
             component: SearchPeople,
           },
-        ]
+        ],
       },
       {
         path: '/tags',
@@ -124,8 +142,8 @@ const routes =  [
             path: '/ug/@:username/t/following',
             exact: true,
             component: AccountFollowing,
-          }
-        ]
+          },
+        ],
       },
       {
         path: '/@:username',
@@ -155,10 +173,10 @@ const routes =  [
             path: '/@:username/t/following',
             exact: true,
             component: AccountFollowing,
-          }
-        ]
+          },
+        ],
       },
-    ]
+    ],
   },
 ]
 

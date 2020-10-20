@@ -2,9 +2,24 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { isMobile } from 'react-device-detect'
 import { createUseStyles } from 'react-jss'
 
-const useStyle = createUseStyles({
+const addHover = (theme) => {
+  let style = {
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+  }
+
+  if(isMobile) {
+    style = {}
+  }
+
+  return style
+}
+
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -15,13 +30,11 @@ const useStyle = createUseStyles({
     width: '100%',
     overflow: 'hidden',
     minHeight: 150,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      backgroundColor: '#f5f8fa',
-    },
+    ...addHover(theme),
     cursor: 'pointer',
   },
   inline: {
@@ -70,7 +83,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -84,14 +97,14 @@ const useStyle = createUseStyles({
     pointerEvents: 'none',
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   paper: {
     pointerEvents: "auto",
     padding: 2,
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   button: {
     width: 85,
@@ -101,7 +114,10 @@ const useStyle = createUseStyles({
     padding: 0,
     margin: 0,
   },
-})
+  skeleton: {
+    color: 'red',
+  },
+}))
 
 const PostlistSkeleton = ({ loading }) => {
   const classes = useStyle()

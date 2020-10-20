@@ -9,14 +9,14 @@ import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
 import {
   setProfileIsVisited,
-  getFollowersRequest
+  getFollowersRequest,
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, FollowButton } from 'components'
 
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -30,12 +30,9 @@ const useStyle = createUseStyles({
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    borderBottom: '1px solid #e6ecf0',
-    '& a': {
-      color: 'black',
-    },
+    borderBottom: theme.border.primary,
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.postList.hover,
     },
     cursor: 'pointer !important',
   },
@@ -59,6 +56,7 @@ const useStyle = createUseStyles({
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -82,6 +80,9 @@ const useStyle = createUseStyles({
       borderRadius: '15px 15px',
     },
     cursor: 'pointer',
+    '& label': {
+      ...theme.font,
+    },
   },
   actionWrapper: {
     paddingTop: 10,
@@ -93,7 +94,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -103,7 +104,10 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-})
+  followButtonContainer: {
+    width: 80,
+  },
+}))
 
 const AccountFollowers = (props) => {
   const classes = useStyle()
@@ -178,6 +182,13 @@ const AccountFollowers = (props) => {
                     </div>
                   </div>
                 </Col>
+                <Col xs="auto">
+                  <div className={classes.followButtonContainer}>
+                    <FollowButton
+                      author={item.profile.name}
+                    />
+                  </div>
+                </Col>
               </Row>
             </div>
           </div>
@@ -201,7 +212,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setProfileIsVisited,
     getFollowersRequest,
-  }, dispatch)
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountFollowers)

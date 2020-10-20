@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { SideBarLeft, SideBarRight, SearchField, NotificationBox } from 'components'
+import React, { useState, useEffect } from 'react'
+import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
@@ -11,46 +11,36 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
 import { clearNotificationsRequest } from 'store/profile/actions'
+import { broadcastNotification } from 'store/interface/actions'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { useLastLocation } from 'react-router-last-location'
+import { useWindowDimensions } from 'services/helper'
 
-
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   main: {
     minHeight: '100vh',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
-  },
-  inner: {
-    width: '98%',
-    margin: '0 auto',
-  },
-  guardedContainer: {
-    '@media (min-width: 1200px)': {
-      '&.container': {
-        maxWidth: '1300px',
-      },
-    },
-  },
-  unGuardedContainer: {
-    '@media (min-width: 1200px)': {
-      '&.container': {
-        maxWidth: '1100px',
-      },
-    },
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
   },
   nav: {
-    borderBottom: '1px solid #e6ecf0',
-    borderLeft: '1px solid #e6ecf0',
-    borderRight: '1px solid #e6ecf0',
-    backgroundColor: 'white',
+    borderBottom: theme.border.primary,
+    borderLeft: theme.border.primary,
+    borderRight: theme.border.primary,
+    backgroundColor: theme.background.primary,
     zIndex: 2,
     overflow: 'hidden',
     width: '100%',
+  },
+  navTitle: {
+    fontFamily: 'Roboto, sans-serif',
+    display: 'inline-block',
+    verticalAlign: 'top',
+    ...theme.navbar.icon,
   },
   trendingWrapper: {
     width: '100%',
@@ -66,6 +56,7 @@ const useStyles = createUseStyles({
     marginLeft: 5,
     fontFamily: 'Segoe-Bold',
     fontSize: 18,
+    color: theme.font.color,
   },
   searchWrapper: {
     padding: 0,
@@ -75,7 +66,7 @@ const useStyles = createUseStyles({
     marginTop: 5,
     float: 'right',
   },
-})
+}))
 
 const GuardedAppFrame = (props) => {
   const {
@@ -84,16 +75,49 @@ const GuardedAppFrame = (props) => {
     searchRequest,
     clearSearchPosts,
     clearNotificationsRequest,
+    broadcastNotification,
     loading,
+    count,
   } = props
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
-  let params = queryString.parse(location.search) || ''
+  const lastLocation = useLastLocation()
+  const params = queryString.parse(location.search) || ''
   const [search, setSearch] = useState(params.q)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
+  const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
+  const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
+  const [mainContainerWidth, setMainContainerWidth] = useState(595)
+  const [minify, setMinify] = useState(false)
+  const [hideSideBarRight, setHideSideBarRight] = useState(false)
+  const { width } = useWindowDimensions()
+
+  useEffect(() => {
+    if(width >= 1366) {
+      setMinify(false)
+      setMainContainerWidth(595)
+      setHideSideBarRight(false)
+      setSideBarLeftWidth(270)
+      setSideBarRightWidth(350)
+    } else if(width >= 1026 && width < 1366) {
+      setMinify(true)
+      setMainContainerWidth(595)
+      setHideSideBarRight(false)
+      setSideBarLeftWidth(55)
+      setSideBarRightWidth(300)
+    } else if(width >=706 && width < 1026) {
+      setMinify(true)
+      setMainContainerWidth(595)
+      setHideSideBarRight(true)
+      setSideBarLeftWidth(60)
+    } else {
+      setMinify(true)
+      setSideBarLeftWidth(55)
+      setHideSideBarRight(true)
+      setMainContainerWidth(width-100)
+    }
+  }, [width])
+
 
   let title = 'Home'
 
@@ -125,12 +149,11 @@ const GuardedAppFrame = (props) => {
     title = 'Search'
   }
 
-
   const handleClickBackButton = () => {
-    try {
-      history.goBack()
-    } catch(e) {
+    if(!lastLocation) {
       history.replace('/')
+    } else {
+      history.goBack()
     }
   }
 
@@ -148,43 +171,44 @@ const GuardedAppFrame = (props) => {
     }
   }
 
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
 
   const handleClearNotification = () => {
     clearNotificationsRequest()
       .then(result => {
-        setShowSnackbar(true)
         if(result.success) {
-          setMessage('Successfully marked all your notifications as read')
+          broadcastNotification('success', 'Successfully marked all your notifications as read')
         } else {
-          setSeverity('error')
-          setMessage('Failed marking all notifications as read')
+          broadcastNotification('error', 'Failed marking all notifications as read')
         }
       })
   }
 
+  useEffect(() => {
+    if(typeof params === 'object') {
+      setSearch(params.q)
+    }
+  }, [params])
+
   return (
     <React.Fragment>
-      <Row>
+      <Row style={{ padding: 0, margin: 0 }}>
         <Col xs="auto" className={classes.clearPadding}>
-          <div style={{ width: 270 }}>
-          <Sticky>
-            {({ style }) => (
-              <div style={{...style}}>
-                <SideBarLeft/>
-              </div>
-            )}
-          </Sticky>
+          <div style={{ width: sideBarLeftWidth }}>
+            <Sticky>
+              {({ style }) => (
+                <div style={{...style}}>
+                  <SideBarLeft minify={minify} />
+                </div>
+              )}
+            </Sticky>
           </div>
         </Col>
         <Col xs="auto" className={classes.clearPadding}>
-          <div style={{ width: 595 }}>
+          <div style={{ width: mainContainerWidth }}>
             <Sticky>
               {({ style }) => (
                 <Navbar style={style} className={classes.nav}>
-                  <Navbar.Brand style={{ fontFamily: 'Roboto, sans-serif', display: 'inline-block', verticalAlign: 'top' }}>
+                  <Navbar.Brand className={classes.navTitle}>
                     {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                       <IconButton onClick={handleClickBackButton} size="small">
                         <BackArrowIcon />
@@ -207,11 +231,11 @@ const GuardedAppFrame = (props) => {
                       />
                     </div>
                   )}
-                  {title === 'Notifications' && (
+                  {title === 'Notifications' && count.unread !== 0 && (
                     <div style={{ width: '100%' }}>
                       <ContainedButton
                         fontSize={12}
-                        style={{ float: 'right', marginTop: 5, }}
+                        style={{ float: 'right', marginTop: 5 }}
                         transparent={true}
                         label="Mark all as read"
                         loading={loading}
@@ -231,30 +255,27 @@ const GuardedAppFrame = (props) => {
             </div>
           </div>
         </Col>
-        <Col xs={3}>
-          <div style={{ width: 350 }}>
-            <Sticky>
-              {({ style }) => (
-                <div style={style}>
-                  <SideBarRight hideSearchBar={false} />
-                </div>
-              )}
-            </Sticky>
-          </div>
-        </Col>
+        {!hideSideBarRight && (
+          <Col xs="auto">
+            <div style={{ width: sideBarRightWidth }}>
+              <Sticky>
+                {({ style }) => (
+                  <div style={style}>
+                    <SideBarRight hideSearchBar={false} />
+                  </div>
+                )}
+              </Sticky>
+            </div>
+          </Col>
+        )}
       </Row>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
+  count: state.polling.get('count'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -262,7 +283,8 @@ const mapDispatchToProps = (dispatch) => ({
     searchRequest,
     clearSearchPosts,
     clearNotificationsRequest,
-  }, dispatch)
+    broadcastNotification,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GuardedAppFrame)

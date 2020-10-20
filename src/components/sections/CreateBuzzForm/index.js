@@ -1,33 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
+import Box from '@material-ui/core/Box'
+import IconButton from '@material-ui/core/IconButton'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { createUseStyles } from 'react-jss'
 import {
   TextArea,
   ContainedButton,
   Avatar,
   UploadIcon,
-  HashtagLoader,
+  Spinner,
 } from 'components/elements'
-import { MarkdownViewer, NotificationBox } from 'components'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import { broadcastNotification } from 'store/interface/actions'
+import { MarkdownViewer } from 'components'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, publishPostRequest, setPageFrom, } from 'store/posts/actions'
+import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
+import { isMobile } from 'react-device-detect'
 
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   container: {
     width: '100%',
-    borderBottom: '10px solid #e6ecf0',
+    borderBottom: theme.border.thick,
   },
   containerModal: {
     width: '100%',
-    borderTop: '1px solid #e6ecf0',
+    borderTop: theme.border.primary,
   },
   row: {
     width: '98%',
@@ -75,19 +77,35 @@ const useStyles = createUseStyles({
     paddingBottom: 10,
     '& img': {
       border: '1px solid #ccd6dd',
-      borderRadius: '10px 10px',
+      borderRadius: '16px 16px',
     },
     '& iframe': {
-      border: '1px solid #ccd6dd',
-      borderRadius: '10px 10px',
+      borderRadius: '16px 16px',
     },
   },
   note: {
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
     color: '#d32f2f',
-  }
-})
+  },
+  actionLabels: {
+    fontFamily: 'Segoe-Bold',
+    fontSize: 14,
+    color: '#e53935',
+    paddingTop: 2,
+  },
+  disabled: {
+    backgroundColor: 'lightgray !important',
+  },
+  previewTitle: {
+    ...theme.preview.title,
+  },
+  separator: {
+    height: 0,
+    width: '100%',
+    border: theme.border.primary,
+  },
+}))
 
 const KeyCodes = {
   comma: 188,
@@ -102,9 +120,6 @@ const CreateBuzzForm = (props) => {
   const [wordCount, setWordCount] = useState(0)
   const [content, setContent] = useState('')
   const [tags, setTags] = useState([])
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
 
   const {
     user,
@@ -115,6 +130,7 @@ const CreateBuzzForm = (props) => {
     publishing,
     modal = false,
     hideModalCallback = () => {},
+    broadcastNotification,
     setPageFrom,
   } = props
 
@@ -138,20 +154,35 @@ const CreateBuzzForm = (props) => {
     setContent(value)
   }
 
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
-
   const handleFileSelect = () => {
-    inputRef.current.click()
+    const target = document.getElementById('file-upload')
+    if (isMobile) {
+      const touch = new Touch({
+        identifier: "123",
+        target: target,
+      })
+
+      const touchEvent = new TouchEvent("touchstart", {
+        touches: [touch],
+        view: window,
+        cancelable: true,
+        bubbles: true,
+      })
+
+      target.dispatchEvent(touchEvent)
+      target.click()
+    }
+    target.click()
   }
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
-    uploadFileRequest(files).then((images) => {
-      const lastImage = images[images.length-1]
-      const contentAppend = `${content} ${lastImage}`
-      setContent(contentAppend)
+    uploadFileRequest(files).then((image) => {
+      const lastImage = image[image.length-1]
+      if(lastImage !== undefined) {
+        const contentAppend = `${content} <br /> ${lastImage}`
+        setContent(contentAppend)
+      }
     })
   }
 
@@ -161,15 +192,13 @@ const CreateBuzzForm = (props) => {
         if(data.success) {
           setPageFrom(null)
           const { author, permlink } = data
-          setShowSnackbar(true)
           hideModalCallback()
-          setMessage('You successfully published a post')
+          broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
-          setSeverity('error')
-          setMessage('You failed publishing a post')
+          broadcastNotification('error', 'You failed publishing a post')
         }
-    })
+      })
   }
 
   const handleDelete = (i) => {
@@ -200,21 +229,16 @@ const CreateBuzzForm = (props) => {
         </div>
         <div className={classNames(classes.inline, classes.right)}>
           {publishing && (
-            <div style={{ width: '100%', paddingTop: 10, }}>
+            <div style={{ width: '100%', paddingTop: 10 }}>
               <Box  position="relative" display="inline-flex">
-                <HashtagLoader top={0} size={20} loading={publishing} />&nbsp;
-                <label style={{ marginTop: -3 }}>Broadcasting your buzz to the network, please wait ...</label>&nbsp;
+                <Spinner top={0} size={20} loading={publishing} />&nbsp;
+                <label className={classes.actionLabels}>broadcasting your buzz to the network, please wait ...</label>&nbsp;
               </Box>
             </div>
           )}
-          {!publishing && (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
-          {tags.length === 0 && (
-            <div style={{ width: '100%' }}>
-              <label className={classes.note}>Please add atleast 1 tag</label>
-            </div>
-          )}
-          {!publishing &&(
-            <div style={{ width: '100%' }}>
+          {(!publishing && !loading) &&  (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {!publishing && content.length !== 0 && (
+            <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
                 placeholder="Add tags"
                 tags={tags}
@@ -227,39 +251,51 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {loading && (
-            <div style={{ width: '100%'}}>
+            <div style={{ width: '100%', paddingTop: 5 }}>
               <Box  position="relative" display="inline-flex">
-                <HashtagLoader top={0} size={20} loading={loading} />&nbsp;
-                <label style={{ marginTop: -2 }}>Uploading image, please wait ...</label>&nbsp;
+                <Spinner top={-10} size={20} loading={loading} />&nbsp;
+                <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
               </Box>
             </div>
           )}
           {content.length !== 0 && (
             <div className={classes.previewContainer}>
-              <h6>Buzz preview</h6>
+              <h6 className={classes.previewTitle}>Buzz preview</h6>
               <MarkdownViewer content={content} minifyAssets={false}/>
-              <hr />
+              <div className={classes.separator} />
             </div>
           )}
           {!publishing && (
             <React.Fragment>
               <ContainedButton
-                disabled={loading || publishing || content.length === 0 || tags.length === 0}
+                disabled={loading || publishing || content.length === 0}
                 label="Buzz it"
                 className={classes.float}
                 onClick={handleClickPublishPost}
               />
               <input
+                id="file-upload"
                 type='file'
                 accept='image/*'
+                multiple={false}
                 ref={inputRef}
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <IconButton size="medium" onClick={handleFileSelect}>
-                <UploadIcon />
-              </IconButton>
-              <Box style={{ float: 'right', marginRight: 10, paddingTop: 15, }} position="relative" display="inline-flex">
+              <label for="file-upload">
+                <IconButton
+                  size="medium"
+                  onClick={handleFileSelect}
+                  disabled={(content.length + 88) > 280}
+                  classes={{
+                    root: classes.root,
+                    disabled: classes.disabled,
+                  }}
+                >
+                  <UploadIcon />
+                </IconButton>
+              </label>
+              <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
                     circle: classes.circle,
@@ -273,12 +309,6 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </div>
   )
 }
@@ -295,7 +325,8 @@ const mapDispatchToProps = (dispatch) => ({
     uploadFileRequest,
     publishPostRequest,
     setPageFrom,
-  }, dispatch)
+    broadcastNotification,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBuzzForm)

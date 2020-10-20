@@ -6,20 +6,22 @@ import {
   HiveIcon,
   ContainedButton,
   HeartIconRed,
-  HashtagLoader,
+  Spinner,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Chip from '@material-ui/core/Chip'
+import moment from 'moment'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
-import { ReplyFormModal, NotificationBox } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
 import { upvoteRequest } from 'store/posts/actions'
-import moment from 'moment'
+import { openReplyModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
-import Chip from '@material-ui/core/Chip'
 import { bindActionCreators } from 'redux'
+import { isMobile } from 'react-device-detect'
 
 const PrettoSlider = withStyles({
   root: {
@@ -27,7 +29,8 @@ const PrettoSlider = withStyles({
     height: 5,
     '& .MuiSlider-markLabel': {
       fontSize: 12,
-    }
+      color: '#d32f2f',
+    },
   },
   thumb: {
     height: 15,
@@ -101,31 +104,47 @@ const marks = [
   },
 ]
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+  icon: {
+    ...theme.icon,
+    ...theme.font,
+  },
+  spinner: {
+    ...theme.font,
+  },
   inline: {
     display: 'inline-block',
     verticalAlign: 'top',
     fontSize: 14,
+    ...theme.font,
   },
   actionWrapperSpace: {
     paddingRight: 30,
     fontSize: 14,
+    whiteSpace: 'nowrap',
   },
   button: {
     height: 33,
     fontSize: 14,
   },
   chip: {
-    border: '1px solid #e53935',
-    marginTop: -5,
+    border: 'none !important',
+    float: 'right !important',
+    '& span': {
+      fontFamily: 'Segoe-Bold',
+      marginTop: -5,
+    },
   },
   sliderWrapper: {
     width: '98%',
-    paddingRight: 30
-  }
-})
+    paddingRight: 30,
+  },
+  iconButton: {
+    ...theme.iconButton.hover,
+  },
+}))
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false, }) => {
+const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
   return (
     <div className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
       <div className={inlineClass}>
@@ -156,20 +175,21 @@ const PostActions = (props) => {
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
-    disableExtraPadding = false
+    disableExtraPadding = false,
+    openReplyModal,
+    broadcastNotification,
+    disableUpvote = false,
+    scrollIndex = 0,
+    recomputeRowIndex = () => {},
   } = props
 
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
   const [vote, setVote] = useState(voteCount)
-  const [replyStateCount, setReplyStateCount] = useState(replyCount)
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
-  const [showSnackbar, setShowSnackBar] = useState(false)
-  const [message, setMessage] = useState()
-  const [severity, setSeverity] = useState('success')
+
   const { is_authenticated } = user
-  const [open, setOpen] = useState(false)
 
   let extraPadding = { paddingTop: 10 }
 
@@ -177,56 +197,53 @@ const PostActions = (props) => {
     extraPadding = {}
   }
 
-  const handleSnackBarClose = () => {
-    setShowSnackBar(false)
-  }
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
+    if(replyRef === 'list') {
+      recomputeRowIndex(scrollIndex)
+    }
   }
 
   const handleClickHideSlider = () => {
     setShowSlider(false)
+    if(replyRef === 'list') {
+      recomputeRowIndex(scrollIndex)
+    }
   }
 
   const handleChange = (e, value) => {
     setSliderValue(value)
   }
 
-  const handleClickUpvote = (author, permlink) => () => {
+  const handleClickUpvote = () => {
+    if(replyRef === 'list') {
+      recomputeRowIndex(scrollIndex)
+    }
     setShowSlider(false)
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
-      .then(() => {
-        setShowSnackBar(true)
-        setVote(vote + 1)
-        setUpvoted(true)
-        setLoading(false)
-        setMessage(`Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+      .then(({ success }) => {
+        if(success) {
+          setVote(vote + 1)
+          setUpvoted(true)
+          setLoading(false)
+          broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+        } else {
+          setUpvoted(false)
+          broadcastNotification('error', `Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
+          setLoading(false)
+        }
       })
       .catch(() => {
         setUpvoted(false)
-        setMessage(`Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
-        setSeverity('error')
+        broadcastNotification('error', `Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
         setLoading(false)
       })
   }
 
-  const handleClickReply = (author, permlink) => () => {
-    setOpen(true)
-  }
-
-  const handleOnClose = () => {
-    setOpen(false)
-  }
-
-  const onReplyDone = ({ message, severity }) => {
-    if(severity === 'success') {
-      setReplyStateCount(replyStateCount+1)
-    }
-    setShowSnackBar(true)
-    setMessage(message)
-    setSeverity(severity)
+  const handleClickReply = () => {
+    openReplyModal(author, permlink, body, treeHistory, replyRef)
   }
 
   const getPayoutDate = (date) => {
@@ -239,7 +256,7 @@ const PostActions = (props) => {
       {!showSlider && (
         <div>
           <Row style={{ width: '100%', ...extraPadding }}>
-            <Col>
+            <Col xs={!isMobile ? 0 : 4}>
               {!loading && upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
@@ -247,7 +264,7 @@ const PostActions = (props) => {
                   icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
                   hideStats={hideStats}
                   stat={(
-                    <label style={{ marginLeft: 5, }}>
+                    <label style={{ marginLeft: 5 }}>
                       {vote}
                     </label>
                   )}
@@ -256,13 +273,13 @@ const PostActions = (props) => {
               {!loading && !upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  icon={<IconButton disabled={!is_authenticated} size="small"><HeartIcon /></IconButton>}
+                  inlineClass={classNames(classes.inline, classes.icon)}
+                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
                   hideStats={hideStats}
-                  disabled={!is_authenticated}
+                  disabled={!is_authenticated || disableUpvote}
                   onClick={handleClickShowSlider}
                   stat={(
-                    <label style={{ marginLeft: 5, }}>
+                    <label style={{ marginLeft: 5 }}>
                       {vote}
                     </label>
                   )}
@@ -271,34 +288,34 @@ const PostActions = (props) => {
               {loading && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  icon={<HashtagLoader top={3} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
+                  inlineClass={classNames(classes.inline, classes.spinner)}
+                  icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
                   hideStats={hideStats}
                   onClick={handleClickShowSlider}
                   stat={(
-                    <label style={{ marginLeft: 5, }}>
+                    <label style={{ marginLeft: 5 }}>
                       {voteCount}
                     </label>
                   )}
                 />
               )}
             </Col>
-            <Col>
+            <Col xs={!isMobile ? 0 : 4}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
-                inlineClass={classes.inline}
-                icon={<IconButton size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
+                inlineClass={classNames(classes.inline, classes.icon)}
+                icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
                 hideStats={hideStats}
                 disabled={!is_authenticated}
-                onClick={handleClickReply(author, permlink)}
+                onClick={handleClickReply}
                 stat={(
-                  <label style={{ marginLeft: 5, }}>
-                    {replyStateCount}
+                  <label style={{ marginLeft: 5 }}>
+                    {replyCount}
                   </label>
                 )}
               />
             </Col>
-            <Col xs="auto">
+            <Col xs={!isMobile ? 'auto' : 4}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
@@ -307,11 +324,13 @@ const PostActions = (props) => {
                   <Chip
                     className={classes.chip}
                     size='small'
-                    icon={<HiveIcon style={{ paddingLeft: 5, }}/>}
+                    icon={<HiveIcon style={{ paddingLeft: 5 }}/>}
                     label={(
-                      <span style={{ color: '#e53935', fontSize: 12, }}>
+                      <span style={{ color: '#e53935', fontSize: 14 }}>
                         ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
-                        {payoutAt ? getPayoutDate(payoutAt) : ''}
+                        {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
+                        {!payout && isMobile ? '0.00' : ''}&nbsp;
+                        {!isMobile && payoutAt ? getPayoutDate(payoutAt) : ''}
                       </span>
                     )}
                     color="secondary"
@@ -327,7 +346,7 @@ const PostActions = (props) => {
         <div className={classes.sliderWrapper}>
           <Row>
             <Col xs="auto">
-              <ContainedButton onClick={handleClickUpvote(author, permlink)} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
+              <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
             </Col>
             <Col style={{ paddingLeft: 0 }}>
               <ContainedButton
@@ -348,22 +367,6 @@ const PostActions = (props) => {
           </div>
         </div>
       )}
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
-      <ReplyFormModal
-        treeHistory={treeHistory}
-        body={body}
-        show={open}
-        onHide={handleOnClose}
-        author={author}
-        permlink={permlink}
-        replyRef={replyRef}
-        onReplyDone={onReplyDone}
-      />
     </React.Fragment>
   )
 }
@@ -375,7 +378,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     upvoteRequest,
-  }, dispatch)
+    openReplyModal,
+    broadcastNotification,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostActions)

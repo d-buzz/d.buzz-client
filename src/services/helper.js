@@ -1,5 +1,16 @@
+import { useState, useEffect } from 'react'
+import diff_match_patch from 'diff-match-patch'
+const dmp = new diff_match_patch()
+
 export const anchorTop = () => {
   window.scrollTo(0, 0)
+}
+
+export const createPatch = (text1, text2) => {
+  if (!text1 && text1 === '') return undefined
+  const patches = dmp.patch_make(text1, text2)
+  const patch = dmp.patch_toText(patches)
+  return patch
 }
 
 export const getAuthorName = (profileMeta, postingMeta) => {
@@ -100,8 +111,6 @@ export const getProfileMetaData = (profile = {}) => {
 export const calculatePayout = (data) => {
 
   const {
-    author_rewards = null,
-    total_pending_payout_value,
     pending_payout_value,
     total_payout_value,
     curator_payout_value,
@@ -113,16 +122,12 @@ export const calculatePayout = (data) => {
   if(is_paidout) {
 
     if(is_paidout) {
-      payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
+      payout = parseFloat(`${pending_payout_value}`.replace('HBD'))
     } else {
       payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
     }
   } else {
-    if(author_rewards === 0) {
-      payout = parseFloat(`${total_pending_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
-    } else {
-      payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
-    }
+    payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
   }
 
   payout = payout.toFixed(2)
@@ -132,4 +137,33 @@ export const calculatePayout = (data) => {
   }
 
   return payout
+}
+
+const getWindowDimensions = () => {
+  const { innerWidth: width, innerHeight: height } = window
+  return { width, height }
+}
+
+export const useWindowDimensions = () => {
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowDimensions(getWindowDimensions())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return windowDimensions
+}
+
+export function hasCompatibleKeychain() {
+  return (
+    window.hive_keychain &&
+    window.hive_keychain.requestSignBuffer &&
+    window.hive_keychain.requestBroadcast &&
+    window.hive_keychain.requestSignedCall
+  )
 }

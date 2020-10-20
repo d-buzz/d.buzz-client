@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { getProfileMetaData } from 'services/helper'
 import { AvatarlistSkeleton } from 'components'
 
-const useStyle = createUseStyles({
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '95%',
     margin: '0 auto',
@@ -32,7 +32,7 @@ const useStyle = createUseStyles({
       color: 'black',
     },
     '&:hover': {
-      backgroundColor: '#f5f8fa',
+      ...theme.right.list.hover,
     },
     cursor: 'pointer',
   },
@@ -55,6 +55,7 @@ const useStyle = createUseStyles({
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -88,7 +89,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -98,7 +99,12 @@ const useStyle = createUseStyles({
       color: '#d32f2f',
     },
   },
-})
+  searchWrapper: {
+    '& h6': {
+      ...theme.font,
+    },
+  },
+}))
 
 const SearchPeople = (props) => {
   const classes = useStyle()
@@ -112,37 +118,37 @@ const SearchPeople = (props) => {
   return (
     <React.Fragment>
       {(items.people || []).map((item) => (
-          <div className={classes.wrapper}>
-            <div className={classes.row}>
-              <Link to={`/@${item.account}`}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Avatar author={item.account} />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <p className={classes.name}>
+        <div className={classes.wrapper}>
+          <div className={classes.row}>
+            <Link to={`/@${item.account}`}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={item.account} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <p className={classes.name}>
                           @{item.account} <Chip  size="small" label={item.repscore} />
-                        </p>
-                        <div className={classes.content}>
-                          <label className={classes.username}>
-                            {getAbout(item.profile)}
-                          </label>
-                        </div>
+                      </p>
+                      <div className={classes.content}>
+                        <label className={classes.username}>
+                          {getAbout(item.profile)}
+                        </label>
                       </div>
                     </div>
-                  </Col>
-                </Row>
-              </Link>
-            </div>
+                  </div>
+                </Col>
+              </Row>
+            </Link>
           </div>
-        ))}
-        <AvatarlistSkeleton loading={loading} />
-        {(!loading && (items.people || []).length === 0) &&
-          (<center><br/><h6>No people found with that username</h6></center>)}
+        </div>
+      ))}
+      <AvatarlistSkeleton loading={loading} />
+      {(!loading && (items.people || []).length === 0) &&
+          (<center><br/><div className={classes.searchWrapper}><h6>No people found with that username</h6></div></center>)}
     </React.Fragment>
   )
 }

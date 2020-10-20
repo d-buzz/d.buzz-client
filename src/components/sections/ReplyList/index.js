@@ -9,25 +9,28 @@ import {
   MarkdownViewer,
   PostTags,
   PostActions,
-  NotificationBox,
-  UserDialog,
 } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
+import classNames from 'classnames'
+import { clearAppendReply, setPageFrom } from 'store/posts/actions'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { getAuthorName } from 'services/helper'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   row: {
-    width: '98%',
-    margin: '0 auto',
+    width: '100%',
     paddingTop: 20,
-    marginBottom: 10,
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+    cursor: 'pointer',
   },
   wrapper: {
     width: '100%',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     overflow: 'hidden',
     '& a': {
       color: 'black',
@@ -51,6 +54,16 @@ const useStyles = createUseStyles({
     paddingBottom: 0,
     marginBottom: 0,
     fontSize: 14,
+    width: 'max-content',
+    color: `${theme.font.color} !important`,
+    '& a': {
+      ...theme.font,
+    },
+  },
+  note: {
+    marginTop: -10,
+    fontSize: 14,
+    ...theme.font,
   },
   username: {
     color: '#657786',
@@ -89,7 +102,7 @@ const useStyles = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -100,14 +113,34 @@ const useStyles = createUseStyles({
     },
   },
   link: {
-    color: 'black !important',
+    ...theme.font,
     fontSize: 14,
     '&:hover': {
-      color: 'black',
+      color: theme.font.color,
       textDecoration: 'underline !important',
     },
   },
-})
+  inner: {
+    width: '95%',
+    margin: '0 auto',
+  },
+  hideNote: {
+    fontSize: 14,
+    width: '98%',
+    margin: '0 auto',
+    marginTop: 10,
+    color: '#d32f2f',
+    paddingBottom: 10,
+    fontFamily: 'Segoe-Bold',
+  },
+  thread: {
+    margin: '0 auto',
+    width: 2,
+    backgroundColor: '#dc354561',
+    height: '100%',
+    flexGrow: 1,
+  },
+}))
 
 const countReplies = async (replies = []) => {
   let counter = 0
@@ -120,18 +153,22 @@ const countReplies = async (replies = []) => {
 }
 
 const ReplyList = (props) => {
-  let { replies, expectedCount, user, append } = props
+  let {
+    replies,
+  } = props
+  const {
+    expectedCount,
+    user,
+    append,
+    setPageFrom,
+    broadcastNotification,
+  } = props
+  const { clearAppendReply } = props
   replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState('')
-  const [severity, setSeverity] = useState('error')
-
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
-  }
+  const history = useHistory()
 
   useEffect(() => {
     countReplies(replies)
@@ -160,10 +197,10 @@ const ReplyList = (props) => {
         const firstIndex = tree[0]
         tree.splice(0, 1)
 
-        let iterableState = [...repliesState]
+        const iterableState = [...repliesState]
         const first = iterableState[firstIndex]
 
-        let prefix = 'first'
+        const prefix = 'first'
         let rep = ''
 
         if(tree.length !== 0 ) {
@@ -174,8 +211,11 @@ const ReplyList = (props) => {
             }
           })
         } else {
-           rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
+          rep = `.replies = [...${prefix}.replies, ${JSON.stringify(append)}]`
         }
+
+        // clear appended reply
+        clearAppendReply()
 
         const combine = `${prefix}${rep}`
         // eslint-disable-next-line
@@ -183,9 +223,7 @@ const ReplyList = (props) => {
 
         iterableState[firstIndex] = first
         setRepliesState(iterableState)
-        setShowSnackbar(true)
-        setSeverity('success')
-        setMessage(`Succesfully replied to @${root_author}/${root_permlink}`)
+        broadcastNotification('success', `Succesfully replied to @${root_author}/${root_permlink}`)
       }
     }
   // eslint-disable-next-line
@@ -200,7 +238,6 @@ const ReplyList = (props) => {
       parent_author,
       active_votes,
       children: replyCount,
-      profile = {},
       meta,
       payout_at,
     } = reply
@@ -216,24 +253,6 @@ const ReplyList = (props) => {
     let { replies } = reply
     replies = replies.filter((reply) => reply.body.length <= 280 )
 
-    let profile_json_metadata = null
-    let profile_posting_metadata = null
-
-    if(
-      'json_metadata' in profile
-      && profile.json_metadata.includes('"name":')
-      && profile.json_metadata.includes('"profile":')
-      ) {
-      profile_json_metadata = profile.json_metadata
-    }
-
-    if(
-      'posting_metadata' in profile
-      && profile.posting_metadata.includes('"name":')
-      && profile.posting_metadata.includes('"profile":')
-      ) {
-      profile_posting_metadata = profile.posting_metadata
-    }
 
     let hasUpvoted = false
 
@@ -245,75 +264,88 @@ const ReplyList = (props) => {
       authorLink = `/ug${authorLink}`
     }
 
-    const [open, setOpen] = useState(false)
     const popoverAnchor = useRef(null)
 
-    const openPopOver = (e) => {
-      setOpen(true)
+    const generateLink = (author, permlink) =>  {
+      let link = ''
+      if(!is_authenticated) {
+        link = '/ug'
+      }
+
+      link += `/@${author}/c/${permlink}`
+
+      return link
     }
 
-    const closePopOver = (e) => {
-      setOpen(false)
+    const handleOpenContent = (e) => {
+      const { target } = e
+      let { href } = target
+      const hostname = window.location.hostname
+
+      e.preventDefault()
+      if(href && !href.includes(hostname)) {
+        window.open(href, '_blank')
+      } else {
+        if(!href) {
+          setPageFrom(null)
+          history.push(generateLink(author, permlink))
+        } else {
+          const split = href.split('/')
+          href = `/${split[3]}`
+          history.push(href)
+        }
+      }
     }
 
     return (
       <React.Fragment>
         <div className={classes.row}>
-          <Row>
-            <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left}>
-                <Avatar author={author} />
-                {replies.length !== 0 && (
-                  <div style={{ margin: '0 auto', width: 2, backgroundColor: '#dc354561', height: '100%', flexGrow: 1, }} />
-                )}
-              </div>
-            </Col>
-            <Col>
-              <div className={classes.right}>
-                <div className={classes.content}>
-                  <Link
-                    ref={popoverAnchor}
-                    to={`${authorLink}?ref=replies`}
-                    className={classes.link}
-                    onMouseEnter={openPopOver}
-                    onMouseLeave={closePopOver}
-                  >
-                    <p className={classes.name}>
-                      {profile_json_metadata || profile_posting_metadata ? getAuthorName(profile_json_metadata, profile_posting_metadata) : `@${author}`}
-                    </p>
-                  </Link>
-                  <label className={classes.username}>
-                    @{author} &bull;&nbsp;
-                    {moment(`${created}Z`).local().fromNow()}
-                  </label>
-                  <p style={{ marginTop: -10, fontSize: 14, }}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
-                  <MarkdownViewer minifyAssets={false} content={body} />
-                  <PostTags meta={meta} />
+          <div className={classes.inner}>
+            <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+              <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent}>
+                <div className={classes.left}>
+                  <Avatar author={author} />
+                  {replies.length !== 0 && (
+                    <div className={classes.thread} />
+                  )}
                 </div>
-                <div className={classes.actionWrapper}>
-                  <PostActions
-                    treeHistory={treeHistory}
-                    body={body}
-                    hasUpvoted={hasUpvoted}
-                    author={author}
-                    permlink={permlink}
-                    voteCount={active_votes.length}
-                    replyCount={replyCount}
-                    payout={payout}
-                    payoutAt={payout_at}
-                    replyRef="replies"
-                  />
+              </Col>
+              <Col>
+                <div className={classes.right}>
+                  <div className={classes.content} onClick={handleOpenContent}>
+                    <Link
+                      ref={popoverAnchor}
+                      to={`${authorLink}?ref=replies`}
+                      className={classNames(classes.link, classes.name)}
+                    >
+                      {author}
+                    </Link>
+                    <label className={classes.username}>
+                      &nbsp;&bull;&nbsp;
+                      {moment(`${created}Z`).local().fromNow()}
+                    </label>
+                    <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    <MarkdownViewer minifyAssets={false} content={body} />
+                    <PostTags meta={meta} />
+                  </div>
+                  <div className={classes.actionWrapper}>
+                    <PostActions
+                      treeHistory={treeHistory}
+                      body={body}
+                      hasUpvoted={hasUpvoted}
+                      author={author}
+                      permlink={permlink}
+                      voteCount={active_votes.length}
+                      replyCount={replyCount}
+                      payout={payout}
+                      payoutAt={payout_at}
+                      replyRef="replies"
+                    />
+                  </div>
                 </div>
-              </div>
-            </Col>
-            <UserDialog
-              open={open}
-              anchorEl={popoverAnchor.current}
-              onMouseEnter={openPopOver}
-              onMouseLeave={closePopOver}
-              profile={profile}
-            />
-          </Row>
+              </Col>
+            </Row>
+          </div>
         </div>
         {replies.length !== 0 && (
           <React.Fragment>
@@ -330,7 +362,7 @@ const ReplyList = (props) => {
     <React.Fragment>
       {(expectedCount !== replyCounter) && (
         <center>
-          <p style={{ fontSize: 15, width: '98%', margin: '0 auto', marginTop: 10, color: '#d32f2f' }}>
+          <p className={classes.hideNote}>
             Some replies may not appear because it exceeds 280 characters
           </p>
         </center>
@@ -340,12 +372,6 @@ const ReplyList = (props) => {
           <RenderReplies reply={reply} treeHistory={index} />
         </div>
       ))}
-      <NotificationBox
-        show={showSnackbar}
-        message={message}
-        severity={severity}
-        onClose={handleSnackBarClose}
-      />
     </React.Fragment>
   )
 }
@@ -355,4 +381,12 @@ const mapStateToProps = (state) => ({
   append: state.posts.get('appendReply'),
 })
 
-export default connect(mapStateToProps)(ReplyList)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    clearAppendReply,
+    setPageFrom,
+    broadcastNotification,
+  }, dispatch),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReplyList)

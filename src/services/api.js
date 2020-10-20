@@ -13,9 +13,10 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
-import moment from 'moment'
+import fleek from '@fleekhq/fleek-storage-js'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
+const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 
 const endpoints = [
   'https://api.openhive.network',
@@ -26,12 +27,14 @@ const endpoints = [
   'https://rpc.esteem.app',
   'https://hived.privex.io',
   'https://techcoderx.com',
-  'https://rpc.esteem.app'
+  'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://rpc.esteem.app' })
+api.setOptions({ url: 'https://api.openhive.network' })
 
 config.set('alternative_api_endpoints', endpoints)
+config.set('rebranded_api', true)
+broadcast.updateOperations()
 
 const visited = []
 
@@ -39,24 +42,38 @@ export const hashBuffer = (buffer) => {
   return hash.sha256(buffer)
 }
 
-const invokeFilter = (item) => {
-  return (item.body.length <= 280 && item.community === `${appConfig.TAG}`)
+export const invokeFilter = (item) => {
+  const body = stripHtml(item.body)
+  return (body.length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
-export const callBridge = async(method, params) => {
+export const removeFootNote = (data) => {
+  return data.forEach(item => item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', ''))
+}
+
+export const callBridge = async(method, params, appendParams = true) => {
   return new Promise((resolve, reject) => {
-    params = { "tag": `${appConfig.TAG}`, limit: 5, ...params,}
+
+    if(appendParams) {
+      params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
+    }
 
     api.call('bridge.' + method, params, async(err, data) => {
       if (err) {
         reject(err)
       }else {
-        const result = data.filter((item) => invokeFilter(item))
+        let lastResult = []
 
-        if(result.length !== 0) {
-          const getProfiledata = mapFetchProfile(result)
-          await Promise.all([getProfiledata])
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
         }
+
+        removeFootNote(data)
+
+        let result = data.filter((item) => invokeFilter(item))
+
+        result = [...result, ...lastResult]
+
         resolve(result)
       }
     })
@@ -97,17 +114,16 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-
+    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
       } else {
-
-        let authors = []
+        const authors = []
         let profile = []
 
         const arr = Object.values(data)
-        let uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
+        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
 
         uniqueAuthors.forEach((item) => {
           if(!authors.includes(item)) {
@@ -129,15 +145,16 @@ export const fetchDiscussions = (author, permlink) => {
 
         const getChildren = (reply) => {
           const { replies } = reply
-          let children = []
+          const children = []
 
           replies.forEach(async(item) => {
-
             let content = data[item]
 
             if(!content) {
               content = item
             }
+
+            content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
 
             if(content.replies.length !== 0) {
               const child = getChildren(content)
@@ -148,7 +165,6 @@ export const fetchDiscussions = (author, permlink) => {
             visited.push(info[0])
             content.profile = info[0]
             children.push(content)
-
           })
 
           return children
@@ -164,7 +180,6 @@ export const fetchDiscussions = (author, permlink) => {
     })
   })
 }
-
 
 export const getUnreadNotificationsCount = async(account) => {
   return new Promise((resolve, reject) => {
@@ -206,48 +221,36 @@ export const getCommunityRole = async(observer) => {
 }
 
 // get_account_posts doesn't use tag
-export const fetchAccountPosts = (account, start_permlink = '', start_author = '', sort = 'posts') => {
+export const fetchAccountPosts = (account, start_permlink = null, start_author = null, sort = 'posts') => {
   return new Promise((resolve, reject) => {
     const params = {
       sort,
       account,
       observer: account,
-      start_author: start_author || account,
+      start_author: start_author,
       start_permlink,
-      limit: 5,
+      limit: 100,
     }
 
     api.call('bridge.get_account_posts', params, async(err, data) => {
       if(err) {
         reject(err)
       }else {
-        let posts = data.filter((item) => invokeFilter(item))
+        removeFootNote(data)
 
-        if(posts.length !== 0) {
+        let lastResult = []
 
-          if(sort === 'posts') {
-            const profileVisited = visited.filter((profile) => profile.name === account)
-            let profile = []
-
-            if(profileVisited.length !== 0) {
-              profile.push(profileVisited[0])
-            } else {
-              profile = await fetchProfile([account])
-            }
-
-            posts.map((item) => (
-              item.profile = profile[0]
-            ))
-
-          } else {
-            const getProfiledata = mapFetchProfile(posts)
-            await Promise.all([getProfiledata])
-          }
-
-        } else {
-          posts = []
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
         }
 
+        let posts = data.filter((item) => invokeFilter(item))
+
+        posts = [...posts, ...lastResult]
+
+        if(posts.length === 0) {
+          posts = []
+        }
         resolve(posts)
       }
     })
@@ -271,6 +274,7 @@ export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
+        result.body = result.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
         resolve(result)
@@ -282,9 +286,9 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
+  api.setOptions({ url: 'https://api.hive.blog' })
   return api.getContentRepliesAsync(author, permlink)
     .then(async(replies) => {
-
       if(replies.length !== 0) {
         const getProfiledata = mapFetchProfile(replies)
         await Promise.all([getProfiledata])
@@ -293,9 +297,9 @@ export const fetchReplies = (author, permlink) => {
       return Promise.map(replies, async(reply) => {
         const getActiveVotes = new Promise((resolve) => {
           api.getActiveVotesAsync(reply.author, reply.permlink)
-          .then((active_votes) => {
-            resolve(active_votes)
-          })
+            .then((active_votes) => {
+              resolve(active_votes)
+            })
         })
 
         const active_votes = await Promise.all([getActiveVotes])
@@ -311,28 +315,15 @@ export const fetchReplies = (author, permlink) => {
           return reply
         }
       })
-  }).catch((error) => {
-    reject(error)
-  })
-}
-
-export const fetchProfile2 = (username) => {
-  return api.getAccountsAsync([username])
-    .then(async(result) => {
-      const repscore = result[0].reputation
-      result[0].reputation = repscore ? formatter.reputation(repscore) : 25
-      const follow_count = await fetchFollowCount(username)
-      result[0].follow_count = follow_count
-      return result
     }).catch((error) => {
-      return error
+      reject(error)
     })
 }
 
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
-    api.call('follow_api.get_followers', params, async(err, data) => {
+    api.call('condenser_api.get_followers', params, async(err, data) => {
       if (err) {
         reject(err)
       }else {
@@ -346,7 +337,30 @@ export const isFollowing = (follower, following) => {
   })
 }
 
-export const fetchProfile = (username) => {
+export const fetchSingleProfile = (account) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  return new Promise((resolve, reject) => {
+    const params = {account}
+    api.call('bridge.get_profile', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        let isFollowed = false
+
+        if(user) {
+          isFollowed = await isFollowing(user.username, data.name)
+        }
+
+        data.isFollowed = isFollowed
+
+        resolve(data)
+      }
+    })
+  })
+}
+
+export const fetchProfile = (username, checkFollow = false) => {
   const user = JSON.parse(localStorage.getItem('user'))
 
   return new Promise((resolve, reject) => {
@@ -361,16 +375,21 @@ export const fetchProfile = (username) => {
           }
 
           result[index].reputation = score
-          const follow_count = await fetchFollowCount(item.name)
-          result[index].follow_count = follow_count
 
-          let isFollowed = false
+          if(checkFollow) {
 
-          if(user) {
-            isFollowed = await isFollowing(user.username, item.name)
+            const follow_count = await fetchFollowCount(item.name)
+            result[index].follow_count = follow_count
+
+            let isFollowed = false
+
+            if(user) {
+              isFollowed = await isFollowing(user.username, item.name)
+            }
+
+            result[index].isFollowed = isFollowed
           }
 
-          result[index].isFollowed = isFollowed
           visited.push(result[index])
 
           if(index === result.length - 1) {
@@ -384,11 +403,11 @@ export const fetchProfile = (username) => {
   })
 }
 
-export const mapFetchProfile = (data) => {
+export const mapFetchProfile = (data, checkFollow = false) => {
   return new Promise(async(resolve, reject) => {
     try {
       let count = 0
-      let uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
+      const uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
       let profiles = []
 
       uniqueAuthors.forEach((item, index) => {
@@ -402,7 +421,7 @@ export const mapFetchProfile = (data) => {
       let profilesFetch = []
 
       if(uniqueAuthors.length !== 0) {
-        profilesFetch = await fetchProfile(uniqueAuthors)
+        profilesFetch = await fetchProfile(uniqueAuthors, checkFollow)
       }
 
       profiles = [...profiles, ...profilesFetch]
@@ -434,29 +453,32 @@ export const generateWif = (username, password, role) => {
 
 export const fetchFeedHistory = () => {
   return api.getFeedHistoryAsync()
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const fetchRewardFund = (username) => {
   return api.getRewardFundAsync(username)
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
+  // api.setOptions({ url: 'https://anyx.io' })
+  config.set('rebranded_api', true)
+  broadcast.updateOperations()
   return broadcast.voteAsync(wif, voter, author, permlink, weight)
-      .then((result) => {
-        return result
-      }).catch((error) => {
-        return error
-      })
+    .then((result) => {
+      return result
+    }).catch((error) => {
+      return error
+    })
 }
 
 export const wifToPublic = (privWif) => {
@@ -469,7 +491,7 @@ export const generateKeys = (username, password, role) => {
 
 export const packLoginData = (username, password) => {
   return new Buffer(
-    `${username}\t${password}`
+    `${username}\t${password}`,
   ).toString('hex')
 }
 
@@ -501,7 +523,7 @@ export const fetchFollowers = (following, start_follower = '', limit = 10) => {
             resolve([])
           }
 
-          const getProfiledata = mapFetchProfile(result)
+          const getProfiledata = mapFetchProfile(result, false)
           await Promise.all([getProfiledata])
 
           resolve(result)
@@ -510,7 +532,6 @@ export const fetchFollowers = (following, start_follower = '', limit = 10) => {
         }
       })
       .catch((error) => {
-        console.log({ error })
         reject(error)
       })
 
@@ -534,7 +555,7 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
             let profile = []
 
             if(profileVisited.length === 0) {
-              profile = await fetchProfile([item.following])
+              profile = await fetchProfile([item.following], false)
               visited.push(profile[0])
             } else {
               profile.push(profileVisited[0])
@@ -559,16 +580,6 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
   })
 }
 
-export const uploadImage = (url, formData) => {
-  return new Promise((resolve, reject) => {
-    axios.post(`${url}`,formData).then((result) => {
-      resolve(result)
-    }).catch((error) => {
-      reject(error)
-    })
-  })
-}
-
 // keychain apis
 
 export const keychainSignIn = (username) => {
@@ -582,7 +593,7 @@ export const keychainSignIn = (username) => {
       'Posting',
       response => {
         resolve(response)
-      }
+      },
     )
   })
 }
@@ -596,16 +607,16 @@ export const keychainUpvote = (username, permlink, author, weight) => {
       weight,
       response => {
         resolve(response)
-      }
+      },
     )
   })
 }
 
-export const generateClearNotificationOperation = (username) => {
+export const generateClearNotificationOperation = (username, lastNotification) => {
   return new Promise((resolve) => {
 
-    const now = moment().format('YYYY-MM-DDT00:00:00')
-    let json = JSON.stringify(["setLastRead",{"date":`${now}`}])
+    const date = lastNotification.date
+    const json = JSON.stringify(["setLastRead",{ date }])
 
     const operation = [
       [
@@ -614,9 +625,9 @@ export const generateClearNotificationOperation = (username) => {
           'required_auths': [],
           'required_posting_auths': [username],
           'id': 'notify',
-           json,
-        }
-      ]
+          json,
+        },
+      ],
     ]
 
     resolve(operation)
@@ -625,7 +636,7 @@ export const generateClearNotificationOperation = (username) => {
 
 export const generateFollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
 
     const operation = [
       [
@@ -634,9 +645,9 @@ export const generateFollowOperation = (follower, following) => {
           'required_auths': [],
           'required_posting_auths': [follower],
           'id': 'follow',
-           json,
-        }
-      ]
+          json,
+        },
+      ],
     ]
 
     resolve(operation)
@@ -645,7 +656,7 @@ export const generateFollowOperation = (follower, following) => {
 
 export const generateUnfollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
 
     const operation = [
       [
@@ -654,9 +665,9 @@ export const generateUnfollowOperation = (follower, following) => {
           'required_auths': [],
           'required_posting_auths': [follower],
           'id': 'follow',
-           json,
-        }
-      ]
+          json,
+        },
+      ],
     ]
 
     resolve(operation)
@@ -665,7 +676,7 @@ export const generateUnfollowOperation = (follower, following) => {
 
 export const generateSubscribeOperation = (username) => {
   return new Promise((resolve) => {
-    let json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
+    const json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
 
     const operation = [
       [
@@ -675,13 +686,35 @@ export const generateSubscribeOperation = (username) => {
           'required_posting_auths': [username],
           'id': 'community',
           json,
-        }
-      ]
+        },
+      ],
     ]
 
     resolve(operation)
   })
 }
+
+
+export const generateUpdateOperation = (parent_author, parent_permlink, author, permlink, title, body, json_metadata) => {
+
+  return new Promise((resolve) => {
+    const op_comment = [[
+      'comment',
+      {
+        parent_author,
+        parent_permlink,
+        author,
+        permlink,
+        title,
+        body,
+        json_metadata,
+      },
+    ]]
+
+    resolve(op_comment)
+  })
+}
+
 
 export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
 
@@ -700,7 +733,7 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
         parent_permlink,
         permlink,
         json_metadata,
-      }
+      },
     ]]
 
     resolve(op_comment)
@@ -711,7 +744,7 @@ export const generatePostOperations = (account, title, body, tags) => {
 
   const json_metadata = createMeta(tags)
 
-  let permlink = createPermlink(title)
+  const permlink = createPermlink(title)
 
   const operations = []
 
@@ -727,7 +760,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'parent_permlink': `${appConfig.TAG}`,
         permlink,
         json_metadata,
-      }
+      },
     ]
 
     operations.push(op_comment)
@@ -739,12 +772,12 @@ export const generatePostOperations = (account, title, body, tags) => {
       {
         'author': account,
         permlink,
-        'max_accepted_payout': max_accepted_payout,
-        'percent_steem_dollars': 5000,
+        max_accepted_payout,
+        'percent_hbd': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
-        'extensions': []
-      }
+        'extensions': [],
+      },
     ]
 
     operations.push(op_comment_options)
@@ -766,12 +799,14 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
         } else {
           resolve(response)
         }
-      }
+      },
     )
   })
 }
 
 export const broadcastOperation = (operations, keys) => {
+  config.set('rebranded_api', true)
+  broadcast.updateOperations()
   return new Promise((resolve, reject) => {
     broadcast.send(
       {
@@ -791,7 +826,7 @@ export const broadcastOperation = (operations, keys) => {
             result,
           })
         }
-      }
+      },
     )
   })
 }
@@ -802,11 +837,12 @@ export const slug = (text) => {
 
 export const createMeta = (tags = []) => {
 
-  let uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
+  const uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
   const meta = {
     app: 'dBuzz/v1.0.0',
-    tags: uniqueTags
+    // app: 'hiveph/v1.0.0',
+    tags: uniqueTags,
   }
 
   return JSON.stringify(meta)
@@ -831,9 +867,8 @@ export const searchPostTags = (tag) => {
       data: body,
     }).then(async(result) => {
       const data = result.data
-      // console.log({ data })
       if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results)
+        const getProfiledata = mapFetchProfile(data.results, false)
         data.results = data.results.filter((item) => item.body.length <= 280)
         await Promise.all([getProfiledata])
       }
@@ -857,7 +892,7 @@ export const searchPostAuthor = (author) => {
       const data = result.data
 
       if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results)
+        const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         data.results = data.results.filter((item) => item.body.length <= 280)
       }
@@ -882,7 +917,7 @@ export const searchPostGeneral = (query) => {
       const data = result.data
 
       if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results)
+        const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         data.results = data.results.filter((item) => item.body.length <= 280)
       }
@@ -895,3 +930,47 @@ export const searchPostGeneral = (query) => {
   })
 }
 
+export const checkIfImage = (links) => {
+  return new Promise(async(resolve, reject) => {
+
+    const params = { links }
+
+    const result = await axios.post(`${scrapeUrl}/generate`, params)
+
+    resolve(result.data)
+  })
+}
+
+export const uploadIpfsImage = async(data) => {
+  const date = new Date()
+  const timestamp = date.getTime()
+
+  return new Promise(async(resolve, reject) => {
+    try{
+      const dataFile = {
+        apiKey: appConfig.API_KEY,
+        apiSecret: appConfig.API_SECRET,
+        key:`dbuzz/file-${timestamp}`,
+        data,
+      }
+      const result = await fleek.upload(dataFile)
+      resolve(result)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export const getLinkMeta = (url) => {
+  return new Promise(async(resolve, reject) => {
+
+    axios.get(`${scrapeUrl}?url=${url}`)
+      .then(function (result) {
+        const data = result.data
+        resolve(data)
+      })
+      .catch(function (error) {
+        reject(error)
+      })
+  })
+}

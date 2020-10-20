@@ -15,12 +15,12 @@ const useStyles = createUseStyles({
       width: '100%',
       objectFit: 'cover',
       overFlow: 'hidden',
-    }
+    },
   },
   wrapper: {
     width: '95%',
     margin: '0 auto',
-    height: 'max-content'
+    height: 'max-content',
   },
   avatar: {
     marginTop: -70,

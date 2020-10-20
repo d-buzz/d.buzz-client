@@ -1,16 +1,34 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
 // import Chip from '@material-ui/core/Chip'
+import { setPageFrom } from 'store/posts/actions'
 import { Link } from 'react-router-dom'
-import { Avatar, HashtagLoader } from 'components/elements'
+import { Avatar, Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { createUseStyles } from 'react-jss'
+import { bindActionCreators } from 'redux'
+import { anchorTop } from 'services/helper'
+import { isMobile } from 'react-device-detect'
 
-const useStyle = createUseStyles({
+const addHover = (theme) => {
+  let style = {
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+  }
+
+  if(isMobile) {
+    style = {}
+  }
+
+  return style
+}
+
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
@@ -22,22 +40,18 @@ const useStyle = createUseStyles({
     },
   },
   unread: {
-    '& label': {
-      color: '#e53935 !important',
-    },
+    ...theme.unread,
   },
   wrapper: {
     width: '100%',
     overflow: 'hidden',
     fontFamily: 'Segoe-Bold',
     fontSize: 14,
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      backgroundColor: '#f5f8fa',
-    },
+    ...addHover(theme),
     cursor: 'pointer !important',
   },
   inline: {
@@ -92,7 +106,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -111,17 +125,28 @@ const useStyle = createUseStyles({
       fontFamily: 'Segoe-Bold',
       textDecoration: 'none !important',
       '&:hover': {
-        textDecoration: 'none !important'
-      }
-    }
-  }
-})
+        textDecoration: 'none !important',
+      },
+    },
+  },
+}))
 
 
 const Notification = (props) => {
-  const { notifications, loading, count } = props
+  const {
+    notifications,
+    loading,
+    count,
+    setPageFrom,
+  } = props
 
   const classes = useStyle()
+
+  useEffect(() => {
+    anchorTop()
+    setPageFrom(null)
+    // eslint-disable-next-line
+  }, [])
 
   const actionAuthor = (msg) => {
     const author = msg.split(' ')[0]
@@ -185,7 +210,7 @@ const Notification = (props) => {
       ))}
       {(!loading && notifications.length === 0) &&
         (<center><br/><h6>You have no notifications</h6></center>)}
-      <HashtagLoader loading={loading} />
+      <Spinner loading={loading} />
     </React.Fragment>
   )
 }
@@ -196,4 +221,10 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'POLL_NOTIF_REQUEST'),
 })
 
-export default connect(mapStateToProps)(Notification)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setPageFrom,
+  }, dispatch),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)

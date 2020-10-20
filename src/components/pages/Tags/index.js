@@ -7,6 +7,7 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearReplies,
 } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { PostList } from 'components'
@@ -14,8 +15,16 @@ import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { pending } from 'redux-saga-thunk'
 import { PostlistSkeleton } from 'components'
+import { createUseStyles } from 'react-jss'
+
+const useStyles = createUseStyles(theme => ({
+  searchWrapper: {
+    ...theme.font,
+  },
+}))
 
 const Tags = (props) => {
+  const classes = useStyles()
   const {
     getSearchTagsRequest,
     clearTagsPost,
@@ -25,6 +34,7 @@ const Tags = (props) => {
     clearLastSearchTag,
     setPageFrom,
     clearSearchPosts,
+    clearReplies,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
@@ -51,6 +61,7 @@ const Tags = (props) => {
       clearTagsPost()
       getSearchTagsRequest(tag)
     }
+    clearReplies()
   // eslint-disable-next-line
   }, [tag])
 
@@ -63,6 +74,7 @@ const Tags = (props) => {
     <React.Fragment>
       {results.map((item) => (
         <PostList
+          disableUpvote={true}
           searchListMode={true}
           profileRef="tags"
           active_votes={item.total_votes}
@@ -77,11 +89,11 @@ const Tags = (props) => {
           profile={item.profile}
           payoutAt={item.payout_at}
           highlightTag={tag}
-        />)
+        />),
       )}
       <PostlistSkeleton loading={loading} />
       {(!loading && results.length === 0) &&
-        (<center><br/><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></center>)}
+        (<center><br/><div className={classes.searchWrapper}><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></div></center>)}
     </React.Fragment>
   )
 }
@@ -90,7 +102,7 @@ const mapStateToProps = (state) => ({
   items: state.posts.get('searchTag'),
   last: state.posts.get('lastSearchTag'),
   loading: pending(state, 'GET_SEARCH_TAG_REQUEST'),
-  visited: state.posts.get('isTagsVisited')
+  visited: state.posts.get('isTagsVisited'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -101,7 +113,8 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     setPageFrom,
     clearSearchPosts,
-  }, dispatch)
+    clearReplies,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tags)

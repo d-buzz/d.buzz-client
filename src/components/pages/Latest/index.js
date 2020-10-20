@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import { PostList } from 'components'
+import React, { useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {
@@ -14,16 +13,18 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearAppendReply,
+  clearReplies,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
-import { PostlistSkeleton } from 'components'
+import { InfiniteList } from 'components'
+import { clearScrollIndex } from 'store/interface/actions'
 
 const Latest = (props) => {
   const {
@@ -45,6 +46,9 @@ const Latest = (props) => {
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
+    clearAppendReply,
+    clearReplies,
+    clearScrollIndex,
   } = props
 
   useEffect(() => {
@@ -52,52 +56,35 @@ const Latest = (props) => {
     if(!isVisited) {
       anchorTop()
       clearHomePosts()
+      clearScrollIndex()
       clearTrendingPosts()
       setLatestIsVisited()
       getLatestPostsRequest()
       setHomeIsVisited(false)
       setTrendingIsVisited(false)
     }
+    clearAppendReply()
     clearSearchPosts()
     clearLastSearchTag()
     clearAccountPosts()
     clearAccountReplies()
     clearTagsPost()
+    clearReplies()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
     //eslint-disable-next-line
   }, [])
 
-  const loadMorePosts = () => {
+
+  const loadMorePosts =  useCallback(() => {
     const { permlink, author } = last
     getLatestPostsRequest(permlink, author)
-  }
+    // eslint-disable-next-line
+  }, [last])
 
   return (
     <React.Fragment>
-      <InfiniteScroll
-        dataLength={items.length || 0}
-        next={loadMorePosts}
-        hasMore={true}
-      >
-        {items.map((item) => (
-          <PostList
-            profileRef="latest"
-            active_votes={item.active_votes}
-            author={item.author}
-            permlink={item.permlink}
-            created={item.created}
-            body={item.body}
-            upvotes={item.active_votes.length}
-            replyCount={item.children}
-            meta={item.json_metadata}
-            payout={item.payout}
-            profile={item.profile}
-            payoutAt={item.payout_at}
-          />
-        ))}
-      </InfiniteScroll>
-      <PostlistSkeleton loading={loading} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
 }
@@ -125,7 +112,10 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     clearLastSearchTag,
     clearSearchPosts,
-  }, dispatch)
+    clearAppendReply,
+    clearReplies,
+    clearScrollIndex,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Latest)

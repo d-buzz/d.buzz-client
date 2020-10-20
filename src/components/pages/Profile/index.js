@@ -10,7 +10,7 @@ import {
   Avatar,
   ContainedButton,
 } from 'components/elements'
-import { NotificationBox } from 'components'
+import { broadcastNotification } from 'store/interface/actions'
 import {
   getProfileRequest,
   getAccountPostsRequest,
@@ -27,18 +27,19 @@ import {
 import {
   followRequest,
   unfollowRequest,
-  setPageFrom
+  setPageFrom,
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getProfileMetaData } from 'services/helper'
+import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
+import { clearScrollIndex } from 'store/interface/actions'
 import queryString from 'query-string'
 import { ProfileSkeleton } from 'components'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   cover: {
     height: 270,
     width: '100%',
@@ -49,7 +50,7 @@ const useStyles = createUseStyles({
       width: '100%',
       objectFit: 'cover',
       overFlow: 'hidden',
-    }
+    },
   },
   avatar: {
     marginTop: -70,
@@ -63,34 +64,38 @@ const useStyles = createUseStyles({
     fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
-    fontFamily: 'Segoe-Bold !important'
+    fontFamily: 'Segoe-Bold !important',
+    ...theme.font,
   },
   userName: {
     fontSize: 16,
     padding: 0,
     marginTop: -20,
+    ...theme.font,
   },
   wrapper: {
     width: '95%',
     margin: '0 auto',
-    height: 'max-content'
+    height: 'max-content',
   },
   paragraph: {
     padding: 0,
     margin: 0,
     fontSize: 14,
+    ...theme.font,
   },
   spacer: {
     width: '100%',
     height: 20,
   },
   descriptionContainer: {
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
+    ...theme.font,
   },
   tabs: {
     textTransform: 'none !important',
     '&:hover': {
-      backgroundColor: '#ffebee',
+      ...theme.left.sidebar.items.hover,
       '& span': {
         color: '#e53935',
       },
@@ -99,6 +104,7 @@ const useStyles = createUseStyles({
       backgroundColor: '#ffebee',
     },
     '& span': {
+      ...theme.font,
       fontWeight: 'bold',
       fontFamily: 'Segoe-Bold',
     },
@@ -106,17 +112,17 @@ const useStyles = createUseStyles({
       '& span': {
         color: '#e53935',
       },
-    }
+    },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
-    }
+    },
   },
   weblink: {
-    color: '#d32f2f'
-  }
-})
+    color: '#d32f2f',
+  },
+}))
 
 const Profile = (props) => {
   const {
@@ -143,6 +149,8 @@ const Profile = (props) => {
     loadingFollow,
     recentFollows,
     recentUnfollows,
+    broadcastNotification,
+    clearScrollIndex,
   } = props
 
   const history = useHistory()
@@ -152,9 +160,6 @@ const Profile = (props) => {
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
-  const [showSnackbar, setShowSnackbar] = useState(false)
-  const [message, setMessage] = useState('')
-  const [severity, setSeverity] = useState('success')
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
 
@@ -213,11 +218,12 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
-    setPageFrom('profile')
+    setPageFrom(null)
     const params = queryString.parse(location.search)
 
     if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
       anchorTop()
+      clearScrollIndex()
       clearProfile()
       clearAccountPosts()
       clearAccountReplies()
@@ -247,158 +253,143 @@ const Profile = (props) => {
     }
   }, [pathname])
 
-  let following_count = 0
-  let follower_count = 0
 
-  if(profile.follow_count) {
-    follower_count = profile.follow_count.follower_count
-    following_count = profile.follow_count.following_count
-  }
+  const { metadata, stats } = profile || ''
+  const { profile: profileMeta } = metadata || ''
+  const { name, cover_image, website, about } = profileMeta || ''
+  const { followers, following } = stats || 0
 
-  const { cover, name, about, website } = getProfileMetaData(profile)
+
+  // const { cover, name, about, website } = getProfileMetaData(profile)
   const { reputation = 0, isFollowed } = profile
 
   const followUser = () => {
     followRequest(username).then((result) => {
-      setShowSnackbar(true)
       if(result) {
-        setMessage(`Successfully followed @${username}`)
+        broadcastNotification('success', `Successfully followed @${username}`)
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
       } else {
-        setMessage(`Failed following @${username}`)
-        setSeverity('error')
+        broadcastNotification('error', `Failed following @${username}`)
       }
     })
   }
 
   const unfollowUser = () => {
     unfollowRequest(username).then((result) => {
-      setShowSnackbar(true)
       if(result) {
-        setMessage(`Successfully Unfollowed @${username}`)
+        broadcastNotification('success', `Successfully Unfollowed @${username}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
       } else {
-        setMessage(`Failed Unfollowing @${username}`)
-        setSeverity('error')
+        broadcastNotification('error', `Failed Unfollowing @${username}`)
       }
     })
-  }
-
-  const handleSnackBarClose = () => {
-    setShowSnackbar(false)
   }
 
   return (
     <React.Fragment>
       <ProfileSkeleton loading={loading} />
       {!loading && (
-          <React.Fragment>
-            <div className={classes.cover}>
-              {cover !== '' && (<img src={`https://images.hive.blog/0x0/${cover}`} alt="cover"/>)}
-            </div>
-            <div className={classes.wrapper}>
-              <Row>
+        <React.Fragment>
+          <div className={classes.cover}>
+            {cover_image !== '' && (<img src={`https://images.hive.blog/0x0/${cover_image}`} alt="cover"/>)}
+          </div>
+          <div className={classes.wrapper}>
+            <Row>
+              <Col xs="auto">
+                <div className={classes.avatar}>
+                  <Avatar border={true} height="135" author={username} size="medium" />
+                </div>
+              </Col>
+              <Col>
+                {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
+                  <ContainedButton
+                    fontSize={14}
+                    loading={loadingFollow}
+                    disabled={loading}
+                    style={{ float: 'right', marginTop: 5 }}
+                    transparent={true}
+                    label="Follow"
+                    className={classes.button}
+                    onClick={followUser}
+                  />
+                )}
+                {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
+                  <ContainedButton
+                    fontSize={14}
+                    loading={loadingFollow}
+                    disabled={loading}
+                    style={{ float: 'right', marginTop: 5 }}
+                    transparent={true}
+                    label="Unfollow"
+                    className={classes.button}
+                    onClick={unfollowUser}
+                  />
+                )}
+              </Col>
+            </Row>
+          </div>
+        </React.Fragment>
+      )}
+      <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
+        <div className={classNames(classes.wrapper)}>
+          {!loading && (
+            <React.Fragment>
+              <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                 <Col xs="auto">
-                  <div className={classes.avatar}>
-                    <Avatar border={true} height="135" author={username} size="medium" />
-                  </div>
-                </Col>
-                <Col>
-                  {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
-                    <ContainedButton
-                      fontSize={14}
-                      loading={loadingFollow}
-                      disabled={loading}
-                      style={{ float: 'right', marginTop: 5, }}
-                      transparent={true}
-                      label="Follow"
-                      className={classes.button}
-                      onClick={followUser}
-                    />
-                  )}
-                  {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
-                    <ContainedButton
-                      fontSize={14}
-                      loading={loadingFollow}
-                      disabled={loading}
-                      style={{ float: 'right', marginTop: 5, }}
-                      transparent={true}
-                      label="Unfollow"
-                      className={classes.button}
-                      onClick={unfollowUser}
-                    />
-                  )}
+                  <p className={classNames(classes.paragraph, classes.fullName)}>
+                    {name || username}&nbsp;<Chip  size="small" label={reputation} />
+                  </p>
+                  <p className={classNames(classes.paragraph, classes.userName)}>
+                        @{username}
+                  </p>
                 </Col>
               </Row>
-            </div>
-          </React.Fragment>
-        )}
-        <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
-          <div className={classNames(classes.wrapper)}>
-            {!loading && (
-                <React.Fragment>
-                  <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-                    <Col xs="auto">
-                      <p className={classNames(classes.paragraph, classes.fullName)}>
-                        {name || username}&nbsp;<Chip  size="small" label={reputation} />
-                      </p>
-                      <p className={classNames(classes.paragraph, classes.userName)}>
-                        @{username}
-                      </p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs="auto">
-                      <p className={classes.paragraph}>
-                        {about}
-                      </p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs="auto">
-                      <p className={classes.paragraph}>
-                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                          {website}
-                        </a>
-                      </p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs="auto">
-                      <p className={classes.paragraph}>
-                      <b>{following_count}</b> Following &nbsp; <b>{follower_count}</b> Follower
-                      </p>
-                    </Col>
-                  </Row>
-                </React.Fragment>
-            )}
-            </div>
-            <div className={classes.spacer} />
-            <Tabs
-              value={index}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-              onChange={onChange}
-              className={classes.tabContainer}
-            >
-              <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-              <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
-              <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
-              <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
-            </Tabs>
+              <Row>
+                <Col xs="auto">
+                  <p className={classes.paragraph}>
+                    {about}
+                  </p>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="auto">
+                  <p className={classes.paragraph}>
+                    <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                      {website}
+                    </a>
+                  </p>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="auto">
+                  <p className={classes.paragraph}>
+                    <b>{following}</b> Following &nbsp; <b>{followers}</b> Follower
+                  </p>
+                </Col>
+              </Row>
+            </React.Fragment>
+          )}
         </div>
-        <React.Fragment>
-          {renderRoutes(route.routes, { author: username })}
-        </React.Fragment>
-        <NotificationBox
-          show={showSnackbar}
-          message={message}
-          severity={severity}
-          onClose={handleSnackBarClose}
-        />
+        <div className={classes.spacer} />
+        <Tabs
+          value={index}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+          onChange={onChange}
+          className={classes.tabContainer}
+        >
+          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
+          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
+          <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
+        </Tabs>
+      </div>
+      <React.Fragment>
+        {renderRoutes(route.routes, { author: username })}
+      </React.Fragment>
     </React.Fragment>
   )
 }
@@ -429,7 +420,9 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     followRequest,
     unfollowRequest,
-  }, dispatch)
+    broadcastNotification,
+    clearScrollIndex,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

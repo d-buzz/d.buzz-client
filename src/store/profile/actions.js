@@ -7,7 +7,7 @@ export const getProfileRequest = (username) => ({
   payload: { username },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getProfileSuccess = (response, meta) => ({
@@ -26,12 +26,12 @@ export const GET_ACCOUNT_POSTS_REQUEST = 'GET_ACCOUNT_POSTS_REQUEST'
 export const GET_ACCOUNT_POSTS_SUCCESS = 'GET_ACCOUNT_POSTS_SUCCESS'
 export const GET_ACCOUNT_POSTS_FAILURE = 'GET_ACCOUNT_POSTS_FAILURE'
 
-export const getAccountPostsRequest = (username, start_permlink = '', start_author = '') => ({
+export const getAccountPostsRequest = (username, start_permlink = null, start_author = null) => ({
   type: GET_ACCOUNT_POSTS_REQUEST,
   payload: { username, start_permlink, start_author },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getAccountPostsSuccess = (response, meta) => ({
@@ -206,7 +206,3 @@ export const clearNotificationsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
-
-
-
-

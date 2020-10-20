@@ -4,47 +4,55 @@ import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
+import Badge from '@material-ui/core/Badge'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import {
   HomeIcon,
   BrandIcon,
+  BrandIconDark,
   TrendingIcon,
   LatestIcon,
   NotificationsIcon,
   ProfileIcon,
   ContainedButton,
   Avatar,
+  SunMoonIcon,
+  PowerIcon,
+  CircularBrandIcon,
+  BuzzIcon,
 } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
 import {
-  BuzzFormModal
+  BuzzFormModal,
+  ThemeModal,
 } from 'components'
-import Badge from '@material-ui/core/Badge'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { AiOutlinePoweroff } from 'react-icons/ai'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
+import { setBuzzModalStatus } from 'store/interface/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   items: {
     fontFamily: 'Segoe-Bold',
     width: 'max-content',
     fontSize: 18,
     padding: 8,
     marginBottom: 15,
+    ...theme.left.sidebar.items.icons,
     '& a': {
-      color: 'black',
+      color: theme.left.sidebar.items.color,
       textDecoration: 'none',
       padding: 6,
       '&:hover': {
-        color: '#e53935'
+        color: '#e53935',
       },
     },
     '&:hover': {
-      backgroundColor: '#ffebee',
+      ...theme.left.sidebar.items.hover,
       borderRadius: '50px 50px',
       cursor: 'pointer',
       '& a': {
@@ -54,7 +62,30 @@ const useStyles = createUseStyles({
         '& path': {
           stroke: '#e53935',
         },
-      }
+      },
+    },
+  },
+  minifyItems: {
+    textAlign: 'left',
+    marginBottom: 15,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
+      '&:hover': {
+        color: '#e53935',
+      },
+    },
+    '&:hover': {
+      cursor: 'pointer',
+      '& a': {
+        color: '#e53935',
+      },
+      '& svg': {
+        '& path': {
+          stroke: '#e53935',
+        },
+      },
     },
   },
   activeItem: {
@@ -67,7 +98,7 @@ const useStyles = createUseStyles({
       '& path': {
         stroke: '#e53935',
       },
-    }
+    },
   },
   navLinkContainer: {
     marginTop: 20,
@@ -80,12 +111,14 @@ const useStyles = createUseStyles({
     width: '90%',
     borderRadius: '50px 50px',
     cursor: 'pointer',
-    backgroundColor: '#f5f8fa',
+    ...theme.left.sidebar.bottom.wrapper,
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
-    '&:hover': {
-      backgroundColor: '#e6ecf0',
-    }
+  },
+  bottomMinify: {
+    position: 'absolute',
+    bottom: 15,
+    ...theme.left.sidebar.bottom.wrapperMinify,
   },
   inline: {
     display: 'inline-block',
@@ -99,8 +132,36 @@ const useStyles = createUseStyles({
   sideBarButton: {
     width: '120%',
     marginBottom: 10,
-  }
-})
+  },
+  logoutLabel: {
+    fontWeight: 'bold',
+    margin: 0,
+    padding: 0,
+    paddingLeft: 5,
+    fontSize: 13,
+    color: theme.left.sidebar.logout.label.color,
+  },
+  logoutUsername: {
+    fontWeight: 'bold',
+    margin: 0,
+    padding: 0,
+    paddingLeft: 5,
+    fontSize: 12,
+    color: theme.left.sidebar.logout.username.color,
+  },
+  logoutIcon: {
+    ...theme.left.sidebar.logout.icon,
+  },
+  buzzButton: {
+    backgroundColor: '#e53935 !important',
+    '&:hover': {
+      backgroundColor: '#b71c1c !important',
+    },
+  },
+  logoutButtonMinify: {
+    ...theme.left.sidebar.bottom.wrapper,
+  },
+}))
 
 
 const LinkContainer = ({ children }) => {
@@ -113,9 +174,9 @@ const LinkContainer = ({ children }) => {
   )
 }
 
-const IconWrapper = ({ children, className }) => {
+const IconWrapper = ({ children, className, style = {} }) => {
   return (
-    <div style={{ paddingLeft: 5, paddingRight: 10 }} className={className}>
+    <div style={{ paddingLeft: 5, paddingRight: 10, ...style }} className={className}>
       {children}
     </div>
   )
@@ -131,6 +192,9 @@ const NavLinkWrapper = (props) => {
     textClass,
     iconClass,
     activeClass,
+    minifyItemsClass,
+    minify,
+    onClick = () => {},
   } = props
 
 
@@ -139,9 +203,27 @@ const NavLinkWrapper = (props) => {
   }
 
   return (
-    <div className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-      <IconWrapper className={iconClass}>{icon}</IconWrapper> <Link to={path}>{name}</Link>
-    </div>
+    <React.Fragment>
+      {!minify && (
+        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+          <Link to={path}>
+            <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
+            {name}
+          </Link>
+        </div>
+      )}
+      {minify && (
+        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
+          <Link to={path}>
+            <IconButton
+              size="medium"
+            >
+              {icon}
+            </IconButton>
+          </Link>
+        </div>
+      )}
+    </React.Fragment>
   )
 }
 
@@ -153,39 +235,19 @@ const SideBarLeft = (props) => {
     loading,
     pollNotifRequest,
     count = 0,
+    theme,
+    minify,
+    setBuzzModalStatus,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
+  const [openTheme, setOpenTheme] = useState(false)
   const classes = useStyles()
   const location = useLocation()
 
-  const NavLinks = [
-    {
-      name: 'Home',
-      path: '/',
-      icon: <HomeIcon top={-5} />,
-    },
-    {
-      name: 'Trending',
-      path: '/trending',
-      icon: <TrendingIcon top={-5} />
-    },
-    {
-      name: 'Latest',
-      path: '/latest',
-      icon: <LatestIcon top={-5} />
-    },
-    {
-      name: 'Notifications',
-      path: `/notifications`,
-      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon top={-5} /></Badge>
-    },
-    {
-      name: 'Profile',
-      path: `/@${username}/t/buzz?ref=nav`,
-      icon: <ProfileIcon top={-5} />,
-    },
-  ]
+  const showThemeModal = () => {
+    setOpenTheme(true)
+  }
 
   useEffect(() => {
     pollNotifRequest()
@@ -201,12 +263,51 @@ const SideBarLeft = (props) => {
   }
 
   const handleClickBuzz = () => {
+    setBuzzModalStatus(true)
     setOpen(true)
   }
 
   const onHide = () => {
+    setBuzzModalStatus(false)
     setOpen(false)
   }
+
+  const onHideTheme = () => {
+    setOpenTheme(false)
+  }
+
+  const NavLinks = [
+    {
+      name: 'Home',
+      path: '/',
+      icon: <HomeIcon />,
+    },
+    {
+      name: 'Trending',
+      path: '/trending',
+      icon: <TrendingIcon />,
+    },
+    {
+      name: 'Latest',
+      path: '/latest',
+      icon: <LatestIcon  />,
+    },
+    {
+      name: 'Notifications',
+      path: `/notifications`,
+      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
+    },
+    {
+      name: 'Profile',
+      path: `/@${username}/t/buzz?ref=nav`,
+      icon: <ProfileIcon />,
+    },
+    {
+      name: 'Display',
+      icon: <SunMoonIcon />,
+      onClick: showThemeModal,
+    },
+  ]
 
   return (
     <React.Fragment>
@@ -214,13 +315,17 @@ const SideBarLeft = (props) => {
         <Nav className="flex-row">
           <LinkContainer >
             <NavbarBrand href="/">
-              <div style={{ marginLeft: 15, marginRight: 15 }}>
-                <BrandIcon />
+              <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
+                {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
+                {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
+                {minify && (<CircularBrandIcon />)}
               </div>
             </NavbarBrand>
             <div className={classes.navLinkContainer}>
               {NavLinks.map((item) => (
                 <NavLinkWrapper
+                  minify={minify}
+                  minifyItemsClass={classes.minifyItems}
                   key={`${item.path}-side`}
                   {...item}
                   textClass={classes.items}
@@ -239,43 +344,74 @@ const SideBarLeft = (props) => {
                   onClick={handleClickSubscribe}
                 />
               )}
-              <ContainedButton
-                 style={{ height: 45 }}
-                 fontSize={14}
-                 label="Buzz"
-                 labelStyle={{ paddingTop: 10 }}
-                 className={classes.sideBarButton}
-                 onClick={handleClickBuzz}
-              />
+              {!minify && (
+                <ContainedButton
+                  style={{ height: 45 }}
+                  fontSize={14}
+                  label="Buzz"
+                  labelStyle={{ paddingTop: 10 }}
+                  className={classes.sideBarButton}
+                  onClick={handleClickBuzz}
+                />
+              )}
+              {minify && (
+                <IconButton
+                  size="medium"
+                  classes={{
+                    root: classes.buzzButton,
+                  }}
+                  onClick={handleClickBuzz}
+                >
+                  <BuzzIcon />
+                </IconButton>
+              )}
             </div>
-            <div className={classes.bottom}>
-              <div className={classes.avatarWrapper} onClick={handleClickLogout}>
-                <Row>
-                  <Col xs="auto">
-                    <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
-                      <div style={{ display: 'inline-flex', top: '50%', bottom: '50%', }}>
-                        <Avatar author={username} />
-                      </div>
-                    </div>
-                  </Col>
-                  <Col style={{ paddingLeft: 5 }}>
-                    <Row style={{ padding: 0 }}>
-                      <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 13, }}>Logout</p>
-                        <p style={{ fontWeight: 'bold', margin: 0, padding: 0, paddingLeft: 5, fontSize: 12, }}>@{username}</p>
+            {!minify && (
+              <div className={classes.bottom}>
+                <div className={classes.avatarWrapper} onClick={handleClickLogout}>
+                  <Row>
+                    <React.Fragment>
+                      <Col xs="auto">
+                        <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
+                          <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
+                            <Avatar author={username} />
+                          </div>
+                        </div>
                       </Col>
-                      <Col style={{ padding: 0 }}>
-                        <AiOutlinePoweroff style={{ fontSize: 25, marginTop: 16 }} />
+                      <Col style={{ paddingLeft: 5 }}>
+                        <Row style={{ padding: 0 }}>
+                          <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
+                            <p className={classes.logoutLabel}>Logout</p>
+                            <p className={classes.logoutUsername}>@{username}</p>
+                          </Col>
+                          <Col style={{ padding: 0 }} className={classes.logoutIcon}>
+                            <PowerIcon top={12} />
+                          </Col>
+                        </Row>
                       </Col>
-                    </Row>
-                  </Col>
-                </Row>
+                    </React.Fragment>
+                  </Row>
+                </div>
               </div>
-            </div>
+            )}
+            {minify && (
+              <div className={classes.bottomMinify}>
+                <IconButton
+                  size="medium"
+                  classes={{
+                    root: classes.logoutButtonMinify,
+                  }}
+                  onClick={handleClickLogout}
+                >
+                  <PowerIcon top={0} />
+                </IconButton>
+              </div>
+            )}
           </LinkContainer>
         </Nav>
       </div>
       <BuzzFormModal show={open}  onHide={onHide} />
+      <ThemeModal show={openTheme} onHide={onHideTheme} />
     </React.Fragment>
   )
 }
@@ -284,6 +420,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'SUBSCRIBE_REQUEST'),
   count: state.polling.get('count'),
+  theme: state.settings.get('theme'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -291,7 +428,8 @@ const mapDispatchToProps = (dispatch) => ({
     signoutUserRequest,
     subscribeRequest,
     pollNotifRequest,
-  }, dispatch)
+    setBuzzModalStatus,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBarLeft)

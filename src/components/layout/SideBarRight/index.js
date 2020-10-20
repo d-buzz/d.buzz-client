@@ -6,10 +6,11 @@ import { pending } from 'redux-saga-thunk'
 import {
   ListGroup,
   ListAction,
-  HashtagLoader,
+  ListLink,
+  Spinner,
 } from 'components/elements'
 import { SearchField } from 'components'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 
 const useStyles = createUseStyles({
   search: {
@@ -28,11 +29,12 @@ const useStyles = createUseStyles({
     '& label': {
       color: '#657786',
       fontSize: 14,
-    }
+    },
   },
   inner: {
     width: '95%',
     margin: '0 auto',
+    whiteSpace: 'nowrap !important',
   },
   searchTips: {
     fontSize: 14,
@@ -40,8 +42,8 @@ const useStyles = createUseStyles({
     '& span': {
       color: '#d32f2f',
       fontWeight: 400,
-    }
-  }
+    },
+  },
 })
 
 const SideBarRight = (props) => {
@@ -68,25 +70,52 @@ const SideBarRight = (props) => {
     return link
   }
 
+  const SocialMediaLinks = [
+    {
+      name: 'Discord',
+      label: 'dbuzzAPP',
+      imagePath: `${window.location.origin}/discord.png`,
+      url: 'https://discord.gg/kCZGPs7',
+    },
+    // {
+    //   name: 'Facebook',
+    //   label: 'dbuzzAPP',
+    //   imagePath: `${window.location.origin}/facebook.png`,
+    //   url: 'https://www.facebook.com/dbuzzapp/',
+    // },
+    // {
+    //   name: 'Twitter',
+    //   label: 'dbuzzAPP',
+    //   imagePath: `${window.location.origin}/twitter.png`,
+    //   url: 'https://twitter.com/dbuzzAPP',
+    // },
+  ]
 
   return (
     <React.Fragment>
       {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
-      <div style={{ paddingTop: 5, }}>
+      <div style={{ paddingTop: 5 }}>
         <ListGroup label="Trends for you">
           {items.slice(0, 5).map((item) => (
             <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
           ))}
-          <HashtagLoader loading={loading} />
+          <Spinner size={50} loading={loading} />
+        </ListGroup>
+      </div>
+      <div style={{ paddingTop: 15 }}>
+        <ListGroup label="Catch us on">
+          {SocialMediaLinks.map((item) => (
+            <ListLink key={`${item.name}-links`} title={item.name} label={`@${item.label}`} imagePath={item.imagePath} href={item.url} />
+          ))}
         </ListGroup>
       </div>
       <div className={classes.footer}>
         <div className={classes.inner}>
-          <a href="/terms">Terms</a>
-          <a href="/terms">Privacy Policy</a>
-          <a href="/terms">Cookies</a>
+          <Link to="/org/en/tos">Terms</Link>
+          <Link to="/org/en/privacy">Privacy Policy</Link>
+          <Link to="/org/en/disclaimer">Disclaimer</Link>
           <a href="/terms">About</a> <br/ >
-          <label>&copy; D.Buzz, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+          <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
         </div>
       </div>
     </React.Fragment>

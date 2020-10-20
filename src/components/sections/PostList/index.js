@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -9,31 +9,50 @@ import {
   MarkdownViewer,
   PostTags,
   PostActions,
-  UserDialog,
 } from 'components'
+import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import { getProfileMetaData } from 'services/helper'
 import { useHistory } from 'react-router-dom'
+import { useWindowDimensions } from 'services/helper'
+import { setPageFrom } from 'store/posts/actions'
+import { bindActionCreators } from 'redux'
+import { isMobile } from 'react-device-detect'
+import classNames from 'classnames'
 
-const useStyle = createUseStyles({
+const addHover = (theme) => {
+  let style = {
+    '&:hover': {
+      ...theme.postList.hover,
+    },
+  }
+
+  if(isMobile) {
+    style = {}
+  }
+
+  return style
+}
+
+const useStyle = createUseStyles(theme => ({
   row: {
     width: '95%',
     margin: '0 auto',
     paddingTop: 20,
     marginBottom: 10,
   },
+  title: {
+    ...theme.font,
+  },
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& a': {
       color: 'black',
     },
-    '&:hover': {
-      backgroundColor: '#f5f8fa',
-    },
+    ...addHover(theme),
     cursor: 'pointer',
   },
   inline: {
@@ -42,11 +61,9 @@ const useStyle = createUseStyles({
   },
   left: {
     height: '100%',
-    width: 60,
   },
   right: {
     height: 'max-content',
-    width: 480,
   },
   name: {
     fontWeight: 'bold',
@@ -54,6 +71,9 @@ const useStyle = createUseStyles({
     paddingBottom: 0,
     marginBottom: 0,
     fontSize: 14,
+    '& a': {
+      color: theme.font.color,
+    },
   },
   username: {
     color: '#657786',
@@ -83,7 +103,7 @@ const useStyle = createUseStyles({
     '& a': {
       borderRadius: '10px 10px',
       boxShadow: 'none',
-    }
+    },
   },
   tags: {
     wordWrap: 'break-word',
@@ -97,14 +117,14 @@ const useStyle = createUseStyles({
     pointerEvents: 'none',
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   paper: {
     pointerEvents: "auto",
     padding: 2,
     '& :after': {
       border: '1px solid red',
-    }
+    },
   },
   button: {
     width: 85,
@@ -114,10 +134,19 @@ const useStyle = createUseStyles({
     padding: 0,
     margin: 0,
   },
-})
+  spanName: {
+    ...theme.font,
+  },
+  colLeft: {
+    paddingRight: 0,
+  },
+  colRight: {
+    paddingLeft: 5,
+  },
+}))
 
 
-const PostList = (props) => {
+const PostList = React.memo((props) => {
   const classes = useStyle()
   const {
     searchListMode = false,
@@ -129,7 +158,6 @@ const PostList = (props) => {
     replyCount,
     payout,
     meta,
-    profile = {},
     active_votes = [],
     unguardedLinks,
     user = {},
@@ -137,13 +165,42 @@ const PostList = (props) => {
     payoutAt = null,
     highlightTag = null,
     title = null,
+    disableProfileLink = false,
+    disableUserMenu = false,
+    disableUpvote = false,
+    openUserDialog,
+    saveScrollIndex,
+    scrollIndex,
+    recomputeRowIndex = () => {},
   } = props
 
-  let { disableProfileLink = false  } = props
+  const { width } = useWindowDimensions()
 
-  const [open, setOpen] = useState(false)
+  const [rightWidth, setRightWidth] = useState({ width: isMobile ? width-90 : 480 })
+  const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
+  const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
+  const [delayHandler, setDelayHandler] = useState(null)
   const popoverAnchor = useRef(null)
 
+
+  useEffect(() => {
+    if(!isMobile) {
+      if(width >= 676) {
+        setAvatarSize(50)
+        setLeftWidth({ width:60 })
+        setRightWidth({ width:480 })
+      } else {
+        setLeftWidth({ width: 50 })
+        setAvatarSize(45)
+        if(!unguardedLinks) {
+          setRightWidth({ width: width-200 })
+        } else {
+          setRightWidth({ width: width-120 })
+        }
+      }
+    }
+    // eslint-disable-next-line
+  }, [width])
 
   let hasUpvoted = false
   const history = useHistory()
@@ -159,10 +216,8 @@ const PostList = (props) => {
     hasUpvoted = false
   }
 
-  const { name } = getProfileMetaData(profile)
-
   const generateLink = (author, permlink) =>  {
-   let link = ''
+    let link = ''
     if(unguardedLinks) {
       link = '/ug'
     }
@@ -172,7 +227,7 @@ const PostList = (props) => {
     return link
   }
 
-  const handleOpenContent = (author, permlink) => (e) => {
+  const handleOpenContent = (e) => {
     const { target } = e
     let { href } = target
     const hostname = window.location.hostname
@@ -182,7 +237,12 @@ const PostList = (props) => {
       window.open(href, '_blank')
     } else {
       if(!href) {
-        history.push(generateLink(author, permlink))
+        // setPageFrom(null)
+        const link = generateLink(author, permlink)
+        saveScrollIndex(scrollIndex)
+        // history.entries = []
+        // history.index = -1
+        history.push(link)
       } else {
         const split = href.split('/')
         href = `/${split[3]}`
@@ -192,11 +252,13 @@ const PostList = (props) => {
   }
 
   const openPopOver = (e) => {
-    setOpen(true)
+    setDelayHandler(setTimeout(() => {
+      openUserDialog(popoverAnchor.current, author)
+    }, 500))
   }
 
-  const closePopOver = (e) => {
-    setOpen(false)
+  const closePopOver = () => {
+    clearTimeout(delayHandler)
   }
 
   return (
@@ -204,39 +266,40 @@ const PostList = (props) => {
       <div className={classes.wrapper}>
         <div className={classes.row}>
           <Row>
-            <Col xs="auto" style={{ paddingRight: 0 }}>
-              <div className={classes.left}>
-                <Avatar author={author} />
+            <Col xs="auto" className={classes.colLeft}>
+              <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
+                <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
-            <Col xs="auto" style={{ paddingLeft: 5, }}>
-              <div className={classes.right}>
+            <Col xs="auto" className={classes.colRight}>
+              <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
                     {!disableProfileLink && (
                       <Link
                         ref={popoverAnchor}
                         to={authorLink}
-                        onMouseEnter={openPopOver}
-                        onMouseLeave={closePopOver}
+                        onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
+                        onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
+                        onClick={closePopOver}
                       >
-                        {name ? name : `${author}`}
+                        {author}
                       </Link>
                     )}
-                    {disableProfileLink && (<span>{name ? name : `@${author}`}</span>)}
+                    {disableProfileLink && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
-                    {`@${author}`} &bull;&nbsp;
-                    {moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
+                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <div onClick={handleOpenContent(author, permlink)}>
-                    {title && (<h6>{title}</h6>)}
-                    <MarkdownViewer content={body}/>
+                  <div onClick={handleOpenContent}>
+                    {title && (<h6 className={classes.title}>{title}</h6>)}
+                    <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
+                    disableUpvote={disableUpvote}
                     body={body}
                     hasUpvoted={hasUpvoted}
                     author={author}
@@ -244,7 +307,9 @@ const PostList = (props) => {
                     voteCount={upvotes}
                     replyCount={replyCount}
                     payout={`${payout}`}
+                    recomputeRowIndex={recomputeRowIndex}
                     payoutAt={payoutAt}
+                    scrollIndex={scrollIndex}
                   />
                 </div>
               </div>
@@ -252,19 +317,21 @@ const PostList = (props) => {
           </Row>
         </div>
       </div>
-      <UserDialog
-        open={open}
-        anchorEl={popoverAnchor.current}
-        onMouseEnter={openPopOver}
-        onMouseLeave={closePopOver}
-        profile={profile}
-      />
     </React.Fragment>
   )
-}
+})
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(PostList)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setPageFrom,
+    openUserDialog,
+    saveScrollIndex,
+  }, dispatch),
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostList)

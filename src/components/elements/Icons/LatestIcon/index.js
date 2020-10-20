@@ -1,9 +1,9 @@
 import React from 'react'
 
-const LatestIcon = () => {
+const LatestIcon = ({ height = 24, top = 0 }) => {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 1V5V1ZM1 3H5H1ZM4 15V19V15ZM2 17H6H2ZM11 1L13.286 7.857L19 10L13.286 12.143L11 19L8.714 12.143L3 10L8.714 7.857L11 1Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg height={height} style={{ marginTop: top }} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 8V12L15 15M21 12C21 13.1819 20.7672 14.3522 20.3149 15.4442C19.8626 16.5361 19.1997 17.5282 18.364 18.364C17.5282 19.1997 16.5361 19.8626 15.4442 20.3149C14.3522 20.7672 13.1819 21 12 21C10.8181 21 9.64778 20.7672 8.55585 20.3149C7.46392 19.8626 6.47177 19.1997 5.63604 18.364C4.80031 17.5282 4.13738 16.5361 3.68508 15.4442C3.23279 14.3522 3 13.1819 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3C14.3869 3 16.6761 3.94821 18.364 5.63604C20.0518 7.32387 21 9.61305 21 12Z"/>
     </svg>
   )
 }

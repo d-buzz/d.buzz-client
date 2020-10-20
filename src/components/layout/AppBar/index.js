@@ -4,19 +4,21 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import {
   BrandIcon,
+  BrandIconDark,
   ContainedButton,
-  IconButton,
   BackArrowIcon,
 } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
 import { LoginModal, SearchField } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   nav: {
     height: 55,
-    backgroundColor: 'white',
-    borderBottom: '1px solid rgb(204, 214, 221)',
+    backgroundColor: theme.nav.background,
+    borderBottom: theme.border.primary,
   },
   search: {
     width: 350,
@@ -41,9 +43,15 @@ const useStyles = createUseStyles({
       },
     },
   },
-})
+  backButton: {
+    display: 'inline-block',
+    ...theme.icon,
+  },
+}))
 
-const AppBar = () => {
+const AppBar = (props) => {
+  const { theme } = props
+  const { mode } = theme
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const location = useLocation()
@@ -62,29 +70,41 @@ const AppBar = () => {
     setOpen(false)
   }
 
+  const handleClickSignup = () => {
+    const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login', '_blank')
+    win.focus()
+  }
+
   return (
     <Navbar fixed="top" className={classes.nav}>
       <Container className={classes.container}>
         <Navbar.Brand>
           {pathname !== '/ug' && (
             <React.Fragment>
-              <IconButton onClick={handleClickBackButton} style={{ display: 'inline-block' }} icon={<BackArrowIcon />} />
+              <IconButton className={classes.backButton} onClick={handleClickBackButton} size="small">
+                <BackArrowIcon />
+              </IconButton>
               &nbsp;
             </React.Fragment>
           )}
           <Link to="/">
-            <BrandIcon height={30} top={-15} />
+            {mode === 'light' && (<BrandIcon height={30} top={-15} />)}
+            {(mode === 'night' || mode === 'gray') && (<BrandIconDark height={30} top={-15} />)}
           </Link>
         </Navbar.Brand>
         <Nav className="mr-auto">
           <SearchField disableTips={true} />
         </Nav>
-        <ContainedButton onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
-        <ContainedButton style={{ marginLeft: 5 }} fontSize={15} label="Sign up" className={classes.button} />
+        <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
+        <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickSignup} fontSize={15} label="Sign up" className={classes.button} />
       </Container>
       <LoginModal show={open} onHide={handleClickCloseLoginModal} />
     </Navbar>
   )
 }
 
-export default AppBar
+const mapStateToProps = (state) => ({
+  theme: state.settings.get('theme'),
+})
+
+export default connect(mapStateToProps)(AppBar)

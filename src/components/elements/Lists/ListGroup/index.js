@@ -1,31 +1,35 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+  container: {
+    backgroundColor: theme.right.list.background,
+    borderRadius: '10px 10px',
+  },
   wrapper: {
     width: '100%',
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
   },
   labelWrapper: {
     width: '95%',
     margin: '0 auto',
   },
   label: {
-    color: '#14171a',
+    color: theme.font.color,
     paddingTop: 10,
     marginBottom: 10,
     fontWeight: 'bold',
     fontSize: 18,
     fontFamily: 'Segoe-Bold',
-  }
-})
+  },
+}))
 
 const ListGroup = (props) => {
   const { children, label } = props
   const classes = useStyles()
 
   return (
-    <div style={{ backgroundColor: '#f5f8fa', borderRadius: '10px 10px' }}>
+    <div className={classes.container}>
       <div className={classes.wrapper}>
         <div className={classes.labelWrapper}>
           <label className={classes.label}>{label}</label>

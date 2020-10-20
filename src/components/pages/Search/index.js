@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { searchRequest } from 'store/posts/actions'
+import {
+  searchRequest,
+  setPageFrom,
+} from 'store/posts/actions'
 import { anchorTop } from 'services/helper'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
@@ -10,11 +13,13 @@ import { renderRoutes } from 'react-router-config'
 import { bindActionCreators } from 'redux'
 import { useHistory, useLocation } from 'react-router-dom'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   tabs: {
     textTransform: 'none !important',
     '&:hover': {
-      backgroundColor: '#ffebee',
+      backgroundColor: {
+        ...theme.textArea,
+      },
       '& span': {
         color: '#e53935',
       },
@@ -25,23 +30,24 @@ const useStyles = createUseStyles({
     '& span': {
       fontFamily: 'Segoe-Bold',
       fontWeight: 'bold',
+      ...theme.font,
     },
     '&.Mui-selected': {
       '& span': {
         color: '#e53935',
       },
-    }
+    },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
-    }
+    },
   },
   weblink: {
-    color: '#d32f2f'
+    color: '#d32f2f',
   },
   topContainer: {
-    borderBottom: '1px solid #e6ecf0',
+    borderBottom: theme.border.primary,
     '& label': {
       fontFamily: 'Segoe-Bold',
       paddingTop: 5,
@@ -49,14 +55,14 @@ const useStyles = createUseStyles({
         color: '#d32f2f',
         fontWeight: 400,
       },
-    }
+    },
   },
-})
+}))
 
 const Search = (props) => {
   const [index, setIndex] = useState(0)
   const classes = useStyles()
-  const { searchRequest, route, user } = props
+  const { searchRequest, setPageFrom, route, user } = props
   const location = useLocation()
   const { pathname } = location
   const params = queryString.parse(location.search)
@@ -65,6 +71,7 @@ const Search = (props) => {
   useEffect(() => {
     anchorTop()
     searchRequest(params.q)
+    setPageFrom(null)
   // eslint-disable-next-line
   }, [])
 
@@ -125,7 +132,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     searchRequest,
-  }, dispatch)
+    setPageFrom,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)

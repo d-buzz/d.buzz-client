@@ -26,26 +26,27 @@ import {
 
   CLEAR_NOTIFICATIONS_REQUEST,
   clearNotificationsSuccess,
-  clearNotificationsFailure
+  clearNotificationsFailure,
 } from './actions'
 
 import {
   extractLoginData,
-  fetchProfile,
+  fetchSingleProfile,
   fetchAccountPosts,
   fetchFollowers,
   fetchFollowing,
   broadcastOperation,
   broadcastKeychainOperation,
   generateClearNotificationOperation,
+  invokeFilter,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
-    const profile = yield call(fetchProfile, [username])
+    const profile = yield call(fetchSingleProfile, username)
 
-    yield put(getProfileSuccess(profile[0], meta))
+    yield put(getProfileSuccess(profile, meta))
   } catch(error) {
     yield put(getProfileFailure(error, meta))
   }
@@ -54,27 +55,17 @@ function* getProfileRequest(payload, meta) {
 function* getAccountPostRequest(payload, meta) {
   try{
     const { username, start_permlink, start_author } = payload
-
     const old = yield select(state => state.profile.get('posts'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
 
-    const oldPermlink = Array.isArray(old) && old.length !== 0 ? old[old.length-1].permlink : ''
-    const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
+    data = [...old, ...data]
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
 
-    if((oldPermlink !== newPermlink)) {
+    data = data.filter(item => invokeFilter(item))
 
-      if(old.length !== 0) {
-        if((old[old.length-1].permlink === data[0].permlink)) {
-          data.splice(0, 1)
-        }
-      }
-
-      data = [...old, ...data]
-      yield put(setLastAccountPosts(data[data.length-1]))
-    } else {
-      yield put(setLastAccountPosts([]))
-    }
-
+    yield put(setLastAccountPosts(data[data.length-1]))
     yield put(getAccountPostsSuccess(data, meta))
   } catch(error) {
     yield put(getAccountPostsFailure(error, meta))
@@ -84,28 +75,17 @@ function* getAccountPostRequest(payload, meta) {
 function* getAccountRepliesRequest(payload, meta) {
   try {
     const { username, start_permlink, start_author } = payload
-
     const old = yield select(state => state.profile.get('replies'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'replies')
 
-    const oldPermlink = Array.isArray(old) && old.length ? old[old.length-1].permlink : ''
-    const newPermlink = data.length !== 0 ? data[data.length-1].permlink : ''
-
-    if(old.length !== 0 && data.length !== 0) {
-      if((old[old.length-1].permlink === data[0].permlink)) {
-        data.splice(0, 1)
-      }
-    }
-
-    if((oldPermlink !== newPermlink)) {
-      yield put(setLastAccountReply(data[data.length-1]))
-    } else {
-      data = []
-      yield put(setLastAccountReply([]))
-    }
-
     data = [...old, ...data]
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
 
+    data = data.filter(item => invokeFilter(item))
+
+    yield put(setLastAccountReply(data[data.length-1]))
     yield put(getAccountRepliesSuccess(data, meta))
   } catch(error) {
     yield put(getAccountRepliesFailure(error, meta))
@@ -116,16 +96,13 @@ function* getFollowersRequest(payload, meta) {
   try {
     const { username, start_follower } = payload
     const old = yield select(state => state.profile.get('followers'))
-
-
     let data = yield call(fetchFollowers, username, start_follower)
-
-    if(old.length !== 0 && data.length !== 0) {
-      old.splice(old.length-1, 1)
-    }
 
     data = [...old, ...data]
 
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['follower']).indexOf(obj['follower']) === pos
+    })
 
     yield put(setLastFollower(data[data.length-1]))
     yield put(getFollowersSuccess(data, meta))
@@ -137,15 +114,14 @@ function* getFollowersRequest(payload, meta) {
 function* getFollowingRequest(payload, meta) {
   try {
     const { username, start_following } = payload
-
     const old = yield select(state => state.profile.get('following'))
     let data = yield call(fetchFollowing, username, start_following)
 
-    if(old.length !== 0 && data.length !== 0) {
-      old.splice(old.length-1, 1)
-    }
-
     data = [...old, ...data]
+
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['following']).indexOf(obj['following']) === pos
+    })
 
     yield put(setLastFollowing(data[data.length-1]))
     yield put(getFollowingSuccess(data, meta))
@@ -157,36 +133,42 @@ function* getFollowingRequest(payload, meta) {
 function* clearNotificationRequest(meta) {
   try {
     const user = yield select(state => state.auth.get('user'))
+    const notifications = yield select(state => state.polling.get('notifications'))
     const { username, useKeychain } = user
-    const operation = yield call(generateClearNotificationOperation, username)
+    const lastNotification = notifications[0]
+
+    const operation = yield call(generateClearNotificationOperation, username, lastNotification)
 
     let success = false
 
-    if(useKeychain) {
-      const result = yield call(broadcastKeychainOperation, username, operation)
-      success = result.success
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
+    if(lastNotification.length !== 0) {
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operation)
+        success = result.success
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
 
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operation, [wif])
-      success = result.success
-    }
-
-    let old = yield select(state => state.polling.get('count'))
-
-    if(success) {
-      old = {
-        success: true,
-        lastread: '',
-        unread: 0,
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operation, [wif])
+        success = result.success
       }
-    } else {
-      old.success = success
-    }
 
-    yield put(clearNotificationsSuccess(old, meta))
+      let old = yield select(state => state.polling.get('count'))
+
+      if(success) {
+        old = {
+          success: true,
+          lastread: '',
+          unread: 0,
+        }
+      } else {
+        old.success = success
+      }
+      yield put(clearNotificationsSuccess(old, meta))
+    } else {
+      yield put(clearNotificationsFailure('failed to clear notification', meta))
+    }
   } catch(error) {
     yield put(clearNotificationsFailure(error, meta))
   }

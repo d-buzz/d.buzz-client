@@ -20,7 +20,7 @@ const useStyles = createUseStyles({
       height: '10px',
       clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
     },
-  }
+  },
 })
 
 const FloatingDialog = (props) => {
@@ -31,7 +31,7 @@ const FloatingDialog = (props) => {
     <React.Fragment>
       {show && (
         <div className={classes.menu}>
-          <div style={{ paddingTop: 10, paddingBottom: 10, }}>
+          <div style={{ paddingTop: 10, paddingBottom: 10 }}>
             {children}
           </div>
         </div>

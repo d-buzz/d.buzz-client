@@ -5,7 +5,7 @@ export const POLL_NOTIF_FAILURE = 'POLL_NOTIF_FAILURE'
 export const POLL_NOTIF_COUNT = 'POLL_NOTIF_COUNT'
 
 export const pollNotifRequest = () => ({
-  type: POLL_NOTIF_REQUEST
+  type: POLL_NOTIF_REQUEST,
 })
 
 export const pollNotifSuccess = (response) => ({

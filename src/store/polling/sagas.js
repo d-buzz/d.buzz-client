@@ -7,10 +7,10 @@ import {
 } from './actions'
 import {
   getAccountNotifications,
-  getUnreadNotificationsCount
+  getUnreadNotificationsCount,
 } from 'services/api'
 
-const POLLING_DELAY = 120000
+const POLLING_DELAY = 30000
 
 function* poll() {
   while (true) {
@@ -39,4 +39,3 @@ function* watchPollingTasks() {
 export default function* sagas() {
   yield takeLatest(POLL_NOTIF_REQUEST, watchPollingTasks)
 }
-

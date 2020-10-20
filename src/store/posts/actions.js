@@ -7,11 +7,12 @@ export const upvoteRequest = (author, permlink, percentage) => ({
   payload: { author, permlink, percentage },
   meta: {
     thunk: true,
-  }
+  },
 })
 
-export const upvoteSuccess = (meta) => ({
+export const upvoteSuccess = (response, meta) => ({
   type: UPVOTE_SUCCESS,
+  payload: response,
   meta,
 })
 
@@ -25,12 +26,12 @@ export const GET_HOME_POSTS_REQUEST = 'GET_HOME_POSTS_REQUEST'
 export const GET_HOME_POSTS_SUCCESS = 'GET_HOME_POSTS_SUCCESS'
 export const GET_HOME_POSTS_FAILURE = 'GET_HOME_POSTS_FAILURE'
 
-export const getHomePostsRequest = (start_permlink = '', start_author = '') => ({
+export const getHomePostsRequest = (start_permlink = null, start_author = null) => ({
   type: GET_HOME_POSTS_REQUEST,
   payload: { start_permlink, start_author },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getHomePostsSuccess = (response, meta) => ({
@@ -147,7 +148,7 @@ export const getContentRequest = (author, permlink) => ({
   payload: { author, permlink },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getContentSuccess = (response, meta) => ({
@@ -170,7 +171,7 @@ export const getTrendingTagsRequest = () => ({
   type: GET_TRENDING_TAGS_REQUEST,
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const getTrendingTagsSuccess = (response, meta) => ({
@@ -208,6 +209,13 @@ export const setLatestIsVisited = (visited = true) => ({
 })
 
 // clear stores
+
+export const CLEAR_CONTENT = 'CLEAR_CONTENT'
+
+export const clearContent = () => ({
+  type: CLEAR_CONTENT,
+})
+
 export const CLEAR_HOME_POSTS  = 'CLEAR_HOME_POSTS'
 
 export const clearHomePosts = () => ({
@@ -433,7 +441,7 @@ export const searchRequest = (query) => ({
   payload: { query },
   meta: {
     thunk: true,
-  }
+  },
 })
 
 export const searchSuccess = (response, meta) => ({
@@ -452,4 +460,95 @@ export const CLEAR_SEARCH_POSTS = 'CLEAR_SEARCH_POSTS'
 
 export const clearSearchPosts = () => ({
   type: CLEAR_SEARCH_POSTS,
+})
+
+
+export const CLEAR_APPEND_REPLY = 'CLEAR_APPEND_REPLY'
+
+export const clearAppendReply = () => ({
+  type: CLEAR_APPEND_REPLY,
+})
+
+export const GET_FOLLOW_DETAILS_REQUEST = 'GET_FOLLOW_DETAILS_REQUEST'
+export const GET_FOLLOW_DETAILS_SUCCESS = 'GET_FOLLOW_DETAILS_SUCCESS'
+export const GET_FOLLOW_DETAILS_FAILURE = 'GET_FOLLOW_DETAILS_FAILURE'
+
+export const getFollowDetailsRequest = (name) => ({
+  type: GET_FOLLOW_DETAILS_REQUEST,
+  payload: { name },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getFollowDetailsSuccess = (response, meta) => ({
+  type: GET_FOLLOW_DETAILS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getFollowDetailsFailure = (error, meta) => ({
+  type: GET_FOLLOW_DETAILS_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const GET_LINK_META_REQUEST = 'GET_LINK_META_REQUEST'
+export const GET_LINK_META_SUCCESS = 'GET_LINK_META_SUCCESS'
+export const GET_LINK_META_FAILURE = 'GET_LINK_META_FAILURE'
+
+export const getLinkMetaRequest = (url) => ({
+  type: GET_LINK_META_REQUEST,
+  payload: { url },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getLinkMetaSuccess = (response, meta) => ({
+  type: GET_LINK_META_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getLinkMetaFailure = (error, meta) => ({
+  type: GET_LINK_META_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_CONTENT_REDIRECT = 'SET_CONTENT_REDIRECT'
+export const UNSET_CONTENT_REDIRECT = 'UNSET_CONTENT_REDIRECT'
+
+export const setContentRedirect = (content) => ({
+  type: SET_CONTENT_REDIRECT,
+  payload: content,
+})
+
+export const unsetContentRedirect = () => ({
+  type: UNSET_CONTENT_REDIRECT,
+})
+
+export const PUBLISH_UPDATE_REQUEST = 'PUBLISH_UPDATE_REQUEST'
+export const PUBLISH_UPDATE_SUCCESS = 'PUBLISH_UPDATE_SUCCESS'
+export const PUBLISH_UPDATE_FAILURE = 'PUBLISH_UPDATE_FAILURE'
+
+export const publishUpdateRequest = (permlink, body) => ({
+  type: PUBLISH_UPDATE_REQUEST,
+  payload: { permlink, body },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const publishUpdateSuccess = (response, meta) => ({
+  type: PUBLISH_UPDATE_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const publishUpdateFailure = (error, meta) => ({
+  type: PUBLISH_UPDATE_FAILURE,
+  payload: error,
+  meta,
 })
