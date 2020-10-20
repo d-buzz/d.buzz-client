@@ -158,6 +158,7 @@ export const fetchDiscussions = (author, permlink) => {
             }
 
             content.body = content.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+            content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
 
             if(content.replies.length !== 0) {
               const child = getChildren(content)
