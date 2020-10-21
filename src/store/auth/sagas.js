@@ -40,7 +40,7 @@ function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain } = payload
   let { username } = payload
   username = `${username}`.toLowerCase()
-  let user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
+  const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
   try {
     if(useKeychain) {
