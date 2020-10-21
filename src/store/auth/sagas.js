@@ -34,6 +34,8 @@ import {
   extractLoginData,
 } from 'services/api'
 
+import { generateSession, readSession } from 'services/helper'
+
 function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain } = payload
   let { username } = payload
@@ -71,10 +73,13 @@ function* authenticateUserRequest(payload, meta) {
     const is_subscribe = yield call(getCommunityRole, username)
     user.is_subscribe = is_subscribe
 
+    const session = generateSession(user)
+
     yield call([localStorage, localStorage.clear])
-    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(user))
+    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
@@ -84,12 +89,14 @@ function* getSavedUserRequest(meta) {
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     saved = JSON.parse(saved)
-    if(saved !== null) {
+    if(saved !== null && saved.hasOwnProperty('id') && saved.hasOwnProperty('token')) {
+      saved = readSession(saved)
       user = saved
     }
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
