@@ -226,6 +226,5 @@ export const generateSession = (obj) => {
   }
 
   token = CryptoJS.AES.encrypt(JSON.stringify(token), `${id}x0`).toString()
-
   return { id, token }
 }
