@@ -208,7 +208,7 @@ export const generateSession = (obj) => {
   const date = new Date()
   const lowerlimit = randomizer(1, 12)
   const upperlimit = randomizer(13, 28)
-  const index = randomizer(lowerlimit, upperlimit)
+  const index = randomizer(upperlimit, lowerlimit)
 
   const uid = uuid()
   const key = keygen(index)
