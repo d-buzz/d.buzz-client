@@ -414,7 +414,7 @@ function* publishPostRequest(payload, meta) {
         pending_payout_value: '0.000 HBD',
         active_votes: [],
         root_author: "",
-        parent_author: "",
+        parent_author: null,
         parent_permlink: "hive-190384",
         root_permlink: permlink,
         root_title: title,
