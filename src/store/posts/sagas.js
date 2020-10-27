@@ -164,7 +164,7 @@ function* getContentRequest(payload, meta) {
     } else {
       data = contentRedirect
     }
-    setContentRedirect(null)
+    yield put(setContentRedirect(null))
     yield put(getContentSuccess(data, meta))
   } catch(error) {
     console.log({ error })
