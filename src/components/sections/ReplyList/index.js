@@ -283,16 +283,18 @@ const ReplyList = (props) => {
       const hostname = window.location.hostname
 
       e.preventDefault()
-      if(href && !href.includes(hostname)) {
-        window.open(href, '_blank')
-      } else {
-        if(!href) {
-          setPageFrom(null)
-          history.push(generateLink(author, permlink))
+      if(!`${href}`.includes('ref=replies')){
+        if(href && !href.includes(hostname)) {
+          window.open(href, '_blank')
         } else {
-          const split = href.split('/')
-          href = `/${split[3]}`
-          history.push(href)
+          if(!href) {
+            setPageFrom(null)
+            history.push(generateLink(author, permlink))
+          } else {
+            const split = href.split('/')
+            href = `/${split[3]}`
+            history.push(href)
+          }
         }
       }
     }

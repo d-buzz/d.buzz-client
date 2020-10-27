@@ -59,10 +59,13 @@ const HelmetGenerator = (props) => {
   return (
     <React.Fragment>
       <Helmet>
-        <meta charSet="utf-8" />
+        <title>{title}</title>
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:og:image" content={image} />
+        <meta property="title" content={title} />
+        <meta property="description" content={description} />
+        <meta property="image" content={image} />
       </Helmet>
     </React.Fragment>
   )

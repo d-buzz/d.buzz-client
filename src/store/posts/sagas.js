@@ -164,7 +164,7 @@ function* getContentRequest(payload, meta) {
     } else {
       data = contentRedirect
     }
-    setContentRedirect(null)
+    yield put(setContentRedirect(null))
     yield put(getContentSuccess(data, meta))
   } catch(error) {
     console.log({ error })
@@ -414,7 +414,7 @@ function* publishPostRequest(payload, meta) {
         pending_payout_value: '0.000 HBD',
         active_votes: [],
         root_author: "",
-        parent_author: "",
+        parent_author: null,
         parent_permlink: "hive-190384",
         root_permlink: permlink,
         root_title: title,
@@ -470,6 +470,9 @@ function* publishReplyRequest(payload, meta) {
     if(success) {
       const meta = operation[0]
 
+      let currentDatetime = moment().toISOString()
+      currentDatetime = currentDatetime.replace('Z', '')
+
       const reply = {
         author: username,
         category: 'hive-193084',
@@ -486,6 +489,7 @@ function* publishReplyRequest(payload, meta) {
         root_author: parent_author,
         root_permlink: parent_permlink,
         children: 0,
+        created: currentDatetime,
       }
 
       reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
