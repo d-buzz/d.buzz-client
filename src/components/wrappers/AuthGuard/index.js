@@ -12,27 +12,20 @@ const AuthGuard = (props) => {
     return pathname.match(/^(\/org)/g)
   }
 
-  const isUnguardedRoute = () => {
-    return pathname.match(/^(\/ug)/g)
-  }
-
-  const isContentRoute = () => {
-    return pathname.match(/^\/@(.*)\/c\/(.*)/g)
+  const isGuardedRoute = () => {
+    return pathname.match(/^(\/latest)/g) || pathname.match(/^(\/trending)/g)
   }
 
   return (
     <React.Fragment>
       {pathname && (
         <React.Fragment>
-          {/* {isContentRoute() && !isUnguardedRoute() && !is_authenticated && !isFreeRoute() && (
-            <Redirect to={{ pathname: `/ug${pathname}` }} />
-          )} */}
           {is_authenticated && !isFreeRoute() && (
             <Redirect to={{ pathname: '/latest' }} />
           )}
-          {/* {!isUnguardedRoute() && !isContentRoute() && !is_authenticated && !isFreeRoute() && (
-            <Redirect to={{ pathname: '/ug' }} />
-          )} */}
+          {!is_authenticated && isGuardedRoute && (
+            <Redirect to={{ pathname: '/' }} />
+          )}
           {children}
         </React.Fragment>
       )}
