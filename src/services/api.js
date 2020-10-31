@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://api.openhive.network' })
+api.setOptions({ url: 'https://hive.roelandp.nl' })
 
 config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)
