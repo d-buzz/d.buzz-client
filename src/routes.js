@@ -6,7 +6,6 @@ import {
   Profile,
   Content,
   Latest,
-  Landing,
   AccountPosts,
   AccountReplies,
   AccountFollowers,
