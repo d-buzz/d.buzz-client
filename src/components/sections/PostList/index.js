@@ -204,11 +204,7 @@ const PostList = React.memo((props) => {
 
   let hasUpvoted = false
   const history = useHistory()
-  let authorLink = `/@${author}${'?ref='+profileRef}`
-
-  if(unguardedLinks) {
-    authorLink = `ug${authorLink}`
-  }
+  const authorLink = `/@${author}${'?ref='+profileRef}`
 
   if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
@@ -218,9 +214,6 @@ const PostList = React.memo((props) => {
 
   const generateLink = (author, permlink) =>  {
     let link = ''
-    if(unguardedLinks) {
-      link = '/ug'
-    }
 
     link += `/@${author}/c/${permlink}`
 
