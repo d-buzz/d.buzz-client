@@ -104,37 +104,6 @@ const routes =  [
         component: Content,
       },
       {
-        path: '/ug/@:username',
-        component: Profile,
-        routes: [
-          {
-            path: '/ug/@:username/',
-            exact: true,
-            component: AccountPosts,
-          },
-          {
-            path: '/ug/@:username/t/buzz',
-            exact: true,
-            component: AccountPosts,
-          },
-          {
-            path: '/ug/@:username/t/replies',
-            exact: true,
-            component: AccountReplies,
-          },
-          {
-            path: '/ug/@:username/t/followers',
-            exact: true,
-            component: AccountFollowers,
-          },
-          {
-            path: '/ug/@:username/t/following',
-            exact: true,
-            component: AccountFollowing,
-          },
-        ],
-      },
-      {
         path: '/@:username',
         component: Profile,
         routes: [
