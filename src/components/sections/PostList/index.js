@@ -230,11 +230,8 @@ const PostList = React.memo((props) => {
       window.open(href, '_blank')
     } else {
       if(!href) {
-        // setPageFrom(null)
         const link = generateLink(author, permlink)
         saveScrollIndex(scrollIndex)
-        // history.entries = []
-        // history.index = -1
         history.push(link)
       } else {
         const split = href.split('/')
