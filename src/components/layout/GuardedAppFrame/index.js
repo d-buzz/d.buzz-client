@@ -17,9 +17,9 @@ import { ContainedButton } from 'components/elements'
 import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { pending } from 'redux-saga-thunk'
 import { useLastLocation } from 'react-router-last-location'
 import { useWindowDimensions } from 'services/helper'
+import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles(theme => ({
   main: {

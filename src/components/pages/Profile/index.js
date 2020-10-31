@@ -156,7 +156,7 @@ const Profile = (props) => {
   const history = useHistory()
   const location = useLocation()
   const { pathname } = location
-  const { username: loginuser } = user
+  const { username: loginuser, is_authenticated } = user
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
@@ -205,12 +205,13 @@ const Profile = (props) => {
     } else if (index === 3) {
       tab = 'following'
     }
-    const { is_authenticated } = user
-    if(is_authenticated) {
-      history.push(`/@${username}/t/${tab}/`)
-    } else {
-      history.push(`/ug/@${username}/t/${tab}/`)
-    }
+    // const { is_authenticated } = user
+    history.push(`/@${username}/t/${tab}/`)
+
+    // if(is_authenticated) {
+    // } else {
+    //   history.push(`/ug/@${username}/t/${tab}/`)
+    // }
   }
 
 
@@ -303,29 +304,33 @@ const Profile = (props) => {
                 </div>
               </Col>
               <Col>
-                {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
-                  <ContainedButton
-                    fontSize={14}
-                    loading={loadingFollow}
-                    disabled={loading}
-                    style={{ float: 'right', marginTop: 5 }}
-                    transparent={true}
-                    label="Follow"
-                    className={classes.button}
-                    onClick={followUser}
-                  />
-                )}
-                {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
-                  <ContainedButton
-                    fontSize={14}
-                    loading={loadingFollow}
-                    disabled={loading}
-                    style={{ float: 'right', marginTop: 5 }}
-                    transparent={true}
-                    label="Unfollow"
-                    className={classes.button}
-                    onClick={unfollowUser}
-                  />
+                {is_authenticated && (
+                  <React.Fragment>
+                    {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
+                      <ContainedButton
+                        fontSize={14}
+                        loading={loadingFollow}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5 }}
+                        transparent={true}
+                        label="Follow"
+                        className={classes.button}
+                        onClick={followUser}
+                      />
+                    )}
+                    {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
+                      <ContainedButton
+                        fontSize={14}
+                        loading={loadingFollow}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5 }}
+                        transparent={true}
+                        label="Unfollow"
+                        className={classes.button}
+                        onClick={unfollowUser}
+                      />
+                    )}
+                  </React.Fragment>
                 )}
               </Col>
             </Row>
@@ -342,7 +347,7 @@ const Profile = (props) => {
                     {name || username}&nbsp;<Chip  size="small" label={reputation} />
                   </p>
                   <p className={classNames(classes.paragraph, classes.userName)}>
-                        @{username}
+                    @{username}
                   </p>
                 </Col>
               </Row>

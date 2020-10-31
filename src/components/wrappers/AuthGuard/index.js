@@ -23,7 +23,7 @@ const AuthGuard = (props) => {
           {is_authenticated && !isFreeRoute() && (
             <Redirect to={{ pathname: '/latest' }} />
           )}
-          {!is_authenticated && isGuardedRoute && (
+          {!is_authenticated && isGuardedRoute() && (
             <Redirect to={{ pathname: '/' }} />
           )}
           {children}
