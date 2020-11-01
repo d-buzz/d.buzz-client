@@ -266,10 +266,7 @@ const Content = (props) => {
 
 
   const generateAuthorLink = () => {
-    let link = `/@${author}`
-    if(!is_authenticated) {
-      link = `/ug${link}`
-    }
+    const link = `/@${author}`
     return link
   }
 
@@ -283,11 +280,6 @@ const Content = (props) => {
 
   const generateParentLinks = (author, permlink) => {
     let link = `/@${author}`
-
-    if(!is_authenticated) {
-      link = `/ug${link}`
-    }
-
     link = `${link}/c/${permlink}`
 
     return link
