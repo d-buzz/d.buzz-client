@@ -44,10 +44,6 @@ const routes =  [
         component: Disclaimer,
       },
       {
-        path: '/ug/tags',
-        component: Tags,
-      },
-      {
         path: '/trending',
         exact: true,
         component: Trending,
