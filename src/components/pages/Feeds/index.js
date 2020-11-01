@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import { CreateBuzzForm, InfiniteList } from 'components'
+import { CreateBuzzForm, InfiniteList, HelmetGenerator } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -101,6 +101,7 @@ const Feeds = React.memo((props) => {
 
   return (
     <React.Fragment>
+      <HelmetGenerator page='Home' />
       {!isMobile && !buzzModalStatus && (<CreateBuzzForm />)}
       {(items.length === 0) && !loading && (
         <React.Fragment>

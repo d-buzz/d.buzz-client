@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Trending } from 'components'
+import { Trending, HelmetGenerator } from 'components'
 import { createUseStyles } from 'react-jss'
 import {
   clearSearchPosts,
@@ -77,6 +77,7 @@ const Landing = (props) => {
   return (
     <React.Fragment>
       <div className={classes.trendingWrapper}>
+        <HelmetGenerator page='Home' />
         <div>
           <h5 className={classes.title}>Trending</h5>
         </div>

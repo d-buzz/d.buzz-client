@@ -37,7 +37,7 @@ import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex } from 'store/interface/actions'
 import queryString from 'query-string'
-import { ProfileSkeleton } from 'components'
+import { ProfileSkeleton, HelmetGenerator } from 'components'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -290,6 +290,7 @@ const Profile = (props) => {
 
   return (
     <React.Fragment>
+      <HelmetGenerator page='Profile' />
       <ProfileSkeleton loading={loading} />
       {!loading && (
         <React.Fragment>

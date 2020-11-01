@@ -6,15 +6,14 @@ import removeMd from 'remove-markdown'
 import markdownLinkExtractor from 'markdown-link-extractor'
 
 const HelmetGenerator = (props) => {
-  const { content, user } = props
+  const {content, user, page = 'content'} = props
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
   const [image, setImage] = useState()
   const url = window.location.href
 
   useEffect(() => {
-    if(content && `${content}`.trim() !== '') {
-
+    if(content && `${content}`.trim() !== '' && page === 'content') {
       const generateMeta = async () => {
 
         const stripContent = stripHtml(removeMd(content))
@@ -53,6 +52,8 @@ const HelmetGenerator = (props) => {
 
       generateMeta()
 
+    } else {
+      setTitle(page)
     }
     // eslint-disable-next-line
   }, [content])
@@ -61,16 +62,21 @@ const HelmetGenerator = (props) => {
     <React.Fragment>
       <Helmet>
         <title>{title}</title>
-        <meta property="description" content={description} />
-        <meta property="image" content={image} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:og:image" content={image} />
-        <meta property="title" content={title} />
-        <meta property="twitter:url" content={url} />
-        <meta property="twitter:title" content={title} />
-        <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" />
-        <meta property="twitter:image" content="https://d.buzzd/buzz.svg" />
+        {page === 'content' && (
+          <React.Fragment>
+            <meta property="description" content={description} />
+            <meta property="image" content={image} />
+            <meta property="og:url" content={url} />
+            <meta property="og:title" content={title} />
+            <meta property="og:description" content={description} />
+            <meta property="og:og:image" content={image} />
+            <meta property="title" content={title} />
+            <meta property="twitter:url" content={url} />
+            <meta property="twitter:title" content={title} />
+            <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" />
+            <meta property="twitter:image" content="https://d.buzzd/buzz.svg" />
+          </React.Fragment>
+        )}
       </Helmet>
     </React.Fragment>
   )
