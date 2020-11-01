@@ -10,6 +10,7 @@ const HelmetGenerator = (props) => {
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
   const [image, setImage] = useState()
+  const url = window.location.href
 
   useEffect(() => {
     if(content && `${content}`.trim() !== '') {
@@ -60,12 +61,16 @@ const HelmetGenerator = (props) => {
     <React.Fragment>
       <Helmet>
         <title>{title}</title>
+        <meta property="description" content={description} />
+        <meta property="image" content={image} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:og:image" content={image} />
         <meta property="title" content={title} />
-        <meta property="description" content={description} />
-        <meta property="image" content={image} />
+        <meta property="twitter:url" content={url} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" />
+        <meta property="twitter:image" content="https://d.buzzd/buzz.svg" />
       </Helmet>
     </React.Fragment>
   )
