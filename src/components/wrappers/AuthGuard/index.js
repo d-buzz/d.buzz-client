@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useLocation, Redirect } from 'react-router-dom'
 
 const AuthGuard = (props) => {
-  const { children, user } = props
+  const { children, user, fromLanding } = props
   const location = useLocation()
   const { pathname } = location
   const { is_authenticated } = user
@@ -20,7 +20,7 @@ const AuthGuard = (props) => {
     <React.Fragment>
       {pathname && (
         <React.Fragment>
-          {is_authenticated && !isFreeRoute() && (
+          {is_authenticated && !isFreeRoute() && fromLanding && (
             <Redirect to={{ pathname: '/latest' }} />
           )}
           {!is_authenticated && isGuardedRoute() && (
@@ -35,6 +35,7 @@ const AuthGuard = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  fromLanding: state.auth.get('fromLanding'),
 })
 
 export default connect(mapStateToProps)(AuthGuard)

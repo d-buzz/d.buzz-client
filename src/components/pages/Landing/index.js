@@ -19,6 +19,7 @@ import {
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
+import { setFromLanding } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -54,6 +55,7 @@ const Landing = (props) => {
     clearAccountReplies,
     clearAppendReply,
     clearReplies,
+    setFromLanding,
   } = props
 
   useEffect(() => {
@@ -71,6 +73,7 @@ const Landing = (props) => {
     setTrendingIsVisited(false)
     setLatestIsVisited(false)
     setTagsIsVisited(false)
+    setFromLanding(true)
     // eslint-disable-next-line
   }, [])
 
@@ -103,6 +106,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAccountReplies,
     clearAppendReply,
     clearReplies,
+    setFromLanding,
   }, dispatch),
 })
 
