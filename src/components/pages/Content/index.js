@@ -358,7 +358,7 @@ const Content = (props) => {
                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
-              {hasUpdateAuthority && (
+              {hasUpdateAuthority && is_authenticated && (
                 <Col xs="auto">
                   <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
                     <MoreIcon className={classes.iconCursor} />
