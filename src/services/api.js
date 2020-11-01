@@ -870,15 +870,14 @@ export const searchPostTags = (tag) => {
       url: `${searchUrl}/tags`,
       data: body,
     }).then(async(result) => {
-      let data = result.data
+      const data = result.data
       if(data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results, false)
         data.results = data.results.filter((item) => item.body.length <= 280)
         await Promise.all([getProfiledata])
       }
 
-
-      data = invokeFilter(data.results)
+      data.results = data.results.filter(item => invokeFilter(item))
 
       resolve(data)
     }).catch((error) => {
