@@ -517,7 +517,7 @@ function* publishReplyRequest(payload, meta) {
 function* getSearchTags(payload, meta) {
   try {
     const { tag } = payload
-    const searchPosts = yield call(searchPostTags,   tag)
+    const searchPosts = yield call(searchPostTags, tag)
 
     yield put(getSearchTagsSuccess(searchPosts, meta))
   } catch(error) {
