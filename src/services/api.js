@@ -871,14 +871,15 @@ export const searchPostTags = (tag) => {
       data: body,
     }).then(async(result) => {
       const data = result.data
-      if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results, false)
-        data.results = data.results.filter((item) => item.body.length <= 280)
-        await Promise.all([getProfiledata])
-      }
+      // if(data.results.length !== 0) {
+      //   const getProfiledata = mapFetchProfile(data.results, false)
+      //   data.results = data.results.filter((item) => item.body.length <= 280)
+      //   await Promise.all([getProfiledata])
+      // }
 
       data.results = data.results.filter(item => invokeFilter(item))
-
+      removeFootNote(data.results)
+      
       resolve(data)
     }).catch((error) => {
       console.log({ error })
