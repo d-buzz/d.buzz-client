@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
+import { TweetSkeleton } from 'components'
 
 const renderer = new DefaultRenderer({
   baseUrl: "https://d.buzz/",
@@ -148,7 +149,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
-    return <TwitterTweetEmbed tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} />
+    return <TwitterTweetEmbed tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
