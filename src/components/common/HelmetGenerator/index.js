@@ -60,24 +60,31 @@ const HelmetGenerator = (props) => {
 
   return (
     <React.Fragment>
-      <Helmet>
-        <title>{title}</title>
-        {page === 'content' && (
-          <React.Fragment>
-            <meta property="description" content={description} />
-            <meta property="image" content={image} />
-            <meta property="og:url" content={url} />
-            <meta property="og:title" content={title} />
-            <meta property="og:description" content={description} />
-            <meta property="og:og:image" content={image} />
-            <meta property="title" content={title} />
-            <meta property="twitter:url" content={url} />
-            <meta property="twitter:title" content={title} />
-            <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" />
-            <meta property="twitter:image" content="https://d.buzzd/buzz.svg" />
-          </React.Fragment>
-        )}
-      </Helmet>
+      {page === 'content' && (
+        <Helmet>
+          <title>{title}</title>
+          <meta property="description" content={description} />
+          <meta property="image" content={image} />
+          <meta property="og:url" content={url} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:og:image" content={image} />
+          <meta property="title" content={title} />
+          <meta property="twitter:url" content={url} />
+          <meta property="twitter:title" content={title} />
+          <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" />
+          <meta property="twitter:image" content="https://d.buzzd/buzz.svg" />
+        </Helmet>
+      )}
+      {page !== 'content' && (
+        <Helmet>
+          <title>{title}</title>
+          <meta property="og:url" content={url} />
+          <meta property="og:title" content={title} />
+          <meta property="title" content={title} />
+          <meta property="twitter:title" content={title} />
+        </Helmet>
+      )}
     </React.Fragment>
   )
 }
