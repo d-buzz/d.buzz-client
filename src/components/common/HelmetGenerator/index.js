@@ -51,9 +51,10 @@ const HelmetGenerator = (props) => {
       }
 
       generateMeta()
-
+      window.prerenderReady = true
     } else {
       setTitle(page)
+      window.prerenderReady = true
     }
     // eslint-disable-next-line
   }, [content])
@@ -68,7 +69,7 @@ const HelmetGenerator = (props) => {
           <meta property="og:url" content={url} />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
-          <meta property="og:og:image" content={image} />
+          <meta property="og:image" content={image} />
           <meta property="title" content={title} />
           <meta property="twitter:url" content={url} />
           <meta property="twitter:title" content={title} />
