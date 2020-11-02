@@ -5,7 +5,7 @@ import store from 'store/store'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
 } from 'react-router-dom'
 import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -15,7 +15,7 @@ initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router hashType='hashbang'>
+    <Router>
       {/* <ScrollMemory /> */}
       <App />
     </Router>

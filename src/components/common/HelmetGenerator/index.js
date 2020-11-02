@@ -48,10 +48,11 @@ const HelmetGenerator = (props) => {
         } else {
           setImage(avatarLink)
         }
+        window.prerenderReady = true
       }
 
       generateMeta()
-      window.prerenderReady = true
+
     } else {
       setTitle(page)
       window.prerenderReady = true
