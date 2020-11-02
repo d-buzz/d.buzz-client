@@ -15,7 +15,7 @@ initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <Router hashType='hashbang'>
       {/* <ScrollMemory /> */}
       <App />
     </Router>
