@@ -50,3 +50,10 @@ export const setBuzzModalStatus = (status) => ({
   type: SET_BUZZ_MODAL_STATUS,
   payload: status,
 })
+
+export const SET_TWITTER_HEIGHTS = 'SET_TWITTER_HEIGHTS'
+
+export const setTwitterHeights = (payload) => ({
+  type: SET_TWITTER_HEIGHTS,
+  payload: { payload },
+})

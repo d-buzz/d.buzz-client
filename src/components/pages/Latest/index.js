@@ -23,7 +23,7 @@ import {
 } from 'store/profile/actions'
 import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
-import { InfiniteList } from 'components'
+import { InfiniteList, HelmetGenerator } from 'components'
 import { clearScrollIndex } from 'store/interface/actions'
 
 const Latest = (props) => {
@@ -84,6 +84,7 @@ const Latest = (props) => {
 
   return (
     <React.Fragment>
+      <HelmetGenerator page='Latest' />
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )

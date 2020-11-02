@@ -21,7 +21,7 @@ import {
   clearAccountReplies,
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
-import { InfiniteList } from 'components'
+import { InfiniteList, HelmetGenerator } from 'components'
 import { clearScrollIndex } from 'store/interface/actions'
 
 const Trending = (props) => {
@@ -78,6 +78,7 @@ const Trending = (props) => {
 
   return (
     <React.Fragment>
+      <HelmetGenerator page='Trending' />
       <InfiniteList unguardedLinks={unguardedLinks} loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )

@@ -6,14 +6,14 @@ import removeMd from 'remove-markdown'
 import markdownLinkExtractor from 'markdown-link-extractor'
 
 const HelmetGenerator = (props) => {
-  const { content, user } = props
+  const {content, user, page = 'content'} = props
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
   const [image, setImage] = useState()
+  const url = window.location.href
 
   useEffect(() => {
-    if(content && `${content}`.trim() !== '') {
-
+    if(content && `${content}`.trim() !== '' && page === 'content') {
       const generateMeta = async () => {
 
         const stripContent = stripHtml(removeMd(content))
@@ -48,25 +48,45 @@ const HelmetGenerator = (props) => {
         } else {
           setImage(avatarLink)
         }
+        window.prerenderReady = true
       }
 
       generateMeta()
 
+    } else {
+      setTitle(page)
+      window.prerenderReady = true
     }
     // eslint-disable-next-line
   }, [content])
 
   return (
     <React.Fragment>
-      <Helmet>
-        <title>{title}</title>
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:og:image" content={image} />
-        <meta property="title" content={title} />
-        <meta property="description" content={description} />
-        <meta property="image" content={image} />
-      </Helmet>
+      {page === 'content' && (
+        <Helmet>
+          <title>{title}</title>
+          <meta property="description" content={description} />
+          <meta property="image" content={image} />
+          <meta property="og:url" content={url} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:image" content={image} />
+          <meta property="title" content={title} />
+          <meta property="twitter:url" content={url} />
+          <meta property="twitter:title" content={title} />
+          <meta property="twitter:description" content={description} />
+          <meta property="twitter:image" ccontent={image} />
+        </Helmet>
+      )}
+      {page !== 'content' && (
+        <Helmet>
+          <title>{title}</title>
+          <meta property="og:url" content={url} />
+          <meta property="og:title" content={title} />
+          <meta property="title" content={title} />
+          <meta property="twitter:title" content={title} />
+        </Helmet>
+      )}
     </React.Fragment>
   )
 }
