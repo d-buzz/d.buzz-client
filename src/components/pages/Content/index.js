@@ -266,10 +266,7 @@ const Content = (props) => {
 
 
   const generateAuthorLink = () => {
-    let link = `/@${author}`
-    if(!is_authenticated) {
-      link = `/ug${link}`
-    }
+    const link = `/@${author}`
     return link
   }
 
@@ -283,11 +280,6 @@ const Content = (props) => {
 
   const generateParentLinks = (author, permlink) => {
     let link = `/@${author}`
-
-    if(!is_authenticated) {
-      link = `/ug${link}`
-    }
-
     link = `${link}/c/${permlink}`
 
     return link
@@ -358,7 +350,7 @@ const Content = (props) => {
                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
-              {hasUpdateAuthority && (
+              {hasUpdateAuthority && is_authenticated && (
                 <Col xs="auto">
                   <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
                     <MoreIcon className={classes.iconCursor} />

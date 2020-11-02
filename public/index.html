@@ -3,17 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/d.buzz.ico" />
+    <title>D.Buzz</title>
+
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <meta name="theme-color" content="#000000" data-react-helmet="true"/>
-    <meta property="title" content="D.Buzz" data-react-helmet="true" />
-    <meta property="description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true"/>
+
+    <meta property="og:type" content="website" data-react-helmet="true"/>
+
+    <meta name="title" content="D.Buzz" data-react-helmet="true" data-react-helmet="true">
+    <meta name="description" content="D.Buzz | Micro-blogging for HIVE">
     <meta property="image" content="https://d.buzz/dbuzz.svg" data-react-helmet="true"/>
+
     <meta property="og:title" content="D.Buzz" data-react-helmet="true" />
     <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true"/>
     <meta property="og:image" content="https://d.buzzd/buzz.svg" data-react-helmet="true"/>
+
+    <meta property="twitter:card" content="summary_large_image" data-react-helmet="true" />
+    <meta property="twitter:url" content="https://d.buzz/" data-react-helmet="true" />
+    <meta property="twitter:title" content="D.Buzz" data-react-helmet="true" />
+    <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true" />
+    <meta property="twitter:image" content="https://d.buzzd/buzz.svg" data-react-helmet="true" />
+
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>D.Buzz</title>
     <base href="/">
   </head>
   <body>
@@ -21,6 +33,8 @@
     <div id="root"></div>
   </body>
 </html>
+
+<script>window.prerenderReady = false;</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');

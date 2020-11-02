@@ -34,8 +34,8 @@ const useStyle = createUseStyles({
 
 const PostTags = (props) => {
   const classes = useStyle()
-  const { meta, highlightTag, user } = props
-  const { is_authenticated } = user
+  const { meta, highlightTag } = props
+  // const { is_authenticated } = user
   const history = useHistory()
 
   let tags = []
@@ -47,11 +47,6 @@ const PostTags = (props) => {
 
   const generateTagsLink = (tag) => {
     let link = ''
-
-    if(!is_authenticated) {
-      link = '/ug'
-    }
-
     link += `/tags?q=${tag}`
 
     return link

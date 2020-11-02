@@ -13,6 +13,7 @@ import {
   NotificationBox,
   UserDialog,
 } from 'components'
+import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
@@ -66,12 +67,15 @@ const useStyles = createUseStyles({
 
 const AppFrame = (props) => {
   const classes = useStyles()
-  const { route } = props
+  const { route, user } = props
   const { pathname } = useLocation()
+  const { is_authenticated } = user
+
+  console.log({ is_authenticated })
 
   const organizationRoutes = (pathname.match(/^\/org/))
   let containerClass = classes.guardedContainer
-  const unGuardedRoute = (pathname.match(/^\/login/) || pathname.match(/^\/ug/))
+  const unGuardedRoute = (pathname.match(/^\/login/) || !is_authenticated)
 
   if(organizationRoutes) {
     containerClass = classes.organizationContainer
@@ -83,7 +87,7 @@ const AppFrame = (props) => {
 
   return(
     <React.Fragment>
-      {unGuardedRoute && (<AppBar />)}
+      {!is_authenticated && (<AppBar />)}
       {organizationRoutes && (<OrganizationAppBar />)}
       {!isMobile && (
         <Container className={containerClass}>
@@ -91,10 +95,10 @@ const AppFrame = (props) => {
             {organizationRoutes && (
               <OrganizationAppFrame pathname={pathname} route={route} />
             )}
-            {!unGuardedRoute && !organizationRoutes && (
+            {is_authenticated && !organizationRoutes && (
               <GuardedAppFrame pathname={pathname} route={route} />
             )}
-            {unGuardedRoute && !organizationRoutes && (
+            {!is_authenticated && !organizationRoutes && (
               <UnguardedAppFrame route={route} />
             )}
           </StickyContainer>
@@ -109,4 +113,8 @@ const AppFrame = (props) => {
   )
 }
 
-export default AppFrame
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps)(AppFrame)

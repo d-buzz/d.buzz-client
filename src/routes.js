@@ -6,7 +6,6 @@ import {
   Profile,
   Content,
   Latest,
-  Landing,
   AccountPosts,
   AccountReplies,
   AccountFollowers,
@@ -43,20 +42,6 @@ const routes =  [
         path: '/org/en/disclaimer',
         exact: true,
         component: Disclaimer,
-      },
-      {
-        path: '/ug',
-        exact: true,
-        component: Landing,
-      },
-      {
-        path: '/ug/tags',
-        component: Tags,
-      },
-      {
-        path: '/ug/@:username/c/:permlink',
-        exact: true,
-        component: Content,
       },
       {
         path: '/trending',
@@ -113,37 +98,6 @@ const routes =  [
         path: '/@:username/c/:permlink',
         exact: true,
         component: Content,
-      },
-      {
-        path: '/ug/@:username',
-        component: Profile,
-        routes: [
-          {
-            path: '/ug/@:username/',
-            exact: true,
-            component: AccountPosts,
-          },
-          {
-            path: '/ug/@:username/t/buzz',
-            exact: true,
-            component: AccountPosts,
-          },
-          {
-            path: '/ug/@:username/t/replies',
-            exact: true,
-            component: AccountReplies,
-          },
-          {
-            path: '/ug/@:username/t/followers',
-            exact: true,
-            component: AccountFollowers,
-          },
-          {
-            path: '/ug/@:username/t/following',
-            exact: true,
-            component: AccountFollowing,
-          },
-        ],
       },
       {
         path: '/@:username',
