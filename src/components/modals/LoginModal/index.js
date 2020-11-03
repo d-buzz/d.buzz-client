@@ -35,7 +35,8 @@ const useStyles = createUseStyles(theme => ({
     '& div.modal-content': {
       borderRadius: '15px 15px !important',
       border: 'none',
-      width: 400,
+      maxWidth: 400,
+      minWidth: 100,
       margin: '0 auto',
       backgroundColor: theme.background.primary,
     },

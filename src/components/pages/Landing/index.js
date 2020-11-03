@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Trending } from 'components'
+import { Trending, HelmetGenerator } from 'components'
 import { createUseStyles } from 'react-jss'
 import {
   clearSearchPosts,
@@ -19,6 +19,7 @@ import {
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
+import { setFromLanding } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -54,6 +55,7 @@ const Landing = (props) => {
     clearAccountReplies,
     clearAppendReply,
     clearReplies,
+    setFromLanding,
   } = props
 
   useEffect(() => {
@@ -71,12 +73,14 @@ const Landing = (props) => {
     setTrendingIsVisited(false)
     setLatestIsVisited(false)
     setTagsIsVisited(false)
+    setFromLanding(true)
     // eslint-disable-next-line
   }, [])
 
   return (
     <React.Fragment>
       <div className={classes.trendingWrapper}>
+        <HelmetGenerator page='Home' />
         <div>
           <h5 className={classes.title}>Trending</h5>
         </div>
@@ -102,6 +106,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAccountReplies,
     clearAppendReply,
     clearReplies,
+    setFromLanding,
   }, dispatch),
 })
 

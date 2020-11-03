@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://api.openhive.network' })
+api.setOptions({ url: 'https://hive.roelandp.nl' })
 
 config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)
@@ -871,14 +871,18 @@ export const searchPostTags = (tag) => {
       data: body,
     }).then(async(result) => {
       const data = result.data
-      if(data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results, false)
-        data.results = data.results.filter((item) => item.body.length <= 280)
-        await Promise.all([getProfiledata])
-      }
+      // if(data.results.length !== 0) {
+      //   const getProfiledata = mapFetchProfile(data.results, false)
+      //   data.results = data.results.filter((item) => item.body.length <= 280)
+      //   await Promise.all([getProfiledata])
+      // }
 
+      data.results = data.results.filter(item => invokeFilter(item))
+      removeFootNote(data.results)
+      
       resolve(data)
     }).catch((error) => {
+      console.log({ error })
       reject(error)
     })
   })

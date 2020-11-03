@@ -13,6 +13,7 @@ import { LoginModal, SearchField } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { isMobile } from 'react-device-detect'
 
 const useStyles = createUseStyles(theme => ({
   nav: {
@@ -92,9 +93,11 @@ const AppBar = (props) => {
             {(mode === 'night' || mode === 'gray') && (<BrandIconDark height={30} top={-15} />)}
           </Link>
         </Navbar.Brand>
-        <Nav className="mr-auto">
-          <SearchField disableTips={true} />
-        </Nav>
+        {!isMobile && (
+          <Nav className="mr-auto">
+            <SearchField disableTips={true} />
+          </Nav>
+        )}
         <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
         <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickSignup} fontSize={15} label="Sign up" className={classes.button} />
       </Container>

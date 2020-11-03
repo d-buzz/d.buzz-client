@@ -116,3 +116,10 @@ export const checkHasUpdateAuthorityFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_FROM_LANDING = 'SET_FROM_LANDING'
+
+export const setFromLanding = (status) => ({
+  type: SET_FROM_LANDING,
+  payload: { status },
+})
