@@ -33,6 +33,7 @@ import {
   HelmetGenerator,
   UpdateFormModal,
 } from 'components'
+import stripHtml from 'string-strip-html'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -309,7 +310,7 @@ const Content = (props) => {
                   </Col>
                 </Row>
               )}
-              {(body.length > 280) && (
+              {(`${stripHtml(body)}`.length > 280)&& (
                 <Row>
                   <Col>
                     <div className={classes.context}>
@@ -324,7 +325,7 @@ const Content = (props) => {
                   </Col>
                 </Row>
               )}
-              {!(body.length > 280) && body &&(
+              {!(`${stripHtml(body)}`.length > 280) && body &&(
                 <React.Fragment> 
                   <Row>
                     <Col xs="auto" style={{ paddingRight: 0 }}>
