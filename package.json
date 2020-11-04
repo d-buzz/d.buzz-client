@@ -1,6 +1,6 @@
 {
   "name": "d.buzz-client",
-  "version": "3.0.2",
+  "version": "3.2.5-dev",
   "private": true,
   "dependencies": {
     "@ashwamegh/react-link-preview": "^0.2.2",
