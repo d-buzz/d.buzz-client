@@ -15,7 +15,8 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: theme.background.primary,
       borderRadius: '15px 15px !important',
       border: 'none',
-      width: 400,
+      maxWidth: 400,
+      minWidth: 100,
       margin: '0 auto',
       '& h6': {
         ...theme.font,
