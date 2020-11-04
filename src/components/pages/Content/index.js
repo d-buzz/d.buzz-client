@@ -27,6 +27,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import stripHtml from 'string-strip-html'
 import {
   ContentSkeleton,
   ReplylistSkeleton,
@@ -309,7 +310,7 @@ const Content = (props) => {
                   </Col>
                 </Row>
               )}
-              {(body.length > 280) && (
+              {(`${stripHtml(body)}`.length > 280) && (
                 <Row>
                   <Col>
                     <div className={classes.context}>
@@ -324,7 +325,7 @@ const Content = (props) => {
                   </Col>
                 </Row>
               )}
-              {!(body.length > 280) && body &&(
+              {!(`${stripHtml(body)}`.length > 280) && body &&(
                 <React.Fragment> 
                   <Row>
                     <Col xs="auto" style={{ paddingRight: 0 }}>
