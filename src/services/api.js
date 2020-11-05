@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://hive.roelandp.nl' })
+api.setOptions({ url: 'https://rpc.ausbit.dev' })
 
 config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)
@@ -879,7 +879,7 @@ export const searchPostTags = (tag) => {
 
       data.results = data.results.filter(item => invokeFilter(item))
       removeFootNote(data.results)
-      
+
       resolve(data)
     }).catch((error) => {
       console.log({ error })
