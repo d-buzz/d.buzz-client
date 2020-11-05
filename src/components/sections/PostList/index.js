@@ -182,15 +182,17 @@ const PostList = React.memo((props) => {
   if(!payout) {
     const { pending_payout_value, total_payout_value } = props
 
-    console.log({ pending_payout_value })
-
-    payout = total_payout_value
+    if(total_payout_value) {
+      payout = total_payout_value
+    }
 
     if(pending_payout_value > total_payout_value) {
       payout = pending_payout_value
     }
 
     payout = `${payout}`.replace('HBD', '')
+
+    console.log({ payout })
 
     if(!payout) {
       payout = '0.00'
