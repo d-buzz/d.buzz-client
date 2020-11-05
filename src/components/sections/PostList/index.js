@@ -156,7 +156,6 @@ const PostList = React.memo((props) => {
     body,
     upvotes,
     replyCount,
-    payout,
     meta,
     active_votes = [],
     unguardedLinks,
@@ -173,6 +172,22 @@ const PostList = React.memo((props) => {
     scrollIndex,
     recomputeRowIndex = () => {},
   } = props
+
+  let { payout = null } = props
+
+  if(!payout) {
+    const { pending_payout_value, total_payout_value } = props
+
+    console.log({ pending_payout_value })
+
+    payout = total_payout_value
+
+    if(pending_payout_value > total_payout_value) {
+      payout = pending_payout_value
+    }
+  }
+
+  console.log({ payout })
 
   const { width } = useWindowDimensions()
 
