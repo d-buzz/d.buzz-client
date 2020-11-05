@@ -161,7 +161,6 @@ const PostList = React.memo((props) => {
     unguardedLinks,
     user = {},
     profileRef = null,
-    payoutAt = null,
     highlightTag = null,
     title = null,
     disableProfileLink = false,
@@ -173,21 +172,32 @@ const PostList = React.memo((props) => {
     recomputeRowIndex = () => {},
   } = props
 
-  let { payout = null } = props
+  let { payout = null, payoutAt = null } = props
+
+  if(!payoutAt) {
+    const { cashout_time } = props
+    payoutAt = cashout_time
+  }
 
   if(!payout) {
     const { pending_payout_value, total_payout_value } = props
 
-    console.log({ pending_payout_value })
-
-    payout = total_payout_value
+    if(total_payout_value) {
+      payout = total_payout_value
+    }
 
     if(pending_payout_value > total_payout_value) {
       payout = pending_payout_value
     }
-  }
 
-  console.log({ payout })
+    payout = `${payout}`.replace('HBD', '')
+
+    console.log({ payout })
+
+    if(!payout) {
+      payout = '0.00'
+    }
+  }
 
   const { width } = useWindowDimensions()
 
