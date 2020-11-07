@@ -286,6 +286,18 @@ const Content = (props) => {
     return link
   }
 
+  const openTweetBox = () => {
+    setAnchorEl(null)
+    const width = 500
+    const height = 600
+    let content = body
+    if(content.length < 274) {
+      content += '#HIVE'
+    }
+    content = encodeURIComponent(stripHtml(content))
+    window.open(`https://twitter.com/intent/tweet?text=${content}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2));
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -326,7 +338,7 @@ const Content = (props) => {
                 </Row>
               )}
               {!(`${stripHtml(body)}`.length > 280) && body &&(
-                <React.Fragment> 
+                <React.Fragment>
                   <Row>
                     <Col xs="auto" style={{ paddingRight: 0 }}>
                       <Avatar author={author} />
@@ -385,6 +397,7 @@ const Content = (props) => {
               onClose={hanldeCloseMore}
             >
               <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
+              <MenuItem onClick={openTweetBox}>Buzz to twitter</MenuItem>
             </Menu>
             {hasUpdateAuthority && (
               <UpdateFormModal onSuccess={onUpdateSuccess} author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
