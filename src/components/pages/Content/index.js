@@ -295,7 +295,7 @@ const Content = (props) => {
       content += '#HIVE'
     }
     content = encodeURIComponent(stripHtml(content))
-    window.open(`https://twitter.com/intent/tweet?text=${content}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2));
+    window.open(`https://twitter.com/intent/tweet?text=${content}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
   }
 
   return (
