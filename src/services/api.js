@@ -513,6 +513,18 @@ export const fetchFollowCount = (username) => {
     })
 }
 
+export const fetchMuteList = (user) => {
+  return new Promise((resolve, reject) => {
+    api.getFollowersAsync(user, '', 'ignore', 1000)
+      .then(async(result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
 export const fetchFollowers = (following, start_follower = '', limit = 10) => {
   return new Promise((resolve, reject) => {
     api.getFollowersAsync(following, start_follower, 'blog', limit)
