@@ -77,7 +77,10 @@ function* authenticateUserRequest(payload, meta) {
       const is_subscribe = yield call(getCommunityRole, username)
       user.is_subscribe = is_subscribe
 
-      const mutelist = yield call(fetchMuteList, username)
+      let mutelist = yield call(fetchMuteList, username)
+
+      mutelist = [...new Set(mutelist.map(item => item.following))]
+
       yield put(setMuteList(mutelist))
 
       const session = generateSession(user)
@@ -85,7 +88,6 @@ function* authenticateUserRequest(payload, meta) {
       yield call([localStorage, localStorage.clear])
       yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
     }
-
 
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
@@ -105,7 +107,8 @@ function* getSavedUserRequest(meta) {
     }
 
     if(user.is_authenticated) {
-      const mutelist = yield call(fetchMuteList, user.username)
+      let mutelist = yield call(fetchMuteList, user.username)
+      mutelist = [...new Set(mutelist.map(item => item.following))]
       yield put(setMuteList(mutelist))
     }
 

@@ -11,7 +11,7 @@ import { fromJS } from 'immutable'
 const defaultState = fromJS({
   user: {},
   fromLanding: false,
-  mutelist: {},
+  mutelist: [],
 })
 
 export const auth = (state = defaultState, { type, payload }) => {
