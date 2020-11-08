@@ -70,13 +70,17 @@ function* authenticateUserRequest(payload, meta) {
       }
     }
 
-    const is_subscribe = yield call(getCommunityRole, username)
-    user.is_subscribe = is_subscribe
+    if(user.is_authenticated) {
+      const is_subscribe = yield call(getCommunityRole, username)
+      user.is_subscribe = is_subscribe
 
-    const session = generateSession(user)
+      const session = generateSession(user)
 
-    yield call([localStorage, localStorage.clear])
-    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+      yield call([localStorage, localStorage.clear])
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+    }
+
+
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
     console.log({ error })
