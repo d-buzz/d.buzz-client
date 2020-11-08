@@ -125,7 +125,6 @@ export const setFromLanding = (status) => ({
 })
 
 export const SET_MUTE_LIST = 'SET_MUTE_LIST'
-export const GET_MUTE_LIST = 'GET_MUTE_LIST'
 
 export const setMuteList = (response) => ({
   type: SET_MUTE_LIST,
