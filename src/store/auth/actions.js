@@ -123,3 +123,10 @@ export const setFromLanding = (status) => ({
   type: SET_FROM_LANDING,
   payload: { status },
 })
+
+export const SET_MUTE_LIST = 'SET_MUTE_LIST'
+
+export const setMuteList = (response) => ({
+  type: SET_MUTE_LIST,
+  payload: response,
+})
