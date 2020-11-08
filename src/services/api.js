@@ -38,6 +38,10 @@ broadcast.updateOperations()
 
 const visited = []
 
+export const invokeMuteFilter = (items, mutelist) => {
+  return items.filter((item) => !mutelist.includes(item.author) )
+}
+
 export const hashBuffer = (buffer) => {
   return hash.sha256(buffer)
 }

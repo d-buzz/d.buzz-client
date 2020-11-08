@@ -100,6 +100,7 @@ import {
   getLinkMeta,
   invokeFilter,
   generateUpdateOperation,
+  invokeMuteFilter,
 } from 'services/api'
 import { createPatch } from 'services/helper'
 import stripHtml from 'string-strip-html'
@@ -202,6 +203,10 @@ function* getTrendingPostsRequest(payload, meta) {
 
     yield put(setTrendingLastPost(data[data.length-1]))
     data = data.filter(item => invokeFilter(item))
+
+    const mutelist = yield select(state => state.auth.get('mutelist'))
+    data = invokeMuteFilter(data, mutelist)
+
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
     yield put(getTrendingPostsFailure(error, meta))
@@ -226,8 +231,10 @@ function* getHomePostsRequest(payload, meta) {
     })
 
     yield put(setHomeLastPost(data[data.length-1]))
+    const mutelist = yield select(state => state.auth.get('mutelist'))
 
     data = data.filter(item => invokeFilter(item))
+    data = invokeMuteFilter(data, mutelist)
 
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
@@ -253,6 +260,9 @@ function* getLatestPostsRequest(payload, meta) {
 
     yield put(setLatestLastPost(data[data.length-1]))
     data = data.filter(item => invokeFilter(item))
+
+    const mutelist = yield select(state => state.auth.get('mutelist'))
+    data = invokeMuteFilter(data, mutelist)
 
     yield put(getLatestPostsSuccess(data, meta))
   } catch(error) {
