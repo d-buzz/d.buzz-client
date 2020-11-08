@@ -104,6 +104,11 @@ function* getSavedUserRequest(meta) {
       user = saved
     }
 
+    if(user.is_authenticated) {
+      const mutelist = yield call(fetchMuteList, user.username)
+      yield put(setMuteList(mutelist))
+    }
+
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
     console.log({ error })
