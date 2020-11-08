@@ -519,20 +519,10 @@ export const fetchMuteList = (user) => {
       if (err) {
         reject(err)
       }else {
-        console.log({ data })
         resolve(data)
       }
     })
   })
-  // api.getFollowersAsync(user, '', 'ignore', 1000)
-  //   .then(async(result) => {
-  //     console.log({ result })
-  //     resolve(result)
-  //   })
-  //   .catch((error) => {
-  //     reject(error)
-  //   })
-  // })
 }
 
 export const fetchFollowers = (following, start_follower = '', limit = 10) => {
