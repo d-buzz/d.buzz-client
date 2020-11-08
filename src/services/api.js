@@ -515,14 +515,24 @@ export const fetchFollowCount = (username) => {
 
 export const fetchMuteList = (user) => {
   return new Promise((resolve, reject) => {
-    api.getFollowersAsync(user, '', 'ignore', 1000)
-      .then(async(result) => {
-        resolve(result)
-      })
-      .catch((error) => {
-        reject(error)
-      })
+    api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        console.log({ data })
+        resolve(data)
+      }
+    })
   })
+  // api.getFollowersAsync(user, '', 'ignore', 1000)
+  //   .then(async(result) => {
+  //     console.log({ result })
+  //     resolve(result)
+  //   })
+  //   .catch((error) => {
+  //     reject(error)
+  //   })
+  // })
 }
 
 export const fetchFollowers = (following, start_follower = '', limit = 10) => {

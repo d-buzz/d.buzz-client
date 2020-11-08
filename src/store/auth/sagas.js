@@ -20,6 +20,8 @@ import {
   CHECK_HAS_UPDATE_AUTHORITY_REQUEST,
   checkHasUpdateAuthoritySuccess,
   checkHasUpdateAuthorityFailure,
+
+  setMuteList,
 } from './actions'
 
 import {
@@ -32,6 +34,7 @@ import {
   broadcastKeychainOperation,
   generateSubscribeOperation,
   extractLoginData,
+  fetchMuteList,
 } from 'services/api'
 
 import { generateSession, readSession } from 'services/helper'
@@ -73,6 +76,9 @@ function* authenticateUserRequest(payload, meta) {
     if(user.is_authenticated) {
       const is_subscribe = yield call(getCommunityRole, username)
       user.is_subscribe = is_subscribe
+
+      const mutelist = yield call(fetchMuteList, username)
+      yield put(setMuteList(mutelist))
 
       const session = generateSession(user)
 
