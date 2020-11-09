@@ -3,6 +3,9 @@ import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { muteUserRequest } from 'store/auth/actions'
 import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
+import {
+  unfollowRequest,
+} from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
@@ -103,6 +106,8 @@ const MuteModal = (props) => {
     muteUserRequest,
     loading,
     broadcastNotification,
+    mutelist,
+    unfollowRequest,
   } = props
   const [open, setOpen] = useState(false)
   const [username, setUsernamae] = useState(null)
@@ -121,13 +126,24 @@ const MuteModal = (props) => {
   }
 
   const handleClickMuteUser = () => {
-    muteUserRequest(username).then(() => {
-      setOpen(false)
-      onHide()
-      broadcastNotification('success', `Succesfully muted @${username}`)
-    }).catch(() => {
-      broadcastNotification('success', `Failed to mute @${username}`)
-    })
+    const inMuteList = mutelist.includes(username)
+    if(!inMuteList) {
+      muteUserRequest(username).then(() => {
+        setOpen(false)
+        onHide()
+        broadcastNotification('success', `Succesfully muted @${username}`)
+      }).catch(() => {
+        broadcastNotification('success', `Failed to mute @${username}`)
+      })
+    } else {
+      unfollowRequest(username).then((result) => {
+        if(result) {
+          broadcastNotification('success', `Successfully unmuted @${username}`)
+        } else {
+          broadcastNotification('error', `Failed unmuting @${username}`)
+        }
+      })
+    }
   }
 
   return (
@@ -138,11 +154,24 @@ const MuteModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  <h6>Add user to mutelist?</h6>
-                  <p className={classes.text}>
-                    Would you like to add <b>@{username}</b> to your list of
-                    muted users?
-                  </p>
+                  {!mutelist.includes(username) && (
+                    <React.Fragment>
+                      <h6>Add user to mutelist?</h6>
+                      <p className={classes.text}>
+                        Would you like to add <b>@{username}</b> to your list of
+                        muted users?
+                      </p>
+                    </React.Fragment>
+                  )}
+                  {mutelist.includes(username) && (
+                    <React.Fragment>
+                      <h6>Add user to mutelist?</h6>
+                      <p className={classes.text}>
+                        Would you like to remove <b>@{username}</b> from your list of
+                        muted users?
+                      </p>
+                    </React.Fragment>
+                  )}
                 </React.Fragment>
               )}
               {loading && (
@@ -192,7 +221,8 @@ const MuteModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   muteModal: state.interfaces.get('muteDialogUser'),
-  loading: pending(state, 'MUTE_USER_REQUEST'),
+  loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -200,6 +230,7 @@ const mapDispatchToProps = (dispatch) => ({
     closeMuteDialog,
     muteUserRequest,
     broadcastNotification,
+    unfollowRequest,
   }, dispatch),
 })
 

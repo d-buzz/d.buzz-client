@@ -32,6 +32,9 @@ import {
   CLEAR_CONTENT,
   SET_CONTENT_REDIRECT,
   UNSET_CONTENT_REDIRECT,
+  REFLECT_UPDATED_MUTE_LIST_LATEST,
+  REFLECT_UPDATED_MUTE_LIST_TRENDING,
+  REFLECT_UPDATED_MUTE_LIST_HOME,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -131,6 +134,12 @@ export const posts = (state = defaultState, { type, payload }) => {
     return state.set('contentRedirect', payload)
   case UNSET_CONTENT_REDIRECT:
     return state.set('contentRedirect', null)
+  case REFLECT_UPDATED_MUTE_LIST_LATEST:
+    return state.set('latest', payload)
+  case REFLECT_UPDATED_MUTE_LIST_TRENDING:
+    return state.set('trending', payload)
+  case REFLECT_UPDATED_MUTE_LIST_HOME:
+    return state.set('home', payload)
   default:
     return state
   }

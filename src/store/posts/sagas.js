@@ -730,6 +730,7 @@ function* publishUpdateRequest(payload, meta) {
   }
 }
 
+
 function* watchGetRepliesRequest({ payload, meta }) {
   yield call(getRepliesRequest, payload, meta)
 }
@@ -797,6 +798,7 @@ function* watchGetLinkMetaRequest({ payload, meta }) {
 function* watchPublishUpdateRequest({ payload, meta }) {
   yield call(publishUpdateRequest, payload, meta)
 }
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)

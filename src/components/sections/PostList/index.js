@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss'
 import {
   Avatar,
 } from 'components/elements'
-import IconButton from '@material-ui/core/IconButton'
+// import IconButton from '@material-ui/core/IconButton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
@@ -11,7 +11,7 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openMuteDialog } from 'store/interface/actions'
+// import { openMuteDialog } from 'store/interface/actions'
 import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -22,7 +22,8 @@ import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
-import VolumeOffIcon from '@material-ui/icons/VolumeOffOutlined'
+// import VolumeOffIcon from '@material-ui/icons/VolumeOffOutlined'
+// import VolumeOnIcon from '@material-ui/icons/VolumeUpOutlined'
 
 const addHover = (theme) => {
   let style = {
@@ -182,8 +183,11 @@ const PostList = React.memo((props) => {
     saveScrollIndex,
     scrollIndex,
     recomputeRowIndex = () => {},
-    openMuteDialog,
+    // openMuteDialog,
+    mutelist,
   } = props
+
+  console.log({ mutelist })
 
   let { payout = null, payoutAt = null } = props
 
@@ -289,9 +293,9 @@ const PostList = React.memo((props) => {
     clearTimeout(delayHandler)
   }
 
-  const openMuteModal = () => {
-    openMuteDialog(author)
-  }
+  // const openMuteModal = () => {
+  //   openMuteDialog(author)
+  // }
 
   return (
     <React.Fragment>
@@ -323,13 +327,20 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {user && user.is_authenticated && (
+                  {/* {user && user.is_authenticated && user.username !== author && !mutelist.includes(author) && (
                     <div className={classes.icon}>
                       <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
-                        <VolumeOffIcon fontSize='small' />
+                        <VolumeOffIcon fontSize='small'/>
                       </IconButton>
                     </div>
                   )}
+                  {user && user.is_authenticated && mutelist.includes(author) && (
+                    <div className={classes.icon}>
+                      <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
+                        <VolumeOnIcon fontSize='small' />
+                      </IconButton>
+                    </div>
+                  )} */}
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
@@ -362,6 +373,7 @@ const PostList = React.memo((props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -369,7 +381,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     openUserDialog,
     saveScrollIndex,
-    openMuteDialog,
+    // openMuteDialog,
   }, dispatch),
 })
 

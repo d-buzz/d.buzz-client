@@ -28,8 +28,6 @@ import {
   muteUserSuccess,
 } from './actions'
 
-import { reflectUpdateMuteList } from '../posts/actions'
-
 import {
   keychainSignIn,
   fetchProfile,
@@ -225,7 +223,6 @@ function* muteUserRequest(payload, meta) {
       const mutelist = yield select(state => state.auth.get('mutelist'))
       mutelist.push(following)
       yield put(setMuteList(mutelist))
-      yield put(reflectUpdateMuteList())
       yield put(muteUserSuccess(meta))
     }
 
