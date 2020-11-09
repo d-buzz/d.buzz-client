@@ -323,11 +323,13 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <div className={classes.icon}>
-                    <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
-                      <VolumeOffIcon fontSize='small' />
-                    </IconButton>
-                  </div>
+                  {user && user.is_authenticated && (
+                    <div className={classes.icon}>
+                      <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
+                        <VolumeOffIcon fontSize='small' />
+                      </IconButton>
+                    </div>
+                  )}
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
