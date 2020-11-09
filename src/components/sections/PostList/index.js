@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss'
 import {
   Avatar,
 } from 'components/elements'
+import IconButton from '@material-ui/core/IconButton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
@@ -20,6 +21,7 @@ import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
+import VolumeOffIcon from '@material-ui/icons/VolumeOff'
 
 const addHover = (theme) => {
   let style = {
@@ -36,6 +38,12 @@ const addHover = (theme) => {
 }
 
 const useStyle = createUseStyles(theme => ({
+  icon: {
+    ...theme.icon,
+    fontSize: 11,
+    float: 'right',
+    display: 'inline-block',
+  },
   row: {
     width: '95%',
     margin: '0 auto',
@@ -142,6 +150,9 @@ const useStyle = createUseStyles(theme => ({
   },
   colRight: {
     paddingLeft: 5,
+  },
+  iconButton: {
+    ...theme.iconButton.hover,
   },
 }))
 
@@ -306,6 +317,9 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
+                  <div className={classes.icon}>
+                    <IconButton classes={{ root: classes.iconButton  }} size="small"><VolumeOffIcon /></IconButton>
+                  </div>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
