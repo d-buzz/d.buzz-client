@@ -130,3 +130,27 @@ export const setMuteList = (response) => ({
   type: SET_MUTE_LIST,
   payload: response,
 })
+
+export const MUTE_USER_REQUEST = 'MUTE_USER_REQUEST'
+export const MUTE_USER_FAILURE = 'MUTE_USER_FAILURE'
+export const MUTE_USER_SUCCESS = 'MUTE_USER_SUCCESS'
+
+export const muteUserRequest = (user) => ({
+  type: MUTE_USER_REQUEST,
+  payload: { user },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const muteUserFailure = (response, meta) => ({
+  type: MUTE_USER_FAILURE,
+  payload: response,
+  meta,
+})
+
+export const muteUserSuccess = (response, meta) => ({
+  type: MUTE_USER_SUCCESS,
+  payload: response,
+  meta,
+})

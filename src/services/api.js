@@ -654,6 +654,26 @@ export const generateClearNotificationOperation = (username, lastNotification) =
   })
 }
 
+export const generateMuteOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["ignore"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+
+    resolve(operation)
+  })
+}
+
 export const generateFollowOperation = (follower, following) => {
   return new Promise((resolve) => {
     const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
@@ -734,7 +754,6 @@ export const generateUpdateOperation = (parent_author, parent_permlink, author, 
     resolve(op_comment)
   })
 }
-
 
 export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
 
