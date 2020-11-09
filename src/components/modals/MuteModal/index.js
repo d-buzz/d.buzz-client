@@ -87,6 +87,9 @@ const useStyles = createUseStyles(theme => ({
     margin: '0 auto',
     height: 'max-content',
   },
+  text: {
+    ...theme.font,
+  },
 }))
 
 
@@ -118,7 +121,7 @@ const MuteModal = (props) => {
           <div className={classes.innerModal}>
             <center>
               <h6>Add user to mutelist?</h6>
-              <p>
+              <p className={classes.text}>
                 Would you like to add <b>@{username}</b> to your list of
                 muted users?
               </p>
