@@ -21,7 +21,7 @@ import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
-import VolumeOffIcon from '@material-ui/icons/VolumeOff'
+import VolumeOffIcon from '@material-ui/icons/VolumeOffOutlined'
 
 const addHover = (theme) => {
   let style = {
@@ -287,6 +287,10 @@ const PostList = React.memo((props) => {
     clearTimeout(delayHandler)
   }
 
+  const openMuteModal = () => {
+    alert(author)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -318,7 +322,9 @@ const PostList = React.memo((props) => {
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
                   <div className={classes.icon}>
-                    <IconButton classes={{ root: classes.iconButton  }} size="small"><VolumeOffIcon /></IconButton>
+                    <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
+                      <VolumeOffIcon fontSize='small' />
+                    </IconButton>
                   </div>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
