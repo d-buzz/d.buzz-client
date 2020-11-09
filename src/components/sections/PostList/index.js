@@ -11,6 +11,7 @@ import {
   PostTags,
   PostActions,
 } from 'components'
+import { openMuteDialog } from 'store/interface/actions'
 import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -181,6 +182,7 @@ const PostList = React.memo((props) => {
     saveScrollIndex,
     scrollIndex,
     recomputeRowIndex = () => {},
+    openMuteDialog,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -288,7 +290,7 @@ const PostList = React.memo((props) => {
   }
 
   const openMuteModal = () => {
-    alert(author)
+    openMuteDialog(author)
   }
 
   return (
@@ -365,6 +367,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     openUserDialog,
     saveScrollIndex,
+    openMuteDialog,
   }, dispatch),
 })
 

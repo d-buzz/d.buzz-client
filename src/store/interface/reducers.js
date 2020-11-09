@@ -40,7 +40,7 @@ export const interfaces = (state = defaultState, { type, payload }) => {
   case SET_BUZZ_MODAL_STATUS:
     return state.set('buzzModalStatus', payload)
   case OPEN_MUTE_DIALOG:
-    return state.set('muteDialogUser', { open: true, username: payload })
+    return state.set('muteDialogUser', { open: true, ...payload })
   case CLOSE_MUTE_DIALOG:
     return state.set('muteDialogUser', { open: false, username: null })
   default:
