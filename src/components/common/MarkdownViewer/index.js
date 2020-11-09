@@ -131,9 +131,9 @@ const prepareThreeSpeakEmbeds = (content) => {
       let match = ''
       if(link.includes('3speak.online/watch?v')) {
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
-      } else {
+      } else if(link.includes('3speak.co/watch?v')){
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
-      }
+      } 
 
       if(match) {
         const id = match[1]
