@@ -7,6 +7,7 @@ import {
   SAVE_SCROLL_INDEX,
   CLEAR_SCROLL_INDEX,
   SET_BUZZ_MODAL_STATUS,
+  OPEN_MUTE_DIALOG,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -16,6 +17,7 @@ const defaultState = fromJS({
   userDialogData: {},
   scrollIndex: -1,
   buzzModalStatus: false,
+  muteDialogUser: '',
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -36,6 +38,8 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('scrollIndex', -1)
   case SET_BUZZ_MODAL_STATUS:
     return state.set('buzzModalStatus', payload)
+  case OPEN_MUTE_DIALOG:
+    return state.set('muteDialogUser', payload)
   default:
     return state
   }
