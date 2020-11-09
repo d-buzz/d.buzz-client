@@ -552,3 +552,27 @@ export const publishUpdateFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const REFLECT_UPDATED_MUTE_LIST = 'REFLECT_UPDATED_MUTE_LIST'
+export const REFLECT_UPDATED_MUTE_LIST_LATEST = 'REFLECT_UPDATED_MUTE_LIST_LATEST'
+export const REFLECT_UPDATED_MUTE_LIST_TRENDING = 'RELECT_UPDATED_MUTE_LIST_TRENDING'
+export const REFLECT_UPDATED_MUTE_LIST_HOME = 'REFLECT_UPDATED_MUTE_LIST_HOME'
+
+export const reflectUpdateMuteList = () => ({
+  type: REFLECT_UPDATED_MUTE_LIST,
+})
+
+export const reflectUpdatedMuteListLatest = (response) => ({
+  type: REFLECT_UPDATED_MUTE_LIST_LATEST,
+  payload: response,
+})
+
+export const reflectUpdatedMuteListTrending = (response) => ({
+  type: REFLECT_UPDATED_MUTE_LIST_TRENDING,
+  payload: response,
+})
+
+export const reflectUpdatedMuteListHome = (response) => ({
+  type: REFLECT_UPDATED_MUTE_LIST_HOME,
+  payload: response,
+})

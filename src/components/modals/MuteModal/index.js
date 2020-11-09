@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { closeMuteDialog } from 'store/interface/actions'
+import { muteUserRequest } from 'store/auth/actions'
+import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
+import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
+import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -97,6 +100,9 @@ const MuteModal = (props) => {
   const {
     closeMuteDialog,
     muteModal,
+    muteUserRequest,
+    loading,
+    broadcastNotification,
   } = props
   const [open, setOpen] = useState(false)
   const [username, setUsernamae] = useState(null)
@@ -114,36 +120,69 @@ const MuteModal = (props) => {
     closeMuteDialog()
   }
 
+  const handleClickMuteUser = () => {
+    muteUserRequest(username).then(() => {
+      setOpen(false)
+      onHide()
+      broadcastNotification('success', `Succesfully muted @${username}`)
+    }).catch(() => {
+      broadcastNotification('success', `Failed to mute @${username}`)
+    })
+  }
+
   return (
     <React.Fragment>
-      <Modal className={classes.modal} show={open} onHide={onHide}>
+      <Modal className={classes.modal} show={open || loading} onHide={onHide}>
         <ModalBody>
           <div className={classes.innerModal}>
             <center>
-              <h6>Add user to mutelist?</h6>
-              <p className={classes.text}>
-                Would you like to add <b>@{username}</b> to your list of
-                muted users?
-              </p>
+              {!loading && (
+                <React.Fragment>
+                  <h6>Add user to mutelist?</h6>
+                  <p className={classes.text}>
+                    Would you like to add <b>@{username}</b> to your list of
+                    muted users?
+                  </p>
+                </React.Fragment>
+              )}
+              {loading && (
+                <React.Fragment>
+                  <h6>Operation in progress</h6>
+                  <p className={classes.text}>
+                    Adding <b>@{username}</b> to your list of
+                    muted users
+                  </p>
+                </React.Fragment>
+              )}
             </center>
           </div>
-          <div style={{ display: 'inline-block' }}>
-            <ContainedButton
-              onClick={onHide}
-              className={classes.closeButton}
-              fontSize={14}
-              label="Add"
-            />
-          </div>
-          <div style={{ display: 'inline-block', float: 'right' }}>
-            <ContainedButton
-              onClick={onHide}
-              className={classes.closeButton}
-              fontSize={14}
-              transparent={true}
-              label="Cancel"
-            />
-          </div>
+          {!loading && (
+            <React.Fragment>
+              <div style={{ display: 'inline-block' }}>
+                <ContainedButton
+                  onClick={handleClickMuteUser}
+                  className={classes.closeButton}
+                  fontSize={14}
+                  transparent={true}
+                  label="Add"
+                />
+              </div>
+              <div style={{ display: 'inline-block', float: 'right' }}>
+                <ContainedButton
+                  onClick={onHide}
+                  className={classes.closeButton}
+                  fontSize={14}
+                  transparent={true}
+                  label="Cancel"
+                />
+              </div>
+            </React.Fragment>
+          )}
+          <center>
+            {loading && (
+              <Spinner size={40} loading={true} />
+            )}
+          </center>
         </ModalBody>
       </Modal>
     </React.Fragment>
@@ -153,11 +192,14 @@ const MuteModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   muteModal: state.interfaces.get('muteDialogUser'),
+  loading: pending(state, 'MUTE_USER_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     closeMuteDialog,
+    muteUserRequest,
+    broadcastNotification,
   }, dispatch),
 })
 
