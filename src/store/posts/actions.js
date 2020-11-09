@@ -552,5 +552,3 @@ export const publishUpdateFailure = (error, meta) => ({
   payload: error,
   meta,
 })
-
-
