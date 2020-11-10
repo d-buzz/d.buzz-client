@@ -35,7 +35,7 @@ import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
-import { clearScrollIndex } from 'store/interface/actions'
+import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
 import queryString from 'query-string'
 import { ProfileSkeleton, HelmetGenerator } from 'components'
 
@@ -151,6 +151,8 @@ const Profile = (props) => {
     recentUnfollows,
     broadcastNotification,
     clearScrollIndex,
+    openMuteDialog,
+    mutelist,
   } = props
 
   const history = useHistory()
@@ -212,6 +214,10 @@ const Profile = (props) => {
     // } else {
     //   history.push(`/ug/@${username}/t/${tab}/`)
     // }
+  }
+
+  const openMuteModal = () => {
+    openMuteDialog(username)
   }
 
 
@@ -307,6 +313,28 @@ const Profile = (props) => {
               <Col>
                 {is_authenticated && (
                   <React.Fragment>
+                    {loginuser !== username && !mutelist.includes(username) && (
+                      <ContainedButton
+                        fontSize={14}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                        transparent={true}
+                        label="Mute"
+                        className={classes.button}
+                        onClick={openMuteModal}
+                      />
+                    )}
+                    {loginuser !== username && mutelist.includes(username) && (
+                      <ContainedButton
+                        fontSize={14}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                        transparent={true}
+                        label="Unmute"
+                        className={classes.button}
+                        onClick={openMuteModal}
+                      />
+                    )}
                     {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
                       <ContainedButton
                         fontSize={14}
@@ -408,6 +436,7 @@ const mapStateToProps = (state) => ({
   loadingFollow: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
   recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -428,6 +457,7 @@ const mapDispatchToProps = (dispatch) => ({
     unfollowRequest,
     broadcastNotification,
     clearScrollIndex,
+    openMuteDialog,
   }, dispatch),
 })
 

@@ -38,6 +38,10 @@ broadcast.updateOperations()
 
 const visited = []
 
+export const invokeMuteFilter = (items, mutelist) => {
+  return items.filter((item) => !mutelist.includes(item.author) )
+}
+
 export const hashBuffer = (buffer) => {
   return hash.sha256(buffer)
 }
@@ -513,6 +517,18 @@ export const fetchFollowCount = (username) => {
     })
 }
 
+export const fetchMuteList = (user) => {
+  return new Promise((resolve, reject) => {
+    api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        resolve(data)
+      }
+    })
+  })
+}
+
 export const fetchFollowers = (following, start_follower = '', limit = 10) => {
   return new Promise((resolve, reject) => {
     api.getFollowersAsync(following, start_follower, 'blog', limit)
@@ -638,6 +654,26 @@ export const generateClearNotificationOperation = (username, lastNotification) =
   })
 }
 
+export const generateMuteOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["ignore"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+
+    resolve(operation)
+  })
+}
+
 export const generateFollowOperation = (follower, following) => {
   return new Promise((resolve) => {
     const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
@@ -718,7 +754,6 @@ export const generateUpdateOperation = (parent_author, parent_permlink, author, 
     resolve(op_comment)
   })
 }
-
 
 export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
 

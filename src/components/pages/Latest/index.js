@@ -85,7 +85,7 @@ const Latest = (props) => {
   return (
     <React.Fragment>
       <HelmetGenerator page='Latest' />
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts}/>
     </React.Fragment>
   )
 }
@@ -95,6 +95,7 @@ const mapStateToProps = (state) => ({
   items: state.posts.get('latest'),
   isVisited: state.posts.get('isLatestVisited'),
   last: state.posts.get('lastLatest'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
