@@ -123,3 +123,33 @@ export const setFromLanding = (status) => ({
   type: SET_FROM_LANDING,
   payload: { status },
 })
+
+export const SET_MUTE_LIST = 'SET_MUTE_LIST'
+
+export const setMuteList = (response) => ({
+  type: SET_MUTE_LIST,
+  payload: response,
+})
+
+export const MUTE_USER_REQUEST = 'MUTE_USER_REQUEST'
+export const MUTE_USER_FAILURE = 'MUTE_USER_FAILURE'
+export const MUTE_USER_SUCCESS = 'MUTE_USER_SUCCESS'
+
+export const muteUserRequest = (user) => ({
+  type: MUTE_USER_REQUEST,
+  payload: { user },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const muteUserFailure = (response, meta) => ({
+  type: MUTE_USER_FAILURE,
+  payload: response,
+  meta,
+})
+
+export const muteUserSuccess = (meta) => ({
+  type: MUTE_USER_SUCCESS,
+  meta,
+})

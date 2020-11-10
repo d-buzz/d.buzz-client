@@ -20,6 +20,12 @@ import {
   CHECK_HAS_UPDATE_AUTHORITY_REQUEST,
   checkHasUpdateAuthoritySuccess,
   checkHasUpdateAuthorityFailure,
+
+  setMuteList,
+
+  MUTE_USER_REQUEST,
+  muteUserFailure,
+  muteUserSuccess,
 } from './actions'
 
 import {
@@ -32,6 +38,8 @@ import {
   broadcastKeychainOperation,
   generateSubscribeOperation,
   extractLoginData,
+  fetchMuteList,
+  generateMuteOperation,
 } from 'services/api'
 
 import { generateSession, readSession } from 'services/helper'
@@ -70,13 +78,22 @@ function* authenticateUserRequest(payload, meta) {
       }
     }
 
-    const is_subscribe = yield call(getCommunityRole, username)
-    user.is_subscribe = is_subscribe
+    if(user.is_authenticated) {
+      const is_subscribe = yield call(getCommunityRole, username)
+      user.is_subscribe = is_subscribe
 
-    const session = generateSession(user)
+      let mutelist = yield call(fetchMuteList, username)
 
-    yield call([localStorage, localStorage.clear])
-    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+      mutelist = [...new Set(mutelist.map(item => item.following))]
+
+      yield put(setMuteList(mutelist))
+
+      const session = generateSession(user)
+
+      yield call([localStorage, localStorage.clear])
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+    }
+
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
     console.log({ error })
@@ -92,6 +109,12 @@ function* getSavedUserRequest(meta) {
     if(saved !== null && saved.hasOwnProperty('id') && saved.hasOwnProperty('token')) {
       saved = readSession(saved)
       user = saved
+    }
+
+    if(user.is_authenticated) {
+      let mutelist = yield call(fetchMuteList, user.username)
+      mutelist = [...new Set(mutelist.map(item => item.following))]
+      yield put(setMuteList(mutelist))
     }
 
     yield put(getSavedUserSuccess(user, meta))
@@ -171,6 +194,43 @@ function* checkHasUpdateAuthorityRequest(payload, meta) {
   }
 }
 
+function* muteUserRequest(payload, meta) {
+  try {
+    const { user: following } = payload
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateMuteOperation, follower, following)
+
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+
+      success = result.success
+    }
+
+    if(!success) {
+      yield put(muteUserFailure('Unable to publish post', meta))
+    } else {
+      const mutelist = yield select(state => state.auth.get('mutelist'))
+      mutelist.push(following)
+      yield put(setMuteList(mutelist))
+      yield put(muteUserSuccess(meta))
+    }
+
+  } catch(error) {
+    yield put(muteUserFailure(error, meta))
+  }
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -191,10 +251,15 @@ function* watchCheckHasUpdateAuthorityRequest({ payload, meta }) {
   yield call(checkHasUpdateAuthorityRequest, payload, meta)
 }
 
+function* watchMuteUserReqyest({ payload, meta }) {
+  yield call(muteUserRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
+  yield takeEvery(MUTE_USER_REQUEST, watchMuteUserReqyest)
 }

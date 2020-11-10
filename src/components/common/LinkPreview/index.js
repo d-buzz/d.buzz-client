@@ -81,6 +81,7 @@ const LinkPreview = (props) => {
           && !link.includes('app.dapplr.in')
           && !link.includes('pbs.twimg.com')
           && !link.includes('ipfs.io')
+          && !link.includes('3speak.co')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)

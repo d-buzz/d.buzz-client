@@ -12,7 +12,6 @@ import { clearScrollIndex } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-
 class InfiniteList extends PureComponent {
   constructor() {
     super()
@@ -20,6 +19,14 @@ class InfiniteList extends PureComponent {
       fixedWidth: true,
       defaultHeight: 100,
     })
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.mutelist !== this.props.mutelist) {
+      console.log('props updated')
+      this.cellMeasurerCache.clearAll()
+      this.listRef.recomputeRowHeights()
+    }
   }
 
   render() {
@@ -45,6 +52,11 @@ class InfiniteList extends PureComponent {
     const recomputeRowIndex = (index) => {
       this.cellMeasurerCache.clear(index, 0)
       this.listRef.recomputeRowHeights(index)
+    }
+
+    const muteTrigger = () => {
+      this.cellMeasurerCache.clearAll()
+      this.listRef.recomputeRowHeights()
     }
 
     const rowRenderer = ({ index, parent, key, style }) => {
@@ -75,6 +87,7 @@ class InfiniteList extends PureComponent {
               cashout_time={items[index].cashout_time}
               scrollIndex={index}
               recomputeRowIndex={recomputeRowIndex}
+              muteTrigger={muteTrigger}
             />
           </div>
         </CellMeasurer>
@@ -132,6 +145,7 @@ class InfiniteList extends PureComponent {
 
 const mapStateToProps = (state) => ({
   scrollToIndex: state.interfaces.get('scrollIndex'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

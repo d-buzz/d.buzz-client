@@ -12,6 +12,7 @@ import {
   ReplyFormModal,
   NotificationBox,
   UserDialog,
+  MuteModal,
 } from 'components'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
@@ -109,6 +110,7 @@ const AppFrame = (props) => {
       {organizationRoutes && (<OrganizationFooter />)}
       <ReplyFormModal />
       <NotificationBox />
+      <MuteModal />
     </React.Fragment>
   )
 }
