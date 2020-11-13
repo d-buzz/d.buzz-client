@@ -1,6 +1,7 @@
 import React from 'react'
 import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
+import textParser from 'npm-text-parser'
 import classNames from 'classnames'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
@@ -91,32 +92,45 @@ const useStyles = createUseStyles(theme => ({
 
 const prepareTwitterEmbeds = (content) => {
   let body = content
+  const mainTwitterRegex = /(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i
+  const htmlReplacement = /<blockquote[^>]*?><p[^>]*?>(.*?)<\/p>.*?mdash; (.*)<a href="(https:\/\/twitter\.com\/.*?(.*?\/status\/(.*?))\?.*?)">(.*?)<\/a><\/blockquote>/i
 
-  const links = markdownLinkExtractor(content)
+  const links = textParser.getUrls(content)
 
-  links.forEach((link) => {
-    try {
-      link = link.replace(/&amp;/g, '&')
-      let match = ''
-      let id = ''
-
-      if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)) {
-        match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
-        id = match[2]
-        if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
-          match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+  const matchData = content.match(htmlReplacement)
+  if(matchData) {
+    const id = matchData[5]
+    let title = body
+    title = title.replace(htmlReplacement, '')
+    body = body.replace(body, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+    body = `${title} ${body}`
+  } else {
+    links.forEach((link) => {
+      try {
+        link = link.replace(/&amp;/g, '&')
+        let match = ''
+        let id = ''
+  
+        if(link.match(mainTwitterRegex)) {
+          match = link.match(mainTwitterRegex)
           id = match[2]
-          id = id.slice(0, -2)
+          if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+            match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+            id = match[2]
+            id = id.slice(0, -2)
+          }
+          body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
-        body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
-      }
+  
+        if(match) {
+          const id = match[2]
+          body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+        }
+      } catch(e) { }
+    })
+  }
 
-      if(match) {
-        const id = match[2]
-        body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
-      }
-    } catch(e) { }
-  })
+  
   return body
 }
 
@@ -175,7 +189,8 @@ const MarkdownViewer = React.memo((props) => {
   const original = content
   // content = prepareImages(content)
 
-  const links = markdownLinkExtractor(content)
+  // const links = markdownLinkExtractor(content)
+  const links = textParser.getUrls(content)
 
   links.forEach((link) => {
     try {
