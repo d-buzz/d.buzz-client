@@ -27,6 +27,7 @@
     "markdown-link-extractor": "^1.2.3",
     "material-ui-popup-state": "^1.6.1",
     "moment": "^2.27.0",
+    "npm-text-parser": "^1.0.8",
     "oaf-react-router": "^2.1.1",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
