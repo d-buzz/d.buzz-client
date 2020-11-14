@@ -117,8 +117,10 @@ const footnote = (body) => {
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
-    const replies = yield call(fetchDiscussions, author, permlink)
-
+    const mutelist = yield select(state => state.auth.get('mutelist'))
+    let replies = yield call(fetchDiscussions, author, permlink)
+    replies = invokeMuteFilter(replies, mutelist)
+    
     yield put(getRepliesSuccess(replies, meta))
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
