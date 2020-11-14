@@ -157,6 +157,7 @@ const ReplyList = (props) => {
     replies,
   } = props
   const {
+    mutelist,
     expectedCount,
     user,
     append,
@@ -251,8 +252,7 @@ const ReplyList = (props) => {
     const { username, is_authenticated } = user
 
     let { replies } = reply
-    replies = replies.filter((reply) => reply.body.length <= 280 )
-
+    replies = replies.filter((reply) => reply.body.length <= 280 && !mutelist.includes(reply.author))
 
     let hasUpvoted = false
 
@@ -381,6 +381,7 @@ const ReplyList = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   append: state.posts.get('appendReply'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
