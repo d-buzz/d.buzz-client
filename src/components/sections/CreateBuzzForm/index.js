@@ -105,6 +105,17 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     border: theme.border.primary,
   },
+  tinyInput: {
+    height: 20,
+    width: 80,
+    marginLeft: 5,
+    borderRadius: 5,
+  },
+  payoutLabel: {
+    ...theme.font,
+    fontSize: 15,
+    display: 'inline-block',
+  },
 }))
 
 const KeyCodes = {
@@ -120,6 +131,7 @@ const CreateBuzzForm = (props) => {
   const [wordCount, setWordCount] = useState(0)
   const [content, setContent] = useState('')
   const [tags, setTags] = useState([])
+  const [payout, setPayout] = useState(1.000)
 
   const {
     user,
@@ -149,9 +161,15 @@ const CreateBuzzForm = (props) => {
 
   const onChange = (e) => {
     const { target } = e
-    const { value } = target
+    const { name } = target
+    let { value } = target
 
-    setContent(value)
+    if(name === 'content-area') {
+      setContent(value)
+    } else if(name === 'max-payout') {
+      if(value < 0) value = 0.00
+      setPayout(parseFloat(value))
+    }
   }
 
   const handleFileSelect = () => {
@@ -236,7 +254,10 @@ const CreateBuzzForm = (props) => {
               </Box>
             </div>
           )}
-          {(!publishing && !loading) &&  (<TextArea maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {(!publishing && !loading) &&  (<TextArea name='content-area' maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          <label className={classes.payoutLabel}>Max Payout: </label>
+          <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
+          <br />
           {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
