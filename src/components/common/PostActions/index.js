@@ -142,6 +142,10 @@ const useStyles = createUseStyles(theme => ({
   iconButton: {
     ...theme.iconButton.hover,
   },
+  payout: {
+    color: '#e53935',
+    fontSize: 14,
+  },
 }))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
@@ -181,7 +185,14 @@ const PostActions = (props) => {
     disableUpvote = false,
     scrollIndex = 0,
     recomputeRowIndex = () => {},
+    max_accepted_payout,
   } = props
+
+  let payoutAdditionalStyle = {}
+
+  if(parseFloat(max_accepted_payout) === 0) {
+    payoutAdditionalStyle = { textDecoration: 'line-through' }
+  }
 
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
@@ -326,7 +337,7 @@ const PostActions = (props) => {
                     size='small'
                     icon={<HiveIcon style={{ paddingLeft: 5 }}/>}
                     label={(
-                      <span style={{ color: '#e53935', fontSize: 14 }}>
+                      <span className={classes.payout} style={payoutAdditionalStyle}>
                         ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
                         {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
                         {!payout && isMobile ? '0.00' : ''}&nbsp;

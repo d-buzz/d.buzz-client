@@ -184,12 +184,13 @@ const PostList = React.memo((props) => {
     scrollIndex,
     recomputeRowIndex = () => {},
     // openMuteDialog,
-    mutelist,
+    // mutelist,
   } = props
 
-  console.log({ mutelist })
 
   let { payout = null, payoutAt = null } = props
+  let { max_accepted_payout } = props
+  max_accepted_payout = max_accepted_payout.replace('HBD', '')
 
   if(!payoutAt) {
     const { cashout_time } = props
@@ -360,6 +361,7 @@ const PostList = React.memo((props) => {
                     recomputeRowIndex={recomputeRowIndex}
                     payoutAt={payoutAt}
                     scrollIndex={scrollIndex}
+                    max_accepted_payout={max_accepted_payout}
                   />
                 </div>
               </div>
