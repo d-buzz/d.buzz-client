@@ -214,7 +214,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickPublishPost = () => {
-    publishPostRequest(content, tags)
+    publishPostRequest(content, tags, payout)
       .then((data) => {
         if(data.success) {
           setPageFrom(null)
