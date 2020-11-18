@@ -116,6 +116,11 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 15,
     display: 'inline-block',
   },
+  payoutNote: {
+    color: '#d32f2f',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
 }))
 
 const KeyCodes = {
@@ -167,8 +172,11 @@ const CreateBuzzForm = (props) => {
     if(name === 'content-area') {
       setContent(value)
     } else if(name === 'max-payout') {
-      if(value < 0) value = 0.00
-      setPayout(parseFloat(value))
+      if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+        value = 0.00
+      }
+      value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
+      setPayout(value)
     }
   }
 
@@ -256,8 +264,10 @@ const CreateBuzzForm = (props) => {
           )}
           {(!publishing && !loading) &&  (<TextArea name='content-area' maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           <label className={classes.payoutLabel}>Max Payout: </label>
-          <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
-          <br />
+          <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" /> <br />
+          <label className={classes.payoutNote}>
+            You can now set the max accepted payout of a post
+          </label> <br />
           {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
