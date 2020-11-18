@@ -120,6 +120,7 @@ const useStyles = createUseStyles(theme => ({
     color: '#d32f2f',
     fontSize: 12,
     fontWeight: 'bold',
+    display: 'block',
   },
 }))
 
@@ -264,9 +265,9 @@ const CreateBuzzForm = (props) => {
           )}
           {(!publishing && !loading) &&  (<TextArea name='content-area' maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           <label className={classes.payoutLabel}>Max Payout: </label>
-          <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" /> <br />
+          <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
           <label className={classes.payoutNote}>
-            You can now set the max accepted payout of a post
+            You may change the max accepted payout for your buzz, set payout to 0 to add <b>@null</b> as your beneficiary
           </label> <br />
           {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
