@@ -338,7 +338,7 @@ const PostActions = (props) => {
                     icon={<HiveIcon style={{ paddingLeft: 5 }}/>}
                     label={(
                       <span className={classes.payout} style={payoutAdditionalStyle}>
-                        ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
+                        ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
                         {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
                         {!payout && isMobile ? '0.00' : ''}&nbsp;
                         {!isMobile && payoutAt ? getPayoutDate(payoutAt) : ''}
