@@ -120,7 +120,7 @@ function* getRepliesRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
     let replies = yield call(fetchDiscussions, author, permlink)
     replies = invokeMuteFilter(replies, mutelist)
-    
+
     yield put(getRepliesSuccess(replies, meta))
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
@@ -356,7 +356,7 @@ function* fileUploadRequest(payload, meta) {
 
 function* publishPostRequest(payload, meta) {
   try {
-    const { tags } = payload
+    const { tags, payout } = payload
     let { body } = payload
 
     body = footnote(body)
@@ -370,7 +370,7 @@ function* publishPostRequest(payload, meta) {
       title = `${title.substr(0, 70)} ...`
     }
 
-    const operations = yield call(generatePostOperations, username, title, body, tags)
+    const operations = yield call(generatePostOperations, username, title, body, tags, payout)
 
     console.log({ operations })
 
