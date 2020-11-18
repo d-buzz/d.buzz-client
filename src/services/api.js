@@ -788,51 +788,59 @@ export const generatePostOperations = (account, title, body, tags, payout) => {
   const operations = []
 
   return new Promise((resolve) => {
-
-    const op_comment = [
-      'comment',
-      {
-        'author': account,
-        'title': stripHtml(title),
-        'body': `${body.trim()}`,
-        'parent_author': '',
-        'parent_permlink': `${appConfig.TAG}`,
-        permlink,
-        json_metadata,
-      },
-    ]
-
-    operations.push(op_comment)
-
-    const max_accepted_payout = `${payout.toFixed(3)} HBD`
-    let extensions = []
-
-    if(payout.toFixed(3) === 0.00) {
-      extensions = [
-        0,
-        { beneficiaries: [
-          { account: null, weight: 10000 },
-        ],
+    try {
+      const op_comment = [
+        'comment',
+        {
+          'author': account,
+          'title': stripHtml(title),
+          'body': `${body.trim()}`,
+          'parent_author': '',
+          'parent_permlink': `${appConfig.TAG}`,
+          permlink,
+          json_metadata,
         },
       ]
+
+      operations.push(op_comment)
+
+      const max_accepted_payout = `${payout.toFixed(3)} HBD`
+      const extensions = []
+
+      console.log({ payout: max_accepted_payout })
+
+      if(payout === 0) {
+        extensions.push([
+          0,
+          { beneficiaries:
+            [
+              { account: 'null', weight: 10000 },
+            ],
+          },
+        ])
+      }
+
+      console.log({ extensions })
+
+      const op_comment_options = [
+        'comment_options',
+        {
+          'author': account,
+          permlink,
+          max_accepted_payout,
+          'percent_hbd': 5000,
+          'allow_votes': true,
+          'allow_curation_rewards': true,
+          extensions,
+        },
+      ]
+
+      operations.push(op_comment_options)
+
+      resolve(operations)
+    } catch(e) {
+      console.log(e)
     }
-
-    const op_comment_options = [
-      'comment_options',
-      {
-        'author': account,
-        permlink,
-        max_accepted_payout,
-        'percent_hbd': 5000,
-        'allow_votes': true,
-        'allow_curation_rewards': true,
-        extensions,
-      },
-    ]
-
-    operations.push(op_comment_options)
-
-    resolve(operations)
   })
 
 }
@@ -845,6 +853,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
+          console.log(response.message)
           reject(response.message)
         } else {
           resolve(response)
@@ -890,8 +899,8 @@ export const createMeta = (tags = []) => {
   const uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
 
   const meta = {
-    app: 'dBuzz/v3.0.0',
-    // app: 'hiveph/v1.0.0',
+    // app: 'dBuzz/v3.0.0',
+    app: 'hiveph/v1.0.0',
     tags: uniqueTags,
   }
 
