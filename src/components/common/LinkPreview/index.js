@@ -82,11 +82,13 @@ const LinkPreview = (props) => {
           && !link.includes('pbs.twimg.com')
           && !link.includes('ipfs.io')
           && !link.includes('3speak.co')
+          && !link.includes('www.vimm.tv')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))/i)
+          && !link.match(/(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
         isValidUrl = true
