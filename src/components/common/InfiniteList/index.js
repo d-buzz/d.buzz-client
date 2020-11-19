@@ -21,13 +21,12 @@ class InfiniteList extends PureComponent {
     })
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.mutelist !== this.props.mutelist) {
-      console.log('props updated')
-      this.cellMeasurerCache.clearAll()
-      this.listRef.recomputeRowHeights()
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.mutelist !== this.props.mutelist) {
+  //     this.cellMeasurerCache.clearAll()
+  //     this.listRef.recomputeRowHeights()
+  //   }
+  // }
 
   render() {
     const {

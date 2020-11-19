@@ -788,59 +788,53 @@ export const generatePostOperations = (account, title, body, tags, payout) => {
   const operations = []
 
   return new Promise((resolve) => {
-    try {
-      const op_comment = [
-        'comment',
-        {
-          'author': account,
-          'title': stripHtml(title),
-          'body': `${body.trim()}`,
-          'parent_author': '',
-          'parent_permlink': `${appConfig.TAG}`,
-          permlink,
-          json_metadata,
+    const op_comment = [
+      'comment',
+      {
+        'author': account,
+        'title': stripHtml(title),
+        'body': `${body.trim()}`,
+        'parent_author': '',
+        'parent_permlink': `${appConfig.TAG}`,
+        permlink,
+        json_metadata,
+      },
+    ]
+
+    operations.push(op_comment)
+
+    const max_accepted_payout = `${payout.toFixed(3)} HBD`
+    const extensions = []
+
+
+    if(payout === 0) {
+      extensions.push([
+        0,
+        { beneficiaries:
+          [
+            { account: 'null', weight: 10000 },
+          ],
         },
-      ]
-
-      operations.push(op_comment)
-
-      const max_accepted_payout = `${payout.toFixed(3)} HBD`
-      const extensions = []
-
-      console.log({ payout: max_accepted_payout })
-
-      if(payout === 0) {
-        extensions.push([
-          0,
-          { beneficiaries:
-            [
-              { account: 'null', weight: 10000 },
-            ],
-          },
-        ])
-      }
-
-      console.log({ extensions })
-
-      const op_comment_options = [
-        'comment_options',
-        {
-          'author': account,
-          permlink,
-          max_accepted_payout,
-          'percent_hbd': 5000,
-          'allow_votes': true,
-          'allow_curation_rewards': true,
-          extensions,
-        },
-      ]
-
-      operations.push(op_comment_options)
-
-      resolve(operations)
-    } catch(e) {
-      console.log(e)
+      ])
     }
+
+
+    const op_comment_options = [
+      'comment_options',
+      {
+        'author': account,
+        permlink,
+        max_accepted_payout,
+        'percent_hbd': 5000,
+        'allow_votes': true,
+        'allow_curation_rewards': true,
+        extensions,
+      },
+    ]
+
+    operations.push(op_comment_options)
+
+    resolve(operations)
   })
 
 }

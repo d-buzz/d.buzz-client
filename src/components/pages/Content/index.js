@@ -162,6 +162,10 @@ const Content = (props) => {
     parent_permlink,
   } = content || ''
 
+  let {  max_accepted_payout } = content || '0.00'
+
+  max_accepted_payout = `${max_accepted_payout}`.replace('HBD', '')
+
   let meta = {}
   let app = null
   let upvotes = 0
@@ -169,7 +173,6 @@ const Content = (props) => {
   let payout_at = cashout_time
 
   useEffect(() => {
-    console.log({ username })
     checkHasUpdateAuthorityRequest(username)
       .then((result) => {
         setHasUpdateAuthority(result)
@@ -419,6 +422,7 @@ const Content = (props) => {
                     payout={payout}
                     payoutAt={payout_at}
                     replyRef="content"
+                    max_accepted_payout={max_accepted_payout}
                   />
                 </Col>
               </Row>
