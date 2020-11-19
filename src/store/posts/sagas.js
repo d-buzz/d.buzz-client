@@ -120,7 +120,7 @@ function* getRepliesRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
     let replies = yield call(fetchDiscussions, author, permlink)
     replies = invokeMuteFilter(replies, mutelist)
-    
+
     yield put(getRepliesSuccess(replies, meta))
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
@@ -356,7 +356,7 @@ function* fileUploadRequest(payload, meta) {
 
 function* publishPostRequest(payload, meta) {
   try {
-    const { tags } = payload
+    const { tags, payout } = payload
     let { body } = payload
 
     body = footnote(body)
@@ -370,9 +370,7 @@ function* publishPostRequest(payload, meta) {
       title = `${title.substr(0, 70)} ...`
     }
 
-    const operations = yield call(generatePostOperations, username, title, body, tags)
-
-    console.log({ operations })
+    const operations = yield call(generatePostOperations, username, title, body, tags, payout)
 
     let success = false
     const comment_options = operations[1]
@@ -398,8 +396,6 @@ function* publishPostRequest(payload, meta) {
     if(success) {
       const comment = operations[0]
       const json_metadata = comment[1].json_metadata
-
-      console.log({ comment })
 
       let currentDatetime = moment().toISOString()
       currentDatetime = currentDatetime.replace('Z', '')
@@ -434,6 +430,7 @@ function* publishPostRequest(payload, meta) {
         children: 0,
         created: currentDatetime,
         cashout_time,
+        max_accepted_payout: `${payout.toFixed(3)} HBD`,
       }
 
       yield put(setContentRedirect(content))
