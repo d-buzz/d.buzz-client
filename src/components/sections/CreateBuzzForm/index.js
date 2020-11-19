@@ -21,7 +21,7 @@ import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
-import stripHtml from 'string-strip-html'
+import { invokeTwitterIntent } from 'services/helper'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -229,14 +229,7 @@ const CreateBuzzForm = (props) => {
   const handleClickPublishPost = () => {
 
     if(buzzToTwitter) {
-      const width = 500
-      const height = 600
-      let body = content
-      if(body.length < 274) {
-        body += '#HIVE'
-      }
-      body = encodeURIComponent(stripHtml(body))
-      window.open(`https://twitter.com/intent/tweet?text=${body}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
+      invokeTwitterIntent(content)
     }
 
     publishPostRequest(content, tags, payout)

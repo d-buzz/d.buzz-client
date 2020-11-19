@@ -19,7 +19,7 @@ import {
 } from 'components'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { anchorTop, calculatePayout } from 'services/helper'
+import { anchorTop, calculatePayout, invokeTwitterIntent } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
@@ -291,14 +291,7 @@ const Content = (props) => {
 
   const openTweetBox = () => {
     setAnchorEl(null)
-    const width = 500
-    const height = 600
-    let content = body
-    if(content.length < 274) {
-      content += '#HIVE'
-    }
-    content = encodeURIComponent(stripHtml(content))
-    window.open(`https://twitter.com/intent/tweet?text=${content}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
+    invokeTwitterIntent(body)
   }
 
   return (
