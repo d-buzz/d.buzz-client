@@ -134,6 +134,31 @@ const prepareTwitterEmbeds = (content) => {
   return body
 }
 
+const prepareVimmEmbeds = (content) => {
+  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+
+    try {
+      if(link.match(vimmRegex)){
+        match = link.match(vimmRegex)
+      }
+  
+      if(match){
+        const id = match[1]
+        body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
+        console.log({body})
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareThreeSpeakEmbeds = (content) => {
   let body = content
 
@@ -168,6 +193,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
     return <UrlVideoEmbed url={url} />
+  } else if(content.includes('vimm')){
+    const splitVimm = content.split(':')
+    const url = `https://www.vimm.tv/${splitVimm[2]}/embed`
+    return <UrlVideoEmbed url={url} />
   } else {
     // render normally
     return <div
@@ -200,6 +229,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareTwitterEmbeds(content)
       } else if(link.includes('3speak.co') || link.includes('3speak.online')) {
         content = prepareThreeSpeakEmbeds(content)
+      } else if(link.includes('www.vimm.tv')) {
+        content = prepareVimmEmbeds(content)
       }
 
     } catch(error) { }
