@@ -16,6 +16,7 @@ import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import stripHtml from 'string-strip-html'
 import { Link, useHistory } from 'react-router-dom'
 
 
@@ -140,6 +141,25 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
     flexGrow: 1,
   },
+  context: {
+    minHeight: 95,
+    width: '100%',
+    ...theme.context.view,
+    paddingBottom: 10,
+    borderRadius: '16px 16px',
+    marginBottom: 20,
+    fontFamily: 'Segoe-Bold',
+  },
+  contextWrapper: {
+    width: '95%',
+    height: '100%',
+    margin: '0 auto',
+    '& a': {
+      color: '#d32f2f',
+    },
+    paddingTop: 10,
+    paddingBottom: 2,
+  },
 }))
 
 const countReplies = async (replies = []) => {
@@ -153,9 +173,9 @@ const countReplies = async (replies = []) => {
 }
 
 const ReplyList = (props) => {
-  let {
-    replies,
-  } = props
+  // let {
+  //   replies,
+  // } = props
   const {
     mutelist,
     expectedCount,
@@ -163,9 +183,10 @@ const ReplyList = (props) => {
     append,
     setPageFrom,
     broadcastNotification,
+    replies,
   } = props
   const { clearAppendReply } = props
-  replies = replies.filter((reply) => reply.body.length <= 280 )
+  // replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
@@ -235,7 +256,6 @@ const ReplyList = (props) => {
       author,
       created,
       permlink,
-      body,
       parent_author,
       active_votes,
       children: replyCount,
@@ -243,7 +263,16 @@ const ReplyList = (props) => {
       payout_at,
     } = reply
 
+    let { body } = reply
+
     let { payout } = reply
+    const bodyLength = `${stripHtml(body)}`.length
+
+    if(bodyLength > 280) {
+      body = stripHtml(body)
+      body = `${body}`.substr(0, 280)
+      body = `${body} . . .`
+    }
 
     if(payout === 0) {
       payout = '0.00'
@@ -252,7 +281,7 @@ const ReplyList = (props) => {
     const { username, is_authenticated } = user
 
     let { replies } = reply
-    replies = replies.filter((reply) => reply.body.length <= 280 && !mutelist.includes(reply.author))
+    replies = replies.filter((reply) => !mutelist.includes(reply.author))
 
     let hasUpvoted = false
 
@@ -328,6 +357,14 @@ const ReplyList = (props) => {
                     </label>
                     <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                     <MarkdownViewer minifyAssets={false} content={body} />
+                    {bodyLength > 280 && (
+                      <div className={classes.context}>
+                        <div className={classes.contextWrapper}>
+                          <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
+                          <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
+                        </div>
+                      </div>
+                    )}
                     <PostTags meta={meta} />
                   </div>
                   <div className={classes.actionWrapper}>
