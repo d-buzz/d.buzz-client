@@ -20,6 +20,8 @@ import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
+import FormCheck from 'react-bootstrap/FormCheck'
+import { invokeTwitterIntent } from 'services/helper'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -122,6 +124,14 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 'bold',
     display: 'block',
   },
+  checkBox: {
+    cursor: 'pointer',
+  },
+  label: {
+    fontFamily: 'Segoe-Bold',
+    ...theme.font,
+    fontSize: 15,
+  },
 }))
 
 const KeyCodes = {
@@ -138,6 +148,7 @@ const CreateBuzzForm = (props) => {
   const [content, setContent] = useState('')
   const [tags, setTags] = useState([])
   const [payout, setPayout] = useState(1.000)
+  const [buzzToTwitter, setBuzzToTwitter] = useState(false)
 
   const {
     user,
@@ -178,6 +189,8 @@ const CreateBuzzForm = (props) => {
       }
       value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
       setPayout(value)
+    } else if (name === 'buzz-to-twitter') {
+      setBuzzToTwitter(!buzzToTwitter)
     }
   }
 
@@ -214,6 +227,11 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickPublishPost = () => {
+
+    if(buzzToTwitter) {
+      invokeTwitterIntent(content)
+    }
+
     publishPostRequest(content, tags, payout)
       .then((data) => {
         if(data.success) {
@@ -264,11 +282,26 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {(!publishing && !loading) &&  (<TextArea name='content-area' maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
           <label className={classes.payoutNote}>
             You may change the max accepted payout for your buzz, set payout to 0 to add <b>@null</b> as your beneficiary
           </label> <br />
+          <FormCheck
+            name='buzz-to-twitter'
+            type='checkbox'
+            label='Buzz to Twitter'
+            checked={buzzToTwitter}
+            onChange={onChange}
+            className={classNames(classes.checkBox, classes.label)}
+          />
+          {buzzToTwitter && (
+            <label className={classes.payoutNote}>
+              Twitter intent will open after you click publish
+            </label>
+          )}
+          <br />
           {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags

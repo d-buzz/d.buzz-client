@@ -16,6 +16,8 @@ import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
+import FormCheck from 'react-bootstrap/FormCheck'
+import { invokeTwitterIntent } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -141,6 +143,14 @@ const useStyles = createUseStyles(theme => ({
   actionWrapper: {
     width: '100%',
   },
+  checkBox: {
+    cursor: 'pointer',
+  },
+  label: {
+    fontFamily: 'Segoe-Bold',
+    ...theme.font,
+    fontSize: 15,
+  },
 }))
 
 const ReplyFormModal = (props) => {
@@ -169,6 +179,7 @@ const ReplyFormModal = (props) => {
   const [body, setBody] = useState('')
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
+  const [buzzToTwitter, setBuzzToTwitter] = useState(false)
 
   const textAreaStyle = { width: '100%' }
   const zeroPadding = { padding: 0 }
@@ -217,8 +228,12 @@ const ReplyFormModal = (props) => {
 
   const handleOnChange = (e) => {
     const { target } = e
-    const { value } = target
-    setContent(value)
+    const { value, name } = target
+    if(name !== 'buzz-to-twitter') {
+      setContent(value)
+    } else {
+      setBuzzToTwitter(!buzzToTwitter)
+    }
   }
 
   const handleFileSelect = () => {
@@ -252,6 +267,10 @@ const ReplyFormModal = (props) => {
   }
 
   const handleSubmitReply = () => {
+    if(buzzToTwitter) {
+      invokeTwitterIntent(content)
+    }
+
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
       .then(({ success }) => {
         if(success) {
@@ -326,6 +345,14 @@ const ReplyFormModal = (props) => {
                       onChange={handleOnChange}
                     />
                   )}
+                  <FormCheck
+                    name='buzz-to-twitter'
+                    type='checkbox'
+                    label='Buzz to Twitter'
+                    checked={buzzToTwitter}
+                    onChange={handleOnChange}
+                    className={classNames(classes.checkBox, classes.label)}
+                  />
                   {uploading && (
                     <div className={classes.actionWrapper}>
                       <Box  position="relative" display="inline-flex">

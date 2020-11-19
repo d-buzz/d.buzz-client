@@ -4,6 +4,8 @@ import { encrypt, decrypt } from 'caesar-shift'
 import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
+import stripHtml from 'string-strip-html'
+
 const dmp = new diff_match_patch()
 
 export const anchorTop = () => {
@@ -227,4 +229,15 @@ export const generateSession = (obj) => {
 
   token = CryptoJS.AES.encrypt(JSON.stringify(token), `${id}x0`).toString()
   return { id, token }
+}
+
+export const invokeTwitterIntent = (content) => {
+  const width = 500
+  const height = 600
+  let body = content
+  if(body.length < 274) {
+    body += '#HIVE'
+  }
+  body = encodeURIComponent(stripHtml(body))
+  window.open(`https://twitter.com/intent/tweet?text=${body}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
 }
