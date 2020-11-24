@@ -135,7 +135,8 @@ const prepareTwitterEmbeds = (content) => {
 }
 
 const prepareVimmEmbeds = (content) => {
-  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
+  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i
+  const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
   let body = content
 
   const links = textParser.getUrls(content)
@@ -143,14 +144,20 @@ const prepareVimmEmbeds = (content) => {
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
     let match = ''
+    let id = ''
 
     try {
       if(link.match(vimmRegex)){
+        const data = link.split('/')
         match = link.match(vimmRegex)
+        id = data[3]
+        if(link.match(vimmRegexEmbed)){
+          match = link.match(vimmRegexEmbed)
+          id = match[1]
+        }
       }
   
       if(match){
-        const id = match[1]
         body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
         console.log({body})
       }
@@ -195,7 +202,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <UrlVideoEmbed url={url} />
   } else if(content.includes('vimm')){
     const splitVimm = content.split(':')
-    const url = `https://www.vimm.tv/${splitVimm[2]}/embed`
+    const url = `https://www.vimm.tv/${splitVimm[2]}/embed?autoplay=0`
     return <UrlVideoEmbed url={url} />
   } else {
     // render normally
