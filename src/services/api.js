@@ -11,9 +11,9 @@ import { v4 as uuidv4 } from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
-import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
 import fleek from '@fleekhq/fleek-storage-js'
+import 'react-app-polyfill/stable'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -902,10 +902,10 @@ export const createMeta = (tags = []) => {
 }
 
 export const createPermlink = (title) => {
-  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
-  permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
-  permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
-
+  const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
+  // let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
+  // permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
+  // permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
   return permlink
 }
 
