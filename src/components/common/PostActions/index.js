@@ -4,6 +4,7 @@ import {
   CommentIcon,
   HeartIcon,
   HiveIcon,
+  BurnIcon,
   ContainedButton,
   HeartIconRed,
   Spinner,
@@ -189,9 +190,13 @@ const PostActions = (props) => {
   } = props
 
   let payoutAdditionalStyle = {}
+  let iconDetails = {}
 
   if(parseFloat(max_accepted_payout) === 0) {
     payoutAdditionalStyle = { textDecoration: 'line-through' }
+    iconDetails = <BurnIcon style={{ paddingLeft: 5 }}/>
+  }else{
+    iconDetails = <HiveIcon style={{ paddingLeft: 5 }}/>
   }
 
   const [showSlider, setShowSlider] = useState(false)
@@ -335,7 +340,7 @@ const PostActions = (props) => {
                   <Chip
                     className={classes.chip}
                     size='small'
-                    icon={<HiveIcon style={{ paddingLeft: 5 }}/>}
+                    icon={iconDetails}
                     label={(
                       <span className={classes.payout} style={payoutAdditionalStyle}>
                         ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
