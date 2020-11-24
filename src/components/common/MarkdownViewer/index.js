@@ -147,16 +147,16 @@ const prepareVimmEmbeds = (content) => {
     let id = ''
 
     try {
-      if(link.match(vimmRegex)){
+      if(link.match(vimmRegex) && !link.includes('/view')){
         const data = link.split('/')
         match = link.match(vimmRegex)
         id = data[3]
-        if(link.match(vimmRegexEmbed)){
+        if(link.match(vimmRegexEmbed)){ 
           match = link.match(vimmRegexEmbed)
           id = match[1]
         }
       }
-  
+
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
         console.log({body})
@@ -200,7 +200,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
     return <UrlVideoEmbed url={url} />
-  } else if(content.includes('vimm')){
+  } else if(content.includes(':vimm:')){
     const splitVimm = content.split(':')
     const url = `https://www.vimm.tv/${splitVimm[2]}/embed?autoplay=0`
     return <UrlVideoEmbed url={url} />
