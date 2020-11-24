@@ -32,6 +32,7 @@ const UrlVideoEmbed = (props) => {
           width='100%'
         ></iframe>
       </div>
+      <br />
     </React.Fragment>
   )
 }

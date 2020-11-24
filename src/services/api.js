@@ -11,9 +11,9 @@ import { v4 as uuidv4 } from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
-import base58 from 'base58-encode'
 import stripHtml from 'string-strip-html'
 import fleek from '@fleekhq/fleek-storage-js'
+import 'react-app-polyfill/stable'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -779,7 +779,7 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
   })
 }
 
-export const generatePostOperations = (account, title, body, tags) => {
+export const generatePostOperations = (account, title, body, tags, payout) => {
 
   const json_metadata = createMeta(tags)
 
@@ -788,7 +788,6 @@ export const generatePostOperations = (account, title, body, tags) => {
   const operations = []
 
   return new Promise((resolve) => {
-
     const op_comment = [
       'comment',
       {
@@ -804,7 +803,21 @@ export const generatePostOperations = (account, title, body, tags) => {
 
     operations.push(op_comment)
 
-    const max_accepted_payout = '1.000 HBD'
+    const max_accepted_payout = `${payout.toFixed(3)} HBD`
+    const extensions = []
+
+
+    if(payout === 0) {
+      extensions.push([
+        0,
+        { beneficiaries:
+          [
+            { account: 'null', weight: 10000 },
+          ],
+        },
+      ])
+    }
+
 
     const op_comment_options = [
       'comment_options',
@@ -815,7 +828,7 @@ export const generatePostOperations = (account, title, body, tags) => {
         'percent_hbd': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
-        'extensions': [],
+        extensions,
       },
     ]
 
@@ -834,6 +847,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
+          console.log(response.message)
           reject(response.message)
         } else {
           resolve(response)
@@ -888,10 +902,10 @@ export const createMeta = (tags = []) => {
 }
 
 export const createPermlink = (title) => {
-  let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
-  permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
-  permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
-
+  const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
+  // let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
+  // permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
+  // permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
   return permlink
 }
 

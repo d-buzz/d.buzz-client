@@ -4,6 +4,7 @@ import {
   CommentIcon,
   HeartIcon,
   HiveIcon,
+  BurnIcon,
   ContainedButton,
   HeartIconRed,
   Spinner,
@@ -142,6 +143,10 @@ const useStyles = createUseStyles(theme => ({
   iconButton: {
     ...theme.iconButton.hover,
   },
+  payout: {
+    color: '#e53935',
+    fontSize: 14,
+  },
 }))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
@@ -181,7 +186,18 @@ const PostActions = (props) => {
     disableUpvote = false,
     scrollIndex = 0,
     recomputeRowIndex = () => {},
+    max_accepted_payout,
   } = props
+
+  let payoutAdditionalStyle = {}
+  let iconDetails = {}
+
+  if(parseFloat(max_accepted_payout) === 0) {
+    payoutAdditionalStyle = { textDecoration: 'line-through' }
+    iconDetails = <BurnIcon style={{ paddingLeft: 5 }}/>
+  }else{
+    iconDetails = <HiveIcon style={{ paddingLeft: 5 }}/>
+  }
 
   const [showSlider, setShowSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
@@ -324,13 +340,13 @@ const PostActions = (props) => {
                   <Chip
                     className={classes.chip}
                     size='small'
-                    icon={<HiveIcon style={{ paddingLeft: 5 }}/>}
+                    icon={iconDetails}
                     label={(
-                      <span style={{ color: '#e53935', fontSize: 14 }}>
-                        ${payout > 1 ? '1.00' : payout === '0' ? '0.00' : payout}&nbsp;
+                      <span className={classes.payout} style={payoutAdditionalStyle}>
+                        ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
                         {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
                         {!payout && isMobile ? '0.00' : ''}&nbsp;
-                        {!isMobile && payoutAt ? getPayoutDate(payoutAt) : ''}
+                        {!isMobile && payoutAt && payout ? getPayoutDate(payoutAt) : ''}
                       </span>
                     )}
                     color="secondary"
