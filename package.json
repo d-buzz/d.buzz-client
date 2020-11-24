@@ -31,6 +31,7 @@
     "oaf-react-router": "^2.1.1",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
+    "react-app-polyfill": "^2.0.0",
     "react-bootstrap": "^1.1.1",
     "react-circular-progressbar": "^2.0.3",
     "react-click-away-listener": "^1.2.0",
