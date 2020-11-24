@@ -137,7 +137,6 @@ const prepareTwitterEmbeds = (content) => {
 const prepareVimmEmbeds = (content) => {
   const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i
   const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
-  const vimmViewRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/view\/(.*?))))/i
   let body = content
 
   const links = textParser.getUrls(content)
@@ -146,29 +145,20 @@ const prepareVimmEmbeds = (content) => {
     link = link.replace(/&amp;/g, '&')
     let match = ''
     let id = ''
-    let isView = false
 
     try {
-      if(link.match(vimmRegex)){
+      if(link.match(vimmRegex) && !link.includes('/view')){
         const data = link.split('/')
         match = link.match(vimmRegex)
         id = data[3]
         if(link.match(vimmRegexEmbed)){ 
           match = link.match(vimmRegexEmbed)
           id = match[1]
-        } else if(link.match(vimmViewRegex)){
-          console.log({match})
-          const data = link.split('/')
-          id = data[4]
-          isView(true)
         }
       }
 
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
-        if(isView){
-          body = body.replace(link, `~~~~~~.^.~~~:vimm:view/${id}:~~~~~~.^.~~~`)
-        }
         console.log({body})
       }
     } catch(error) { }
