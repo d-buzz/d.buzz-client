@@ -137,6 +137,7 @@ const prepareTwitterEmbeds = (content) => {
 const prepareVimmEmbeds = (content) => {
   const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i
   const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
+  const vimmViewRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/view\/(.*?))))/i
   let body = content
 
   const links = textParser.getUrls(content)
@@ -145,20 +146,29 @@ const prepareVimmEmbeds = (content) => {
     link = link.replace(/&amp;/g, '&')
     let match = ''
     let id = ''
+    let isView = false
 
     try {
       if(link.match(vimmRegex)){
         const data = link.split('/')
         match = link.match(vimmRegex)
         id = data[3]
-        if(link.match(vimmRegexEmbed)){
+        if(link.match(vimmRegexEmbed)){ 
           match = link.match(vimmRegexEmbed)
           id = match[1]
+        } else if(link.match(vimmViewRegex)){
+          console.log({match})
+          const data = link.split('/')
+          id = data[4]
+          isView(true)
         }
       }
-  
+
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
+        if(isView){
+          body = body.replace(link, `~~~~~~.^.~~~:vimm:view/${id}:~~~~~~.^.~~~`)
+        }
         console.log({body})
       }
     } catch(error) { }
@@ -200,7 +210,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
     return <UrlVideoEmbed url={url} />
-  } else if(content.includes('vimm')){
+  } else if(content.includes(':vimm:')){
     const splitVimm = content.split(':')
     const url = `https://www.vimm.tv/${splitVimm[2]}/embed?autoplay=0`
     return <UrlVideoEmbed url={url} />
