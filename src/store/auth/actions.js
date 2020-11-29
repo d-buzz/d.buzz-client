@@ -153,3 +153,10 @@ export const muteUserSuccess = (meta) => ({
   type: MUTE_USER_SUCCESS,
   meta,
 })
+
+export const SET_HAS_PAYOUT_AGREED = 'SET_HAS_PAYOUT_AGREED'
+
+export const setHasAgreedPayout = (agreed) => ({
+  type: SET_HAS_PAYOUT_AGREED,
+  payload: agreed,
+})

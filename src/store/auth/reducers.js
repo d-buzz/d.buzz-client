@@ -5,6 +5,7 @@ import {
   SUBSCRIBE_SUCCESS,
   SET_FROM_LANDING,
   SET_MUTE_LIST,
+  SET_HAS_PAYOUT_AGREED,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -12,6 +13,7 @@ const defaultState = fromJS({
   user: {},
   fromLanding: false,
   mutelist: [],
+  payoutAgreed: false,
 })
 
 export const auth = (state = defaultState, { type, payload }) => {
@@ -28,6 +30,8 @@ export const auth = (state = defaultState, { type, payload }) => {
     return state.set('fromLanding', payload)
   case SET_MUTE_LIST:
     return state.set('mutelist', payload)
+  case SET_HAS_PAYOUT_AGREED:
+    return state.set('payoutAgreed', payload)
   default:
     return state
   }

@@ -109,7 +109,7 @@ const useStyles = createUseStyles(theme => ({
   },
   tinyInput: {
     height: 20,
-    width: 80,
+    width: 50,
     marginLeft: 5,
     borderRadius: 5,
   },
@@ -286,9 +286,9 @@ const CreateBuzzForm = (props) => {
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
-          <label className={classes.payoutNote}>
+          {/* <label className={classes.payoutNote}>
             You may change the max accepted payout for your buzz, set payout to 0 to add <b>@null</b> as your beneficiary
-          </label> <br />
+          </label> <br /> */}
           <FormCheck
             name='buzz-to-twitter'
             type='checkbox'
