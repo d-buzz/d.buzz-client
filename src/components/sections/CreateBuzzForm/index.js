@@ -253,6 +253,7 @@ const CreateBuzzForm = (props) => {
   const handleAddition = (tag) => {
     tag.id = tag.id.split(" ").join("")
     tag.text = tag.text.split(" ").join("")
+    tag.text = tag.text.replace('#', '')
     setTags([...tags, tag])
   }
 
