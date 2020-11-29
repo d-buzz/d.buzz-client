@@ -393,7 +393,7 @@ const Content = (props) => {
               onClose={hanldeCloseMore}
             >
               <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
-              <MenuItem onClick={openTweetBox}>Buzz to twitter</MenuItem>
+              <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
             </Menu>
             {hasUpdateAuthority && (
               <UpdateFormModal onSuccess={onUpdateSuccess} author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />
