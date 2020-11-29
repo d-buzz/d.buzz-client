@@ -121,7 +121,7 @@ function* getSavedUserRequest(meta) {
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
 
-    if(payoutAgreed === undefined) {
+    if(payoutAgreed === null) {
       payoutAgreed = false
     }
 
