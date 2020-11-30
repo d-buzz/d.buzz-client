@@ -5,6 +5,8 @@ import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { connect } from 'react-redux'
+import { broadcastNotification } from 'store/interface/actions'
+import { setHasAgreedPayout } from 'store/auth/actions'
 import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles(theme => ({
@@ -43,8 +45,18 @@ const PayoutDisclaimerModal = (props) => {
   const {
     show,
     onHide,
+    setHasAgreedPayout,
+    broadcastNotification,
   } = props
   const classes = useStyles()
+
+  const agree = () => {
+    localStorage.setItem('payoutAgreed', true)
+    setHasAgreedPayout(true)
+    onHide()
+    broadcastNotification('success', 'You have agreed to the payout disclaimer, you can now change your max accepted payout')
+  }
+
 
   return (
     <React.Fragment>
@@ -69,6 +81,7 @@ const PayoutDisclaimerModal = (props) => {
           </div>
           <div style={{ display: 'inline-block' }}>
             <ContainedButton
+              onClick={agree}
               className={classes.closeButton}
               fontSize={14}
               transparent={true}
@@ -94,6 +107,8 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setThemeRequest,
     generateStyles,
+    setHasAgreedPayout,
+    broadcastNotification,
   }, dispatch),
 })
 
