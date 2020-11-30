@@ -190,7 +190,10 @@ const PostList = React.memo((props) => {
 
   let { payout = null, payoutAt = null } = props
   let { max_accepted_payout } = props
-  max_accepted_payout = max_accepted_payout.replace('HBD', '')
+
+  if(max_accepted_payout) {
+    max_accepted_payout = max_accepted_payout.replace('HBD', '')
+  }
 
   if(!payoutAt) {
     const { cashout_time } = props
