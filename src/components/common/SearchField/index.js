@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import { useHistory } from 'react-router-dom'
 import {
@@ -38,13 +38,19 @@ const SearchTips = ({ show, className }) => {
 }
 
 const SearchField = (props) => {
-  const { disableTips = false, iconTop = -2, defaultValue, user } = props
+  const { disableTips = false, iconTop = -2, defaultValue, user, ...otherProps } = props
   const [openTips, setOpenTips] = useState(false)
-  const [search, setSearch] = useState(defaultValue)
+  const [search, setSearch] = useState('')
   const classes = useStyles()
   const history = useHistory()
   const { is_authenticated } = user
 
+
+  console.log({ otherProps })
+
+  useEffect(() => {
+    setSearch(defaultValue)
+  }, [defaultValue])
 
   const onMouseEnter = () => {
     setOpenTips(true)
@@ -82,9 +88,8 @@ const SearchField = (props) => {
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onKeyDown={handleSearchKey}
-        value={search}
         onChange={onChange}
-        {...props}
+        {...otherProps}
       />
       {!disableTips && (<SearchTips show={openTips || search} className={classes.searchTips} />)}
     </React.Fragment>
