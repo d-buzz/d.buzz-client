@@ -314,9 +314,6 @@ const CreateBuzzForm = (props) => {
           <Tooltip title={tooltips.payout} placement="top">
             <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
           </Tooltip>
-          {/* <label className={classes.payoutNote}>
-            You may change the max accepted payout for your buzz, set payout to 0 to add <b>@null</b> as your beneficiary
-          </label> <br /> */}
           <FormCheck
             name='buzz-to-twitter'
             type='checkbox'
@@ -327,7 +324,7 @@ const CreateBuzzForm = (props) => {
           />
           {buzzToTwitter && (
             <label className={classes.payoutNote}>
-              Twitter intent will open after you click publish
+              Twitter intent will open after you click <b>Buzz it</b>
             </label>
           )}
           <br />
