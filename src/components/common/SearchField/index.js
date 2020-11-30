@@ -45,9 +45,6 @@ const SearchField = (props) => {
   const history = useHistory()
   const { is_authenticated } = user
 
-
-  console.log({ otherProps })
-
   useEffect(() => {
     setSearch(defaultValue)
   }, [defaultValue])

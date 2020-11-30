@@ -72,8 +72,6 @@ const AppFrame = (props) => {
   const { pathname } = useLocation()
   const { is_authenticated } = user
 
-  console.log({ is_authenticated })
-
   const organizationRoutes = (pathname.match(/^\/org/))
   let containerClass = classes.guardedContainer
   const unGuardedRoute = (pathname.match(/^\/login/) || !is_authenticated)

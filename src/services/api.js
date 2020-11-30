@@ -851,7 +851,6 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
-          console.log(response.message)
           reject(response.message)
         } else {
           resolve(response)
