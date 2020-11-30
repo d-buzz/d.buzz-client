@@ -35,6 +35,7 @@ import {
   REFLECT_UPDATED_MUTE_LIST_LATEST,
   REFLECT_UPDATED_MUTE_LIST_TRENDING,
   REFLECT_UPDATED_MUTE_LIST_HOME,
+  SAVE_RECENT_UPVOTES,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -64,6 +65,7 @@ const defaultState = fromJS({
   pageFrom: '',
   search: {},
   contentRedirect: null,
+  recentUpvotes: [],
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
@@ -140,6 +142,8 @@ export const posts = (state = defaultState, { type, payload }) => {
     return state.set('trending', payload)
   case REFLECT_UPDATED_MUTE_LIST_HOME:
     return state.set('home', payload)
+  case SAVE_RECENT_UPVOTES:
+    return state.set('recentUpvotes', payload)
   default:
     return state
   }

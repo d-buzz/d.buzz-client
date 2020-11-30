@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import {
   CommentIcon,
@@ -187,6 +187,7 @@ const PostActions = (props) => {
     scrollIndex = 0,
     recomputeRowIndex = () => {},
     max_accepted_payout,
+    recentUpvotes,
   } = props
 
   let payoutAdditionalStyle = {}
@@ -212,6 +213,13 @@ const PostActions = (props) => {
   if(disableExtraPadding) {
     extraPadding = {}
   }
+
+  useEffect(() => {
+    if(recentUpvotes && permlink && recentUpvotes.includes(permlink)) {
+      setUpvoted(true)
+    }
+    // eslint-disable-next-line
+  }, [recentUpvotes, permlink])
 
 
   const handleClickShowSlider = () => {
@@ -389,6 +397,7 @@ const PostActions = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  recentUpvotes: state.posts.get('recentUpvotes'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
