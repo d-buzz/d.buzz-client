@@ -12,7 +12,7 @@ const useStyles = createUseStyles(theme => ({
     '& div.modal-content': {
       backgroundColor: theme.background.primary,
       borderRadius: '15px 15px !important',
-      border: 'none',
+      border: '1px solid white',
       maxWidth: 400,
       minWidth: 100,
       margin: '0 auto',
@@ -77,6 +77,7 @@ const PayoutDisclaimerModal = (props) => {
           </div>
           <div style={{ display: 'inline-block', float: 'right' }}>
             <ContainedButton
+              onClick={onHide}
               className={classes.closeButton}
               fontSize={14}
               transparent={true}

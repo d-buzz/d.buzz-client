@@ -149,6 +149,7 @@ const CreateBuzzForm = (props) => {
   const [tags, setTags] = useState([])
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
+  const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
 
   const {
     user,
@@ -177,6 +178,10 @@ const CreateBuzzForm = (props) => {
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content, images])
 
+  const closePayoutDisclaimer = () => {
+    setOpenPayoutDisclaimer(false)
+  }
+
   const onChange = (e) => {
     const { target } = e
     const { name } = target
@@ -187,7 +192,7 @@ const CreateBuzzForm = (props) => {
     } else if(name === 'max-payout') {
 
       if(!payoutAgreed) {
-        alert('hello world')
+        setOpenPayoutDisclaimer(true)
       } else {
         if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
           value = 0.00
@@ -382,7 +387,7 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
-      <PayoutDisclaimerModal show={!payoutAgreed} />
+      <PayoutDisclaimerModal show={openPayoutDisclaimer} onHide={closePayoutDisclaimer} />
     </div>
   )
 }
