@@ -30,7 +30,7 @@ const endpoints = [
   'https://anyx.io',
 ]
 
-api.setOptions({ url: 'https://rpc.ausbit.dev' })
+api.setOptions({ url: 'https://api.hive.blog' })
 
 config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)

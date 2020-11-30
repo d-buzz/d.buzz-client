@@ -26,6 +26,8 @@ import {
   MUTE_USER_REQUEST,
   muteUserFailure,
   muteUserSuccess,
+
+  setHasAgreedPayout,
 } from './actions'
 
 import {
@@ -116,6 +118,14 @@ function* getSavedUserRequest(meta) {
       mutelist = [...new Set(mutelist.map(item => item.following))]
       yield put(setMuteList(mutelist))
     }
+
+    let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
+
+    if(payoutAgreed === null) {
+      payoutAgreed = false
+    }
+
+    yield put(setHasAgreedPayout(payoutAgreed))
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
