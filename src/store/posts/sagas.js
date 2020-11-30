@@ -74,6 +74,8 @@ import {
   PUBLISH_UPDATE_REQUEST,
   publishUpdateSuccess,
   publishUpdateFailure,
+
+  saveReceptUpvotes,
 } from './actions'
 
 import {
@@ -278,6 +280,12 @@ function* upvoteRequest(payload, meta) {
     const { author, permlink, percentage } = payload
     const user = yield select(state => state.auth.get('user'))
     const { username, is_authenticated, useKeychain } = user
+    let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
+
+    // if(typeof recentUpvotes === 'object') {
+    //   recentUpvotes = []
+    // }
+
     const weight = percentage * 100
 
     if(is_authenticated) {
@@ -285,6 +293,7 @@ function* upvoteRequest(payload, meta) {
         try {
           const result = yield call(keychainUpvote, username, permlink, author, weight)
           if(result.success) {
+            recentUpvotes = [...recentUpvotes, permlink]
             yield put(upvoteSuccess({ success: true }, meta))
           } else {
             yield put(upvoteFailure({ success: false }, meta))
@@ -298,8 +307,12 @@ function* upvoteRequest(payload, meta) {
         const wif = login_data[1]
 
         yield call(broadcastVote, wif, username, author, permlink, weight)
+        recentUpvotes = [...recentUpvotes, permlink]
         yield put(upvoteSuccess({ success: true }, meta))
       }
+
+      yield put(saveReceptUpvotes(recentUpvotes))
+
     } else {
       yield put(upvoteFailure({ success: true, error: 'No authentication' }, meta))
     }
