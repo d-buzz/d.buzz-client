@@ -42,7 +42,7 @@ const useStyles = createUseStyles({
     },
   },
   disabledButton: {
-    backgroundColor: '#f55d5d85',
+    backgroundColor: '#dad1d14d',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'mouse',
