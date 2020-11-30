@@ -416,9 +416,6 @@ function* publishPostRequest(payload, meta) {
       let cashout_time = moment().add(7, 'days').toISOString()
       cashout_time = cashout_time.replace('Z', '')
 
-      console.log({ currentDatetime })
-      console.log({ cashout_time })
-
       let body = comment[1].body
       body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
 

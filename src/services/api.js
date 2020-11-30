@@ -13,6 +13,7 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
 import fleek from '@fleekhq/fleek-storage-js'
+import moment from 'moment'
 import 'react-app-polyfill/stable'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
@@ -635,7 +636,10 @@ export const keychainUpvote = (username, permlink, author, weight) => {
 export const generateClearNotificationOperation = (username, lastNotification) => {
   return new Promise((resolve) => {
 
-    const date = lastNotification.date
+    // const date = lastNotification.date
+    let date = moment().utc().format()
+    date = `${date}`.replace('Z', '')
+
     const json = JSON.stringify(["setLastRead",{ date }])
 
     const operation = [
@@ -847,7 +851,6 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
-          console.log(response.message)
           reject(response.message)
         } else {
           resolve(response)
