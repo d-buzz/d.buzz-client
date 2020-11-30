@@ -12,7 +12,7 @@ import {
   Spinner,
 } from 'components/elements'
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer } from 'components'
+import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -161,6 +161,7 @@ const CreateBuzzForm = (props) => {
     hideModalCallback = () => {},
     broadcastNotification,
     setPageFrom,
+    payoutAgreed,
   } = props
 
   const history = useHistory()
@@ -184,11 +185,17 @@ const CreateBuzzForm = (props) => {
     if(name === 'content-area') {
       setContent(value)
     } else if(name === 'max-payout') {
-      if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
-        value = 0.00
+
+      if(!payoutAgreed) {
+        alert('hello world')
+      } else {
+        if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+          value = 0.00
+        }
+        value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
+        setPayout(value)
       }
-      value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
-      setPayout(value)
+
     } else if (name === 'buzz-to-twitter') {
       setBuzzToTwitter(!buzzToTwitter)
     }
@@ -375,6 +382,7 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
+      <PayoutDisclaimerModal show={!payoutAgreed} />
     </div>
   )
 }
@@ -384,6 +392,7 @@ const mapStateToProps = (state) => ({
   images: state.posts.get('images'),
   loading: pending(state, 'UPLOAD_FILE_REQUEST'),
   publishing: pending(state, 'PUBLISH_POST_REQUEST'),
+  payoutAgreed: state.auth.get('payoutAgreed'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
