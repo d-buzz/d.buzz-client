@@ -292,6 +292,21 @@ const CreateBuzzForm = (props) => {
     setTags(newTags)
   }
 
+  const handleClickContent = (e) => {
+    const { target } = e
+    let { href } = target
+    const hostname = window.location.hostname
+
+    e.preventDefault()
+    if(href && !href.includes(hostname)) {
+      window.open(href, '_blank')
+    } else {
+      const split = `${href}`.split('/')
+      href = `/${split[3]}`
+      history.push(href)
+    }
+  }
+
   return (
     <div className={containerClass}>
       <div className={classes.row}>
@@ -350,7 +365,7 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {content.length !== 0 && (
-            <div className={classes.previewContainer}>
+            <div className={classes.previewContainer} onClick={handleClickContent}>
               <h6 className={classes.previewTitle}>Buzz preview</h6>
               <MarkdownViewer content={content} minifyAssets={false}/>
               <div className={classes.separator} />
