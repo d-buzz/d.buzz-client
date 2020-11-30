@@ -11,6 +11,7 @@ import {
   UploadIcon,
   Spinner,
 } from 'components/elements'
+
 import { broadcastNotification } from 'store/interface/actions'
 import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
 import { bindActionCreators } from 'redux'
@@ -22,6 +23,8 @@ import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
 import { invokeTwitterIntent } from 'services/helper'
+import HelpIcon from '@material-ui/icons/Help'
+import Tooltip from '@material-ui/core/Tooltip'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -132,6 +135,12 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     fontSize: 15,
   },
+  icon: {
+    ...theme.icon,
+    ...theme.font,
+    cursor: 'pointer',
+    marginLeft: 2,
+  },
 }))
 
 const KeyCodes = {
@@ -140,6 +149,10 @@ const KeyCodes = {
 }
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter]
+
+const tooltips = {
+  payout: `This is your max accept payout for THIS buzz. You can set different max payouts for each of your buzz's. If you set you payout to "0", any rewards will be sent to the @null account.`,
+}
 
 const CreateBuzzForm = (props) => {
   const classes = useStyles()
@@ -298,6 +311,9 @@ const CreateBuzzForm = (props) => {
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
+          <Tooltip title={tooltips.payout} placement="top">
+            <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
+          </Tooltip>
           {/* <label className={classes.payoutNote}>
             You may change the max accepted payout for your buzz, set payout to 0 to add <b>@null</b> as your beneficiary
           </label> <br /> */}
