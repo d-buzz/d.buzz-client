@@ -34,6 +34,7 @@ import {
   HelmetGenerator,
   UpdateFormModal,
 } from 'components'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -143,6 +144,7 @@ const Content = (props) => {
   const [openUpdateForm, setOpenUpdateForm] = useState(false)
   const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
   const popoverAnchor = useRef(null)
+  const history = useHistory()
 
 
   const {
@@ -294,6 +296,21 @@ const Content = (props) => {
     invokeTwitterIntent(body)
   }
 
+  const handleClickContent = (e) => {
+    const { target } = e
+    let { href } = target
+    const hostname = window.location.hostname
+
+    e.preventDefault()
+    if(href && !href.includes(hostname)) {
+      window.open(href, '_blank')
+    } else {
+      const split = `${href}`.split('/')
+      href = `/${split[3]}`
+      history.push(href)
+    }
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -360,7 +377,9 @@ const Content = (props) => {
                     </Col>
                   </Row>
                   <br />
-                  <MarkdownViewer content={originalContent} minifyAssets={false} />
+                  <div onClick={handleClickContent}>
+                    <MarkdownViewer content={originalContent} minifyAssets={false} />
+                  </div>
                   <PostTags meta={meta} />
                   <div style={{ marginTop: 10 }}>
                     <label className={classes.meta}>
