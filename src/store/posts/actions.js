@@ -576,3 +576,10 @@ export const reflectUpdatedMuteListHome = (response) => ({
   type: REFLECT_UPDATED_MUTE_LIST_HOME,
   payload: response,
 })
+
+export const SAVE_RECENT_UPVOTES = 'SAVE_RECENT_UPVOTES'
+
+export const saveReceptUpvotes = (response) => ({
+  type: SAVE_RECENT_UPVOTES,
+  payload: response,
+})

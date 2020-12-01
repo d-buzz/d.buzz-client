@@ -41,7 +41,7 @@ const IconWrapper = ({ children, className }) => {
   )
 }
 
-const RoundedFields = (props) => {
+const RoundedField = (props) => {
   const classes = useStyles()
   const {
     placeholder = '',
@@ -51,6 +51,7 @@ const RoundedFields = (props) => {
     icon = '',
     searchWrapperClass = {},
     defaultValue,
+    onChange,
     ...otherProps
   } = props
 
@@ -58,6 +59,10 @@ const RoundedFields = (props) => {
 
   if(icon) {
     defaultInputStyle = {}
+  }
+
+  const change = (e) => {
+    onChange(e)
   }
 
   return (
@@ -71,6 +76,7 @@ const RoundedFields = (props) => {
           style={{ ...style, ...defaultInputStyle }}
           placeholder={placeholder}
           className={classNames(classes.field, classes.inline)}
+          onChange={change}
           {...otherProps}
         />
       </div>
@@ -78,4 +84,4 @@ const RoundedFields = (props) => {
   )
 }
 
-export default RoundedFields
+export default RoundedField

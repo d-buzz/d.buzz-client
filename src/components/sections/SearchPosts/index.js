@@ -31,6 +31,8 @@ const SearchPosts = (props) => {
   useEffect(() => {
     if(items.hasOwnProperty('results')) {
       setFull(items.results)
+    } else {
+      setFull([])
     }
   }, [items])
 

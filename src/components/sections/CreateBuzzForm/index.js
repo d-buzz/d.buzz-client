@@ -11,8 +11,9 @@ import {
   UploadIcon,
   Spinner,
 } from 'components/elements'
+
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer } from 'components'
+import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -22,6 +23,8 @@ import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
 import { invokeTwitterIntent } from 'services/helper'
+import HelpIcon from '@material-ui/icons/Help'
+import Tooltip from '@material-ui/core/Tooltip'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -109,7 +112,7 @@ const useStyles = createUseStyles(theme => ({
   },
   tinyInput: {
     height: 20,
-    width: 80,
+    width: 50,
     marginLeft: 5,
     borderRadius: 5,
   },
@@ -132,6 +135,12 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     fontSize: 15,
   },
+  icon: {
+    ...theme.icon,
+    ...theme.font,
+    cursor: 'pointer',
+    marginLeft: 2,
+  },
 }))
 
 const KeyCodes = {
@@ -141,6 +150,10 @@ const KeyCodes = {
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
+const tooltips = {
+  payout: `This is your max accept payout for THIS buzz. You can set different max payouts for each of your buzz's. If you set you payout to "0", any rewards will be sent to the @null account.`,
+}
+
 const CreateBuzzForm = (props) => {
   const classes = useStyles()
   const inputRef = useRef(null)
@@ -149,6 +162,7 @@ const CreateBuzzForm = (props) => {
   const [tags, setTags] = useState([])
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
+  const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
 
   const {
     user,
@@ -161,6 +175,7 @@ const CreateBuzzForm = (props) => {
     hideModalCallback = () => {},
     broadcastNotification,
     setPageFrom,
+    payoutAgreed,
   } = props
 
   const history = useHistory()
@@ -176,6 +191,10 @@ const CreateBuzzForm = (props) => {
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content, images])
 
+  const closePayoutDisclaimer = () => {
+    setOpenPayoutDisclaimer(false)
+  }
+
   const onChange = (e) => {
     const { target } = e
     const { name } = target
@@ -184,11 +203,17 @@ const CreateBuzzForm = (props) => {
     if(name === 'content-area') {
       setContent(value)
     } else if(name === 'max-payout') {
-      if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
-        value = 0.00
+
+      if(!payoutAgreed) {
+        setOpenPayoutDisclaimer(true)
+      } else {
+        if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+          value = 0.00
+        }
+        value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
+        setPayout(value)
       }
-      value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
-      setPayout(value)
+
     } else if (name === 'buzz-to-twitter') {
       setBuzzToTwitter(!buzzToTwitter)
     }
@@ -253,6 +278,7 @@ const CreateBuzzForm = (props) => {
   const handleAddition = (tag) => {
     tag.id = tag.id.split(" ").join("")
     tag.text = tag.text.split(" ").join("")
+    tag.text = tag.text.replace('#', '')
     setTags([...tags, tag])
   }
 
@@ -264,6 +290,21 @@ const CreateBuzzForm = (props) => {
     newTags.splice(newPos, 0, tag)
 
     setTags(newTags)
+  }
+
+  const handleClickContent = (e) => {
+    const { target } = e
+    let { href } = target
+    const hostname = window.location.hostname
+
+    e.preventDefault()
+    if(href && !href.includes(hostname)) {
+      window.open(href, '_blank')
+    } else {
+      const split = `${href}`.split('/')
+      href = `/${split[3]}`
+      history.push(href)
+    }
   }
 
   return (
@@ -285,9 +326,9 @@ const CreateBuzzForm = (props) => {
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
-          <label className={classes.payoutNote}>
-            You may change the max accepted payout for your buzz, set payout to 0 to add <b>@null</b> as your beneficiary
-          </label> <br />
+          <Tooltip title={tooltips.payout} placement="top">
+            <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
+          </Tooltip>
           <FormCheck
             name='buzz-to-twitter'
             type='checkbox'
@@ -298,7 +339,7 @@ const CreateBuzzForm = (props) => {
           />
           {buzzToTwitter && (
             <label className={classes.payoutNote}>
-              Twitter intent will open after you click publish
+              Twitter intent will open after you click <b>Buzz it</b>
             </label>
           )}
           <br />
@@ -324,7 +365,7 @@ const CreateBuzzForm = (props) => {
             </div>
           )}
           {content.length !== 0 && (
-            <div className={classes.previewContainer}>
+            <div className={classes.previewContainer} onClick={handleClickContent}>
               <h6 className={classes.previewTitle}>Buzz preview</h6>
               <MarkdownViewer content={content} minifyAssets={false}/>
               <div className={classes.separator} />
@@ -374,6 +415,7 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
+      <PayoutDisclaimerModal show={openPayoutDisclaimer} onHide={closePayoutDisclaimer} />
     </div>
   )
 }
@@ -383,6 +425,7 @@ const mapStateToProps = (state) => ({
   images: state.posts.get('images'),
   loading: pending(state, 'UPLOAD_FILE_REQUEST'),
   publishing: pending(state, 'PUBLISH_POST_REQUEST'),
+  payoutAgreed: state.auth.get('payoutAgreed'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

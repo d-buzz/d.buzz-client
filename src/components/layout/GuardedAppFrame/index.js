@@ -66,6 +66,11 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 5,
     float: 'right',
   },
+  searchDiv: {
+    display: 'inline-block',
+    verticalAlign: 'top',
+    width: '100%',
+  },
 }))
 
 const GuardedAppFrame = (props) => {
@@ -158,16 +163,19 @@ const GuardedAppFrame = (props) => {
   }
 
   const onChange = (e) => {
+    console.log({ e })
+    console.log('searching')
     const { target } = e
     const { value } = target
+    console.log({ value })
     setSearch(value)
   }
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
       clearSearchPosts()
-      history.replace(`/search/posts?q=${encodeURIComponent(search)}`)
       searchRequest(search)
+      history.push(`/search/posts?q=${encodeURIComponent(search)}`)
     }
   }
 
@@ -183,11 +191,11 @@ const GuardedAppFrame = (props) => {
       })
   }
 
-  useEffect(() => {
-    if(typeof params === 'object') {
-      setSearch(params.q)
-    }
-  }, [params])
+  // useEffect(() => {
+  //   if(typeof params === 'object') {
+  //     setSearch(params.q)
+  //   }
+  // }, [params])
 
   return (
     <React.Fragment>
@@ -217,7 +225,7 @@ const GuardedAppFrame = (props) => {
                     {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
                   </Navbar.Brand>
                   {title === 'Search' && (
-                    <div style={{ display: 'inline-block', verticalAlign: 'top', width: '100%' }}>
+                    <div className={classes.searchDiv}>
                       <SearchField
                         disableTips={true}
                         iconTop={-2}
@@ -225,8 +233,8 @@ const GuardedAppFrame = (props) => {
                         searchWrapperClass={classes.searchWrapper}
                         style={{ height: 30 }}
                         value={search}
-                        onChange={onChange}
                         onKeyDown={handleSearchKey}
+                        onChange={onChange}
                         placeholder="You can use @username or #tag to simplify your query"
                       />
                     </div>
