@@ -14,7 +14,7 @@ import {
 } from './actions'
 
 import {
-  getBestRpcNode
+  getBestRpcNode,
 } from 'services/api'
 
 function* getSavedThemeRequest(payload, meta) {
