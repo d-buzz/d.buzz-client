@@ -1039,12 +1039,10 @@ export const getBestRpcNode = () => {
   return new Promise(async(resolve, reject) => {
     axios.get('https://beacon.peakd.com/api/best')
       .then(function (result) {
-        console.log(result)
-        // const data = result.data
-        resolve(result)
+        resolve(result.data[0].endpoint)
       })
       .catch(function (error) {
-        reject(error)
+        resolve('https://api.hive.blog')
       })
   })
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
 import { getSavedUserRequest } from 'store/auth/actions'
+import { getBestRpcNode } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -49,15 +50,18 @@ const Init = (props) => {
   const {
     getSavedUserRequest,
     getTrendingTagsRequest,
+    getBestRpcNode,
     children,
   } = props
 
   const [init, setInit] = useState(false)
 
   useEffect(() => {
-    getTrendingTagsRequest()
-    getSavedUserRequest().then(() => {
-      setInit(true)
+    getBestRpcNode().then(() => {
+      getTrendingTagsRequest()
+      getSavedUserRequest().then(() => {
+        setInit(true)
+      })
     })
     // eslint-disable-next-line
   }, [])
@@ -74,6 +78,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getTrendingTagsRequest,
     getSavedUserRequest,
+    getBestRpcNode,
   }, dispatch),
 })
 

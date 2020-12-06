@@ -8,7 +8,14 @@ import {
   SET_THEME_REQUEST,
   setThemeSuccess,
   setThemeFailure,
+
+  GET_BEST_RPC_NODE,
+  setRpcNode,
 } from './actions'
+
+import {
+  getBestRpcNode
+} from 'services/api'
 
 function* getSavedThemeRequest(payload, meta) {
   let theme = { mode: 'night' }
@@ -35,6 +42,13 @@ function* setThemeRequest(payload, meta) {
   }
 }
 
+function* getBestRPCNode(meta) {
+  const node = yield call(getBestRpcNode)
+  yield call([localStorage, localStorage.setItem], 'rpc', node)
+
+  yield put(setRpcNode(node, meta))
+}
+
 function* watchGetSavedThemeRequest({ payload, meta }) {
   yield call(getSavedThemeRequest, payload, meta)
 }
@@ -43,7 +57,12 @@ function* watchSetThemeRequest({ payload, meta }) {
   yield call(setThemeRequest, payload ,meta)
 }
 
+function* watchGetBestRPCNode({ meta }) {
+  yield call(getBestRPCNode, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
+  yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
 }
