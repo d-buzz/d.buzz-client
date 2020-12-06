@@ -51,3 +51,20 @@ export const generateStyles = (theme) => ({
   type: GENERATE_STYLES,
   payload: theme,
 })
+
+export const GET_BEST_RPC_NODE = 'GET_BEST_RPC_NODE'
+
+export const SET_RPC_NODE = 'SET_RPC_NODE'
+
+export const getBestRpcNode = () => ({
+  type: GET_BEST_RPC_NODE,
+  meta: {
+    thunk: true,
+  },
+})
+
+export const setRpcNode = (response, meta) => ({
+  type: SET_RPC_NODE,
+  payload: response,
+  meta,
+})
