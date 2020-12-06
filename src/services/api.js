@@ -39,6 +39,13 @@ broadcast.updateOperations()
 
 const visited = []
 
+const setRPCNode = () => {
+  const node = localStorage.getItem('rpc')
+  console.log({ node })
+  api.setOptions({ url: node })
+}
+
+
 export const invokeMuteFilter = (items, mutelist) => {
   return items.filter((item) => !mutelist.includes(item.author) )
 }
@@ -269,6 +276,8 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
 
 export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
+    // set RPC node here because this is the first API call to execute
+    setRPCNode()
     api.getTrendingTagsAsync(null, 100)
       .then((result) => {
         resolve(result)
