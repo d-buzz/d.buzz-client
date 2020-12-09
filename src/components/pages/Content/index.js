@@ -297,18 +297,22 @@ const Content = (props) => {
   }
 
   const handleClickContent = (e) => {
-    const { target } = e
-    let { href } = target
-    const hostname = window.location.hostname
+    try {
+      const { target } = e
+      let { href } = target
+      const hostname = window.location.hostname
 
-    e.preventDefault()
-    if(href && !href.includes(hostname)) {
-      window.open(href, '_blank')
-    } else {
-      const split = `${href}`.split('/')
-      href = `/${split[3]}`
-      history.push(href)
-    }
+      e.preventDefault()
+      if(href && !href.includes(hostname)) {
+        window.open(href, '_blank')
+      } else {
+        const split = `${href}`.split('/')
+        href = `/${split[3]}`
+        if(href !== '/undefined') {
+          history.push(href)
+        }
+      }
+    } catch (e) {}
   }
 
   return (
