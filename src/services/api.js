@@ -12,12 +12,12 @@ import appConfig from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
-import fleek from '@fleekhq/fleek-storage-js'
 import moment from 'moment'
 import 'react-app-polyfill/stable'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
+const imageUrl = `${appConfig.IMAGE_API}/image`
 
 const endpoints = [
   'https://api.openhive.network',
@@ -1011,22 +1011,26 @@ export const checkIfImage = (links) => {
 }
 
 export const uploadIpfsImage = async(data) => {
-  const date = new Date()
-  const timestamp = date.getTime()
+  const formData = new FormData()
+  formData.append('image', data)
+  console.log('test')
 
   return new Promise(async(resolve, reject) => {
-    try{
-      const dataFile = {
-        apiKey: appConfig.API_KEY,
-        apiSecret: appConfig.API_SECRET,
-        key:`dbuzz/file-${timestamp}`,
-        data,
-      }
-      const result = await fleek.upload(dataFile)
-      resolve(result)
-    } catch (error) {
+    axios({
+      method: 'POST',
+      url: `${imageUrl}/upload`,
+      key: 'image',
+      headers: {'Content-Type': 'multipart/form-data' },
+      data: formData,
+    }).then(async(result) => {
+      console.log({result})
+      const data = result.data
+      resolve(data)
+
+    }).catch((error) => {
+      console.log({error})
       reject(error)
-    }
+    })
   })
 }
 
