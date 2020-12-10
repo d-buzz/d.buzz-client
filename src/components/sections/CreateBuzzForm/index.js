@@ -222,23 +222,26 @@ const CreateBuzzForm = (props) => {
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload')
     if (isMobile) {
-      const touch = new Touch({
-        identifier: "123",
-        target: target,
-      })
 
-      const touchEvent = new TouchEvent("touchstart", {
-        touches: [touch],
-        view: window,
-        cancelable: true,
-        bubbles: true,
-      })
+      target.addEventListener('click', function() {
+        const touch = new Touch({
+          identifier: 'file-upload',
+          target: target,
+        })
+  
+        const touchEvent = new TouchEvent("touchstart", {
+          touches: [touch],
+          view: window,
+          cancelable: true,
+          bubbles: true,
+        })
 
-      target.dispatchEvent(touchEvent)
-      target.click()
+        target.dispatchEvent(touchEvent)
+      })
     }
     target.click()
   }
+
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
@@ -382,6 +385,7 @@ const CreateBuzzForm = (props) => {
               <input
                 id="file-upload"
                 type='file'
+                name='image'
                 accept='image/*'
                 multiple={false}
                 ref={inputRef}
