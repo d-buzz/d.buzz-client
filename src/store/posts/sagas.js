@@ -331,22 +331,7 @@ function* fileUploadRequest(payload, meta) {
 
     if(is_authenticated) {
 
-      let data
-      if(file) {
-        const reader = new FileReader()
-        data = yield new Promise((resolve) => {
-          reader.addEventListener('load', () => {
-            const result = new Buffer(reader.result, 'binary')
-            resolve(result)
-          })
-          reader.readAsBinaryString(file)
-        })
-      }
-
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const result = yield call(uploadIpfsImage, data)
+      const result = yield call(uploadIpfsImage, file)
 
       let images = []
 
@@ -354,7 +339,7 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      const ipfsHash = result.hash
+      const ipfsHash = result.hashV0
       const postUrl = `https://ipfs.io/ipfs/${ipfsHash}`
       images.push(postUrl)
 
