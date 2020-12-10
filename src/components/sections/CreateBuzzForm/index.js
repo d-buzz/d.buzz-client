@@ -111,7 +111,7 @@ const useStyles = createUseStyles(theme => ({
     border: theme.border.primary,
   },
   tinyInput: {
-    height: 20,
+    height: 25,
     width: 50,
     marginLeft: 5,
     borderRadius: 5,
