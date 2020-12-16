@@ -325,7 +325,7 @@ const CreateBuzzForm = (props) => {
               </Box>
             </div>
           )}
-          {(!publishing && !loading) &&  (<TextArea name='content-area' maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {(!publishing && !loading) &&  (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
@@ -392,7 +392,7 @@ const CreateBuzzForm = (props) => {
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <label for="file-upload">
+              <label htmlFor="file-upload">
                 <IconButton
                   size="medium"
                   onClick={handleFileSelect}

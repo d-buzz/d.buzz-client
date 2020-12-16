@@ -197,7 +197,6 @@ const NavLinkWrapper = (props) => {
     onClick = () => {},
   } = props
 
-
   const isActivePath = (path, current) => {
     return path === current
   }
@@ -206,7 +205,7 @@ const NavLinkWrapper = (props) => {
     <React.Fragment>
       {!minify && (
         <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path}>
+          <Link to={path || '/'}>
             <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
             {name}
           </Link>
@@ -214,7 +213,7 @@ const NavLinkWrapper = (props) => {
       )}
       {minify && (
         <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path}>
+          <Link to={path || '/'}>
             <IconButton
               size="medium"
             >
