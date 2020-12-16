@@ -87,7 +87,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "gulp": "gulp build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -106,6 +107,8 @@
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0"
+    "eslint-plugin-import": "^2.22.0",
+    "gulp": "^4.0.2",
+    "gulp-uglify": "^3.0.2"
   }
 }

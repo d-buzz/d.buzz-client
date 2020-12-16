@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
 import Badge from '@material-ui/core/Badge'
 import { createUseStyles } from 'react-jss'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import {
   HomeIcon,
   BrandIcon,
@@ -243,12 +243,18 @@ const SideBarLeft = (props) => {
   const [openTheme, setOpenTheme] = useState(false)
   const classes = useStyles()
   const location = useLocation()
+  const history = useHistory()
+  const { pathname } = location
+  const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
 
   const showThemeModal = () => {
     setOpenTheme(true)
   }
 
   useEffect(() => {
+    if(isBuzzIntent){
+      setOpen(true)
+    }
     pollNotifRequest()
     // eslint-disable-next-line
   }, [])
@@ -269,6 +275,9 @@ const SideBarLeft = (props) => {
   const onHide = () => {
     setBuzzModalStatus(false)
     setOpen(false)
+    if(isBuzzIntent){
+      history.push('/')
+    }
   }
 
   const onHideTheme = () => {
@@ -420,6 +429,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'SUBSCRIBE_REQUEST'),
   count: state.polling.get('count'),
   theme: state.settings.get('theme'),
+  intentBuzz: state.auth.get("intentBuzz"),
 })
 
 const mapDispatchToProps = (dispatch) => ({

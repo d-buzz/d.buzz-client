@@ -11,7 +11,7 @@ import {
   UploadIcon,
   Spinner,
 } from 'components/elements'
-
+import { clearIntentBuzz } from "store/auth/actions"
 import { broadcastNotification } from 'store/interface/actions'
 import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
 import { bindActionCreators } from 'redux'
@@ -25,7 +25,8 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { invokeTwitterIntent } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
-
+import { useLocation } from "react-router-dom"
+import queryString from "query-string"
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -158,12 +159,13 @@ const CreateBuzzForm = (props) => {
   const classes = useStyles()
   const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
-  const [content, setContent] = useState('')
   const [tags, setTags] = useState([])
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
-
+  const location = useLocation()
+  const params = queryString.parse(location.search) || ""
+  const paramsBuzzText = params.text || ""
   const {
     user,
     uploadFileRequest,
@@ -176,7 +178,14 @@ const CreateBuzzForm = (props) => {
     broadcastNotification,
     setPageFrom,
     payoutAgreed,
+    intentBuzz,
+    // clearIntentBuzz,
   } = props
+
+  const { text='', url='' } = intentBuzz
+  const buzzIntentText = (text || paramsBuzzText)
+  const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
+  const [content, setContent] = useState(wholeIntent)
 
   const history = useHistory()
   let containerClass = classes.container
@@ -266,6 +275,7 @@ const CreateBuzzForm = (props) => {
           setPageFrom(null)
           const { author, permlink } = data
           hideModalCallback()
+          // clearIntentBuzz()
           broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
@@ -430,6 +440,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'UPLOAD_FILE_REQUEST'),
   publishing: pending(state, 'PUBLISH_POST_REQUEST'),
   payoutAgreed: state.auth.get('payoutAgreed'),
+  intentBuzz: state.auth.get("intentBuzz"),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -438,6 +449,7 @@ const mapDispatchToProps = (dispatch) => ({
     publishPostRequest,
     setPageFrom,
     broadcastNotification,
+    clearIntentBuzz,
   }, dispatch),
 })
 

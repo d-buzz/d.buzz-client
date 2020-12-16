@@ -31,6 +31,11 @@ const routes =  [
         component: Home,
       },
       {
+        path: '/intent/buzz',
+        exact: true,
+        component: Home,
+      },
+      {
         path: '/org/en/tos',
         exact: true,
         component: TermsConditions,
