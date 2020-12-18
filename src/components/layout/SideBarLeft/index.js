@@ -237,6 +237,7 @@ const SideBarLeft = (props) => {
     theme,
     minify,
     setBuzzModalStatus,
+    intentBuzz,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -252,7 +253,7 @@ const SideBarLeft = (props) => {
   }
 
   useEffect(() => {
-    if(isBuzzIntent){
+    if(isBuzzIntent || (intentBuzz && intentBuzz.text)){
       setOpen(true)
     }
     pollNotifRequest()

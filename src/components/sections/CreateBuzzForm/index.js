@@ -159,7 +159,6 @@ const CreateBuzzForm = (props) => {
   const classes = useStyles()
   const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
-  const [tags, setTags] = useState([])
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
@@ -179,13 +178,23 @@ const CreateBuzzForm = (props) => {
     setPageFrom,
     payoutAgreed,
     intentBuzz,
-    // clearIntentBuzz,
+    clearIntentBuzz,
   } = props
 
-  const { text='', url='' } = intentBuzz
+  const { text='', url='', hashtags='' } = intentBuzz
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
+  const buzzIntentTags = []
+  if(wholeIntent && hashtags){
+    const intentTags = hashtags.split(',')
+    if(intentTags){
+      intentTags.forEach((item) => {
+        buzzIntentTags.push({ id: item, text: item })
+      })
+    }
+  }
   const [content, setContent] = useState(wholeIntent)
+  const [tags, setTags] = useState(buzzIntentTags)
 
   const history = useHistory()
   let containerClass = classes.container
@@ -196,7 +205,7 @@ const CreateBuzzForm = (props) => {
     minRows = 5
   }
 
-  useEffect(() => {
+  useEffect(() => { 
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content, images])
 
@@ -275,7 +284,7 @@ const CreateBuzzForm = (props) => {
           setPageFrom(null)
           const { author, permlink } = data
           hideModalCallback()
-          // clearIntentBuzz()
+          clearIntentBuzz()
           broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {

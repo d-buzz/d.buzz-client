@@ -168,9 +168,9 @@ export const setOpacityUsers = (users) => ({
   payload: users,
 })
 
-export const setIntentBuzz = (url, text) => ({
+export const setIntentBuzz = (text, url, hashtags='') => ({
   type: SET_INTENT_BUZZ,
-  payload: { url, text },
+  payload: { text, url, hashtags },
 })
  
 export const CLEAR_INTENT_BUZZ = 'CLEAR_INTENT_BUZZ'
