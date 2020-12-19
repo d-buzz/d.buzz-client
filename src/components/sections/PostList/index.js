@@ -15,6 +15,7 @@ import {
 import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
+import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { useWindowDimensions } from 'services/helper'
@@ -351,6 +352,7 @@ const PostList = React.memo((props) => {
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
                 </div>
+                <Button style={{ marginTop: 10 }} size="small" variant="outlined" color="secondary">Buy me berries</Button>
                 <div className={classes.actionWrapper}>
                   <PostActions
                     disableUpvote={disableUpvote}
