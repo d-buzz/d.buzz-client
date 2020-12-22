@@ -375,7 +375,6 @@ const PostList = React.memo((props) => {
                   />
                 </div>
                 <Menu
-                  id="simple-menu"
                   anchorEl={anchorEl}
                   keepMounted
                   open={Boolean(anchorEl)}
