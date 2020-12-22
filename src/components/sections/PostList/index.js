@@ -24,6 +24,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
+import SendIcon from '@material-ui/icons/Send'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Typography from '@material-ui/core/Typography'
 
 const addHover = (theme) => {
   let style = {
@@ -159,6 +162,12 @@ const useStyle = createUseStyles(theme => ({
   berries: {
     width: 120,
     marginTop: 10,
+  },
+  moreIcon: {
+    ...theme.font,
+  },
+  menuText: {
+    fontSize: 14,
   },
 }))
 
@@ -341,7 +350,7 @@ const PostList = React.memo((props) => {
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
                   <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
-                    <ExpandMoreIcon  style={{ color: 'white' }} />
+                    <ExpandMoreIcon  className={classes.moreIcon} />
                   </IconButton>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
@@ -375,9 +384,7 @@ const PostList = React.memo((props) => {
                   open={Boolean(anchorEl)}
                   onClose={closeMenu}
                 >
-                  <MenuItem>Profile</MenuItem>
-                  <MenuItem>My account</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem className={classes.menuText}>Send Tip</MenuItem>
                 </Menu>
               </div>
             </Col>
