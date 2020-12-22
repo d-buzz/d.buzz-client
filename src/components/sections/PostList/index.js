@@ -3,7 +3,6 @@ import { createUseStyles } from 'react-jss'
 import {
   Avatar,
 } from 'components/elements'
-// import IconButton from '@material-ui/core/IconButton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
@@ -11,7 +10,6 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-// import { openMuteDialog } from 'store/interface/actions'
 import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -22,8 +20,8 @@ import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
-// import VolumeOffIcon from '@material-ui/icons/VolumeOffOutlined'
-// import VolumeOnIcon from '@material-ui/icons/VolumeUpOutlined'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import IconButton from '@material-ui/core/IconButton'
 
 const addHover = (theme) => {
   let style = {
@@ -301,10 +299,6 @@ const PostList = React.memo((props) => {
     clearTimeout(delayHandler)
   }
 
-  // const openMuteModal = () => {
-  //   openMuteDialog(author)
-  // }
-
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -335,28 +329,17 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {/* {user && user.is_authenticated && user.username !== author && !mutelist.includes(author) && (
-                    <div className={classes.icon}>
-                      <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
-                        <VolumeOffIcon fontSize='small'/>
-                      </IconButton>
-                    </div>
-                  )}
-                  {user && user.is_authenticated && mutelist.includes(author) && (
-                    <div className={classes.icon}>
-                      <IconButton onClick={openMuteModal} classes={{ root: classes.iconButton  }} size="small">
-                        <VolumeOnIcon fontSize='small' />
-                      </IconButton>
-                    </div>
-                  )} */}
+                  <IconButton style={{ float: 'right' }} size='small'>
+                    <ExpandMoreIcon  style={{ color: 'white' }} />
+                  </IconButton>
                   <div onClick={handleOpenContent}>
                     {title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>
-                  <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
+                  {/* <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
                     <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
-                  </a>
+                  </a> */}
                 </div>
                 <div className={classes.actionWrapper}>
                   <PostActions
