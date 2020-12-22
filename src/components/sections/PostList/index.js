@@ -164,7 +164,7 @@ const useStyle = createUseStyles(theme => ({
     ...theme.font,
   },
   menuText: {
-    fontSize: 14,
+    fontSize: 13,
   },
 }))
 
