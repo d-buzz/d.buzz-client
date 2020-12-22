@@ -381,7 +381,7 @@ const PostList = React.memo((props) => {
                   open={Boolean(anchorEl)}
                   onClose={closeMenu}
                 >
-                  <MenuItem className={classes.menuText}>Send Tip</MenuItem>
+                  <MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Send Tip</MenuItem>
                 </Menu>
               </div>
             </Col>
