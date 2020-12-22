@@ -22,6 +22,8 @@ import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
+import MenuItem from '@material-ui/core/MenuItem'
+import Menu from '@material-ui/core/Menu'
 
 const addHover = (theme) => {
   let style = {
@@ -228,6 +230,7 @@ const PostList = React.memo((props) => {
   const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
   const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
   const [delayHandler, setDelayHandler] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
   const popoverAnchor = useRef(null)
 
 
@@ -299,6 +302,14 @@ const PostList = React.memo((props) => {
     clearTimeout(delayHandler)
   }
 
+  const openMenu = (e) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const closeMenu = () => {
+    setAnchorEl(null)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -329,7 +340,7 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <IconButton style={{ float: 'right' }} size='small'>
+                  <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
                     <ExpandMoreIcon  style={{ color: 'white' }} />
                   </IconButton>
                   <div onClick={handleOpenContent}>
@@ -357,6 +368,17 @@ const PostList = React.memo((props) => {
                     max_accepted_payout={max_accepted_payout}
                   />
                 </div>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={closeMenu}
+                >
+                  <MenuItem>Profile</MenuItem>
+                  <MenuItem>My account</MenuItem>
+                  <MenuItem>Logout</MenuItem>
+                </Menu>
               </div>
             </Col>
           </Row>
