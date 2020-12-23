@@ -10,6 +10,7 @@ import {
   AccountReplies,
   AccountFollowers,
   AccountFollowing,
+  AccountComments,
   Notification,
   Tags,
   Search,
@@ -117,6 +118,11 @@ const routes =  [
             path: '/@:username/t/replies',
             exact: true,
             component: AccountReplies,
+          },
+          {
+            path: '/@:username/t/comments',
+            exact: true,
+            component: AccountComments,
           },
           {
             path: '/@:username/t/followers',
