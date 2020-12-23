@@ -204,15 +204,18 @@ const Profile = (props) => {
   }
 
   const handleTabs = (index) => () => {
+    console.log({ index })
     let tab = 'buzz'
 
     if(index === 1) {
       tab = 'replies'
     } else if (index === 2) {
-      tab = 'followers'
-    } else if (index === 3) {
-      tab = 'following'
+      tab = 'comments'
     }
+
+    // else if (index === 3) {
+    //   tab = 'following'
+    // }
     // const { is_authenticated } = user
     history.push(`/@${username}/t/${tab}/`)
 
@@ -257,13 +260,19 @@ const Profile = (props) => {
       setIndex(0)
     } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(1)
-    } else if(pathname.match(/(\/t\/followers\/)$|(\/t\/followers)$/m)) {
+    } else if(pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
       setIndex(2)
-    } else if(pathname.match(/(\/t\/following\/)$|(\/t\/following)$/m)) {
-      setIndex(3)
     } else {
       setIndex(0)
     }
+
+    // else if(pathname.match(/(\/t\/followers\/)$|(\/t\/followers)$/m)) {
+    //   setIndex(2)
+    // } else if(pathname.match(/(\/t\/following\/)$|(\/t\/following)$/m)) {
+    //   setIndex(3)
+    // } else {
+    //   setIndex(0)
+    // }
   }, [pathname])
 
 
@@ -424,7 +433,7 @@ const Profile = (props) => {
         >
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
           <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
+          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Comments" />
           {/* <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
           <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" /> */}
         </Tabs>
