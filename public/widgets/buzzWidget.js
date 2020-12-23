@@ -3,79 +3,45 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
         typeof define === 'function' && define.amd ? define(factory) :
-            (global = global || self, global.BuzzWidget = factory());
+            (global = global || self, global.__dbuzzwidget = factory());
 }(this, function () {
     'use strict';
 
     const w = window;
     const d = w.document;
 
-    function BuzzWidget() {
+    function DbuzzWidget() {
 
-        const BUZZ_BUTTON_HTML_PATH = 'http://localhost:3000/widgets/buzz_button.html';
+        const resourceBaseUrl = "http://localhost:3000";
+        const buzzButtonHtmlPath = "/widgets/buzz_button.html";
+        const dbuzzShareClass = "dbuzz-share-button";
+        const intentUrlRegex = /localhost\:3000\/intent\/buzz/
 
-        /**
-         * Method for get string in the special format by arguments
-         * @param {string} str
-         * @param {Array} args
-         */
-        const stringFormat = function (str, args) {
-            return str.replace(/\{(\d+)\}/g, function (m, n) {
-                return args[n] || m;
-            });
-        };
 
         /**
          * Method for initialize class for all elements
          */
         this.i = function () {
-            const buzz = d.querySelectorAll('.dbuzz-share-button');
-            for (let i = buzz.length; i--;) {
-                setIframe(buzz[i], i);
+            const b = d.getElementsByClassName(dbuzzShareClass);
+            for (let i = b.length; i--;) {
+                setIframe(b[i], i);
             }
-        };
-        
-        const getSource = function (el, i) {
-            let linkSrc = getAttribute(el, 'href');
-            if (!linkSrc) {
-                const id =  "dbuzz-widget-"+i;
-                const original_referrer = encode(location.href);
-                const url = encode(getUrl(el));
-                const text = encode(getText(el));
-                const size = getSize(el);
-                const tags = getHashTags(el);
-                let srcFormat = 'original_referrer={0}&id={1}&size={2}&url={3}&text={4}';
-                let args = [
-                    original_referrer,
-                    id,
-                    size,
-                    url,
-                    text
-                ]
-                if (tags.trim()) {
-                    srcFormat = srcFormat+"&tags={5}";
-                    args.push(tags)
-                }
-
-                linkSrc = stringFormat(srcFormat, args)
-            }
-            return linkSrc
         };
 
         const setIframe = function (el, i) {
-            const size = getSize(el);
             const ifrm = createElement("iframe");
+            const size = getSize(el);
             const args = getSource(el, i);
-            const source = BUZZ_BUTTON_HTML_PATH+"#"+args;
+            const source = resourceBaseUrl + buzzButtonHtmlPath + "#" + args;
             let style = "position: static; visibility: visible;";
-            if(size === 'l'){
+            if (size === 'l') {
                 style = style + 'width: 76px; height: 28px;';
-            }else{
+            } else {
                 style = style + 'width: 60px; height: 20px;';
             }
             ifrm.setAttribute('id', 'dbuzz-widget-' + i);
             ifrm.setAttribute('title', 'Dbuzz share button');
-            ifrm.setAttribute('class', 'dbuzz-share-button');
+            ifrm.setAttribute('class', dbuzzShareClass);
             ifrm.setAttribute('allowtransparency', true);
             ifrm.setAttribute('scrolling', "no");
             ifrm.setAttribute('frameBorder', 0);
@@ -85,42 +51,59 @@
             el.remove();
         }
 
-        const createElement = function (el) {
-            return d.createElement(el)
+        const getSource = function (el, i) {
+            const params = {
+                original_referrer: encode(location.href),
+                id: "dbuzz-widget-" + i,
+                text: encode(getText(el)),
+                size: getSize(el),
+                url: encode(getUrl(el)),
+                tags: getHashTags(el).trim()
+            }
+            let srcFormat = "";
+            let args = [];
+            let count = 0;
+            Object.entries(params).forEach(function (e) {
+                const [key, value] = e;
+                if (value) {
+                    if(srcFormat){
+                        srcFormat += "&"; 
+                    }
+                    srcFormat += key + "={" + count + "}";
+                    args.push(value);
+                }
+                count++;
+            });
+            return stringFormat(srcFormat, args);
+        };
+ 
+        const extractHrefParams = function (el, attr) {
+            let params = "";
+            const intentUrl  = getAttribute(el,"href");
+            if(intentUrl){
+                const validateUrl = validateIntentUrl(intentUrl);
+                const query = validateUrl ? validateUrl.input : '';
+                const queryParams = splitUrlQuery(decodeUrl(query));
+                if(queryParams && queryParams[attr]){
+                    params = queryParams[attr];
+                }
+            }
+            return params;
         }
 
-        /**
-         * Method for getting url from page or options
-         * @param {HTMLElement} share
-         */
-        const getUrl = function (share) {
-            return getAttribute(share, 'data-url') || location.href || ' ';
+        const getUrl = function (el) {
+            return extractHrefParams(el,'url') || getAttribute(el, 'data-url') || location.href || ' ';
         };
 
-        /**
-         * Method for getting title from page or options
-         * @param {HTMLElement} share
-         */
-        const getTitle = function (share) {
-            return getAttribute(share, 'data-title') || d.title || ' ';
-        };
-
-        /**
-         * Method for getting description from page or options
-         * @param {HTMLElement} share
-         */
-        const getText = function (share) {
+        const getText = function (el) {
             const metaDesc = d.querySelector('meta[name=description]');
-            return getAttribute(share, 'data-text') || (metaDesc && getAttribute(metaDesc, 'content')) || ' ';
+            return extractHrefParams(el,'text') || 
+                   getAttribute(el, 'data-text') || 
+                   (metaDesc && getAttribute(metaDesc, 'content')) || ' ';
         };
 
-
-        /**
-        * Method for getting size from page or options
-        * @param {HTMLElement} share
-        */
-        const getSize = function (share) {
-            let size = getAttribute(share, 'data-size') || d.size || 'medium';
+        const getSize = function (el) {
+            let size = extractHrefParams(el,'size') || getAttribute(el, 'data-size') || 'medium';
             size = size.toLowerCase()
             if (size == "large" || size == "medium") {
                 return size.charAt(0);
@@ -129,40 +112,60 @@
             }
         };
 
-        /**
-         * Method for getting size from page or options
-         * @param {HTMLElement} share
-         */
-        const getHashTags = function (share) {
-            return getAttribute(share, 'data-hashtags') || d.hashtags || ' ';
+        const getHashTags = function (el) {
+            return extractHrefParams(el,'tags') || getAttribute(el, 'data-hashtags') || ' ';
         };
+        
+        const createElement = function (el) {
+            return d.createElement(el)
+        }
 
-        /**
-         * Method for get attribute value by name
-         * @param {HTMLElement} el
-         * @param {string} attrName
-         */
         const getAttribute = function (el, attrName) {
             return el.getAttribute(attrName);
         };
 
-        /**
-         * Method for encoding text to URL format
-         * @param {string} text
-         */
-        const encode = function (text) {
-            return encodeURIComponent(text);
+        const decodeUrl = function (el) {
+            const e = el && el.split("?");
+            return 2 === e.length ? e[1] : "";
+        }
+
+        const encode = function (t) {
+            return encodeURIComponent(t);
         };
+
+        const decode = function (t) {
+            return decodeURIComponent(t);
+        };
+
+        const splitUrlQuery = function (q) {
+            let e = {};
+            return q ? (q.split("&").forEach(function(t) {
+                const n = t.split("=");
+                const i = n[0];
+                const v = n[1];
+                if(2 === n.length){
+                    e[i] = decode(v);
+                }
+            }),e) : {};
+        }
+        
+        const stringFormat = function (str, args) {
+            return str.replace(/\{(\d+)\}/g, function (m, n) {
+                return args[n] || m;
+            });
+        };
+
+        const validateIntentUrl = function (url) {
+            return url.match(intentUrlRegex);
+        }
     }
 
     // start
-    const buzzWidget = new BuzzWidget();
-    buzzWidget.i();
-
+    const __dbuzzwidget = new DbuzzWidget();
+    __dbuzzwidget.i();
     return {
-        update: function () {
-            buzzWidget.i();
+        init: function () {
+            __dbuzzwidget.i();
         }
     };
-
 }));
