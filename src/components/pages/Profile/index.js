@@ -121,6 +121,12 @@ const useStyles = createUseStyles(theme => ({
   },
   weblink: {
     color: '#d32f2f',
+    '&:hover': {
+      color: '#d32f2f',
+    },
+  },
+  followLinks: {
+    ...theme.font,
   },
 }))
 
@@ -399,7 +405,8 @@ const Profile = (props) => {
               <Row>
                 <Col xs="auto">
                   <p className={classes.paragraph}>
-                    <b>{following}</b> Following &nbsp; <b>{followers}</b> Follower
+                    <a className={classes.followLinks} href="/follow/following"><b>{following}</b> Following</a> &nbsp;
+                    <a className={classes.followLinks} href="/follow/following"><b>{followers}</b> Follower</a>
                   </p>
                 </Col>
               </Row>
