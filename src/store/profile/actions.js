@@ -211,9 +211,9 @@ export const GET_ACCOUNT_COMMENTS_REQUEST = 'GET_ACCOUNT_COMMENTS_REQUEST'
 export const GET_ACCOUNT_COMMENTS_SUCCESS = 'GET_ACCOUNT_COMMENTS_SUCCESS'
 export const GET_ACCOUNT_COMMENTS_FAILURE = 'GET_ACCOUNT_COMMNETS_FAILURE'
 
-export const getAccountCommentsRequest = (username) => ({
+export const getAccountCommentsRequest = (username, start_permlink = null, start_author = null) => ({
   type: GET_ACCOUNT_COMMENTS_REQUEST,
-  payload: { username },
+  payload: { username, start_permlink, start_author },
   meta: {
     thunk: true,
   },
@@ -229,4 +229,11 @@ export const getAccountCommentsFailure = (error, meta) => ({
   type: GET_ACCOUNT_COMMENTS_FAILURE,
   payload: error,
   meta,
+})
+
+export const SET_LAST_ACCOUNT_COMMENT = 'SET_LAST_ACCOUNT_COMMENT'
+
+export const setLastAccountComment = (response) => ({
+  type: SET_LAST_ACCOUNT_REPLY,
+  payload: response,
 })

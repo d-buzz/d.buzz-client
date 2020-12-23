@@ -27,6 +27,11 @@ import {
   CLEAR_NOTIFICATIONS_REQUEST,
   clearNotificationsSuccess,
   clearNotificationsFailure,
+
+  GET_ACCOUNT_COMMENTS_REQUEST,
+  getAccountCommentsFailure,
+  getAccountCommentsSucess,
+  setLastAccountComment,
 } from './actions'
 
 import {
@@ -174,6 +179,26 @@ function* clearNotificationRequest(meta) {
   }
 }
 
+function* getCommentsAccountRequest(payload, meta) {
+  try {
+    const { username, start_permlink, start_author } = payload
+    const old = yield select(state => state.profile.get('comments'))
+    let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'comments')
+
+    data = [...old, ...data]
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
+
+    data = data.filter(item => invokeFilter(item))
+
+    yield put(setLastAccountComment(data[data.length-1]))
+    yield put(getAccountCommentsSucess(data, meta))
+  } catch (error) {
+    yield put(getAccountCommentsFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -198,6 +223,10 @@ function* watchClearNotificationRequest({ meta }) {
   yield call(clearNotificationRequest, meta)
 }
 
+function* watchGetAccountCommentsRequest({ payload, meta }) {
+  yield call(getCommentsAccountRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
@@ -205,4 +234,5 @@ export default function* sagas() {
   yield takeEvery(GET_FOLLOWERS_REQUEST, watchGetFollowersRequest)
   yield takeEvery(GET_FOLLOWING_REQUEST, watchGetFollowingRequest)
   yield takeEvery(CLEAR_NOTIFICATIONS_REQUEST, watchClearNotificationRequest)
+  yield takeEvery(GET_ACCOUNT_COMMENTS_REQUEST, watchGetAccountCommentsRequest)
 }
