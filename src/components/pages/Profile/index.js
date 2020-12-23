@@ -16,6 +16,7 @@ import {
   getAccountPostsRequest,
   setProfileIsVisited,
   getAccountRepliesRequest,
+  getAccountCommentsRequest,
   clearAccountPosts,
   clearAccountReplies,
   getFollowersRequest,
@@ -159,6 +160,7 @@ const Profile = (props) => {
     clearScrollIndex,
     openMuteDialog,
     mutelist,
+    getAccountCommentsRequest,
   } = props
 
   const history = useHistory()
@@ -248,6 +250,7 @@ const Profile = (props) => {
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
+      getAccountCommentsRequest(username)
       getAccountRepliesRequest(username)
       getFollowersRequest(username)
       getFollowingRequest(username)
@@ -475,6 +478,7 @@ const mapDispatchToProps = (dispatch) => ({
     broadcastNotification,
     clearScrollIndex,
     openMuteDialog,
+    getAccountCommentsRequest,
   }, dispatch),
 })
 
