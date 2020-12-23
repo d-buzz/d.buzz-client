@@ -237,3 +237,9 @@ export const setLastAccountComment = (response) => ({
   type: SET_LAST_ACCOUNT_REPLY,
   payload: response,
 })
+
+export const CLEAR_ACCOUNT_COMMENTS = 'CLEAR_ACCOUNT_COMMENTS'
+
+export const clearAccountComments = () => ({
+  type: CLEAR_ACCOUNT_COMMENTS,
+})
