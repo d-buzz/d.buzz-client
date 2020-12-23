@@ -206,3 +206,27 @@ export const clearNotificationsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const GET_ACCOUNT_COMMENTS_REQUEST = 'GET_ACCOUNT_COMMENTS_REQUEST'
+export const GET_ACCOUNT_COMMENTS_SUCCESS = 'GET_ACCOUNT_COMMENTS_SUCCESS'
+export const GET_ACCOUNT_COMMENTS_FAILURE = 'GET_ACCOUNT_COMMNETS_FAILURE'
+
+export const getAccountCommentsRequest = (username) => ({
+  type: GET_ACCOUNT_COMMENTS_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getAccountCommentsSucess = (response, meta) => ({
+  type: GET_ACCOUNT_COMMENTS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getAccountCommentsFailure = (error, meta) => ({
+  type: GET_ACCOUNT_COMMENTS_FAILURE,
+  payload: error,
+  meta,
+})
