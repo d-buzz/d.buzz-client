@@ -16,6 +16,7 @@ import {
   CLEAR_ACCOUNT_FOLLOWING,
   GET_ACCOUNT_COMMENTS_SUCCESS,
   SET_LAST_ACCOUNT_COMMENT,
+  CLEAR_ACCOUNT_COMMENTS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -70,6 +71,8 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state.set('comments', payload)
   case SET_LAST_ACCOUNT_COMMENT:
     return state.set('lastComment', payload)
+  case CLEAR_ACCOUNT_COMMENTS:
+    return state.set('comments', [])
   default:
     return state
   }
