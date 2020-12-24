@@ -24,6 +24,7 @@ import {
   getFollowingRequest,
   clearAccountFollowers,
   clearAccountFollowing,
+  clearAccountComments,
 } from 'store/profile/actions'
 import {
   followRequest,
@@ -161,6 +162,7 @@ const Profile = (props) => {
     openMuteDialog,
     mutelist,
     getAccountCommentsRequest,
+    clearAccountComments,
   } = props
 
   const history = useHistory()
@@ -247,6 +249,7 @@ const Profile = (props) => {
       clearAccountReplies()
       clearAccountFollowers()
       clearAccountFollowing()
+      clearAccountComments()
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
@@ -479,6 +482,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearScrollIndex,
     openMuteDialog,
     getAccountCommentsRequest,
+    clearAccountComments,
   }, dispatch),
 })
 
