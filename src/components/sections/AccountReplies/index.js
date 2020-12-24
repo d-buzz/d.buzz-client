@@ -23,7 +23,7 @@ const AccountReplies = (props) => {
 
   return (
     <React.Fragment>
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
+      <InfiniteList title={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
       {(!loading && items.length === 0) &&
           (<center><br/><h6>No replies found</h6></center>)}
     </React.Fragment>
