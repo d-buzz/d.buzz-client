@@ -36,7 +36,7 @@ import { connect } from 'react-redux'
 import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
-import { useHistory, useLocation } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
 import queryString from 'query-string'
 import { ProfileSkeleton, HelmetGenerator } from 'components'
@@ -420,8 +420,12 @@ const Profile = (props) => {
               <Row>
                 <Col xs="auto">
                   <p className={classes.paragraph}>
-                    <a className={classes.followLinks} href="/follow/following"><b>{following}</b> Following</a> &nbsp;
-                    <a className={classes.followLinks} href="/follow/following"><b>{followers}</b> Follower</a>
+                    <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
+                      <b>{following}</b> Following
+                    </Link> &nbsp;
+                    <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
+                      <b>{followers}</b> Follower
+                    </Link> &nbsp;
                   </p>
                 </Col>
               </Row>
