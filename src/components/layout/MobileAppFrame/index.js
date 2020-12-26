@@ -189,6 +189,11 @@ const MobileAppFrame = (props) => {
     title = 'Search'
   }
 
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g)) {
+    const items = pathname.split('/')
+    title = `Profile / ${items[1]}`
+  }
+
   const handleClickBackButton = () => {
     if(!lastLocation) {
       history.replace('/')

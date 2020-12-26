@@ -1,23 +1,26 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
+
 import { bindActionCreators } from 'redux'
-import { getAccountRepliesRequest } from 'store/profile/actions'
+import { getAccountCommentsRequest } from 'store/profile/actions'
 import { InfiniteList } from 'components'
 
-const AccountReplies = (props) => {
+const AccountComments = (props) => {
   const {
     items = [],
     loading,
-    last,
+    getAccountCommentsRequest,
     author,
-    getAccountRepliesRequest,
+    last,
     user,
   } = props
 
   const loadMorePosts =  useCallback(() => {
-    const { author: start_author, permlink } = last
-    getAccountRepliesRequest(author, permlink, start_author)
+    try {
+      const { permlink, author: start_author } = last
+      getAccountCommentsRequest(author, permlink, start_author)
+    } catch(e) { }
     // eslint-disable-next-line
   }, [last])
 
@@ -25,22 +28,22 @@ const AccountReplies = (props) => {
     <React.Fragment>
       <InfiniteList title={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
       {(!loading && items.length === 0) &&
-          (<center><br/><h6>No replies found</h6></center>)}
+      (<center><br/><h6>No comments from @{author}</h6></center>)}
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
-  items: state.profile.get('replies'),
-  loading: pending(state, 'GET_ACCOUNT_REPLIES_REQUEST'),
-  last: state.profile.get('lastReply'),
+  items: state.profile.get('comments'),
+  loading: pending(state, 'GET_ACCOUNT_COMMENTS_REQUEST'),
+  last: state.profile.get('lastComment'),
   user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    getAccountRepliesRequest,
+    getAccountCommentsRequest,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountReplies)
+export default connect(mapStateToProps, mapDispatchToProps)(AccountComments)

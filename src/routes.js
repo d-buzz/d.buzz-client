@@ -10,6 +10,8 @@ import {
   AccountReplies,
   AccountFollowers,
   AccountFollowing,
+  AccountComments,
+  AccountFollow,
   Notification,
   Tags,
   Search,
@@ -100,6 +102,27 @@ const routes =  [
         component: Content,
       },
       {
+        path: '/@:username/follow',
+        component: AccountFollow,
+        routes: [
+          {
+            path: '/@:username/follow',
+            exact: true,
+            component: AccountFollowers,
+          },
+          {
+            path: '/@:username/follow/followers',
+            exact: true,
+            component: AccountFollowers,
+          },
+          {
+            path: '/@:username/follow/following',
+            exact: true,
+            component: AccountFollowing,
+          },
+        ],
+      },
+      {
         path: '/@:username',
         component: Profile,
         routes: [
@@ -119,15 +142,20 @@ const routes =  [
             component: AccountReplies,
           },
           {
-            path: '/@:username/t/followers',
+            path: '/@:username/t/comments',
             exact: true,
-            component: AccountFollowers,
+            component: AccountComments,
           },
-          {
-            path: '/@:username/t/following',
-            exact: true,
-            component: AccountFollowing,
-          },
+          // {
+          //   path: '/@:username/t/followers',
+          //   exact: true,
+          //   component: AccountFollowers,
+          // },
+          // {
+          //   path: '/@:username/t/following',
+          //   exact: true,
+          //   component: AccountFollowing,
+          // },
         ],
       },
     ],

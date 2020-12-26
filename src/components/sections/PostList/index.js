@@ -193,6 +193,7 @@ const PostList = React.memo((props) => {
     saveScrollIndex,
     scrollIndex,
     recomputeRowIndex = () => {},
+    displayTitle,
     // openMuteDialog,
     // mutelist,
   } = props
@@ -222,8 +223,6 @@ const PostList = React.memo((props) => {
     }
 
     payout = `${payout}`.replace('HBD', '')
-
-    console.log({ payout })
 
     if(!payout) {
       payout = '0.00'
@@ -350,7 +349,7 @@ const PostList = React.memo((props) => {
                     <ExpandMoreIcon  className={classes.moreIcon} />
                   </IconButton>
                   <div onClick={handleOpenContent}>
-                    {title && (<h6 className={classes.title}>{title}</h6>)}
+                    {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
                     <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                     <PostTags meta={meta} highlightTag={highlightTag} />
                   </div>

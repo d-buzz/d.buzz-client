@@ -206,3 +206,40 @@ export const clearNotificationsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const GET_ACCOUNT_COMMENTS_REQUEST = 'GET_ACCOUNT_COMMENTS_REQUEST'
+export const GET_ACCOUNT_COMMENTS_SUCCESS = 'GET_ACCOUNT_COMMENTS_SUCCESS'
+export const GET_ACCOUNT_COMMENTS_FAILURE = 'GET_ACCOUNT_COMMNETS_FAILURE'
+
+export const getAccountCommentsRequest = (username, start_permlink = null, start_author = null) => ({
+  type: GET_ACCOUNT_COMMENTS_REQUEST,
+  payload: { username, start_permlink, start_author },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getAccountCommentsSucess = (response, meta) => ({
+  type: GET_ACCOUNT_COMMENTS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getAccountCommentsFailure = (error, meta) => ({
+  type: GET_ACCOUNT_COMMENTS_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_LAST_ACCOUNT_COMMENT = 'SET_LAST_ACCOUNT_COMMENT'
+
+export const setLastAccountComment = (response) => ({
+  type: SET_LAST_ACCOUNT_REPLY,
+  payload: response,
+})
+
+export const CLEAR_ACCOUNT_COMMENTS = 'CLEAR_ACCOUNT_COMMENTS'
+
+export const clearAccountComments = () => ({
+  type: CLEAR_ACCOUNT_COMMENTS,
+})
