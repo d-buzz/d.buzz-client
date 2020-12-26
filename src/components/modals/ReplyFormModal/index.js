@@ -387,7 +387,7 @@ const ReplyFormModal = (props) => {
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleSubmitReply}
-                      disabled={loading}
+                      disabled={loading || `${content}`.trim() === ''}
                     />
                     <CircularProgress
                       style={CircularProgressStyle}
