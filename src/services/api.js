@@ -1039,7 +1039,7 @@ export const getLinkMeta = (url) => {
 }
 
 export const getBestRpcNode = () => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise((resolve) => {
     axios.get('https://beacon.peakd.com/api/best')
       .then(function (result) {
         resolve(result.data[0].endpoint)
