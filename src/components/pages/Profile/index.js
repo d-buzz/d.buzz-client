@@ -264,9 +264,9 @@ const Profile = (props) => {
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
-      setIndex(1)
     } else if(pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
+      setIndex(1)
+    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(2)
     } else {
       setIndex(0)
@@ -442,8 +442,8 @@ const Profile = (props) => {
           className={classes.tabContainer}
         >
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
-          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Comments" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's (comments)" />
+          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
           {/* <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
           <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" /> */}
         </Tabs>
