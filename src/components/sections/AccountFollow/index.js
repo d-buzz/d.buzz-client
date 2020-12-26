@@ -133,14 +133,14 @@ const Profile = (props) => {
   }
 
   const handleTabs = (index) => () => {
-    let tab = 'buzz'
+    let tab = 'followers'
 
-    if(index === 1) {
-      tab = 'replies'
-    } else if (index === 2) {
-      tab = 'comments'
+    if(index === 0) {
+      tab = 'followers'
+    } else if (index === 1) {
+      tab = 'following'
     }
-    history.push(`/@${username}/t/${tab}/`)
+    history.push(`/@${username}/follow/${tab}/`)
   }
 
   const { params } = match
