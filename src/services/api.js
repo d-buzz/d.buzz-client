@@ -20,21 +20,6 @@ const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
 
-const endpoints = [
-  'https://api.openhive.network',
-  'https://api.hive.blog',
-  'https://api.hivekings.com',
-  'https://api.pharesim.me',
-  'https://hived.hive-engine.com',
-  'https://rpc.esteem.app',
-  'https://hived.privex.io',
-  'https://techcoderx.com',
-  'https://anyx.io',
-]
-
-api.setOptions({ url: 'https://api.hive.blog' })
-
-config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)
 broadcast.updateOperations()
 
