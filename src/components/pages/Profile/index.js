@@ -271,14 +271,6 @@ const Profile = (props) => {
     } else {
       setIndex(0)
     }
-
-    // else if(pathname.match(/(\/t\/followers\/)$|(\/t\/followers)$/m)) {
-    //   setIndex(2)
-    // } else if(pathname.match(/(\/t\/following\/)$|(\/t\/following)$/m)) {
-    //   setIndex(3)
-    // } else {
-    //   setIndex(0)
-    // }
   }, [pathname])
 
 
@@ -287,8 +279,6 @@ const Profile = (props) => {
   const { name, cover_image, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
 
-
-  // const { cover, name, about, website } = getProfileMetaData(profile)
   const { reputation = 0, isFollowed } = profile
 
   const followUser = () => {
@@ -444,8 +434,6 @@ const Profile = (props) => {
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
           <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's (comments)" />
           <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
-          {/* <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
-          <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" /> */}
         </Tabs>
       </div>
       <React.Fragment>
