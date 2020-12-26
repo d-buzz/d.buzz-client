@@ -14,6 +14,7 @@ import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
 import moment from 'moment'
 import 'react-app-polyfill/stable'
+import { readSession } from 'services/helper'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -339,21 +340,16 @@ export const fetchReplies = (author, permlink) => {
 }
 
 export const isFollowing = (follower, following) => {
+  console.log({ follower })
+  console.log({ following })
   return new Promise((resolve, reject) => {
-    const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
-    api.call('condenser_api.get_followers', params, (err, data) => {
-      console.log({ follower })
-      console.log({ following })
-      console.log({ params })
-      console.log({ data })
+    const params = [follower, following]
+    api.call('bridge.get_relationship_between_accounts', params, (err, data) => {
       if (err) {
         reject(err)
       }else {
-        if(data.length !== 0) {
-          resolve(true)
-        } else {
-          resolve(false)
-        }
+        const { follows } = data
+        resolve(follows)
       }
     })
   })
@@ -371,7 +367,12 @@ export const fetchSingleProfile = (account) => {
         let isFollowed = false
 
         if(user) {
-          isFollowed = await isFollowing(user.username, data.name)
+          const { username } = readSession(user)
+          console.log({ username })
+          console.log({ name: data.name })
+          if(username !== data.name) {
+            isFollowed = await isFollowing(username, data.name)
+          }
         }
 
         data.isFollowed = isFollowed
