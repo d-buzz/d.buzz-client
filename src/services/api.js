@@ -341,11 +341,15 @@ export const fetchReplies = (author, permlink) => {
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
-    api.call('condenser_api.get_followers', params, async(err, data) => {
+    api.call('condenser_api.get_followers', params, (err, data) => {
+      console.log({ follower })
+      console.log({ following })
+      console.log({ params })
+      console.log({ data })
       if (err) {
         reject(err)
       }else {
-        if(data.length !== 0 && data[0].follower === follower) {
+        if(data.length !== 0) {
           resolve(true)
         } else {
           resolve(false)
