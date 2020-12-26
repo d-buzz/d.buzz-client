@@ -325,8 +325,6 @@ export const fetchReplies = (author, permlink) => {
 }
 
 export const isFollowing = (follower, following) => {
-  console.log({ follower })
-  console.log({ following })
   return new Promise((resolve, reject) => {
     const params = [follower, following]
     api.call('bridge.get_relationship_between_accounts', params, (err, data) => {
@@ -353,8 +351,7 @@ export const fetchSingleProfile = (account) => {
 
         if(user) {
           const { username } = readSession(user)
-          console.log({ username })
-          console.log({ name: data.name })
+
           if(username !== data.name) {
             isFollowed = await isFollowing(username, data.name)
           }

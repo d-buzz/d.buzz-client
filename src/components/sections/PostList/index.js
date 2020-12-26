@@ -224,8 +224,6 @@ const PostList = React.memo((props) => {
 
     payout = `${payout}`.replace('HBD', '')
 
-    console.log({ payout })
-
     if(!payout) {
       payout = '0.00'
     }

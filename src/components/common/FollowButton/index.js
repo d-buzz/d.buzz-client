@@ -99,8 +99,6 @@ const FollowButton = (props) => {
   const fetchFollowInformation = () => {
     getFollowDetailsRequest(author)
       .then(({ isFollowed: followed, count }) => {
-        console.log({ author })
-        console.log({ isFollowed })
         setDetailsFetching(false)
         setIsFollowed(followed)
       })
