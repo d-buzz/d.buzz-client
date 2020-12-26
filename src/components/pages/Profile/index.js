@@ -241,7 +241,7 @@ const Profile = (props) => {
     setPageFrom(null)
     const params = queryString.parse(location.search)
 
-    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
+    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username) {
       anchorTop()
       clearScrollIndex()
       clearProfile()
