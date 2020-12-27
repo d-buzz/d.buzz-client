@@ -10,7 +10,7 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
+import { openUserDialog, saveScrollIndex, openMuteDialog } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -166,6 +166,9 @@ const useStyle = createUseStyles(theme => ({
   menuText: {
     fontSize: 13,
   },
+  muted: {
+    opacity: 0.4,
+  },
 }))
 
 
@@ -194,8 +197,7 @@ const PostList = React.memo((props) => {
     scrollIndex,
     recomputeRowIndex = () => {},
     displayTitle,
-    // openMuteDialog,
-    // mutelist,
+    openMuteDialog,
   } = props
 
 
@@ -236,6 +238,7 @@ const PostList = React.memo((props) => {
   const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
   const [delayHandler, setDelayHandler] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [muted, setMuted] = useState(false)
   const popoverAnchor = useRef(null)
 
 
@@ -315,10 +318,21 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
   }
 
+  const muteSuccessCallback = () => {
+    setMuted(true)
+  }
+
+  const handleClickMuteDialog = () => {
+    // scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}
+    openMuteDialog(author, muteSuccessCallback)
+    setAnchorEl(null)
+  }
+
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classes.row}>
+        <div className={classNames(classes.row, muted ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
@@ -380,6 +394,7 @@ const PostList = React.memo((props) => {
                   onClose={closeMenu}
                 >
                   <MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>
+                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute</MenuItem>)}
                 </Menu>
               </div>
             </Col>
@@ -400,7 +415,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     openUserDialog,
     saveScrollIndex,
-    // openMuteDialog,
+    openMuteDialog,
   }, dispatch),
 })
 

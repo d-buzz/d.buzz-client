@@ -21,13 +21,6 @@ class InfiniteList extends PureComponent {
     })
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.mutelist !== this.props.mutelist) {
-  //     this.cellMeasurerCache.clearAll()
-  //     this.listRef.recomputeRowHeights()
-  //   }
-  // }
-
   render() {
     const {
       onScroll,
@@ -148,7 +141,6 @@ class InfiniteList extends PureComponent {
 
 const mapStateToProps = (state) => ({
   scrollToIndex: state.interfaces.get('scrollIndex'),
-  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

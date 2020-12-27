@@ -160,3 +160,10 @@ export const setHasAgreedPayout = (agreed) => ({
   type: SET_HAS_PAYOUT_AGREED,
   payload: agreed,
 })
+
+export const SET_OPACITY_USERS = 'SET_OPACITY_USERS'
+
+export const setOpacityUsers = (users) => ({
+  type: SET_OPACITY_USERS,
+  payload: users,
+})
