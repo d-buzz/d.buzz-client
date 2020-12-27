@@ -208,13 +208,12 @@ const Profile = (props) => {
   }
 
   const handleTabs = (index) => () => {
-    console.log({ index })
     let tab = 'buzz'
 
     if(index === 1) {
-      tab = 'replies'
-    } else if (index === 2) {
       tab = 'comments'
+    } else if (index === 2) {
+      tab = 'replies'
     }
 
     // else if (index === 3) {
