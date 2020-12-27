@@ -261,7 +261,7 @@ function* watchCheckHasUpdateAuthorityRequest({ payload, meta }) {
   yield call(checkHasUpdateAuthorityRequest, payload, meta)
 }
 
-function* watchMuteUserReqyest({ payload, meta }) {
+function* watchMuteUserRequest({ payload, meta }) {
   yield call(muteUserRequest, payload, meta)
 }
 
@@ -271,5 +271,5 @@ export default function* sagas() {
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
-  yield takeEvery(MUTE_USER_REQUEST, watchMuteUserReqyest)
+  yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
 }
