@@ -315,7 +315,7 @@ const UpdateFormModal = (props) => {
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleClickSubmitUpdate}
-                      disabled={loading}
+                      disabled={loading || `${content}`.trim() === ''}
                     />
                     <CircularProgress
                       style={CircularProgressStyle}
