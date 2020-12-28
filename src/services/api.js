@@ -902,9 +902,6 @@ export const createMeta = (tags = []) => {
 
 export const createPermlink = (title) => {
   const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
-  // let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
-  // permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
-  // permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
   return permlink
 }
 
@@ -919,11 +916,6 @@ export const searchPostTags = (tag) => {
       data: body,
     }).then(async(result) => {
       const data = result.data
-      // if(data.results.length !== 0) {
-      //   const getProfiledata = mapFetchProfile(data.results, false)
-      //   data.results = data.results.filter((item) => item.body.length <= 280)
-      //   await Promise.all([getProfiledata])
-      // }
 
       data.results = data.results.filter(item => invokeFilter(item))
       removeFootNote(data.results)
@@ -1043,6 +1035,16 @@ export const getBestRpcNode = () => {
       })
       .catch(function (error) {
         resolve('https://api.hive.blog')
+      })
+  })
+}
+
+export const checkVersion = () => {
+  return new Promise((resolve) => {
+    axios.get('https://d.buzz/version.json')
+      .then(function (result) {
+        console.log({ result })
+        resolve(result.data)
       })
   })
 }
