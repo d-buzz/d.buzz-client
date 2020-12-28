@@ -13,11 +13,14 @@ import {
   setRpcNode,
 
   CHECK_VERSION_REQUEST,
+  checkVersionSuccess,
 } from './actions'
 
 import {
   getBestRpcNode,
+  checkVersion,
 } from 'services/api'
+import config from 'config'
 
 function* getSavedThemeRequest(payload, meta) {
   let theme = { mode: 'night' }
@@ -44,8 +47,25 @@ function* setThemeRequest(payload, meta) {
   }
 }
 
-function checkVersionRequest(meta) {
+function* checkVersionRequest(meta) {
+  const remote = yield call(checkVersion)
+  let  running = yield call([localStorage, localStorage.getItem], 'version')
+  let latest = false
 
+  if(!running) {
+    running = JSON.stringify(remote)
+  } else {
+    const { prod, dev } = JSON.parse(running)
+    const { BRANCH } = config
+
+    latest = (BRANCH === 'dev' && dev === remote.dev) || (BRANCH === 'prod' && prod === remote.prod)
+  }
+
+  if(!latest) {
+    yield call([localStorage, localStorage.setItem], 'version', JSON.stringify(remote))
+  }
+
+  yield put(checkVersionSuccess(latest, meta))
 }
 
 function* getBestRPCNode(meta) {
