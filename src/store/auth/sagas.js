@@ -28,6 +28,7 @@ import {
   muteUserSuccess,
 
   setHasAgreedPayout,
+  setOpacityUsers,
 } from './actions'
 
 import {
@@ -117,6 +118,7 @@ function* getSavedUserRequest(meta) {
       let mutelist = yield call(fetchMuteList, user.username)
       mutelist = [...new Set(mutelist.map(item => item.following))]
       yield put(setMuteList(mutelist))
+      yield put(setOpacityUsers([]))
     }
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
@@ -208,6 +210,7 @@ function* muteUserRequest(payload, meta) {
   try {
     const { user: following } = payload
     const user = yield select(state => state.auth.get('user'))
+
     const { username: follower, useKeychain } = user
 
     const operation = yield call(generateMuteOperation, follower, following)
@@ -232,6 +235,10 @@ function* muteUserRequest(payload, meta) {
     } else {
       const mutelist = yield select(state => state.auth.get('mutelist'))
       mutelist.push(following)
+
+      const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+      opacityUsers.push(following)
+      yield put(setOpacityUsers(opacityUsers))
       yield put(setMuteList(mutelist))
       yield put(muteUserSuccess(meta))
     }
@@ -261,7 +268,7 @@ function* watchCheckHasUpdateAuthorityRequest({ payload, meta }) {
   yield call(checkHasUpdateAuthorityRequest, payload, meta)
 }
 
-function* watchMuteUserReqyest({ payload, meta }) {
+function* watchMuteUserRequest({ payload, meta }) {
   yield call(muteUserRequest, payload, meta)
 }
 
@@ -271,5 +278,5 @@ export default function* sagas() {
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
-  yield takeEvery(MUTE_USER_REQUEST, watchMuteUserReqyest)
+  yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
 }

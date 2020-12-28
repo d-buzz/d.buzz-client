@@ -10,7 +10,7 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openUserDialog, saveScrollIndex } from 'store/interface/actions'
+import { openUserDialog, saveScrollIndex, openMuteDialog } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -166,6 +166,9 @@ const useStyle = createUseStyles(theme => ({
   menuText: {
     fontSize: 13,
   },
+  muted: {
+    opacity: 0.2,
+  },
 }))
 
 
@@ -194,8 +197,9 @@ const PostList = React.memo((props) => {
     scrollIndex,
     recomputeRowIndex = () => {},
     displayTitle,
-    // openMuteDialog,
-    // mutelist,
+    openMuteDialog,
+    opacityUsers,
+    disableOpacity,
   } = props
 
 
@@ -236,6 +240,7 @@ const PostList = React.memo((props) => {
   const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
   const [delayHandler, setDelayHandler] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [muted, setMuted] = useState(false)
   const popoverAnchor = useRef(null)
 
 
@@ -315,10 +320,23 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
   }
 
+  const muteSuccessCallback = () => {
+    setMuted(true)
+    recomputeRowIndex(scrollIndex)
+  }
+
+  const handleClickMuteDialog = () => {
+    // scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}
+    openMuteDialog(author, muteSuccessCallback)
+    setAnchorEl(null)
+  }
+
+  const opacityActivated = opacityUsers.includes(author)
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classes.row}>
+        <div className={classNames(classes.row, muted || opacityUsers.includes(author) ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
@@ -332,10 +350,10 @@ const PostList = React.memo((props) => {
                     {!disableProfileLink && (
                       <Link
                         ref={popoverAnchor}
-                        to={authorLink}
-                        onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
-                        onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
-                        onClick={closePopOver}
+                        to={!muted && !opacityActivated && disableOpacity ? authorLink : '#'}
+                        onMouseEnter={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? openPopOver : () => {}}
+                        onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
+                        onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
                         {author}
                       </Link>
@@ -345,34 +363,40 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
-                    <ExpandMoreIcon  className={classes.moreIcon} />
-                  </IconButton>
-                  <div onClick={handleOpenContent}>
-                    {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                    <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
-                    <PostTags meta={meta} highlightTag={highlightTag} />
-                  </div>
+                  {!muted && !opacityActivated && disableOpacity && (
+                    <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
+                      <ExpandMoreIcon  className={classes.moreIcon} />
+                    </IconButton>
+                  )}
+                  {!muted && !opacityActivated && disableOpacity && (
+                    <div onClick={handleOpenContent}>
+                      {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
+                      <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      <PostTags meta={meta} highlightTag={highlightTag} />
+                    </div>
+                  )}
                   {/* <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
                     <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
                   </a> */}
                 </div>
-                <div className={classes.actionWrapper}>
-                  <PostActions
-                    disableUpvote={disableUpvote}
-                    body={body}
-                    hasUpvoted={hasUpvoted}
-                    author={author}
-                    permlink={permlink}
-                    voteCount={upvotes}
-                    replyCount={replyCount}
-                    payout={`${payout}`}
-                    recomputeRowIndex={recomputeRowIndex}
-                    payoutAt={payoutAt}
-                    scrollIndex={scrollIndex}
-                    max_accepted_payout={max_accepted_payout}
-                  />
-                </div>
+                {!muted && !opacityActivated && disableOpacity && (
+                  <div className={classes.actionWrapper}>
+                    <PostActions
+                      disableUpvote={disableUpvote}
+                      body={body}
+                      hasUpvoted={hasUpvoted}
+                      author={author}
+                      permlink={permlink}
+                      voteCount={upvotes}
+                      replyCount={replyCount}
+                      payout={`${payout}`}
+                      recomputeRowIndex={recomputeRowIndex}
+                      payoutAt={payoutAt}
+                      scrollIndex={scrollIndex}
+                      max_accepted_payout={max_accepted_payout}
+                    />
+                  </div>
+                )}
                 <Menu
                   anchorEl={anchorEl}
                   keepMounted
@@ -380,6 +404,7 @@ const PostList = React.memo((props) => {
                   onClose={closeMenu}
                 >
                   <MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>
+                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute</MenuItem>)}
                 </Menu>
               </div>
             </Col>
@@ -393,6 +418,7 @@ const PostList = React.memo((props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   mutelist: state.auth.get('mutelist'),
+  opacityUsers: state.auth.get('opacityUsers'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -400,7 +426,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPageFrom,
     openUserDialog,
     saveScrollIndex,
-    // openMuteDialog,
+    openMuteDialog,
   }, dispatch),
 })
 
