@@ -323,7 +323,7 @@ const PostList = React.memo((props) => {
   const muteSuccessCallback = () => {
     setMuted(true)
     recomputeRowIndex(scrollIndex)
-    muteTrigger()
+    // muteTrigger()
   }
 
   const handleClickMuteDialog = () => {
