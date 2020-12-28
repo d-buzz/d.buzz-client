@@ -69,12 +69,20 @@ export const setRpcNode = (response, meta) => ({
   meta,
 })
 
-export const CHECK_VERSION = 'CHECK_VERSION'
+export const CHECK_VERSION_REQUEST = 'CHECK_VERSION_REQUEST'
+export const CHECK_VERSION_SUCCESS = 'CHECK_VERSION_SUCCESS'
 
-export const checkVersion = () => ({
-  type: CHECK_VERSION,
+export const checkVersionRequest = () => ({
+  type: CHECK_VERSION_REQUEST,
   payload: null,
   meta: {
     thunk: true,
   },
+})
+
+
+export const checkVersionSuccess = (response, meta) => ({
+  type: CHECK_VERSION_SUCCESS,
+  payload: response,
+  meta,
 })
