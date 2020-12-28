@@ -209,7 +209,8 @@ function* getTrendingPostsRequest(payload, meta) {
     data = data.filter(item => invokeFilter(item))
 
     const mutelist = yield select(state => state.auth.get('mutelist'))
-    data = invokeMuteFilter(data, mutelist)
+    const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+    data = invokeMuteFilter(data, mutelist, opacityUsers)
 
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
@@ -238,7 +239,8 @@ function* getHomePostsRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
 
     data = data.filter(item => invokeFilter(item))
-    data = invokeMuteFilter(data, mutelist)
+    const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+    data = invokeMuteFilter(data, mutelist, opacityUsers)
 
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
@@ -267,7 +269,6 @@ function* getLatestPostsRequest(payload, meta) {
 
     const mutelist = yield select(state => state.auth.get('mutelist'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
-
     data = invokeMuteFilter(data, mutelist, opacityUsers)
 
 
