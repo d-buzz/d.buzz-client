@@ -199,7 +199,6 @@ const PostList = React.memo((props) => {
     displayTitle,
     openMuteDialog,
     opacityUsers,
-    muteTrigger,
   } = props
 
 
@@ -323,7 +322,6 @@ const PostList = React.memo((props) => {
   const muteSuccessCallback = () => {
     setMuted(true)
     recomputeRowIndex(scrollIndex)
-    // muteTrigger()
   }
 
   const handleClickMuteDialog = () => {
