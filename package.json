@@ -59,6 +59,7 @@
     "react-scrollspy": "^3.4.3",
     "react-spinners": "^0.9.0",
     "react-sticky": "^6.0.3",
+    "react-syntax-highlighter": "^15.4.3",
     "react-tag-input": "^6.2.1",
     "react-tap-or-click": "^0.2.1",
     "react-textarea-autosize": "^8.2.0",

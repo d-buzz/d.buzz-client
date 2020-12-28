@@ -19,6 +19,7 @@ import {
   SearchPeople,
   PrivacyPolicy,
   Disclaimer,
+  Developers,
 } from 'components'
 
 const routes =  [
@@ -49,6 +50,11 @@ const routes =  [
         path: '/org/en/disclaimer',
         exact: true,
         component: Disclaimer,
+      },
+      {
+        path: '/org/en/developers',
+        exact: true,
+        component: Developers,
       },
       {
         path: '/trending',

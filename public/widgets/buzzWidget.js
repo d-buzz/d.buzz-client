@@ -12,10 +12,10 @@
 
     function DbuzzWidget() {
 
-        const resourceBaseUrl = "https://next.d.buzz";
+        const resourceBaseUrl = "https://d.buzz";
         const buzzButtonHtmlPath = "/widgets/buzz_button.html";
         const dbuzzShareClass = "dbuzz-share-button";
-        const intentUrlRegex = /next\.d\.buzz\/#\/intent\/buzz/
+        const intentUrlRegex = /d\.buzz\/#\/intent\/buzz/
 
 
         /**
@@ -96,10 +96,9 @@
         };
 
         const getText = function (el) {
-            const metaDesc = d.querySelector('meta[name=description]');
             return extractHrefParams(el,'text') || 
                    getAttribute(el, 'data-text') || 
-                   (metaDesc && getAttribute(metaDesc, 'content')) || ' ';
+                   d.title || ' ';
         };
 
         const getSize = function (el) {
