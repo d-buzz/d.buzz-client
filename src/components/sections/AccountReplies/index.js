@@ -13,6 +13,7 @@ const AccountReplies = (props) => {
     author,
     getAccountRepliesRequest,
     user,
+    mutelist,
   } = props
 
   const loadMorePosts =  useCallback(() => {
@@ -21,11 +22,18 @@ const AccountReplies = (props) => {
     // eslint-disable-next-line
   }, [last])
 
+  const muted = mutelist.includes(author)
+
   return (
     <React.Fragment>
-      <InfiniteList title={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
-      {(!loading && items.length === 0) &&
+      {!muted && (
+        <React.Fragment>
+          <InfiniteList title={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
+          {(!loading && items.length === 0) &&
           (<center><br/><h6>No replies found</h6></center>)}
+        </React.Fragment>
+      )}
+      {muted && (<center><br/><h6>This user is on your mutelist, unmute this user to view replies</h6></center>)}
     </React.Fragment>
   )
 }
@@ -35,6 +43,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_ACCOUNT_REPLIES_REQUEST'),
   last: state.profile.get('lastReply'),
   user: state.auth.get('user'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

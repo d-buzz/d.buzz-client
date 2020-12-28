@@ -199,6 +199,7 @@ const PostList = React.memo((props) => {
     displayTitle,
     openMuteDialog,
     opacityUsers,
+    disableOpacity,
   } = props
 
 
@@ -349,9 +350,9 @@ const PostList = React.memo((props) => {
                     {!disableProfileLink && (
                       <Link
                         ref={popoverAnchor}
-                        to={!muted && !opacityActivated ? authorLink : '#'}
-                        onMouseEnter={(!disableUserMenu && !isMobile && !muted && !opacityActivated) ? openPopOver : () => {}}
-                        onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated) ? closePopOver: () => {}}
+                        to={!muted && !opacityActivated && disableOpacity ? authorLink : '#'}
+                        onMouseEnter={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? openPopOver : () => {}}
+                        onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
                         {author}
@@ -362,12 +363,12 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {!muted && !opacityActivated && (
+                  {!muted && !opacityActivated && disableOpacity && (
                     <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
                       <ExpandMoreIcon  className={classes.moreIcon} />
                     </IconButton>
                   )}
-                  {!muted && !opacityActivated && (
+                  {!muted && !opacityActivated && disableOpacity && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
                       <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
@@ -378,7 +379,7 @@ const PostList = React.memo((props) => {
                     <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
                   </a> */}
                 </div>
-                {!muted && !opacityActivated && (
+                {!muted && !opacityActivated && disableOpacity && (
                   <div className={classes.actionWrapper}>
                     <PostActions
                       disableUpvote={disableUpvote}

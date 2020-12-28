@@ -14,6 +14,7 @@ const AccountPosts = (props) => {
     author,
     last,
     user,
+    mutelist,
   } = props
 
   const loadMorePosts =  useCallback(() => {
@@ -24,11 +25,18 @@ const AccountPosts = (props) => {
     // eslint-disable-next-line
   }, [last])
 
+  const muted = mutelist.includes(author)
+
   return (
     <React.Fragment>
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
-      {(!loading && items.length === 0) &&
+      {!muted && (
+        <React.Fragment>
+          <InfiniteList disableOpacity={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
+          {(!loading && items.length === 0) &&
           (<center><br/><h6>No Buzz's from @{author}</h6></center>)}
+        </React.Fragment>
+      )}
+      {muted && <center><br /><h6>This user is on your mutelist, unmute this user to view their buzzes</h6></center>}
     </React.Fragment>
   )
 }
@@ -38,6 +46,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_ACCOUNT_POSTS_REQUEST'),
   last: state.profile.get('last'),
   user: state.auth.get('user'),
+  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

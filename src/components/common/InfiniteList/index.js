@@ -30,6 +30,7 @@ class InfiniteList extends PureComponent {
       clearScrollIndex,
       scrollToIndex,
       title = false,
+      disableOpacity = true,
     } = this.props
 
     const clearOutlineStyle = { outline: 'none' }
@@ -63,6 +64,7 @@ class InfiniteList extends PureComponent {
         >
           <div style={style}>
             <PostList
+              disableOpacity={disableOpacity}
               displayTitle={title}
               title={items[index].title}
               unguardedLinks={unguardedLinks}
