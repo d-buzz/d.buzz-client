@@ -74,7 +74,6 @@ export const CHECK_VERSION_SUCCESS = 'CHECK_VERSION_SUCCESS'
 
 export const checkVersionRequest = () => ({
   type: CHECK_VERSION_REQUEST,
-  payload: null,
   meta: {
     thunk: true,
   },

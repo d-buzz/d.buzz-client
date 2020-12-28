@@ -1043,7 +1043,8 @@ export const checkVersion = () => {
   return new Promise((resolve) => {
     axios.get('https://d.buzz/version.json')
       .then(function (result) {
-        resolve(result.data[0])
+        console.log({ result })
+        resolve(result.data)
       })
   })
 }
