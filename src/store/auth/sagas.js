@@ -28,6 +28,7 @@ import {
   muteUserSuccess,
 
   setHasAgreedPayout,
+  setOpacityUsers,
 } from './actions'
 
 import {
@@ -117,6 +118,7 @@ function* getSavedUserRequest(meta) {
       let mutelist = yield call(fetchMuteList, user.username)
       mutelist = [...new Set(mutelist.map(item => item.following))]
       yield put(setMuteList(mutelist))
+      yield put(setOpacityUsers([]))
     }
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
@@ -208,6 +210,7 @@ function* muteUserRequest(payload, meta) {
   try {
     const { user: following } = payload
     const user = yield select(state => state.auth.get('user'))
+
     const { username: follower, useKeychain } = user
 
     const operation = yield call(generateMuteOperation, follower, following)
@@ -232,6 +235,10 @@ function* muteUserRequest(payload, meta) {
     } else {
       const mutelist = yield select(state => state.auth.get('mutelist'))
       mutelist.push(following)
+
+      const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+      opacityUsers.push(following)
+      yield put(setOpacityUsers(opacityUsers))
       yield put(setMuteList(mutelist))
       yield put(muteUserSuccess(meta))
     }

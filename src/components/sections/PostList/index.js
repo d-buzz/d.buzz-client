@@ -167,7 +167,7 @@ const useStyle = createUseStyles(theme => ({
     fontSize: 13,
   },
   muted: {
-    opacity: 0.4,
+    opacity: 0.2,
   },
 }))
 
@@ -198,6 +198,8 @@ const PostList = React.memo((props) => {
     recomputeRowIndex = () => {},
     displayTitle,
     openMuteDialog,
+    opacityUsers,
+    muteTrigger,
   } = props
 
 
@@ -320,6 +322,8 @@ const PostList = React.memo((props) => {
 
   const muteSuccessCallback = () => {
     setMuted(true)
+    recomputeRowIndex(scrollIndex)
+    muteTrigger()
   }
 
   const handleClickMuteDialog = () => {
@@ -332,7 +336,7 @@ const PostList = React.memo((props) => {
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classNames(classes.row, muted ? classes.muted : {})}>
+        <div className={classNames(classes.row, muted || opacityUsers.includes(author) ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
@@ -362,11 +366,13 @@ const PostList = React.memo((props) => {
                   <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
                     <ExpandMoreIcon  className={classes.moreIcon} />
                   </IconButton>
-                  <div onClick={handleOpenContent}>
-                    {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                    <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
-                    <PostTags meta={meta} highlightTag={highlightTag} />
-                  </div>
+                  {!muted && !opacityUsers.includes(author) && (
+                    <div onClick={handleOpenContent}>
+                      {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
+                      <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      <PostTags meta={meta} highlightTag={highlightTag} />
+                    </div>
+                  )}
                   {/* <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
                     <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
                   </a> */}
@@ -408,6 +414,7 @@ const PostList = React.memo((props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   mutelist: state.auth.get('mutelist'),
+  opacityUsers: state.auth.get('opacityUsers'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

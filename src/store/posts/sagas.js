@@ -266,7 +266,10 @@ function* getLatestPostsRequest(payload, meta) {
     data = data.filter(item => invokeFilter(item))
 
     const mutelist = yield select(state => state.auth.get('mutelist'))
-    data = invokeMuteFilter(data, mutelist)
+    const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+
+    data = invokeMuteFilter(data, mutelist, opacityUsers)
+
 
     yield put(getLatestPostsSuccess(data, meta))
   } catch(error) {

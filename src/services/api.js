@@ -32,8 +32,8 @@ const setRPCNode = () => {
 }
 
 
-export const invokeMuteFilter = (items, mutelist) => {
-  return items.filter((item) => !mutelist.includes(item.author) )
+export const invokeMuteFilter = (items, mutelist, opacityUsers = []) => {
+  return items.filter((item) => !mutelist.includes(item.author) || opacityUsers.includes(item.author))
 }
 
 export const hashBuffer = (buffer) => {
