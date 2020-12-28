@@ -69,13 +69,3 @@ export const openMuteDialog = (username, muteSuccessCallback = null) => ({
 export const closeMuteDialog = () => ({
   type: CLOSE_MUTE_DIALOG,
 })
-
-export const CHECK_VERSION = 'CHECK_VERSION'
-
-export const checkVersion = () => ({
-  type: CHECK_VERSION,
-  payload: null,
-  meta: {
-    thunk: true,
-  },
-})
