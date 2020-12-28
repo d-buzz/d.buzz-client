@@ -11,11 +11,16 @@ import {
 
   GET_BEST_RPC_NODE,
   setRpcNode,
+
+  CHECK_VERSION_REQUEST,
+  checkVersionSuccess,
 } from './actions'
 
 import {
   getBestRpcNode,
+  checkVersion,
 } from 'services/api'
+import config from 'config'
 
 function* getSavedThemeRequest(payload, meta) {
   let theme = { mode: 'night' }
@@ -42,6 +47,28 @@ function* setThemeRequest(payload, meta) {
   }
 }
 
+function* checkVersionRequest(meta) {
+  const remote = yield call(checkVersion)
+  console.log({ remote })
+  let  running = yield call([localStorage, localStorage.getItem], 'version')
+  let latest = false
+
+  if(!running) {
+    running = JSON.stringify(remote)
+  } else {
+    const { prod, dev } = JSON.parse(running)
+    const { BRANCH } = config
+
+    latest = (BRANCH === 'dev' && dev === remote.dev) || (BRANCH === 'prod' && prod === remote.prod)
+  }
+
+  if(!latest) {
+    yield call([localStorage, localStorage.setItem], 'version', JSON.stringify(remote))
+  }
+
+  yield put(checkVersionSuccess(latest, meta))
+}
+
 function* getBestRPCNode(meta) {
   const node = yield call(getBestRpcNode)
   yield call([localStorage, localStorage.setItem], 'rpc', node)
@@ -61,8 +88,13 @@ function* watchGetBestRPCNode({ meta }) {
   yield call(getBestRPCNode, meta)
 }
 
+function* watchCheckVersionRequest({ meta }) {
+  yield call(checkVersionRequest, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
   yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
+  yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
 }

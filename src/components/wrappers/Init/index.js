@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
 import { getSavedUserRequest } from 'store/auth/actions'
-import { getBestRpcNode } from 'store/settings/actions'
+import { getBestRpcNode, checkVersionRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -51,17 +51,25 @@ const Init = (props) => {
     getSavedUserRequest,
     getTrendingTagsRequest,
     getBestRpcNode,
+    checkVersionRequest,
     children,
   } = props
 
   const [init, setInit] = useState(false)
 
   useEffect(() => {
-    getBestRpcNode().then(() => {
-      getTrendingTagsRequest()
-      getSavedUserRequest().then(() => {
-        setInit(true)
-      })
+    checkVersionRequest().then((isLatest) => {
+      if(!isLatest) {
+        window.history.forward(1)
+        window.location.reload(true)
+      } else {
+        getBestRpcNode().then(() => {
+          getTrendingTagsRequest()
+          getSavedUserRequest().then(() => {
+            setInit(true)
+          })
+        })
+      }
     })
     // eslint-disable-next-line
   }, [])
@@ -79,6 +87,7 @@ const mapDispatchToProps = (dispatch) => ({
     getTrendingTagsRequest,
     getSavedUserRequest,
     getBestRpcNode,
+    checkVersionRequest,
   }, dispatch),
 })
 
