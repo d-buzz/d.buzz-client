@@ -11,6 +11,8 @@ import {
 
   GET_BEST_RPC_NODE,
   setRpcNode,
+
+  CHECK_VERSION_REQUEST,
 } from './actions'
 
 import {
@@ -42,6 +44,10 @@ function* setThemeRequest(payload, meta) {
   }
 }
 
+function checkVersionRequest(meta) {
+
+}
+
 function* getBestRPCNode(meta) {
   const node = yield call(getBestRpcNode)
   yield call([localStorage, localStorage.setItem], 'rpc', node)
@@ -61,8 +67,13 @@ function* watchGetBestRPCNode({ meta }) {
   yield call(getBestRPCNode, meta)
 }
 
+function* watchCheckVersionRequest({ meta }) {
+  yield call(checkVersionRequest, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
   yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
+  yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
 }
