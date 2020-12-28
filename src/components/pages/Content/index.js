@@ -415,7 +415,7 @@ const Content = (props) => {
               open={Boolean(anchorEl)}
               onClose={hanldeCloseMore}
             >
-              <MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>
+              {!hasUpdateAuthority && (<MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
