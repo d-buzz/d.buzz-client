@@ -53,7 +53,7 @@ function* checkVersionRequest(meta) {
   let  running = yield call([localStorage, localStorage.getItem], 'version')
   let latest = false
 
-  if(running === "undefined") {
+  if(!running) {
     running = JSON.stringify(remote)
   } else {
     const { prod, dev } = JSON.parse(running)
