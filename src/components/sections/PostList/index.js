@@ -332,6 +332,7 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
   }
 
+  const opacityActivated = opacityUsers.includes(author)
 
   return (
     <React.Fragment>
@@ -350,10 +351,10 @@ const PostList = React.memo((props) => {
                     {!disableProfileLink && (
                       <Link
                         ref={popoverAnchor}
-                        to={authorLink}
-                        onMouseEnter={(!disableUserMenu && !isMobile) ? openPopOver : () => {}}
-                        onMouseLeave={(!disableUserMenu && !isMobile) ? closePopOver: () => {}}
-                        onClick={closePopOver}
+                        to={!muted && !opacityActivated ? authorLink : '#'}
+                        onMouseEnter={(!disableUserMenu && !isMobile && !muted && !opacityActivated) ? openPopOver : () => {}}
+                        onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated) ? closePopOver: () => {}}
+                        onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
                         {author}
                       </Link>
@@ -363,10 +364,12 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
-                    <ExpandMoreIcon  className={classes.moreIcon} />
-                  </IconButton>
-                  {!muted && !opacityUsers.includes(author) && (
+                  {!muted && !opacityActivated && (
+                    <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
+                      <ExpandMoreIcon  className={classes.moreIcon} />
+                    </IconButton>
+                  )}
+                  {!muted && !opacityActivated && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
                       <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
@@ -377,22 +380,24 @@ const PostList = React.memo((props) => {
                     <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
                   </a> */}
                 </div>
-                <div className={classes.actionWrapper}>
-                  <PostActions
-                    disableUpvote={disableUpvote}
-                    body={body}
-                    hasUpvoted={hasUpvoted}
-                    author={author}
-                    permlink={permlink}
-                    voteCount={upvotes}
-                    replyCount={replyCount}
-                    payout={`${payout}`}
-                    recomputeRowIndex={recomputeRowIndex}
-                    payoutAt={payoutAt}
-                    scrollIndex={scrollIndex}
-                    max_accepted_payout={max_accepted_payout}
-                  />
-                </div>
+                {!muted && !opacityActivated && (
+                  <div className={classes.actionWrapper}>
+                    <PostActions
+                      disableUpvote={disableUpvote}
+                      body={body}
+                      hasUpvoted={hasUpvoted}
+                      author={author}
+                      permlink={permlink}
+                      voteCount={upvotes}
+                      replyCount={replyCount}
+                      payout={`${payout}`}
+                      recomputeRowIndex={recomputeRowIndex}
+                      payoutAt={payoutAt}
+                      scrollIndex={scrollIndex}
+                      max_accepted_payout={max_accepted_payout}
+                    />
+                  </div>
+                )}
                 <Menu
                   anchorEl={anchorEl}
                   keepMounted
