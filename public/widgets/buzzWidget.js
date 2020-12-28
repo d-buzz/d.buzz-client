@@ -12,10 +12,10 @@
 
     function DbuzzWidget() {
 
-        const resourceBaseUrl = "http://localhost:3000";
+        const resourceBaseUrl = "https://next.d.buzz";
         const buzzButtonHtmlPath = "/widgets/buzz_button.html";
         const dbuzzShareClass = "dbuzz-share-button";
-        const intentUrlRegex = /localhost\:3000\/intent\/buzz/
+        const intentUrlRegex = /next\.d\.buzz\/#\/intent\/buzz/
 
 
         /**
