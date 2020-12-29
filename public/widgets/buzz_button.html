@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html data-scribe="page:button" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="dns-prefetch" href="//d.buzz" />
+    <title>Buzz Button</title>
+    <base target="_blank" />
+    <style type="text/css">
+     html{margin:0;padding:0;user-select:none;font:normal normal normal 11px/18px "Helvetica Neue",Arial,sans-serif;color:#333}body{margin:0;padding:0;background:0 0;display:block}a{outline:0;text-decoration:none}#widget{display:inline-block;white-space:nowrap;overflow:hidden;text-align:left}.btn,.btn .label,.btn-buzz{display:inline-block;vertical-align:top;zoom:1}.btn-buzz{max-width:100%}.btn-buzz a{outline:0;text-decoration:none}.btn{position:relative;height:20px;box-sizing:border-box;padding:1px 8px 1px 6px;background-color:#d32f2f;color:#fff;border-radius:3px;font-weight:500;cursor:pointer}.btn i{position:relative;top:2px;display:inline-block;width:14px;height:14px;background:transparent 0 0 no-repeat;background-image:url(https://d.buzz/dbuzz_icon_white.svg)}.btn .label{white-space:nowrap}.xl{font-size:13px;line-height:26px}.xl .btn{height:28px;border-radius:4px;padding:1px 10px 1px 9px}
+    </style>
+  </head>
+  <body data-scribe="section:buzz">
+    <div id="widget">
+      <div class="btn-buzz" data-scribe="component:button">
+        <a id="b" class="btn" href="https://d.buzz/#/intent/buzz">
+          <i></i>
+          <span class="label" id="l">Buzz</span>
+        </a>
+      </div>
+    </div>
+    <script type="text/javascript">
+      (function(global,factory){typeof exports==="object"&&typeof module!=="undefined"?(module.exports=factory()):typeof define==="function"&&define.amd?define(factory):((global=global||self),(global.__dbuzzBtn=factory()))})(this,function(){const w=window;const d=w.document;const frameEl=w.frameElement;function BuzzButton(){const RESOURCE_BASE_URL="https://d.buzz/#/";const DBUZZ_INTENT_URL=RESOURCE_BASE_URL+"intent/buzz";const buttonParams=["id","title","size","url","text","original_referrer","tags",];const buzzIntentParams=["original_referrer","url","tags","text"];this.i=function(){let frameSrc="";if(frameEl&&frameEl.className==="dbuzz-share-button"){if(frameEl.getAttribute("src")){frameSrc=frameEl.getAttribute("src")}}else{if(w.location.href){frameSrc=w.location.href}}
+      if(frameSrc){const frameSrcParams=frameSrc.split("#")[1]||'';const vars=validateUrlQuery(frameSrcParams);if(d.body&&d.body.getAttribute("data-scribe")==="section:buzz"){setButtonSize(d.body,vars.size);handleIntent(d.body,vars)}}};const validateUrlQuery=function(q){let e={title:"Dbuzz Intent",size:"m"};return q?(q.split("&").forEach(function(t){const n=t.split("=");const i=n[0];const v=n[1];if(2===n.length){if(buttonParams.includes(i)){e[i]=v}}}),e):{}};const setButtonSize=function(el,size="m"){let buzzBtnWidth="60px";if(size.toLowerCase()==="l"){el.setAttribute("class","xl");buzzBtnWidth="76px"}else{el.setAttribute("class","m")}
+      const elBtnBuzz=el.querySelector(".btn-buzz");if(elBtnBuzz){elBtnBuzz.setAttribute("style","width:"+buzzBtnWidth)}};const handleIntent=function(el,params){let srcFormat="";let args=[];let count=0;Object.entries(params).forEach(function(e){const[key,value]=e;if(buzzIntentParams.includes(key)&&value){if(srcFormat){srcFormat+="&"}
+      srcFormat+=key+"={"+count+"}";args.push(value);count++}});const qs=stringFormat(srcFormat,args);const elBtnBuzz=el.querySelector(".btn");if(qs&&elBtnBuzz){const intentLink=DBUZZ_INTENT_URL+"?"+qs;elBtnBuzz.setAttribute("href",intentLink);addEventListener(elBtnBuzz,"click",{url:intentLink,title:params.title,})}};const stringFormat=function(str,args){return str.replace(/\{(\d+)\}/g,function(m,n){return args[n]||m})};const addEventListener=function(el,eventName,opt){const handler=function(){popupCenter(opt.url)};if(el.addEventListener){el.addEventListener(eventName,handler)}else{el.attachEvent("on"+eventName,function(){handler.call(el)})}};const popupCenter=function(url){let _w=600,_h=550,dualScreenLeft=typeof w.screenLeft!=="undefined"?w.screenLeft:screen.left,dualScreenTop=typeof w.screenTop!=="undefined"?w.screenTop:screen.top,width=screen.width,height=screen.height,left=width/2-_w/2+dualScreenLeft,top=height/3-_h/3+dualScreenTop,windowFormat="resizable,toolbar=yes,location=yes,scrollbars=yes,menubar=yes,width={0},height={1},top={2},left={3}",newWindow=w.open(url,"",stringFormat(windowFormat,[_w,_h,top,left]));if(newWindow!==null&&newWindow.focus){newWindow.focus()}}}
+      const buzzButton=new BuzzButton();buzzButton.i()})
+    </script>
+  </body>
+</html>

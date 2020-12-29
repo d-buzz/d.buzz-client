@@ -21,13 +21,6 @@ class InfiniteList extends PureComponent {
     })
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.mutelist !== this.props.mutelist) {
-  //     this.cellMeasurerCache.clearAll()
-  //     this.listRef.recomputeRowHeights()
-  //   }
-  // }
-
   render() {
     const {
       onScroll,
@@ -36,6 +29,8 @@ class InfiniteList extends PureComponent {
       unguardedLinks,
       clearScrollIndex,
       scrollToIndex,
+      title = false,
+      disableOpacity = true,
     } = this.props
 
     const clearOutlineStyle = { outline: 'none' }
@@ -69,6 +64,9 @@ class InfiniteList extends PureComponent {
         >
           <div style={style}>
             <PostList
+              disableOpacity={disableOpacity}
+              displayTitle={title}
+              title={items[index].title}
               unguardedLinks={unguardedLinks}
               profileRef="home"
               active_votes={items[index].active_votes}
@@ -145,7 +143,6 @@ class InfiniteList extends PureComponent {
 
 const mapStateToProps = (state) => ({
   scrollToIndex: state.interfaces.get('scrollIndex'),
-  mutelist: state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

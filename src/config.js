@@ -8,6 +8,7 @@ const config = {
   API_SECRET: 'D4e7pwZphykKWsG0ElancXSzDmDEqImeC9yenZMMfVo=',
   BUCKET: 'nathansenn-team-bucket.storage.fleek.co',
   DISABLE_MOBILE: false,
+  BRANCH: 'dev',
 }
 
 export default config

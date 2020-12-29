@@ -16,6 +16,7 @@ import {
   getAccountPostsRequest,
   setProfileIsVisited,
   getAccountRepliesRequest,
+  getAccountCommentsRequest,
   clearAccountPosts,
   clearAccountReplies,
   getFollowersRequest,
@@ -23,6 +24,7 @@ import {
   getFollowingRequest,
   clearAccountFollowers,
   clearAccountFollowing,
+  clearAccountComments,
 } from 'store/profile/actions'
 import {
   followRequest,
@@ -34,7 +36,7 @@ import { connect } from 'react-redux'
 import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
-import { useHistory, useLocation } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
 import queryString from 'query-string'
 import { ProfileSkeleton, HelmetGenerator } from 'components'
@@ -121,6 +123,12 @@ const useStyles = createUseStyles(theme => ({
   },
   weblink: {
     color: '#d32f2f',
+    '&:hover': {
+      color: '#d32f2f',
+    },
+  },
+  followLinks: {
+    ...theme.font,
   },
 }))
 
@@ -153,6 +161,8 @@ const Profile = (props) => {
     clearScrollIndex,
     openMuteDialog,
     mutelist,
+    getAccountCommentsRequest,
+    clearAccountComments,
   } = props
 
   const history = useHistory()
@@ -201,12 +211,14 @@ const Profile = (props) => {
     let tab = 'buzz'
 
     if(index === 1) {
-      tab = 'replies'
+      tab = 'comments'
     } else if (index === 2) {
-      tab = 'followers'
-    } else if (index === 3) {
-      tab = 'following'
+      tab = 'replies'
     }
+
+    // else if (index === 3) {
+    //   tab = 'following'
+    // }
     // const { is_authenticated } = user
     history.push(`/@${username}/t/${tab}/`)
 
@@ -228,7 +240,7 @@ const Profile = (props) => {
     setPageFrom(null)
     const params = queryString.parse(location.search)
 
-    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
+    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username) {
       anchorTop()
       clearScrollIndex()
       clearProfile()
@@ -236,9 +248,11 @@ const Profile = (props) => {
       clearAccountReplies()
       clearAccountFollowers()
       clearAccountFollowing()
+      clearAccountComments()
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
+      getAccountCommentsRequest(username)
       getAccountRepliesRequest(username)
       getFollowersRequest(username)
       getFollowingRequest(username)
@@ -249,12 +263,10 @@ const Profile = (props) => {
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
+    } else if(pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
       setIndex(1)
-    } else if(pathname.match(/(\/t\/followers\/)$|(\/t\/followers)$/m)) {
+    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(2)
-    } else if(pathname.match(/(\/t\/following\/)$|(\/t\/following)$/m)) {
-      setIndex(3)
     } else {
       setIndex(0)
     }
@@ -266,8 +278,6 @@ const Profile = (props) => {
   const { name, cover_image, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
 
-
-  // const { cover, name, about, website } = getProfileMetaData(profile)
   const { reputation = 0, isFollowed } = profile
 
   const followUser = () => {
@@ -399,7 +409,12 @@ const Profile = (props) => {
               <Row>
                 <Col xs="auto">
                   <p className={classes.paragraph}>
-                    <b>{following}</b> Following &nbsp; <b>{followers}</b> Follower
+                    <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
+                      <b>{following}</b> Following
+                    </Link> &nbsp;
+                    <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
+                      <b>{followers}</b> Follower
+                    </Link> &nbsp;
                   </p>
                 </Col>
               </Row>
@@ -416,9 +431,8 @@ const Profile = (props) => {
           className={classes.tabContainer}
         >
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies" />
-          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Followers" />
-          <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Following" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's (comments)" />
+          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
         </Tabs>
       </div>
       <React.Fragment>
@@ -458,6 +472,8 @@ const mapDispatchToProps = (dispatch) => ({
     broadcastNotification,
     clearScrollIndex,
     openMuteDialog,
+    getAccountCommentsRequest,
+    clearAccountComments,
   }, dispatch),
 })
 

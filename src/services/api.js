@@ -14,26 +14,12 @@ import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
 import moment from 'moment'
 import 'react-app-polyfill/stable'
+import { readSession } from 'services/helper'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
 
-const endpoints = [
-  'https://api.openhive.network',
-  'https://api.hive.blog',
-  'https://api.hivekings.com',
-  'https://api.pharesim.me',
-  'https://hived.hive-engine.com',
-  'https://rpc.esteem.app',
-  'https://hived.privex.io',
-  'https://techcoderx.com',
-  'https://anyx.io',
-]
-
-api.setOptions({ url: 'https://api.hive.blog' })
-
-config.set('alternative_api_endpoints', endpoints)
 config.set('rebranded_api', true)
 broadcast.updateOperations()
 
@@ -46,8 +32,8 @@ const setRPCNode = () => {
 }
 
 
-export const invokeMuteFilter = (items, mutelist) => {
-  return items.filter((item) => !mutelist.includes(item.author) )
+export const invokeMuteFilter = (items, mutelist, opacityUsers = []) => {
+  return items.filter((item) => !mutelist.includes(item.author) || opacityUsers.includes(item.author))
 }
 
 export const hashBuffer = (buffer) => {
@@ -340,16 +326,13 @@ export const fetchReplies = (author, permlink) => {
 
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
-    const params = {"account":`${following}`,"start":`${follower}`,"type":"blog","limit":1}
-    api.call('condenser_api.get_followers', params, async(err, data) => {
+    const params = [follower, following]
+    api.call('bridge.get_relationship_between_accounts', params, (err, data) => {
       if (err) {
         reject(err)
       }else {
-        if(data.length !== 0 && data[0].follower === follower) {
-          resolve(true)
-        } else {
-          resolve(false)
-        }
+        const { follows } = data
+        resolve(follows)
       }
     })
   })
@@ -367,7 +350,11 @@ export const fetchSingleProfile = (account) => {
         let isFollowed = false
 
         if(user) {
-          isFollowed = await isFollowing(user.username, data.name)
+          const { username } = readSession(user)
+
+          if(username !== data.name) {
+            isFollowed = await isFollowing(username, data.name)
+          }
         }
 
         data.isFollowed = isFollowed
@@ -915,9 +902,6 @@ export const createMeta = (tags = []) => {
 
 export const createPermlink = (title) => {
   const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
-  // let permlink = base58(slug(title) + Math.floor(Date.now() / 1000).toString(36))
-  // permlink = permlink.substring(0, 8) + permlink.substring(permlink.length-8, permlink.length)
-  // permlink = permlink.toLowerCase() + Math.floor(Date.now() / 1000).toString(36)
   return permlink
 }
 
@@ -932,11 +916,6 @@ export const searchPostTags = (tag) => {
       data: body,
     }).then(async(result) => {
       const data = result.data
-      // if(data.results.length !== 0) {
-      //   const getProfiledata = mapFetchProfile(data.results, false)
-      //   data.results = data.results.filter((item) => item.body.length <= 280)
-      //   await Promise.all([getProfiledata])
-      // }
 
       data.results = data.results.filter(item => invokeFilter(item))
       removeFootNote(data.results)
@@ -1049,13 +1028,23 @@ export const getLinkMeta = (url) => {
 }
 
 export const getBestRpcNode = () => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise((resolve) => {
     axios.get('https://beacon.peakd.com/api/best')
       .then(function (result) {
         resolve(result.data[0].endpoint)
       })
       .catch(function (error) {
         resolve('https://api.hive.blog')
+      })
+  })
+}
+
+export const checkVersion = () => {
+  return new Promise((resolve) => {
+    axios.get('https://d.buzz/version.json')
+      .then(function (result) {
+        console.log({ result })
+        resolve(result.data)
       })
   })
 }

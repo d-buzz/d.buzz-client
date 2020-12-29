@@ -10,6 +10,8 @@ import {
   AccountReplies,
   AccountFollowers,
   AccountFollowing,
+  AccountComments,
+  AccountFollow,
   Notification,
   Tags,
   Search,
@@ -17,6 +19,7 @@ import {
   SearchPeople,
   PrivacyPolicy,
   Disclaimer,
+  Developers,
 } from 'components'
 
 const routes =  [
@@ -25,6 +28,11 @@ const routes =  [
     routes: [
       {
         path: '/',
+        exact: true,
+        component: Home,
+      },
+      {
+        path: '/intent/buzz',
         exact: true,
         component: Home,
       },
@@ -42,6 +50,11 @@ const routes =  [
         path: '/org/en/disclaimer',
         exact: true,
         component: Disclaimer,
+      },
+      {
+        path: '/org/en/developers',
+        exact: true,
+        component: Developers,
       },
       {
         path: '/trending',
@@ -100,6 +113,27 @@ const routes =  [
         component: Content,
       },
       {
+        path: '/@:username/follow',
+        component: AccountFollow,
+        routes: [
+          {
+            path: '/@:username/follow',
+            exact: true,
+            component: AccountFollowers,
+          },
+          {
+            path: '/@:username/follow/followers',
+            exact: true,
+            component: AccountFollowers,
+          },
+          {
+            path: '/@:username/follow/following',
+            exact: true,
+            component: AccountFollowing,
+          },
+        ],
+      },
+      {
         path: '/@:username',
         component: Profile,
         routes: [
@@ -119,15 +153,20 @@ const routes =  [
             component: AccountReplies,
           },
           {
-            path: '/@:username/t/followers',
+            path: '/@:username/t/comments',
             exact: true,
-            component: AccountFollowers,
+            component: AccountComments,
           },
-          {
-            path: '/@:username/t/following',
-            exact: true,
-            component: AccountFollowing,
-          },
+          // {
+          //   path: '/@:username/t/followers',
+          //   exact: true,
+          //   component: AccountFollowers,
+          // },
+          // {
+          //   path: '/@:username/t/following',
+          //   exact: true,
+          //   component: AccountFollowing,
+          // },
         ],
       },
     ],

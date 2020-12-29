@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
 import Badge from '@material-ui/core/Badge'
 import { createUseStyles } from 'react-jss'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import {
   HomeIcon,
   BrandIcon,
@@ -197,7 +197,6 @@ const NavLinkWrapper = (props) => {
     onClick = () => {},
   } = props
 
-
   const isActivePath = (path, current) => {
     return path === current
   }
@@ -206,7 +205,7 @@ const NavLinkWrapper = (props) => {
     <React.Fragment>
       {!minify && (
         <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path}>
+          <Link to={path || '/'}>
             <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
             {name}
           </Link>
@@ -214,7 +213,7 @@ const NavLinkWrapper = (props) => {
       )}
       {minify && (
         <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path}>
+          <Link to={path || '/'}>
             <IconButton
               size="medium"
             >
@@ -238,18 +237,25 @@ const SideBarLeft = (props) => {
     theme,
     minify,
     setBuzzModalStatus,
+    intentBuzz,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
   const classes = useStyles()
   const location = useLocation()
+  const history = useHistory()
+  const { pathname } = location
+  const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
 
   const showThemeModal = () => {
     setOpenTheme(true)
   }
 
   useEffect(() => {
+    if(isBuzzIntent || (intentBuzz && intentBuzz.text)){
+      setOpen(true)
+    }
     pollNotifRequest()
     // eslint-disable-next-line
   }, [])
@@ -270,6 +276,9 @@ const SideBarLeft = (props) => {
   const onHide = () => {
     setBuzzModalStatus(false)
     setOpen(false)
+    if(isBuzzIntent){
+      history.push('/')
+    }
   }
 
   const onHideTheme = () => {
@@ -421,6 +430,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'SUBSCRIBE_REQUEST'),
   count: state.polling.get('count'),
   theme: state.settings.get('theme'),
+  intentBuzz: state.auth.get("intentBuzz"),
 })
 
 const mapDispatchToProps = (dispatch) => ({

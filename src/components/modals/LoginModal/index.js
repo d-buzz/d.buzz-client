@@ -74,6 +74,8 @@ const LoginModal = (props) => {
     onHide,
     authenticateUserRequest,
     loading,
+    fromIntentBuzz=false,
+    buzzIntentCallback = () => {},
   } = props
 
   const classes = useStyles()
@@ -114,6 +116,10 @@ const LoginModal = (props) => {
       .then(({ is_authenticated }) => {
         if(!is_authenticated) {
           setHasAuthenticationError(true)
+        }else{
+          if(fromIntentBuzz && buzzIntentCallback){
+            buzzIntentCallback()
+          }
         }
       })
   }

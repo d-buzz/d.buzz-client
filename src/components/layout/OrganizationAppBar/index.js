@@ -45,6 +45,7 @@ const OrganizationAppBar = () => {
   const termsOfService = (pathname.match(/^\/org\/en\/tos/))
   const privacyPolicy = (pathname.match(/^\/org\/en\/privacy/))
   const disclaimer = (pathname.match(/^\/org\/en\/disclaimer/))
+  const developers = (pathname.match(/^\/org\/en\/developers/))
 
   let title = ''
   if(termsOfService) {
@@ -53,6 +54,8 @@ const OrganizationAppBar = () => {
     title = 'Privacy Policy'
   } else if(disclaimer) {
     title = 'Disclaimer'
+  } else if (developers) {
+    title = 'Developer'
   }
 
   

@@ -61,9 +61,9 @@ export const setTwitterHeights = (payload) => ({
 export const OPEN_MUTE_DIALOG = 'OPEN_MUTE_DIALOG'
 export const CLOSE_MUTE_DIALOG = 'CLOSE_MUTE_DIALOG'
 
-export const openMuteDialog = (username) => ({
+export const openMuteDialog = (username, muteSuccessCallback = null) => ({
   type: OPEN_MUTE_DIALOG,
-  payload: { username },
+  payload: { username, muteSuccessCallback },
 })
 
 export const closeMuteDialog = () => ({

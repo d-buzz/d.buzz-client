@@ -401,7 +401,7 @@ const Content = (props) => {
                 <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
-              {hasUpdateAuthority && is_authenticated && (
+              {is_authenticated && (
                 <Col xs="auto">
                   <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
                     <MoreIcon className={classes.iconCursor} />
@@ -415,8 +415,13 @@ const Content = (props) => {
               open={Boolean(anchorEl)}
               onClose={hanldeCloseMore}
             >
-              <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
-              <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
+              {!hasUpdateAuthority && (<MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>)}
+              {hasUpdateAuthority && (
+                <React.Fragment>
+                  <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
+                  <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
+                </React.Fragment>
+              )}
             </Menu>
             {hasUpdateAuthority && (
               <UpdateFormModal onSuccess={onUpdateSuccess} author={author} permlink={permlink} body={originalContent} open={openUpdateForm} onClose={handleClickCloseUpdateForm} />

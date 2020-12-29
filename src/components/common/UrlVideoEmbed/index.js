@@ -26,7 +26,7 @@ const UrlVideoEmbed = (props) => {
         <iframe
           title='Embedded Video'
           src={url}
-          allowFullScreen='true'
+          allowFullScreen={true}
           frameBorder='0'
           height='300'
           width='100%'

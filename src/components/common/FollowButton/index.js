@@ -105,7 +105,7 @@ const FollowButton = (props) => {
   }
 
   useEffect(() => {
-    if(author && username && author !== '' && username !== '' && is_authenticated) {
+    if(author !== undefined && username && author !== '' && username !== '' && is_authenticated) {
       fetchFollowInformation()
     }
     // eslint-disable-next-line
@@ -202,6 +202,7 @@ const mapStateToProps = (state) => ({
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
   recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
 })
+
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
