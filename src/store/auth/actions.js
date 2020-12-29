@@ -167,3 +167,16 @@ export const setOpacityUsers = (users) => ({
   type: SET_OPACITY_USERS,
   payload: users,
 })
+
+export const SET_INTENT_BUZZ = 'SET_INTENT_BUZZ'
+
+export const setIntentBuzz = (text, url, hashtags='') => ({
+  type: SET_INTENT_BUZZ,
+  payload: { text, url, hashtags },
+})
+ 
+export const CLEAR_INTENT_BUZZ = 'CLEAR_INTENT_BUZZ'
+
+export const clearIntentBuzz = () => ({
+  type: CLEAR_INTENT_BUZZ,
+})

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
 import {
@@ -13,11 +13,15 @@ import {
   NotificationBox,
   UserDialog,
   MuteModal,
+  LoginModal,
 } from 'components'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
+import { bindActionCreators } from 'redux'
+import { setIntentBuzz } from 'store/auth/actions'
+import queryString from 'query-string'
 
 
 const useStyles = createUseStyles({
@@ -68,9 +72,12 @@ const useStyles = createUseStyles({
 
 const AppFrame = (props) => {
   const classes = useStyles()
-  const { route, user } = props
-  const { pathname } = useLocation()
+  const { route, user, setIntentBuzz } = props
+  const { pathname, search } = useLocation()
   const { is_authenticated } = user
+  const [fromIntentBuzz, setFromIntentBuzz] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+  const params = queryString.parse(search) || ''
 
   const organizationRoutes = (pathname.match(/^\/org/))
   let containerClass = classes.guardedContainer
@@ -82,6 +89,36 @@ const AppFrame = (props) => {
 
   if(unGuardedRoute) {
     containerClass = classes.unGuardedContainer
+  }
+
+  useEffect(() => {
+    // console.log({ is_authenticated })
+    if (pathname.match(/^\/intent\/buzz/)) {
+      setFromIntentBuzz(true)
+      if(params.text && params.url){
+        setIntentBuzz(params.text, params.url, params.tags)
+      }
+     
+      if (!is_authenticated) {
+        setShowLogin(true)
+      } else {
+        setShowLogin(false)
+      }
+    } else {
+      setShowLogin(false)
+    }
+    // eslint-disable-next-line
+  }, [params, pathname, is_authenticated]);
+
+  const handleClickCloseLoginModal = () => {
+    setShowLogin(false)
+  }
+
+  const handleSetBuzzIntent = () => {
+    const { text, url, tags } = params
+    if (text) {
+      setIntentBuzz(text, url, tags)
+    }
   }
 
   return(
@@ -109,6 +146,11 @@ const AppFrame = (props) => {
       <ReplyFormModal />
       <NotificationBox />
       <MuteModal />
+      <LoginModal
+        show={showLogin}
+        onHide={handleClickCloseLoginModal}
+        fromIntentBuzz={fromIntentBuzz}
+        buzzIntentCallback={handleSetBuzzIntent} />
     </React.Fragment>
   )
 }
@@ -117,4 +159,9 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
 })
 
-export default connect(mapStateToProps)(AppFrame)
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setIntentBuzz,
+  }, dispatch),
+})
+export default connect(mapStateToProps, mapDispatchToProps)(AppFrame)

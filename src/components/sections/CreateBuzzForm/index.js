@@ -11,7 +11,7 @@ import {
   UploadIcon,
   Spinner,
 } from 'components/elements'
-
+import { clearIntentBuzz } from "store/auth/actions"
 import { broadcastNotification } from 'store/interface/actions'
 import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
 import { bindActionCreators } from 'redux'
@@ -25,7 +25,8 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { invokeTwitterIntent } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
-
+import { useLocation } from "react-router-dom"
+import queryString from "query-string"
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -158,12 +159,12 @@ const CreateBuzzForm = (props) => {
   const classes = useStyles()
   const inputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
-  const [content, setContent] = useState('')
-  const [tags, setTags] = useState([])
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
-
+  const location = useLocation()
+  const params = queryString.parse(location.search) || ""
+  const paramsBuzzText = params.text || ""
   const {
     user,
     uploadFileRequest,
@@ -176,7 +177,24 @@ const CreateBuzzForm = (props) => {
     broadcastNotification,
     setPageFrom,
     payoutAgreed,
+    intentBuzz,
+    clearIntentBuzz,
   } = props
+
+  const { text='', url='', hashtags='' } = intentBuzz
+  const buzzIntentText = (text || paramsBuzzText)
+  const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
+  const buzzIntentTags = []
+  if(wholeIntent && hashtags){
+    const intentTags = hashtags.split(',')
+    if(intentTags){
+      intentTags.forEach((item) => {
+        buzzIntentTags.push({ id: item, text: item })
+      })
+    }
+  }
+  const [content, setContent] = useState(wholeIntent)
+  const [tags, setTags] = useState(buzzIntentTags)
 
   const history = useHistory()
   let containerClass = classes.container
@@ -187,7 +205,7 @@ const CreateBuzzForm = (props) => {
     minRows = 5
   }
 
-  useEffect(() => {
+  useEffect(() => { 
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content, images])
 
@@ -266,6 +284,7 @@ const CreateBuzzForm = (props) => {
           setPageFrom(null)
           const { author, permlink } = data
           hideModalCallback()
+          clearIntentBuzz()
           broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
@@ -325,7 +344,7 @@ const CreateBuzzForm = (props) => {
               </Box>
             </div>
           )}
-          {(!publishing && !loading) &&  (<TextArea name='content-area' maxlength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {(!publishing && !loading) &&  (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
@@ -392,7 +411,7 @@ const CreateBuzzForm = (props) => {
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <label for="file-upload">
+              <label htmlFor="file-upload">
                 <IconButton
                   size="medium"
                   onClick={handleFileSelect}
@@ -430,6 +449,7 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'UPLOAD_FILE_REQUEST'),
   publishing: pending(state, 'PUBLISH_POST_REQUEST'),
   payoutAgreed: state.auth.get('payoutAgreed'),
+  intentBuzz: state.auth.get("intentBuzz"),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -438,6 +458,7 @@ const mapDispatchToProps = (dispatch) => ({
     publishPostRequest,
     setPageFrom,
     broadcastNotification,
+    clearIntentBuzz,
   }, dispatch),
 })
 
