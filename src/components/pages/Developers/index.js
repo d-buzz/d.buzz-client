@@ -56,7 +56,7 @@ const useStyles = createUseStyles(theme => ({
 
 const Developers = () => {
   const classes = useStyles()
-  const hostUrl = 'https://d.buzz'
+  const hostUrl = window.location.origin
   const webIntentUrl = hostUrl+'/#/intent/buzz'
   const snippet1 = '<a class="dbuzz-share-button" href="'+webIntentUrl+'">Buzz</a>'
   const snippet2 = '<a class="dbuzz-share-button" href="'+webIntentUrl+'?text=Hello%20dbuzz">Buzz</a>'
@@ -75,7 +75,7 @@ const Developers = () => {
                     <Scrollspy items={[
                       'section-1', 
                     ]} currentClassName={classes.currentLink}>
-                      <li><a href="#section-1">1. BUZZ BUTTON</a></li>
+                      <li><a href="#section-1">1. EMBED BUZZ BUTTON</a></li>
                     </Scrollspy>
                   </div>
                 </div>
@@ -88,11 +88,21 @@ const Developers = () => {
               <section id="section-1">
                 <div className={classes.hero}>
                   <div >
-                    <h2>BUZZ BUTTON</h2>
+                    <h2>EMBED BUZZ BUTTON</h2>
                     <p>
                         The Buzz button is a small button displayed on your website where viewers can easily share content on DBuzz. It consists of 
                         two parts; a link to the d.buzz's Buzz composer and buzzWidget.js script to enhance the link with the easily identifiable Buzz button.  
                     </p>
+                  </div>
+                  <div>
+                    <iframe id="dbuzz-widget-0" 
+                      title="Dbuzz share button" 
+                      className="dbuzz-share-button" 
+                      allowtransparency="true" 
+                      scrolling="no" 
+                      frameborder="0" 
+                      style={{position: "static", visibility:"visible", width: "60px", height: "20px"}} 
+                      src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=m&text=Hello world&url="+hostUrl+"&tags=dbuzz,hive"}></iframe>
                   </div>
                   <div >
                     <h5>
@@ -104,14 +114,14 @@ const Developers = () => {
                     </h5>
                     <ul>
                       <li>
-                        <i>Create a new anchor element with a <b>dbuzz-share-button</b> class to allow the buzzWidget.js script to discover the element and turn it into a Buzz Button. Set href attribute value to <a href={webIntentUrl}>{webIntentUrl}</a> to create a link that redirects to the DBuzz Web Intent Composer.</i>
+                        <i>Create a new anchor element with a <b>dbuzz-share-button</b> class to allow the buzzWidget.js script to discover the element and turn it into a Buzz Button. Set href attribute value to <a href={webIntentUrl} target="_blank" rel="noopener noreferrer">{webIntentUrl}</a> to create a link that redirects to the DBuzz Web Intent Composer.</i>
                         <SyntaxHighlighter language="markup" style={dracula} wrapLongLines>
                           {snippet1}
                         </SyntaxHighlighter>
                       </li>
                       <br/>
                       <li>
-                        <i>Set Buzz text by customizing DBuzz web intent query parameters.</i>
+                        <i>Set Buzz text by customizing Buzz web intent query parameters.</i>
                         <SyntaxHighlighter language="markup" style={dracula} wrapLongLines>
                           {snippet2}
                         </SyntaxHighlighter>
@@ -153,6 +163,16 @@ const Developers = () => {
                     </h5>
                     <br/>
                     <p>Add a data-size attribute value of "large" to display a larger Buzz button</p>
+                    <div>
+                      <iframe id="dbuzz-widget-1" 
+                        title="Dbuzz share button" 
+                        className="dbuzz-share-button" 
+                        allowtransparency="true" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        style={{position: "static", visibility:"visible", width: '76px', height: '28px'}} 
+                        src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=l&text=Hello world&url="+hostUrl+"&tags=dbuzz,hive"}></iframe>
+                    </div>
                   </div>
                 </div>
               </section>

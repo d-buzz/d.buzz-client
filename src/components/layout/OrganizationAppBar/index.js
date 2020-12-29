@@ -55,7 +55,7 @@ const OrganizationAppBar = () => {
   } else if(disclaimer) {
     title = 'Disclaimer'
   } else if (developers) {
-    title = 'Developers'
+    title = 'Developer'
   }
 
   
