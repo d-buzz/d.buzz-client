@@ -333,6 +333,10 @@ const PostList = React.memo((props) => {
 
   const opacityActivated = opacityUsers.includes(author)
 
+  const handleTipClick = () => {
+    window.open(`https://buymeberri.es/@${author}`, '_blank')
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -403,7 +407,7 @@ const PostList = React.memo((props) => {
                   open={Boolean(anchorEl)}
                   onClose={closeMenu}
                 >
-                  <MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>
+                  <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
                   {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute</MenuItem>)}
                 </Menu>
               </div>
