@@ -89,6 +89,7 @@ const Tags = (props) => {
           profile={item.profile}
           payoutAt={item.payout_at}
           highlightTag={tag}
+          disableOpacity={true}
         />),
       )}
       <PostlistSkeleton loading={loading} />
