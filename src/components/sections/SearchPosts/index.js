@@ -65,6 +65,7 @@ const SearchPosts = (props) => {
             payoutAt={item.payout_at}
             highlightTag={`${query}`.replace('#', '')}
             disableUserMenu={true}
+            disableOpacity={true}
           />),
         )}
       </InfiniteScroll>
