@@ -206,6 +206,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   } else {
     // render normally
     return <div
+      key={new Date().getTime()}
       className={classNames(markdownClass, assetClass)}
       dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
     />
