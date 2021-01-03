@@ -194,7 +194,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
 
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
-    return <TwitterTweetEmbed tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
+    return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
@@ -206,7 +206,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   } else {
     // render normally
     return <div
-      key={new Date().getTime()}
+      key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
       className={classNames(markdownClass, assetClass)}
       dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
     />
