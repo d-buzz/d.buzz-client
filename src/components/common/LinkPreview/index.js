@@ -105,17 +105,23 @@ const LinkPreview = (props) => {
   }
 
   useEffect(() => {
+    let isSubscribed = true
+
     if(isValidUrl) {
       setLoading(true)
       getLinkMetaRequest(url)
         .then((data) => {
-          if(!data.hasOwnProperty('title')) {
-            setNoShow(true)
+          if(isSubscribed) {
+            if(!data.hasOwnProperty('title')) {
+              setNoShow(true)
+            }
+            setMeta(data)
+            setLoading(false)
           }
-          setMeta(data)
-          setLoading(false)
         })
     }
+
+    return () => isSubscribed = false
   // eslint-disable-next-line
   }, [])
 

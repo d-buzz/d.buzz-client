@@ -170,7 +170,7 @@ const Notification = (props) => {
   return (
     <React.Fragment>
       {notifications.map((item, index) => (
-        <React.Fragment>
+        <React.Fragment key={index}>
           <div className={classNames(classes.wrapper, index < count.unread ? classes.unread : '')}>
             <div className={classes.row}>
               <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>

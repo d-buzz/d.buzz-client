@@ -38,7 +38,7 @@ const SearchTips = ({ show, className }) => {
 }
 
 const SearchField = (props) => {
-  const { disableTips = false, iconTop = -2, defaultValue, user, ...otherProps } = props
+  const { disableTips = false, iconTop = -2, defaultValue, user, dispatch, ...otherProps } = props
   const [openTips, setOpenTips] = useState(false)
   const [search, setSearch] = useState('')
   const classes = useStyles()

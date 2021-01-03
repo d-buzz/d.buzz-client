@@ -205,7 +205,7 @@ const CreateBuzzForm = (props) => {
     minRows = 5
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     setWordCount(Math.floor((content.length/280) * 100))
   }, [content, images])
 
@@ -246,7 +246,7 @@ const CreateBuzzForm = (props) => {
           identifier: 'file-upload',
           target: target,
         })
-  
+
         const touchEvent = new TouchEvent("touchstart", {
           touches: [touch],
           view: window,

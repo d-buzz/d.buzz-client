@@ -92,13 +92,12 @@ const AppFrame = (props) => {
   }
 
   useEffect(() => {
-    // console.log({ is_authenticated })
     if (pathname.match(/^\/intent\/buzz/)) {
       setFromIntentBuzz(true)
       if(params.text && params.url){
         setIntentBuzz(params.text, params.url, params.tags)
       }
-     
+
       if (!is_authenticated) {
         setShowLogin(true)
       } else {

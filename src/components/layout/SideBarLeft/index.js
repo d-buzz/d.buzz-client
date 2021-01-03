@@ -195,17 +195,22 @@ const NavLinkWrapper = (props) => {
     minifyItemsClass,
     minify,
     onClick = () => {},
+    preventDefault = false,
   } = props
 
   const isActivePath = (path, current) => {
     return path === current
   }
 
+  const preventLink = (e) => {
+    if(preventDefault) e.preventDefault()
+  }
+
   return (
     <React.Fragment>
       {!minify && (
         <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path || '/'}>
+          <Link to={path}>
             <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
             {name}
           </Link>
@@ -213,7 +218,7 @@ const NavLinkWrapper = (props) => {
       )}
       {minify && (
         <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path || '/'}>
+          <Link to={path} onClick={preventLink}>
             <IconButton
               size="medium"
             >
@@ -314,6 +319,8 @@ const SideBarLeft = (props) => {
     {
       name: 'Display',
       icon: <SunMoonIcon />,
+      path: '#',
+      preventDefault: true,
       onClick: showThemeModal,
     },
   ]
