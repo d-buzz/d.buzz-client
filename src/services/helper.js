@@ -241,3 +241,7 @@ export const invokeTwitterIntent = (content) => {
   body = encodeURIComponent(stripHtml(body))
   window.open(`https://twitter.com/intent/tweet?text=${body}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
 }
+
+export const sendToBerries = (author) => {
+  window.open(`https://buymeberri.es/!dbuzz/@${author}`, '_blank')
+}
