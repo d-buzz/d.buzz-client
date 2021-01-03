@@ -361,7 +361,7 @@ const CreateBuzzForm = (props) => {
           />
           {buzzToTwitter && (
             <label className={classes.payoutNote}>
-              Twitter intent will open after you click <b>Buzz it</b>
+              Twitter intent will open after you click <b>Buzz</b>
             </label>
           )}
           <br />
@@ -397,7 +397,7 @@ const CreateBuzzForm = (props) => {
             <React.Fragment>
               <ContainedButton
                 disabled={loading || publishing || content.length === 0}
-                label="Buzz it"
+                label="Buzz"
                 className={classes.float}
                 onClick={handleClickPublishPost}
               />
