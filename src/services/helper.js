@@ -174,7 +174,7 @@ export function hasCompatibleKeychain() {
   )
 }
 
-const randomizer = (max, min) => {
+const randomizer = (min, max) => {
   return Math.random() * (max - min) + min
 }
 
