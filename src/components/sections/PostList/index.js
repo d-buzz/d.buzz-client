@@ -24,6 +24,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
+import { sendToBerries } from 'services/helper'
 
 const addHover = (theme) => {
   let style = {
@@ -334,7 +335,7 @@ const PostList = React.memo((props) => {
   const opacityActivated = opacityUsers.includes(author)
 
   const handleTipClick = () => {
-    window.open(`https://buymeberri.es/@${author}`, '_blank')
+    sendToBerries(author)
   }
 
   return (

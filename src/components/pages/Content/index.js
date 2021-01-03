@@ -19,7 +19,7 @@ import {
 } from 'components'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { anchorTop, calculatePayout, invokeTwitterIntent } from 'services/helper'
+import { anchorTop, calculatePayout, invokeTwitterIntent, sendToBerries } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
@@ -315,6 +315,10 @@ const Content = (props) => {
     } catch (e) {}
   }
 
+  const handleTipClick = () => {
+    sendToBerries(author)
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -415,7 +419,7 @@ const Content = (props) => {
               open={Boolean(anchorEl)}
               onClose={hanldeCloseMore}
             >
-              {!hasUpdateAuthority && (<MenuItem component='a' href={`https://buymeberri.es/@${author}`} target='_blank' className={classes.menuText}>Tip</MenuItem>)}
+              {!hasUpdateAuthority && (<MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
