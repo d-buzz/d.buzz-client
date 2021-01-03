@@ -49,7 +49,6 @@ function* setThemeRequest(payload, meta) {
 
 function* checkVersionRequest(meta) {
   const remote = yield call(checkVersion)
-  console.log({ remote })
   let  running = yield call([localStorage, localStorage.getItem], 'version')
   let latest = false
 

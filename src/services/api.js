@@ -27,7 +27,6 @@ const visited = []
 
 const setRPCNode = () => {
   const node = localStorage.getItem('rpc')
-  console.log({ node })
   api.setOptions({ url: node })
 }
 
@@ -922,7 +921,6 @@ export const searchPostTags = (tag) => {
 
       resolve(data)
     }).catch((error) => {
-      console.log({ error })
       reject(error)
     })
   })
@@ -992,7 +990,6 @@ export const checkIfImage = (links) => {
 export const uploadIpfsImage = async(data) => {
   const formData = new FormData()
   formData.append('image', data)
-  console.log('test')
 
   return new Promise(async(resolve, reject) => {
     axios({
@@ -1002,12 +999,10 @@ export const uploadIpfsImage = async(data) => {
       headers: {'Content-Type': 'multipart/form-data' },
       data: formData,
     }).then(async(result) => {
-      console.log({result})
       const data = result.data
       resolve(data)
 
     }).catch((error) => {
-      console.log({error})
       reject(error)
     })
   })
@@ -1043,7 +1038,6 @@ export const checkVersion = () => {
   return new Promise((resolve) => {
     axios.get('https://d.buzz/version.json')
       .then(function (result) {
-        console.log({ result })
         resolve(result.data)
       })
   })

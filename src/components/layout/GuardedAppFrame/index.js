@@ -170,11 +170,8 @@ const GuardedAppFrame = (props) => {
   }
 
   const onChange = (e) => {
-    console.log({ e })
-    console.log('searching')
     const { target } = e
     const { value } = target
-    console.log({ value })
     setSearch(value)
   }
 

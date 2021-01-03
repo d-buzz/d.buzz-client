@@ -99,7 +99,6 @@ function* authenticateUserRequest(payload, meta) {
 
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
@@ -131,7 +130,6 @@ function* getSavedUserRequest(meta) {
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
@@ -201,7 +199,6 @@ function* checkHasUpdateAuthorityRequest(payload, meta) {
 
     yield put(checkHasUpdateAuthoritySuccess(hasAuthority, meta))
   } catch (error) {
-    console.log({ error })
     yield put(checkHasUpdateAuthorityFailure(error, meta))
   }
 }

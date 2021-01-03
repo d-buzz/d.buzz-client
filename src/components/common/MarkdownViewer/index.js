@@ -110,7 +110,7 @@ const prepareTwitterEmbeds = (content) => {
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-  
+
         if(link.match(mainTwitterRegex)) {
           match = link.match(mainTwitterRegex)
           id = match[2]
@@ -121,7 +121,7 @@ const prepareTwitterEmbeds = (content) => {
           }
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
-  
+
         if(match) {
           const id = match[2]
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
@@ -130,7 +130,7 @@ const prepareTwitterEmbeds = (content) => {
     })
   }
 
-  
+
   return body
 }
 
@@ -151,7 +151,7 @@ const prepareVimmEmbeds = (content) => {
         const data = link.split('/')
         match = link.match(vimmRegex)
         id = data[3]
-        if(link.match(vimmRegexEmbed)){ 
+        if(link.match(vimmRegexEmbed)){
           match = link.match(vimmRegexEmbed)
           id = match[1]
         }
@@ -159,7 +159,6 @@ const prepareVimmEmbeds = (content) => {
 
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
-        console.log({body})
       }
     } catch(error) { }
   })
