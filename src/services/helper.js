@@ -127,11 +127,11 @@ export const calculatePayout = (data) => {
 
   if(is_paidout) {
 
-    if(is_paidout) {
-      payout = parseFloat(`${pending_payout_value}`.replace('HBD'))
-    } else {
-      payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
-    }
+    // if(is_paidout) {
+    payout = parseFloat(`${pending_payout_value}`.replace('HBD'))
+    // } else {
+    //   payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
+    // }
   } else {
     payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
   }
