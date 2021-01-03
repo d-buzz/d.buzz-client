@@ -198,11 +198,11 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
-    return <UrlVideoEmbed url={url} />
+    return <UrlVideoEmbed key={`${url}${scrollIndex}3speak`} url={url} />
   } else if(content.includes(':vimm:')){
     const splitVimm = content.split(':')
     const url = `https://www.vimm.tv/${splitVimm[2]}/embed?autoplay=0`
-    return <UrlVideoEmbed url={url} />
+    return <UrlVideoEmbed key={`${url}${scrollIndex}vimm`} url={url} />
   } else {
     // render normally
     return <div
