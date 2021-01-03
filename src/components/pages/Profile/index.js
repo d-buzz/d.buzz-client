@@ -383,7 +383,7 @@ const Profile = (props) => {
               <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                 <Col xs="auto">
                   <p className={classNames(classes.paragraph, classes.fullName)}>
-                    {name || username}&nbsp;<Chip  size="small" label={reputation} />
+                    {name || username}&nbsp;<Chip component="span"  size="small" label={reputation} />
                   </p>
                   <p className={classNames(classes.paragraph, classes.userName)}>
                     @{username}
