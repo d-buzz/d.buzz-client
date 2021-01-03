@@ -397,7 +397,7 @@ const CreateBuzzForm = (props) => {
             <React.Fragment>
               <ContainedButton
                 disabled={loading || publishing || content.length === 0}
-                label="Buzz it"
+                label="Buzz"
                 className={classes.float}
                 onClick={handleClickPublishPost}
               />
