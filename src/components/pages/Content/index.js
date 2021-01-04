@@ -35,6 +35,7 @@ import {
   UpdateFormModal,
 } from 'components'
 import { useHistory } from 'react-router-dom'
+import { truncateBody } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -149,7 +150,6 @@ const Content = (props) => {
 
   const {
     author,
-    body,
     json_metadata,
     created,
     children: replyCount = 0,
@@ -163,6 +163,10 @@ const Content = (props) => {
     parent_author = null,
     parent_permlink,
   } = content || ''
+
+
+  let { body } = content || ''
+  body = truncateBody(body || '')
 
   let {  max_accepted_payout } = content || '0.00'
 
@@ -343,60 +347,59 @@ const Content = (props) => {
                   </Col>
                 </Row>
               )}
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <Avatar author={author} />
+                </Col>
+                <Col style={{ paddingLeft: 10 }}>
+                  <div style={{ marginTop: 2 }}>
+                    <Link
+                      ref={popoverAnchor}
+                      to={generateAuthorLink}
+                      className={classes.link}
+                      onMouseEnter={openPopOver}
+                      onMouseLeave={closePopOver}
+                    >
+                      <p className={classes.name}>
+                        {author}
+                      </p>
+                    </Link>
+                    <br />
+                    <p className={classes.username}>
+                      {moment(`${created}Z`).local().fromNow()}
+                    </p>
+                  </div>
+                </Col>
+              </Row>
+              <div onClick={handleClickContent}>
+                <MarkdownViewer content={originalContent} minifyAssets={false} />
+              </div>
+              <PostTags meta={meta} />
               {(`${stripHtml(body)}`.length > 280) && (
                 <Row>
                   <Col>
                     <div className={classes.context}>
                       <div className={classes.contextWrapper}>
-                        <h6 style={{ paddingTop: 5 }}>You are viewing a content that is over 280 characters:</h6>
+                        <h6 style={{ paddingTop: 5 }}>Content is truncated because it is over 280 characters</h6>
                         <br />
                         <ul>
-                          <li><a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}><h6>RE: {root_title}</h6></a></li>
+                          <li>
+                            <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>
+                              <h6>View the full content</h6>
+                            </a>
+                          </li>
                         </ul>
                       </div>
                     </div>
                   </Col>
                 </Row>
               )}
-              {!(`${stripHtml(body)}`.length > 280) && body &&(
-                <React.Fragment>
-                  <Row>
-                    <Col xs="auto" style={{ paddingRight: 0 }}>
-                      <Avatar author={author} />
-                    </Col>
-                    <Col style={{ paddingLeft: 10 }}>
-                      <div style={{ marginTop: 2 }}>
-                        <Link
-                          ref={popoverAnchor}
-                          to={generateAuthorLink}
-                          className={classes.link}
-                          onMouseEnter={openPopOver}
-                          onMouseLeave={closePopOver}
-                        >
-                          <p className={classes.name}>
-                            {author}
-                          </p>
-                        </Link>
-                        <br />
-                        <p className={classes.username}>
-                          {moment(`${created}Z`).local().fromNow()}
-                        </p>
-                      </div>
-                    </Col>
-                  </Row>
-                  <br />
-                  <div onClick={handleClickContent}>
-                    <MarkdownViewer content={originalContent} minifyAssets={false} />
-                  </div>
-                  <PostTags meta={meta} />
-                  <div style={{ marginTop: 10 }}>
-                    <label className={classes.meta}>
-                      {moment(`${created}Z`).local().format('LTS • \nLL')}
-                      {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
-                    </label>
-                  </div>
-                </React.Fragment>
-              )}
+              <div style={{ marginTop: 10 }}>
+                <label className={classes.meta}>
+                  {moment(`${created}Z`).local().format('LTS • \nLL')}
+                  {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
+                </label>
+              </div>
             </React.Fragment>
           </div>
           <div className={classes.wrapper}>

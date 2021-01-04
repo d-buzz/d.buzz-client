@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Link, useHistory } from 'react-router-dom'
 import { truncateBody } from 'services/helper'
+import stripHtml from 'string-strip-html'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -352,7 +353,7 @@ const ReplyList = (props) => {
                     </label>
                     <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                     <MarkdownViewer minifyAssets={false} content={body} />
-                    {`${body}`.length > 280 && (
+                    {`${stripHtml(body)}`.length > 280 && (
                       <div className={classes.context}>
                         <div className={classes.contextWrapper}>
                           <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
