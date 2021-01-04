@@ -16,8 +16,8 @@ import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import stripHtml from 'string-strip-html'
 import { Link, useHistory } from 'react-router-dom'
+import { truncateBody } from 'services/helper'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -266,13 +266,8 @@ const ReplyList = (props) => {
     let { body } = reply
 
     let { payout } = reply
-    const bodyLength = `${stripHtml(body)}`.length
 
-    if(bodyLength > 280) {
-      body = stripHtml(body)
-      body = `${body}`.substr(0, 280)
-      body = `${body} . . .`
-    }
+    body = truncateBody(body)
 
     if(payout === 0) {
       payout = '0.00'
@@ -357,7 +352,7 @@ const ReplyList = (props) => {
                     </label>
                     <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
                     <MarkdownViewer minifyAssets={false} content={body} />
-                    {bodyLength > 280 && (
+                    {`${body}`.length > 280 && (
                       <div className={classes.context}>
                         <div className={classes.contextWrapper}>
                           <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>

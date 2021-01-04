@@ -245,3 +245,15 @@ export const invokeTwitterIntent = (content) => {
 export const sendToBerries = (author) => {
   window.open(`https://buymeberri.es/!dbuzz/@${author}`, '_blank')
 }
+
+export const truncateBody = (body) => {
+  const bodyLength = `${stripHtml(body)}`.length
+
+  if(bodyLength > 280) {
+    body = stripHtml(body)
+    body = `${body}`.substr(0, 280)
+    body = `${body} . . .`
+  }
+
+  return body
+}
