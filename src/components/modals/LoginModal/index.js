@@ -16,6 +16,7 @@ import { hasCompatibleKeychain } from 'services/helper'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import Button from '@material-ui/core/Button'
 import { isMobile } from 'react-device-detect'
+import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
@@ -59,6 +60,15 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: 'pink !important',
     },
   },
+  noAccount: {
+    fontSize: 14,
+  },
+  signup: {
+    color: '#d32f2f !important',
+    wordBreak: 'break-word !important',
+    whiteSpace: 'nowrap',
+    fontSize: 14,
+  },
 }))
 
 const FormSpacer = () => {
@@ -74,8 +84,8 @@ const LoginModal = (props) => {
     onHide,
     authenticateUserRequest,
     loading,
-    fromIntentBuzz=false,
-    buzzIntentCallback = () => {},
+    fromIntentBuzz,
+    buzzIntentCallback = () => { },
   } = props
 
   const classes = useStyles()
@@ -89,9 +99,9 @@ const LoginModal = (props) => {
     const { target } = e
     const { name, value } = target
 
-    if(name === 'username') {
+    if (name === 'username') {
       setUsername(value)
-    } else if(name === 'password') {
+    } else if (name === 'password') {
       setPassword(value)
     }
     setHasAuthenticationError(false)
@@ -101,8 +111,8 @@ const LoginModal = (props) => {
     const { target } = e
     const { name, checked } = target
 
-    if(name === 'keychain') {
-      if(checked) {
+    if (name === 'keychain') {
+      if (checked) {
         const isCompatible = hasCompatibleKeychain() ? true : false
         setHasInstalledKeychain(isCompatible)
         setPassword('')
@@ -114,10 +124,10 @@ const LoginModal = (props) => {
   const handleClickLogin = () => {
     authenticateUserRequest(username, password, useKeychain)
       .then(({ is_authenticated }) => {
-        if(!is_authenticated) {
+        if (!is_authenticated) {
           setHasAuthenticationError(true)
-        }else{
-          if(fromIntentBuzz && buzzIntentCallback){
+        } else {
+          if (fromIntentBuzz && buzzIntentCallback) {
             buzzIntentCallback()
           }
         }
@@ -131,11 +141,16 @@ const LoginModal = (props) => {
   }
 
   const onKeyDown = (e) => {
-    if(e.key === 'Enter') {
-      if(!isDisabled()) {
+    if (e.key === 'Enter') {
+      if (!isDisabled()) {
         handleClickLogin()
       }
     }
+  }
+
+  const handleClickSignup = () => {
+    const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login', '_blank')
+    win.focus()
   }
 
   return (
@@ -207,8 +222,8 @@ const LoginModal = (props) => {
                 <React.Fragment>
                   <center><h6 className={classes.label}>Install Hive Keychain</h6>
                     <Button
-                      classes={{root: classes.browserExtension}}
-                      style={{borderRadius: 50}}
+                      classes={{ root: classes.browserExtension }}
+                      style={{ borderRadius: 50 }}
                       variant="outlined"
                       startIcon={<FaChrome />}
                       href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en"
@@ -218,9 +233,9 @@ const LoginModal = (props) => {
                       Chrome
                     </Button>
                     <Button
-                      classes={{root: classes.browserExtension}}
+                      classes={{ root: classes.browserExtension }}
                       variant="outlined"
-                      style={{borderRadius: 50, marginLeft: 15}}
+                      style={{ borderRadius: 50, marginLeft: 15 }}
                       startIcon={<FaFirefoxBrowser />}
                       href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/"
                       rel="noopener noreferrer"
@@ -247,6 +262,13 @@ const LoginModal = (props) => {
             {loading && (
               <Spinner size={40} loading={true} />
             )}
+          </center>
+          <FormSpacer />
+          <center>
+            <span className={classNames(classes.noAccount,classes.label)}>Don't have an account?</span>
+            <Link to={"#"} onClick={handleClickSignup} className={classNames(classes.label, classes.signup)}>
+              &nbsp;<span>Sign up</span>
+            </Link>
           </center>
         </ModalBody>
       </Modal>

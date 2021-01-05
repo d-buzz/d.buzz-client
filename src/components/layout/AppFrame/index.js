@@ -20,7 +20,7 @@ import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import { bindActionCreators } from 'redux'
-import { setIntentBuzz } from 'store/auth/actions'
+import { setIntentBuzz, setFromIntentBuzz } from 'store/auth/actions'
 import queryString from 'query-string'
 
 
@@ -72,10 +72,9 @@ const useStyles = createUseStyles({
 
 const AppFrame = (props) => {
   const classes = useStyles()
-  const { route, user, setIntentBuzz } = props
+  const { route, user, setIntentBuzz, setFromIntentBuzz, fromIntentBuzz } = props
   const { pathname, search } = useLocation()
   const { is_authenticated } = user
-  const [fromIntentBuzz, setFromIntentBuzz] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const params = queryString.parse(search) || ''
 
@@ -94,7 +93,7 @@ const AppFrame = (props) => {
   useEffect(() => {
     if (pathname.match(/^\/intent\/buzz/)) {
       setFromIntentBuzz(true)
-      if(params.text && params.url){
+      if(params.text){
         setIntentBuzz(params.text, params.url, params.tags)
       }
 
@@ -156,11 +155,13 @@ const AppFrame = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  fromIntentBuzz: state.auth.get('fromIntentBuzz'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setIntentBuzz,
+    setFromIntentBuzz,
   }, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(AppFrame)

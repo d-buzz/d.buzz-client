@@ -9,6 +9,7 @@ import {
   SET_INTENT_BUZZ,
   CLEAR_INTENT_BUZZ,
   SET_OPACITY_USERS,
+  SET_FROM_INTENT_BUZZ,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -19,6 +20,7 @@ const defaultState = fromJS({
   payoutAgreed: false,
   opacityUsers: [],
   intentBuzz: {},
+  fromIntentBuzz: false,
 })
 
 export const auth = (state = defaultState, { type, payload }) => {
@@ -43,6 +45,8 @@ export const auth = (state = defaultState, { type, payload }) => {
     return state.set("intentBuzz", {})
   case SET_OPACITY_USERS:
     return state.set('opacityUsers', payload)
+  case SET_FROM_INTENT_BUZZ:
+    return state.set('fromIntentBuzz', payload)
   default:
     return state
   }

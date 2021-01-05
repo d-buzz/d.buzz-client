@@ -173,7 +173,7 @@ const CreateBuzzForm = (props) => {
     loading,
     publishing,
     modal = false,
-    hideModalCallback = () => {},
+    hideModalCallback = () => { },
     broadcastNotification,
     setPageFrom,
     payoutAgreed,
@@ -181,13 +181,13 @@ const CreateBuzzForm = (props) => {
     clearIntentBuzz,
   } = props
 
-  const { text='', url='', hashtags='' } = intentBuzz
+  const { text = '', url = '', hashtags = '' } = intentBuzz
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
   const buzzIntentTags = []
-  if(wholeIntent && hashtags){
+  if (wholeIntent && hashtags) {
     const intentTags = hashtags.split(',')
-    if(intentTags){
+    if (intentTags) {
       intentTags.forEach((item) => {
         buzzIntentTags.push({ id: item, text: item })
       })
@@ -200,13 +200,13 @@ const CreateBuzzForm = (props) => {
   let containerClass = classes.container
   let minRows = 2
 
-  if(modal) {
+  if (modal) {
     containerClass = classes.containerModal
     minRows = 5
   }
 
   useEffect(() => {
-    setWordCount(Math.floor((content.length/280) * 100))
+    setWordCount(Math.floor((content.length / 280) * 100))
   }, [content, images])
 
   const closePayoutDisclaimer = () => {
@@ -218,14 +218,14 @@ const CreateBuzzForm = (props) => {
     const { name } = target
     let { value } = target
 
-    if(name === 'content-area') {
+    if (name === 'content-area') {
       setContent(value)
-    } else if(name === 'max-payout') {
+    } else if (name === 'max-payout') {
 
-      if(!payoutAgreed) {
+      if (!payoutAgreed) {
         setOpenPayoutDisclaimer(true)
       } else {
-        if((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+        if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
           value = 0.00
         }
         value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
@@ -241,7 +241,7 @@ const CreateBuzzForm = (props) => {
     const target = document.getElementById('file-upload')
     if (isMobile) {
 
-      target.addEventListener('click', function() {
+      target.addEventListener('click', function () {
         const touch = new Touch({
           identifier: 'file-upload',
           target: target,
@@ -264,8 +264,8 @@ const CreateBuzzForm = (props) => {
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((image) => {
-      const lastImage = image[image.length-1]
-      if(lastImage !== undefined) {
+      const lastImage = image[image.length - 1]
+      if (lastImage !== undefined) {
         const contentAppend = `${content} <br /> ${lastImage}`
         setContent(contentAppend)
       }
@@ -274,13 +274,13 @@ const CreateBuzzForm = (props) => {
 
   const handleClickPublishPost = () => {
 
-    if(buzzToTwitter) {
+    if (buzzToTwitter) {
       invokeTwitterIntent(content)
     }
 
     publishPostRequest(content, tags, payout)
       .then((data) => {
-        if(data.success) {
+        if (data.success) {
           setPageFrom(null)
           const { author, permlink } = data
           hideModalCallback()
@@ -320,13 +320,19 @@ const CreateBuzzForm = (props) => {
     const hostname = window.location.hostname
 
     e.preventDefault()
-    if(href && !href.includes(hostname)) {
+    if (href && !href.includes(hostname)) {
       window.open(href, '_blank')
     } else {
       const split = `${href}`.split('/')
       href = `/${split[3]}`
       history.push(href)
     }
+  }
+
+  const moveCaretAtEnd = (e) => {
+    var temp_value = e.target.value
+    e.target.value = ''
+    e.target.value = temp_value
   }
 
   return (
@@ -338,13 +344,13 @@ const CreateBuzzForm = (props) => {
         <div className={classNames(classes.inline, classes.right)}>
           {publishing && (
             <div style={{ width: '100%', paddingTop: 10 }}>
-              <Box  position="relative" display="inline-flex">
+              <Box position="relative" display="inline-flex">
                 <Spinner top={0} size={20} loading={publishing} />&nbsp;
                 <label className={classes.actionLabels}>broadcasting your buzz to the network, please wait ...</label>&nbsp;
               </Box>
             </div>
           )}
-          {(!publishing && !loading) &&  (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} />)}
+          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
@@ -380,7 +386,7 @@ const CreateBuzzForm = (props) => {
           )}
           {loading && (
             <div style={{ width: '100%', paddingTop: 5 }}>
-              <Box  position="relative" display="inline-flex">
+              <Box position="relative" display="inline-flex">
                 <Spinner top={-10} size={20} loading={loading} />&nbsp;
                 <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
               </Box>
@@ -389,7 +395,7 @@ const CreateBuzzForm = (props) => {
           {content.length !== 0 && (
             <div className={classes.previewContainer} onClick={handleClickContent}>
               <h6 className={classes.previewTitle}>Buzz preview</h6>
-              <MarkdownViewer content={content} minifyAssets={false}/>
+              <MarkdownViewer content={content} minifyAssets={false} />
               <div className={classes.separator} />
             </div>
           )}
@@ -431,7 +437,7 @@ const CreateBuzzForm = (props) => {
                   }}
                   size={30}
                   value={wordCount}
-                  variant="static"
+                  variant="determinate"
                 />
               </Box>
             </React.Fragment>
