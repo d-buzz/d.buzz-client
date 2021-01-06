@@ -194,7 +194,7 @@ const NavLinkWrapper = (props) => {
     activeClass,
     minifyItemsClass,
     minify,
-    onClick = () => {},
+    onClick = () => { },
     preventDefault = false,
   } = props
 
@@ -203,13 +203,13 @@ const NavLinkWrapper = (props) => {
   }
 
   const preventLink = (e) => {
-    if(preventDefault) e.preventDefault()
+    if (preventDefault) e.preventDefault()
   }
 
   return (
     <React.Fragment>
       {!minify && (
-        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
+        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '')}>
           <Link to={path}>
             <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
             {name}
@@ -217,7 +217,7 @@ const NavLinkWrapper = (props) => {
         </div>
       )}
       {minify && (
-        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
+        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '')}>
           <Link to={path} onClick={preventLink}>
             <IconButton
               size="medium"
@@ -243,6 +243,7 @@ const SideBarLeft = (props) => {
     minify,
     setBuzzModalStatus,
     intentBuzz,
+    fromIntentBuzz,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -258,7 +259,7 @@ const SideBarLeft = (props) => {
   }
 
   useEffect(() => {
-    if(isBuzzIntent || (intentBuzz && intentBuzz.text)){
+    if (isBuzzIntent || fromIntentBuzz || (intentBuzz && intentBuzz.text)) {
       setOpen(true)
     }
     pollNotifRequest()
@@ -281,7 +282,7 @@ const SideBarLeft = (props) => {
   const onHide = () => {
     setBuzzModalStatus(false)
     setOpen(false)
-    if(isBuzzIntent){
+    if (isBuzzIntent) {
       history.push('/')
     }
   }
@@ -304,7 +305,7 @@ const SideBarLeft = (props) => {
     {
       name: 'Latest',
       path: '/latest',
-      icon: <LatestIcon  />,
+      icon: <LatestIcon />,
     },
     {
       name: 'Notifications',
@@ -332,7 +333,7 @@ const SideBarLeft = (props) => {
           <LinkContainer >
             <NavbarBrand href="/">
               <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
-                {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
+                {theme.mode === 'light' && !minify && (<BrandIcon />)}
                 {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
                 {minify && (<CircularBrandIcon />)}
               </div>
@@ -426,7 +427,7 @@ const SideBarLeft = (props) => {
           </LinkContainer>
         </Nav>
       </div>
-      <BuzzFormModal show={open}  onHide={onHide} />
+      <BuzzFormModal show={open} onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
     </React.Fragment>
   )
@@ -438,6 +439,7 @@ const mapStateToProps = (state) => ({
   count: state.polling.get('count'),
   theme: state.settings.get('theme'),
   intentBuzz: state.auth.get("intentBuzz"),
+  fromIntentBuzz: state.auth.get('fromIntentBuzz'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

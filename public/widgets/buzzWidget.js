@@ -58,7 +58,7 @@
                 text: encode(getText(el)),
                 size: getSize(el),
                 url: encode(getUrl(el)),
-                tags: getHashTags(el).trim()
+                tags: strReplace(getHashTags(el).trim(),'#','') 
             }
             let srcFormat = "";
             let args = [];
@@ -66,25 +66,25 @@
             Object.entries(params).forEach(function (e) {
                 const [key, value] = e;
                 if (value) {
-                    if(srcFormat){
-                        srcFormat += "&"; 
+                    if (srcFormat) {
+                        srcFormat += "&";
                     }
                     srcFormat += key + "={" + count + "}";
                     args.push(value);
+                    count++;
                 }
-                count++;
             });
             return stringFormat(srcFormat, args);
         };
- 
+
         const extractHrefParams = function (el, attr) {
             let params = "";
-            const intentUrl  = getAttribute(el,"href");
-            if(intentUrl){
+            const intentUrl = getAttribute(el, "href");
+            if (intentUrl) {
                 const validateUrl = validateIntentUrl(intentUrl);
                 const query = validateUrl ? validateUrl.input : '';
                 const queryParams = splitUrlQuery(decodeUrl(query));
-                if(queryParams && queryParams[attr]){
+                if (queryParams && queryParams[attr]) {
                     params = queryParams[attr];
                 }
             }
@@ -92,17 +92,15 @@
         }
 
         const getUrl = function (el) {
-            return extractHrefParams(el,'url') || getAttribute(el, 'data-url') || location.href || ' ';
+            return extractHrefParams(el, 'url') || getAttribute(el, 'data-url') || '';
         };
 
         const getText = function (el) {
-            return extractHrefParams(el,'text') || 
-                   getAttribute(el, 'data-text') || 
-                   d.title || ' ';
+            return extractHrefParams(el, 'text') || getAttribute(el, 'data-text') || '';
         };
 
         const getSize = function (el) {
-            let size = extractHrefParams(el,'size') || getAttribute(el, 'data-size') || 'medium';
+            let size = extractHrefParams(el, 'size') || getAttribute(el, 'data-size') || 'medium';
             size = size.toLowerCase()
             if (size == "large" || size == "medium") {
                 return size.charAt(0);
@@ -112,9 +110,9 @@
         };
 
         const getHashTags = function (el) {
-            return extractHrefParams(el,'tags') || getAttribute(el, 'data-hashtags') || ' ';
+            return extractHrefParams(el, 'tags') || getAttribute(el, 'data-hashtags') || '';
         };
-        
+
         const createElement = function (el) {
             return d.createElement(el)
         }
@@ -136,18 +134,22 @@
             return decodeURIComponent(t);
         };
 
+        const strReplace = function (t,c,v) {
+            return t ? t.replace(c,v) : '';
+        }
+
         const splitUrlQuery = function (q) {
             let e = {};
-            return q ? (q.split("&").forEach(function(t) {
+            return q ? (q.split("&").forEach(function (t) {
                 const n = t.split("=");
                 const i = n[0];
                 const v = n[1];
-                if(2 === n.length){
+                if (2 === n.length) {
                     e[i] = decode(v);
                 }
-            }),e) : {};
+            }), e) : {};
         }
-        
+
         const stringFormat = function (str, args) {
             return str.replace(/\{(\d+)\}/g, function (m, n) {
                 return args[n] || m;
