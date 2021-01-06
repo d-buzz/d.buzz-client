@@ -187,3 +187,6 @@ export const setFromIntentBuzz = (status) => ({
   type: SET_FROM_INTENT_BUZZ,
   payload: status,
 })
+
+export const ADD_ACCOUNT_REQUEST = 'ADD_ACCOUNT_REQUEST'
+export const ADD_ACCOUNT_SUCCCESS = 'ADD_ACCOUNT_SUCCESS'
