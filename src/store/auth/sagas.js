@@ -53,6 +53,17 @@ function* authenticateUserRequest(payload, meta) {
   username = `${username}`.toLowerCase()
   const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
+  let users = yield call([localStorage, localStorage.getItem], 'user')
+  let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
+
+  if(!users) {
+    users = []
+  }
+
+  if(!accounts) {
+    accounts = []
+  }
+
   try {
     if(useKeychain) {
       const data = yield call(keychainSignIn, username)
@@ -94,9 +105,14 @@ function* authenticateUserRequest(payload, meta) {
 
       const session = generateSession(user)
 
+      if(!accounts.includes(username)) {
+        users.push(session)
+      }
+
       yield call([localStorage, localStorage.clear])
-      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
       yield call([localStorage, localStorage.setItem], 'active', username)
+      yield call([localStorage, localStorage.setItem], 'accounts', accounts)
     }
 
     yield put(authenticateUserSuccess(user, meta))
@@ -109,10 +125,21 @@ function* getSavedUserRequest(meta) {
   let user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
+    const active = yield call([localStorage, localStorage.getItem], 'active')
+
     saved = JSON.parse(saved)
-    if(saved !== null && saved.hasOwnProperty('id') && saved.hasOwnProperty('token')) {
-      saved = readSession(saved)
-      user = saved
+
+    if(saved !== null && Array.isArray(saved) && active) {
+      // saved.hasOwnProperty('id') && saved.hasOwnProperty('token')
+      let activeUser = null
+      saved.forEach((item) => {
+        const decrypted = readSession(item)
+
+        if(decrypted.username === active) {
+          activeUser = decrypted
+        }
+      })
+      user = activeUser
     }
 
     if(user.is_authenticated) {
@@ -132,6 +159,7 @@ function* getSavedUserRequest(meta) {
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
