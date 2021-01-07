@@ -84,6 +84,7 @@ function* authenticateUserRequest(payload, meta) {
     if(user.is_authenticated) {
       const is_subscribe = yield call(getCommunityRole, username)
       user.is_subscribe = is_subscribe
+      user.active = true
 
       let mutelist = yield call(fetchMuteList, username)
 
@@ -95,6 +96,7 @@ function* authenticateUserRequest(payload, meta) {
 
       yield call([localStorage, localStorage.clear])
       yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+      yield call([localStorage, localStorage.setItem], 'active', username)
     }
 
     yield put(authenticateUserSuccess(user, meta))
