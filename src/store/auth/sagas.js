@@ -29,6 +29,8 @@ import {
 
   setHasAgreedPayout,
   setOpacityUsers,
+
+  setAccountList,
 } from './actions'
 
 import {
@@ -62,6 +64,8 @@ function* authenticateUserRequest(payload, meta) {
 
   if(!accounts) {
     accounts = []
+  } else {
+    accounts = JSON.parse(accounts)
   }
 
   try {
@@ -114,6 +118,7 @@ function* authenticateUserRequest(payload, meta) {
       yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
       yield call([localStorage, localStorage.setItem], 'active', username)
       yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
+      yield put(setAccountList(accounts))
     }
 
     yield put(authenticateUserSuccess(user, meta))
@@ -127,10 +132,17 @@ function* getSavedUserRequest(meta) {
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     const active = yield call([localStorage, localStorage.getItem], 'active')
+    let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
+
+    if(!accounts) {
+      accounts = []
+    } else {
+      accounts = JSON.parse(accounts)
+    }
 
     saved = JSON.parse(saved)
 
-    if(saved !== null && Array.isArray(saved) && active) {
+    if(saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
       // saved.hasOwnProperty('id') && saved.hasOwnProperty('token')
       let activeUser = null
       saved.forEach((item) => {
@@ -156,6 +168,7 @@ function* getSavedUserRequest(meta) {
       payoutAgreed = false
     }
 
+    yield put(setAccountList(accounts))
     yield put(setHasAgreedPayout(payoutAgreed))
 
     yield put(getSavedUserSuccess(user, meta))
