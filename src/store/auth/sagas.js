@@ -56,6 +56,8 @@ function* authenticateUserRequest(payload, meta) {
   let users = yield call([localStorage, localStorage.getItem], 'user')
   let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
 
+  console.log({ accounts })
+
   if(!users) {
     users = []
   }
@@ -63,6 +65,8 @@ function* authenticateUserRequest(payload, meta) {
   if(!accounts) {
     accounts = []
   }
+
+  console.log({ accounts })
 
   try {
     if(useKeychain) {
@@ -107,12 +111,13 @@ function* authenticateUserRequest(payload, meta) {
 
       if(!accounts.includes(username)) {
         users.push(session)
+        accounts.push({ username, keychain: useKeychain })
       }
 
       yield call([localStorage, localStorage.clear])
       yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
       yield call([localStorage, localStorage.setItem], 'active', username)
-      yield call([localStorage, localStorage.setItem], 'accounts', accounts)
+      yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
     }
 
     yield put(authenticateUserSuccess(user, meta))
