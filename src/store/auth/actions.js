@@ -188,5 +188,9 @@ export const setFromIntentBuzz = (status) => ({
   payload: status,
 })
 
-export const ADD_ACCOUNT_REQUEST = 'ADD_ACCOUNT_REQUEST'
-export const ADD_ACCOUNT_SUCCCESS = 'ADD_ACCOUNT_SUCCESS'
+export const SET_ACCOUNT_LIST = 'SET_ACCOUNT_LIST'
+
+export const setAccountList = (list) => ({
+  type: SET_ACCOUNT_LIST,
+  payload: list,
+})
