@@ -23,6 +23,7 @@ import {
   BuzzIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
+import IconPeople from '@material-ui/icons/People'
 import {
   BuzzFormModal,
   ThemeModal,
@@ -320,6 +321,13 @@ const SideBarLeft = (props) => {
     {
       name: 'Display',
       icon: <SunMoonIcon />,
+      path: '#',
+      preventDefault: true,
+      onClick: showThemeModal,
+    },
+    {
+      name: 'Switch Account',
+      icon: <IconPeople />,
       path: '#',
       preventDefault: true,
       onClick: showThemeModal,
