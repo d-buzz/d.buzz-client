@@ -58,7 +58,7 @@ function* authenticateUserRequest(payload, meta) {
   let users = yield call([localStorage, localStorage.getItem], 'user')
   let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
 
-  if(!users) {
+  if(!users || typeof user === 'object') {
     users = []
   } else {
     users = JSON.parse(users)
@@ -177,6 +177,7 @@ function* getSavedUserRequest(meta) {
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
