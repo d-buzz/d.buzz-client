@@ -23,9 +23,12 @@ import {
   BuzzIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
+import IconPeople from '@material-ui/icons/People'
 import {
   BuzzFormModal,
   ThemeModal,
+  SwitchUserModal,
+  LoginModal,
 } from 'components'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -248,6 +251,8 @@ const SideBarLeft = (props) => {
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
+  const [openSwitchModal, setOpenSwitchModal] = useState(false)
+  const [openLoginModal, setOpenLoginModal] = useState(false)
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -256,6 +261,10 @@ const SideBarLeft = (props) => {
 
   const showThemeModal = () => {
     setOpenTheme(true)
+  }
+
+  const showSwitchModal = () => {
+    setOpenSwitchModal(true)
   }
 
   useEffect(() => {
@@ -291,6 +300,19 @@ const SideBarLeft = (props) => {
     setOpenTheme(false)
   }
 
+  const onHideSwitchModal = () => {
+    setOpenSwitchModal(false)
+  }
+
+  const addUserCallBack = () => {
+    setOpenLoginModal(true)
+    onHideSwitchModal()
+  }
+
+  const hideLoginModal = () => {
+    setOpenLoginModal(false)
+  }
+
   const NavLinks = [
     {
       name: 'Home',
@@ -323,6 +345,13 @@ const SideBarLeft = (props) => {
       path: '#',
       preventDefault: true,
       onClick: showThemeModal,
+    },
+    {
+      name: 'Switch Account',
+      icon: <IconPeople />,
+      path: '#',
+      preventDefault: true,
+      onClick: showSwitchModal,
     },
   ]
 
@@ -429,6 +458,8 @@ const SideBarLeft = (props) => {
       </div>
       <BuzzFormModal show={open} onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
+      <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
+      <LoginModal show={openLoginModal} onHide={hideLoginModal} />
     </React.Fragment>
   )
 }

@@ -187,3 +187,26 @@ export const setFromIntentBuzz = (status) => ({
   type: SET_FROM_INTENT_BUZZ,
   payload: status,
 })
+
+export const SET_ACCOUNT_LIST = 'SET_ACCOUNT_LIST'
+
+export const setAccountList = (list) => ({
+  type: SET_ACCOUNT_LIST,
+  payload: list,
+})
+
+export const SWITCH_ACCOUNT_REQUEST = 'SWITCH_ACCOUNT_REQUEST'
+export const SWITCH_ACCOUNT_SUCCESS = 'SWTICH_ACCOUNT_SUCCESS'
+
+export const switchAccountRequest = (username) => ({
+  type: SWITCH_ACCOUNT_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const switchAccountSuccess = (meta) => ({
+  type: SWITCH_ACCOUNT_SUCCESS,
+  meta,
+})

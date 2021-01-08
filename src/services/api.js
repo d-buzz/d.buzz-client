@@ -14,7 +14,6 @@ import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
 import moment from 'moment'
 import 'react-app-polyfill/stable'
-import { readSession } from 'services/helper'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -338,21 +337,22 @@ export const isFollowing = (follower, following) => {
 }
 
 export const fetchSingleProfile = (account) => {
-  const user = JSON.parse(localStorage.getItem('user'))
+  const user = localStorage.getItem('active')
 
   return new Promise((resolve, reject) => {
     const params = {account}
     api.call('bridge.get_profile', params, async(err, data) => {
       if (err) {
+        console.log({err})
         reject(err)
       }else {
         let isFollowed = false
 
-        if(user) {
-          const { username } = readSession(user)
-
-          if(username !== data.name) {
-            isFollowed = await isFollowing(username, data.name)
+        if(user && `${user}`.trim() !== '') {
+          // const { username } = readSession(user)
+          console.log({account})
+          if(user !== data.name) {
+            isFollowed = await isFollowing(user, data.name)
           }
         }
 

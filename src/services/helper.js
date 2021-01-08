@@ -209,7 +209,7 @@ export const readSession = (session) => {
 export const generateSession = (obj) => {
   const date = new Date()
   const lowerlimit = randomizer(1, 12)
-  const upperlimit = randomizer(13, 28)
+  const upperlimit = randomizer(13, 26)
   const index = randomizer(upperlimit, lowerlimit)
 
   const uid = uuid()
