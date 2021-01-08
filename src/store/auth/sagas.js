@@ -60,6 +60,8 @@ function* authenticateUserRequest(payload, meta) {
 
   if(!users) {
     users = []
+  } else {
+    users = JSON.parse(users)
   }
 
   if(!accounts) {
@@ -109,7 +111,9 @@ function* authenticateUserRequest(payload, meta) {
 
       const session = generateSession(user)
 
-      if(!accounts.includes(username)) {
+      const isInAccountList = accounts.filter(item => item.username === username)
+
+      if(isInAccountList.length === 0) {
         users.push(session)
         accounts.push({ username, keychain: useKeychain })
       }
@@ -178,11 +182,33 @@ function* getSavedUserRequest(meta) {
 }
 
 function* signoutUserRequest(meta) {
-  const user = { username: '', useKeychain: false, is_authenticated: false }
   try {
-    yield call([localStorage, localStorage.removeItem], 'user')
+    const user = { username: '', useKeychain: false, is_authenticated: false }
+    const active = yield call([localStorage, localStorage.getItem], 'active')
+    let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
+    let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
+
+    console.log({users})
+    console.log({ accounts })
+
+    accounts = accounts.filter(item => item.username !== active)
+
+    const decryptedUsers = []
+
+    users.forEach((item) => {
+      decryptedUsers.push(readSession(item))
+    })
+
+    users = decryptedUsers.filter(item => item.username !== active)
+
+    // yield call([localStorage, localStorage.removeItem], 'user')
+    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
+    yield call([localStorage, localStorage.setItem], 'active', null)
+    yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
+    yield put(setAccountList(accounts))
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(signoutUserFailure(error, meta))
   }
 }
