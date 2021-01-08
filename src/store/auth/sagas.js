@@ -31,6 +31,9 @@ import {
   setOpacityUsers,
 
   setAccountList,
+
+  SWITCH_ACCOUNT_REQUEST,
+  switchAccountSuccess,
 } from './actions'
 
 import {
@@ -324,6 +327,12 @@ function* muteUserRequest(payload, meta) {
   }
 }
 
+function* switchAccountRequest(payload, meta) {
+  const { username } = payload
+  yield call([localStorage, localStorage.setItem], 'active', username)
+  yield put(switchAccountSuccess(meta))
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -348,6 +357,10 @@ function* watchMuteUserRequest({ payload, meta }) {
   yield call(muteUserRequest, payload, meta)
 }
 
+function* watchSwitchAccountRequest({ payload, meta }) {
+  yield call(switchAccountRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
@@ -355,4 +368,5 @@ export default function* sagas() {
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
   yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
+  yield takeEvery(SWITCH_ACCOUNT_REQUEST, watchSwitchAccountRequest)
 }
