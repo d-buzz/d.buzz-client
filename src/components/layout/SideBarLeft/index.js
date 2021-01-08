@@ -27,6 +27,7 @@ import IconPeople from '@material-ui/icons/People'
 import {
   BuzzFormModal,
   ThemeModal,
+  SwitchUserModal,
 } from 'components'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -249,6 +250,7 @@ const SideBarLeft = (props) => {
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
+  const [openSwitchModal, setOpenSwitchModal] = useState(false)
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -257,6 +259,10 @@ const SideBarLeft = (props) => {
 
   const showThemeModal = () => {
     setOpenTheme(true)
+  }
+
+  const showSwitchModal = () => {
+    setOpenSwitchModal(true)
   }
 
   useEffect(() => {
@@ -290,6 +296,10 @@ const SideBarLeft = (props) => {
 
   const onHideTheme = () => {
     setOpenTheme(false)
+  }
+
+  const onHideSwitchModal = () => {
+    setOpenSwitchModal(false)
   }
 
   const NavLinks = [
@@ -330,7 +340,7 @@ const SideBarLeft = (props) => {
       icon: <IconPeople />,
       path: '#',
       preventDefault: true,
-      onClick: showThemeModal,
+      onClick: showSwitchModal,
     },
   ]
 
@@ -437,6 +447,7 @@ const SideBarLeft = (props) => {
       </div>
       <BuzzFormModal show={open} onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
+      <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} />
     </React.Fragment>
   )
 }

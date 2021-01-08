@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { muteUserRequest } from 'store/auth/actions'
-import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
-import {
-  unfollowRequest,
-} from 'store/posts/actions'
-import { ContainedButton } from 'components/elements'
+import { ContainedButton, Avatar } from 'components/elements'
 import { createUseStyles } from 'react-jss'
+import classNames from 'classnames'
+import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { connect } from 'react-redux'
-import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
-import { pending } from 'redux-saga-thunk'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -36,16 +31,14 @@ const useStyles = createUseStyles(theme => ({
   },
   button: {
     width: '100%',
-    height: 60,
+    height: 55,
     marginBottom: 15,
     borderRadius: '5px 5px',
     cursor: 'pointer',
     lineHeight: 0.8,
     border: `3px solid ${theme.background.primary}`,
-    '& :first-child': {
-      paddingTop: 5,
-    },
     '& label': {
+      paddingTop: 9,
       cursor: 'pointer',
     },
     '&:hover': {
@@ -88,134 +81,51 @@ const useStyles = createUseStyles(theme => ({
   active: {
     border: '3px solid #e61c34',
   },
-  innerModal: {
-    width: '98%',
-    margin: '0 auto',
-    height: 'max-content',
-  },
-  text: {
-    ...theme.font,
+  accountButtons: {
+    backgroundColor: theme.background.primary,
+    border: theme.border.primary,
+    '& label': {
+      color: theme.font.color,
+    },
   },
 }))
 
 
-const MuteModal = (props) => {
+const ThemeModal = (props) => {
   const {
-    closeMuteDialog,
-    muteModal,
-    muteUserRequest,
-    loading,
-    broadcastNotification,
-    mutelist,
-    unfollowRequest,
+    show,
+    accounts,
+    onHide,
   } = props
-  const [open, setOpen] = useState(false)
-  const [username, setUsernamae] = useState(null)
+
   const classes = useStyles()
 
-  useEffect(() => {
-    if(muteModal && muteModal.hasOwnProperty('open')) {
-      const { open, username } = muteModal
-      setOpen(open)
-      setUsernamae(username)
-    }
-  }, [muteModal])
-
-  const onHide = () => {
-    closeMuteDialog()
-  }
-
-  const handleClickMuteUser = () => {
-    const inMuteList = mutelist.includes(username)
-    if(!inMuteList) {
-      muteUserRequest(username).then(() => {
-        setOpen(false)
-        onHide()
-        broadcastNotification('success', `Succesfully muted @${username}`)
-        const { muteSuccessCallback } = muteModal
-
-        if(muteSuccessCallback) {
-          muteSuccessCallback()
-        }
-      }).catch(() => {
-        broadcastNotification('success', `Failed to mute @${username}`)
-      })
-    } else {
-      unfollowRequest(username).then((result) => {
-        if(result) {
-          broadcastNotification('success', `Successfully unmuted @${username}`)
-        } else {
-          broadcastNotification('error', `Failed unmuting @${username}`)
-        }
-      })
-    }
-  }
 
   return (
     <React.Fragment>
-      <Modal className={classes.modal} show={open || loading} onHide={onHide}>
+      <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
-          <div className={classes.innerModal}>
+          <div style={{ width: '98%', margin: '0 auto', height: 'max-content' }}>
             <center>
-              {!loading && (
-                <React.Fragment>
-                  {!mutelist.includes(username) && (
-                    <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
-                      <p className={classes.text}>
-                        Would you like to add <b>@{username}</b> to your list of
-                        muted users?
-                      </p>
-                    </React.Fragment>
-                  )}
-                  {mutelist.includes(username) && (
-                    <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
-                      <p className={classes.text}>
-                        Would you like to remove <b>@{username}</b> from your list of
-                        muted users?
-                      </p>
-                    </React.Fragment>
-                  )}
-                </React.Fragment>
-              )}
-              {loading && (
-                <React.Fragment>
-                  <h6>Operation in progress</h6>
-                  <p className={classes.text}>
-                    Adding <b>@{username}</b> to your list of
-                    muted users
-                  </p>
-                </React.Fragment>
-              )}
+              <h6>Switch User</h6>
             </center>
+            {accounts.map((item) => (
+              <div
+                className={classNames(classes.button, classes.accountButtons)}
+              >
+                <div style={{ padding: 2, width: '95%', margin: '0 auto', }}>
+                  <Avatar author={item.username} height={45} />
+                </div>
+              </div>
+            ))}
           </div>
-          {!loading && (
-            <React.Fragment>
-              <div style={{ display: 'inline-block' }}>
-                <ContainedButton
-                  onClick={handleClickMuteUser}
-                  className={classes.closeButton}
-                  fontSize={14}
-                  transparent={true}
-                  label="Add"
-                />
-              </div>
-              <div style={{ display: 'inline-block', float: 'right' }}>
-                <ContainedButton
-                  onClick={onHide}
-                  className={classes.closeButton}
-                  fontSize={14}
-                  transparent={true}
-                  label="Cancel"
-                />
-              </div>
-            </React.Fragment>
-          )}
           <center>
-            {loading && (
-              <Spinner size={40} loading={true} />
-            )}
+            <ContainedButton
+              onClick={onHide}
+              className={classes.closeButton}
+              fontSize={14}
+              label="Add user"
+            />
           </center>
         </ModalBody>
       </Modal>
@@ -225,18 +135,14 @@ const MuteModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  muteModal: state.interfaces.get('muteDialogUser'),
-  loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
-  mutelist: state.auth.get('mutelist'),
+  accounts: state.auth.get('accounts'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    closeMuteDialog,
-    muteUserRequest,
-    broadcastNotification,
-    unfollowRequest,
+    setThemeRequest,
+    generateStyles,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MuteModal)
+export default connect(mapStateToProps, mapDispatchToProps)(ThemeModal)

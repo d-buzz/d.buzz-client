@@ -113,7 +113,7 @@ const ThemeModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal className={classes.modal} show={show}>
+      <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
           <div style={{ width: '98%', margin: '0 auto', height: 'max-content' }}>
             <center>
