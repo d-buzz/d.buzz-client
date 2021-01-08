@@ -31,7 +31,7 @@ const useStyles = createUseStyles(theme => ({
   },
   button: {
     width: '100%',
-    height: 55,
+    height: 50,
     marginBottom: 15,
     borderRadius: '5px 5px',
     cursor: 'pointer',
@@ -40,9 +40,6 @@ const useStyles = createUseStyles(theme => ({
     '& label': {
       paddingTop: 9,
       cursor: 'pointer',
-    },
-    '&:hover': {
-      border: '3px solid #e61c34',
     },
   },
   darkModeButton: {
@@ -79,7 +76,8 @@ const useStyles = createUseStyles(theme => ({
     height: 35,
   },
   active: {
-    border: '3px solid #e61c34',
+    border: '3px solid #e61c34 !important',
+    cursor: 'default !important',
   },
   accountButtons: {
     backgroundColor: theme.background.primary,
@@ -88,16 +86,28 @@ const useStyles = createUseStyles(theme => ({
       color: theme.font.color,
     },
   },
+  buttonInner: {
+    padding: 2,
+    width: '95%',
+    margin: '0 auto',
+  },
+  hoverable: {
+    '&:hover': {
+      border: '3px solid #e61c34',
+    },
+  },
 }))
 
 
 const ThemeModal = (props) => {
   const {
     show,
+    user,
     accounts,
     onHide,
   } = props
 
+  const { username: activeUser } = user
   const classes = useStyles()
 
 
@@ -109,12 +119,13 @@ const ThemeModal = (props) => {
             <center>
               <h6>Switch User</h6>
             </center>
-            {accounts.map((item) => (
+            {accounts.map(({ username, keychain }) => (
               <div
-                className={classNames(classes.button, classes.accountButtons)}
+                className={classNames(classes.button, classes.accountButtons, activeUser !== username ? classes.hoverable : classes.active)}
               >
-                <div style={{ padding: 2, width: '95%', margin: '0 auto', }}>
-                  <Avatar author={item.username} height={45} />
+                <div className={classes.buttonInner}>
+                  <Avatar author={username} height={40} />&nbsp;
+                  <label>{username} ({activeUser === username ? 'online': 'offline'})</label>
                 </div>
               </div>
             ))}
@@ -136,6 +147,7 @@ const ThemeModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   accounts: state.auth.get('accounts'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
