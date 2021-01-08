@@ -105,6 +105,7 @@ const ThemeModal = (props) => {
     user,
     accounts,
     onHide,
+    addUserCallBack,
   } = props
 
   const { username: activeUser } = user
@@ -132,7 +133,7 @@ const ThemeModal = (props) => {
           </div>
           <center>
             <ContainedButton
-              onClick={onHide}
+              onClick={addUserCallBack}
               className={classes.closeButton}
               fontSize={14}
               label="Add user"

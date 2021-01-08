@@ -28,6 +28,7 @@ import {
   BuzzFormModal,
   ThemeModal,
   SwitchUserModal,
+  LoginModal,
 } from 'components'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -251,6 +252,7 @@ const SideBarLeft = (props) => {
   const [open, setOpen] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
   const [openSwitchModal, setOpenSwitchModal] = useState(false)
+  const [openLoginModal, setOpenLoginModal] = useState(false)
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -300,6 +302,15 @@ const SideBarLeft = (props) => {
 
   const onHideSwitchModal = () => {
     setOpenSwitchModal(false)
+  }
+
+  const addUserCallBack = () => {
+    setOpenLoginModal(true)
+    onHideSwitchModal()
+  }
+
+  const hideLoginModal = () => {
+    setOpenLoginModal(false)
   }
 
   const NavLinks = [
@@ -447,7 +458,8 @@ const SideBarLeft = (props) => {
       </div>
       <BuzzFormModal show={open} onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
-      <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} />
+      <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
+      <LoginModal show={openLoginModal} onHide={hideLoginModal} />
     </React.Fragment>
   )
 }

@@ -86,7 +86,10 @@ const LoginModal = (props) => {
     loading,
     fromIntentBuzz,
     buzzIntentCallback = () => { },
+    accounts,
   } = props
+
+  console.log({ accounts })
 
   const classes = useStyles()
   const [username, setUsername] = useState()
@@ -153,6 +156,18 @@ const LoginModal = (props) => {
     win.focus()
   }
 
+  const hasSwitcherMatch = () => {
+    let hasMatch = false
+    if(accounts && Array.isArray(accounts) && accounts.length !== 0) {
+      accounts.forEach((item) => {
+        if(item.username === username) {
+          hasMatch = true
+        }
+      })
+    }
+    return hasMatch
+  }
+
   return (
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
@@ -163,6 +178,7 @@ const LoginModal = (props) => {
               {hasAuthenticationError && (
                 <span style={{ color: 'red' }}>Authentication failed, please check credentials and retry again.</span>
               )}
+              {hasSwitcherMatch() && (<span style={{ color: 'red' }}>You are trying to login a username that is already added in the account switcher</span>)}
             </center>
           </div>
           <FormLabel className={classes.label}>Username</FormLabel>
@@ -255,7 +271,7 @@ const LoginModal = (props) => {
                 transparent={true}
                 className={classes.loginButton}
                 fontSize={15}
-                disabled={isDisabled()}
+                disabled={isDisabled() || hasSwitcherMatch()}
                 label="Submit"
               />
             )}
@@ -278,6 +294,7 @@ const LoginModal = (props) => {
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'AUTHENTICATE_USER_REQUEST'),
+  accounts: state.auth.get('accounts'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
