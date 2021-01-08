@@ -89,8 +89,6 @@ const LoginModal = (props) => {
     accounts,
   } = props
 
-  console.log({ accounts })
-
   const classes = useStyles()
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
