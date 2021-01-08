@@ -53,16 +53,20 @@ function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain } = payload
   let { username } = payload
   username = `${username}`.toLowerCase()
+
   const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
 
   let users = yield call([localStorage, localStorage.getItem], 'user')
   let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
 
-  if(!users || typeof user === 'object') {
+  if(!users || !Array.isArray(JSON.parse(users))) {
+    console.log('emptied')
     users = []
   } else {
     users = JSON.parse(users)
   }
+
+  const initialUsersLength = users.length
 
   if(!accounts) {
     accounts = []
@@ -125,8 +129,13 @@ function* authenticateUserRequest(payload, meta) {
       yield put(setAccountList(accounts))
     }
 
+    if(users.length !== initialUsersLength) {
+      window.location.reload()
+    }
+
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
