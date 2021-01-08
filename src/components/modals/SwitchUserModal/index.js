@@ -5,6 +5,7 @@ import { ContainedButton, Avatar } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import classNames from 'classnames'
 import { setThemeRequest, generateStyles } from 'store/settings/actions'
+import { switchAccountRequest } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -99,18 +100,25 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 
-const ThemeModal = (props) => {
+const SwitchUserModal = (props) => {
   const {
     show,
     user,
     accounts,
     onHide,
     addUserCallBack,
+    switchAccountRequest,
   } = props
 
   const { username: activeUser } = user
   const classes = useStyles()
 
+  const handleClickSwitchUser = (username) => () => {
+    switchAccountRequest(username)
+      .then(() => {
+        window.location.reload()
+      })
+  }
 
   return (
     <React.Fragment>
@@ -120,8 +128,9 @@ const ThemeModal = (props) => {
             <center>
               <h6>Switch User</h6>
             </center>
-            {accounts.map(({ username, keychain }) => (
+            {accounts.map(({ username }) => (
               <div
+                onClick={handleClickSwitchUser(username)}
                 className={classNames(classes.button, classes.accountButtons, activeUser !== username ? classes.hoverable : classes.active)}
               >
                 <div className={classes.buttonInner}>
@@ -155,7 +164,8 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setThemeRequest,
     generateStyles,
+    switchAccountRequest,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ThemeModal)
+export default connect(mapStateToProps, mapDispatchToProps)(SwitchUserModal)
