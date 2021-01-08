@@ -131,6 +131,7 @@ const LoginModal = (props) => {
           if (fromIntentBuzz && buzzIntentCallback) {
             buzzIntentCallback()
           }
+          onHide()
         }
       })
   }
