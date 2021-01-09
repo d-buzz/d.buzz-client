@@ -63,7 +63,6 @@ function* authenticateUserRequest(payload, meta) {
   let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
 
   if(!users || !Array.isArray(JSON.parse(users))) {
-    console.log('emptied')
     users = []
   } else {
     users = JSON.parse(users)
@@ -138,7 +137,6 @@ function* authenticateUserRequest(payload, meta) {
 
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
@@ -189,7 +187,6 @@ function* getSavedUserRequest(meta) {
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
@@ -200,9 +197,6 @@ function* signoutUserRequest(meta) {
     const active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
     let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
-
-    console.log({users})
-    console.log({ accounts })
 
     accounts = accounts.filter(item => item.username !== active)
 
@@ -221,7 +215,6 @@ function* signoutUserRequest(meta) {
     yield put(setAccountList(accounts))
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(signoutUserFailure(error, meta))
   }
 }
