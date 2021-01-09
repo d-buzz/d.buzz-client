@@ -37,6 +37,12 @@ const useStyles = createUseStyles(theme => ({
       fontSize: 14,
     },
     fontSize: '14 !important',
+    '& blockquote': {
+      padding: '10px 12px',
+      margin: '0 0 20px',
+      fontSize: 13,
+      borderLeft: '5px solid #eee',
+    },
   },
   preview: {
     marginBottom: 10,
