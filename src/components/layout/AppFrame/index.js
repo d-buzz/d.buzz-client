@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
 import {
   AppBar,
+  DeveloperFrame,
   GuardedAppFrame,
   UnguardedAppFrame,
   OrganizationAppFrame,
@@ -79,6 +80,7 @@ const AppFrame = (props) => {
   const params = queryString.parse(search) || ''
 
   const organizationRoutes = (pathname.match(/^\/org/))
+  const developerRoutes = pathname.match(/^\/developer/)
   let containerClass = classes.guardedContainer
   const unGuardedRoute = (pathname.match(/^\/login/) || !is_authenticated)
 
@@ -123,7 +125,7 @@ const AppFrame = (props) => {
     <React.Fragment>
       {!is_authenticated && (<AppBar />)}
       {organizationRoutes && (<OrganizationAppBar />)}
-      {!isMobile && (
+      {!isMobile && !developerRoutes && (
         <Container className={containerClass}>
           <StickyContainer>
             {organizationRoutes && (
@@ -139,7 +141,8 @@ const AppFrame = (props) => {
           <UserDialog />
         </Container>
       )}
-      {isMobile && (<MobileAppFrame pathname={pathname} route={route} />)}
+      {isMobile && !developerRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
+      {developerRoutes && (<DeveloperFrame route={route} />)}
       {organizationRoutes && (<OrganizationFooter />)}
       <ReplyFormModal />
       <NotificationBox />
