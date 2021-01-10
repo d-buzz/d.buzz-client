@@ -87,6 +87,7 @@ const LoginModal = (props) => {
     fromIntentBuzz,
     buzzIntentCallback = () => { },
     accounts,
+    user,
   } = props
 
   const classes = useStyles()
@@ -157,7 +158,8 @@ const LoginModal = (props) => {
 
   const hasSwitcherMatch = () => {
     let hasMatch = false
-    if(accounts && Array.isArray(accounts) && accounts.length !== 0) {
+    const { is_authenticated } = user
+    if(accounts && Array.isArray(accounts) && accounts.length !== 0 && is_authenticated) {
       accounts.forEach((item) => {
         if(item.username === username) {
           hasMatch = true
@@ -294,6 +296,7 @@ const LoginModal = (props) => {
 const mapStateToProps = (state) => ({
   loading: pending(state, 'AUTHENTICATE_USER_REQUEST'),
   accounts: state.auth.get('accounts'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

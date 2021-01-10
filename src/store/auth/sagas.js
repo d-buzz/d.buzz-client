@@ -145,7 +145,7 @@ function* getSavedUserRequest(meta) {
   let user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
-    const active = yield call([localStorage, localStorage.getItem], 'active')
+    let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
 
     if(!accounts) {
@@ -156,7 +156,12 @@ function* getSavedUserRequest(meta) {
 
     saved = JSON.parse(saved)
 
-    if(saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
+    try {
+      const parseActive = JSON.parse(active)
+      active = parseActive
+    } catch (e) {}
+
+    if(active !== null && saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
       // saved.hasOwnProperty('id') && saved.hasOwnProperty('token')
       let activeUser = null
       saved.forEach((item) => {
@@ -194,25 +199,28 @@ function* getSavedUserRequest(meta) {
 function* signoutUserRequest(meta) {
   try {
     const user = { username: '', useKeychain: false, is_authenticated: false }
-    const active = yield call([localStorage, localStorage.getItem], 'active')
-    let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
-    let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
+    // const active = yield call([localStorage, localStorage.getItem], 'active')
+    // let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
+    // let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
 
-    accounts = accounts.filter(item => item.username !== active)
+    // accounts = accounts.filter(item => item.username !== active)
 
-    const decryptedUsers = []
+    // const subtracted = []
 
-    users.forEach((item) => {
-      decryptedUsers.push(readSession(item))
-    })
+    // users.forEach((item) => {
+    //   const { username } = readSession(item)
+    //   if(username !== active) {
+    //     subtracted.push(item)
+    //   }
+    // })
 
-    users = decryptedUsers.filter(item => item.username !== active)
+    // users = subtracted
 
     // yield call([localStorage, localStorage.removeItem], 'user')
-    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
+    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([]))
     yield call([localStorage, localStorage.setItem], 'active', null)
-    yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
-    yield put(setAccountList(accounts))
+    yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify([]))
+    yield put(setAccountList([]))
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
     yield put(signoutUserFailure(error, meta))
