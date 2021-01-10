@@ -145,7 +145,7 @@ function* getSavedUserRequest(meta) {
   let user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
-    const active = yield call([localStorage, localStorage.getItem], 'active')
+    let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
 
     if(!accounts) {
@@ -156,7 +156,12 @@ function* getSavedUserRequest(meta) {
 
     saved = JSON.parse(saved)
 
-    if(saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
+    try {
+      const parseActive = JSON.parse(active)
+      active = parseActive
+    } catch (e) {}
+
+    if(active !== null && saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
       // saved.hasOwnProperty('id') && saved.hasOwnProperty('token')
       let activeUser = null
       saved.forEach((item) => {
@@ -187,6 +192,7 @@ function* getSavedUserRequest(meta) {
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
+    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
