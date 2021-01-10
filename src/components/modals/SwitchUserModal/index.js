@@ -97,6 +97,11 @@ const useStyles = createUseStyles(theme => ({
       border: '3px solid #e61c34',
     },
   },
+  wrapper: {
+    width: '98%',
+    margin: '0 auto',
+    height: 'max-content',
+  },
 }))
 
 
@@ -124,13 +129,13 @@ const SwitchUserModal = (props) => {
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
-          <div style={{ width: '98%', margin: '0 auto', height: 'max-content' }}>
+          <div style={{  }}>
             <center>
               <h6>Switch User</h6>
             </center>
             {accounts.map(({ username }) => (
               <div
-                onClick={handleClickSwitchUser(username)}
+                onClick={activeUser !== username ? handleClickSwitchUser(username) : () => {}}
                 className={classNames(classes.button, classes.accountButtons, activeUser !== username ? classes.hoverable : classes.active)}
               >
                 <div className={classes.buttonInner}>
