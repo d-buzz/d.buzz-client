@@ -200,13 +200,16 @@ function* signoutUserRequest(meta) {
 
     accounts = accounts.filter(item => item.username !== active)
 
-    const decryptedUsers = []
+    const subtracted = []
 
     users.forEach((item) => {
-      decryptedUsers.push(readSession(item))
+      const { username } = readSession(item)
+      if(username !== active) {
+        subtracted.push(item)
+      }
     })
 
-    users = decryptedUsers.filter(item => item.username !== active)
+    users = subtracted
 
     // yield call([localStorage, localStorage.removeItem], 'user')
     yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))

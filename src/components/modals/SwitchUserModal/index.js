@@ -129,7 +129,7 @@ const SwitchUserModal = (props) => {
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
-          <div style={{  }}>
+          <div className={classes.wrapper}>
             <center>
               <h6>Switch User</h6>
             </center>
@@ -141,6 +141,7 @@ const SwitchUserModal = (props) => {
                 <div className={classes.buttonInner}>
                   <Avatar author={username} height={40} />&nbsp;
                   <label>{username} ({activeUser === username ? 'online': 'offline'})</label>
+                  <label>remove</label>
                 </div>
               </div>
             ))}
