@@ -200,28 +200,28 @@ function* getSavedUserRequest(meta) {
 function* signoutUserRequest(meta) {
   try {
     const user = { username: '', useKeychain: false, is_authenticated: false }
-    const active = yield call([localStorage, localStorage.getItem], 'active')
-    let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
-    let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
+    // const active = yield call([localStorage, localStorage.getItem], 'active')
+    // let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
+    // let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
 
-    accounts = accounts.filter(item => item.username !== active)
+    // accounts = accounts.filter(item => item.username !== active)
 
-    const subtracted = []
+    // const subtracted = []
 
-    users.forEach((item) => {
-      const { username } = readSession(item)
-      if(username !== active) {
-        subtracted.push(item)
-      }
-    })
+    // users.forEach((item) => {
+    //   const { username } = readSession(item)
+    //   if(username !== active) {
+    //     subtracted.push(item)
+    //   }
+    // })
 
-    users = subtracted
+    // users = subtracted
 
     // yield call([localStorage, localStorage.removeItem], 'user')
-    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
+    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([]))
     yield call([localStorage, localStorage.setItem], 'active', null)
-    yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
-    yield put(setAccountList(accounts))
+    yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify([]))
+    yield put(setAccountList([]))
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
     yield put(signoutUserFailure(error, meta))
