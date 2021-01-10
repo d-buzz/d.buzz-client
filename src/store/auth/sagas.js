@@ -192,7 +192,6 @@ function* getSavedUserRequest(meta) {
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
