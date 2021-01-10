@@ -141,7 +141,6 @@ const SwitchUserModal = (props) => {
                 <div className={classes.buttonInner}>
                   <Avatar author={username} height={40} />&nbsp;
                   <label>{username} ({activeUser === username ? 'online': 'offline'})</label>
-                  <label>remove</label>
                 </div>
               </div>
             ))}
