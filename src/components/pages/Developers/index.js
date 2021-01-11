@@ -22,16 +22,19 @@ const useStyles = createUseStyles(theme => ({
     paddingTop: 20,
     textAlign: 'justify',
   },
+  innerWrapper: {
+    ...theme.font,
+  },
 }))
 
 const Developers = () => {
   const classes = useStyles()
   const hostUrl = window.location.origin
-  const webIntentUrl =`${hostUrl}/#/intent/buzz`
+  const webIntentUrl = `${hostUrl}/#/intent/buzz`
   const snippet1 = `<a class="dbuzz-share-button" href="${webIntentUrl}">Buzz</a>`
   const snippet2 = `<a class="dbuzz-share-button" href="${webIntentUrl}?text=Hello%20dbuzz">Buzz</a>`
-  const snippet3 = `<a class="dbuzz-share-button" href="${webIntentUrl}" `+
-                   'data-text="Hello dbuzz" data-size="large" data-hashtags="dbuzz,hive" data-url="https://d.buzz">Buzz</a>'
+  const snippet3 = `<a class="dbuzz-share-button" href="${webIntentUrl}" ` +
+    'data-text="Hello dbuzz" data-size="large" data-hashtags="dbuzz,hive" data-url="https://d.buzz">Buzz</a>'
   const snippet4 = `<script type="text/javascript" src="${hostUrl}/buzzWidget.js"></script>`
 
   return (
@@ -43,8 +46,8 @@ const Developers = () => {
               <div >
                 <h2>EMBED BUZZ BUTTON</h2>
                 <p>
-                    The Buzz button is a small button displayed on your website where viewers can easily share content on DBuzz. It consists of
-                    two parts; a link to the d.buzz's Buzz composer and buzzWidget.js script to enhance the link with the easily identifiable Buzz button.
+                  The Buzz button is a small button displayed on your website where viewers can easily share content on DBuzz. It consists of
+                  two parts; a link to the d.buzz's Buzz composer and buzzWidget.js script to enhance the link with the easily identifiable Buzz button.
                 </p>
               </div>
               <div>
@@ -53,9 +56,9 @@ const Developers = () => {
                   className="dbuzz-share-button"
                   allowtransparency="true"
                   scrolling="no"
-                  frameborder="0"
-                  style={{position: "static", visibility:"visible", width: "60px", height: "20px"}}
-                  src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=m&text=Hello world&url="+hostUrl+"&tags=dbuzz,hive"}></iframe>
+                  frameBorder="0"
+                  style={{ position: "static", visibility: "visible", width: "60px", height: "20px" }}
+                  src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=m&text=Hello world&url=" + hostUrl + "&tags=dbuzz,hive"}></iframe>
               </div>
               <div >
                 <h5>
@@ -72,21 +75,21 @@ const Developers = () => {
                       {snippet1}
                     </SyntaxHighlighter>
                   </li>
-                  <br/>
+                  <br />
                   <li>
                     <i>Set Buzz text by customizing Buzz web intent query parameters.</i>
                     <SyntaxHighlighter language="markup" style={dracula} wrapLongLines>
                       {snippet2}
                     </SyntaxHighlighter>
                   </li>
-                  <br/>
+                  <br />
                   <li>
                     <i>Customize Buzz button parameters using data-* attributes.</i>
                     <SyntaxHighlighter language="markup" style={dracula} wrapLongLines>
                       {snippet3}
                     </SyntaxHighlighter>
                   </li>
-                  <br/>
+                  <br />
                   <li>
                     <i>Include buzzWidget.js script once in your page template to enable tracking of Buzz button widget JavaScript events.</i>
                     <SyntaxHighlighter language="markup" style={dracula} wrapLongLines>
@@ -94,11 +97,11 @@ const Developers = () => {
                     </SyntaxHighlighter>
                   </li>
                 </ul>
-                <br/>
+                <br />
                 <h5>
                   Buzz web intent query parameters
                 </h5>
-                <br/>
+                <br />
                 <ul>
                   <li>
                     <p>The <b>Text</b> parameter appears pre-selected in a Buzz composer. If not set, it may be auto-populated from the webpage's title element.</p>
@@ -110,11 +113,11 @@ const Developers = () => {
                     <p>The <b>Tags</b> parameter must be separated with a comma.  Omit a preceding "#" from each hashtag; the Buzz composer will automatically  add the proper space-separated hashtag.</p>
                   </li>
                 </ul>
-                <br/>
+                <br />
                 <h5>
                   Buzz Button customization
                 </h5>
-                <br/>
+                <br />
                 <p>Add a data-size attribute value of "large" to display a larger Buzz button</p>
                 <div>
                   <iframe id="dbuzz-widget-1"
@@ -122,9 +125,9 @@ const Developers = () => {
                     className="dbuzz-share-button"
                     allowtransparency="true"
                     scrolling="no"
-                    frameborder="0"
-                    style={{position: "static", visibility:"visible", width: '76px', height: '28px'}}
-                    src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=l&text=Hello world&url="+hostUrl+"&tags=dbuzz,hive"}></iframe>
+                    frameBorder="0"
+                    style={{ position: "static", visibility: "visible", width: '76px', height: '28px' }}
+                    src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=l&text=Hello world&url=" + hostUrl + "&tags=dbuzz,hive"}></iframe>
                 </div>
               </div>
             </div>
