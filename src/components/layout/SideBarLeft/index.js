@@ -372,7 +372,7 @@ const SideBarLeft = (props) => {
                 <NavLinkWrapper
                   minify={minify}
                   minifyItemsClass={classes.minifyItems}
-                  key={`${item.path}-side`}
+                  key={`${item.path}-side-${Math.random(0, 100)}`}
                   {...item}
                   textClass={classes.items}
                   iconClass={classes.inline}

@@ -133,14 +133,15 @@ const SwitchUserModal = (props) => {
             <center>
               <h6>Switch User</h6>
             </center>
-            {accounts.map(({ username }) => (
+            {accounts.map(({ username }, index) => (
               <div
-                onClick={activeUser !== username ? handleClickSwitchUser(username) : () => {}}
+                key={index}
+                onClick={activeUser !== username ? handleClickSwitchUser(username) : () => { }}
                 className={classNames(classes.button, classes.accountButtons, activeUser !== username ? classes.hoverable : classes.active)}
               >
                 <div className={classes.buttonInner}>
                   <Avatar author={username} height={40} />&nbsp;
-                  <label>{username} ({activeUser === username ? 'online': 'offline'})</label>
+                  <label>{username} ({activeUser === username ? 'online' : 'offline'})</label>
                 </div>
               </div>
             ))}
