@@ -105,10 +105,11 @@ const AppFrame = (props) => {
         setShowLogin(false)
       }
     } else {
+      setFromIntentBuzz(false)
       setShowLogin(false)
     }
     // eslint-disable-next-line
-  }, [params, pathname, is_authenticated]);
+  }, [params, pathname]);
 
   const handleClickCloseLoginModal = () => {
     setShowLogin(false)

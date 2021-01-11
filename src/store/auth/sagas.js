@@ -131,7 +131,7 @@ function* authenticateUserRequest(payload, meta) {
       yield put(setAccountList(accounts))
     }
 
-    if(users.length !== initialUsersLength) {
+    if(initialUsersLength > 0 && users.length !== initialUsersLength) {
       window.location.reload()
     }
 
