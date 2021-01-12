@@ -23,7 +23,7 @@ import {
 import config from 'config'
 
 function* getSavedThemeRequest(payload, meta) {
-  let theme = { mode: 'night' }
+  let theme = { mode: 'light' }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'theme')
     saved = JSON.parse(saved)
