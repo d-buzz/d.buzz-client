@@ -23,7 +23,7 @@ import {
 import config from 'config'
 
 function* getSavedThemeRequest(payload, meta) {
-  let theme = { mode: 'night' }
+  let theme = { mode: 'light' }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'theme')
     saved = JSON.parse(saved)
@@ -49,7 +49,6 @@ function* setThemeRequest(payload, meta) {
 
 function* checkVersionRequest(meta) {
   const remote = yield call(checkVersion)
-  console.log({ remote })
   let  running = yield call([localStorage, localStorage.getItem], 'version')
   let latest = false
 

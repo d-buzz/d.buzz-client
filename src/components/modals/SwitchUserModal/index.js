@@ -1,11 +1,11 @@
 import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { ContainedButton } from 'components/elements'
+import { ContainedButton, Avatar } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import classNames from 'classnames'
-import { getTheme } from 'services/theme'
 import { setThemeRequest, generateStyles } from 'store/settings/actions'
+import { switchAccountRequest } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -32,20 +32,15 @@ const useStyles = createUseStyles(theme => ({
   },
   button: {
     width: '100%',
-    height: 60,
+    height: 50,
     marginBottom: 15,
     borderRadius: '5px 5px',
     cursor: 'pointer',
     lineHeight: 0.8,
     border: `3px solid ${theme.background.primary}`,
-    '& :first-child': {
-      paddingTop: 5,
-    },
     '& label': {
+      paddingTop: 9,
       cursor: 'pointer',
-    },
-    '&:hover': {
-      border: '3px solid #e61c34',
     },
   },
   darkModeButton: {
@@ -82,32 +77,51 @@ const useStyles = createUseStyles(theme => ({
     height: 35,
   },
   active: {
-    border: '3px solid #e61c34',
+    border: '3px solid #e61c34 !important',
+    cursor: 'default !important',
+  },
+  accountButtons: {
+    backgroundColor: theme.background.primary,
+    border: theme.border.primary,
+    '& label': {
+      color: theme.font.color,
+    },
+  },
+  buttonInner: {
+    padding: 2,
+    width: '95%',
+    margin: '0 auto',
+  },
+  hoverable: {
+    '&:hover': {
+      border: '3px solid #e61c34',
+    },
+  },
+  wrapper: {
+    width: '98%',
+    margin: '0 auto',
+    height: 'max-content',
   },
 }))
 
-const THEME = {
-  LIGHT: 'light',
-  NIGHT: 'night',
-  GRAY: 'gray',
-}
 
-const ThemeModal = (props) => {
+const SwitchUserModal = (props) => {
   const {
     show,
+    user,
+    accounts,
     onHide,
-    setThemeRequest,
-    generateStyles,
-    theme,
+    addUserCallBack,
+    switchAccountRequest,
   } = props
-  const { mode } = theme
+
+  const { username: activeUser } = user
   const classes = useStyles()
 
-  const handleClickSetTheme = (mode) => () => {
-    setThemeRequest(mode)
-      .then(({ mode }) => {
-        const theme = getTheme(mode)
-        generateStyles(theme)
+  const handleClickSwitchUser = (username) => () => {
+    switchAccountRequest(username)
+      .then(() => {
+        window.location.reload()
       })
   }
 
@@ -115,49 +129,29 @@ const ThemeModal = (props) => {
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
-          <div style={{ width: '98%', margin: '0 auto', height: 'max-content' }}>
+          <div className={classes.wrapper}>
             <center>
-              <h6>Customize your view</h6>
+              <h6>Switch User</h6>
             </center>
-            <center>
-              <label className={classes.notes}>
-                Display settings affect all of your Dbuzz accounts on this browser. These settings are only visible to you.
-              </label>
-            </center>
-            <div
-              onClick={handleClickSetTheme(THEME.NIGHT)}
-              className={classNames(classes.button, classes.darkModeButton, mode === 'night' ? classes.active : '')}
-            >
-              <center>
-                <label>Nightshade</label>
-                <label>Dark and Shady, reduced brightness</label>
-              </center>
-            </div>
-            <div
-              onClick={handleClickSetTheme(THEME.LIGHT)}
-              className={classNames(classes.button, classes.ligthModeButton, mode === 'light' ? classes.active : '')}
-            >
-              <center>
-                <label>Daylight</label>
-                <label>Light and bright, default theme</label>
-              </center>
-            </div>
-            <div
-              onClick={handleClickSetTheme(THEME.GRAY)}
-              className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
-            >
-              <center>
-                <label>Granite</label>
-                <label>Dark and Gray, reduced brightness</label>
-              </center>
-            </div>
+            {accounts.map(({ username }, index) => (
+              <div
+                key={index}
+                onClick={activeUser !== username ? handleClickSwitchUser(username) : () => { }}
+                className={classNames(classes.button, classes.accountButtons, activeUser !== username ? classes.hoverable : classes.active)}
+              >
+                <div className={classes.buttonInner}>
+                  <Avatar author={username} height={40} />&nbsp;
+                  <label>{username} ({activeUser === username ? 'online' : 'offline'})</label>
+                </div>
+              </div>
+            ))}
           </div>
           <center>
             <ContainedButton
-              onClick={onHide}
+              onClick={addUserCallBack}
               className={classes.closeButton}
               fontSize={14}
-              label="Done"
+              label="Add user"
             />
           </center>
         </ModalBody>
@@ -168,13 +162,16 @@ const ThemeModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
+  accounts: state.auth.get('accounts'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setThemeRequest,
     generateStyles,
+    switchAccountRequest,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ThemeModal)
+export default connect(mapStateToProps, mapDispatchToProps)(SwitchUserModal)

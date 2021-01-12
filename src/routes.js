@@ -37,6 +37,11 @@ const routes =  [
         component: Home,
       },
       {
+        path: '/developer',
+        exact: true,
+        component: Developers,
+      },
+      {
         path: '/org/en/tos',
         exact: true,
         component: TermsConditions,
@@ -50,11 +55,6 @@ const routes =  [
         path: '/org/en/disclaimer',
         exact: true,
         component: Disclaimer,
-      },
-      {
-        path: '/org/en/developers',
-        exact: true,
-        component: Developers,
       },
       {
         path: '/trending',
@@ -157,16 +157,6 @@ const routes =  [
             exact: true,
             component: AccountComments,
           },
-          // {
-          //   path: '/@:username/t/followers',
-          //   exact: true,
-          //   component: AccountFollowers,
-          // },
-          // {
-          //   path: '/@:username/t/following',
-          //   exact: true,
-          //   component: AccountFollowing,
-          // },
         ],
       },
     ],

@@ -13,8 +13,6 @@ import { pollNotifRequest } from 'store/polling/actions'
 import {
   BackArrowIcon,
   HomeIcon,
-  BrandIcon,
-  BrandIconDark,
   TrendingIcon,
   LatestIcon,
   NotificationsIcon,
@@ -24,9 +22,13 @@ import {
   BuzzIcon,
   SunMoonIcon,
 } from 'components/elements'
-import { BuzzFormModal, ThemeModal } from 'components'
+import {
+  BuzzFormModal,
+  ThemeModal,
+  SwitchUserModal,
+  LoginModal,
+} from 'components'
 import { useLocation } from 'react-router-dom'
-import config from 'config'
 import Fab from '@material-ui/core/Fab'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -34,8 +36,9 @@ import { clearNotificationsRequest } from 'store/profile/actions'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { broadcastNotification } from 'store/interface/actions'
-import { signoutUserRequest } from 'store/auth/actions'
+import { signoutUserRequest, setIntentBuzz } from 'store/auth/actions'
 import { pending } from 'redux-saga-thunk'
+import queryString from 'query-string'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -135,7 +138,6 @@ const MobileAppFrame = (props) => {
   const {
     pathname,
     route,
-    theme,
     user,
     pollNotifRequest,
     count = 0,
@@ -143,17 +145,26 @@ const MobileAppFrame = (props) => {
     loading,
     broadcastNotification,
     clearNotificationsRequest,
+    setIntentBuzz,
+    fromIntentBuzz,
   } = props
   const { is_authenticated, username } = user
   const avatarRef = React.useRef()
   const [openAvatarMenu, setOpenAvatarMenu] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
+  const [openSwitchModal, setOpenSwitchModal] = useState(false)
+  const [openLoginModal, setOpenLoginModal] = useState(false)
   const classes = useStyles()
 
   const history = useHistory()
   const lastLocation = useLastLocation()
+  const location = useLocation()
 
   const [open, setOpen] = useState(false)
+
+
+  const { search } = location
+  const params = queryString.parse(search) || ''
 
   let title = 'Home'
 
@@ -161,52 +172,49 @@ const MobileAppFrame = (props) => {
     setOpenTheme(true)
   }
 
-  if(pathname.match(/(\/c\/)/)) {
+  if (pathname.match(/(\/c\/)/)) {
     title = 'Buzz'
   }
 
-  if(pathname.match(/^\/trending/)) {
+  if (pathname.match(/^\/trending/)) {
     title = 'Trending'
   }
 
-  if(pathname.match(/^\/latest/)) {
+  if (pathname.match(/^\/latest/)) {
     title = 'Latest'
   }
 
-  if(!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
+  if (!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
     title = 'Profile'
   }
 
-  if(pathname.match(/(\/notifications)/)) {
+  if (pathname.match(/(\/notifications)/)) {
     title = 'Notifications'
   }
 
-  if(pathname.match(/(\/tags?)/)) {
+  if (pathname.match(/(\/tags?)/)) {
     title = 'Tags'
   }
 
-  if(pathname.match(/(\/search?)/)) {
+  if (pathname.match(/(\/search?)/)) {
     title = 'Search'
   }
 
-  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g)) {
+  if (pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g)) {
     const items = pathname.split('/')
     title = `Profile / ${items[1]}`
   }
 
   const handleClickBackButton = () => {
-    if(!lastLocation) {
+    if (!lastLocation) {
       history.replace('/')
     } else {
       history.goBack()
     }
   }
 
-  const openRedirect = () => {
-    window.open("https://d.buzz/", "_self")
-  }
-
-  const floatStyle = {margin: 0,
+  const floatStyle = {
+    margin: 0,
     top: 'auto',
     right: 20,
     bottom: 100,
@@ -232,7 +240,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Latest',
       path: '/latest',
-      icon: <LatestIcon  />,
+      icon: <LatestIcon />,
     },
     {
       name: 'Notifications',
@@ -251,9 +259,6 @@ const MobileAppFrame = (props) => {
       type: 'action',
     },
   ]
-
-  const location = useLocation()
-
   const isActivePath = (path, current) => {
     return path === current
   }
@@ -281,12 +286,30 @@ const MobileAppFrame = (props) => {
   const handleClearNotification = () => {
     clearNotificationsRequest()
       .then(result => {
-        if(result.success) {
+        if (result.success) {
           broadcastNotification('success', 'Successfully marked all your notifications as read')
         } else {
           broadcastNotification('error', 'Failed marking all notifications as read')
         }
       })
+  }
+
+  const showSwitchModal = () => {
+    setOpenAvatarMenu(false)
+    setOpenSwitchModal(true)
+  }
+
+  const onHideSwitchModal = () => {
+    setOpenSwitchModal(false)
+  }
+
+  const addUserCallBack = () => {
+    setOpenLoginModal(true)
+    onHideSwitchModal()
+  }
+
+  const hideLoginModal = () => {
+    setOpenLoginModal(false)
   }
 
   const NavigationTop = () => {
@@ -313,7 +336,7 @@ const MobileAppFrame = (props) => {
           )}
         </Navbar.Brand>
         {is_authenticated &&
-        (<div className={classes.avatarWrapper}><span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span></div>)}
+          (<div className={classes.avatarWrapper}><span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span></div>)}
       </Navbar>
     )
   }
@@ -323,8 +346,8 @@ const MobileAppFrame = (props) => {
       <Navbar className={classes.navBottom} fixed="bottom">
         <div style={{ width: '100%' }}>
           <Nav className="justify-content-center">
-            {NavLinks.map((item) => (
-              <NavLinkWrapper item={item} active={location.pathname} />
+            {NavLinks.map((item, index) => (
+              <NavLinkWrapper key={index} item={item} active={location.pathname} />
             ))}
           </Nav>
         </div>
@@ -334,8 +357,8 @@ const MobileAppFrame = (props) => {
 
   const NavLinkWrapper = ({ item, active }) => {
     return (
-      <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '' )}>
-        <Link to={item.path}>
+      <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '')}>
+        <Link to={item.path || '#'}>
           <IconButton
             size="medium"
           >
@@ -356,6 +379,8 @@ const MobileAppFrame = (props) => {
         classes={{ root: classes.avatarMenuWrapper }}
       >
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
+        <MenuItem onClick={showSwitchModal}>Switch Account</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/developer`}>Developers</MenuItem>
         <MenuItem onClick={handleClickSignout}>Logout</MenuItem>
       </Menu>
     )
@@ -366,72 +391,52 @@ const MobileAppFrame = (props) => {
     signoutUserRequest()
   }
 
+
+  const handleSetBuzzIntent = () => {
+    const { text, url, tags } = params
+    if (text) {
+      setIntentBuzz(text, url, tags)
+    }
+  }
+
   useEffect(() => {
-    if(is_authenticated) {
+    if (is_authenticated) {
       pollNotifRequest()
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if (fromIntentBuzz && is_authenticated) {
+      setOpen(true)
+    }
+    // eslint-disable-next-line
+  }, [fromIntentBuzz, is_authenticated])
 
   return (
     <React.Fragment>
       <div className={classes.main}>
-        {!config.DISABLE_MOBILE && (
+        <React.Fragment>
+          <NavigationTop />
           <React.Fragment>
-            <NavigationTop />
-            <React.Fragment>
-              {is_authenticated && (
-                <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
-                  <BuzzIcon />
-                </Fab>
-              )}
-              <AvatarMenu />
-              <div className={classes.main}>
-                {renderRoutes(route.routes)}
-              </div>
-            </React.Fragment>
-            <div className={classes.separator}></div>
-            {is_authenticated && (<NavigationBottom />)}
-            <BuzzFormModal show={open}  onHide={handleCloseModal} />
-          </React.Fragment>
-        )}
-        {config.DISABLE_MOBILE && (
-          <React.Fragment>
-            <div style={{ width: '98%', margin: '0 auto', marginTop: 20 }}>
-              <center>
-                {theme.mode === 'light' &&  (<BrandIcon />)}
-                {(theme.mode === 'night' || theme.mode === 'gray') && (<BrandIconDark />)}
-                <h6 style={{ paddingTop: 10 }} className={classes.notes}>
-                  Hello there, mobile view is still underway for this version
-                </h6>
-              </center>
-              <iframe
-                title="giphy"
-                src="https://giphy.com/embed/XaMTNZkRahZ7ysPMci"
-                width="100%"
-                height="250px"
-                frameBorder="0"
-                class="giphy-embed"
-                allowFullScreen>
-              </iframe>
-              <center>
-                <h6 className={classes.notes}>meanwhile you can still view the application on mobile by following the link below</h6>
-                <ContainedButton
-                  style={{ height: 45 }}
-                  fontSize={14}
-                  transparent={true}
-                  label="Take me to the main site"
-                  labelStyle={{ paddingTop: 10 }}
-                  onClick={openRedirect}
-                />
-                <br />
-                <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
-              </center>
+            {is_authenticated && (
+              <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
+                <BuzzIcon />
+              </Fab>
+            )}
+            <AvatarMenu />
+            <div className={classes.main}>
+              {renderRoutes(route.routes)}
             </div>
           </React.Fragment>
-        )}
+          <div className={classes.separator}></div>
+          {is_authenticated && (<NavigationBottom />)}
+          <BuzzFormModal show={open} onHide={handleCloseModal} />
+        </React.Fragment>
       </div>
       <ThemeModal show={openTheme} onHide={onHideTheme} />
+      <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
+      <LoginModal show={openLoginModal} onHide={hideLoginModal} fromIntentBuzz={fromIntentBuzz} buzzIntentCallback={handleSetBuzzIntent} />
     </React.Fragment>
   )
 }
@@ -441,6 +446,7 @@ const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   count: state.polling.get('count'),
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
+  fromIntentBuzz: state.auth.get('fromIntentBuzz'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -449,6 +455,7 @@ const mapDispatchToProps = (dispatch) => ({
     signoutUserRequest,
     broadcastNotification,
     clearNotificationsRequest,
+    setIntentBuzz,
   }, dispatch),
 })
 

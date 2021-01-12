@@ -29,6 +29,11 @@ import {
 
   setHasAgreedPayout,
   setOpacityUsers,
+
+  setAccountList,
+
+  SWITCH_ACCOUNT_REQUEST,
+  switchAccountSuccess,
 } from './actions'
 
 import {
@@ -51,7 +56,25 @@ function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain } = payload
   let { username } = payload
   username = `${username}`.toLowerCase()
+
   const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
+
+  let users = yield call([localStorage, localStorage.getItem], 'user')
+  let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
+
+  if(!users || !Array.isArray(JSON.parse(users))) {
+    users = []
+  } else {
+    users = JSON.parse(users)
+  }
+
+  const initialUsersLength = users.length
+
+  if(!accounts) {
+    accounts = []
+  } else {
+    accounts = JSON.parse(accounts)
+  }
 
   try {
     if(useKeychain) {
@@ -84,6 +107,7 @@ function* authenticateUserRequest(payload, meta) {
     if(user.is_authenticated) {
       const is_subscribe = yield call(getCommunityRole, username)
       user.is_subscribe = is_subscribe
+      user.active = true
 
       let mutelist = yield call(fetchMuteList, username)
 
@@ -93,13 +117,26 @@ function* authenticateUserRequest(payload, meta) {
 
       const session = generateSession(user)
 
+      const isInAccountList = accounts.filter(item => item.username === username)
+
+      if(isInAccountList.length === 0) {
+        users.push(session)
+        accounts.push({ username, keychain: useKeychain })
+      }
+
       yield call([localStorage, localStorage.clear])
-      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(session))
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
+      yield call([localStorage, localStorage.setItem], 'active', username)
+      yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
+      yield put(setAccountList(accounts))
+    }
+
+    if(initialUsersLength > 0 && users.length !== initialUsersLength) {
+      window.location.reload()
     }
 
     yield put(authenticateUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(authenticateUserFailure(error, meta))
   }
 }
@@ -108,10 +145,33 @@ function* getSavedUserRequest(meta) {
   let user = { username: '', useKeychain: false, is_authenticated: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
+    let active = yield call([localStorage, localStorage.getItem], 'active')
+    let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
+
+    if(!accounts) {
+      accounts = []
+    } else {
+      accounts = JSON.parse(accounts)
+    }
+
     saved = JSON.parse(saved)
-    if(saved !== null && saved.hasOwnProperty('id') && saved.hasOwnProperty('token')) {
-      saved = readSession(saved)
-      user = saved
+
+    try {
+      const parseActive = JSON.parse(active)
+      active = parseActive
+    } catch (e) {}
+
+    if(active !== null && saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
+      // saved.hasOwnProperty('id') && saved.hasOwnProperty('token')
+      let activeUser = null
+      saved.forEach((item) => {
+        const decrypted = readSession(item)
+
+        if(decrypted.username === active) {
+          activeUser = decrypted
+        }
+      })
+      user = activeUser
     }
 
     if(user.is_authenticated) {
@@ -127,19 +187,40 @@ function* getSavedUserRequest(meta) {
       payoutAgreed = false
     }
 
+    yield put(setAccountList(accounts))
     yield put(setHasAgreedPayout(payoutAgreed))
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getSavedUserFailure(user, meta))
   }
 }
 
 function* signoutUserRequest(meta) {
-  const user = { username: '', useKeychain: false, is_authenticated: false }
   try {
-    yield call([localStorage, localStorage.removeItem], 'user')
+    const user = { username: '', useKeychain: false, is_authenticated: false }
+    // const active = yield call([localStorage, localStorage.getItem], 'active')
+    // let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
+    // let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
+
+    // accounts = accounts.filter(item => item.username !== active)
+
+    // const subtracted = []
+
+    // users.forEach((item) => {
+    //   const { username } = readSession(item)
+    //   if(username !== active) {
+    //     subtracted.push(item)
+    //   }
+    // })
+
+    // users = subtracted
+
+    // yield call([localStorage, localStorage.removeItem], 'user')
+    yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([]))
+    yield call([localStorage, localStorage.setItem], 'active', null)
+    yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify([]))
+    yield put(setAccountList([]))
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
     yield put(signoutUserFailure(error, meta))
@@ -201,7 +282,6 @@ function* checkHasUpdateAuthorityRequest(payload, meta) {
 
     yield put(checkHasUpdateAuthoritySuccess(hasAuthority, meta))
   } catch (error) {
-    console.log({ error })
     yield put(checkHasUpdateAuthorityFailure(error, meta))
   }
 }
@@ -248,6 +328,12 @@ function* muteUserRequest(payload, meta) {
   }
 }
 
+function* switchAccountRequest(payload, meta) {
+  const { username } = payload
+  yield call([localStorage, localStorage.setItem], 'active', username)
+  yield put(switchAccountSuccess(meta))
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -272,6 +358,10 @@ function* watchMuteUserRequest({ payload, meta }) {
   yield call(muteUserRequest, payload, meta)
 }
 
+function* watchSwitchAccountRequest({ payload, meta }) {
+  yield call(switchAccountRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
@@ -279,4 +369,5 @@ export default function* sagas() {
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
   yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
+  yield takeEvery(SWITCH_ACCOUNT_REQUEST, watchSwitchAccountRequest)
 }

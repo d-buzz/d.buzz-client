@@ -73,24 +73,26 @@ const Tags = (props) => {
   return (
     <React.Fragment>
       {results.map((item) => (
-        <PostList
-          disableUpvote={true}
-          searchListMode={true}
-          profileRef="tags"
-          active_votes={item.total_votes}
-          author={item.author}
-          permlink={item.permlink}
-          created={item.created_at}
-          body={item.body}
-          upvotes={item.total_votes}
-          replyCount={item.children}
-          meta={{ app: item.app, tags: item.tags }}
-          payout={item.payout}
-          profile={item.profile}
-          payoutAt={item.payout_at}
-          highlightTag={tag}
-          disableOpacity={true}
-        />),
+        <React.Fragment key={item.id}>
+          <PostList
+            disableUpvote={true}
+            searchListMode={true}
+            profileRef="tags"
+            active_votes={item.total_votes}
+            author={item.author}
+            permlink={item.permlink}
+            created={item.created_at}
+            body={item.body}
+            upvotes={item.total_votes}
+            replyCount={item.children}
+            meta={{ app: item.app, tags: item.tags }}
+            payout={item.payout}
+            profile={item.profile}
+            payoutAt={item.payout_at}
+            highlightTag={tag}
+            disableOpacity={true}
+          />
+        </React.Fragment>),
       )}
       <PostlistSkeleton loading={loading} />
       {(!loading && results.length === 0) &&

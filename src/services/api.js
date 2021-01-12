@@ -14,7 +14,6 @@ import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
 import moment from 'moment'
 import 'react-app-polyfill/stable'
-import { readSession } from 'services/helper'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -27,7 +26,6 @@ const visited = []
 
 const setRPCNode = () => {
   const node = localStorage.getItem('rpc')
-  console.log({ node })
   api.setOptions({ url: node })
 }
 
@@ -339,7 +337,7 @@ export const isFollowing = (follower, following) => {
 }
 
 export const fetchSingleProfile = (account) => {
-  const user = JSON.parse(localStorage.getItem('user'))
+  const user = localStorage.getItem('active')
 
   return new Promise((resolve, reject) => {
     const params = {account}
@@ -349,11 +347,10 @@ export const fetchSingleProfile = (account) => {
       }else {
         let isFollowed = false
 
-        if(user) {
-          const { username } = readSession(user)
-
-          if(username !== data.name) {
-            isFollowed = await isFollowing(username, data.name)
+        if(user && `${user}`.trim() !== '') {
+          // const { username } = readSession(user)
+          if(user !== data.name) {
+            isFollowed = await isFollowing(user, data.name)
           }
         }
 
@@ -922,7 +919,6 @@ export const searchPostTags = (tag) => {
 
       resolve(data)
     }).catch((error) => {
-      console.log({ error })
       reject(error)
     })
   })
@@ -992,7 +988,6 @@ export const checkIfImage = (links) => {
 export const uploadIpfsImage = async(data) => {
   const formData = new FormData()
   formData.append('image', data)
-  console.log('test')
 
   return new Promise(async(resolve, reject) => {
     axios({
@@ -1002,12 +997,10 @@ export const uploadIpfsImage = async(data) => {
       headers: {'Content-Type': 'multipart/form-data' },
       data: formData,
     }).then(async(result) => {
-      console.log({result})
       const data = result.data
       resolve(data)
 
     }).catch((error) => {
-      console.log({error})
       reject(error)
     })
   })
@@ -1043,7 +1036,6 @@ export const checkVersion = () => {
   return new Promise((resolve) => {
     axios.get('https://d.buzz/version.json')
       .then(function (result) {
-        console.log({ result })
         resolve(result.data)
       })
   })

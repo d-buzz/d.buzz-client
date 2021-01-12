@@ -23,9 +23,12 @@ import {
   BuzzIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
+import IconPeople from '@material-ui/icons/People'
 import {
   BuzzFormModal,
   ThemeModal,
+  SwitchUserModal,
+  LoginModal,
 } from 'components'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -194,26 +197,31 @@ const NavLinkWrapper = (props) => {
     activeClass,
     minifyItemsClass,
     minify,
-    onClick = () => {},
+    onClick = () => { },
+    preventDefault = false,
   } = props
 
   const isActivePath = (path, current) => {
     return path === current
   }
 
+  const preventLink = (e) => {
+    if (preventDefault) e.preventDefault()
+  }
+
   return (
     <React.Fragment>
       {!minify && (
-        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path || '/'}>
+        <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '')}>
+          <Link to={path}>
             <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
             {name}
           </Link>
         </div>
       )}
       {minify && (
-        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '' )}>
-          <Link to={path || '/'}>
+        <div onClick={onClick} className={classNames(minifyItemsClass, isActivePath(path, active) ? activeClass : '')}>
+          <Link to={path} onClick={preventLink}>
             <IconButton
               size="medium"
             >
@@ -238,10 +246,13 @@ const SideBarLeft = (props) => {
     minify,
     setBuzzModalStatus,
     intentBuzz,
+    fromIntentBuzz,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
+  const [openSwitchModal, setOpenSwitchModal] = useState(false)
+  const [openLoginModal, setOpenLoginModal] = useState(false)
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -252,8 +263,12 @@ const SideBarLeft = (props) => {
     setOpenTheme(true)
   }
 
+  const showSwitchModal = () => {
+    setOpenSwitchModal(true)
+  }
+
   useEffect(() => {
-    if(isBuzzIntent || (intentBuzz && intentBuzz.text)){
+    if (isBuzzIntent || fromIntentBuzz || (intentBuzz && intentBuzz.text)) {
       setOpen(true)
     }
     pollNotifRequest()
@@ -276,13 +291,26 @@ const SideBarLeft = (props) => {
   const onHide = () => {
     setBuzzModalStatus(false)
     setOpen(false)
-    if(isBuzzIntent){
+    if (isBuzzIntent) {
       history.push('/')
     }
   }
 
   const onHideTheme = () => {
     setOpenTheme(false)
+  }
+
+  const onHideSwitchModal = () => {
+    setOpenSwitchModal(false)
+  }
+
+  const addUserCallBack = () => {
+    setOpenLoginModal(true)
+    onHideSwitchModal()
+  }
+
+  const hideLoginModal = () => {
+    setOpenLoginModal(false)
   }
 
   const NavLinks = [
@@ -299,7 +327,7 @@ const SideBarLeft = (props) => {
     {
       name: 'Latest',
       path: '/latest',
-      icon: <LatestIcon  />,
+      icon: <LatestIcon />,
     },
     {
       name: 'Notifications',
@@ -314,7 +342,16 @@ const SideBarLeft = (props) => {
     {
       name: 'Display',
       icon: <SunMoonIcon />,
+      path: '#',
+      preventDefault: true,
       onClick: showThemeModal,
+    },
+    {
+      name: 'Switch Account',
+      icon: <IconPeople />,
+      path: '#',
+      preventDefault: true,
+      onClick: showSwitchModal,
     },
   ]
 
@@ -325,7 +362,7 @@ const SideBarLeft = (props) => {
           <LinkContainer >
             <NavbarBrand href="/">
               <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
-                {theme.mode === 'light' && !minify &&  (<BrandIcon />)}
+                {theme.mode === 'light' && !minify && (<BrandIcon />)}
                 {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
                 {minify && (<CircularBrandIcon />)}
               </div>
@@ -335,7 +372,7 @@ const SideBarLeft = (props) => {
                 <NavLinkWrapper
                   minify={minify}
                   minifyItemsClass={classes.minifyItems}
-                  key={`${item.path}-side`}
+                  key={`${item.path}-side-${Math.random(0, 100)}`}
                   {...item}
                   textClass={classes.items}
                   iconClass={classes.inline}
@@ -419,8 +456,10 @@ const SideBarLeft = (props) => {
           </LinkContainer>
         </Nav>
       </div>
-      <BuzzFormModal show={open}  onHide={onHide} />
+      <BuzzFormModal show={open} onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
+      <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
+      <LoginModal show={openLoginModal} onHide={hideLoginModal} />
     </React.Fragment>
   )
 }
@@ -431,6 +470,7 @@ const mapStateToProps = (state) => ({
   count: state.polling.get('count'),
   theme: state.settings.get('theme'),
   intentBuzz: state.auth.get("intentBuzz"),
+  fromIntentBuzz: state.auth.get('fromIntentBuzz'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -3,7 +3,6 @@ import Skeleton from 'react-loading-skeleton'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { createUseStyles } from 'react-jss'
-import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -70,13 +69,9 @@ const ContentSkeleton = ({ loading }) => {
                 </Col>
                 <Col style={{ paddingLeft: 10 }}>
                   <div style={{ marginTop: 2 }}>
-                    <Link
-                      className={classes.link}
-                    >
-                      <p className={classes.name}>
-                        <Skeleton height={10} width={120} />
-                      </p>
-                    </Link>
+                    <p className={classes.name}>
+                      <Skeleton height={10} width={120} />
+                    </p>
                     <br />
                     <p className={classes.username}>
                       <Skeleton height={10} width={120} />

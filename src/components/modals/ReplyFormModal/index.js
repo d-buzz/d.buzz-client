@@ -337,7 +337,7 @@ const ReplyFormModal = (props) => {
                     <TextArea
                       style={textAreaStyle}
                       minRows={3}
-                      maxlength="280"
+                      maxLength="280"
                       label="Buzz your reply"
                       value={content}
                       onKeyUp={handleOnChange}

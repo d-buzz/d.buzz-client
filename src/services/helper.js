@@ -127,11 +127,11 @@ export const calculatePayout = (data) => {
 
   if(is_paidout) {
 
-    if(is_paidout) {
-      payout = parseFloat(`${pending_payout_value}`.replace('HBD'))
-    } else {
-      payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
-    }
+    // if(is_paidout) {
+    payout = parseFloat(`${pending_payout_value}`.replace('HBD'))
+    // } else {
+    //   payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
+    // }
   } else {
     payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
   }
@@ -174,7 +174,7 @@ export function hasCompatibleKeychain() {
   )
 }
 
-const randomizer = (max, min) => {
+const randomizer = (min, max) => {
   return Math.random() * (max - min) + min
 }
 
@@ -209,7 +209,7 @@ export const readSession = (session) => {
 export const generateSession = (obj) => {
   const date = new Date()
   const lowerlimit = randomizer(1, 12)
-  const upperlimit = randomizer(13, 28)
+  const upperlimit = randomizer(13, 26)
   const index = randomizer(upperlimit, lowerlimit)
 
   const uid = uuid()
@@ -240,4 +240,20 @@ export const invokeTwitterIntent = (content) => {
   }
   body = encodeURIComponent(stripHtml(body))
   window.open(`https://twitter.com/intent/tweet?text=${body}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
+}
+
+export const sendToBerries = (author) => {
+  window.open(`https://buymeberri.es/!dbuzz/@${author}`, '_blank')
+}
+
+export const truncateBody = (body) => {
+  const bodyLength = `${stripHtml(body)}`.length
+
+  if(bodyLength > 280) {
+    body = stripHtml(body)
+    body = `${body}`.substr(0, 280)
+    body = `${body} . . .`
+  }
+
+  return body
 }

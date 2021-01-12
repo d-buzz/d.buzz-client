@@ -172,7 +172,6 @@ function* getContentRequest(payload, meta) {
     yield put(setContentRedirect(null))
     yield put(getContentSuccess(data, meta))
   } catch(error) {
-    console.log({ error })
     yield put(getContentFailure(error, meta))
   }
 }
@@ -443,7 +442,6 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    console.log({ error })
     yield put(publishPostFailure(error, meta))
   }
 }
@@ -723,7 +721,6 @@ function* publishUpdateRequest(payload, meta) {
     yield put(publishUpdateSuccess(success, meta))
 
   } catch(error) {
-    console.log({ error })
     yield put(publishUpdateFailure(error, meta))
   }
 }

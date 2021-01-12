@@ -50,7 +50,7 @@ export const GET_SAVED_USER_SUCCESS = 'GET_SAVED_USER_SUCCESS'
 export const GET_SAVED_USER_FAILURE = 'GET_SAVED_USER_FAILURE'
 
 export const getSavedUserRequest = () => ({
-  type:  GET_SAVED_USER_REQUEST,
+  type: GET_SAVED_USER_REQUEST,
   meta: {
     thunk: true,
   },
@@ -170,13 +170,43 @@ export const setOpacityUsers = (users) => ({
 
 export const SET_INTENT_BUZZ = 'SET_INTENT_BUZZ'
 
-export const setIntentBuzz = (text, url, hashtags='') => ({
+export const setIntentBuzz = (text, url, hashtags = '') => ({
   type: SET_INTENT_BUZZ,
   payload: { text, url, hashtags },
 })
- 
+
 export const CLEAR_INTENT_BUZZ = 'CLEAR_INTENT_BUZZ'
 
 export const clearIntentBuzz = () => ({
   type: CLEAR_INTENT_BUZZ,
+})
+
+export const SET_FROM_INTENT_BUZZ = 'SET_FROM_INTENT_BUZZ'
+
+export const setFromIntentBuzz = (status) => ({
+  type: SET_FROM_INTENT_BUZZ,
+  payload: status,
+})
+
+export const SET_ACCOUNT_LIST = 'SET_ACCOUNT_LIST'
+
+export const setAccountList = (list) => ({
+  type: SET_ACCOUNT_LIST,
+  payload: list,
+})
+
+export const SWITCH_ACCOUNT_REQUEST = 'SWITCH_ACCOUNT_REQUEST'
+export const SWITCH_ACCOUNT_SUCCESS = 'SWTICH_ACCOUNT_SUCCESS'
+
+export const switchAccountRequest = (username) => ({
+  type: SWITCH_ACCOUNT_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const switchAccountSuccess = (meta) => ({
+  type: SWITCH_ACCOUNT_SUCCESS,
+  meta,
 })

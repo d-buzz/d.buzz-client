@@ -27,8 +27,8 @@ const useStyles = createUseStyles({
     },
   },
   heroSection: {
-    width: '100%', 
-    maxHeight: 500, 
+    width: '100%',
+    maxHeight: 500,
     backgroundColor: '#f83541',
     paddingTop: '4rem',
     backgroundSize: '85%',
@@ -45,40 +45,37 @@ const OrganizationAppBar = () => {
   const termsOfService = (pathname.match(/^\/org\/en\/tos/))
   const privacyPolicy = (pathname.match(/^\/org\/en\/privacy/))
   const disclaimer = (pathname.match(/^\/org\/en\/disclaimer/))
-  const developers = (pathname.match(/^\/org\/en\/developers/))
 
   let title = ''
-  if(termsOfService) {
+  if (termsOfService) {
     title = 'Terms of Service'
-  } else if(privacyPolicy) {
+  } else if (privacyPolicy) {
     title = 'Privacy Policy'
-  } else if(disclaimer) {
+  } else if (disclaimer) {
     title = 'Disclaimer'
-  } else if (developers) {
-    title = 'Developer'
   }
 
-  
+
   return (
     <React.Fragment>
       <Navbar fixed="top" className={classes.nav}>
         <Container className={classes.container}>
           <Navbar.Brand>
             <Link to="/">
-              <OrgIcon height={25} top={-15} style={{marginLeft: '-239'}} />
+              <OrgIcon height={25} top={-15} style={{ marginLeft: '-239' }} />
             </Link>
           &nbsp;&nbsp;
             <span>
               {title}
             </span>
           </Navbar.Brand>
-          <div style={{marginRight: '-205px'}}>
-            <Button style={{borderRadius: '20px', paddingLeft: 15}} variant="outline-light">Download: D.BUZZ User Agreement</Button>
+          <div style={{ marginRight: '-205px' }}>
+            <Button style={{ borderRadius: '20px', paddingLeft: 15 }} variant="outline-light">Download: D.BUZZ User Agreement</Button>
           </div>
         </Container>
       </Navbar>
       <div className={classes.heroSection}>
-        <Container style={{overflowX: 'hidden', overflowY: 'auto'}}>
+        <Container style={{ overflowX: 'hidden', overflowY: 'auto' }}>
           <div style={{
             fontFamily: 'Segoe-Bold',
             fontSize: '96px',

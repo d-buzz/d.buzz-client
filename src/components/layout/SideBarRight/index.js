@@ -115,7 +115,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/privacy">Privacy Policy</Link>
           <Link to="/org/en/disclaimer">Disclaimer</Link>
           <a href="/terms">About</a> <br/ >
-          <Link to="/org/en/developers">Developers</Link>
+          <Link to="/developer">Developers</Link>
           <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
         </div>
       </div>

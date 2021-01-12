@@ -67,6 +67,7 @@ const PostTags = (props) => {
       <div style={{ width: '95%', wordBreak: 'break-word' }}>
         {tags.map((tag, index) => (
           <Link
+            to={'#'}
             onClick={onClick(generateTagsLink(tag))}
             key={`${tag}~${index}~${Math.random(0,100)}`}
             className={classNames(classes.default, `${highlightTag}`.toLowerCase() === `${tag}`.toLowerCase() ? classes.highlighted : '')}
