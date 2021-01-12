@@ -58,7 +58,7 @@
                 text: encode(getText(el)),
                 size: getSize(el),
                 url: encode(getUrl(el)),
-                tags: strReplace(getHashTags(el).trim(),'#','') 
+                tags: strReplace(getHashTags(el).trim(), '#', '')
             }
             let srcFormat = "";
             let args = [];
@@ -92,7 +92,7 @@
         }
 
         const getUrl = function (el) {
-            return extractHrefParams(el, 'url') || getAttribute(el, 'data-url') || '';
+            return extractHrefParams(el, 'url') || getAttribute(el, 'data-url') || location.href || '';
         };
 
         const getText = function (el) {
@@ -134,8 +134,8 @@
             return decodeURIComponent(t);
         };
 
-        const strReplace = function (t,c,v) {
-            return t ? t.replace(c,v) : '';
+        const strReplace = function (t, c, v) {
+            return t ? t.replace(c, v) : '';
         }
 
         const splitUrlQuery = function (q) {
