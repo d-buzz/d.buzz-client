@@ -113,7 +113,6 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
@@ -1024,6 +1023,7 @@ export const getBestRpcNode = () => {
   return new Promise((resolve) => {
     axios.get('https://beacon.peakd.com/api/best')
       .then(function (result) {
+        console.log({ result })
         resolve(result.data[0].endpoint)
       })
       .catch(function (error) {
