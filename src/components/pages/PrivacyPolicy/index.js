@@ -1,5 +1,6 @@
 import React from 'react'
 import Scrollspy from 'react-scrollspy'
+import { HashLink } from 'react-router-hash-link'
 import { createUseStyles } from 'react-jss'
 import { Sticky } from 'react-sticky'
 import Row from 'react-bootstrap/Row'
@@ -46,7 +47,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   currentLink: {
-    borderLeft: '5px solid #FF625E',
+    borderLeft: '3px solid #FF625E',
     '& a': {
       color: '#f83541 !important',
     },
@@ -71,57 +72,55 @@ const PrivacyPolicy = () => {
           </p>
         </div>
         <Row>
-          <Col xs={4}>
+          <Col xs={5}>
             <Sticky>
               {({ style }) => (
                 <div style={{...style}}>
-                  <div className={classes.sideWrapper}>
-                    <Scrollspy items={[
-                      'section-1', 
-                      'section-2', 
-                      'section-3', 
-                      'section-4', 
-                      'section-5',
-                      'section-6',
-                      'section-7',
-                      'section-8',
-                      'section-9',
-                      'section-10',
-                      'section-11',
-                      'section-12',
-                      'section-13',
-                      'section-14',
-                      'section-15',
-                    ]} currentClassName={classes.currentLink}>
-                      <li><a href="#section-1">1. WHAT INFORMATION DO WE COLLECT?</a></li>
-                      <li><a href="#section-2">2. HOW DO WE USE YOUR INFORMATION?</a></li>
-                      <li><a href="#section-3">3. WILL YOUR INFORMATION BE SHARED WITH ANYONE?</a></li>
-                      <li><a href="#section-4">4. DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?</a></li>
-                      <li><a href="#section-5">5. DO WE USE GOOGLE MAPS?</a></li>
-                      <li><a href="#section-6">6. HOW DO WE HANDLE YOUR SOCIAL LOGINS?</a></li>
-                      <li><a href="#section-7">7. IS YOUR INFORMATION TRANSFERRED INTERNATIONALLY?</a></li>
-                      <li><a href="#section-8">8. WHAT IS OUR STANCE ON THIRD-PARTY WEBSITES?</a></li>
-                      <li><a href="#section-9">9. HOW LONG DO WE KEEP YOUR INFORMATION?</a></li>
-                      <li><a href="#section-10">10. HOW DO WE KEEP YOUR INFORMATION SAFE?</a></li>
-                      <li><a href="#section-11">11. WHAT ARE YOUR PRIVACY RIGHTS?</a></li>
-                      <li><a href="#section-12">12. CONTROLS FOR DO-NOT-TRACK FEATURES</a></li>
-                      <li><a href="#section-13">13. DO CALIFORNIA RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?</a></li>
-                      <li><a href="#section-14">14. DO WE MAKE UPDATES TO THIS NOTICE?</a></li>
-                      <li><a href="#section-15">15. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</a></li>
-                    </Scrollspy>
-                  </div>
+                  <Scrollspy items={[
+                    'section-1', 
+                    'section-2', 
+                    'section-3', 
+                    'section-4', 
+                    'section-5',
+                    'section-6',
+                    'section-7',
+                    'section-8',
+                    'section-9',
+                    'section-10',
+                    'section-11',
+                    'section-12',
+                    'section-13',
+                    'section-14',
+                    'section-15',
+                  ]} currentClassName={classes.currentLink} className={classes.sideWrapper}>
+                    <li><HashLink to="#section-1">What information do we collect?</HashLink></li>
+                    <li><HashLink to="#section-2">How do we use your information?</HashLink></li>
+                    <li><HashLink to="#section-3">Will your information be shared with anyone?</HashLink></li>
+                    <li><HashLink to="#section-4">Do we use cookies and other tracking technologies?</HashLink></li>
+                    <li><HashLink to="#section-5">Do we use google maps?</HashLink></li>
+                    <li><HashLink to="#section-6">How do we handle your social logins?</HashLink></li>
+                    <li><HashLink to="#section-7">Is your information transferred internationally?</HashLink></li>
+                    <li><HashLink to="#section-8">What is our stance on third-party websites?</HashLink></li>
+                    <li><HashLink to="#section-9">How long do we keep your information?</HashLink></li>
+                    <li><HashLink to="#section-10">How do we keep your information safe?</HashLink></li>
+                    <li><HashLink to="#section-11">What are your privacy rights?</HashLink></li>
+                    <li><HashLink to="#section-12">Controls for do-not-track features</HashLink></li>
+                    <li><HashLink to="#section-13">Do California residents have specific privacy rights?</HashLink></li>
+                    <li><HashLink to="#section-14">Do we make updates to this notice?</HashLink></li>
+                    <li><HashLink to="#section-15">How can you contact us about this notice?</HashLink></li>
+                  </Scrollspy>
                 </div>
               )}
-              
             </Sticky>
           </Col>
-          <Col xs={8}>
+          <Col xs={7}>
             <div className={classes.innerWrapper}>
               <section id="section-1">
                 <div className={classes.hero}>
                   <div>
-                    <h2>WHAT INFORMATION DO WE COLLECT?</h2>
+                    <h3>What information do we collect?</h3>
                   </div>
+                  <hr />
                   <div>
                     <h5>
                       Information automatically collected
@@ -208,8 +207,9 @@ const PrivacyPolicy = () => {
               <section id="section-2">
                 <div className={classes.hero}>
                   <div>
-                    <h2>HOW DO WE USE YOUR INFORMATION?</h2>
+                    <h3>How do we use your information?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  We process your information for purposes based on legitimate business interests, the fulfillment of our contract with you, compliance with our legal obligations, and/or your consent.
@@ -301,8 +301,9 @@ const PrivacyPolicy = () => {
               <section id="section-3">
                 <div className={classes.hero}>
                   <div>
-                    <h2>WILL YOUR INFORMATION BE SHARED WITH ANYONE?</h2>
+                    <h3>Will your information be shared with anyone?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  We only share information with your consent, to comply with laws, to provide you with services, to protect your rights, or to fulfill business obligations
@@ -363,8 +364,9 @@ const PrivacyPolicy = () => {
               <section id="section-4">
                 <div className={classes.hero}>
                   <div>
-                    <h2>DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?</h2>
+                    <h3>Do we use cookies and other tracking technologies?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  We may use cookies and other tracking technologies to collect and store your information.
@@ -378,8 +380,9 @@ const PrivacyPolicy = () => {
               <section id="section-5">
                 <div className={classes.hero}>
                   <div>
-                    <h2>DO WE USE GOOGLE MAPS?</h2>
+                    <h3>Do we use google maps?</h3>
                   </div>
+                  <hr />
                   <div>
                     <p>
                       In Short:  Yes, we use Google Maps for the purpose of providing better service.
@@ -400,8 +403,9 @@ const PrivacyPolicy = () => {
               <section id="section-6">
                 <div className={classes.hero}>
                   <div>
-                    <h2>HOW DO WE HANDLE YOUR SOCIAL LOGINS?</h2>
+                    <h3>How do we handle your social logins?</h3>
                   </div>
+                  <hr />
                   <div>
                     <p>          
                       By posting your Contributions to any part of the Site, you automatically grant, and you represent and warrant that you have the right to grant, to us an unrestricted, unlimited, irrevocable, perpetual, non-exclusive, transferable, royalty-free, fully-paid, worldwide right, and license to host, use, copy, reproduce, disclose, sell, resell, publish, broadcast, retitle, archive, store, cache, publicly perform, publicly display, reformat, translate, transmit, excerpt (in whole or in part), and distribute such Contributions (including, without limitation, your image and voice) for any purpose, commercial, advertising, or otherwise, and to prepare derivative works of, or incorporate into other works, such Contributions, and grant and authorize sublicenses of the foregoing. The use and distribution may occur in any media formats and through any media channels.
@@ -421,8 +425,9 @@ const PrivacyPolicy = () => {
               <section id="section-7">
                 <div className={classes.hero}>
                   <div>
-                    <h2>IS YOUR INFORMATION TRANSFERRED INTERNATIONALLY?</h2>
+                    <h3>Is your information transferred internationally?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>In Short:  We may transfer, store, and process your information in countries other than your own.</i>
                     <p>
@@ -437,8 +442,9 @@ const PrivacyPolicy = () => {
               <section id="section-8">
                 <div className={classes.hero}>
                   <div>
-                    <h2>WHAT IS OUR STANCE ON THIRD-PARTY WEBSITES?</h2>
+                    <h3>What is our stance on third-party websites?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  We are not responsible for the safety of any information that you share with third-party providers who advertise, but are not affiliated with, our Website.
@@ -452,8 +458,9 @@ const PrivacyPolicy = () => {
               <section id="section-9">
                 <div className={classes.hero}>
                   <div>
-                    <h2>HOW LONG DO WE KEEP YOUR INFORMATION?</h2>
+                    <h3>How long do we keep your information?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  We keep your information for as long as necessary to fulfill the purposes outlined in this privacy notice unless otherwise required by law.
@@ -470,8 +477,9 @@ const PrivacyPolicy = () => {
               <section id="section-10">
                 <div className={classes.hero}>
                   <div>
-                    <h2>HOW DO WE KEEP YOUR INFORMATION SAFE?</h2>
+                    <h3>How do we keep your information safe?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  We aim to protect your personal information through a system of organizational and technical security measures.
@@ -485,8 +493,9 @@ const PrivacyPolicy = () => {
               <section id="section-11">
                 <div className={classes.hero}>
                   <div>
-                    <h2> WHAT ARE YOUR PRIVACY RIGHTS?</h2>
+                    <h3>What are your privacy rights?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  You may review, change, or terminate your account at any time.
@@ -506,8 +515,9 @@ const PrivacyPolicy = () => {
               <section id="section-12">
                 <div className={classes.hero}>
                   <div>
-                    <h2>CONTROLS FOR DO-NOT-TRACK FEATURES</h2>
+                    <h3>Controls for do-not-track features</h3>
                   </div>
+                  <hr />
                   <div>
                     <p>
                       Most web browsers and some mobile operating systems and mobile applications include a Do-Not-Track (“DNT”) feature or setting you can activate to signal your privacy preference not to have data about your online browsing activities monitored and collected. At this stage, no uniform technology standard for recognizing and implementing DNT signals has been finalized. As such, we do not currently respond to DNT browser signals or any other mechanism that automatically communicates your choice not to be tracked online. If a standard for online tracking is adopted that we must follow in the future, we will inform you about that practice in a revised version of this privacy notice.
@@ -518,8 +528,9 @@ const PrivacyPolicy = () => {
               <section id="section-13">
                 <div className={classes.hero}>
                   <div>
-                    <h2>DO CALIFORNIA RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?</h2>
+                    <h3>Do California residents have specific privacy rights?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>In Short:  Yes, if you are a resident of California, you are granted specific rights regarding access to your personal information.</i>
                     <p>California Civil Code Section 1798.83, also known as the “Shine The Light” law, permits our users who are California residents to request and obtain from us, once a year and free of charge, information about categories of personal information (if any) we disclosed to third parties for direct marketing purposes and the names and addresses of all third parties with which we shared personal information in the immediately preceding calendar year. If you are a California resident and would like to make such a request, please submit your request in writing to us using the contact information provided below.</p>
@@ -532,8 +543,9 @@ const PrivacyPolicy = () => {
               <section id="section-14">
                 <div className={classes.hero}>
                   <div>
-                    <h2>DO WE MAKE UPDATES TO THIS NOTICE?</h2>
+                    <h3>Do we make updates to this notice?</h3>
                   </div>
+                  <hr />
                   <div>
                     <i>
                       In Short:  Yes, we will update this notice as necessary to stay compliant with relevant laws.
@@ -547,26 +559,17 @@ const PrivacyPolicy = () => {
               <section id="section-15">
                 <div className={classes.hero}>
                   <div>
-                    <h2>HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</h2>
+                    <h3>How can you contact us about this notice?</h3>
                   </div>
+                  <hr />
                   <div style={{paddingBottom: 300}}>
                     <p>
-                      In order to resolve a complaint regarding the Site or to receive further information regarding use of the Site, please contact us at: 
+                      If you have any questions about these Terms and Conditions, You can contact us:
                     </p>
-                    <ol>
-                      <p>
-                        D.Buzz <br />
-                        Davao City <br />
-                        Philippines <br />
-                        {/* Phone: __________ <br /> */}
-                        buzz@d.buzz
-                      </p>
-                    </ol>
-                    <h5>
-                      HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
-                    </h5>
                     <p>
-                      Based on the applicable laws of your country, you may have the right to request access to the personal information we collect from you, change that information, or delete it in some circumstances. To request to review, update, or delete your personal information, please submit a request form.. We will respond to your request within 30 days.
+                      Email us at: <a href="mailto: nathan@d.buzz">nathan@d.buzz</a><br />
+                      D.Buzz <br />
+                      Arkansas, United States 
                     </p>
                   </div>
                 </div>
