@@ -63,17 +63,17 @@ const TermsConditions = () => {
           <br />
           <br />
           <center>
-          <h3>
+            <h3>
             Terms and Conditions
-          </h3>
-          <i>
-            <p>
+            </h3>
+            <i>
+              <p>
               Last updated: January 08, 2021
-            </p>
-          </i>
-          <h2>
+              </p>
+            </i>
+            <h2>
             Please read these terms and conditions carefully before using Our Service.
-          </h2>
+            </h2>
           </center>
         </div>
         <Row>
