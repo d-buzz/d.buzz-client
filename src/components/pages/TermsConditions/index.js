@@ -26,6 +26,10 @@ const useStyles = createUseStyles(theme => ({
     paddingTop: 100,
     textAlign: 'justify',
   },
+  outsideWrapper: {
+    paddingTop: 50,
+    ...theme.font,
+  },
   sideWrapper: {
     width: '100%', 
     paddingTop: 100, 
@@ -59,9 +63,6 @@ const TermsConditions = () => {
     <React.Fragment>
       <div className={classes.wrapper}>
         <div className={classes.outsideWrapper}>
-          <br />
-          <br />
-          <br />
           <center>
             <h3>
             Terms and Conditions
@@ -81,7 +82,7 @@ const TermsConditions = () => {
             <Sticky>
               {({ style }) => (
                 <div style={{...style}}>
-                  <Scrollbars autoHide autoHideDuration={300} style={{ height: 550 }} >
+                  <Scrollbars autoHide autoHideDuration={300} style={{ height: 700 }} >
                     <Scrollspy items={[
                       'section-1', 
                       'section-2', 
