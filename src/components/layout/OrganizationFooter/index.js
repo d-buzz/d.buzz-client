@@ -28,7 +28,6 @@ const useStyles = createUseStyles({
   inner: {
     width: '100%',
     paddingTop: 30,
-    paddingLeft: 85,
     '& a': {
       color: 'white',
       fontSize: 14,
@@ -50,12 +49,14 @@ const OrganizationFooter = () => {
     <React.Fragment>
       <div className={classes.footer}>
         <Container className={classes.container}>
-          <div className={classes.inner}>
-            <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
-            <Link to="/org/en/tos">Terms</Link>
-            <Link to="/org/en/privacy">Privacy Policy</Link>
-            <Link to="/org/en/disclaimer">Disclaimer</Link>
-          </div>
+          <center>
+            <div className={classes.inner}>
+              <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+              <Link to="/org/en/tos">Terms & Conditions</Link>
+              <Link to="/org/en/privacy">Privacy Policy</Link>
+              <Link to="/org/en/disclaimer">Disclaimer</Link>
+            </div>
+          </center>
         </Container>
       </div>
     </React.Fragment>
