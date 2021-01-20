@@ -266,7 +266,7 @@ const CreateBuzzForm = (props) => {
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${content} <br /> ${lastImage}`
+        const contentAppend = `${content} <br /> ![](${lastImage})`
         setContent(contentAppend)
       }
     })
