@@ -383,7 +383,8 @@ const Profile = (props) => {
               <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                 <Col xs="auto">
                   <p className={classNames(classes.paragraph, classes.fullName)}>
-                    {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;<Chip component="span"  size="small" label={`${hivepower} HP`} />
+                    {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;
+                    <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />
                   </p>
                 </Col>
               </Row>
