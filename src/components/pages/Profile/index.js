@@ -273,7 +273,7 @@ const Profile = (props) => {
   }, [pathname])
 
 
-  const { metadata, stats } = profile || ''
+  const { metadata, stats, delegated, hivepower } = profile || ''
   const { profile: profileMeta } = metadata || ''
   const { name, cover_image, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
@@ -386,7 +386,7 @@ const Profile = (props) => {
                     {name || username}&nbsp;<Chip component="span"  size="small" label={reputation} />
                   </p>
                   <p className={classNames(classes.paragraph, classes.userName)}>
-                    @{username}
+                    {delegated ? `(-${delegated})` : ''} {hivepower} HP
                   </p>
                 </Col>
               </Row>
