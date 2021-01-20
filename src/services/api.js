@@ -335,6 +335,18 @@ export const isFollowing = (follower, following) => {
   })
 }
 
+export const fetchGlobalProperties = () => {
+  return new Promise((resolve, reject) => {
+    api.getDynamicGlobalProperties((err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
 export const fetchSingleProfile = (account) => {
   const user = localStorage.getItem('active')
 
@@ -358,6 +370,17 @@ export const fetchSingleProfile = (account) => {
         resolve(data)
       }
     })
+  })
+}
+
+export const fetchAccounts = (username) => {
+  return new Promise((resolve, reject) => {
+    api.getAccountsAsync([username])
+      .then(async(result) => {
+        resolve(result)
+      }).catch((error) => {
+        reject(error)
+      })
   })
 }
 
