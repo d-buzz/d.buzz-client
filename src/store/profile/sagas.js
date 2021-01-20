@@ -44,12 +44,26 @@ import {
   broadcastKeychainOperation,
   generateClearNotificationOperation,
   invokeFilter,
+  fetchGlobalProperties,
+  fetchAccounts,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
+    const props = yield call(fetchGlobalProperties)
     const profile = yield call(fetchSingleProfile, username)
+    const account = yield call(fetchAccounts, username)
+    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares } = account[0]
+    const delagated = parseFloat(parseFloat(props.total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(props.total_vesting_shares)),6)
+    const avail = parseFloat(vesting_shares) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
+    const vestHive = parseFloat(parseFloat(props.total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(props.total_vesting_shares)),6)
+
+    profile.hivepower = vestHive.toFixed(2)
+    profile.delegated = delagated.toFixed(2)
+
+    console.log({ vestHive: profile.hivepower })
+    console.log({ delegated: profile.delagated })
 
     yield put(getProfileSuccess(profile, meta))
   } catch(error) {
