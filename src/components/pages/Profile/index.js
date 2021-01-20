@@ -273,7 +273,7 @@ const Profile = (props) => {
   }, [pathname])
 
 
-  const { metadata, stats } = profile || ''
+  const { metadata, stats, hivepower } = profile || ''
   const { profile: profileMeta } = metadata || ''
   const { name, cover_image, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
@@ -383,10 +383,7 @@ const Profile = (props) => {
               <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                 <Col xs="auto">
                   <p className={classNames(classes.paragraph, classes.fullName)}>
-                    {name || username}&nbsp;<Chip component="span"  size="small" label={reputation} />
-                  </p>
-                  <p className={classNames(classes.paragraph, classes.userName)}>
-                    @{username}
+                    {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;<Chip component="span"  size="small" label={`${hivepower} HP`} />
                   </p>
                 </Col>
               </Row>
