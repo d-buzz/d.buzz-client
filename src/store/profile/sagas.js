@@ -62,9 +62,6 @@ function* getProfileRequest(payload, meta) {
     profile.hivepower = vestHive.toFixed(2)
     profile.delegated = delagated.toFixed(2)
 
-    console.log({ vestHive: profile.hivepower })
-    console.log({ delegated: profile.delagated })
-
     yield put(getProfileSuccess(profile, meta))
   } catch(error) {
     yield put(getProfileFailure(error, meta))
