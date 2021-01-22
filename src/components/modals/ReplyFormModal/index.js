@@ -275,13 +275,13 @@ const ReplyFormModal = (props) => {
     }
 
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-      .then(({ success }) => {
+      .then(({ success, errorMessage }) => {
         if(success) {
           broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
           setReplyDone(true)
           closeReplyModal()
         } else {
-          broadcastNotification('error', `Failed reply to @${author}/${permlink}`)
+          broadcastNotification('error', errorMessage)
         }
       })
   }
