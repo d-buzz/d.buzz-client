@@ -110,14 +110,18 @@ const SideBarRight = (props) => {
         </ListGroup>
       </div>
       <div className={classes.footer}>
-        <div className={classes.inner}>
-          <Link to="/org/en/tos">Terms</Link>
-          <Link to="/org/en/privacy">Privacy Policy</Link>
-          <Link to="/org/en/disclaimer">Disclaimer</Link>
-          <a href="/terms">About</a> <br/ >
-          <Link to="/developer">Developers</Link>
-          <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
-        </div>
+        <right>
+          <div className={classes.inner}>
+            <Link to="/org/en/tos">Terms of Service</Link>
+            <Link to="/org/en/privacy">Privacy Policy</Link>
+            <Link to="/org/en/disclaimer">Disclaimer</Link>
+            <br />
+            <Link to="/org/en/getstarted">Get Started</Link>
+            <Link to="/developer">Developers</Link>
+            <br />
+            <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+          </div>
+        </right>
       </div>
     </React.Fragment>
   )
