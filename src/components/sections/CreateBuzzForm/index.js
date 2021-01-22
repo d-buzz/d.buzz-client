@@ -288,7 +288,7 @@ const CreateBuzzForm = (props) => {
           broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
-          broadcastNotification('error', 'You failed publishing a post')
+          broadcastNotification('error', data.errorMessage)
         }
       })
   }

@@ -442,7 +442,11 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    yield put(publishPostFailure(error, meta))
+    let errorMessage = 'Reply broadcast failed, please try again in a moment'
+    if(error === -32000) {
+      errorMessage = 'Sorry you have insufficient resoure credit to make publish this post, please try again after recharge or consider powering up hive'
+    }
+    yield put(publishPostFailure({ errorMessage }, meta))
   }
 }
 
