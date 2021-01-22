@@ -7,8 +7,6 @@ import {
   GuardedAppFrame,
   UnguardedAppFrame,
   OrganizationAppFrame,
-  OrganizationAppBar,
-  OrganizationFooter,
   MobileAppFrame,
   ReplyFormModal,
   NotificationBox,
@@ -125,13 +123,9 @@ const AppFrame = (props) => {
   return(
     <React.Fragment>
       {!is_authenticated && (<AppBar />)}
-      {organizationRoutes && (<OrganizationAppBar />)}
-      {!isMobile && !developerRoutes && (
+      {!isMobile && !developerRoutes && !organizationRoutes && (
         <Container className={containerClass}>
           <StickyContainer>
-            {organizationRoutes && (
-              <OrganizationAppFrame pathname={pathname} route={route} />
-            )}
             {is_authenticated && !organizationRoutes && (
               <GuardedAppFrame pathname={pathname} route={route} />
             )}
@@ -142,9 +136,9 @@ const AppFrame = (props) => {
           <UserDialog />
         </Container>
       )}
-      {isMobile && !developerRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
+      {isMobile && !developerRoutes && !organizationRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
       {developerRoutes && (<DeveloperFrame route={route} />)}
-      {organizationRoutes && (<OrganizationFooter />)}
+      {organizationRoutes &&(<OrganizationAppFrame pathname={pathname} route={route} />)}
       <ReplyFormModal />
       <NotificationBox />
       <MuteModal />
