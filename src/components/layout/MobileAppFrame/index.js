@@ -381,6 +381,7 @@ const MobileAppFrame = (props) => {
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
         <MenuItem onClick={showSwitchModal}>Switch Account</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/developer`}>Developers</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/getstarted`}>Get Started</MenuItem>
         <MenuItem onClick={handleClickSignout}>Logout</MenuItem>
       </Menu>
     )
