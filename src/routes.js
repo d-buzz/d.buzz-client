@@ -38,7 +38,7 @@ const routes =  [
         component: Home,
       },
       {
-        path: '/developer',
+        path: '/developers',
         exact: true,
         component: Developers,
       },
