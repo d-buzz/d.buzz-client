@@ -437,10 +437,7 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    let errorMessage = 'Reply broadcast failed, please try again in a moment'
-    if(error === -32000) {
-      errorMessage = 'Sorry you have insufficient resoure credit to make publish this post, please try again after recharge or consider powering up hive'
-    }
+    const errorMessage = errorMessageComposer('post', error)
     yield put(publishPostFailure({ errorMessage }, meta))
   }
 }
@@ -516,10 +513,7 @@ function* publishReplyRequest(payload, meta) {
 
     yield put(publishReplySuccess(data, meta))
   } catch(error) {
-    let errorMessage = 'Reply broadcast failed, please try again in a moment'
-    if(error === -32000) {
-      errorMessage = 'Sorry you have insufficient resoure credit to make this reply, please try again after recharge or consider powering up hive'
-    }
+    const errorMessage = errorMessageComposer('post', error)
     yield put(publishReplyFailure({ errorMessage }, meta))
   }
 }
