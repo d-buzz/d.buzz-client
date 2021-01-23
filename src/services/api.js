@@ -635,14 +635,18 @@ export const keychainSignIn = (username) => {
 }
 
 export const keychainUpvote = (username, permlink, author, weight) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     window.hive_keychain.requestVote(
       username,
       permlink,
       author,
       weight,
       response => {
-        resolve(response)
+        if(response.success) {
+          resolve(response)
+        } else {
+          reject(response.error.code)
+        }
       },
     )
   })
