@@ -513,7 +513,7 @@ function* publishReplyRequest(payload, meta) {
 
     yield put(publishReplySuccess(data, meta))
   } catch(error) {
-    const errorMessage = errorMessageComposer('post', error)
+    const errorMessage = errorMessageComposer('reply', error)
     yield put(publishReplyFailure({ errorMessage }, meta))
   }
 }
