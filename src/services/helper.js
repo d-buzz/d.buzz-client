@@ -257,3 +257,33 @@ export const truncateBody = (body) => {
 
   return body
 }
+
+
+export const errorMessageComposer = (type = null, errorCode = 0) => {
+  let errorMessage = 'Transaction broadcast failure for unknown reason, please contact the administrator'
+
+  const prefixes = [
+    {
+      type: 'post',
+      prefix: 'Post creation failed',
+    },
+    {
+      type: 'upvote',
+      prefix: 'Upvote transaction failed',
+    },
+    {
+      type: 'reply',
+      prefix: 'Reply transaction failed',
+    },
+  ]
+
+  if(type) {
+    errorMessage = prefixes.find( item => item.type === type).prefix
+  }
+
+  if(errorCode === -32000) {
+    errorMessage += ', you have insufficient resource credit to make this transaction, please consider retrying after recharge or after powering up hive'
+  }
+
+  return errorMessage
+}

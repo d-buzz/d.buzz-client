@@ -104,7 +104,7 @@ import {
   generateUpdateOperation,
   invokeMuteFilter,
 } from 'services/api'
-import { createPatch } from 'services/helper'
+import { createPatch, errorMessageComposer } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
@@ -285,26 +285,19 @@ function* upvoteRequest(payload, meta) {
     const { username, is_authenticated, useKeychain } = user
     let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
 
-    // if(typeof recentUpvotes === 'object') {
-    //   recentUpvotes = []
-    // }
-
     const weight = percentage * 100
 
     if(is_authenticated) {
       if(useKeychain) {
-        try {
-          const result = yield call(keychainUpvote, username, permlink, author, weight)
-          if(result.success) {
-            recentUpvotes = [...recentUpvotes, permlink]
-            yield put(upvoteSuccess({ success: true }, meta))
-          } else {
-            yield put(upvoteFailure({ success: false }, meta))
-          }
-        } catch(error) {
-          yield put(upvoteFailure({ success: true, error }, meta))
+
+        const result = yield call(keychainUpvote, username, permlink, author, weight)
+        if(result.success) {
+          recentUpvotes = [...recentUpvotes, permlink]
+          yield put(upvoteSuccess({ success: true }, meta))
         }
+
       } else {
+
         let { login_data } = user
         login_data = extractLoginData(login_data)
         const wif = login_data[1]
@@ -312,16 +305,18 @@ function* upvoteRequest(payload, meta) {
         yield call(broadcastVote, wif, username, author, permlink, weight)
         recentUpvotes = [...recentUpvotes, permlink]
         yield put(upvoteSuccess({ success: true }, meta))
+
       }
 
       yield put(saveReceptUpvotes(recentUpvotes))
 
     } else {
-      yield put(upvoteFailure({ success: true, error: 'No authentication' }, meta))
+      yield put(upvoteFailure({ success: false, errorMessage: 'No authentication' }, meta))
     }
 
   } catch(error) {
-    yield put(upvoteFailure({ success: true, error }, meta))
+    const errorMessage = errorMessageComposer('upvote', error)
+    yield put(upvoteFailure({ success: false, errorMessage }, meta))
   }
 }
 
@@ -442,10 +437,7 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    let errorMessage = 'Reply broadcast failed, please try again in a moment'
-    if(error === -32000) {
-      errorMessage = 'Sorry you have insufficient resoure credit to make publish this post, please try again after recharge or consider powering up hive'
-    }
+    const errorMessage = errorMessageComposer('post', error)
     yield put(publishPostFailure({ errorMessage }, meta))
   }
 }
@@ -521,10 +513,7 @@ function* publishReplyRequest(payload, meta) {
 
     yield put(publishReplySuccess(data, meta))
   } catch(error) {
-    let errorMessage = 'Reply broadcast failed, please try again in a moment'
-    if(error === -32000) {
-      errorMessage = 'Sorry you have insufficient resoure credit to make this reply, please try again after recharge or consider powering up hive'
-    }
+    const errorMessage = errorMessageComposer('reply', error)
     yield put(publishReplyFailure({ errorMessage }, meta))
   }
 }

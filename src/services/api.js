@@ -497,12 +497,14 @@ export const broadcastVote = (wif, voter, author, permlink, weight) => {
   // api.setOptions({ url: 'https://anyx.io' })
   config.set('rebranded_api', true)
   broadcast.updateOperations()
-  return broadcast.voteAsync(wif, voter, author, permlink, weight)
-    .then((result) => {
-      return result
-    }).catch((error) => {
-      return error
-    })
+  return new Promise((resolve, reject) => {
+    broadcast.voteAsync(wif, voter, author, permlink, weight)
+      .then((result) => {
+        resolve(result)
+      }).catch((error) => {
+        reject(error.code)
+      })
+  })
 }
 
 export const wifToPublic = (privWif) => {
@@ -635,14 +637,18 @@ export const keychainSignIn = (username) => {
 }
 
 export const keychainUpvote = (username, permlink, author, weight) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     window.hive_keychain.requestVote(
       username,
       permlink,
       author,
       weight,
       response => {
-        resolve(response)
+        if(response.success) {
+          resolve(response)
+        } else {
+          reject(response.error.code)
+        }
       },
     )
   })
