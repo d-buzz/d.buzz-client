@@ -247,7 +247,7 @@ const PostActions = (props) => {
     setShowSlider(false)
     setLoading(true)
     upvoteRequest(author, permlink, sliderValue)
-      .then(({ success }) => {
+      .then(({ success, errorMessage }) => {
         if(success) {
           setVote(vote + 1)
           setUpvoted(true)
@@ -255,14 +255,9 @@ const PostActions = (props) => {
           broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
         } else {
           setUpvoted(false)
-          broadcastNotification('error', `Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
+          broadcastNotification('error', errorMessage)
           setLoading(false)
         }
-      })
-      .catch(() => {
-        setUpvoted(false)
-        broadcastNotification('error', `Failure upvoting @${author}/${permlink} at ${sliderValue}%`)
-        setLoading(false)
       })
   }
 
