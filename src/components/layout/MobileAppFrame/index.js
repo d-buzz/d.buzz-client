@@ -312,6 +312,10 @@ const MobileAppFrame = (props) => {
     setOpenLoginModal(false)
   }
 
+  const handleDiscordClick = () => { 
+    window.open('https://discord.gg/kCZGPs7','_blank') 
+  }
+
   const NavigationTop = () => {
     return (
       <Navbar className={classes.navTop} fixed="top">
@@ -380,8 +384,10 @@ const MobileAppFrame = (props) => {
       >
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
         <MenuItem onClick={showSwitchModal}>Switch Account</MenuItem>
-        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/developers`}>Developers</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/getstarted`}>Get Started</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/tos`}>Terms of Service</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/developers`}>Developers</MenuItem>
+        <MenuItem onClick={handleDiscordClick}>Discord Channel</MenuItem>
         <MenuItem onClick={handleClickSignout}>Logout</MenuItem>
       </Menu>
     )
