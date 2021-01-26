@@ -7,7 +7,6 @@ import Image from 'react-bootstrap/Image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Container } from '@material-ui/core'
-import Iframe from 'react-iframe'
 
 
 const useStyles = createUseStyles(theme => ({
