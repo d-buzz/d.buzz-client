@@ -266,7 +266,7 @@ const CreateBuzzForm = (props) => {
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${content} <br /> ${lastImage}`
+        const contentAppend = `${content} <br /> ![](${lastImage})`
         setContent(contentAppend)
       }
     })
@@ -288,7 +288,7 @@ const CreateBuzzForm = (props) => {
           broadcastNotification('success', 'You successfully published a post')
           history.push(`/@${author}/c/${permlink}`)
         } else {
-          broadcastNotification('error', 'You failed publishing a post')
+          broadcastNotification('error', data.errorMessage)
         }
       })
   }

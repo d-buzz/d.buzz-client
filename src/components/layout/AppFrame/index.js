@@ -3,12 +3,10 @@ import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
 import {
   AppBar,
-  DeveloperFrame,
+  DevelopersFrame,
   GuardedAppFrame,
   UnguardedAppFrame,
   OrganizationAppFrame,
-  OrganizationAppBar,
-  OrganizationFooter,
   MobileAppFrame,
   ReplyFormModal,
   NotificationBox,
@@ -80,7 +78,7 @@ const AppFrame = (props) => {
   const params = queryString.parse(search) || ''
 
   const organizationRoutes = (pathname.match(/^\/org/))
-  const developerRoutes = pathname.match(/^\/developer/)
+  const developersRoutes = pathname.match(/^\/developers/)
   let containerClass = classes.guardedContainer
   const unGuardedRoute = (pathname.match(/^\/login/) || !is_authenticated)
 
@@ -125,13 +123,9 @@ const AppFrame = (props) => {
   return(
     <React.Fragment>
       {!is_authenticated && (<AppBar />)}
-      {organizationRoutes && (<OrganizationAppBar />)}
-      {!isMobile && !developerRoutes && (
+      {!isMobile && !developersRoutes && !organizationRoutes && (
         <Container className={containerClass}>
           <StickyContainer>
-            {organizationRoutes && (
-              <OrganizationAppFrame pathname={pathname} route={route} />
-            )}
             {is_authenticated && !organizationRoutes && (
               <GuardedAppFrame pathname={pathname} route={route} />
             )}
@@ -142,9 +136,9 @@ const AppFrame = (props) => {
           <UserDialog />
         </Container>
       )}
-      {isMobile && !developerRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
-      {developerRoutes && (<DeveloperFrame route={route} />)}
-      {organizationRoutes && (<OrganizationFooter />)}
+      {isMobile && !developersRoutes && !organizationRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
+      {developersRoutes && (<DevelopersFrame route={route} />)}
+      {organizationRoutes &&(<OrganizationAppFrame pathname={pathname} route={route} />)}
       <ReplyFormModal />
       <NotificationBox />
       <MuteModal />

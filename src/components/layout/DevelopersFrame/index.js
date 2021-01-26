@@ -1,7 +1,5 @@
 import React from 'react'
-import { StickyContainer } from 'react-sticky'
 import config from 'config'
-import Container from '@material-ui/core/Container'
 import { renderRoutes } from 'react-router-config'
 import { createUseStyles } from 'react-jss'
 import { Link, useLocation } from 'react-router-dom'
@@ -12,7 +10,8 @@ import Button from 'react-bootstrap/Button'
 import {
   OrgIcon,
 } from 'components/elements'
-
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Container from '@material-ui/core/Container'
 
 const useStyles = createUseStyles({
   nav: {
@@ -66,31 +65,22 @@ const useStyles = createUseStyles({
   },
 })
 
-const OrganizationAppBar = () => {
+const DevelopersAppBar = () => {
   const classes = useStyles()
   const { pathname } = useLocation()
 
-  const termsOfService = (pathname.match(/^\/org\/en\/tos/))
-  const privacyPolicy = (pathname.match(/^\/org\/en\/privacy/))
-  const disclaimer = (pathname.match(/^\/org\/en\/disclaimer/))
-  const getStarted = (pathname.match(/^\/org\/en\/getstarted/))
+  const developers = (pathname.match(/^\/developers/))
 
   let title = ''
-  if (termsOfService) {
-    title = 'Terms of Service'
-  } else if (privacyPolicy) {
-    title = 'Privacy Policy'
-  } else if (disclaimer) {
-    title = 'Disclaimer'
-  } else if (getStarted) {
-    title = 'Get Started'
+  if (developers) {
+    title = 'Developers Page'
   }
 
 
   return (
     <React.Fragment>
       <Container className={classes.container}>
-        <Navbar collapseOnSelect expand="md" fixed="top" variant="dark" className={classes.nav}>
+        <Navbar collapseOnSelect expand="md" fixed="top" variant="white" className={classes.nav}>
           <Navbar.Brand>
             <Link to="/">
               <left>
@@ -138,7 +128,7 @@ const OrganizationAppBar = () => {
   )
 }
 
-const OrganizationFooter = () => {
+const DevelopersFooter = () => {
   const classes = useStyles()
 
   return (
@@ -159,22 +149,20 @@ const OrganizationFooter = () => {
   )
 }
 
-const OrganizationAppFrame = (props) => {
-  const { 
-    route,
-  } = props
+
+const DevelopersFrame = (props) => {
+  const { route } = props
 
   return (
     <React.Fragment>
-      <OrganizationAppBar />
+      <DevelopersAppBar />
+      <CssBaseline />
       <Container maxWidth="md">
-        <StickyContainer>
-          {renderRoutes(route.routes)}
-        </StickyContainer>
+        {renderRoutes(route.routes)}
       </Container>
-      <OrganizationFooter />
+      <DevelopersFooter />
     </React.Fragment>
   )
 }
 
-export default OrganizationAppFrame
+export default DevelopersFrame

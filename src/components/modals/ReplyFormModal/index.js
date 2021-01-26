@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import FormCheck from 'react-bootstrap/FormCheck'
+import { useHistory } from 'react-router-dom'
 import { invokeTwitterIntent } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
@@ -166,6 +167,8 @@ const ReplyFormModal = (props) => {
     uploadFileRequest,
   } = props
 
+  const history = useHistory()
+
   const CircularProgressStyle = { float: 'right', marginRight: 5, marginTop: 15 }
 
   const { username } = user
@@ -272,15 +275,30 @@ const ReplyFormModal = (props) => {
     }
 
     publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-      .then(({ success }) => {
+      .then(({ success, errorMessage }) => {
         if(success) {
           broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
           setReplyDone(true)
           closeReplyModal()
         } else {
-          broadcastNotification('error', `Failed reply to @${author}/${permlink}`)
+          broadcastNotification('error', errorMessage)
         }
       })
+  }
+
+  const handleClickContent = (e) => {
+    const { target } = e
+    let { href } = target
+    const hostname = window.location.hostname
+
+    e.preventDefault()
+    if (href && !href.includes(hostname)) {
+      window.open(href, '_blank')
+    } else {
+      const split = `${href}`.split('/')
+      href = `/${split[3]}`
+      history.push(href)
+    }
   }
 
   return (
@@ -365,7 +383,9 @@ const ReplyFormModal = (props) => {
                   {content.length !== 0 && (
                     <div className={classes.previewContainer}>
                       <h6>Reply preview</h6>
-                      <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                      <div onClick={handleClickContent}>
+                        <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                      </div>
                       <hr />
                     </div>
                   )}

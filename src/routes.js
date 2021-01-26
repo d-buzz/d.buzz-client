@@ -1,6 +1,7 @@
 import {
   AppFrame,
   TermsConditions,
+  GetStarted,
   Home,
   Trending,
   Profile,
@@ -37,7 +38,7 @@ const routes =  [
         component: Home,
       },
       {
-        path: '/developer',
+        path: '/developers',
         exact: true,
         component: Developers,
       },
@@ -55,6 +56,11 @@ const routes =  [
         path: '/org/en/disclaimer',
         exact: true,
         component: Disclaimer,
+      },
+      {
+        path: '/org/en/getstarted',
+        exact: true,
+        component: GetStarted,
       },
       {
         path: '/trending',

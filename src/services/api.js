@@ -113,7 +113,6 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-    api.setOptions({ url: 'https://api.hive.blog' })
     api.call('bridge.get_discussion', params, async(err, data) => {
       if(err) {
         reject(err)
@@ -336,6 +335,18 @@ export const isFollowing = (follower, following) => {
   })
 }
 
+export const fetchGlobalProperties = () => {
+  return new Promise((resolve, reject) => {
+    api.getDynamicGlobalProperties((err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
 export const fetchSingleProfile = (account) => {
   const user = localStorage.getItem('active')
 
@@ -359,6 +370,17 @@ export const fetchSingleProfile = (account) => {
         resolve(data)
       }
     })
+  })
+}
+
+export const fetchAccounts = (username) => {
+  return new Promise((resolve, reject) => {
+    api.getAccountsAsync([username])
+      .then(async(result) => {
+        resolve(result)
+      }).catch((error) => {
+        reject(error)
+      })
   })
 }
 
@@ -475,12 +497,14 @@ export const broadcastVote = (wif, voter, author, permlink, weight) => {
   // api.setOptions({ url: 'https://anyx.io' })
   config.set('rebranded_api', true)
   broadcast.updateOperations()
-  return broadcast.voteAsync(wif, voter, author, permlink, weight)
-    .then((result) => {
-      return result
-    }).catch((error) => {
-      return error
-    })
+  return new Promise((resolve, reject) => {
+    broadcast.voteAsync(wif, voter, author, permlink, weight)
+      .then((result) => {
+        resolve(result)
+      }).catch((error) => {
+        reject(error.code)
+      })
+  })
 }
 
 export const wifToPublic = (privWif) => {
@@ -613,14 +637,18 @@ export const keychainSignIn = (username) => {
 }
 
 export const keychainUpvote = (username, permlink, author, weight) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     window.hive_keychain.requestVote(
       username,
       permlink,
       author,
       weight,
       response => {
-        resolve(response)
+        if(response.success) {
+          resolve(response)
+        } else {
+          reject(response.error.code)
+        }
       },
     )
   })
@@ -844,7 +872,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       key,
       response => {
         if(!response.success) {
-          reject(response.message)
+          reject(response.error.code)
         } else {
           resolve(response)
         }
@@ -864,11 +892,9 @@ export const broadcastOperation = (operations, keys) => {
       },
       keys,
       (error, result) => {
+        console.log(error)
         if(error) {
-          reject({
-            success: false,
-            error,
-          })
+          reject(error.code)
         } else {
           resolve({
             success: true,
@@ -1024,6 +1050,7 @@ export const getBestRpcNode = () => {
   return new Promise((resolve) => {
     axios.get('https://beacon.peakd.com/api/best')
       .then(function (result) {
+        console.log({ result })
         resolve(result.data[0].endpoint)
       })
       .catch(function (error) {
