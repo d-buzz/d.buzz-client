@@ -7,6 +7,7 @@ import Image from 'react-bootstrap/Image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Container } from '@material-ui/core'
+import Iframe from 'react-iframe'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -26,7 +27,7 @@ const useStyles = createUseStyles(theme => ({
   },
   hero: {
     paddingTop: 100,
-    textAlign: 'justify',
+    textAlign: 'left',
   },
   outsideWrapper: {
     paddingTop: 50,
@@ -111,27 +112,28 @@ const GetStarted = () => {
                           <b>D.Buzz</b> is a micro-blogging platform that allow users to create accounts, join in conversations, and post their own content. 
                         </p>
                         <p>
-                          <b>D.Buzz</b> mission is to promote freedom of speech and the rights of users, with a little help from blockchain technology.
+                          <b>D.Buzz's</b> mission is to promote freedom of speech and the rights of users, with a little help from blockchain technology.
                         </p>
                         <p>
-                          <b>D.Buzz</b> censorship resistance is king and users are in control. Advance content delivery algorithms used by big social media companies
-                          have drawn a razor-thin line between whether these companies are defined as platfroms or publishers, terms that each carrying unique legal implications.
+                          <b>D.Buzz</b> censorship resistance is king and users are in control. Advanced content delivery algorithms used by big social media companies have drawn a razor-thin line between whether these companies are defined as platfroms or publishers, terms that each carry unique legal implications.
                         </p>
                         <p>
-                          Big social media appears to be presenting themselves as platforms, public forums which would be protected from certain liabilities under the US Communications Decency Act. However, they are also engagin in what is known as 'Algorithmic Cencorship', a practice that would technically classifu them as publishers, disqualifying them from Communications Decency Act. 
+                          Big social media appears to be presenting themselves as platforms, public forums which would be protected from certain liabilities under the US Communications Decency Act. However, they are also engaging in what is known as 'Algorithmic Censorship', a practice that would technically classify them as publishers, disqualifying them from Communications Decency Act.
                         </p>
-                        
                         <p>
                           <b>D.Buzz</b> is different. They are creating a censorship-resistant platform powered by the Hive Blockchain. This is great for users because they get freedom of speech in regards to what they post, they truly own their content, and they get improved content curation as well as less ads.
                         </p>
-                        <iframe
-                          title='Embedded Video'
-                          src="https://3speak.co/embed?v=hellomsq/rmivqzsw"
-                          allowFullScreen={true}
-                          frameBorder='0'
-                          height='300'
-                          width='100%'
-                        ></iframe>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=hellomsq/rmivqzsw"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
                         <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=hellomsq/rmivqzsw">https://3speak.co/watch?v=hellomsq/rmivqzsw</a></i></p>
                       </div>
                     </div>
@@ -144,36 +146,38 @@ const GetStarted = () => {
                       <hr />
                       <div>
                         <h2>
-                          Steps on Sign Up Feature with D.Buzz:
+                        Steps to Sign Up to D.Buzz:
                         </h2>
                         <br />
                         <ol>
                           <li>
                             <i>
-                              Go to the big sign-up button. This will bring you to the <a href="https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login"target="_blank" rel="noopener noreferrer">hiveonboard.com</a> webpage. This is where you go
-                              to sign-up for a new account. 
+                              Go to the big sign-up button. 
+                              This will bring you to the <a href="https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login"target="_blank" rel="noopener noreferrer">hiveonboard.com</a> webpage. 
+                              This is where you go to sign-up for a new account.
                             </i>
                           </li>
                           <li>
                             <i>
-                              When you land on the page, scroll down. Towards says <b> Username </b> and select one that you like. It should not start with a space or number. Start with a couple of 
-                              letters to find you a unique username. <b>Please Note: Currently there are no ways to change the username on the hive blockchain or on D.Buzz, so once you select one it is yours for life.</b> 
+                              When you land on the page, scroll down. Head towards where it says <b> Username </b> and type in a username you like. 
+                              It should not start with a space or number. Start with a couple of letters to find a unique username. 
+                              <br /> <b>Please Note: Currently there are no ways to change the username on the Hive blockchain or on D.Buzz, so once you select one it is yours for life.</b> 
                             </i>
                           </li>
                           <li>
                             <i>
-                              After you found your username that is acceptable, agree to the terms of service and continue and hit continue.
+                              After you found your username that is acceptable, agree to the Terms of Service and hit continue.
                             </i>
                           </li> 
                           <li>
                             <i>
-                              The second phase on creating the account is to backup your account keys. Your account keys are unique to you, we at D.Buzz does not control them. If you lose a copy of the keys, you will not be able to login to your account or interact on the blockchain in fashion.
-                              <b>Note: It is important to keep these keys very safe and keep these numbers with you. Do not give these out to anybody, who ask for them. As they can take ownership with your account and transfer your money away. </b> To interact with D.Buzz we only use your posting key to login. And hit the download backup button.
+                              The second phase on creating the account is to backup your account keys. Your account keys are unique to you, we at <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a> do not control or have access to them.  If you lose all the copies of your keys, you will not be able to login to your account or interact on the HIVE blockchain, in any fashion.
+                              <br /> <b>Note: It is important to keep these keys very safe and keep these numbers with you. Do not give these out to anyone who asks for them. As they can take ownership of your account and transfer your money away.</b> <br />To interact with D.Buzz we only use your posting key to login. Hit the download backup button.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Continue by pressing the <b>CREATE HIVE ACCOUNT</b>, it would ask for a one-time-code phone verification. This is a one time process to enable authenticity on the blockchain. Hive Onboard will not sell your phone number to any 3rd-parties or use it in any marketing efforts. It is to very the authenticity of you and to make sure that people do not take advantage of the system.   
+                              Continue by pressing the <b>CREATE HIVE ACCOUNT</b>, it would ask for a one-time-code phone verification. This is a one time process to enable authenticity on the blockchain. Hive Onboard will not sell your phone number to any 3rd-parties or use it in any marketing efforts. It is to verify the authenticity of you and to make sure that people do not take advantage of the system.   
                             </i>
                           </li>
                           <li>
@@ -187,14 +191,17 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <iframe
-                          title='Embedded Video'
-                          src="https://3speak.co/embed?v=jacuzzi/ksllvfbj"
-                          allowFullScreen={true}
-                          frameBorder='0'
-                          height='300'
-                          width='100%'
-                        ></iframe>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/ksllvfbj"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
                         <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/ksllvfbj">https://3speak.co/watch?v=jacuzzi/ksllvfbj</a></i></p>
                       </div>
                     </div>
@@ -207,41 +214,49 @@ const GetStarted = () => {
                       <hr />
                       <div>
                         <p>
-                          Switch options this allows you to multiple account and change between them. 
+                          The Switch Accounts feature allows you to login to multiple accounts and switch between them.
                         </p>
                         <h2>
-                          Steps on using Switch Accounts Feature with D.Buzz:
+                          Steps for using Switch Accounts Feature with D.Buzz:
                         </h2>
                         <ol>
                           <li>
                             <i>
-                              Log in to <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a>, after loggin in you will see down the bottom that you are logged in. But then above the Buzz button, you see a switch account button and click it. 
+                              Log in to <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a>, after logging in, you will see down at the bottom that you are logged in. But then above the Buzz button, you can see a Switch Account button and click it.
                             </i>
                           </li>
                           <li>
                             <i>
-                              You will be shown an interface in switching account, click add user button.
+                              You will be shown an interface for switching accounts, click the Add User button.
                             </i>
                           </li>
                           <li>
                             <i>
-                              You will be prompted back to the login in page, and enter the other account you have. <b>Note: You can either use your posting key directly or hivekeychain</b>
+                              You will be prompted back to the login page, and enter the other account you have. <br /><b>Note: You can either use your posting key directly or hivekeychain</b>
                             </i>
                           </li>
                           <li>
                             <i>
-                              After logging in, the page will refresh and it will show the current account you sign in on <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a>. <b>Note: Upon opening the interface for switching account it will show the online and offline accounts. You can toggle on the accounts for faster switching accounts, upon clicking the desired account the page will automatically refresh.</b>
+                              After logging in, the page page will refresh and it will show the current account you signed into on  <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a>. 
+                            </i>
+                          </li>
+                          <li>
+                            <i>
+                              Upon opening the interface for switching accounts it will show the online and offline accounts. You can toggle the different accounts to switch between accounts faster, upon clicking the desired account the page will automatically refresh.
                             </i>
                           </li>
                         </ol>
-                        <iframe
-                          title='Embedded Video'
-                          src="https://3speak.co/embed?v=jacuzzi/yydvvemc"
-                          allowFullScreen={true}
-                          frameBorder='0'
-                          height='300'
-                          width='100%'
-                        ></iframe>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/yydvvemc"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
                         <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/yydvvemc">https://3speak.co/watch?v=jacuzzi/yydvvemc</a></i></p>
                       </div>
                     </div>
@@ -257,17 +272,17 @@ const GetStarted = () => {
                           In <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a> you can mute an author that you do not like or maybe content you do not like as well. 
                         </p>
                         <h2>
-                          Steps on using Mute & Unmute with D.Buzz:
+                          Steps for using the Mute & Unmute features with D.Buzz:
                         </h2>
                         <ol>
                           <li>
                             <i>
-                              Look for a post, and go to the top-right side where you see the dropdown caret. 
+                              Look for a post, and go to the top-right side where you see the drop-down caret.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Upon clicking it, you'll get a window and you can click the mute button. <b>Note: This author  will be remove from your news feed, until you turn them back on. This will be removed from your news feed on all front-ends that works on Hive blockchain, this includes: PeakD, hive.blog, and others. </b> So when you have clicked the mute button, you'll get the option to add the author to your list of muted users.
+                              Upon clicking it, you'll get a window and you can click the mute button. Note: This author will be removed from your news feed, until you turn them back on. This will be removed from your news feed on all front-ends that works on the Hive blockchain, this includes: PeakD, Hive.Blog, and others. So when you have clicked the Mute button, you'll get the option to add the author to your list of muted users.
                             </i>
                           </li>
                           <li>
@@ -276,14 +291,17 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <iframe
-                          title='Embedded Video'
-                          src="https://3speak.co/embed?v=jacuzzi/kkdhlwsy"
-                          allowFullScreen={true}
-                          frameBorder='0'
-                          height='300'
-                          width='100%'
-                        ></iframe>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/kkdhlwsy"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
                         <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/kkdhlwsy">https://3speak.co/watch?v=jacuzzi/kkdhlwsy</a></i></p>
                       </div>
                     </div>
@@ -296,7 +314,7 @@ const GetStarted = () => {
                       <hr />
                       <div>
                         <h2>
-                          Steps on using Buzz to Twitter feature with D.Buzz:
+                          Steps for using the Buzz-to-Twitter feature on D.Buzz:
                         </h2>
                         <ol>
                           <li>
@@ -311,38 +329,41 @@ const GetStarted = () => {
                           </li>
                           <li>
                             <i>
-                              Go down and click the Buzz it button. <b>Note: Your buzz will be posted on the Hive blockchain once you click buzz it button.</b>
+                              Go down and click the Buzz button. <br /><b> Note: Your Buzz will be posted to the Hive blockchain once you click the Buzz button </b>.
                             </i>
                           </li>
                           <li>
                             <i>
-                              After your buzz is posted you will have a confirmation on the bottom-right side.
+                              After your Buzz is posted you will have a confirmation on the bottom-right side.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Scroll down a little bit, and at the bottom you'll notice a three dots icon. 
+                              Scroll down a little bit, and at the bottom you'll notice a three dots icon.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Click the three dots icon button, and you have now the option to edit your buzz or buzz it to twitter.
+                              Click the three dots icon button, and you have now the option to edit your Buzz or Buzz it to Twitter.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Click Buzz to twitter button. As long as you are login to your twitter account, you'll see a window pop out. Enabling you to share the buzz directly with twitter. And once you're good with the result share, click the tweet button from twitter.
+                              Click the Buzz-to-Twitter button. As long as you are logged into your Twitter account, you'll see a window pop up. Enabling you to share the Buzz directly with Twitter. And once you're good with the result of what you want to share, click the Tweet button from Twitter.
                             </i>
                           </li>
                         </ol>
-                        <iframe
-                          title='Embedded Video'
-                          src="https://3speak.co/embed?v=jacuzzi/rvdfuood"
-                          allowFullScreen={true}
-                          frameBorder='0'
-                          height='300'
-                          width='100%'
-                        ></iframe>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/rvdfuood"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
                         <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/rvdfuood">https://3speak.co/watch?v=jacuzzi/rvdfuood</a></i></p>
                       </div>
                     </div>
@@ -694,15 +715,15 @@ const GetStarted = () => {
                         <h3>How to Buy $HIVE to Power Up?</h3>
                       </div>
                       <hr />
-                      <div style={{paddingBottom: 300}}>
+                      <div style={{paddingBottom: 200}}>
                         <p>
                           <b>Goals:</b> 
                           <ol>
                             <li>
-                              Buy Hive coins
+                              Buy $Hive coins
                             </li>
                             <li>
-                              Power Up Hive on your acccount
+                              Power Up $Hive on your acccount
                             </li>
                           </ol>
                         </p>
@@ -710,7 +731,7 @@ const GetStarted = () => {
                           <b>Requirements:</b> 
                           <ol>
                             <li>
-                              A Hive Account and Username(@username)
+                              A Hive Account and Username (@username)
                             </li>
                             <li>
                               A Blocktrades Account
@@ -719,7 +740,7 @@ const GetStarted = () => {
                               Log into PeakD
                             </li>
                             <li>
-                              BTC(Bitcoin or other Cryto Asset)
+                              BTC (Bitcoin or other Crypto Asset)
                             </li>
                           </ol>
                         </p>
@@ -734,22 +755,22 @@ const GetStarted = () => {
                           </li>
                           <li>
                             <i>
-                              Sign up for an account in blocktrades.
+                              Sign up for an account in Blocktrades.
                             </i>
                           </li>
                           <li>
                             <i>
-                              After creating an account, sign in to blocktrades. <b>Note: You have the option to verify your account or not. If you do not verify your account, you'll be limited to $1750 USD for trade and daily trade.</b>
+                              After creating an account, sign into Blocktrades. <br /> <b>Note: You have the option to verify your account or not. If you do not verify your account, you'll be limited to $1,750 USD for trade and daily trade.</b>
                             </i>
                           </li>
                           <li>
                             <i>
-                              Go to send and select Bitcoin(BTC) 
+                              Go to send and select Bitcoin (BTC)
                             </i>
                           </li>
                           <li>
                             <i>
-                              On receive, select Hive.
+                              On receive, select $Hive.
                             </i>
                           </li>
                           <li>
@@ -759,52 +780,52 @@ const GetStarted = () => {
                           </li>
                           <li>
                             <i>
-                              Scroll down a bit, enter your username at Hive. After, click the get deposit address button. <b>Note: This will open a new interface which includes the depositing address. You can send any amount up to your daily trading limit.</b>
+                              Scroll down a bit, enter your username at Hive. After, click the get deposit address button. <br /> <b>Note: This will open a new interface which includes the depositing address. You can send any amount up to your daily trading limit.</b>
                             </i>
                           </li>
                           <li>
                             <i>
-                              Go to your external wallet and send the desired amount on the address that was provided.
+                              Go to your external wallet and send the desired amount to the address that was provided.
                             </i>
                           </li>
                           <li>
                             <i>
-                              After a several confirmations on the transaction, you will recieve your Hive coins.
+                              After a several confirmations on the transaction, you will receive your $Hive coins.
                             </i>
                           </li>
                         </ol>
                         <h2>
-                          Steps on powering your Hive Account:
+                          Steps for Powering Up your Hive Account:
                         </h2>
                         <ol>
                           <li>
                             <i>
-                              Go to <a target="_blank" rel="noopener noreferrer" href="https://peakd.com/">peakd.com/</a> and login your Hive account.
+                              Go to <a target="_blank" rel="noopener noreferrer" href="https://peakd.com/">peakd.com</a> and login your Hive account.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Click the avatar on top-right side of the interface, it should show a list of options. Go down which it says Wallet and click, this would show your wallet screen.
+                              Click the avatar on the top-right side of the interface, it should show a list of options. Go down to where it says Wallet and click, this would show your wallet screen.
                             </i>
                           </li>
                           <li>
                             <i>
-                              Once the transaction of converting your BTC to Hive with several confirmations, it will show your Hive as Hive Tokens(Hive)
+                              Once the transaction of converting your BTC to Hive is done, after several confirmations, it will show up in your wallet as Hive Tokens (Hive)
                             </i>
                           </li>
                           <li>
                             <i>
-                              Go to the right-middle side beside the send button, click the bottom-facing caret icon. It will show options and click Power Up. <b>Note: It will show a modal form which is asking how much will you power up.</b>
+                              Go to the right-middle side beside the send button, click the bottom-facing caret icon. It will show options and click Power Up. <br /> <b>Note: It will show a modal form which is asking how much you will power up. </b>
                             </i>
                           </li>
                           <li>
                             <i>
-                              Once done deciding for how many will be power up, click continue to proceed. Click confirm once the hivekeychain prompts the confirmation.
+                              Once you are done deciding how much HIVE you want to Power Up, click continue to proceed. Click confirm once Hive Keychain prompts the confirmation (if you are using HIVE Keychain).
                             </i>
                           </li>
                           <li>
                             <i>
-                              Scroll down, and after a few transaction cycle you will see it appear in your transaction's below.
+                              Scroll down, and after a few transaction cycles, you will see it appear in your transaction's below.
                             </i>
                           </li>
                         </ol>
@@ -813,7 +834,7 @@ const GetStarted = () => {
                           src="https://3speak.co/embed?v=jacuzzi/xiqtpcpw"
                           allowFullScreen={true}
                           frameBorder='0'
-                          height='300'
+                          height='200'
                           width='100%'
                         ></iframe>
                         <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/xiqtpcpw">https://3speak.co/watch?v=jacuzzi/xiqtpcpw</a></i></p>
