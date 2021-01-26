@@ -24,7 +24,7 @@ const useStyles = createUseStyles(theme => ({
   },
   hero: {
     paddingTop: 100,
-    textAlign: 'justify',
+    textAlign: 'left',
   },
   outsideWrapper: {
     paddingTop: 50,
