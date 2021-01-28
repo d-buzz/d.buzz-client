@@ -107,8 +107,21 @@ const GetStarted = () => {
                       </div>
                       <hr />
                       <div>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=hellomsq/rmivqzsw"
+                            allowFullScreen={true}
+                            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
+                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=hellomsq/rmivqzsw">https://3speak.co/watch?v=hellomsq/rmivqzsw</a></i></p>
+                        <br />
                         <p>
-                          <b>D.Buzz</b> is a micro-blogging platform that allow users to create accounts, join in conversations, and post their own content. 
+                          <b>D.Buzz</b> is a micro-blogging platform that allows users to create accounts, join in conversations, and post their own content.
                         </p>
                         <p>
                           <b>D.Buzz's</b> mission is to promote freedom of speech and the rights of users, with a little help from blockchain technology.
@@ -122,18 +135,6 @@ const GetStarted = () => {
                         <p>
                           <b>D.Buzz</b> is different. They are creating a censorship-resistant platform powered by the Hive Blockchain. This is great for users because they get freedom of speech in regards to what they post, they truly own their content, and they get improved content curation as well as less ads.
                         </p>
-                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
-                          <iframe
-                            title='Embedded Video'
-                            src="https://3speak.co/embed?v=hellomsq/rmivqzsw"
-                            allowFullScreen={true}
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                            frameBorder='0'
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
-                          />
-                        </div>
-                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=hellomsq/rmivqzsw">https://3speak.co/watch?v=hellomsq/rmivqzsw</a></i></p>
                       </div>
                     </div>
                   </section>
@@ -144,6 +145,19 @@ const GetStarted = () => {
                       </div>
                       <hr />
                       <div>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/ksllvfbj"
+                            allowFullScreen={true}
+                            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
+                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/ksllvfbj">https://3speak.co/watch?v=jacuzzi/ksllvfbj</a></i></p>
+                        <br />
                         <h2>
                         Steps to Sign Up to D.Buzz:
                         </h2>
@@ -190,18 +204,6 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
-                          <iframe
-                            title='Embedded Video'
-                            src="https://3speak.co/embed?v=jacuzzi/ksllvfbj"
-                            allowFullScreen={true}
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                            frameBorder='0'
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
-                          />
-                        </div>
-                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/ksllvfbj">https://3speak.co/watch?v=jacuzzi/ksllvfbj</a></i></p>
                       </div>
                     </div>
                   </section>
@@ -212,6 +214,19 @@ const GetStarted = () => {
                       </div>
                       <hr />
                       <div>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/yydvvemc"
+                            allowFullScreen={true}
+                            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
+                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/yydvvemc">https://3speak.co/watch?v=jacuzzi/yydvvemc</a></i></p>
+                        <br />
                         <p>
                           The Switch Accounts feature allows you to login to multiple accounts and switch between them.
                         </p>
@@ -245,18 +260,6 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
-                          <iframe
-                            title='Embedded Video'
-                            src="https://3speak.co/embed?v=jacuzzi/yydvvemc"
-                            allowFullScreen={true}
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                            frameBorder='0'
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
-                          />
-                        </div>
-                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/yydvvemc">https://3speak.co/watch?v=jacuzzi/yydvvemc</a></i></p>
                       </div>
                     </div>
                   </section>
@@ -267,6 +270,19 @@ const GetStarted = () => {
                       </div>
                       <hr />
                       <div>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/kkdhlwsy"
+                            allowFullScreen={true}
+                            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
+                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/kkdhlwsy">https://3speak.co/watch?v=jacuzzi/kkdhlwsy</a></i></p>
+                        <br />
                         <p>
                           In <a target="_blank" rel="noopener noreferrer" href="https://d.buzz">D.Buzz</a> you can mute an author that you do not like or maybe content you do not like as well. 
                         </p>
@@ -290,18 +306,6 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
-                          <iframe
-                            title='Embedded Video'
-                            src="https://3speak.co/embed?v=jacuzzi/kkdhlwsy"
-                            allowFullScreen={true}
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                            frameBorder='0'
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
-                          />
-                        </div>
-                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/kkdhlwsy">https://3speak.co/watch?v=jacuzzi/kkdhlwsy</a></i></p>
                       </div>
                     </div>
                   </section>
@@ -312,6 +316,19 @@ const GetStarted = () => {
                       </div>
                       <hr />
                       <div>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/rvdfuood"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
+                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/rvdfuood">https://3speak.co/watch?v=jacuzzi/rvdfuood</a></i></p>
+                        <br />
                         <h2>
                           Steps for using the Buzz-to-Twitter feature on D.Buzz:
                         </h2>
@@ -352,18 +369,6 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
-                          <iframe
-                            title='Embedded Video'
-                            src="https://3speak.co/embed?v=jacuzzi/rvdfuood"
-                            allowFullScreen={true}
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                            frameBorder='0'
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
-                          />
-                        </div>
-                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/rvdfuood">https://3speak.co/watch?v=jacuzzi/rvdfuood</a></i></p>
                       </div>
                     </div>
                   </section>
@@ -715,6 +720,19 @@ const GetStarted = () => {
                       </div>
                       <hr />
                       <div style={{paddingBottom: 200}}>
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', overflow: 'hidden' }}>
+                          <iframe
+                            title='Embedded Video'
+                            src="https://3speak.co/embed?v=jacuzzi/xiqtpcpw"
+                            allowFullScreen={true}
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            frameBorder='0'
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                          />
+                        </div>
+                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/xiqtpcpw">https://3speak.co/watch?v=jacuzzi/xiqtpcpw</a></i></p>
+                        <br />
                         <p>
                           <b>Goals:</b> 
                           <ol>
@@ -828,15 +846,6 @@ const GetStarted = () => {
                             </i>
                           </li>
                         </ol>
-                        <iframe
-                          title='Embedded Video'
-                          src="https://3speak.co/embed?v=jacuzzi/xiqtpcpw"
-                          allowFullScreen={true}
-                          frameBorder='0'
-                          height='200'
-                          width='100%'
-                        ></iframe>
-                        <p>Source: <i><a target="_blank" rel="noopener noreferrer" href="https://3speak.co/watch?v=jacuzzi/xiqtpcpw">https://3speak.co/watch?v=jacuzzi/xiqtpcpw</a></i></p>
                       </div>
                     </div>
                   </section>
