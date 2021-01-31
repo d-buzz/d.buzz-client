@@ -14,6 +14,7 @@ import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { isMobile } from 'react-device-detect'
+import { signOnHiveonboard } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   nav: {
@@ -72,8 +73,7 @@ const AppBar = (props) => {
   }
 
   const handleClickSignup = () => {
-    const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login', '_blank')
-    win.focus()
+    signOnHiveonboard()
   }
 
   return (
