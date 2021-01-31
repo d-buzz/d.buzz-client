@@ -76,11 +76,13 @@ const AppFrame = (props) => {
   const { is_authenticated } = user
   const [showLogin, setShowLogin] = useState(false)
   const params = queryString.parse(search) || ''
+  const referrer = document.referrer
 
   const organizationRoutes = (pathname.match(/^\/org/))
   const developersRoutes = pathname.match(/^\/developers/)
   let containerClass = classes.guardedContainer
   const unGuardedRoute = (pathname.match(/^\/login/) || !is_authenticated)
+  const [signUpConfirmation, setSignUpConfirmation] = useState(false)
 
   if(organizationRoutes) {
     containerClass = classes.organizationContainer
@@ -90,18 +92,24 @@ const AppFrame = (props) => {
     containerClass = classes.unGuardedContainer
   }
 
+  const checkIfLogin = () => {
+    if (!is_authenticated) {
+      setShowLogin(true)
+    } else {
+      setShowLogin(false)
+    }
+  }
+
   useEffect(() => {
     if (pathname.match(/^\/intent\/buzz/)) {
       setFromIntentBuzz(true)
       if(params.text){
         setIntentBuzz(params.text, params.url, params.tags)
       }
-
-      if (!is_authenticated) {
-        setShowLogin(true)
-      } else {
-        setShowLogin(false)
-      }
+      checkIfLogin()
+    } else if ((params.status === 'success') && referrer === 'https://hiveonboard.com/') {
+      setSignUpConfirmation(true)
+      checkIfLogin()
     } else {
       setFromIntentBuzz(false)
       setShowLogin(false)
@@ -145,6 +153,7 @@ const AppFrame = (props) => {
       <LoginModal
         show={showLogin}
         onHide={handleClickCloseLoginModal}
+        signUpConfirmation={signUpConfirmation}
         fromIntentBuzz={fromIntentBuzz}
         buzzIntentCallback={handleSetBuzzIntent} />
     </React.Fragment>
