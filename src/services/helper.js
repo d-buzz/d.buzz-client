@@ -287,3 +287,8 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
 
   return errorMessage
 }
+
+export const signOnHiveonboard = () => {
+  const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/#/?status=success', '_blank')
+  win.blur()
+} 
