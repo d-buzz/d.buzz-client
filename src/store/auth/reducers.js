@@ -42,9 +42,9 @@ export const auth = (state = defaultState, { type, payload }) => {
   case SET_HAS_PAYOUT_AGREED:
     return state.set('payoutAgreed', payload)
   case SET_INTENT_BUZZ:
-    return state.set("intentBuzz", payload)
+    return state.set('intentBuzz', payload)
   case CLEAR_INTENT_BUZZ:
-    return state.set("intentBuzz", {})
+    return state.set('intentBuzz', {})
   case SET_OPACITY_USERS:
     return state.set('opacityUsers', payload)
   case SET_FROM_INTENT_BUZZ:
