@@ -17,6 +17,8 @@ import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import Button from '@material-ui/core/Button'
 import { isMobile } from 'react-device-detect'
 import { Link } from 'react-router-dom'
+import { signOnHiveonboard } from 'services/helper'
+import { SuccessConfirmation } from 'components/elements'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
@@ -88,6 +90,7 @@ const LoginModal = (props) => {
     buzzIntentCallback = () => { },
     accounts,
     user,
+    signUpConfirmation,
   } = props
 
   const classes = useStyles()
@@ -152,8 +155,7 @@ const LoginModal = (props) => {
   }
 
   const handleClickSignup = () => {
-    const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/login', '_blank')
-    win.focus()
+    signOnHiveonboard()
   }
 
   const hasSwitcherMatch = () => {
@@ -176,6 +178,14 @@ const LoginModal = (props) => {
           <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
             <center>
               <h6 className={classes.label}>Hi there, welcome back!</h6>
+              {signUpConfirmation && (
+                <React.Fragment>
+                  <div style={{ height: 100, width: 100 }} >
+                    <SuccessConfirmation />
+                  </div>
+                  <span style={{ color: 'green '}}> You successfully created a HIVE account, and can now login to D.Buzz </span>
+                </React.Fragment>
+              )}
               {hasAuthenticationError && (
                 <span style={{ color: 'red' }}>Authentication failed, please check credentials and retry again.</span>
               )}
