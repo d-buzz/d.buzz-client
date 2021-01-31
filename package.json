@@ -17,6 +17,7 @@
     "crypto-js": "^4.0.0",
     "diff-match-patch": "^1.0.5",
     "immutable": "^4.0.0-rc.12",
+    "lottie-react": "^2.1.0",
     "markdown-link-extractor": "^1.2.3",
     "moment": "^2.27.0",
     "npm-text-parser": "^1.0.8",
