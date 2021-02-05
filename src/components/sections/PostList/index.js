@@ -409,7 +409,8 @@ const PostList = React.memo((props) => {
                   onClose={closeMenu}
                 >
                   <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
-                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute</MenuItem>)}
+                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute Post</MenuItem>)}
                 </Menu>
               </div>
             </Col>
