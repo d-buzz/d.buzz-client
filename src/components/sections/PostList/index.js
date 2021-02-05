@@ -338,6 +338,10 @@ const PostList = React.memo((props) => {
     sendToBerries(author)
   }
 
+  const isAuthor = () => {
+    return user.username && user.username === author
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -409,8 +413,8 @@ const PostList = React.memo((props) => {
                   onClose={closeMenu}
                 >
                   <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
-                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
-                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute Post</MenuItem>)}
+                  {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                  {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
                 </Menu>
               </div>
             </Col>
