@@ -10,7 +10,12 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openUserDialog, saveScrollIndex, openMuteDialog } from 'store/interface/actions'
+import {
+  openUserDialog,
+  saveScrollIndex,
+  openMuteDialog,
+  openHideBuzzDialog,
+} from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -201,6 +206,7 @@ const PostList = React.memo((props) => {
     openMuteDialog,
     opacityUsers,
     disableOpacity,
+    openHideBuzzDialog,
   } = props
 
 
@@ -342,6 +348,11 @@ const PostList = React.memo((props) => {
     return user.username && user.username === author
   }
 
+  const handleClickHideBuzzDialog = () => {
+    openHideBuzzDialog(author, permlink)
+    setAnchorEl(null)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -384,9 +395,6 @@ const PostList = React.memo((props) => {
                       <PostTags meta={meta} highlightTag={highlightTag} />
                     </div>
                   )}
-                  {/* <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
-                    <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
-                  </a> */}
                 </div>
                 {!muted && !opacityActivated && disableOpacity && (
                   <div className={classes.actionWrapper}>
@@ -414,7 +422,7 @@ const PostList = React.memo((props) => {
                 >
                   <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
                   {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
-                  {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
+                  {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
                 </Menu>
               </div>
             </Col>
@@ -437,6 +445,7 @@ const mapDispatchToProps = (dispatch) => ({
     openUserDialog,
     saveScrollIndex,
     openMuteDialog,
+    openHideBuzzDialog,
   }, dispatch),
 })
 
