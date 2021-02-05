@@ -69,3 +69,15 @@ export const openMuteDialog = (username, muteSuccessCallback = null) => ({
 export const closeMuteDialog = () => ({
   type: CLOSE_MUTE_DIALOG,
 })
+
+export const OPEN_HIDE_BUZZ_DIALOG = 'OPEN_HIDE_BUZZ_DIALOG'
+export const CLOSE_HIDE_BUZZ_DIALOG = 'CLOSE_HIDE_BUZZ_DIALOG'
+
+export const openHideBuzzDialog = (author, permlink) => ({
+  type: OPEN_HIDE_BUZZ_DIALOG,
+  payload: { author, permlink },
+})
+
+export const closeHideBuzzDialog = () => ({
+  type: CLOSE_HIDE_BUZZ_DIALOG,
+})
