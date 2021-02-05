@@ -3,9 +3,7 @@ import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { muteUserRequest } from 'store/auth/actions'
 import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
-import {
-  unfollowRequest,
-} from 'store/posts/actions'
+import { unfollowRequest } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
