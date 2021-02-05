@@ -125,16 +125,6 @@ const MuteModal = (props) => {
     closeMuteDialog()
   }
 
-  // useEffect(() => {
-  //   if(mutelist.includes(username)) {
-
-  //     setOpen(false)
-  //     onHide()
-  //     broadcastNotification('success', `Succesfully muted @${username}`)
-  //   }
-  //   // eslint-disable-next-line
-  // }, [mutelist])
-
   const handleClickMuteUser = () => {
     const inMuteList = mutelist.includes(username)
     if(!inMuteList) {
