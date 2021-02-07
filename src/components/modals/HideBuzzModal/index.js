@@ -97,10 +97,10 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 
-const MuteModal = (props) => {
+const HideBuzzModal = (props) => {
   const {
     closeMuteDialog,
-    muteModal,
+    hideBuzzDialog,
     muteUserRequest,
     loading,
     broadcastNotification,
@@ -108,42 +108,44 @@ const MuteModal = (props) => {
     unfollowRequest,
   } = props
   const [open, setOpen] = useState(false)
-  const [username, setUsernamae] = useState(null)
+  const [author, setAuthor] = useState(null)
+  const [permlink, setPermlink] = useState(null)
   const classes = useStyles()
 
   useEffect(() => {
-    if(muteModal && muteModal.hasOwnProperty('open')) {
-      const { open, username } = muteModal
+    if(hideBuzzDialog && hideBuzzDialog.hasOwnProperty('open')) {
+      const { open, author, permlink } = hideBuzzDialog
       setOpen(open)
-      setUsernamae(username)
+      setAuthor(author)
+      setPermlink(permlink)
     }
-  }, [muteModal])
+  }, [hideBuzzDialog])
 
   const onHide = () => {
     closeMuteDialog()
   }
 
   const handleClickMuteUser = () => {
-    const inMuteList = mutelist.includes(username)
+    const inMuteList = mutelist.includes(author)
     if(!inMuteList) {
-      muteUserRequest(username).then(() => {
+      muteUserRequest(author).then(() => {
         setOpen(false)
         onHide()
-        broadcastNotification('success', `Succesfully muted @${username}`)
-        const { muteSuccessCallback } = muteModal
+        broadcastNotification('success', `Succesfully muted @${author}`)
+        const { muteSuccessCallback } = hideBuzzDialog
 
         if(muteSuccessCallback) {
           muteSuccessCallback()
         }
       }).catch(() => {
-        broadcastNotification('success', `Failed to mute @${username}`)
+        broadcastNotification('success', `Failed to mute @${author}`)
       })
     } else {
-      unfollowRequest(username).then((result) => {
+      unfollowRequest(author).then((result) => {
         if(result) {
-          broadcastNotification('success', `Successfully unmuted @${username}`)
+          broadcastNotification('success', `Successfully unmuted @${author}`)
         } else {
-          broadcastNotification('error', `Failed unmuting @${username}`)
+          broadcastNotification('error', `Failed unmuting @${author}`)
         }
       })
     }
@@ -157,21 +159,11 @@ const MuteModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  {!mutelist.includes(username) && (
+                  {!mutelist.includes(author) && (
                     <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
+                      <h6>Would you like to hide this buzz?</h6>
                       <p className={classes.text}>
-                        Would you like to add <b>@{username}</b> to your list of
-                        muted users?
-                      </p>
-                    </React.Fragment>
-                  )}
-                  {mutelist.includes(username) && (
-                    <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
-                      <p className={classes.text}>
-                        Would you like to remove <b>@{username}</b> from your list of
-                        muted users?
+                        Clicking yes will hide the buzz <b>@${author}/${permlink}</b> from your feeds on this browser
                       </p>
                     </React.Fragment>
                   )}
@@ -181,7 +173,7 @@ const MuteModal = (props) => {
                 <React.Fragment>
                   <h6>Operation in progress</h6>
                   <p className={classes.text}>
-                    Adding <b>@{username}</b> to your list of
+                    Adding <b>@{author}</b> to your list of
                     muted users
                   </p>
                 </React.Fragment>
@@ -223,7 +215,7 @@ const MuteModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  muteModal: state.interfaces.get('muteDialogUser'),
+  hideBuzzDialog: state.interfaces.get('hideBuzzDialog'),
   loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
   mutelist: state.auth.get('mutelist'),
 })
@@ -237,4 +229,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MuteModal)
+export default connect(mapStateToProps, mapDispatchToProps)(HideBuzzModal)
