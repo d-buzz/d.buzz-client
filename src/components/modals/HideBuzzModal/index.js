@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { muteUserRequest } from 'store/auth/actions'
-import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
+import { closeHideBuzzDialog, broadcastNotification } from 'store/interface/actions'
 import { unfollowRequest } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -99,7 +100,7 @@ const useStyles = createUseStyles(theme => ({
 
 const HideBuzzModal = (props) => {
   const {
-    closeMuteDialog,
+    closeHideBuzzDialog,
     hideBuzzDialog,
     muteUserRequest,
     loading,
@@ -122,10 +123,10 @@ const HideBuzzModal = (props) => {
   }, [hideBuzzDialog])
 
   const onHide = () => {
-    closeMuteDialog()
+    closeHideBuzzDialog()
   }
 
-  const handleClickMuteUser = () => {
+  const handleClickHideBuzz = () => {
     const inMuteList = mutelist.includes(author)
     if(!inMuteList) {
       muteUserRequest(author).then(() => {
@@ -163,7 +164,7 @@ const HideBuzzModal = (props) => {
                     <React.Fragment>
                       <h6>Would you like to hide this buzz?</h6>
                       <p className={classes.text}>
-                        Clicking yes will hide the buzz <b>@${author}/${permlink}</b> from your feeds on this browser
+                        Clicking yes will hide the buzz <Link to={`/@${author}/c/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/c/${permlink}</Link> from your feeds on this browser
                       </p>
                     </React.Fragment>
                   )}
@@ -173,8 +174,7 @@ const HideBuzzModal = (props) => {
                 <React.Fragment>
                   <h6>Operation in progress</h6>
                   <p className={classes.text}>
-                    Adding <b>@{author}</b> to your list of
-                    muted users
+                    Adding <Link to={`/@${author}/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/${permlink}</Link> to your hidden buzz list
                   </p>
                 </React.Fragment>
               )}
@@ -184,7 +184,7 @@ const HideBuzzModal = (props) => {
             <React.Fragment>
               <div style={{ display: 'inline-block' }}>
                 <ContainedButton
-                  onClick={handleClickMuteUser}
+                  onClick={handleClickHideBuzz}
                   className={classes.closeButton}
                   fontSize={14}
                   transparent={true}
@@ -222,7 +222,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    closeMuteDialog,
+    closeHideBuzzDialog,
     muteUserRequest,
     broadcastNotification,
     unfollowRequest,
