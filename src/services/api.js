@@ -21,7 +21,6 @@ const imageUrl = `${appConfig.IMAGE_API}/image`
 const censorUrl = `${appConfig.CENSOR_API}`
 
 config.set('rebranded_api', true)
-broadcast.updateOperations()
 
 const visited = []
 
@@ -497,7 +496,6 @@ export const fetchRewardFund = (username) => {
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   // api.setOptions({ url: 'https://anyx.io' })
   config.set('rebranded_api', true)
-  broadcast.updateOperations()
   return new Promise((resolve, reject) => {
     broadcast.voteAsync(wif, voter, author, permlink, weight)
       .then((result) => {
@@ -884,7 +882,6 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 
 export const broadcastOperation = (operations, keys) => {
   config.set('rebranded_api', true)
-  broadcast.updateOperations()
   return new Promise((resolve, reject) => {
     broadcast.send(
       {
@@ -893,7 +890,6 @@ export const broadcastOperation = (operations, keys) => {
       },
       keys,
       (error, result) => {
-        console.log(error)
         if(error) {
           reject(error.code)
         } else {
@@ -1051,7 +1047,6 @@ export const getBestRpcNode = () => {
   return new Promise((resolve) => {
     axios.get('https://beacon.peakd.com/api/best')
       .then(function (result) {
-        console.log({ result })
         resolve(result.data[0].endpoint)
       })
       .catch(function (error) {

@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { BuzzIcon, CloseIcon } from 'components/elements'
+import { CloseIcon, ContainedButton } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
-import FormLabel from 'react-bootstrap/FormLabel'
 import { createUseStyles } from 'react-jss'
+import { Container } from 'react-bootstrap'
 
 const useStyles = createUseStyles({
-  label: {
+  button: {
     fontSize: 15,
     height: 35,
+    marginTop: -25,
   },
   container: {
     margin: '0 auto',
-    '@media (min-width: 1100px)': {
-      '&.container': {
-        maxWidth: '900px',
+    height: 55,
+    '& svg': {
+      '& path': {
+        fill: '#000000',
       },
     },
   },
@@ -41,16 +43,19 @@ const InstallAppBanner = () => {
 
   useEffect(() => { if (prompt) setVisibleState(true) }, [prompt])
 
-  if (!isVisible) return (<div />)
+  if (!isVisible) return (<Container />)
 
   return (
-    <div className={classes.container} onClick={promptToInstall}>
-      <IconButton style={{ marginTop: -5 }} onClick={hide} size="small">
-        <CloseIcon />
-      </IconButton>
-      <BuzzIcon />
-      <FormLabel className={classes.label}>Install D.Buzz | Micro-blogging for HIVE</FormLabel>
-    </div>
+    <React.Fragment>
+      <Container className={classes.container} onClick={hide} fluid={true}>
+        <IconButton onClick={hide} size="small" style={{paddingTop: 15}}>
+          <CloseIcon />
+        </IconButton>
+        <center>
+          <ContainedButton onClick={promptToInstall} fontSize={15} label={'Install D.Buzz | Micro-blogging for HIVE'} className={classes.button} />
+        </center>
+      </Container>
+    </React.Fragment>
   )
 }
 

@@ -54,14 +54,14 @@ const SideBarRight = (props) => {
   let isInSearchRoute = false
   const { is_authenticated } = user
 
-  if(pathname.match(/(\/search?)/)) {
+  if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
   }
 
   const linkGenerator = (tag) => {
     let link = ''
 
-    if(!is_authenticated) {
+    if (!is_authenticated) {
       link = '/ug'
     }
 
@@ -110,18 +110,16 @@ const SideBarRight = (props) => {
         </ListGroup>
       </div>
       <div className={classes.footer}>
-        <right>
-          <div className={classes.inner}>
-            <Link to="/org/en/tos">Terms of Service</Link>
-            <Link to="/org/en/privacy">Privacy Policy</Link>
-            <Link to="/org/en/disclaimer">Disclaimer</Link>
-            <br />
-            <Link to="/org/en/getstarted">Get Started</Link>
-            <Link to="/developers">Developers</Link>
-            <br />
-            <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
-          </div>
-        </right>
+        <div className={classes.inner}>
+          <Link to="/org/en/tos">Terms of Service</Link>
+          <Link to="/org/en/privacy">Privacy Policy</Link>
+          <Link to="/org/en/disclaimer">Disclaimer</Link>
+          <br />
+          <Link to="/org/en/getstarted">Get Started</Link>
+          <Link to="/developers">Developers</Link>
+          <br />
+          <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+        </div>
       </div>
     </React.Fragment>
   )
