@@ -9,6 +9,11 @@ import {
   getAccountPostsFailure,
   setLastAccountPosts,
 
+  GET_ACCOUNT_BLOG_REQUEST,
+  getAccountBlogSuccess,
+  getAccountBlogFailure,
+  setLastAccountBlog,
+
   GET_ACCOUNT_REPLIES_REQUEST,
   getAccountRepliesSuccess,
   getAccountRepliesFailure,
@@ -38,6 +43,7 @@ import {
   extractLoginData,
   fetchSingleProfile,
   fetchAccountPosts,
+  fetchAccountBlog,
   fetchFollowers,
   fetchFollowing,
   broadcastOperation,
@@ -90,6 +96,25 @@ function* getAccountPostRequest(payload, meta) {
     yield put(getAccountPostsSuccess(data, meta))
   } catch(error) {
     yield put(getAccountPostsFailure(error, meta))
+  }
+}
+
+function* getAccountBlogRequest(payload, meta) {
+  try {
+    const { username, start_permlink, start_author } = payload
+    const old = yield select(state => state.profile.get('blog'))
+    let data = yield call(fetchAccountBlog, username, start_permlink, start_author)
+
+    data = [...old, ...data]
+
+    data = data.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+    })
+    
+    yield put(setLastAccountBlog(data[data.length-1]))
+    yield put(getAccountBlogSuccess(data, meta))
+  } catch (error) {
+    yield put(getAccountBlogFailure(error, meta))
   }
 }
 
@@ -223,6 +248,10 @@ function* watchGetAccountPostRequest({ payload, meta }) {
   yield call(getAccountPostRequest, payload, meta)
 }
 
+function* watchGetAccountBlogRequest({ payload, meta}) {
+  yield call(getAccountBlogRequest, payload, meta)
+}
+
 function* watchGetAccountRepliesRequest({ payload, meta }) {
   yield call(getAccountRepliesRequest, payload, meta)
 }
@@ -246,6 +275,7 @@ function* watchGetAccountCommentsRequest({ payload, meta }) {
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
+  yield takeEvery(GET_ACCOUNT_BLOG_REQUEST, watchGetAccountBlogRequest)
   yield takeEvery(GET_ACCOUNT_REPLIES_REQUEST, watchGetAccountRepliesRequest)
   yield takeEvery(GET_FOLLOWERS_REQUEST, watchGetFollowersRequest)
   yield takeEvery(GET_FOLLOWING_REQUEST, watchGetFollowingRequest)
