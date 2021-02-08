@@ -130,14 +130,14 @@ const HideBuzzModal = (props) => {
     hideBuzzRequest(author, permlink).then(() => {
       setOpen(false)
       onHide()
-      broadcastNotification('success', `Succesfully muted @${author}/${permlink}`)
+      broadcastNotification('success', `Succesfully hide @${author}/${permlink}`)
       const { hideBuzzSuccesCallback } = hideBuzzDialog
 
       if(hideBuzzSuccesCallback) {
         hideBuzzSuccesCallback()
       }
     }).catch(() => {
-      broadcastNotification('success', `Failed to mute @${author}/${permlink}`)
+      broadcastNotification('success', `Failed to hide @${author}/${permlink}`)
     })
   }
 
