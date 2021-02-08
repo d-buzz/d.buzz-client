@@ -148,7 +148,7 @@ const HideBuzzModal = (props) => {
                     <React.Fragment>
                       <h6>Would you like to hide this buzz?</h6>
                       <p className={classes.text}>
-                        Clicking yes will hide the buzz <Link to={`/@${author}/c/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/c/${permlink}</Link> from your feeds on this browser
+                        Clicking yes will hide the buzz <Link to={`/@${author}/c/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/c/${permlink}</Link> <br /> from your feeds on this browser
                       </p>
                     </React.Fragment>
                   )}
@@ -200,7 +200,7 @@ const HideBuzzModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   hideBuzzDialog: state.interfaces.get('hideBuzzDialog'),
-  loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
+  loading: pending(state, 'HIDE_BUZZ_REQUEST'),
   mutelist: state.auth.get('mutelist'),
 })
 
