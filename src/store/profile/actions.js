@@ -46,6 +46,30 @@ export const getAccountPostsFailure = (error, meta) => ({
   meta,
 })
 
+export const GET_ACCOUNT_BLOG_REQUEST = 'GET_ACCOUNT_BLOG_REQUEST'
+export const GET_ACCOUNT_BLOG_SUCCESS = 'GET_ACCOUNT_BLOG_SUCCESS'
+export const GET_ACCOUNT_BLOG_FAILURE = 'GET_ACCOUNT_BLOG_FAILURE'
+
+export const getAccountBlogRequest = (username, start_permlink = null, start_author = null) => ({
+  type: GET_ACCOUNT_BLOG_REQUEST,
+  payload: { username, start_permlink, start_author },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getAccountBlogSuccess = (response, meta) => ({
+  type: GET_ACCOUNT_BLOG_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getAccountBlogFailure = (error, meta) => ({
+  type: GET_ACCOUNT_BLOG_FAILURE,
+  payload: error,
+  meta,
+})
+
 export const GET_ACCOUNT_REPLIES_REQUEST = 'GET_ACCOUNT_REPLIES_REQUEST'
 export const GET_ACCOUNT_REPLIES_SUCCESS = 'GET_ACCOUNT_REPLIES_SUCCESS'
 export const GET_ACCOUNT_REPLIES_FAILURE = 'GET_ACCOUNT_REPLIES_FAILURE'
@@ -77,6 +101,13 @@ export const setLastAccountPosts = (response) => ({
   payload: response,
 })
 
+export const SET_LAST_ACCOUNT_BLOG = 'SET_LAST_ACCOUNT_BLOG'
+
+export const setLastAccountBlog = (response) => ({
+  type: SET_LAST_ACCOUNT_BLOG,
+  payload: response,
+})
+
 export const SET_PROFILE_IS_VISITED = 'SET_PROFILE_IS_VISITED'
 
 export const setProfileIsVisited = (visited = true) => ({
@@ -88,6 +119,12 @@ export const CLEAR_ACCOUNT_POSTS = 'CLEAR_ACCOUNT_POSTS'
 
 export const clearAccountPosts = () => ({
   type: CLEAR_ACCOUNT_POSTS,
+})
+
+export const CLEAR_ACCOUNT_BLOG = 'CLEAR_ACCOUNT_BLOG'
+
+export const clearAccountBlog = () => ({
+  type: CLEAR_ACCOUNT_BLOG,
 })
 
 export const CLEAR_ACCOUNT_REPLIES = 'CLEAR_ACCOUNT_REPLIES'
