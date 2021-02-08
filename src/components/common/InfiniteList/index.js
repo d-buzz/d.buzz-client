@@ -24,6 +24,7 @@ class InfiniteList extends PureComponent {
   render() {
     const {
       onScroll,
+      isBlog = false,
       items,
       loading,
       unguardedLinks,
@@ -64,6 +65,7 @@ class InfiniteList extends PureComponent {
         >
           <div style={style}>
             <PostList
+              isBlog={isBlog}
               disableOpacity={disableOpacity}
               displayTitle={title}
               title={items[index].title}
