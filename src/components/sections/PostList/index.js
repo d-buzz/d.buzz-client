@@ -375,7 +375,7 @@ const PostList = React.memo((props) => {
         <div className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
-              <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
+              <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
                 <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
@@ -412,7 +412,7 @@ const PostList = React.memo((props) => {
                     </div>
                   )}
                 </div>
-                {!muted && !hidden && !opacityActivated && disableOpacity && (
+                {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
                       disableUpvote={disableUpvote}
