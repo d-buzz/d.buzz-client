@@ -25,6 +25,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { sendToBerries } from 'services/helper'
+import stripHtml from 'string-strip-html'
 
 const addHover = (theme) => {
   let style = {
@@ -170,12 +171,32 @@ const useStyle = createUseStyles(theme => ({
   muted: {
     opacity: 0.2,
   },
+  context: {
+    minHeight: 120,
+    width: '100%',
+    ...theme.context.view,
+    paddingBottom: 10,
+    borderRadius: '16px 16px',
+    marginBottom: 20,
+    fontFamily: 'Segoe-Bold',
+  },
+  contextWrapper: {
+    width: '95%',
+    height: '100%',
+    margin: '0 auto',
+    '& a': {
+      color: '#d32f2f',
+    },
+    paddingTop: 10,
+    paddingBottom: 2,
+  },
 }))
 
 
 const PostList = React.memo((props) => {
   const classes = useStyle()
   const {
+    isBlog,
     searchListMode = false,
     author,
     permlink,
@@ -243,7 +264,6 @@ const PostList = React.memo((props) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [muted, setMuted] = useState(false)
   const popoverAnchor = useRef(null)
-
 
   useEffect(() => {
     if(!isMobile) {
@@ -374,12 +394,48 @@ const PostList = React.memo((props) => {
                     </IconButton>
                   )}
                   {!muted && !opacityActivated && disableOpacity && (
-                    <div onClick={handleOpenContent}>
-                      {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                      <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
-                      <PostTags meta={meta} highlightTag={highlightTag} />
-                    </div>
+                    <React.Fragment>
+                      <div onClick={handleOpenContent}>
+                        {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
+                        {!isBlog && (
+                          <React.Fragment>
+                            <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>  
+                            <PostTags meta={meta} highlightTag={highlightTag} />
+                          </React.Fragment>
+                        )}
+                        {isBlog && !(`${stripHtml(body)}`.length > 280) && (
+                          <React.Fragment>
+                            <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>  
+                            <PostTags meta={meta} highlightTag={highlightTag} />
+                          </React.Fragment>
+                        )}
+                      </div>
+                      {isBlog && (`${stripHtml(body)}`.length > 280) && (
+                        <React.Fragment>
+                          <MarkdownViewer content={body.slice(0, 280)} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                          <Row>
+                            <Col>
+                              <div className={classes.context}>
+                                <div className={classes.contextWrapper}>
+                                  <h6 style={{ paddingTop: 5 }}>Content is truncated because it is over 280 characters</h6>
+                                  <br />
+                                  <ul>
+                                    <li>
+                                      <a href={`https://hive.blog/@${author}/${permlink}`} target="_blank" rel="noopener noreferrer" >
+                                        <h6>View the full content at blog.d.buzz</h6>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
+                          <PostTags meta={meta} highlightTag={highlightTag} />
+                        </React.Fragment>
+                      )}
+                    </React.Fragment>
                   )}
+                  
                   {/* <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
                     <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
                   </a> */}
