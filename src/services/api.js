@@ -256,6 +256,26 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
   })
 }
 
+export const fetchAccountBlog = (account, start_permlink = null, start_author = null, sort = 'blog') => {
+  return new Promise((resolve, reject) => {
+    const params = {
+      sort,
+      account,
+      observer: account,
+      start_author: start_author,
+      start_permlink,
+      limit: 100,
+    }
+
+    api.call('bridge.get_account_posts', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
 
 export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
