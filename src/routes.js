@@ -8,6 +8,7 @@ import {
   Content,
   Latest,
   AccountPosts,
+  AccountBlog,
   AccountReplies,
   AccountFollowers,
   AccountFollowing,
@@ -152,6 +153,11 @@ const routes =  [
             path: '/@:username/t/buzz',
             exact: true,
             component: AccountPosts,
+          },
+          {
+            path: '/@:username/t/blog',
+            exact: true,
+            component: AccountBlog,
           },
           {
             path: '/@:username/t/replies',
