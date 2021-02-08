@@ -210,3 +210,19 @@ export const switchAccountSuccess = (meta) => ({
   type: SWITCH_ACCOUNT_SUCCESS,
   meta,
 })
+
+export const HIDE_BUZZ_REQUEST = 'HIDE_BUZZ_REQUEST'
+export const HIDE_BUZZ_SUCCESS = 'HIDE_BUZZ_SUCCESS'
+
+export const hideBuzzRequest = (author, permlink) => ({
+  type: HIDE_BUZZ_REQUEST,
+  payload: { author, permlink },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const hideBuzzSuccess = (meta) => ({
+  type: HIDE_BUZZ_SUCCESS,
+  meta,
+})
