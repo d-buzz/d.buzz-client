@@ -14,10 +14,12 @@ import { broadcastNotification } from 'store/interface/actions'
 import {
   getProfileRequest,
   getAccountPostsRequest,
+  getAccountBlogRequest,
   setProfileIsVisited,
   getAccountRepliesRequest,
   getAccountCommentsRequest,
   clearAccountPosts,
+  clearAccountBlog,
   clearAccountReplies,
   getFollowersRequest,
   clearProfile,
@@ -137,6 +139,7 @@ const Profile = (props) => {
     match,
     getProfileRequest,
     getAccountPostsRequest,
+    getAccountBlogRequest,
     setProfileIsVisited,
     getAccountRepliesRequest,
     getFollowersRequest,
@@ -145,6 +148,7 @@ const Profile = (props) => {
     loading,
     route,
     clearAccountPosts,
+    clearAccountBlog,
     clearProfile,
     clearAccountReplies,
     getFollowingRequest,
@@ -210,9 +214,11 @@ const Profile = (props) => {
   const handleTabs = (index) => () => {
     let tab = 'buzz'
 
-    if(index === 1) {
+    if (index === 1) {
+      tab = 'blog'
+    } if (index === 2) {
       tab = 'comments'
-    } else if (index === 2) {
+    } else if (index === 3) {
       tab = 'replies'
     }
 
@@ -245,6 +251,7 @@ const Profile = (props) => {
       clearScrollIndex()
       clearProfile()
       clearAccountPosts()
+      clearAccountBlog()
       clearAccountReplies()
       clearAccountFollowers()
       clearAccountFollowing()
@@ -252,6 +259,7 @@ const Profile = (props) => {
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
+      getAccountBlogRequest(username)
       getAccountCommentsRequest(username)
       getAccountRepliesRequest(username)
       getFollowersRequest(username)
@@ -263,10 +271,12 @@ const Profile = (props) => {
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if(pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
+    } else if (pathname.match(/(\/t\/blog\/)$|(\/t\/blog)$/m)) {
       setIndex(1)
-    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
+    } else if(pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
       setIndex(2)
+    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
+      setIndex(3)
     } else {
       setIndex(0)
     }
@@ -429,8 +439,9 @@ const Profile = (props) => {
           className={classes.tabContainer}
         >
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's (comments)" />
-          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Blog" />
+          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Buzz's (comments)" />
+          <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Replies" />
         </Tabs>
       </div>
       <React.Fragment>
@@ -455,9 +466,11 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getProfileRequest,
     getAccountPostsRequest,
+    getAccountBlogRequest,
     setProfileIsVisited,
     getAccountRepliesRequest,
     clearAccountPosts,
+    clearAccountBlog,
     getFollowersRequest,
     clearProfile,
     clearAccountReplies,
