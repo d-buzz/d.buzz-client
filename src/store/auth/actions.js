@@ -222,7 +222,8 @@ export const hideBuzzRequest = (author, permlink) => ({
   },
 })
 
-export const hideBuzzSuccess = (meta) => ({
+export const hideBuzzSuccess = (buzzes, meta) => ({
   type: HIDE_BUZZ_SUCCESS,
+  payload: buzzes,
   meta,
 })

@@ -23,6 +23,7 @@ const defaultState = fromJS({
   intentBuzz: {},
   fromIntentBuzz: false,
   accounts: [],
+  hiddenBuzzes: [],
 })
 
 export const auth = (state = defaultState, { type, payload }) => {

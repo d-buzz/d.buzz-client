@@ -34,6 +34,9 @@ import {
 
   SWITCH_ACCOUNT_REQUEST,
   switchAccountSuccess,
+
+  HIDE_BUZZ_REQUEST,
+  hideBuzzSuccess,
 } from './actions'
 
 import {
@@ -334,6 +337,13 @@ function* switchAccountRequest(payload, meta) {
   yield put(switchAccountSuccess(meta))
 }
 
+function* hideBuzzRequest(payload, meta) {
+  const { author, permlink } = payload
+  let hiddenBuzzes = yield select(state => state.auth.get('hiddenBuzzes'))
+  hiddenBuzzes = [...hiddenBuzzes, { author, permlink }]
+  yield put(hideBuzzSuccess(hiddenBuzzes, meta))
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -362,6 +372,10 @@ function* watchSwitchAccountRequest({ payload, meta }) {
   yield call(switchAccountRequest, payload, meta)
 }
 
+function* watchHideBuzzRequest({ payload, meta }) {
+  yield call(hideBuzzRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
@@ -370,4 +384,5 @@ export default function* sagas() {
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
   yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
   yield takeEvery(SWITCH_ACCOUNT_REQUEST, watchSwitchAccountRequest)
+  yield takeEvery(HIDE_BUZZ_REQUEST, watchHideBuzzRequest)
 }
