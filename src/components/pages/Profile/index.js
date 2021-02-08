@@ -429,7 +429,7 @@ const Profile = (props) => {
           className={classes.tabContainer}
         >
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's (comments)" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
           <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
         </Tabs>
       </div>
