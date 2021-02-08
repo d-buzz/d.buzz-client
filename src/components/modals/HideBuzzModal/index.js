@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { muteUserRequest } from 'store/auth/actions'
+import { hideBuzzRequest } from 'store/auth/actions'
 import { closeHideBuzzDialog, broadcastNotification } from 'store/interface/actions'
 import { unfollowRequest } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
@@ -102,12 +102,12 @@ const HideBuzzModal = (props) => {
   const {
     closeHideBuzzDialog,
     hideBuzzDialog,
-    muteUserRequest,
+    hideBuzzRequest,
     loading,
     broadcastNotification,
     mutelist,
-    unfollowRequest,
   } = props
+
   const [open, setOpen] = useState(false)
   const [author, setAuthor] = useState(null)
   const [permlink, setPermlink] = useState(null)
@@ -127,29 +127,13 @@ const HideBuzzModal = (props) => {
   }
 
   const handleClickHideBuzz = () => {
-    const inMuteList = mutelist.includes(author)
-    if(!inMuteList) {
-      muteUserRequest(author).then(() => {
-        setOpen(false)
-        onHide()
-        broadcastNotification('success', `Succesfully muted @${author}`)
-        const { muteSuccessCallback } = hideBuzzDialog
-
-        if(muteSuccessCallback) {
-          muteSuccessCallback()
-        }
-      }).catch(() => {
-        broadcastNotification('success', `Failed to mute @${author}`)
-      })
-    } else {
-      unfollowRequest(author).then((result) => {
-        if(result) {
-          broadcastNotification('success', `Successfully unmuted @${author}`)
-        } else {
-          broadcastNotification('error', `Failed unmuting @${author}`)
-        }
-      })
-    }
+    hideBuzzRequest(author, permlink).then(() => {
+      setOpen(false)
+      onHide()
+      broadcastNotification('success', `Succesfully muted @${author}/${permlink}`)
+    }).catch(() => {
+      broadcastNotification('success', `Failed to mute @${author}/${permlink}`)
+    })
   }
 
   return (
@@ -223,7 +207,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     closeHideBuzzDialog,
-    muteUserRequest,
+    hideBuzzRequest,
     broadcastNotification,
     unfollowRequest,
   }, dispatch),
