@@ -73,9 +73,9 @@ export const closeMuteDialog = () => ({
 export const OPEN_HIDE_BUZZ_DIALOG = 'OPEN_HIDE_BUZZ_DIALOG'
 export const CLOSE_HIDE_BUZZ_DIALOG = 'CLOSE_HIDE_BUZZ_DIALOG'
 
-export const openHideBuzzDialog = (author, permlink) => ({
+export const openHideBuzzDialog = (author, permlink, hideBuzzSuccesCallback = null) => ({
   type: OPEN_HIDE_BUZZ_DIALOG,
-  payload: { author, permlink },
+  payload: { author, permlink, hideBuzzSuccesCallback },
 })
 
 export const closeHideBuzzDialog = () => ({

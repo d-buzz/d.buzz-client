@@ -207,6 +207,7 @@ const PostList = React.memo((props) => {
     opacityUsers,
     disableOpacity,
     openHideBuzzDialog,
+    hiddenBuzzes,
   } = props
 
 
@@ -248,6 +249,7 @@ const PostList = React.memo((props) => {
   const [delayHandler, setDelayHandler] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const [muted, setMuted] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const popoverAnchor = useRef(null)
 
 
@@ -332,6 +334,11 @@ const PostList = React.memo((props) => {
     recomputeRowIndex(scrollIndex)
   }
 
+  const hideBuzzSuccesCallback = () => {
+    setHidden(true)
+    recomputeRowIndex(scrollIndex)
+  }
+
   const handleClickMuteDialog = () => {
     // scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}
     openMuteDialog(author, muteSuccessCallback)
@@ -349,14 +356,23 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickHideBuzzDialog = () => {
-    openHideBuzzDialog(author, permlink)
+    openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
     setAnchorEl(null)
+  }
+
+  const isAHiddenBuzz = () => {
+    const list = hiddenBuzzes.filter( item => item.author === author && item.permlink === permlink )
+    return list.length >= 1
+  }
+
+  const isMutedUser = () => {
+    return opacityUsers.includes(author)
   }
 
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classNames(classes.row, muted || opacityUsers.includes(author) ? classes.muted : {})}>
+        <div className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
@@ -367,7 +383,7 @@ const PostList = React.memo((props) => {
               <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {!disableProfileLink && (
+                    {!disableProfileLink && !isMutedUser() && !isAHiddenBuzz() && (
                       <Link
                         ref={popoverAnchor}
                         to={!muted && !opacityActivated && disableOpacity ? authorLink : '#'}
@@ -378,17 +394,17 @@ const PostList = React.memo((props) => {
                         {author}
                       </Link>
                     )}
-                    {disableProfileLink && (<span className={classes.spanName}>{author}</span>)}
+                    {(disableProfileLink || !isMutedUser() || !isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {!muted && !opacityActivated && disableOpacity && (
+                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
                       <ExpandMoreIcon  className={classes.moreIcon} />
                     </IconButton>
                   )}
-                  {!muted && !opacityActivated && disableOpacity && (
+                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
                       <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
@@ -396,7 +412,7 @@ const PostList = React.memo((props) => {
                     </div>
                   )}
                 </div>
-                {!muted && !opacityActivated && disableOpacity && (
+                {!muted && !hidden && !opacityActivated && disableOpacity && (
                   <div className={classes.actionWrapper}>
                     <PostActions
                       disableUpvote={disableUpvote}
@@ -437,6 +453,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   mutelist: state.auth.get('mutelist'),
   opacityUsers: state.auth.get('opacityUsers'),
+  hiddenBuzzes: state.auth.get('hiddenBuzzes'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

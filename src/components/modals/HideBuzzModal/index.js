@@ -131,6 +131,11 @@ const HideBuzzModal = (props) => {
       setOpen(false)
       onHide()
       broadcastNotification('success', `Succesfully muted @${author}/${permlink}`)
+      const { hideBuzzSuccesCallback } = hideBuzzDialog
+
+      if(hideBuzzSuccesCallback) {
+        hideBuzzSuccesCallback()
+      }
     }).catch(() => {
       broadcastNotification('success', `Failed to mute @${author}/${permlink}`)
     })
