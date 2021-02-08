@@ -341,6 +341,7 @@ function* hideBuzzRequest(payload, meta) {
   const { author, permlink } = payload
   let hiddenBuzzes = yield select(state => state.auth.get('hiddenBuzzes'))
   hiddenBuzzes = [...hiddenBuzzes, { author, permlink }]
+  yield call([localStorage, localStorage.setItem], 'hiddenBuzzes', JSON.stringify(hiddenBuzzes))
   yield put(hideBuzzSuccess(hiddenBuzzes, meta))
 }
 
