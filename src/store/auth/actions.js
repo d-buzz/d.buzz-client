@@ -227,3 +227,10 @@ export const hideBuzzSuccess = (buzzes, meta) => ({
   payload: buzzes,
   meta,
 })
+
+export const SET_HIDDEN_BUZZES = 'SET_HIDDEN_BUZZES'
+
+export const setHiddenBuzzes = (list) => ({
+  type: SET_HIDDEN_BUZZES,
+  payload: list,
+})
