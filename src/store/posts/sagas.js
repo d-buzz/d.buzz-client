@@ -116,6 +116,18 @@ const footnote = (body) => {
   return body
 }
 
+const invokeHideBuzzFilter = (items) => {
+  let hiddenBuzzes = localStorage.getItem('hiddenBuzzes')
+
+  if(!hiddenBuzzes) {
+    hiddenBuzzes = []
+  } else {
+    hiddenBuzzes = JSON.parse(hiddenBuzzes)
+  }
+
+  return items.filter((item) => hiddenBuzzes.filter((hidden) => hidden.author === item.author && hidden.permlink === item.permlink).length === 0)
+}
+
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
@@ -240,6 +252,7 @@ function* getHomePostsRequest(payload, meta) {
     data = data.filter(item => invokeFilter(item))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeHideBuzzFilter(data)
 
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
