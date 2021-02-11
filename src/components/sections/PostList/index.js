@@ -394,7 +394,7 @@ const PostList = React.memo((props) => {
                         {author}
                       </Link>
                     )}
-                    {(disableProfileLink || !isMutedUser() || !isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
+                    {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
