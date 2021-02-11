@@ -222,6 +222,7 @@ function* getTrendingPostsRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeHideBuzzFilter(data)
 
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
@@ -282,6 +283,7 @@ function* getLatestPostsRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeHideBuzzFilter(data)
 
 
     yield put(getLatestPostsSuccess(data, meta))
