@@ -151,6 +151,14 @@ function* getSavedUserRequest(meta) {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
+    let hiddenBuzzes = yield call([localStorage, localStorage.getItem], 'hiddenBuzzes')
+
+    if(!hiddenBuzzes) {
+      hiddenBuzzes = []
+    } else {
+      hiddenBuzzes = JSON.parse(hiddenBuzzes)
+    }
+
 
     if(!accounts) {
       accounts = []
@@ -193,6 +201,7 @@ function* getSavedUserRequest(meta) {
 
     yield put(setAccountList(accounts))
     yield put(setHasAgreedPayout(payoutAgreed))
+    yield put(setHiddenBuzzes(hiddenBuzzes))
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
