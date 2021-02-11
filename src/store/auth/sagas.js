@@ -37,6 +37,7 @@ import {
 
   HIDE_BUZZ_REQUEST,
   hideBuzzSuccess,
+  setHiddenBuzzes,
 } from './actions'
 
 import {
@@ -342,7 +343,8 @@ function* hideBuzzRequest(payload, meta) {
   let hiddenBuzzes = yield select(state => state.auth.get('hiddenBuzzes'))
   hiddenBuzzes = [...hiddenBuzzes, { author, permlink }]
   yield call([localStorage, localStorage.setItem], 'hiddenBuzzes', JSON.stringify(hiddenBuzzes))
-  yield put(hideBuzzSuccess(hiddenBuzzes, meta))
+  yield put(setHiddenBuzzes(hiddenBuzzes))
+  yield put(hideBuzzSuccess(meta))
 }
 
 function* watchSignoutUserRequest({ meta }) {
