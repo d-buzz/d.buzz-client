@@ -323,6 +323,17 @@ const Profile = (props) => {
               <Col>
                 {is_authenticated && (
                   <React.Fragment>
+                    {loginuser === username && (
+                      <ContainedButton
+                        fontSize={14}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                        transparent={true}
+                        label="Hidden Buzzes"
+                        className={classes.button}
+                        onClick={openMuteModal}
+                      />
+                    )}
                     {loginuser !== username && !mutelist.includes(username) && (
                       <ContainedButton
                         fontSize={14}
