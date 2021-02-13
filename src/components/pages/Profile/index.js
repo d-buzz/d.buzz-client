@@ -38,8 +38,8 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
+import { ProfileSkeleton, HelmetGenerator, HiddenBuzzListModal } from 'components'
 import queryString from 'query-string'
-import { ProfileSkeleton, HelmetGenerator } from 'components'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -174,6 +174,7 @@ const Profile = (props) => {
   const [index, setIndex] = useState(0)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
+  const [openHiddenBuzzList, setOpenHiddenBuzzList] = useState(false)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -304,6 +305,10 @@ const Profile = (props) => {
     })
   }
 
+  const handleClickOpenHiddenBuzzList = () => {
+    setOpenHiddenBuzzList(!openHiddenBuzzList)
+  }
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Profile' />
@@ -331,7 +336,7 @@ const Profile = (props) => {
                         transparent={true}
                         label="Hidden Buzzes"
                         className={classes.button}
-                        onClick={openMuteModal}
+                        onClick={handleClickOpenHiddenBuzzList}
                       />
                     )}
                     {loginuser !== username && !mutelist.includes(username) && (
@@ -447,6 +452,7 @@ const Profile = (props) => {
       <React.Fragment>
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
+      <HiddenBuzzListModal open={true} />
     </React.Fragment>
   )
 }
