@@ -98,6 +98,12 @@ const useStyles = createUseStyles(theme => ({
   buzzLinks: {
     marginLeft: 5,
   },
+  list: {
+    outline: 'none',
+  },
+  listInner: {
+    paddingBottom: 15,
+  },
 }))
 
 
@@ -118,26 +124,28 @@ const HiddenBuzzListModal = (props) => {
 
   useEffect(() => {
     const hiddenLength = items.length
-    if(hiddenLength >= 5) {
+    if(hiddenLength <= 3) {
       setModalHeight({ height: 300 })
-    } else if (hiddenLength >= 10 ) {
-      setModalHeight({ height: 450 })
+    } else if (hiddenLength <= 5) {
+      setModalHeight({ height: 350 })
+    } else if (hiddenLength <= 10 ) {
+      setModalHeight({ height: 500 })
     } else {
-      setModalHeight({ height: 150 })
+      setModalHeight({ height: 600 })
     }
   }, [items])
 
   const truncateLink = (link) => {
     console.log({ link })
-    if(link.length >= 28) {
-      return `${link}`.substr(0, 27) + '...'
+    if(link.length >= 20) {
+      return `${link}`.substr(0, 19) + '...'
     }
     return link
   }
 
   const rowRenderer = ({ key, index, style }) => {
     return (
-      <div key={key} style={style}>
+      <div className={classes.listInner} key={key} style={style}>
         <div className={classes.inline}>
           <Avatar author={items[index].author} />
         </div>
@@ -158,7 +166,8 @@ const HiddenBuzzListModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  <h6>Filtered Buzz List</h6>
+                  <h6>Hidden Buzz List</h6>
+                  <p>Below are the list of buzzes you removed from your feeds</p>
                 </React.Fragment>
               )}
             </center>
@@ -170,8 +179,9 @@ const HiddenBuzzListModal = (props) => {
                       width={width}
                       height={height}
                       rowCount={items.length}
-                      rowHeight={50}
+                      rowHeight={70}
                       rowRenderer={rowRenderer}
+                      className={classes.list}
                     />
                   )}
                 </AutoSizer>
