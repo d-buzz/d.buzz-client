@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { broadcastNotification } from 'store/interface/actions'
@@ -6,6 +6,12 @@ import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { List, AutoSizer } from 'react-virtualized'
+
+const list = [
+  'Brian Vaughn',
+  'Brian Vaughn',
+]
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -98,12 +104,39 @@ const HiddenBuzzListModal = (props) => {
     open,
     closeHideBuzzDialog,
     loading,
+    hiddenItems = [],
   } = props
 
   const classes = useStyles()
+  const [modalHeight, setModalHeight] = useState({ height: 250 })
 
   const onHide = () => {
     closeHideBuzzDialog()
+  }
+
+  useEffect(() => {
+    const hiddenLength = hiddenItems.length
+    if(hiddenLength >= 5) {
+      setModalHeight({ height: 300 })
+    } else if (hiddenLength >= 10 ) {
+      setModalHeight({ height: 450 })
+    } else {
+      setModalHeight({ height: 250 })
+    }
+  }, [hiddenItems])
+
+  const rowRenderer = ({
+    key, // Unique key within array of rows
+    index, // Index of row within collection
+    isScrolling, // The List is currently being scrolled
+    isVisible, // This row is visible within the List (eg it is not an overscanned row)
+    style, // Style object to be applied to row (to position it)
+  }) => {
+    return (
+      <div key={key} style={style}>
+        {list[index]}
+      </div>
+    )
   }
 
 
@@ -119,6 +152,19 @@ const HiddenBuzzListModal = (props) => {
                 </React.Fragment>
               )}
             </center>
+            <div style={modalHeight}>
+              <AutoSizer>
+                {({height, width}) => (
+                  <List
+                    width={width}
+                    height={height}
+                    rowCount={list.length}
+                    rowHeight={50}
+                    rowRenderer={rowRenderer}
+                  />
+                )}
+              </AutoSizer>
+            </div>
           </div>
         </ModalBody>
       </Modal>
@@ -129,6 +175,7 @@ const HiddenBuzzListModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   loading: pending(state, 'HIDE_BUZZ_REQUEST'),
+  hiddenItems: state.auth.get('hiddenBuzzes'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
