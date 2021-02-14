@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { Avatar } from 'components/elements'
+import { Avatar, ContainedButton } from 'components/elements'
 import { broadcastNotification } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
@@ -48,6 +48,10 @@ const useStyles = createUseStyles(theme => ({
     '&:hover': {
       border: '3px solid #e61c34',
     },
+  },
+  removeButton: {
+    width: 85,
+    height: 35,
   },
   innerModal: {
     width: '98%',
@@ -124,6 +128,15 @@ const HiddenBuzzListModal = (props) => {
           >
             @{truncateLink(`${items[index].author}/c/${items[index].permlink}`)}
           </Link>
+        </div>
+        <div className={classes.inline} style={{ float: 'right', marginRight: 5 }}>
+          <ContainedButton
+            onClick={onHide}
+            className={classes.removeButton}
+            fontSize={14}
+            transparent={true}
+            label="Remove"
+          />
         </div>
       </div>
     )
