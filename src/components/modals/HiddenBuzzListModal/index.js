@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
+import { Avatar } from 'components/elements'
 import { broadcastNotification } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import { List, AutoSizer } from 'react-virtualized'
-
-const list = [
-  'Brian Vaughn',
-  'Brian Vaughn',
-]
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -96,49 +92,63 @@ const useStyles = createUseStyles(theme => ({
   text: {
     ...theme.font,
   },
+  inline: {
+    display: 'inline-block',
+  },
+  buzzLinks: {
+    marginLeft: 5,
+  },
 }))
 
 
 const HiddenBuzzListModal = (props) => {
   const {
     open,
-    closeHideBuzzDialog,
+    onClose,
     loading,
-    hiddenItems = [],
+    items = [],
   } = props
 
   const classes = useStyles()
-  const [modalHeight, setModalHeight] = useState({ height: 250 })
+  const [modalHeight, setModalHeight] = useState({ height: 200 })
 
   const onHide = () => {
-    closeHideBuzzDialog()
+    onClose()
   }
 
   useEffect(() => {
-    const hiddenLength = hiddenItems.length
+    const hiddenLength = items.length
     if(hiddenLength >= 5) {
       setModalHeight({ height: 300 })
     } else if (hiddenLength >= 10 ) {
       setModalHeight({ height: 450 })
     } else {
-      setModalHeight({ height: 250 })
+      setModalHeight({ height: 150 })
     }
-  }, [hiddenItems])
+  }, [items])
 
-  const rowRenderer = ({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    isScrolling, // The List is currently being scrolled
-    isVisible, // This row is visible within the List (eg it is not an overscanned row)
-    style, // Style object to be applied to row (to position it)
-  }) => {
+  const truncateLink = (link) => {
+    console.log({ link })
+    if(link.length >= 28) {
+      return `${link}`.substr(0, 27) + '...'
+    }
+    return link
+  }
+
+  const rowRenderer = ({ key, index, style }) => {
     return (
       <div key={key} style={style}>
-        {list[index]}
+        <div className={classes.inline}>
+          <Avatar author={items[index].author} />
+        </div>
+        <div className={classes.inline}>
+          <p className={classes.buzzLinks}>
+            {truncateLink(`${items[index].author}/${items[index].permlink}`)}
+          </p>
+        </div>
       </div>
     )
   }
-
 
   return (
     <React.Fragment>
@@ -148,22 +158,25 @@ const HiddenBuzzListModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  <h6>The list below contains all the buzzes you filtered and removed from your buzz feeds</h6>
+                  <h6>Filtered Buzz List</h6>
                 </React.Fragment>
               )}
             </center>
             <div style={modalHeight}>
-              <AutoSizer>
-                {({height, width}) => (
-                  <List
-                    width={width}
-                    height={height}
-                    rowCount={list.length}
-                    rowHeight={50}
-                    rowRenderer={rowRenderer}
-                  />
-                )}
-              </AutoSizer>
+              {items.length !== 0 && (
+                <AutoSizer>
+                  {({height, width}) => (
+                    <List
+                      width={width}
+                      height={height}
+                      rowCount={items.length}
+                      rowHeight={50}
+                      rowRenderer={rowRenderer}
+                    />
+                  )}
+                </AutoSizer>
+              )}
+              {items.length === 0 && (<h4>You have not filtered any buzz</h4>)}
             </div>
           </div>
         </ModalBody>
@@ -175,7 +188,7 @@ const HiddenBuzzListModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   loading: pending(state, 'HIDE_BUZZ_REQUEST'),
-  hiddenItems: state.auth.get('hiddenBuzzes'),
+  items: state.auth.get('hiddenBuzzes'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

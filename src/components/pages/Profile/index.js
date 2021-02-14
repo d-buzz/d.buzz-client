@@ -217,16 +217,7 @@ const Profile = (props) => {
       tab = 'replies'
     }
 
-    // else if (index === 3) {
-    //   tab = 'following'
-    // }
-    // const { is_authenticated } = user
     history.push(`/@${username}/t/${tab}/`)
-
-    // if(is_authenticated) {
-    // } else {
-    //   history.push(`/ug/@${username}/t/${tab}/`)
-    // }
   }
 
   const openMuteModal = () => {
@@ -452,7 +443,7 @@ const Profile = (props) => {
       <React.Fragment>
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
-      <HiddenBuzzListModal open={true} />
+      <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
     </React.Fragment>
   )
 }
