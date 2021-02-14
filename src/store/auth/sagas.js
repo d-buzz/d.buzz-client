@@ -38,6 +38,9 @@ import {
   HIDE_BUZZ_REQUEST,
   hideBuzzSuccess,
   setHiddenBuzzes,
+
+  REMOVE_HIDDEN_BUZZ_REQUEST,
+  removeHiddenBuzzSuccess,
 } from './actions'
 
 import {
@@ -356,6 +359,15 @@ function* hideBuzzRequest(payload, meta) {
   yield put(hideBuzzSuccess(meta))
 }
 
+function* removeHiddenBuzzRequest(payload, meta) {
+  const { permlink } = payload
+  let hiddenBuzzes = yield select(state => state.auth.get('hiddenBuzzes'))
+  hiddenBuzzes = hiddenBuzzes.filter((item) => item.permlink !== permlink)
+  yield call([localStorage, localStorage.setItem], 'hiddenBuzzes', JSON.stringify(hiddenBuzzes))
+  yield put(setHiddenBuzzes(hiddenBuzzes))
+  yield put(removeHiddenBuzzSuccess(meta))
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -388,6 +400,10 @@ function* watchHideBuzzRequest({ payload, meta }) {
   yield call(hideBuzzRequest, payload, meta)
 }
 
+function* watchRemoveHiddenBuzzRequest({ payload, meta }) {
+  yield call(removeHiddenBuzzRequest, payload ,meta)
+}
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
@@ -397,4 +413,5 @@ export default function* sagas() {
   yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
   yield takeEvery(SWITCH_ACCOUNT_REQUEST, watchSwitchAccountRequest)
   yield takeEvery(HIDE_BUZZ_REQUEST, watchHideBuzzRequest)
+  yield takeEvery(REMOVE_HIDDEN_BUZZ_REQUEST, watchRemoveHiddenBuzzRequest)
 }

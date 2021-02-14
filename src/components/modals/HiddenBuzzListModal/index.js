@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { Avatar, ContainedButton } from 'components/elements'
 import { broadcastNotification } from 'store/interface/actions'
+import { removeHiddenBuzzRequest } from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -83,10 +84,12 @@ const HiddenBuzzListModal = (props) => {
     onClose,
     loading,
     items = [],
+    removeHiddenBuzzRequest,
+    broadcastNotification,
   } = props
 
   const classes = useStyles()
-  const [modalHeight, setModalHeight] = useState({ height: 200 })
+  const [modalHeight, setModalHeight] = useState({ height: 20 })
 
   const onHide = () => {
     onClose()
@@ -94,13 +97,17 @@ const HiddenBuzzListModal = (props) => {
 
   useEffect(() => {
     const hiddenLength = items.length
-    if(hiddenLength <= 3) {
-      setModalHeight({ height: 300 })
+    if (hiddenLength === 0) {
+      setModalHeight({ height: 20 })
+    } else if (hiddenLength <= 2) {
+      setModalHeight({ height: 100 })
+    } else if (hiddenLength <= 5) {
+      setModalHeight({ height: 250 })
     } else if (hiddenLength <= 5) {
       setModalHeight({ height: 350 })
     } else if (hiddenLength <= 10 ) {
-      setModalHeight({ height: 500 })
-    } else {
+      setModalHeight({ height: 450 })
+    } else  {
       setModalHeight({ height: 600 })
     }
   }, [items])
@@ -113,8 +120,10 @@ const HiddenBuzzListModal = (props) => {
   }
 
   const unhideBuzz = (author, permlink) => () => {
-    console.log({ author })
-    console.log({ permlink })
+    removeHiddenBuzzRequest(author, permlink)
+      .then(() => {
+        broadcastNotification('success', `Succesfully Unhide @${author}/${permlink}`)
+      })
   }
 
   const rowRenderer = ({ key, index, style }) => {
@@ -158,6 +167,7 @@ const HiddenBuzzListModal = (props) => {
                   <p className={classes.text}>Below are the list of buzzes you removed from your feeds</p>
                 </React.Fragment>
               )}
+              {items.length === 0 && (<h6>You have not filtered any buzz</h6>)}
             </center>
             <div style={modalHeight}>
               {items.length !== 0 && (
@@ -174,7 +184,6 @@ const HiddenBuzzListModal = (props) => {
                   )}
                 </AutoSizer>
               )}
-              {items.length === 0 && (<h4>You have not filtered any buzz</h4>)}
             </div>
           </div>
         </ModalBody>
@@ -192,6 +201,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     broadcastNotification,
+    removeHiddenBuzzRequest,
   }, dispatch),
 })
 

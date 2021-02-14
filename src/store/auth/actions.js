@@ -239,7 +239,10 @@ export const REMOVE_HIDDEN_BUZZ_SUCCESS = 'REMOVE_HIDDEN_BUZZ_SUCCESS'
 
 export const removeHiddenBuzzRequest = (author, permlink) => ({
   type: REMOVE_HIDDEN_BUZZ_REQUEST,
-  payload: author, permlink,
+  meta: {
+    thunk: true,
+  },
+  payload: {author, permlink},
 })
 
 export const removeHiddenBuzzSuccess = (meta) => ({
