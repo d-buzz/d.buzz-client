@@ -233,3 +233,16 @@ export const setHiddenBuzzes = (list) => ({
   type: SET_HIDDEN_BUZZES,
   payload: list,
 })
+
+export const REMOVE_HIDDEN_BUZZ_REQUEST = 'REMOVE_HIDDEN_BUZZ_REQUEST'
+export const REMOVE_HIDDEN_BUZZ_SUCCESS = 'REMOVE_HIDDEN_BUZZ_SUCCESS'
+
+export const removeHiddenBuzzRequest = (author, permlink) => ({
+  type: REMOVE_HIDDEN_BUZZ_REQUEST,
+  payload: author, permlink,
+})
+
+export const removeHiddenBuzzSuccess = (meta) => ({
+  type: REMOVE_HIDDEN_BUZZ_SUCCESS,
+  meta,
+})

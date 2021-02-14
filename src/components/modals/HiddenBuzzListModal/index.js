@@ -106,11 +106,15 @@ const HiddenBuzzListModal = (props) => {
   }, [items])
 
   const truncateLink = (link) => {
-    console.log({ link })
     if(link.length >= 20) {
       return `${link}`.substr(0, 19) + '...'
     }
     return link
+  }
+
+  const unhideBuzz = (author, permlink) => () => {
+    console.log({ author })
+    console.log({ permlink })
   }
 
   const rowRenderer = ({ key, index, style }) => {
@@ -131,11 +135,11 @@ const HiddenBuzzListModal = (props) => {
         </div>
         <div className={classes.inline} style={{ float: 'right', marginRight: 5 }}>
           <ContainedButton
-            onClick={onHide}
+            onClick={unhideBuzz(items[index].author, items[index].permlink)}
             className={classes.removeButton}
             fontSize={14}
             transparent={true}
-            label="Remove"
+            label='Remove'
           />
         </div>
       </div>
