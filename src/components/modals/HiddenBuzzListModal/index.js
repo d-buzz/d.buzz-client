@@ -7,6 +7,7 @@ import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { Link } from 'react-router-dom'
 import { List, AutoSizer } from 'react-virtualized'
 
 const useStyles = createUseStyles(theme => ({
@@ -48,42 +49,6 @@ const useStyles = createUseStyles(theme => ({
       border: '3px solid #e61c34',
     },
   },
-  darkModeButton: {
-    backgroundColor: 'rgb(21, 32, 43)',
-    '& label': {
-      fontSize: 14,
-      color: 'white',
-      display: 'block',
-    },
-  },
-  ligthModeButton: {
-    backgroundColor: 'rgb(255, 255, 255)',
-    '& label': {
-      fontSize: 14,
-      color: 'black',
-      display: 'block',
-    },
-  },
-  grayModeButton: {
-    backgroundColor: '#202225',
-    '& label': {
-      fontSize: 14,
-      color: 'white',
-      display: 'block',
-    },
-  },
-  notes: {
-    fontSize: 14,
-    ...theme.font,
-  },
-  closeButton: {
-    marginTop: 15,
-    width: 100,
-    height: 35,
-  },
-  active: {
-    border: '3px solid #e61c34',
-  },
   innerModal: {
     width: '98%',
     margin: '0 auto',
@@ -96,7 +61,8 @@ const useStyles = createUseStyles(theme => ({
     display: 'inline-block',
   },
   buzzLinks: {
-    marginLeft: 5,
+    marginLeft: 10,
+    color: '#d32f2f',
   },
   list: {
     outline: 'none',
@@ -150,9 +116,14 @@ const HiddenBuzzListModal = (props) => {
           <Avatar author={items[index].author} />
         </div>
         <div className={classes.inline}>
-          <p className={classes.buzzLinks}>
-            {truncateLink(`${items[index].author}/${items[index].permlink}`)}
-          </p>
+          <Link
+            className={classes.buzzLinks}
+            to={`/@${items[index].author}/c/${items[index].permlink}`}
+            rel='noopener noreferrer'
+            target='_blank'
+          >
+            @{truncateLink(`${items[index].author}/c/${items[index].permlink}`)}
+          </Link>
         </div>
       </div>
     )
@@ -166,8 +137,8 @@ const HiddenBuzzListModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  <h6>Hidden Buzz List</h6>
-                  <p>Below are the list of buzzes you removed from your feeds</p>
+                  <h6 className={classes.text}>Hidden Buzz List</h6>
+                  <p className={classes.text}>Below are the list of buzzes you removed from your feeds</p>
                 </React.Fragment>
               )}
             </center>
