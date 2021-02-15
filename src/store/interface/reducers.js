@@ -11,6 +11,8 @@ import {
   CLOSE_MUTE_DIALOG,
   OPEN_HIDE_BUZZ_DIALOG,
   CLOSE_HIDE_BUZZ_DIALOG,
+  OPEN_CENSORSHIP_DIALOG,
+  CLOSE_CENSOSHIP_DIALOG,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -22,6 +24,7 @@ const defaultState = fromJS({
   buzzModalStatus: false,
   muteDialogUser: { open: false, username: null },
   hideBuzzDialog: { open: false, author: null, permlink: null },
+  censorshipDialog: { open: false, author: null, permlink: null },
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -50,6 +53,10 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('hideBuzzDialog', { open: true, ...payload })
   case CLOSE_HIDE_BUZZ_DIALOG:
     return state.set('hideBuzzDialog', { open: false, author: null, permlink: null })
+  case OPEN_CENSORSHIP_DIALOG:
+    return state.set('censorshipDialog', { open: true, ...payload })
+  case CLOSE_CENSOSHIP_DIALOG:
+    return state.set('censorshipDialog', { open: false, author: null, permlink: null })
   default:
     return state
   }
