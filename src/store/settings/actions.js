@@ -87,7 +87,7 @@ export const checkVersionSuccess = (response, meta) => ({
 })
 
 export const GET_CENSOR_TYPES_REQUEST = 'GET_CENSOR_TYPES_REQUEST'
-export const GET_CENSORT_TYPES_SUCCESS = 'GET_CENSOR_TPES_SUCCESS'
+export const GET_CENSOR_TYPES_SUCCESS = 'GET_CENSOR_TYPES_SUCCESS'
 
 export const getCensorTypesRequest = () => ({
   type: GET_CENSOR_TYPES_REQUEST,
@@ -97,6 +97,6 @@ export const getCensorTypesRequest = () => ({
 })
 
 export const getCensorTypesSuccess = (meta) => ({
-  type: GET_CENSORT_TYPES_SUCCESS,
+  type: GET_CENSOR_TYPES_SUCCESS,
   meta,
 })
