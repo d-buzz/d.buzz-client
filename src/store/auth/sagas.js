@@ -55,9 +55,11 @@ import {
   extractLoginData,
   fetchMuteList,
   generateMuteOperation,
+  getKeyPair,
 } from 'services/api'
 
 import { generateSession, readSession } from 'services/helper'
+import crypto from 'crypto'
 
 function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain } = payload
@@ -155,6 +157,17 @@ function* getSavedUserRequest(meta) {
     let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
     let hiddenBuzzes = yield call([localStorage, localStorage.getItem], 'hiddenBuzzes')
+    const keypairs = yield call(getKeyPair)
+
+    const identity = '5Jmt1Gbj79xfGpMfmn64MH3k5xafJuMqxcc81T9KBnM1VGyzZaN'
+
+    const transaction = {author: 'ssomeauthors', permlink: 'ssomepermlinks', type: 1, wif: identity}
+
+    const signerObject = crypto.createSign("RSA-SHA512")
+    signerObject.update(JSON.stringify(transaction))
+    const signature = signerObject.sign(keypairs.pair["private"], "base64")
+
+    console.log({ signature })
 
     if(!hiddenBuzzes) {
       hiddenBuzzes = []

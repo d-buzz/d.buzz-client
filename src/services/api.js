@@ -18,6 +18,7 @@ import 'react-app-polyfill/stable'
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
+const censorUrl = `${appConfig.CENSOR_API}`
 
 config.set('rebranded_api', true)
 broadcast.updateOperations()
@@ -1062,6 +1063,15 @@ export const getBestRpcNode = () => {
 export const checkVersion = () => {
   return new Promise((resolve) => {
     axios.get('https://d.buzz/version.json')
+      .then(function (result) {
+        resolve(result.data)
+      })
+  })
+}
+
+export const getKeyPair = () => {
+  return new Promise((resolve) => {
+    axios.get(`${censorUrl}/keypair`)
       .then(function (result) {
         resolve(result.data)
       })
