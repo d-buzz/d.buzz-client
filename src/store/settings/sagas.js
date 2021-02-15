@@ -14,11 +14,15 @@ import {
 
   CHECK_VERSION_REQUEST,
   checkVersionSuccess,
+
+  GET_CENSOR_TYPES_REQUEST,
+  getCensorTypesSuccess,
 } from './actions'
 
 import {
   getBestRpcNode,
   checkVersion,
+  getCensorTypes,
 } from 'services/api'
 import config from 'config'
 
@@ -76,6 +80,11 @@ function* getBestRPCNode(meta) {
   yield put(setRpcNode(node, meta))
 }
 
+function* getCensorTypesRequest(meta) {
+  const types = yield call(getCensorTypes)
+  yield put(getCensorTypesSuccess(types))
+}
+
 function* watchGetSavedThemeRequest({ payload, meta }) {
   yield call(getSavedThemeRequest, payload, meta)
 }
@@ -92,9 +101,14 @@ function* watchCheckVersionRequest({ meta }) {
   yield call(checkVersionRequest, meta)
 }
 
+function* watchGetCensorTypesRequest({ meta }) {
+  yield call(getCensorTypesRequest, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
   yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
   yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
+  yield takeEvery(GET_CENSOR_TYPES_REQUEST, watchGetCensorTypesRequest)
 }
