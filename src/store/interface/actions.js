@@ -81,3 +81,16 @@ export const openHideBuzzDialog = (author, permlink, hideBuzzSuccesCallback = nu
 export const closeHideBuzzDialog = () => ({
   type: CLOSE_HIDE_BUZZ_DIALOG,
 })
+
+
+export const OPEN_CENSORSHIP_DIALOG = 'OPEN_CENSORSHIP_DIALOG'
+export const CLOSE_CENSOSHIP_DIALOG = 'CLOSE_CENSORSHIP_DIALOG'
+
+export const openCensorshipDialog = (author, permlink) => ({
+  type: OPEN_CENSORSHIP_DIALOG,
+  payload: { author, permlink },
+})
+
+export const closeCensorshipDialog = () => ({
+  type: CLOSE_CENSOSHIP_DIALOG,
+})
