@@ -1077,3 +1077,12 @@ export const getKeyPair = () => {
       })
   })
 }
+
+export const getCensorTypes = () => {
+  return new Promise((resolve) => {
+    axios.get(`${censorUrl}/types`)
+      .then(function (result) {
+        resolve(result.data)
+      })
+  })
+}

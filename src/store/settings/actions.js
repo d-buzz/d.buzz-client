@@ -85,3 +85,18 @@ export const checkVersionSuccess = (response, meta) => ({
   payload: response,
   meta,
 })
+
+export const GET_CENSOR_TYPES_REQUEST = 'GET_CENSOR_TYPES_REQUEST'
+export const GET_CENSORT_TYPES_SUCCESS = 'GET_CENSOR_TPES_SUCCESS'
+
+export const getCensorTypesRequest = () => ({
+  type: GET_CENSOR_TYPES_REQUEST,
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getCensorTypesSuccess = (meta) => ({
+  type: GET_CENSORT_TYPES_SUCCESS,
+  meta,
+})
