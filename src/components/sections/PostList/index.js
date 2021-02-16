@@ -29,6 +29,7 @@ import classNames from 'classnames'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
+import textParser from 'npm-text-parser'
 import Menu from '@material-ui/core/Menu'
 import { sendToBerries } from 'services/helper'
 
@@ -363,7 +364,13 @@ const PostList = React.memo((props) => {
   }
 
   const censorCallBack = () => () => {
-    setContent('[censored]')
+    const links = textParser.getUrls(content)
+    console.log({ links })
+    let contentCopy = content
+    links.forEach((item) => {
+      contentCopy = contentCopy.replace(item, '<b>[link censored]</b>')
+    })
+    setContent(contentCopy)
     recomputeRowIndex(scrollIndex)
   }
 
