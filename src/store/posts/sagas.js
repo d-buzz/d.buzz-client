@@ -104,7 +104,7 @@ import {
   generateUpdateOperation,
   invokeMuteFilter,
 } from 'services/api'
-import { createPatch, errorMessageComposer } from 'services/helper'
+import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
@@ -126,6 +126,18 @@ const invokeHideBuzzFilter = (items) => {
   }
 
   return items.filter((item) => hiddenBuzzes.filter((hidden) => hidden.author === item.author && hidden.permlink === item.permlink).length === 0)
+}
+
+const censorCheck = (content, censoredList) => {
+  const copyContent = content
+
+  const result = censoredList.filter(({ author, permlink }) => `${author}/${permlink}` === `${content.author}/${content.permlink}`)
+
+  if(result.length !== 0) {
+    copyContent.body = censorLinks(copyContent.body)
+  }
+
+  return copyContent
 }
 
 function* getRepliesRequest(payload, meta) {
@@ -201,6 +213,7 @@ function* getTrendingTagsRequests(meta) {
 }
 
 function* getTrendingPostsRequest(payload, meta) {
+  const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
 
   const params = { sort: 'trending', start_permlink, start_author }
@@ -223,6 +236,7 @@ function* getTrendingPostsRequest(payload, meta) {
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
     data = invokeHideBuzzFilter(data)
+    data.map((item) => censorCheck(item, censoredList))
 
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
@@ -231,6 +245,7 @@ function* getTrendingPostsRequest(payload, meta) {
 }
 
 function* getHomePostsRequest(payload, meta) {
+  const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
   const user = yield select(state => state.auth.get('user'))
   const { username: account } = user
@@ -254,6 +269,7 @@ function* getHomePostsRequest(payload, meta) {
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
     data = invokeHideBuzzFilter(data)
+    data.map((item) => censorCheck(item, censoredList))
 
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
@@ -262,6 +278,7 @@ function* getHomePostsRequest(payload, meta) {
 }
 
 function* getLatestPostsRequest(payload, meta) {
+  const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
 
   const params = { sort: 'created', start_permlink, start_author }
@@ -284,6 +301,7 @@ function* getLatestPostsRequest(payload, meta) {
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
     data = invokeHideBuzzFilter(data)
+    data.map((item) => censorCheck(item, censoredList))
 
 
     yield put(getLatestPostsSuccess(data, meta))
