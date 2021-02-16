@@ -103,7 +103,6 @@ function* censorBuzzRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const censorList = yield select(state => state.auth.get('censorList'))
     const censorTypes = yield select(state => state.settings.get('censorTypes'))
-    console.log({ censorTypes })
     const typeName = censorTypes.filter((item) => item.id = type)[0]
 
     let { login_data } = user
