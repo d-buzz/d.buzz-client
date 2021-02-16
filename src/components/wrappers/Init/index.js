@@ -5,6 +5,7 @@ import { getBestRpcNode, checkVersionRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
+import { getCensorTypesRequest } from 'store/settings/actions'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
@@ -52,6 +53,7 @@ const Init = (props) => {
     getTrendingTagsRequest,
     getBestRpcNode,
     checkVersionRequest,
+    getCensorTypesRequest,
     children,
   } = props
 
@@ -63,6 +65,7 @@ const Init = (props) => {
         window.history.forward(1)
         window.location.reload(true)
       } else {
+        getCensorTypesRequest()
         getBestRpcNode().then(() => {
           getTrendingTagsRequest()
           getSavedUserRequest().then(() => {
@@ -88,6 +91,7 @@ const mapDispatchToProps = (dispatch) => ({
     getSavedUserRequest,
     getBestRpcNode,
     checkVersionRequest,
+    getCensorTypesRequest,
   }, dispatch),
 })
 

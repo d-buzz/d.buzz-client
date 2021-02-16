@@ -85,3 +85,42 @@ export const checkVersionSuccess = (response, meta) => ({
   payload: response,
   meta,
 })
+
+export const GET_CENSOR_TYPES_REQUEST = 'GET_CENSOR_TYPES_REQUEST'
+export const GET_CENSOR_TYPES_SUCCESS = 'GET_CENSOR_TYPES_SUCCESS'
+
+export const getCensorTypesRequest = () => ({
+  type: GET_CENSOR_TYPES_REQUEST,
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getCensorTypesSuccess = (response, meta) => ({
+  type: GET_CENSOR_TYPES_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const CENSOR_BUZZ_REQUEST = 'CENSOR_BUZZ_REQUEST'
+export const CENSOR_BUZZ_SUCCESS = 'CENSOR_BUZZ_SUCCESS'
+export const CENSOR_BUZZ_FAILURE = 'CENSOR_BUZZ_FAILURE'
+
+export const censorBuzzRequest = (author, permlink, type) => ({
+  type: CENSOR_BUZZ_REQUEST,
+  payload: { author, permlink, type },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const censorBuzzSuccess = (meta) => ({
+  type: CENSOR_BUZZ_SUCCESS,
+  meta,
+})
+
+export const censorBuzzFailure = (response, meta) => ({
+  type: CENSOR_BUZZ_FAILURE,
+  payload: response,
+  meta,
+})

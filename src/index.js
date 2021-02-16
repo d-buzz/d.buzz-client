@@ -16,7 +16,6 @@ initReactFastclick()
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      {/* <ScrollMemory /> */}
       <App />
     </Router>
   </Provider>,

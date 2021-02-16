@@ -69,3 +69,28 @@ export const openMuteDialog = (username, muteSuccessCallback = null) => ({
 export const closeMuteDialog = () => ({
   type: CLOSE_MUTE_DIALOG,
 })
+
+export const OPEN_HIDE_BUZZ_DIALOG = 'OPEN_HIDE_BUZZ_DIALOG'
+export const CLOSE_HIDE_BUZZ_DIALOG = 'CLOSE_HIDE_BUZZ_DIALOG'
+
+export const openHideBuzzDialog = (author, permlink, hideBuzzSuccesCallback = null) => ({
+  type: OPEN_HIDE_BUZZ_DIALOG,
+  payload: { author, permlink, hideBuzzSuccesCallback },
+})
+
+export const closeHideBuzzDialog = () => ({
+  type: CLOSE_HIDE_BUZZ_DIALOG,
+})
+
+
+export const OPEN_CENSORSHIP_DIALOG = 'OPEN_CENSORSHIP_DIALOG'
+export const CLOSE_CENSOSHIP_DIALOG = 'CLOSE_CENSORSHIP_DIALOG'
+
+export const openCensorshipDialog = (author, permlink, callback = null) => ({
+  type: OPEN_CENSORSHIP_DIALOG,
+  payload: { author, permlink, callback },
+})
+
+export const closeCensorshipDialog = () => ({
+  type: CLOSE_CENSOSHIP_DIALOG,
+})

@@ -210,3 +210,49 @@ export const switchAccountSuccess = (meta) => ({
   type: SWITCH_ACCOUNT_SUCCESS,
   meta,
 })
+
+export const HIDE_BUZZ_REQUEST = 'HIDE_BUZZ_REQUEST'
+export const HIDE_BUZZ_SUCCESS = 'HIDE_BUZZ_SUCCESS'
+
+export const hideBuzzRequest = (author, permlink) => ({
+  type: HIDE_BUZZ_REQUEST,
+  payload: { author, permlink },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const hideBuzzSuccess = (meta) => ({
+  type: HIDE_BUZZ_SUCCESS,
+  meta,
+})
+
+export const SET_HIDDEN_BUZZES = 'SET_HIDDEN_BUZZES'
+
+export const setHiddenBuzzes = (list) => ({
+  type: SET_HIDDEN_BUZZES,
+  payload: list,
+})
+
+export const REMOVE_HIDDEN_BUZZ_REQUEST = 'REMOVE_HIDDEN_BUZZ_REQUEST'
+export const REMOVE_HIDDEN_BUZZ_SUCCESS = 'REMOVE_HIDDEN_BUZZ_SUCCESS'
+
+export const removeHiddenBuzzRequest = (author, permlink) => ({
+  type: REMOVE_HIDDEN_BUZZ_REQUEST,
+  meta: {
+    thunk: true,
+  },
+  payload: {author, permlink},
+})
+
+export const removeHiddenBuzzSuccess = (meta) => ({
+  type: REMOVE_HIDDEN_BUZZ_SUCCESS,
+  meta,
+})
+
+export const SET_CENSOR_LIST = 'SET_CENSOR_LIST'
+
+export const setCensorList = (list) => ({
+  type: SET_CENSOR_LIST,
+  payload: list,
+})

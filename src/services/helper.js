@@ -5,6 +5,7 @@ import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import stripHtml from 'string-strip-html'
+import textParser from 'npm-text-parser'
 
 const dmp = new diff_match_patch()
 
@@ -126,12 +127,7 @@ export const calculatePayout = (data) => {
   let payout = 0
 
   if(is_paidout) {
-
-    // if(is_paidout) {
     payout = parseFloat(`${pending_payout_value}`.replace('HBD'))
-    // } else {
-    //   payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD'))
-    // }
   } else {
     payout = parseFloat(`${total_payout_value}`.replace('HBD')) + parseFloat(`${curator_payout_value}`.replace('HBD')) + parseFloat(`${pending_payout_value}`.replace('HBD'))
   }
@@ -291,4 +287,15 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
 export const signOnHiveonboard = () => {
   const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/#/?status=success', '_blank')
   win.blur()
+}
+
+export const censorLinks = (content) => {
+  const links = textParser.getUrls(content)
+  let contentCopy = content
+
+  links.forEach((item) => {
+    contentCopy = contentCopy.replace(item, '<b>[link removed]</b>')
+  })
+
+  return contentCopy
 }
