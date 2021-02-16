@@ -30,6 +30,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
+import Chip from '@material-ui/core/Chip'
 import { sendToBerries, censorLinks } from 'services/helper'
 
 const addHover = (theme) => {
@@ -176,6 +177,9 @@ const useStyle = createUseStyles(theme => ({
   muted: {
     opacity: 0.2,
   },
+  chip: {
+    float: 'right',
+  },
 }))
 
 
@@ -210,6 +214,7 @@ const PostList = React.memo((props) => {
     openHideBuzzDialog,
     hiddenBuzzes,
     openCensorshipDialog,
+    censorList,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -252,7 +257,20 @@ const PostList = React.memo((props) => {
   const [muted, setMuted] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [content, setContent] = useState(body)
+  const [isCensored, setIsCensored] = useState(false)
+  const [censorType, setCensorType] = useState(null)
   const popoverAnchor = useRef(null)
+
+  useEffect(() => {
+    if(censorList.length !== 0 && author && permlink) {
+      const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
+
+      if(result.length !== 0) {
+        setIsCensored(true)
+        setCensorType(result[0].type)
+      }
+    }
+  }, [censorList, author, permlink])
 
 
   useEffect(() => {
@@ -417,6 +435,9 @@ const PostList = React.memo((props) => {
                       <ExpandMoreIcon  className={classes.moreIcon} />
                     </IconButton>
                   )}
+                  {isCensored && (
+                    <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
+                  )}
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
@@ -468,6 +489,7 @@ const mapStateToProps = (state) => ({
   mutelist: state.auth.get('mutelist'),
   opacityUsers: state.auth.get('opacityUsers'),
   hiddenBuzzes: state.auth.get('hiddenBuzzes'),
+  censorList: state.auth.get('censorList'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

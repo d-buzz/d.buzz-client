@@ -173,6 +173,7 @@ const CensorhipModal = (props) => {
       setOpen(open)
       setAuthor(author)
       setPermlink(permlink)
+      setTypeId(0)
     }
   }, [item])
 
@@ -181,9 +182,7 @@ const CensorhipModal = (props) => {
   }
 
   const handleChangeTypeId = (event) => {
-    const { target } = event
-    const { value } = target
-    setTypeId(value)
+    setTypeId(event.target.value)
   }
 
   const handleClickCensorBuzz = () => {
@@ -192,10 +191,12 @@ const CensorhipModal = (props) => {
         setOpen(false)
         broadcastNotification('success', `Successfully censored @${author}/${permlink}`)
         callback()
+        setTypeId(0)
       })
       .catch(() => {
         setOpen(false)
         broadcastNotification('error', `Something went wrong while`)
+        setTypeId(0)
       })
   }
 
@@ -277,7 +278,6 @@ const CensorhipModal = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  theme: state.settings.get('theme'),
   item: state.interfaces.get('censorshipDialog'),
   censorTypes: state.settings.get('censorTypes'),
   loading: pending(state, 'CENSOR_BUZZ_REQUEST'),

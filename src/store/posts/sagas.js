@@ -159,6 +159,7 @@ function* getRepliesRequest(payload, meta) {
 function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
   const contentRedirect = yield select(state => state.posts.get('contentRedirect'))
+  const censoredList = yield select(state => state.auth.get('censorList'))
 
   try {
     let data = {}
@@ -196,6 +197,9 @@ function* getContentRequest(payload, meta) {
     } else {
       data = contentRedirect
     }
+
+    data = censorCheck(data, censoredList)
+
     yield put(setContentRedirect(null))
     yield put(getContentSuccess(data, meta))
   } catch(error) {
