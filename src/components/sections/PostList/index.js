@@ -473,7 +473,7 @@ const PostList = React.memo((props) => {
                   <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
                   {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                   {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
-                  {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
+                  {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
                 </Menu>
               </div>
             </Col>

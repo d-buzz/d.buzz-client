@@ -10,6 +10,7 @@ import {
 } from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar, MoreIcon } from 'components/elements'
+import { openCensorshipDialog } from 'store/interface/actions'
 import {
   MarkdownViewer,
   PostTags,
@@ -34,8 +35,9 @@ import {
   HelmetGenerator,
   UpdateFormModal,
 } from 'components'
+import Chip from '@material-ui/core/Chip'
 import { useHistory } from 'react-router-dom'
-import { truncateBody } from 'services/helper'
+import { truncateBody, censorLinks } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -121,6 +123,10 @@ const useStyles = createUseStyles(theme => ({
   iconButton: {
     ...theme.iconButton.hover,
   },
+  chip: {
+    marginTop: 5,
+    marginBottom: 5,
+  },
 }))
 
 const Content = (props) => {
@@ -135,6 +141,8 @@ const Content = (props) => {
     user = {},
     replies,
     checkHasUpdateAuthorityRequest,
+    openCensorshipDialog,
+    censorList = [],
   } = props
 
   const { username, permlink } = match.params
@@ -144,6 +152,8 @@ const Content = (props) => {
   const [open, setOpen] = useState(false)
   const [openUpdateForm, setOpenUpdateForm] = useState(false)
   const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
+  const [isCensored, setIsCensored] = useState(false)
+  const [censorType, setCensorType] = useState(null)
   const popoverAnchor = useRef(null)
   const history = useHistory()
 
@@ -185,6 +195,17 @@ const Content = (props) => {
       })
     // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if(censorList.length !== 0 && username && permlink) {
+      const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${username}/${permlink}`)
+      console.log({ result })
+      if(result.length !== 0) {
+        setIsCensored(true)
+        setCensorType(result[0].type)
+      }
+    }
+  }, [censorList, username, permlink])
 
   useEffect(() => {
     if(body !== '' && body) {
@@ -323,6 +344,21 @@ const Content = (props) => {
     sendToBerries(author)
   }
 
+  const censorCallBack = () => () => {
+    const contentCopy = censorLinks(originalContent)
+    setOriginalContent(contentCopy)
+    setIsCensored(true)
+  }
+
+  const handleClickCensorDialog = () => {
+    openCensorshipDialog(author, permlink, censorCallBack)
+    setAnchorEl(null)
+  }
+
+  const isAuthor = () => {
+    return user.username && user.username === author
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -364,6 +400,7 @@ const Content = (props) => {
                         {author}
                       </p>
                     </Link>
+
                     <br />
                     <p className={classes.username}>
                       {moment(`${created}Z`).local().fromNow()}
@@ -372,6 +409,9 @@ const Content = (props) => {
                 </Col>
               </Row>
               <div onClick={handleClickContent}>
+                {isCensored && (
+                  <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
+                )}
                 <MarkdownViewer content={originalContent} minifyAssets={false} />
               </div>
               <PostTags meta={meta} />
@@ -423,6 +463,7 @@ const Content = (props) => {
               onClose={hanldeCloseMore}
             >
               {!hasUpdateAuthority && (<MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>)}
+              {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
@@ -483,6 +524,7 @@ const mapStateToProps = (state) => ({
   replies: state.posts.get('replies'),
   content: state.posts.get('content'),
   user: state.auth.get('user'),
+  censorList: state.auth.get('censorList'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -491,6 +533,7 @@ const mapDispatchToProps = (dispatch) => ({
     getRepliesRequest,
     clearReplies,
     checkHasUpdateAuthorityRequest,
+    openCensorshipDialog,
   }, dispatch),
 })
 
