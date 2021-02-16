@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from "redux-saga/effects"
+import { call, put, select, takeEvery } from "redux-saga/effects"
 
 import {
   GET_SAVED_THEME_REQUEST,
@@ -28,6 +28,8 @@ import {
   checkVersion,
   getCensorTypes,
   getKeyPair,
+  extractLoginData,
+  censorBuzz,
 } from 'services/api'
 import config from 'config'
 
@@ -94,21 +96,28 @@ function* getCensorTypesRequest(meta) {
 }
 
 function* censorBuzzRequest(payload, meta) {
-  const { author, permlink, type } = payload
   try {
+    const { author, permlink, type } = payload
+    const user = yield select(state => state.auth.get('user'))
+    let { login_data } = user
+    login_data = extractLoginData(login_data)
+
+    const wif = login_data[1]
+
     const keypairs = yield call(getKeyPair)
-
-    const identity = '5Jmt1Gbj79xfGpMfmn64MH3k5xafJuMqxcc81T9KBnM1VGyzZaN'
-
-    const transaction = {author: 'ssomeauthors', permlink: 'ssomepermlinks', type: 1, wif: identity}
+    const transaction = {author, permlink, type, wif }
 
     const signerObject = crypto.createSign("RSA-SHA512")
     signerObject.update(JSON.stringify(transaction))
     const signature = signerObject.sign(keypairs.pair["private"], "base64")
-
     console.log({ signature })
+    yield call(censorBuzz, author, permlink, type, signature)
+
+    yield put(censorBuzzSuccess(meta))
+
   } catch(error) {
-    yield put(censorBuzzSuccess(error, meta))
+    console.log({ error })
+    yield put(censorBuzzFailure(error, meta))
   }
 }
 

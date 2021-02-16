@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { broadcastNotification, closeCensorshipDialog } from 'store/interface/actions'
+import { censorBuzzRequest } from 'store/settings/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
@@ -153,6 +154,8 @@ const CensorhipModal = (props) => {
     item,
     closeCensorshipDialog,
     censorTypes = [],
+    censorBuzzRequest,
+    broadcastNotification,
   } = props
 
   const [open, setOpen] = useState(false)
@@ -178,6 +181,18 @@ const CensorhipModal = (props) => {
     const { target } = event
     const { value } = target
     setTypeId(value)
+  }
+
+  const handleClickCensorBuzz = () => {
+    censorBuzzRequest(author, permlink, typeId)
+      .then(() => {
+        setOpen(false)
+        broadcastNotification('success', `Successfully censored @${author}/${permlink}`)
+      })
+      .catch(() => {
+        setOpen(false)
+        broadcastNotification('error', `Something went wrong while`)
+      })
   }
 
 
@@ -226,6 +241,7 @@ const CensorhipModal = (props) => {
                   className={classes.closeButton}
                   fontSize={14}
                   transparent={true}
+                  onClick={handleClickCensorBuzz}
                   label="Yes"
                 />
               </div>
@@ -261,6 +277,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     broadcastNotification,
     closeCensorshipDialog,
+    censorBuzzRequest,
   }, dispatch),
 })
 

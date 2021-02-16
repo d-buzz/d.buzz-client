@@ -1086,3 +1086,15 @@ export const getCensorTypes = () => {
       })
   })
 }
+
+export const censorBuzz = (author, permlink, type, signature) => {
+  return new Promise((resolve) => {
+    const params = { author, permlink, type, signature }
+    axios.post(`${censorUrl}/add`, params)
+      .then((response) => {
+        resolve(response.data)
+      }, (error) => {
+        reject(error)
+      })
+  })
+}
