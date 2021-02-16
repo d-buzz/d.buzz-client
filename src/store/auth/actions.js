@@ -249,3 +249,10 @@ export const removeHiddenBuzzSuccess = (meta) => ({
   type: REMOVE_HIDDEN_BUZZ_SUCCESS,
   meta,
 })
+
+export const SET_CENSOR_LIST = 'SET_CENSOR_LIST'
+
+export const setCensorList = (list) => ({
+  type: SET_CENSOR_LIST,
+  payload: list,
+})

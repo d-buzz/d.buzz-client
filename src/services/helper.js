@@ -5,6 +5,7 @@ import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import stripHtml from 'string-strip-html'
+import textParser from 'npm-text-parser'
 
 const dmp = new diff_match_patch()
 
@@ -286,4 +287,15 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
 export const signOnHiveonboard = () => {
   const win = window.open('https://hiveonboard.com/create-account?ref=dbuzz&redirect_url=https://d.buzz/#/?status=success', '_blank')
   win.blur()
+}
+
+export const censorLinks = (content) => {
+  const links = textParser.getUrls(content)
+  let contentCopy = content
+
+  links.forEach((item) => {
+    contentCopy = contentCopy.replace(item, '<b>[link censored]</b>')
+  })
+
+  return contentCopy
 }

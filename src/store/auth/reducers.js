@@ -12,6 +12,7 @@ import {
   SET_FROM_INTENT_BUZZ,
   SET_ACCOUNT_LIST,
   SET_HIDDEN_BUZZES,
+  SET_CENSOR_LIST,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -25,6 +26,7 @@ const defaultState = fromJS({
   fromIntentBuzz: false,
   accounts: [],
   hiddenBuzzes: [],
+  censorList: [],
 })
 
 export const auth = (state = defaultState, { type, payload }) => {
@@ -55,6 +57,8 @@ export const auth = (state = defaultState, { type, payload }) => {
     return state.set('accounts', payload)
   case SET_HIDDEN_BUZZES:
     return state.set('hiddenBuzzes', payload)
+  case SET_CENSOR_LIST:
+    return state.set('censorList', payload)
   default:
     return state
   }

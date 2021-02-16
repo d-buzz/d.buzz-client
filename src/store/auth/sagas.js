@@ -41,6 +41,8 @@ import {
 
   REMOVE_HIDDEN_BUZZ_REQUEST,
   removeHiddenBuzzSuccess,
+
+  setCensorList,
 } from './actions'
 
 import {
@@ -198,8 +200,8 @@ function* getSavedUserRequest(meta) {
       yield put(setOpacityUsers([]))
 
       const censorList = yield call(getCensoredList)
+      yield put(setCensorList(censorList))
 
-      console.log({ censorList })
     }
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
