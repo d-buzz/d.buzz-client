@@ -161,7 +161,7 @@ const CensorhipModal = (props) => {
   const [open, setOpen] = useState(false)
   const [author, setAuthor] = useState(null)
   const [permlink, setPermlink] = useState(null)
-  const [typeId, setTypeId] = useState(null)
+  const [typeId, setTypeId] = useState(0)
   const [callback, setCallback] = useState(null)
   const classes = useStyles()
 
@@ -212,6 +212,9 @@ const CensorhipModal = (props) => {
                     Clicking yes will mark this buzz as censored <br />
                     <Link className={classes.link} to={`/@${author}/c/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/c/${permlink}</Link> <br />
                   </p>
+                  <p className={classes.text}>
+                    Pick a reason below why this buzz should be censored
+                  </p>
                 </React.Fragment>
               )}
             </center>
@@ -228,7 +231,7 @@ const CensorhipModal = (props) => {
                   },
                 }}
               >
-                <MenuItem value='null'>
+                <MenuItem value={0}>
                   <em>-- select --</em>
                 </MenuItem>
                 {censorTypes.map((item) => (
