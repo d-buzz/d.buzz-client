@@ -113,9 +113,9 @@ function* censorBuzzRequest(payload, meta) {
     const keypairs = yield call(getKeyPair)
     const transaction = {author, permlink, type, wif }
 
-    const signerObject = crypto.createSign("RSA-SHA512")
+    const signerObject = crypto.createSign('RSA-SHA512')
     signerObject.update(JSON.stringify(transaction))
-    const signature = signerObject.sign(keypairs.pair["private"], "base64")
+    const signature = signerObject.sign(keypairs.pair['private'], 'base64')
 
     yield call(censorBuzz, author, permlink, type, signature)
 
