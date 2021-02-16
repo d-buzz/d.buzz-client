@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { broadcastNotification, closeCensorshipDialog } from 'store/interface/actions'
-import { getCensorTypesRequest } from 'store/settings/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
@@ -153,13 +152,12 @@ const CensorhipModal = (props) => {
     loading,
     item,
     closeCensorshipDialog,
-    getCensorTypesRequest,
+    censorTypes = [],
   } = props
 
   const [open, setOpen] = useState(false)
   const [author, setAuthor] = useState(null)
   const [permlink, setPermlink] = useState(null)
-  const [types, setTypes] = useState([])
   const [typeId, setTypeId] = useState(null)
   const classes = useStyles()
 
@@ -171,13 +169,6 @@ const CensorhipModal = (props) => {
       setPermlink(permlink)
     }
   }, [item])
-
-  useEffect(() => {
-    getCensorTypesRequest()
-      .then((list) => {
-        setTypes(list)
-      })
-  })
 
   const handleClickCloseDialog = () => {
     closeCensorshipDialog()
@@ -222,7 +213,7 @@ const CensorhipModal = (props) => {
                 <MenuItem value='null'>
                   <em>-- select --</em>
                 </MenuItem>
-                {types.map((item) => (
+                {censorTypes.map((item) => (
                   <MenuItem value={item.id}>{item.name}</MenuItem>
                 ))}
               </Select>
@@ -263,13 +254,13 @@ const CensorhipModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   item: state.interfaces.get('censorshipDialog'),
+  censorTypes: state.settings.get('censorTypes'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     broadcastNotification,
     closeCensorshipDialog,
-    getCensorTypesRequest,
   }, dispatch),
 })
 

@@ -17,14 +17,21 @@ import {
 
   GET_CENSOR_TYPES_REQUEST,
   getCensorTypesSuccess,
+
+  CENSOR_BUZZ_REQUEST,
+  censorBuzzSuccess,
+  censorBuzzFailure,
 } from './actions'
 
 import {
   getBestRpcNode,
   checkVersion,
   getCensorTypes,
+  getKeyPair,
 } from 'services/api'
 import config from 'config'
+
+import crypto from 'crypto'
 
 function* getSavedThemeRequest(payload, meta) {
   let theme = { mode: 'light' }
@@ -86,6 +93,25 @@ function* getCensorTypesRequest(meta) {
   yield put(getCensorTypesSuccess(types, meta))
 }
 
+function* censorBuzzRequest(payload, meta) {
+  const { author, permlink, type } = payload
+  try {
+    const keypairs = yield call(getKeyPair)
+
+    const identity = '5Jmt1Gbj79xfGpMfmn64MH3k5xafJuMqxcc81T9KBnM1VGyzZaN'
+
+    const transaction = {author: 'ssomeauthors', permlink: 'ssomepermlinks', type: 1, wif: identity}
+
+    const signerObject = crypto.createSign("RSA-SHA512")
+    signerObject.update(JSON.stringify(transaction))
+    const signature = signerObject.sign(keypairs.pair["private"], "base64")
+
+    console.log({ signature })
+  } catch(error) {
+    yield put(censorBuzzSuccess(error, meta))
+  }
+}
+
 function* watchGetSavedThemeRequest({ payload, meta }) {
   yield call(getSavedThemeRequest, payload, meta)
 }
@@ -106,10 +132,15 @@ function* watchGetCensorTypesRequest({ meta }) {
   yield call(getCensorTypesRequest, meta)
 }
 
+function* watchCensorBuzzRequest({ payload, meta }) {
+  yield call(censorBuzzRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
   yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
   yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
   yield takeEvery(GET_CENSOR_TYPES_REQUEST, watchGetCensorTypesRequest)
+  yield takeEvery(CENSOR_BUZZ_REQUEST, watchCensorBuzzRequest)
 }
