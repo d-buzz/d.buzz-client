@@ -15,6 +15,7 @@ import {
   saveScrollIndex,
   openMuteDialog,
   openHideBuzzDialog,
+  openCensorshipDialog,
 } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -208,6 +209,7 @@ const PostList = React.memo((props) => {
     disableOpacity,
     openHideBuzzDialog,
     hiddenBuzzes,
+    openCensorshipDialog,
   } = props
 
 
@@ -360,6 +362,11 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
   }
 
+  const handleClickCensorDialog = () => {
+    openCensorshipDialog(author, permlink)
+    setAnchorEl(null)
+  }
+
   const isAHiddenBuzz = () => {
     const list = hiddenBuzzes.filter( item => item.author === author && item.permlink === permlink )
     return list.length >= 1
@@ -439,7 +446,7 @@ const PostList = React.memo((props) => {
                   <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
                   {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                   {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
-                  {!isAuthor() && user.username === 'dbuzz' && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
+                  {!isAuthor() && user.username === 'dbuzz' && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
                 </Menu>
               </div>
             </Col>
@@ -464,6 +471,7 @@ const mapDispatchToProps = (dispatch) => ({
     saveScrollIndex,
     openMuteDialog,
     openHideBuzzDialog,
+    openCensorshipDialog,
   }, dispatch),
 })
 

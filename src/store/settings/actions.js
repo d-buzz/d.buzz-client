@@ -96,7 +96,8 @@ export const getCensorTypesRequest = () => ({
   },
 })
 
-export const getCensorTypesSuccess = (meta) => ({
+export const getCensorTypesSuccess = (response, meta) => ({
   type: GET_CENSOR_TYPES_SUCCESS,
+  payload: response,
   meta,
 })
