@@ -86,9 +86,9 @@ export const closeHideBuzzDialog = () => ({
 export const OPEN_CENSORSHIP_DIALOG = 'OPEN_CENSORSHIP_DIALOG'
 export const CLOSE_CENSOSHIP_DIALOG = 'CLOSE_CENSORSHIP_DIALOG'
 
-export const openCensorshipDialog = (author, permlink) => ({
+export const openCensorshipDialog = (author, permlink, callback = null) => ({
   type: OPEN_CENSORSHIP_DIALOG,
-  payload: { author, permlink },
+  payload: { author, permlink, callback },
 })
 
 export const closeCensorshipDialog = () => ({

@@ -162,11 +162,13 @@ const CensorhipModal = (props) => {
   const [author, setAuthor] = useState(null)
   const [permlink, setPermlink] = useState(null)
   const [typeId, setTypeId] = useState(null)
+  const [callback, setCallback] = useState(null)
   const classes = useStyles()
 
   useEffect(() => {
     if(item && item.hasOwnProperty('open')) {
-      const { open, author, permlink } = item
+      const { open, author, permlink, callback } = item
+      setCallback(callback)
       setOpen(open)
       setAuthor(author)
       setPermlink(permlink)
@@ -188,6 +190,7 @@ const CensorhipModal = (props) => {
       .then(() => {
         setOpen(false)
         broadcastNotification('success', `Successfully censored @${author}/${permlink}`)
+        callback()
       })
       .catch(() => {
         setOpen(false)

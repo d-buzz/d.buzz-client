@@ -212,7 +212,6 @@ const PostList = React.memo((props) => {
     openCensorshipDialog,
   } = props
 
-
   let { payout = null, payoutAt = null } = props
   let { max_accepted_payout } = props
 
@@ -252,6 +251,7 @@ const PostList = React.memo((props) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [muted, setMuted] = useState(false)
   const [hidden, setHidden] = useState(false)
+  const [content, setContent] = useState(body)
   const popoverAnchor = useRef(null)
 
 
@@ -362,8 +362,13 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
   }
 
+  const censorCallBack = () => () => {
+    setContent('[censored]')
+    recomputeRowIndex(scrollIndex)
+  }
+
   const handleClickCensorDialog = () => {
-    openCensorshipDialog(author, permlink)
+    openCensorshipDialog(author, permlink, censorCallBack)
     setAnchorEl(null)
   }
 
@@ -414,7 +419,7 @@ const PostList = React.memo((props) => {
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                      <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      <MarkdownViewer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                       <PostTags meta={meta} highlightTag={highlightTag} />
                     </div>
                   )}
