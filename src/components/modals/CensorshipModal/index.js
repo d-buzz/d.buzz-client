@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
+import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 
@@ -218,27 +219,29 @@ const CensorhipModal = (props) => {
                 </React.Fragment>
               )}
             </center>
-            <FormControl variant="outlined" className={classes.formControl} classes={{ input: classes.selectRoot }}>
-              <InputLabel className={classes.text}>Reason</InputLabel>
-              <Select
-                label='Reason'
-                value={typeId}
-                onChange={handleChangeTypeId}
-                className={classNames(classes.text, classes.selectRoot)}
-                inputProps={{
-                  classes: {
-                    icon: classes.icon,
-                  },
-                }}
-              >
-                <MenuItem value={0}>
-                  <em>-- select --</em>
-                </MenuItem>
-                {censorTypes.map((item) => (
-                  <MenuItem value={item.id}>{item.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {!loading && (
+              <FormControl variant="outlined" className={classes.formControl} classes={{ input: classes.selectRoot }}>
+                <InputLabel className={classes.text}>Reason</InputLabel>
+                <Select
+                  label='Reason'
+                  value={typeId}
+                  onChange={handleChangeTypeId}
+                  className={classNames(classes.text, classes.selectRoot)}
+                  inputProps={{
+                    classes: {
+                      icon: classes.icon,
+                    },
+                  }}
+                >
+                  <MenuItem value={0}>
+                    <em>-- select --</em>
+                  </MenuItem>
+                  {censorTypes.map((item) => (
+                    <MenuItem value={item.id}>{item.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
           </div>
           {!loading && (
             <React.Fragment>
@@ -277,6 +280,7 @@ const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   item: state.interfaces.get('censorshipDialog'),
   censorTypes: state.settings.get('censorTypes'),
+  loading: pending(state, 'CENSOR_BUZZ_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -133,8 +133,11 @@ const censorCheck = (content, censoredList) => {
 
   const result = censoredList.filter(({ author, permlink }) => `${author}/${permlink}` === `${content.author}/${content.permlink}`)
 
+  copyContent.censored = { status: false, reason: null }
+
   if(result.length !== 0) {
     copyContent.body = censorLinks(copyContent.body)
+    copyContent.censored = { status: true, reason: result[0].type }
   }
 
   return copyContent
