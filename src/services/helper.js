@@ -294,7 +294,7 @@ export const censorLinks = (content) => {
   let contentCopy = content
 
   links.forEach((item) => {
-    contentCopy = contentCopy.replace(item, '<b>[link censored]</b>')
+    contentCopy = contentCopy.replace(item, '<b>[link removed]</b>')
   })
 
   return contentCopy
