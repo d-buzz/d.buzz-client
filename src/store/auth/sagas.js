@@ -55,6 +55,7 @@ import {
   extractLoginData,
   fetchMuteList,
   generateMuteOperation,
+  getCensoredList,
 } from 'services/api'
 
 import { generateSession, readSession } from 'services/helper'
@@ -195,6 +196,10 @@ function* getSavedUserRequest(meta) {
       mutelist = [...new Set(mutelist.map(item => item.following))]
       yield put(setMuteList(mutelist))
       yield put(setOpacityUsers([]))
+
+      const censorList = yield call(getCensoredList)
+
+      console.log({ censorList })
     }
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')

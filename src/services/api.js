@@ -1098,3 +1098,12 @@ export const censorBuzz = (author, permlink, type, signature) => {
       })
   })
 }
+
+export const getCensoredList = () => {
+  return new Promise((resolve) => {
+    axios.get(`${censorUrl}/list`)
+      .then(function (result) {
+        resolve(result.data)
+      })
+  })
+}
