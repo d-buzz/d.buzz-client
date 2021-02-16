@@ -219,6 +219,7 @@ const CensorhipModal = (props) => {
                   </p>
                 </React.Fragment>
               )}
+              {loading && (<h6>Marking buzz as censored, please wait while it process</h6>)}
             </center>
             {!loading && (
               <FormControl variant="outlined" className={classes.formControl} classes={{ input: classes.selectRoot }}>
