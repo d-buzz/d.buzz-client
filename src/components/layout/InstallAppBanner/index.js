@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react'
 import { CloseIcon, ContainedButton } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
 import { createUseStyles } from 'react-jss'
+import { connect } from 'react-redux'
 import { Container } from 'react-bootstrap'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   button: {
     fontSize: 15,
     height: 35,
-    marginTop: -25,
+    marginTop: -42,
   },
-  container: {
+  appBanner: {
     margin: '0 auto',
+    border: theme.border.primary,
     height: 55,
     '& svg': {
       '& path': {
@@ -19,7 +21,7 @@ const useStyles = createUseStyles({
       },
     },
   },
-})
+}))
 
 const InstallAppBanner = () => {
   const classes = useStyles()
@@ -43,12 +45,18 @@ const InstallAppBanner = () => {
 
   useEffect(() => { if (prompt) setVisibleState(true) }, [prompt])
 
+  useEffect(() => {
+    const installed = () => { setVisibleState(false) }
+    window.addEventListener("appinstalled", installed)
+    return () => { window.removeEventListener("appinstalled", installed) }
+  }, [])
+
   if (!isVisible) return (<Container />)
 
   return (
     <React.Fragment>
-      <Container className={classes.container} onClick={hide} fluid={true}>
-        <IconButton onClick={hide} size="small" style={{paddingTop: 15}}>
+      <Container className={classes.appBanner} onClick={hide} fluid={true}>
+        <IconButton onClick={hide} size="small" style={{padding: 15}}>
           <CloseIcon />
         </IconButton>
         <center>
@@ -59,4 +67,8 @@ const InstallAppBanner = () => {
   )
 }
 
-export default InstallAppBanner
+const mapStateToProps = (state) => ({
+  theme: state.settings.get('theme'),
+})
+
+export default connect(mapStateToProps)(InstallAppBanner)
