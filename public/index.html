@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/d.buzz.ico" />
-    <title>D.Buzz</title>
 
-    <meta name="viewport" content="width=device-width, user-scalable=no">
-    <meta name="theme-color" content="#000000" data-react-helmet="true"/>
+<head>
+  <meta charset="utf-8" />
+  <title>D.Buzz</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="images/d.buzz-icon-152.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Hello World">
+  <meta name="msapplication-TileImage" content="images/d.buzz-icon-144.png">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
 
-    <meta property="og:type" content="website" data-react-helmet="true"/>
+  <meta property="og:type" content="website" data-react-helmet="true" />
 
-    <meta name="title" content="D.Buzz" data-react-helmet="true" data-react-helmet="true">
-    <meta name="description" content="D.Buzz | Micro-blogging for HIVE">
-    <meta property="image" content="https://d.buzz/dbuzz.svg" data-react-helmet="true"/>
+  <meta name="title" content="D.Buzz" data-react-helmet="true" data-react-helmet="true">
+  <meta name="description" content="D.Buzz | Micro-blogging for HIVE">
+  <meta property="image" content="https://d.buzz/dbuzz.svg" data-react-helmet="true" />
 
-    <meta property="og:title" content="D.Buzz" data-react-helmet="true" />
-    <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true"/>
-    <meta property="og:image" content="https://d.buzzd/buzz.svg" data-react-helmet="true"/>
+  <meta property="og:title" content="D.Buzz" data-react-helmet="true" />
+  <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true" />
+  <meta property="og:image" content="https://d.buzzd/buzz.svg" data-react-helmet="true" />
 
-    <meta property="twitter:card" content="summary_large_image" data-react-helmet="true" />
-    <meta property="twitter:url" content="https://d.buzz/" data-react-helmet="true" />
-    <meta property="twitter:title" content="D.Buzz" data-react-helmet="true" />
-    <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true" />
-    <meta property="twitter:image" content="https://d.buzzd/buzz.svg" data-react-helmet="true" />
+  <meta property="twitter:card" content="summary_large_image" data-react-helmet="true" />
+  <meta property="twitter:url" content="https://d.buzz/" data-react-helmet="true" />
+  <meta property="twitter:title" content="D.Buzz" data-react-helmet="true" />
+  <meta property="twitter:description" content="D.Buzz | Micro-blogging for HIVE" data-react-helmet="true" />
+  <meta property="twitter:image" content="https://d.buzzd/buzz.svg" data-react-helmet="true" />
 
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <base href="/">
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+  <base href="/">
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
 </html>
 
 <script>window.prerenderReady = false;</script>
@@ -40,15 +47,19 @@
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
   @media (min-width: 1200px) {
-    .container{
-        max-width: 1300px;
+    .container {
+      max-width: 1300px;
     }
   }
 
-  button:focus {outline:0;}
+  button:focus {
+    outline: 0;
+  }
+
   .CircularProgressbar-path {
     stroke: red;
   }
+
   .CircularProgressbar-trail {
     stroke: gray;
   }

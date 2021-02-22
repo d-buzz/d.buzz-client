@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Container from 'react-bootstrap/Container'
 import { StickyContainer } from 'react-sticky'
 import {
+  InstallAppBanner,
   AppBar,
   DevelopersFrame,
   GuardedAppFrame,
@@ -86,11 +87,11 @@ const AppFrame = (props) => {
   const unGuardedRoute = (pathname.match(/^\/login/) || !is_authenticated)
   const [signUpConfirmation, setSignUpConfirmation] = useState(false)
 
-  if(organizationRoutes) {
+  if (organizationRoutes) {
     containerClass = classes.organizationContainer
   }
 
-  if(unGuardedRoute) {
+  if (unGuardedRoute) {
     containerClass = classes.unGuardedContainer
   }
 
@@ -105,7 +106,7 @@ const AppFrame = (props) => {
   useEffect(() => {
     if (pathname.match(/^\/intent\/buzz/)) {
       setFromIntentBuzz(true)
-      if(params.text){
+      if (params.text) {
         setIntentBuzz(params.text, params.url, params.tags)
       }
       checkIfLogin()
@@ -130,8 +131,9 @@ const AppFrame = (props) => {
     }
   }
 
-  return(
+  return (
     <React.Fragment>
+      <InstallAppBanner />
       {!is_authenticated && (<AppBar />)}
       {!isMobile && !developersRoutes && !organizationRoutes && (
         <Container className={containerClass}>
@@ -148,7 +150,7 @@ const AppFrame = (props) => {
       )}
       {isMobile && !developersRoutes && !organizationRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
       {developersRoutes && (<DevelopersFrame route={route} />)}
-      {organizationRoutes &&(<OrganizationAppFrame pathname={pathname} route={route} />)}
+      {organizationRoutes && (<OrganizationAppFrame pathname={pathname} route={route} />)}
       <ReplyFormModal />
       <NotificationBox />
       <MuteModal />

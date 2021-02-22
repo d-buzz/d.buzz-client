@@ -500,7 +500,6 @@ function* publishReplyRequest(payload, meta) {
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
-      console.log({ result })
     } else {
       let { login_data } = user
       login_data = extractLoginData(login_data)
