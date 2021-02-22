@@ -158,13 +158,13 @@ function* getSavedUserRequest(meta) {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
-    let hiddenBuzzes = yield call([localStorage, localStorage.getItem], 'hiddenBuzzes')
+    const hiddenBuzzes = []
 
-    if(!hiddenBuzzes) {
-      hiddenBuzzes = []
-    } else {
-      hiddenBuzzes = JSON.parse(hiddenBuzzes)
-    }
+    // if(!hiddenBuzzes) {
+    //   hiddenBuzzes = []
+    // } else {
+    //   hiddenBuzzes = JSON.parse(hiddenBuzzes)
+    // }
 
 
     if(!accounts) {
@@ -199,10 +199,11 @@ function* getSavedUserRequest(meta) {
       yield put(setMuteList(mutelist))
       yield put(setOpacityUsers([]))
 
-      const censorList = yield call(getCensoredList)
-      yield put(setCensorList(censorList))
 
     }
+
+    const censorList = yield call(getCensoredList)
+    yield put(setCensorList(censorList))
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
 
