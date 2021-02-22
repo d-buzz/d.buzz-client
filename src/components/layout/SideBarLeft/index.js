@@ -340,7 +340,7 @@ const SideBarLeft = (props) => {
       icon: <ProfileIcon />,
     },
     {
-      name: 'Display',
+      name: 'Theme',
       icon: <SunMoonIcon />,
       path: '#',
       preventDefault: true,
