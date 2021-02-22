@@ -65,11 +65,12 @@ const Init = (props) => {
         window.history.forward(1)
         window.location.reload(true)
       } else {
-        getCensorTypesRequest()
-        getBestRpcNode().then(() => {
-          getTrendingTagsRequest()
-          getSavedUserRequest().then(() => {
-            setInit(true)
+        getCensorTypesRequest().then(() => {
+          getBestRpcNode().then(() => {
+            getTrendingTagsRequest()
+            getSavedUserRequest().then(() => {
+              setInit(true)
+            })
           })
         })
       }
