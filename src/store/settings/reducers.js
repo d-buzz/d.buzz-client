@@ -3,6 +3,7 @@ import {
   SET_THEME_SUCCESS,
   GENERATE_STYLES,
   SET_RPC_NODE,
+  GET_CENSOR_TYPES_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -10,6 +11,7 @@ const defaultState = fromJS({
   theme: {},
   themeStyles: {},
   rpcNode: 'https://api.hive.blog',
+  censorTypes: [],
 })
 
 export const settings = (state = defaultState, { type, payload }) => {
@@ -22,6 +24,8 @@ export const settings = (state = defaultState, { type, payload }) => {
     return state.set('themeStyles', payload)
   case SET_RPC_NODE:
     return state.set('rpcNode', payload)
+  case GET_CENSOR_TYPES_SUCCESS:
+    return state.set('censorTypes', payload)
   default:
     return state
   }

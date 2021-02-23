@@ -38,8 +38,8 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
+import { ProfileSkeleton, HelmetGenerator, HiddenBuzzListModal } from 'components'
 import queryString from 'query-string'
-import { ProfileSkeleton, HelmetGenerator } from 'components'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -174,6 +174,7 @@ const Profile = (props) => {
   const [index, setIndex] = useState(0)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
+  const [openHiddenBuzzList, setOpenHiddenBuzzList] = useState(false)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -216,16 +217,7 @@ const Profile = (props) => {
       tab = 'replies'
     }
 
-    // else if (index === 3) {
-    //   tab = 'following'
-    // }
-    // const { is_authenticated } = user
     history.push(`/@${username}/t/${tab}/`)
-
-    // if(is_authenticated) {
-    // } else {
-    //   history.push(`/ug/@${username}/t/${tab}/`)
-    // }
   }
 
   const openMuteModal = () => {
@@ -304,6 +296,10 @@ const Profile = (props) => {
     })
   }
 
+  const handleClickOpenHiddenBuzzList = () => {
+    setOpenHiddenBuzzList(!openHiddenBuzzList)
+  }
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Profile' />
@@ -323,6 +319,17 @@ const Profile = (props) => {
               <Col>
                 {is_authenticated && (
                   <React.Fragment>
+                    {loginuser === username && (
+                      <ContainedButton
+                        fontSize={14}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                        transparent={true}
+                        label="Hidden Buzzes"
+                        className={classes.button}
+                        onClick={handleClickOpenHiddenBuzzList}
+                      />
+                    )}
                     {loginuser !== username && !mutelist.includes(username) && (
                       <ContainedButton
                         fontSize={14}
@@ -429,13 +436,14 @@ const Profile = (props) => {
           className={classes.tabContainer}
         >
           <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's (comments)" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
           <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
         </Tabs>
       </div>
       <React.Fragment>
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
+      <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
     </React.Fragment>
   )
 }

@@ -34,6 +34,15 @@ import {
 
   SWITCH_ACCOUNT_REQUEST,
   switchAccountSuccess,
+
+  HIDE_BUZZ_REQUEST,
+  hideBuzzSuccess,
+  setHiddenBuzzes,
+
+  REMOVE_HIDDEN_BUZZ_REQUEST,
+  removeHiddenBuzzSuccess,
+
+  setCensorList,
 } from './actions'
 
 import {
@@ -48,9 +57,11 @@ import {
   extractLoginData,
   fetchMuteList,
   generateMuteOperation,
+  getCensoredList,
 } from 'services/api'
 
 import { generateSession, readSession } from 'services/helper'
+
 
 function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain } = payload
@@ -147,6 +158,14 @@ function* getSavedUserRequest(meta) {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
+    const hiddenBuzzes = []
+
+    // if(!hiddenBuzzes) {
+    //   hiddenBuzzes = []
+    // } else {
+    //   hiddenBuzzes = JSON.parse(hiddenBuzzes)
+    // }
+
 
     if(!accounts) {
       accounts = []
@@ -179,7 +198,12 @@ function* getSavedUserRequest(meta) {
       mutelist = [...new Set(mutelist.map(item => item.following))]
       yield put(setMuteList(mutelist))
       yield put(setOpacityUsers([]))
+
+
     }
+
+    const censorList = yield call(getCensoredList)
+    yield put(setCensorList(censorList))
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
 
@@ -189,6 +213,7 @@ function* getSavedUserRequest(meta) {
 
     yield put(setAccountList(accounts))
     yield put(setHasAgreedPayout(payoutAgreed))
+    yield put(setHiddenBuzzes(hiddenBuzzes))
 
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
@@ -334,6 +359,24 @@ function* switchAccountRequest(payload, meta) {
   yield put(switchAccountSuccess(meta))
 }
 
+function* hideBuzzRequest(payload, meta) {
+  const { author, permlink } = payload
+  let hiddenBuzzes = yield select(state => state.auth.get('hiddenBuzzes'))
+  hiddenBuzzes = [...hiddenBuzzes, { author, permlink }]
+  yield call([localStorage, localStorage.setItem], 'hiddenBuzzes', JSON.stringify(hiddenBuzzes))
+  yield put(setHiddenBuzzes(hiddenBuzzes))
+  yield put(hideBuzzSuccess(meta))
+}
+
+function* removeHiddenBuzzRequest(payload, meta) {
+  const { permlink } = payload
+  let hiddenBuzzes = yield select(state => state.auth.get('hiddenBuzzes'))
+  hiddenBuzzes = hiddenBuzzes.filter((item) => item.permlink !== permlink)
+  yield call([localStorage, localStorage.setItem], 'hiddenBuzzes', JSON.stringify(hiddenBuzzes))
+  yield put(setHiddenBuzzes(hiddenBuzzes))
+  yield put(removeHiddenBuzzSuccess(meta))
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -362,6 +405,14 @@ function* watchSwitchAccountRequest({ payload, meta }) {
   yield call(switchAccountRequest, payload, meta)
 }
 
+function* watchHideBuzzRequest({ payload, meta }) {
+  yield call(hideBuzzRequest, payload, meta)
+}
+
+function* watchRemoveHiddenBuzzRequest({ payload, meta }) {
+  yield call(removeHiddenBuzzRequest, payload ,meta)
+}
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
@@ -370,4 +421,6 @@ export default function* sagas() {
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
   yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
   yield takeEvery(SWITCH_ACCOUNT_REQUEST, watchSwitchAccountRequest)
+  yield takeEvery(HIDE_BUZZ_REQUEST, watchHideBuzzRequest)
+  yield takeEvery(REMOVE_HIDDEN_BUZZ_REQUEST, watchRemoveHiddenBuzzRequest)
 }

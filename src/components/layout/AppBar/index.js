@@ -19,6 +19,7 @@ import { signOnHiveonboard } from 'services/helper'
 const useStyles = createUseStyles(theme => ({
   nav: {
     height: 55,
+    top: 'auto',
     backgroundColor: theme.nav.background,
     borderBottom: theme.border.primary,
   },

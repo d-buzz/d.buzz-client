@@ -104,7 +104,7 @@ import {
   generateUpdateOperation,
   invokeMuteFilter,
 } from 'services/api'
-import { createPatch, errorMessageComposer } from 'services/helper'
+import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
@@ -114,6 +114,33 @@ const footnote = (body) => {
   body = `${body} ${footnoteAppend}`
 
   return body
+}
+
+const invokeHideBuzzFilter = (items) => {
+  let hiddenBuzzes = localStorage.getItem('hiddenBuzzes')
+
+  if(!hiddenBuzzes) {
+    hiddenBuzzes = []
+  } else {
+    hiddenBuzzes = JSON.parse(hiddenBuzzes)
+  }
+
+  return items.filter((item) => hiddenBuzzes.filter((hidden) => hidden.author === item.author && hidden.permlink === item.permlink).length === 0)
+}
+
+const censorCheck = (content, censoredList) => {
+  const copyContent = content
+
+  const result = censoredList.filter(({ author, permlink }) => `${author}/${permlink}` === `${content.author}/${content.permlink}`)
+
+  copyContent.censored = { status: false, reason: null }
+
+  if(result.length !== 0) {
+    copyContent.body = censorLinks(copyContent.body)
+    copyContent.censored = { status: true, reason: result[0].type }
+  }
+
+  return copyContent
 }
 
 function* getRepliesRequest(payload, meta) {
@@ -132,6 +159,7 @@ function* getRepliesRequest(payload, meta) {
 function* getContentRequest(payload, meta) {
   const { author, permlink } = payload
   const contentRedirect = yield select(state => state.posts.get('contentRedirect'))
+  const censoredList = yield select(state => state.auth.get('censorList'))
 
   try {
     let data = {}
@@ -169,6 +197,9 @@ function* getContentRequest(payload, meta) {
     } else {
       data = contentRedirect
     }
+
+    data = censorCheck(data, censoredList)
+
     yield put(setContentRedirect(null))
     yield put(getContentSuccess(data, meta))
   } catch(error) {
@@ -189,6 +220,7 @@ function* getTrendingTagsRequests(meta) {
 }
 
 function* getTrendingPostsRequest(payload, meta) {
+  const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
 
   const params = { sort: 'trending', start_permlink, start_author }
@@ -210,6 +242,8 @@ function* getTrendingPostsRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeHideBuzzFilter(data)
+    data.map((item) => censorCheck(item, censoredList))
 
     yield put(getTrendingPostsSuccess(data, meta))
   } catch(error) {
@@ -218,6 +252,7 @@ function* getTrendingPostsRequest(payload, meta) {
 }
 
 function* getHomePostsRequest(payload, meta) {
+  const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
   const user = yield select(state => state.auth.get('user'))
   const { username: account } = user
@@ -240,6 +275,8 @@ function* getHomePostsRequest(payload, meta) {
     data = data.filter(item => invokeFilter(item))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeHideBuzzFilter(data)
+    data.map((item) => censorCheck(item, censoredList))
 
     yield put(getHomePostsSuccess(data, meta))
   } catch(error) {
@@ -248,6 +285,7 @@ function* getHomePostsRequest(payload, meta) {
 }
 
 function* getLatestPostsRequest(payload, meta) {
+  const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
 
   const params = { sort: 'created', start_permlink, start_author }
@@ -269,6 +307,8 @@ function* getLatestPostsRequest(payload, meta) {
     const mutelist = yield select(state => state.auth.get('mutelist'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeHideBuzzFilter(data)
+    data.map((item) => censorCheck(item, censoredList))
 
 
     yield put(getLatestPostsSuccess(data, meta))
@@ -460,7 +500,6 @@ function* publishReplyRequest(payload, meta) {
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
-      console.log({ result })
     } else {
       let { login_data } = user
       login_data = extractLoginData(login_data)

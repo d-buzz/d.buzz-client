@@ -10,7 +10,13 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { openUserDialog, saveScrollIndex, openMuteDialog } from 'store/interface/actions'
+import {
+  openUserDialog,
+  saveScrollIndex,
+  openMuteDialog,
+  openHideBuzzDialog,
+  openCensorshipDialog,
+} from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -24,7 +30,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import { sendToBerries } from 'services/helper'
+import Chip from '@material-ui/core/Chip'
+import { sendToBerries, censorLinks } from 'services/helper'
 
 const addHover = (theme) => {
   let style = {
@@ -170,6 +177,9 @@ const useStyle = createUseStyles(theme => ({
   muted: {
     opacity: 0.2,
   },
+  chip: {
+    float: 'right',
+  },
 }))
 
 
@@ -201,8 +211,11 @@ const PostList = React.memo((props) => {
     openMuteDialog,
     opacityUsers,
     disableOpacity,
+    openHideBuzzDialog,
+    hiddenBuzzes,
+    openCensorshipDialog,
+    censorList,
   } = props
-
 
   let { payout = null, payoutAt = null } = props
   let { max_accepted_payout } = props
@@ -242,7 +255,22 @@ const PostList = React.memo((props) => {
   const [delayHandler, setDelayHandler] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const [muted, setMuted] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const [content, setContent] = useState(body)
+  const [isCensored, setIsCensored] = useState(false)
+  const [censorType, setCensorType] = useState(null)
   const popoverAnchor = useRef(null)
+
+  useEffect(() => {
+    if(censorList.length !== 0 && author && permlink) {
+      const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
+
+      if(result.length !== 0) {
+        setIsCensored(true)
+        setCensorType(result[0].type)
+      }
+    }
+  }, [censorList, author, permlink])
 
 
   useEffect(() => {
@@ -326,6 +354,11 @@ const PostList = React.memo((props) => {
     recomputeRowIndex(scrollIndex)
   }
 
+  const hideBuzzSuccesCallback = () => {
+    setHidden(true)
+    recomputeRowIndex(scrollIndex)
+  }
+
   const handleClickMuteDialog = () => {
     // scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}
     openMuteDialog(author, muteSuccessCallback)
@@ -338,13 +371,42 @@ const PostList = React.memo((props) => {
     sendToBerries(author)
   }
 
+  const isAuthor = () => {
+    return user.username && user.username === author
+  }
+
+  const handleClickHideBuzzDialog = () => {
+    openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
+    setAnchorEl(null)
+  }
+
+  const censorCallBack = () => () => {
+    const contentCopy = censorLinks(content)
+    setContent(contentCopy)
+    recomputeRowIndex(scrollIndex)
+  }
+
+  const handleClickCensorDialog = () => {
+    openCensorshipDialog(author, permlink, censorCallBack)
+    setAnchorEl(null)
+  }
+
+  const isAHiddenBuzz = () => {
+    const list = hiddenBuzzes.filter( item => item.author === author && item.permlink === permlink )
+    return list.length >= 1
+  }
+
+  const isMutedUser = () => {
+    return opacityUsers.includes(author)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classNames(classes.row, muted || opacityUsers.includes(author) ? classes.muted : {})}>
+        <div className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
-              <div style={leftWidth} className={classes.left} onClick={handleOpenContent}>
+              <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
                 <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
@@ -352,7 +414,7 @@ const PostList = React.memo((props) => {
               <div className={classNames('right-content', classes.right)} style={rightWidth}>
                 <div className={classes.content}>
                   <label className={classes.name}>
-                    {!disableProfileLink && (
+                    {!disableProfileLink && !isMutedUser() && !isAHiddenBuzz() && (
                       <Link
                         ref={popoverAnchor}
                         to={!muted && !opacityActivated && disableOpacity ? authorLink : '#'}
@@ -363,28 +425,28 @@ const PostList = React.memo((props) => {
                         {author}
                       </Link>
                     )}
-                    {disableProfileLink && (<span className={classes.spanName}>{author}</span>)}
+                    {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {!muted && !opacityActivated && disableOpacity && (
+                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
                       <ExpandMoreIcon  className={classes.moreIcon} />
                     </IconButton>
                   )}
-                  {!muted && !opacityActivated && disableOpacity && (
+                  {isCensored && (
+                    <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
+                  )}
+                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                      <MarkdownViewer content={body} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      <MarkdownViewer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                       <PostTags meta={meta} highlightTag={highlightTag} />
                     </div>
                   )}
-                  {/* <a href={`https://buymeberri.es/@${author}`} rel='noopener noreferrer' target='_blank'>
-                    <img alt='berry-tip-button' className={classes.berries} src='https://buymeberries.com/assets/bmb-4-s.png'/>
-                  </a> */}
                 </div>
-                {!muted && !opacityActivated && disableOpacity && (
+                {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
                       disableUpvote={disableUpvote}
@@ -409,7 +471,9 @@ const PostList = React.memo((props) => {
                   onClose={closeMenu}
                 >
                   <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
-                  {user.username && user.username !== author && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute</MenuItem>)}
+                  {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                  {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
+                  {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
                 </Menu>
               </div>
             </Col>
@@ -424,6 +488,8 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   mutelist: state.auth.get('mutelist'),
   opacityUsers: state.auth.get('opacityUsers'),
+  hiddenBuzzes: state.auth.get('hiddenBuzzes'),
+  censorList: state.auth.get('censorList'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -432,6 +498,8 @@ const mapDispatchToProps = (dispatch) => ({
     openUserDialog,
     saveScrollIndex,
     openMuteDialog,
+    openHideBuzzDialog,
+    openCensorshipDialog,
   }, dispatch),
 })
 
