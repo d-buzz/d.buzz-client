@@ -170,9 +170,9 @@ export const setOpacityUsers = (users) => ({
 
 export const SET_INTENT_BUZZ = 'SET_INTENT_BUZZ'
 
-export const setIntentBuzz = (text, url, hashtags = '') => ({
+export const setIntentBuzz = (payload) => ({
   type: SET_INTENT_BUZZ,
-  payload: { text, url, hashtags },
+  payload,
 })
 
 export const CLEAR_INTENT_BUZZ = 'CLEAR_INTENT_BUZZ'
@@ -242,7 +242,7 @@ export const removeHiddenBuzzRequest = (author, permlink) => ({
   meta: {
     thunk: true,
   },
-  payload: {author, permlink},
+  payload: { author, permlink },
 })
 
 export const removeHiddenBuzzSuccess = (meta) => ({

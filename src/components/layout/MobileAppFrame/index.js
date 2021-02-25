@@ -312,8 +312,8 @@ const MobileAppFrame = (props) => {
     setOpenLoginModal(false)
   }
 
-  const handleDiscordClick = () => { 
-    window.open('https://discord.gg/kCZGPs7','_blank') 
+  const handleDiscordClick = () => {
+    window.open('https://discord.gg/kCZGPs7', '_blank')
   }
 
   const NavigationTop = () => {
@@ -400,9 +400,9 @@ const MobileAppFrame = (props) => {
 
 
   const handleSetBuzzIntent = () => {
-    const { text, url, tags } = params
-    if (text) {
-      setIntentBuzz(text, url, tags)
+    if (params.text) {
+      const payload = { ...params, hashtags: params.tags }
+      setIntentBuzz(payload)
     }
   }
 

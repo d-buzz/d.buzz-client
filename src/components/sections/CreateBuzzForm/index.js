@@ -181,7 +181,13 @@ const CreateBuzzForm = (props) => {
     clearIntentBuzz,
   } = props
 
-  const { text = '', url = '', hashtags = '' } = intentBuzz
+  const {
+    text = '',
+    url = '',
+    hashtags = '',
+    origin_app_name = '',
+    min_chars = 0,
+  } = intentBuzz
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
   const buzzIntentTags = []
@@ -278,19 +284,36 @@ const CreateBuzzForm = (props) => {
       invokeTwitterIntent(content)
     }
 
-    publishPostRequest(content, tags, payout)
-      .then((data) => {
-        if (data.success) {
-          setPageFrom(null)
-          const { author, permlink } = data
-          hideModalCallback()
-          clearIntentBuzz()
-          broadcastNotification('success', 'You successfully published a post')
-          history.push(`/@${author}/c/${permlink}`)
-        } else {
-          broadcastNotification('error', data.errorMessage)
+    if (!checkBuzzWidgetMinCharacters()) {
+      broadcastNotification('error', `${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
+    } else {
+      publishPostRequest(content, tags, payout)
+        .then((data) => {
+          if (data.success) {
+            setPageFrom(null)
+            const { author, permlink } = data
+            hideModalCallback()
+            clearIntentBuzz()
+            broadcastNotification('success', 'You successfully published a post')
+            history.push(`/@${author}/c/${permlink}`)
+          } else {
+            broadcastNotification('error', data.errorMessage)
+          }
+        })
+    }
+  }
+
+  const checkBuzzWidgetMinCharacters = () => {
+    let passed = true
+    if (buzzIntentText) {
+      const len = content.length
+      if (parseInt(min_chars) > 0) {
+        if (parseInt(len) < parseInt(min_chars)) {
+          passed = false
         }
-      })
+      }
+    }
+    return passed
   }
 
   const handleDelete = (i) => {
