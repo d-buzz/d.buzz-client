@@ -128,12 +128,22 @@ function* authenticateUserRequest(payload, meta) {
 
       const session = generateSession(user)
 
-      const isInAccountList = accounts.filter(item => item.username === username)
+      // const isInAccountList = accounts.filter(item => item.username === username)
 
-      if(isInAccountList.length === 0) {
-        users.push(session)
+      // if(isInAccountList.length === 0) {
+      //   users.push(session)
+      //   accounts.push({ username, keychain: useKeychain })
+      // }
+
+      const accountIndex = accounts.findIndex(item => item.username === username)
+
+      if(accountIndex === -1) {
         accounts.push({ username, keychain: useKeychain })
+      } else {
+        accounts[accountIndex].keychain = useKeychain
       }
+
+      users.push(session)
 
       yield call([localStorage, localStorage.clear])
       yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
