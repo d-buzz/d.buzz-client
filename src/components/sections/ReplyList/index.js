@@ -10,15 +10,19 @@ import {
   PostTags,
   PostActions,
 } from 'components'
-import { broadcastNotification } from 'store/interface/actions'
+import { broadcastNotification, openCensorshipDialog } from 'store/interface/actions'
 import classNames from 'classnames'
 import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import IconButton from '@material-ui/core/IconButton'
+import MuteIcon from '@material-ui/icons/VolumeOff'
+import Chip from '@material-ui/core/Chip'
 import { Link, useHistory } from 'react-router-dom'
 import { truncateBody } from 'services/helper'
 import stripHtml from 'string-strip-html'
+import { censorLinks } from 'services/helper'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -161,6 +165,12 @@ const useStyles = createUseStyles(theme => ({
     paddingTop: 10,
     paddingBottom: 2,
   },
+  muteIcon: {
+    ...theme.font,
+  },
+  muteButton: {
+    float: 'right',
+  },
 }))
 
 const countReplies = async (replies = []) => {
@@ -174,9 +184,6 @@ const countReplies = async (replies = []) => {
 }
 
 const ReplyList = (props) => {
-  // let {
-  //   replies,
-  // } = props
   const {
     mutelist,
     expectedCount,
@@ -184,7 +191,9 @@ const ReplyList = (props) => {
     append,
     setPageFrom,
     broadcastNotification,
+    openCensorshipDialog,
     replies,
+    censorList,
   } = props
   const { clearAppendReply } = props
   // replies = replies.filter((reply) => reply.body.length <= 280 )
@@ -270,6 +279,10 @@ const ReplyList = (props) => {
 
     body = truncateBody(body)
 
+    const [content, setContent] = useState(body)
+    const [isCensored, setIsCensored] = useState(false)
+    const [censorType, setCensorType] = useState(null)
+
     if(payout === 0) {
       payout = '0.00'
     }
@@ -324,6 +337,36 @@ const ReplyList = (props) => {
       }
     }
 
+    const isAuthor = () => {
+      return user.username && user.username === author
+    }
+
+    const applyCensor = () => {
+      const contentCopy = censorLinks(content)
+      setContent(contentCopy)
+    }
+
+    const censorCallBack = () => () => {
+      applyCensor()
+    }
+
+    const handleClickCensorDialog = () => {
+      openCensorshipDialog(author, permlink, censorCallBack)
+    }
+
+    useEffect(() => {
+      if(censorList.length !== 0 && author && permlink) {
+        const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
+
+        if(result.length !== 0) {
+          setIsCensored(true)
+          applyCensor()
+          setCensorType(result[0].type)
+        }
+      }
+      // eslint-disable-next-line
+    }, [censorList, author, permlink])
+
     return (
       <React.Fragment>
         <div className={classes.row}>
@@ -339,7 +382,7 @@ const ReplyList = (props) => {
               </Col>
               <Col>
                 <div className={classes.right}>
-                  <div className={classes.content} onClick={handleOpenContent}>
+                  <div className={classes.content}>
                     <Link
                       ref={popoverAnchor}
                       to={`${authorLink}?ref=replies`}
@@ -351,22 +394,32 @@ const ReplyList = (props) => {
                       &nbsp;&bull;&nbsp;
                       {moment(`${created}Z`).local().fromNow()}
                     </label>
-                    <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
-                    <MarkdownViewer minifyAssets={false} content={body} />
-                    {`${stripHtml(body)}`.length > 280 && (
-                      <div className={classes.context}>
-                        <div className={classes.contextWrapper}>
-                          <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
-                          <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
-                        </div>
-                      </div>
+                    {!isAuthor() && !isCensored && user.username === 'dbuzz' && !user.useKeychain && (
+                      <IconButton onClick={handleClickCensorDialog} className={classes.muteButton} size='small'>
+                        <MuteIcon  className={classes.muteIcon} />
+                      </IconButton>
                     )}
-                    <PostTags meta={meta} />
+                    <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    {isCensored && (
+                      <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
+                    )}
+                    <div onClick={handleOpenContent}>
+                      <MarkdownViewer minifyAssets={false} content={content} />
+                      {`${stripHtml(content)}`.length > 280 && (
+                        <div className={classes.context}>
+                          <div className={classes.contextWrapper}>
+                            <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
+                            <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
+                          </div>
+                        </div>
+                      )}
+                      <PostTags meta={meta} />
+                    </div>
                   </div>
                   <div className={classes.actionWrapper}>
                     <PostActions
                       treeHistory={treeHistory}
-                      body={body}
+                      body={content}
                       hasUpvoted={hasUpvoted}
                       author={author}
                       permlink={permlink}
@@ -415,6 +468,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   append: state.posts.get('appendReply'),
   mutelist: state.auth.get('mutelist'),
+  censorList: state.auth.get('censorList'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -422,6 +476,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAppendReply,
     setPageFrom,
     broadcastNotification,
+    openCensorshipDialog,
   }, dispatch),
 })
 
