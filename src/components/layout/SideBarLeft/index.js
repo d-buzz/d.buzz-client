@@ -203,7 +203,7 @@ const NavLinkWrapper = (props) => {
   } = props
 
   const isActivePath = (path, current) => {
-    const _path = path.split("?")[0] || path
+    const _path = (path && path.split("?").length > 0) ? path.split("?")[0] : path
     return _path === current
   }
 
