@@ -3,6 +3,7 @@ import { CreateBuzzForm, InfiniteList, HelmetGenerator } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { useLocation } from 'react-router-dom'
 import { createUseStyles } from 'react-jss'
 import {
   getHomePostsRequest,
@@ -19,6 +20,7 @@ import {
   clearAppendReply,
   clearContent,
   clearReplies,
+  clearHomePosts,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -65,12 +67,13 @@ const Feeds = React.memo((props) => {
     clearReplies,
     clearScrollIndex,
     buzzModalStatus,
+    clearHomePosts,
   } = props
   const classes = useStyles()
 
   useEffect(() => {
     setPageFrom('home')
-    if(!isHomeVisited) {
+    if (!isHomeVisited) {
       anchorTop()
       clearScrollIndex()
       clearTrendingPosts()
@@ -93,7 +96,16 @@ const Feeds = React.memo((props) => {
     //eslint-disable-next-line
   }, [])
 
-  const loadMorePosts =  useCallback(() => {
+  const location = useLocation()
+  useEffect(() => {
+    anchorTop()
+    clearScrollIndex()
+    clearHomePosts()
+    getHomePostsRequest()
+    // eslint-disable-next-line
+  }, [location.search])
+
+  const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -107,7 +119,7 @@ const Feeds = React.memo((props) => {
         <React.Fragment>
           <center>
             <h6 className={classes.wrapper}>
-              Hi there! it looks like you haven't followed anyone yet, <br/>
+              Hi there! it looks like you haven't followed anyone yet, <br />
               you may start following people by reading the&nbsp;
               <Link to="/latest">latest</Link> <br /> or <Link to="/trending">trending</Link>&nbsp;
               buzzes on d.buzz today.
@@ -148,6 +160,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearContent,
     clearReplies,
     clearScrollIndex,
+    clearHomePosts,
   }, dispatch),
 })
 

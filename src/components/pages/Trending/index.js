@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { useLocation } from 'react-router-dom'
 import {
   getTrendingPostsRequest,
   setTrendingIsVisited,
@@ -14,6 +15,7 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearTrendingPosts,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -46,11 +48,12 @@ const Trending = (props) => {
     clearLastSearchTag,
     clearSearchPosts,
     clearScrollIndex,
+    clearTrendingPosts,
   } = props
 
   useEffect(() => {
     setPageFrom('trending')
-    if(!isVisited) {
+    if (!isVisited) {
       anchorTop()
       clearScrollIndex()
       clearHomePosts()
@@ -67,10 +70,19 @@ const Trending = (props) => {
     clearTagsPost()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
-  const loadMorePosts =  useCallback(() => {
+  const location = useLocation()
+  useEffect(() => {
+    anchorTop()
+    clearScrollIndex()
+    clearTrendingPosts()
+    getTrendingPostsRequest()
+    // eslint-disable-next-line
+  }, [location.search])
+
+  const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getTrendingPostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -108,7 +120,8 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     clearSearchPosts,
     clearScrollIndex,
-  },dispatch),
+    clearTrendingPosts,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Trending)

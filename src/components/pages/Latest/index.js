@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { useLocation } from 'react-router-dom'
 import {
   getLatestPostsRequest,
   setLatestIsVisited,
@@ -15,6 +16,7 @@ import {
   clearSearchPosts,
   clearAppendReply,
   clearReplies,
+  clearLatestPosts,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -49,11 +51,12 @@ const Latest = (props) => {
     clearAppendReply,
     clearReplies,
     clearScrollIndex,
+    clearLatestPosts,
   } = props
 
   useEffect(() => {
     setPageFrom('latest')
-    if(!isVisited) {
+    if (!isVisited) {
       anchorTop()
       clearHomePosts()
       clearScrollIndex()
@@ -72,11 +75,21 @@ const Latest = (props) => {
     clearReplies()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
+
     //eslint-disable-next-line
   }, [])
 
+  const location = useLocation()
+  useEffect(() => {
+    anchorTop()
+    clearScrollIndex()
+    clearLatestPosts()
+    getLatestPostsRequest()
+    // eslint-disable-next-line
+  }, [location.search])
 
-  const loadMorePosts =  useCallback(() => {
+
+  const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getLatestPostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -85,7 +98,7 @@ const Latest = (props) => {
   return (
     <React.Fragment>
       <HelmetGenerator page='Latest' />
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts}/>
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
 }
@@ -117,6 +130,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearAppendReply,
     clearReplies,
     clearScrollIndex,
+    clearLatestPosts,
   }, dispatch),
 })
 

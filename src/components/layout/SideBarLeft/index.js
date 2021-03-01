@@ -37,6 +37,7 @@ import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 import { setBuzzModalStatus } from 'store/interface/actions'
 import { pollNotifRequest } from 'store/polling/actions'
+import moment from 'moment'
 
 const useStyles = createUseStyles(theme => ({
   items: {
@@ -202,7 +203,8 @@ const NavLinkWrapper = (props) => {
   } = props
 
   const isActivePath = (path, current) => {
-    return path === current
+    const _path = path.split("?")[0] || path
+    return _path === current
   }
 
   const preventLink = (e) => {
@@ -258,6 +260,7 @@ const SideBarLeft = (props) => {
   const history = useHistory()
   const { pathname } = location
   const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
+  const timestamp = moment().unix()
 
   const showThemeModal = () => {
     setOpenTheme(true)
@@ -316,17 +319,17 @@ const SideBarLeft = (props) => {
   const NavLinks = [
     {
       name: 'Home',
-      path: '/',
+      path: `/?rfsh=${timestamp}`,
       icon: <HomeIcon />,
     },
     {
       name: 'Trending',
-      path: '/trending',
+      path: `/trending?rfsh=${timestamp}`,
       icon: <TrendingIcon />,
     },
     {
       name: 'Latest',
-      path: '/latest',
+      path: `/latest?rfsh=${timestamp}`,
       icon: <LatestIcon />,
     },
     {
