@@ -394,7 +394,7 @@ const ReplyList = (props) => {
                       &nbsp;&bull;&nbsp;
                       {moment(`${created}Z`).local().fromNow()}
                     </label>
-                    {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && (
+                    {!isAuthor() && !isCensored && user.username === 'dbuzz' && !user.useKeychain && (
                       <IconButton onClick={handleClickCensorDialog} className={classes.muteButton} size='small'>
                         <MuteIcon  className={classes.muteIcon} />
                       </IconButton>
