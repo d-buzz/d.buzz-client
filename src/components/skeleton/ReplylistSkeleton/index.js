@@ -112,7 +112,7 @@ const ReplylistSkeleton = ({ loading }) => {
                 <Col>
                   <div className={classes.right}>
                     <div className={classes.content}>
-                      <Link
+                      <Link to=''
                         className={classes.link}
                       >
                         <p className={classes.name}>
@@ -138,7 +138,7 @@ const ReplylistSkeleton = ({ loading }) => {
                 <Col>
                   <div className={classes.right}>
                     <div className={classes.content}>
-                      <Link
+                      <Link to=''
                         className={classes.link}
                       >
                         <p className={classes.name}>

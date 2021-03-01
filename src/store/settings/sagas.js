@@ -92,7 +92,6 @@ function* getBestRPCNode(meta) {
 
 function* getCensorTypesRequest(meta) {
   const types = yield call(getCensorTypes)
-  console.log({ types })
   yield put(getCensorTypesSuccess(types, meta))
 }
 

@@ -357,7 +357,7 @@ const ReplyList = (props) => {
                       <div className={classes.context}>
                         <div className={classes.contextWrapper}>
                           <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
-                          <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
+                          <a target="_blank" without="true" rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
                         </div>
                       </div>
                     )}
@@ -385,7 +385,7 @@ const ReplyList = (props) => {
         {replies.length !== 0 && (
           <React.Fragment>
             {replies.map((reply, index) => (
-              <RenderReplies reply={reply} treeHistory={`${treeHistory}|${index}`}/>
+              <RenderReplies key={index} reply={reply} treeHistory={`${treeHistory}|${index}`}/>
             ))}
           </React.Fragment>
         )}
@@ -403,7 +403,7 @@ const ReplyList = (props) => {
         </center>
       )}
       {repliesState.map((reply, index) => (
-        <div className={classes.wrapper}>
+        <div key={index} className={classes.wrapper}>
           <RenderReplies reply={reply} treeHistory={index} />
         </div>
       ))}
