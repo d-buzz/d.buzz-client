@@ -225,6 +225,17 @@ const CreateBuzzForm = (props) => {
     let { value } = target
 
     if (name === 'content-area') {
+      if (e?.clipboardData?.files?.length) {
+        const fileObject = e.clipboardData.files[0]
+        uploadFileRequest(fileObject).then((image) => {
+          const value = image[image.length - 1]
+          if (value !== undefined) {
+            const contentAppend = `${content} <br /> ![](${value})`
+            setContent(contentAppend)
+          }
+        })
+      }
+
       setContent(value)
     } else if (name === 'max-payout') {
 
@@ -373,7 +384,7 @@ const CreateBuzzForm = (props) => {
               </Box>
             </div>
           )}
-          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
+          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} onPaste={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
