@@ -209,6 +209,11 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitVimm = content.split(':')
     const url = `https://www.vimm.tv/${splitVimm[2]}/embed?autoplay=0`
     return <UrlVideoEmbed key={`${url}${scrollIndex}vimm`} url={url} />
+  } else if(content.includes('rumble.com')) {
+    const splitRumble = content.split(':')
+    if (!splitRumble[1].includes('html')) {
+      return <UrlVideoEmbed key={`${content}${scrollIndex}rumble`} url={content} />
+    }
   } else {
     // render normally
     return <div
