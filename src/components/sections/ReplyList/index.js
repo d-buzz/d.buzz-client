@@ -438,7 +438,7 @@ const ReplyList = (props) => {
         {replies.length !== 0 && (
           <React.Fragment>
             {replies.map((reply, index) => (
-              <RenderReplies reply={reply} treeHistory={`${treeHistory}|${index}`}/>
+              <RenderReplies key={index} reply={reply} treeHistory={`${treeHistory}|${index}`}/>
             ))}
           </React.Fragment>
         )}
@@ -456,7 +456,7 @@ const ReplyList = (props) => {
         </center>
       )}
       {repliesState.map((reply, index) => (
-        <div className={classes.wrapper}>
+        <div key={index} className={classes.wrapper}>
           <RenderReplies reply={reply} treeHistory={index} />
         </div>
       ))}

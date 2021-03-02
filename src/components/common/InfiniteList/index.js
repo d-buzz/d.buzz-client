@@ -103,7 +103,7 @@ class InfiniteList extends PureComponent {
         >
           {({ onRowsRendered }) => (
             <WindowScroller onScroll={clearScrollPosition}>
-              {({height, isScrolling, onChildScroll, scrollTop}) => (
+              {({ height, isScrolling, registerChild, onChildScroll, scrollTop }) => (
                 <AutoSizer disableHeight>
                   {({ width }) => {
                     return (
@@ -119,6 +119,7 @@ class InfiniteList extends PureComponent {
                         onRowsRendered={onRowsRendered}
                         ref={el => {
                           this.listRef = el
+                          if (el instanceof Element) { registerChild(el) }
                         }}
                         isScrolling={isScrolling}
                         scrollToAlignment="center"

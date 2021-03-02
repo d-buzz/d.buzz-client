@@ -199,7 +199,6 @@ const Content = (props) => {
   useEffect(() => {
     if(censorList.length !== 0 && username && permlink) {
       const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${username}/${permlink}`)
-      console.log({ result })
       if(result.length !== 0) {
         setIsCensored(true)
         setCensorType(result[0].type)
