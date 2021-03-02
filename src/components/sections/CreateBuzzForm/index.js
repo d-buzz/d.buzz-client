@@ -484,10 +484,6 @@ const CreateBuzzForm = (props) => {
               <IconButton
                 size="medium"
                 onClick={handleOpenGiphy}
-                classes={{
-                  root: classes.root,
-                  disabled: classes.disabled,
-                }}
               >
                 <GifIcon />
               </IconButton>
