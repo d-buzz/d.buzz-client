@@ -3,7 +3,6 @@ import { CreateBuzzForm, InfiniteList, HelmetGenerator } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { useLocation } from 'react-router-dom'
 import { createUseStyles } from 'react-jss'
 import {
   getHomePostsRequest,
@@ -27,7 +26,7 @@ import {
   clearAccountPosts,
   clearAccountReplies,
 } from 'store/profile/actions'
-import { clearScrollIndex } from 'store/interface/actions'
+import { clearScrollIndex, clearRefreshRouteStatus} from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 import { Link } from 'react-router-dom'
@@ -68,6 +67,8 @@ const Feeds = React.memo((props) => {
     clearScrollIndex,
     buzzModalStatus,
     clearHomePosts,
+    refreshRouteStatus,
+    clearRefreshRouteStatus,
   } = props
   const classes = useStyles()
 
@@ -96,14 +97,16 @@ const Feeds = React.memo((props) => {
     //eslint-disable-next-line
   }, [])
 
-  const location = useLocation()
   useEffect(() => {
-    anchorTop()
-    clearScrollIndex()
-    clearHomePosts()
-    getHomePostsRequest()
+    if(refreshRouteStatus.pathname === "home"){
+      anchorTop()
+      clearScrollIndex()
+      clearHomePosts()
+      getHomePostsRequest()
+      clearRefreshRouteStatus()
+    }
     // eslint-disable-next-line
-  }, [location.search])
+  }, [refreshRouteStatus])
 
   const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
@@ -138,6 +141,7 @@ const mapStateToProps = (state) => ({
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
   last: state.posts.get('lastHome'),
+  refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -161,6 +165,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearReplies,
     clearScrollIndex,
     clearHomePosts,
+    clearRefreshRouteStatus,
   }, dispatch),
 })
 

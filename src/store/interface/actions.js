@@ -94,3 +94,15 @@ export const openCensorshipDialog = (author, permlink, callback = null) => ({
 export const closeCensorshipDialog = () => ({
   type: CLOSE_CENSOSHIP_DIALOG,
 })
+
+export const SET_REFRESH_ROUTE_STATUS = 'SET_REFRESH_ROUTE_STATUS'
+export const setRefreshRouteStatus = (pathname, timestamp) => ({
+  type: SET_REFRESH_ROUTE_STATUS,
+  payload: { pathname, timestamp },
+})
+
+
+export const CLEAR_REFRESH_ROUTE_STATUS = 'CLEAR_REFRESH_ROUTE_STATUS'
+export const clearRefreshRouteStatus = () => ({
+  type: CLEAR_REFRESH_ROUTE_STATUS,
+})

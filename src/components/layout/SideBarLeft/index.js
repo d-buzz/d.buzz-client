@@ -35,7 +35,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
-import { setBuzzModalStatus } from 'store/interface/actions'
+import { setBuzzModalStatus, setRefreshRouteStatus } from 'store/interface/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 import moment from 'moment'
 
@@ -210,7 +210,7 @@ const NavLinkWrapper = (props) => {
   const preventLink = (e) => {
     if (preventDefault) e.preventDefault()
   }
-
+  
   return (
     <React.Fragment>
       {!minify && (
@@ -249,6 +249,7 @@ const SideBarLeft = (props) => {
     setBuzzModalStatus,
     intentBuzz,
     fromIntentBuzz,
+    setRefreshRouteStatus,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -316,21 +317,45 @@ const SideBarLeft = (props) => {
     setOpenLoginModal(false)
   }
 
+  const refreshLatestRouteData = () => {
+    if(pathname.match(/^\/latest/)){
+      setRefreshRouteStatus("latest",timestamp)
+    }
+  }
+
+  const refreshTrendingRouteData = () => {
+    if(pathname.match(/^\/trending/)){
+      setRefreshRouteStatus("trending",timestamp)
+    }
+  }
+
+  const refreshHomeRouteData = () => {
+    if(pathname === "/"){
+      setRefreshRouteStatus("home",timestamp)
+    }
+  }
+
   const NavLinks = [
     {
       name: 'Home',
-      path: `/?rfsh=${timestamp}`,
+      path: "/",
       icon: <HomeIcon />,
+      preventDefault: true,
+      onClick: refreshHomeRouteData,
     },
     {
       name: 'Trending',
-      path: `/trending?rfsh=${timestamp}`,
+      path: '/trending',
       icon: <TrendingIcon />,
+      preventDefault: true,
+      onClick: refreshTrendingRouteData,
     },
     {
       name: 'Latest',
-      path: `/latest?rfsh=${timestamp}`,
+      path: "/latest",
       icon: <LatestIcon />,
+      preventDefault: true,
+      onClick: refreshLatestRouteData,
     },
     {
       name: 'Notifications',
@@ -482,6 +507,7 @@ const mapDispatchToProps = (dispatch) => ({
     subscribeRequest,
     pollNotifRequest,
     setBuzzModalStatus,
+    setRefreshRouteStatus,
   }, dispatch),
 })
 

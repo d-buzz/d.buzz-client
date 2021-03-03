@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { useLocation } from 'react-router-dom'
 import {
   getTrendingPostsRequest,
   setTrendingIsVisited,
@@ -24,7 +23,7 @@ import {
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
 import { InfiniteList, HelmetGenerator } from 'components'
-import { clearScrollIndex } from 'store/interface/actions'
+import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
 
 const Trending = (props) => {
   const {
@@ -49,6 +48,8 @@ const Trending = (props) => {
     clearSearchPosts,
     clearScrollIndex,
     clearTrendingPosts,
+    refreshRouteStatus,
+    clearRefreshRouteStatus,
   } = props
 
   useEffect(() => {
@@ -73,14 +74,16 @@ const Trending = (props) => {
     // eslint-disable-next-line
   }, [])
 
-  const location = useLocation()
   useEffect(() => {
-    anchorTop()
-    clearScrollIndex()
-    clearTrendingPosts()
-    getTrendingPostsRequest()
+    if(refreshRouteStatus.pathname === "trending"){
+      anchorTop()
+      clearScrollIndex()
+      clearTrendingPosts()
+      getTrendingPostsRequest()
+      clearRefreshRouteStatus()
+    }
     // eslint-disable-next-line
-  }, [location.search])
+  }, [refreshRouteStatus])
 
   const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
@@ -101,6 +104,7 @@ const mapStateToProps = (state) => ({
   isVisited: state.posts.get('isTrendingVisited'),
   items: state.posts.get('trending'),
   last: state.posts.get('lastTrending'),
+  refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -121,6 +125,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearSearchPosts,
     clearScrollIndex,
     clearTrendingPosts,
+    clearRefreshRouteStatus,
   }, dispatch),
 })
 

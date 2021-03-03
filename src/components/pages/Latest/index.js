@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { useLocation } from 'react-router-dom'
 import {
   getLatestPostsRequest,
   setLatestIsVisited,
@@ -26,7 +25,7 @@ import {
 import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
 import { InfiniteList, HelmetGenerator } from 'components'
-import { clearScrollIndex } from 'store/interface/actions'
+import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
 
 const Latest = (props) => {
   const {
@@ -52,6 +51,8 @@ const Latest = (props) => {
     clearReplies,
     clearScrollIndex,
     clearLatestPosts,
+    refreshRouteStatus,
+    clearRefreshRouteStatus,
   } = props
 
   useEffect(() => {
@@ -79,14 +80,16 @@ const Latest = (props) => {
     //eslint-disable-next-line
   }, [])
 
-  const location = useLocation()
   useEffect(() => {
-    anchorTop()
-    clearScrollIndex()
-    clearLatestPosts()
-    getLatestPostsRequest()
+    if(refreshRouteStatus.pathname === "latest"){
+      anchorTop()
+      clearScrollIndex()
+      clearLatestPosts()
+      getLatestPostsRequest()
+      clearRefreshRouteStatus()
+    }
     // eslint-disable-next-line
-  }, [location.search])
+  }, [refreshRouteStatus])
 
 
   const loadMorePosts = useCallback(() => {
@@ -109,6 +112,7 @@ const mapStateToProps = (state) => ({
   isVisited: state.posts.get('isLatestVisited'),
   last: state.posts.get('lastLatest'),
   mutelist: state.auth.get('mutelist'),
+  refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -131,6 +135,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearReplies,
     clearScrollIndex,
     clearLatestPosts,
+    clearRefreshRouteStatus,
   }, dispatch),
 })
 
