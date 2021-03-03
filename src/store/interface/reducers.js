@@ -13,6 +13,8 @@ import {
   CLOSE_HIDE_BUZZ_DIALOG,
   OPEN_CENSORSHIP_DIALOG,
   CLOSE_CENSOSHIP_DIALOG,
+  SET_REFRESH_ROUTE_STATUS,
+  CLEAR_REFRESH_ROUTE_STATUS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -25,6 +27,7 @@ const defaultState = fromJS({
   muteDialogUser: { open: false, username: null },
   hideBuzzDialog: { open: false, author: null, permlink: null },
   censorshipDialog: { open: false, author: null, permlink: null },
+  refreshRouteStatus : { pathname: null, timestamp: null },
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -57,6 +60,10 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('censorshipDialog', { open: true, ...payload })
   case CLOSE_CENSOSHIP_DIALOG:
     return state.set('censorshipDialog', { open: false, author: null, permlink: null })
+  case SET_REFRESH_ROUTE_STATUS:
+    return state.set('refreshRouteStatus', payload)
+  case CLEAR_REFRESH_ROUTE_STATUS:
+    return state.set('refreshRouteStatus', { pathname: null, timestamp: null })
   default:
     return state
   }
