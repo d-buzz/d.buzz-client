@@ -84,6 +84,8 @@ const LinkPreview = (props) => {
           && !link.includes('3speak.co')
           && !link.includes('www.vimm.tv/view')
           && !link.includes('rumble.com/embed')
+          && !link.includes('lbry.tv')
+          && !link.includes('open.lbry.com')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)

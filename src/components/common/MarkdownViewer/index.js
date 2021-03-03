@@ -231,6 +231,41 @@ const prepareRumbleEmbed = (content) => {
   return body
 }
 
+const prepareLbryEmbeds = (content) => {
+  const lbryRegex = /(?:https?:\/\/(?:(?:lbry\.tv)))/i
+  const lbry1Regex = /(?:https?:\/\/(?:(?:open\.lbry\.com)))/i
+  const lbryRegexEmbed = /(?:https?:\/\/(?:(?:lbry\.tv\/.*?\/embed\/(.*?))))/i
+  let body = content
+  
+  const links = markdownLinkExtractor(content)
+
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+      let match = ''
+      let id = ''
+      
+      if(link.match(lbryRegex) || link.match(lbry1Regex)){
+        const data = link.split('/')
+        match = link.match(lbryRegex) ? link.match(lbryRegex) : link.match(lbry1Regex)
+        if (data[4]) {
+          const data1 = data[4].split(':')
+          id = data1[0]
+        }
+        
+        if(link.match(lbryRegexEmbed)){
+          match = link.split('/')
+          id = match[5]
+        }
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:lbry:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
 
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
@@ -251,6 +286,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       const url = `https://rumble.com/embed/${splitRumble[2]}`
       return <UrlVideoEmbed key={`${content}${scrollIndex}rumble`} url={url} />
     }
+  } else if(content.includes(':lbry:')){
+    const splitLbry = content.split(':')
+    const url = `https://lbry.tv/$/embed/${splitLbry[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}lbry`} url={url} />
   } else {
     // render normally
     return <div
@@ -288,6 +327,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareVimmEmbeds(content)
       } else if(link.includes('rumble.com')) {
         content = prepareRumbleEmbed(content)
+      } else if(link.includes('lbry.tv') || link.includes('open.lbry.com')) {
+        content = prepareLbryEmbeds(content)
       }
 
     } catch(error) { }
