@@ -10,8 +10,8 @@ import classNames from 'classnames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
-import { MarkdownViewer } from 'components'
-import { Spinner, CloseIcon } from 'components/elements'
+import { MarkdownViewer, GiphySearchModal } from 'components'
+import { Spinner, CloseIcon, GifIcon} from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -183,6 +183,7 @@ const ReplyFormModal = (props) => {
   const [wordCount, setWordCount] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
+  const [openGiphy, setOpenGiphy] = useState(false)
 
   const textAreaStyle = { width: '100%' }
   const zeroPadding = { padding: 0 }
@@ -301,6 +302,21 @@ const ReplyFormModal = (props) => {
     }
   }
 
+  const closeGiphy = () => {
+    setOpenGiphy(false)
+  }
+
+  const handleOpenGiphy = () => {
+    setOpenGiphy(!openGiphy)
+  }
+
+  const handleSelectGif = (gif) => {
+    if(gif){
+      const contentAppend = `${content} <br /> ${gif}`
+      setContent(contentAppend)
+    }
+  }
+
   return (
     <React.Fragment>
       <Modal
@@ -402,6 +418,12 @@ const ReplyFormModal = (props) => {
                     <IconButton size="medium" onClick={handleFileSelect}>
                       <UploadIcon />
                     </IconButton>
+                    <IconButton
+                      size="medium"
+                      onClick={handleOpenGiphy}
+                    >
+                      <GifIcon />
+                    </IconButton>
                     <ContainedButton
                       label="Reply"
                       style={replyButtonStyle}
@@ -425,6 +447,7 @@ const ReplyFormModal = (props) => {
           </ModalBody>
         </div>
       </Modal>
+      <GiphySearchModal show={openGiphy} onHide={closeGiphy} handleAppendContent={handleSelectGif}/>
     </React.Fragment>
   )
 }

@@ -10,10 +10,11 @@ import {
   Avatar,
   UploadIcon,
   Spinner,
+  GifIcon,
 } from 'components/elements'
 import { clearIntentBuzz } from "store/auth/actions"
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
+import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal} from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -162,6 +163,7 @@ const CreateBuzzForm = (props) => {
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
+  const [openGiphy, setOpenGiphy] = useState(false)
   const location = useLocation()
   const params = queryString.parse(location.search) || ""
   const paramsBuzzText = params.text || ""
@@ -369,6 +371,21 @@ const CreateBuzzForm = (props) => {
     e.target.value = temp_value
   }
 
+  const closeGiphy = () => {
+    setOpenGiphy(false)
+  }
+
+  const handleOpenGiphy = () => {
+    setOpenGiphy(!openGiphy)
+  }
+
+  const handleSelectGif = (gif) => {
+    if(gif){
+      const contentAppend = `${content} <br /> ${gif}`
+      setContent(contentAppend)
+    }
+  }
+
   return (
     <div className={containerClass}>
       <div className={classes.row}>
@@ -464,6 +481,12 @@ const CreateBuzzForm = (props) => {
                   <UploadIcon />
                 </IconButton>
               </label>
+              <IconButton
+                size="medium"
+                onClick={handleOpenGiphy}
+              >
+                <GifIcon />
+              </IconButton>
               <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
@@ -478,6 +501,7 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
+      <GiphySearchModal show={openGiphy} onHide={closeGiphy} handleAppendContent={handleSelectGif}/>
       <PayoutDisclaimerModal show={openPayoutDisclaimer} onHide={closePayoutDisclaimer} />
     </div>
   )
