@@ -86,6 +86,7 @@ const LinkPreview = (props) => {
           && !link.includes('rumble.com/embed')
           && !link.includes('lbry.tv')
           && !link.includes('open.lbry.com')
+          && !link.includes('www.bitchute.com')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)

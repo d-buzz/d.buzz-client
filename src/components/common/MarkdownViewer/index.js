@@ -231,6 +231,7 @@ const prepareRumbleEmbed = (content) => {
   return body
 }
 
+
 const prepareLbryEmbeds = (content) => {
   const lbryRegex = /(?:https?:\/\/(?:(?:lbry\.tv)))/i
   const lbry1Regex = /(?:https?:\/\/(?:(?:open\.lbry\.com)))/i
@@ -266,6 +267,43 @@ const prepareLbryEmbeds = (content) => {
   })
   return body
 }
+        
+const prepareBitchuteEmbeds = (content) => {
+  const bitchuteRegex = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/(.*?))))/i
+  const bitchuteRegexEmbed = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/embed\/(.*?))))/i 
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
+    
+    try {
+      if(link.match(bitchuteRegex)){
+        const data = link.split('/')
+        match = link.match(bitchuteRegex)
+        id = data[4]
+        if(link.match(bitchuteRegexEmbed)){
+          match = link.match(bitchuteRegexEmbed)
+          const input = match['input']
+          const data = input.split('/')
+          id = data[4]
+        }
+      }
+
+      if (!id) {
+        id = ''
+      }
+      
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:bitchute:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
 
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
@@ -290,6 +328,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitLbry = content.split(':')
     const url = `https://lbry.tv/$/embed/${splitLbry[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}lbry`} url={url} />
+  } else if(content.includes(':bitchute:')) {
+    const splitBitchute = content.split(':')
+    const url = `https://www.bitchute.com/embed/${splitBitchute[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
   } else {
     // render normally
     return <div
@@ -329,6 +371,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareRumbleEmbed(content)
       } else if(link.includes('lbry.tv') || link.includes('open.lbry.com')) {
         content = prepareLbryEmbeds(content)
+      } else if(link.includes('www.bitchute.com')) {
+        content = prepareBitchuteEmbeds(content)
       }
 
     } catch(error) { }
