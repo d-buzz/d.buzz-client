@@ -17,7 +17,7 @@ const useStyles = createUseStyles(theme => ({
       width: 545,
       height: 530,
       borderRadius: '20px 20px !important',
-      border: 'none',
+      border: '1px solid white',
       '& div.right-content': {
         width: '98% !important',
       },
@@ -100,14 +100,13 @@ const GiphySearchModal = (props) => {
               <CloseIcon />
             </IconButton>
           </div>
-          <hr className={classes.break} />
           <div className={classes.giphySearch}>
             <ReactGiphySearchbox
               wrapperClassName={classes.searchGifWrapper}
               searchFormClassName={classes.searchGifFormClassName}
               apiKey={config.GIPHY_API_KEY} 
               onSelect={handleSelectGif}
-              gifListHeight="335px"
+              gifListHeight="370px"
               imageBackgroundColor="#15202B"
               masonryConfig={[
                 { columns: 4, imageWidth: 120, gutter: 4 },
