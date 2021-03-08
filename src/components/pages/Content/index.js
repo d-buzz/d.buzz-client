@@ -4,6 +4,7 @@ import {
   getContentRequest,
   getRepliesRequest,
   clearReplies,
+  clearAppendReply,
 } from 'store/posts/actions'
 import {
   checkHasUpdateAuthorityRequest,
@@ -143,6 +144,7 @@ const Content = (props) => {
     checkHasUpdateAuthorityRequest,
     openCensorshipDialog,
     censorList = [],
+    clearAppendReply,
   } = props
 
   const { username, permlink } = match.params
@@ -285,6 +287,7 @@ const Content = (props) => {
   useEffect(() => {
     anchorTop()
     clearReplies()
+    clearAppendReply()
     getContentRequest(username, permlink)
       .then(({ children }) => {
         if(children !== 0) {
@@ -533,6 +536,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearReplies,
     checkHasUpdateAuthorityRequest,
     openCensorshipDialog,
+    clearAppendReply,
   }, dispatch),
 })
 
