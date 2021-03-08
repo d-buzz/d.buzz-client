@@ -2,7 +2,6 @@ import {
   api,
   auth,
   broadcast,
-  config,
   formatter,
 } from '@hiveio/hive-js'
 import { hash } from '@hiveio/hive-js/lib/auth/ecc'
@@ -19,8 +18,6 @@ const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
 const censorUrl = `${appConfig.CENSOR_API}`
-
-config.set('rebranded_api', true)
 
 const visited = []
 
@@ -495,7 +492,7 @@ export const fetchRewardFund = (username) => {
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   // api.setOptions({ url: 'https://anyx.io' })
-  config.set('rebranded_api', true)
+
   return new Promise((resolve, reject) => {
     broadcast.voteAsync(wif, voter, author, permlink, weight)
       .then((result) => {
@@ -881,7 +878,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys) => {
-  config.set('rebranded_api', true)
+
   return new Promise((resolve, reject) => {
     broadcast.send(
       {
