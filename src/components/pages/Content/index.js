@@ -4,6 +4,7 @@ import {
   getContentRequest,
   getRepliesRequest,
   clearReplies,
+  clearAppendReply,
 } from 'store/posts/actions'
 import {
   checkHasUpdateAuthorityRequest,
@@ -143,6 +144,7 @@ const Content = (props) => {
     checkHasUpdateAuthorityRequest,
     openCensorshipDialog,
     censorList = [],
+    clearAppendReply,
   } = props
 
   const { username, permlink } = match.params
@@ -199,7 +201,6 @@ const Content = (props) => {
   useEffect(() => {
     if(censorList.length !== 0 && username && permlink) {
       const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${username}/${permlink}`)
-      console.log({ result })
       if(result.length !== 0) {
         setIsCensored(true)
         setCensorType(result[0].type)
@@ -286,6 +287,7 @@ const Content = (props) => {
   useEffect(() => {
     anchorTop()
     clearReplies()
+    clearAppendReply()
     getContentRequest(username, permlink)
       .then(({ children }) => {
         if(children !== 0) {
@@ -534,6 +536,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearReplies,
     checkHasUpdateAuthorityRequest,
     openCensorshipDialog,
+    clearAppendReply,
   }, dispatch),
 })
 

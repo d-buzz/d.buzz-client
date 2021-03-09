@@ -15,6 +15,7 @@ import {
   clearSearchPosts,
   clearAppendReply,
   clearReplies,
+  clearLatestPosts,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -24,7 +25,7 @@ import {
 import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
 import { InfiniteList, HelmetGenerator } from 'components'
-import { clearScrollIndex } from 'store/interface/actions'
+import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
 
 const Latest = (props) => {
   const {
@@ -49,11 +50,14 @@ const Latest = (props) => {
     clearAppendReply,
     clearReplies,
     clearScrollIndex,
+    clearLatestPosts,
+    refreshRouteStatus,
+    clearRefreshRouteStatus,
   } = props
 
   useEffect(() => {
     setPageFrom('latest')
-    if(!isVisited) {
+    if (!isVisited) {
       anchorTop()
       clearHomePosts()
       clearScrollIndex()
@@ -72,11 +76,23 @@ const Latest = (props) => {
     clearReplies()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
+
     //eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    if(refreshRouteStatus.pathname === "latest"){
+      anchorTop()
+      clearScrollIndex()
+      clearLatestPosts()
+      getLatestPostsRequest()
+      clearRefreshRouteStatus()
+    }
+    // eslint-disable-next-line
+  }, [refreshRouteStatus])
 
-  const loadMorePosts =  useCallback(() => {
+
+  const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getLatestPostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -85,7 +101,7 @@ const Latest = (props) => {
   return (
     <React.Fragment>
       <HelmetGenerator page='Latest' />
-      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts}/>
+      <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
 }
@@ -96,6 +112,7 @@ const mapStateToProps = (state) => ({
   isVisited: state.posts.get('isLatestVisited'),
   last: state.posts.get('lastLatest'),
   mutelist: state.auth.get('mutelist'),
+  refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -117,6 +134,8 @@ const mapDispatchToProps = (dispatch) => ({
     clearAppendReply,
     clearReplies,
     clearScrollIndex,
+    clearLatestPosts,
+    clearRefreshRouteStatus,
   }, dispatch),
 })
 

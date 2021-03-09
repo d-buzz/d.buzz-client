@@ -14,6 +14,7 @@ import {
   setPageFrom,
   clearLastSearchTag,
   clearSearchPosts,
+  clearTrendingPosts,
 } from 'store/posts/actions'
 import {
   setProfileIsVisited,
@@ -22,7 +23,7 @@ import {
 } from 'store/profile/actions'
 import { anchorTop } from 'services/helper'
 import { InfiniteList, HelmetGenerator } from 'components'
-import { clearScrollIndex } from 'store/interface/actions'
+import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
 
 const Trending = (props) => {
   const {
@@ -46,11 +47,14 @@ const Trending = (props) => {
     clearLastSearchTag,
     clearSearchPosts,
     clearScrollIndex,
+    clearTrendingPosts,
+    refreshRouteStatus,
+    clearRefreshRouteStatus,
   } = props
 
   useEffect(() => {
     setPageFrom('trending')
-    if(!isVisited) {
+    if (!isVisited) {
       anchorTop()
       clearScrollIndex()
       clearHomePosts()
@@ -67,10 +71,21 @@ const Trending = (props) => {
     clearTagsPost()
     setTagsIsVisited(false)
     setProfileIsVisited(false)
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
-  const loadMorePosts =  useCallback(() => {
+  useEffect(() => {
+    if(refreshRouteStatus.pathname === "trending"){
+      anchorTop()
+      clearScrollIndex()
+      clearTrendingPosts()
+      getTrendingPostsRequest()
+      clearRefreshRouteStatus()
+    }
+    // eslint-disable-next-line
+  }, [refreshRouteStatus])
+
+  const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getTrendingPostsRequest(permlink, author)
     // eslint-disable-next-line
@@ -89,6 +104,7 @@ const mapStateToProps = (state) => ({
   isVisited: state.posts.get('isTrendingVisited'),
   items: state.posts.get('trending'),
   last: state.posts.get('lastTrending'),
+  refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -108,7 +124,9 @@ const mapDispatchToProps = (dispatch) => ({
     clearLastSearchTag,
     clearSearchPosts,
     clearScrollIndex,
-  },dispatch),
+    clearTrendingPosts,
+    clearRefreshRouteStatus,
+  }, dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Trending)

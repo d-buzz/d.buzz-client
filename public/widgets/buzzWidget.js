@@ -58,7 +58,9 @@
                 text: encode(getText(el)),
                 size: getSize(el),
                 url: encode(getUrl(el)),
-                tags: strReplace(getHashTags(el).trim(), '#', '')
+                tags: strReplace(getHashTags(el).trim(), '#', ''),
+                min_chars: parseInt(getMinChars(el)),
+                origin_app_name: getOriginAppName()
             }
             let srcFormat = "";
             let args = [];
@@ -91,6 +93,10 @@
             return params;
         }
 
+        const getOriginAppName = function () {
+            return d.title || location.hostname || 'The site/app you are buzzing from';
+        }
+
         const getUrl = function (el) {
             return extractHrefParams(el, 'url') || getAttribute(el, 'data-url') || location.href || '';
         };
@@ -112,6 +118,10 @@
         const getHashTags = function (el) {
             return extractHrefParams(el, 'tags') || getAttribute(el, 'data-hashtags') || '';
         };
+
+        const getMinChars = function (el) {
+            return extractHrefParams(el, 'min_chars') || getAttribute(el, 'data-min-chars') || 0;
+        }
 
         const createElement = function (el) {
             return d.createElement(el)

@@ -10,10 +10,12 @@ import {
   Avatar,
   UploadIcon,
   Spinner,
+  GifIcon,
+  EmojiIcon,
 } from 'components/elements'
 import { clearIntentBuzz } from "store/auth/actions"
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer, PayoutDisclaimerModal } from 'components'
+import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal, EmojiPicker } from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -162,6 +164,10 @@ const CreateBuzzForm = (props) => {
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
+  const [openGiphy, setOpenGiphy] = useState(false)
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
+  const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+
   const location = useLocation()
   const params = queryString.parse(location.search) || ""
   const paramsBuzzText = params.text || ""
@@ -181,7 +187,13 @@ const CreateBuzzForm = (props) => {
     clearIntentBuzz,
   } = props
 
-  const { text = '', url = '', hashtags = '' } = intentBuzz
+  const {
+    text = '',
+    url = '',
+    hashtags = '',
+    origin_app_name = '',
+    min_chars = 0,
+  } = intentBuzz
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
   const buzzIntentTags = []
@@ -219,6 +231,17 @@ const CreateBuzzForm = (props) => {
     let { value } = target
 
     if (name === 'content-area') {
+      if (e?.clipboardData?.files?.length) {
+        const fileObject = e.clipboardData.files[0]
+        uploadFileRequest(fileObject).then((image) => {
+          const value = image[image.length - 1]
+          if (value !== undefined) {
+            const contentAppend = `${content} <br /> ![](${value})`
+            setContent(contentAppend)
+          }
+        })
+      }
+
       setContent(value)
     } else if (name === 'max-payout') {
 
@@ -278,19 +301,36 @@ const CreateBuzzForm = (props) => {
       invokeTwitterIntent(content)
     }
 
-    publishPostRequest(content, tags, payout)
-      .then((data) => {
-        if (data.success) {
-          setPageFrom(null)
-          const { author, permlink } = data
-          hideModalCallback()
-          clearIntentBuzz()
-          broadcastNotification('success', 'You successfully published a post')
-          history.push(`/@${author}/c/${permlink}`)
-        } else {
-          broadcastNotification('error', data.errorMessage)
+    if (!checkBuzzWidgetMinCharacters()) {
+      broadcastNotification('error', `${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
+    } else {
+      publishPostRequest(content, tags, payout)
+        .then((data) => {
+          if (data.success) {
+            setPageFrom(null)
+            const { author, permlink } = data
+            hideModalCallback()
+            clearIntentBuzz()
+            broadcastNotification('success', 'You successfully published a post')
+            history.push(`/@${author}/c/${permlink}`)
+          } else {
+            broadcastNotification('error', data.errorMessage)
+          }
+        })
+    }
+  }
+
+  const checkBuzzWidgetMinCharacters = () => {
+    let passed = true
+    if (buzzIntentText) {
+      const len = content.length
+      if (parseInt(min_chars) > 0) {
+        if (parseInt(len) < parseInt(min_chars)) {
+          passed = false
         }
-      })
+      }
+    }
+    return passed
   }
 
   const handleDelete = (i) => {
@@ -325,7 +365,9 @@ const CreateBuzzForm = (props) => {
     } else {
       const split = `${href}`.split('/')
       href = `/${split[3]}`
-      history.push(href)
+      if(href !== '/undefined') {
+        history.push(href)
+      }
     }
   }
 
@@ -334,6 +376,39 @@ const CreateBuzzForm = (props) => {
     e.target.value = ''
     e.target.value = temp_value
   }
+
+  const closeGiphy = () => {
+    setOpenGiphy(false)
+  }
+
+  const handleOpenGiphy = () => {
+    setOpenGiphy(!openGiphy)
+  }
+
+  const handleSelectGif = (gif) => {
+    if(gif){
+      const contentAppend = `${content} <br /> ${gif}`
+      setContent(contentAppend)
+    }
+  }
+
+  const handleOpenEmojiPicker = (e) => {
+    setOpenEmojiPicker(!openEmojiPicker)
+    setEmojianchorEl(e.currentTarget)
+  }
+
+  const handleCloseEmojiPicker = () => {
+    setOpenEmojiPicker(false)
+    setEmojianchorEl(null)
+  }
+
+  const handleSelectEmoticon = (emoticon) => {
+    if (emoticon) {
+      const contentAppend = `${content}${emoticon}`
+      setContent(contentAppend)
+    } 
+  }
+  
 
   return (
     <div className={containerClass}>
@@ -350,7 +425,7 @@ const CreateBuzzForm = (props) => {
               </Box>
             </div>
           )}
-          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
+          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} onPaste={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
@@ -430,6 +505,18 @@ const CreateBuzzForm = (props) => {
                   <UploadIcon />
                 </IconButton>
               </label>
+              <IconButton
+                size="medium"
+                onClick={handleOpenGiphy}
+              >
+                <GifIcon />
+              </IconButton>
+              <IconButton
+                size="medium"
+                onClick={handleOpenEmojiPicker}
+              >
+                <EmojiIcon />
+              </IconButton>
               <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
@@ -444,6 +531,8 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
+      <EmojiPicker open={openEmojiPicker} anchorEl={emojiAnchorEl} handleClose={handleCloseEmojiPicker} handleAppendContent={handleSelectEmoticon}/>
+      <GiphySearchModal show={openGiphy} onHide={closeGiphy} handleAppendContent={handleSelectGif}/>
       <PayoutDisclaimerModal show={openPayoutDisclaimer} onHide={closePayoutDisclaimer} />
     </div>
   )

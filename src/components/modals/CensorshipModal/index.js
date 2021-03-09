@@ -235,11 +235,11 @@ const CensorhipModal = (props) => {
                     },
                   }}
                 >
-                  <MenuItem value={0}>
+                  <MenuItem key={0} value={0}>
                     <em>-- select --</em>
                   </MenuItem>
                   {censorTypes.map((item) => (
-                    <MenuItem value={item.id}>{item.name}</MenuItem>
+                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

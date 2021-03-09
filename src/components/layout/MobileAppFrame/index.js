@@ -39,6 +39,7 @@ import { broadcastNotification } from 'store/interface/actions'
 import { signoutUserRequest, setIntentBuzz } from 'store/auth/actions'
 import { pending } from 'redux-saga-thunk'
 import queryString from 'query-string'
+import moment from 'moment'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -165,6 +166,7 @@ const MobileAppFrame = (props) => {
 
   const { search } = location
   const params = queryString.parse(search) || ''
+  const timestamp = moment().unix()
 
   let title = 'Home'
 
@@ -229,17 +231,17 @@ const MobileAppFrame = (props) => {
   const NavLinks = [
     {
       name: 'Home',
-      path: '/',
+      path: `/?rfsh=${timestamp}`,
       icon: <HomeIcon />,
     },
     {
       name: 'Trending',
-      path: '/trending',
+      path: `/trending?rfsh=${timestamp}`,
       icon: <TrendingIcon />,
     },
     {
       name: 'Latest',
-      path: '/latest',
+      path: `/latest?rfsh=${timestamp}`,
       icon: <LatestIcon />,
     },
     {
@@ -260,7 +262,8 @@ const MobileAppFrame = (props) => {
     },
   ]
   const isActivePath = (path, current) => {
-    return path === current
+    const _path = (path && path.split("?").length > 0) ? path.split("?")[0] : path
+    return _path === current
   }
 
   const handleOpenBuzzModal = () => {
@@ -312,8 +315,8 @@ const MobileAppFrame = (props) => {
     setOpenLoginModal(false)
   }
 
-  const handleDiscordClick = () => { 
-    window.open('https://discord.gg/kCZGPs7','_blank') 
+  const handleDiscordClick = () => {
+    window.open('https://discord.gg/kCZGPs7', '_blank')
   }
 
   const NavigationTop = () => {
@@ -400,9 +403,9 @@ const MobileAppFrame = (props) => {
 
 
   const handleSetBuzzIntent = () => {
-    const { text, url, tags } = params
-    if (text) {
-      setIntentBuzz(text, url, tags)
+    if (params.text) {
+      const payload = { ...params, hashtags: params.tags }
+      setIntentBuzz(payload)
     }
   }
 

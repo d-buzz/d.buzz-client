@@ -106,9 +106,7 @@ const AppFrame = (props) => {
   useEffect(() => {
     if (pathname.match(/^\/intent\/buzz/)) {
       setFromIntentBuzz(true)
-      if (params.text) {
-        setIntentBuzz(params.text, params.url, params.tags)
-      }
+      handleSetBuzzIntent()
       checkIfLogin()
     } else if ((params.status === 'success') && referrer === 'https://hiveonboard.com/') {
       setSignUpConfirmation(true)
@@ -125,9 +123,9 @@ const AppFrame = (props) => {
   }
 
   const handleSetBuzzIntent = () => {
-    const { text, url, tags } = params
-    if (text) {
-      setIntentBuzz(text, url, tags)
+    if (params.text) {
+      const payload = { ...params, hashtags: params.tags }
+      setIntentBuzz(payload)
     }
   }
 
