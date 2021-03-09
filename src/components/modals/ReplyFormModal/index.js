@@ -10,8 +10,8 @@ import classNames from 'classnames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
-import { MarkdownViewer, GiphySearchModal } from 'components'
-import { Spinner, CloseIcon, GifIcon} from 'components/elements'
+import { MarkdownViewer, GiphySearchModal, EmojiPicker } from 'components'
+import { Spinner, CloseIcon, GifIcon, EmojiIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -184,6 +184,8 @@ const ReplyFormModal = (props) => {
   const [replyDone, setReplyDone] = useState(false)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openGiphy, setOpenGiphy] = useState(false)
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
+  const [emojiAnchorEl, setEmojianchorEl] = useState(null)
 
   const textAreaStyle = { width: '100%' }
   const zeroPadding = { padding: 0 }
@@ -317,6 +319,23 @@ const ReplyFormModal = (props) => {
     }
   }
 
+  const handleOpenEmojiPicker = (e) => {
+    setOpenEmojiPicker(!openEmojiPicker)
+    setEmojianchorEl(e.currentTarget)
+  }
+
+  const handleCloseEmojiPicker = () => {
+    setOpenEmojiPicker(false)
+    setEmojianchorEl(null)
+  }
+
+  const handleSelectEmoticon = (emoticon) => {
+    if (emoticon) {
+      const contentAppend = `${content}${emoticon}`
+      setContent(contentAppend)
+    } 
+  }
+
   return (
     <React.Fragment>
       <Modal
@@ -424,6 +443,12 @@ const ReplyFormModal = (props) => {
                     >
                       <GifIcon />
                     </IconButton>
+                    <IconButton
+                      size="medium"
+                      onClick={handleOpenEmojiPicker}
+                    >
+                      <EmojiIcon />
+                    </IconButton>
                     <ContainedButton
                       label="Reply"
                       style={replyButtonStyle}
@@ -448,6 +473,7 @@ const ReplyFormModal = (props) => {
         </div>
       </Modal>
       <GiphySearchModal show={openGiphy} onHide={closeGiphy} handleAppendContent={handleSelectGif}/>
+      <EmojiPicker open={openEmojiPicker} anchorEl={emojiAnchorEl} handleClose={handleCloseEmojiPicker}  handleAppendContent={handleSelectEmoticon}/>
     </React.Fragment>
   )
 }

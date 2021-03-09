@@ -11,10 +11,11 @@ import {
   UploadIcon,
   Spinner,
   GifIcon,
+  EmojiIcon,
 } from 'components/elements'
 import { clearIntentBuzz } from "store/auth/actions"
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal} from 'components'
+import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal, EmojiPicker } from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -164,6 +165,9 @@ const CreateBuzzForm = (props) => {
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
   const [openGiphy, setOpenGiphy] = useState(false)
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
+  const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+
   const location = useLocation()
   const params = queryString.parse(location.search) || ""
   const paramsBuzzText = params.text || ""
@@ -361,7 +365,9 @@ const CreateBuzzForm = (props) => {
     } else {
       const split = `${href}`.split('/')
       href = `/${split[3]}`
-      history.push(href)
+      if(href !== '/undefined') {
+        history.push(href)
+      }
     }
   }
 
@@ -385,6 +391,24 @@ const CreateBuzzForm = (props) => {
       setContent(contentAppend)
     }
   }
+
+  const handleOpenEmojiPicker = (e) => {
+    setOpenEmojiPicker(!openEmojiPicker)
+    setEmojianchorEl(e.currentTarget)
+  }
+
+  const handleCloseEmojiPicker = () => {
+    setOpenEmojiPicker(false)
+    setEmojianchorEl(null)
+  }
+
+  const handleSelectEmoticon = (emoticon) => {
+    if (emoticon) {
+      const contentAppend = `${content}${emoticon}`
+      setContent(contentAppend)
+    } 
+  }
+  
 
   return (
     <div className={containerClass}>
@@ -487,6 +511,12 @@ const CreateBuzzForm = (props) => {
               >
                 <GifIcon />
               </IconButton>
+              <IconButton
+                size="medium"
+                onClick={handleOpenEmojiPicker}
+              >
+                <EmojiIcon />
+              </IconButton>
               <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
                 <CircularProgress
                   classes={{
@@ -501,6 +531,7 @@ const CreateBuzzForm = (props) => {
           )}
         </div>
       </div>
+      <EmojiPicker open={openEmojiPicker} anchorEl={emojiAnchorEl} handleClose={handleCloseEmojiPicker} handleAppendContent={handleSelectEmoticon}/>
       <GiphySearchModal show={openGiphy} onHide={closeGiphy} handleAppendContent={handleSelectGif}/>
       <PayoutDisclaimerModal show={openPayoutDisclaimer} onHide={closePayoutDisclaimer} />
     </div>
