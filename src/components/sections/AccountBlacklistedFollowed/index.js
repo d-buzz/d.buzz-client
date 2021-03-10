@@ -55,6 +55,7 @@ const useStyle = createUseStyles(theme => ({
     paddingTop: 0,
     paddingBottom: 0,
     ...theme.font,
+    color: "#e61c34",
   },
   post: {
     color: '#14171a',
@@ -76,6 +77,9 @@ const useStyle = createUseStyles(theme => ({
   },
   blacklistButtonContainer: {
     width: 80,
+  },
+  noData : {
+    ...theme.font,
   },
 }))
 
@@ -128,6 +132,12 @@ const AccountBlacklistedFollowed = (props) => {
                       @{item.name}
                       </p>
                     </div>
+                    {item.blacklist_description && 
+                    (<div className={classes.content}>
+                      <p className={classes.username}>
+                        {item.blacklist_description}
+                      </p>
+                    </div>)}
                   </div>
                 </Col>
                 <Col xs="auto">
@@ -138,7 +148,7 @@ const AccountBlacklistedFollowed = (props) => {
                       disabled={loading}
                       style={{ float: 'right', marginTop: 5 }}
                       transparent={true}
-                      label="Unfollow blacklist"
+                      label="unfollow blacklist"
                       className={classes.button}
                       onClick={unblacklistUser}
                     />
@@ -149,7 +159,7 @@ const AccountBlacklistedFollowed = (props) => {
           </div>
         ))}
         {(!loading && items.length === 0) &&
-          (<center><br/><h6>No users found on this list yet</h6></center>)}
+          (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>

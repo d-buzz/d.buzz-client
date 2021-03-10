@@ -1,26 +1,24 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Avatar } from 'components/elements'
+import { Avatar, ContainedButton } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
-import { getProfileMetaData } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
 import {
   setProfileIsVisited,
-  getFollowersRequest,
 } from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton, FollowButton } from 'components'
+import { AvatarlistSkeleton } from 'components'
 
 
 const useStyle = createUseStyles(theme => ({
   row: {
     width: '98%',
     margin: '0 auto',
-    paddingTop: 20,
+    paddingTop: 10,
     marginBottom: 10,
     cursor: 'pointer',
     '& label': {
@@ -49,22 +47,14 @@ const useStyle = createUseStyles(theme => ({
     width: '98%',
     cursor: 'pointer',
   },
-  name: {
+  username: {
     fontWeight: 'bold',
     paddingRight: 5,
-    marginTop: 0,
+    marginTop: 10,
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
     ...theme.font,
-  },
-  username: {
-    color: '#657786',
-    paddingTop: 0,
-    marginTop: 0,
-    marginBottom: 0,
-    paddingBottom: 0,
-    cursor: 'pointer',
   },
   post: {
     color: '#14171a',
@@ -84,58 +74,28 @@ const useStyle = createUseStyles(theme => ({
       ...theme.font,
     },
   },
-  actionWrapper: {
-    paddingTop: 10,
-  },
-  actionWrapperSpace: {
-    paddingRight: 30,
-  },
-  preview: {
-    '& a': {
-      borderRadius: '10px 10px',
-      boxShadow: 'none',
-    },
-  },
-  tags: {
-    wordWrap: 'break-word',
-    width: 'calc(100% - 60px)',
-    height: 'max-content',
-    '& a': {
-      color: '#d32f2f',
-    },
-  },
-  followButtonContainer: {
+  buttonContainer: {
     width: 80,
+  },
+  noData : {
+    ...theme.font,
   },
 }))
 
 const AccountMutedUsers = (props) => {
   const classes = useStyle()
   const {
-    items,
     loading,
     setProfileIsVisited,
-    getFollowersRequest,
-    author,
-    last,
     user,
+    mutedList : items,
   } = props
 
   const { is_authenticated } = user
 
   const history = useHistory()
 
-  const getName = (profile) => {
-    const { name } = getProfileMetaData(profile)
-    return name ? name : `@${profile.name}`
-  }
-
-  const getAbout = (profile) => {
-    const { about } = getProfileMetaData(profile)
-    return about
-  }
-
-  const handleClickFollower = (name) => () => {
+  const handleClickUser = (name) => () => {
     setProfileIsVisited(false)
     if(is_authenticated) {
       history.replace(`/@${name}/t/buzz`)
@@ -144,48 +104,45 @@ const AccountMutedUsers = (props) => {
     }
   }
 
-  const loadMorePosts = () => {
-    const { follower } = last || ''
-    getFollowersRequest(author, follower)
+  const unmuteUser = () => {
+
   }
 
   return (
     <React.Fragment>
       <InfiniteScroll
         dataLength={items.length || 0}
-        next={loadMorePosts}
-        hasMore={true}
+        hasMore={false}
       >
         {items.map((item) => (
           <div className={classes.wrapper}>
-            <div className={classes.row} onClick={handleClickFollower(item.follower)}>
-              <Row>
+            <div className={classes.row} onClick={handleClickUser(item.name)}>
+              <Row style={{ marginRight: 0, marginLeft: 0 }}>
                 <Col xs="auto" style={{ paddingRight: 0 }}>
                   <div className={classes.left}>
-                    <Avatar author={item.follower} />
+                    <Avatar author={item.name} />
                   </div>
                 </Col>
                 <Col>
                   <div className={classes.right}>
                     <div className={classes.content}>
-                      <p className={classes.name}>
-                        {getName(item.profile)}
-                      </p>
                       <p className={classes.username}>
-                        @{item.profile.name}
+                      @{item.name}
                       </p>
-                    </div>
-                    <div className={classes.content}>
-                      <label className={classes.username}>
-                        {getAbout(item.profile)}
-                      </label>
                     </div>
                   </div>
                 </Col>
                 <Col xs="auto">
-                  <div className={classes.followButtonContainer}>
-                    <FollowButton
-                      author={item.profile.name}
+                  <div className={classes.buttonContainer}>
+                    <ContainedButton
+                      fontSize={14}
+                      loading={loading}
+                      disabled={loading}
+                      style={{ float: 'right', marginTop: 5 }}
+                      transparent={true}
+                      label="unmute"
+                      className={classes.button}
+                      onClick={unmuteUser}
                     />
                   </div>
                 </Col>
@@ -194,7 +151,7 @@ const AccountMutedUsers = (props) => {
           </div>
         ))}
         {(!loading && items.length === 0) &&
-          (<center><br/><h6>Do not have a follower</h6></center>)}
+          (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>
@@ -203,15 +160,13 @@ const AccountMutedUsers = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
-  items: state.profile.get('followers'),
-  loading: pending(state, 'GET_FOLLOWERS_REQUEST'),
-  last: state.profile.get('lastFollower'),
+  loading: pending(state, 'GET_ACCOUNT_LIST_REQUEST'),
+  mutedList: state.profile.get('mutedList'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setProfileIsVisited,
-    getFollowersRequest,
   }, dispatch),
 })
 

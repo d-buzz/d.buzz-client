@@ -280,12 +280,57 @@ export const setAccountFollowedBlacklist = (response) => ({
   payload: response,
 })
 
+export const SET_ACCOUNT_MUTED_LIST = 'SET_ACCOUNT_MUTED_LIST'
+export const setAccountMutedList = (response) => ({
+  type: SET_ACCOUNT_MUTED_LIST,
+  payload: response,
+})
+
+export const SET_ACCOUNT_FOLLOWED_MUTED_LIST = 'SET_ACCOUNT_FOLLOWED_MUTED_LIST'
+export const setAccountFollowedMutedList = (response) => ({
+  type: SET_ACCOUNT_FOLLOWED_MUTED_LIST,
+  payload: response,
+})
+
 export const CLEAR_ACCOUNT_BLACKLIST = 'CLEAR_ACCOUNT_BLACKLIST'
 export const clearAccountBlacklist = () => ({
-  type: CLEAR_ACCOUNT_COMMENTS,
+  type: CLEAR_ACCOUNT_BLACKLIST,
 })
 
 export const CLEAR_ACCOUNT_FOLLOWED_BLACKLIST = 'CLEAR_ACCOUNT_FOLLOWED_BLACKLIST'
 export const clearAccountFollowedBlacklist = () => ({
   type: CLEAR_ACCOUNT_FOLLOWED_BLACKLIST,
+})
+
+export const CLEAR_ACCOUNT_MUTED_LIST = 'CLEAR_ACCOUNT_MUTED_LIST'
+export const clearAccountMutedList = () => ({ 
+  type: CLEAR_ACCOUNT_MUTED_LIST,
+})
+
+export const CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST = 'CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST'
+export const clearAccountFollowedMutedList = () => ({
+  type: CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST,
+})
+
+export const CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST = 'CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST'
+export const CHECK_ACCOUNT_FOLLOWS_LIST_SUCCESS = 'CHECK_ACCOUNT_FOLLOWS_LIST_SUCCESS'
+export const CHECK_ACCOUNT_FOLLOWS_LIST_FAILURE = 'CHECK_ACCOUNT_FOLLOWS_LIST_FAILURE'
+export const CheckAccountFollowsListRequest = (observer) => ({
+  type: CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST,
+  payload: { observer },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const checkAccountFollowsListSuccess = (response, meta) => ({
+  type: CHECK_ACCOUNT_FOLLOWS_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const checkAccountFollowsListFailure = (error, meta) => ({
+  type: CHECK_ACCOUNT_FOLLOWS_LIST_FAILURE,
+  payload: error,
+  meta,
 })

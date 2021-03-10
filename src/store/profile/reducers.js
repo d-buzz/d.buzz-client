@@ -20,8 +20,12 @@ import {
   GET_ACCOUNT_LIST_SUCCESS,
   SET_ACCOUNT_BLACKLIST,
   SET_ACCOUNT_FOLLOWED_BLACKLIST,
+  SET_ACCOUNT_MUTED_LIST,
+  SET_ACCOUNT_FOLLOWED_MUTED_LIST,
   CLEAR_ACCOUNT_BLACKLIST,
   CLEAR_ACCOUNT_FOLLOWED_BLACKLIST,
+  CLEAR_ACCOUNT_MUTED_LIST,
+  CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -89,10 +93,14 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state.set('blacklistedList', payload)
   case SET_ACCOUNT_FOLLOWED_BLACKLIST:
     return state.set('followedBlacklist', payload)
-  case CLEAR_ACCOUNT_BLACKLIST:
-    return state.set('blacklistedList', [])
-  case CLEAR_ACCOUNT_FOLLOWED_BLACKLIST:
-    return state.set('followedBlacklist', [])
+  case SET_ACCOUNT_MUTED_LIST:
+    return state.set('mutedList', payload)
+  case SET_ACCOUNT_FOLLOWED_MUTED_LIST:
+    return state.set('followedMuted', payload)
+  case CLEAR_ACCOUNT_MUTED_LIST:
+    return state.set('mutedList', [])
+  case CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST:
+    return state.set('followedMuted', [])
   default:
     return state
   }

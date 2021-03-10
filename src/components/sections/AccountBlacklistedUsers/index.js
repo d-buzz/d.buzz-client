@@ -74,8 +74,11 @@ const useStyle = createUseStyles(theme => ({
       ...theme.font,
     },
   },
-  blacklistButtonContainer: {
+  buttonContainer: {
     width: 80,
+  },
+  noData : {
+    ...theme.font,
   },
 }))
 
@@ -125,20 +128,20 @@ const AccountBlacklistedUsers = (props) => {
                   <div className={classes.right}>
                     <div className={classes.content}>
                       <p className={classes.username}>
-                      @{item.name}
+                       @{item.name}
                       </p>
                     </div>
                   </div>
                 </Col>
                 <Col xs="auto">
-                  <div className={classes.blacklistButtonContainer}>
+                  <div className={classes.buttonContainer}>
                     <ContainedButton
                       fontSize={14}
                       loading={loading}
                       disabled={loading}
                       style={{ float: 'right', marginTop: 5 }}
                       transparent={true}
-                      label="Unblacklist"
+                      label="unblacklist"
                       className={classes.button}
                       onClick={unblacklistUser}
                     />
@@ -149,7 +152,7 @@ const AccountBlacklistedUsers = (props) => {
           </div>
         ))}
         {(!loading && items.length === 0) &&
-          (<center><br/><h6>No users found on this list yet</h6></center>)}
+          (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>

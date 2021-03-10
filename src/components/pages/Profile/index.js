@@ -379,7 +379,7 @@ const Profile = (props) => {
                       <React.Fragment>
                         <IconButton
                           size="medium"
-                          style={{ float: 'right', marginTop: -5}}
+                          style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
                           onClick={handleOpenMoreOptions}
                         >
                           <MoreCircleIconRed/>

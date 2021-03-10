@@ -614,7 +614,6 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
   })
 }
 
-
 export const getAccountLists = (observer, list_type) => {
   return new Promise((resolve, reject) => {
     const params = { observer, follow_type: list_type }
@@ -622,18 +621,24 @@ export const getAccountLists = (observer, list_type) => {
       if(err) {
         reject(err)
       } else {
-        // if(result.length > 0){
-        //   result.forEach((item, index) => {
-        //     result[index].author = item.name
-        //   })
-        //   const getProfiledata = mapFetchProfile(result)
-        //   await Promise.all([getProfiledata])
-        // }
         resolve(result)
       }
     })
   })
 }
+
+export const checkAccountIsFollowingLists = (observer) => {
+  return new Promise((resolve, reject) => {
+    api.call('bridge.get_follow_list', { observer }, async (err, result) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
 
 // keychain apis
 

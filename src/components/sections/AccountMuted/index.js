@@ -3,11 +3,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { createUseStyles } from 'react-jss'
 import {
-  getFollowersRequest,
-  clearProfile,
-  getFollowingRequest,
-  clearAccountFollowers,
-  clearAccountFollowing,
+  getAccountListRequest,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -15,57 +11,13 @@ import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
-import queryString from 'query-string'
-import { ProfileSkeleton, HelmetGenerator } from 'components'
+import { ProfileSkeleton, HelmetGenerator, SearchListsField } from 'components'
+import { ContainedButton } from 'components/elements'
 
 const useStyles = createUseStyles(theme => ({
-  cover: {
-    height: 270,
-    width: '100%',
-    backgroundColor: '#ffebee',
-    overFlow: 'hidden',
-    '& img': {
-      height: '100%',
-      width: '100%',
-      objectFit: 'cover',
-      overFlow: 'hidden',
-    },
-  },
-  avatar: {
-    marginTop: -70,
-  },
-  walletButton: {
-    marginTop: 5,
-    float: 'right',
-    marginRight: 15,
-  },
-  fullName: {
-    fontSize: '18px !important',
-    fontWeight: 'bold',
-    padding: 0,
-    fontFamily: 'Segoe-Bold !important',
-    ...theme.font,
-  },
-  userName: {
-    fontSize: 16,
-    padding: 0,
-    marginTop: -20,
-    ...theme.font,
-  },
-  wrapper: {
-    width: '95%',
-    margin: '0 auto',
-    height: 'max-content',
-  },
-  paragraph: {
-    padding: 0,
-    margin: 0,
-    fontSize: 14,
-    ...theme.font,
-  },
   spacer: {
     width: '100%',
-    height: 20,
+    height: 5,
   },
   descriptionContainer: {
     borderBottom: theme.border.primary,
@@ -98,26 +50,14 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: '#e53935 !important',
     },
   },
-  weblink: {
-    color: '#d32f2f',
-    '&:hover': {
-      color: '#d32f2f',
-    },
-  },
-  followLinks: {
-    ...theme.font,
-  },
 }))
 
 const AccountMuted = (props) => {
   const {
     match,
-    getFollowersRequest,
-    isVisited,
     loading,
     route,
-    getFollowingRequest,
-    // setPageFrom,
+    getAccountListRequest,
   } = props
 
   const history = useHistory()
@@ -126,42 +66,34 @@ const AccountMuted = (props) => {
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
-
+  const { params } = match
+  const { username } = params
 
   const onChange = (e, index) => {
     setIndex(index)
   }
 
   const handleTabs = (index) => () => {
-    let tab = ''
-
+    let tab = 'users'
     if(index === 0) {
-      tab = ''
-    } else if (index === 1) {
+      tab = 'users'
+    }else if (index === 1) {
       tab = 'followed'
     }
     history.push(`/@${username}/lists/muted/${tab}`)
   }
 
-  const { params } = match
-  const { username } = params
-
   useEffect(() => {
-    // setPageFrom(null)
-    const params = queryString.parse(location.search)
-
-    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
-      anchorTop()
-      getFollowersRequest(username)
-      getFollowingRequest(username)
-    }
+    anchorTop()
+    getAccountListRequest(username,'muted')
+    getAccountListRequest(username,'follow_muted')
     // eslint-disable-next-line
   }, [username])
 
   useEffect(() => {
-    if(pathname.match(/\/lists\/muted/g)) {
+    if(pathname.match(/\/lists\/muted\/users/g)) {
       setIndex(0)
-    } else if(pathname.match((/\/lists\/mutedlist\/followed/g))) {
+    } else if(pathname.match((/\/lists\/muted\/followed/g))) {
       setIndex(1)
     } else {
       setIndex(0)
@@ -174,6 +106,7 @@ const AccountMuted = (props) => {
       <ProfileSkeleton loading={loading} />
       <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
         <div className={classes.spacer} />
+        <SearchListsField showButton={false} buttonLabel="mute"/>
         <Tabs
           value={index}
           indicatorColor="primary"
@@ -195,17 +128,11 @@ const AccountMuted = (props) => {
 
 const mapStateToProps = (state) => ({
   loading: pending(state, 'GET_PROFILE_REQUEST'),
-  isVisited: state.profile.get('isProfileVisited'),
-  loadingFollow: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    getFollowersRequest,
-    clearProfile,
-    getFollowingRequest,
-    clearAccountFollowers,
-    clearAccountFollowing,
+    getAccountListRequest,
   }, dispatch),
 })
 
