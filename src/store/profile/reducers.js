@@ -17,6 +17,11 @@ import {
   GET_ACCOUNT_COMMENTS_SUCCESS,
   SET_LAST_ACCOUNT_COMMENT,
   CLEAR_ACCOUNT_COMMENTS,
+  GET_ACCOUNT_LIST_SUCCESS,
+  SET_ACCOUNT_BLACKLIST,
+  SET_ACCOUNT_FOLLOWED_BLACKLIST,
+  CLEAR_ACCOUNT_BLACKLIST,
+  CLEAR_ACCOUNT_FOLLOWED_BLACKLIST,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -33,6 +38,11 @@ const defaultState = fromJS({
   lastFollowing: [],
   comments: [],
   lastComment: [],
+  mutedList: [],
+  blacklistedList: [],
+  followedMuted : [],
+  followedBlacklist : [],
+  accountLists : {},
 })
 
 export const profile = (state = defaultState, { type, payload }) => {
@@ -73,6 +83,16 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state.set('lastComment', payload)
   case CLEAR_ACCOUNT_COMMENTS:
     return state.set('comments', [])
+  case GET_ACCOUNT_LIST_SUCCESS:
+    return state.set('accountLists', payload)
+  case SET_ACCOUNT_BLACKLIST:
+    return state.set('blacklistedList', payload)
+  case SET_ACCOUNT_FOLLOWED_BLACKLIST:
+    return state.set('followedBlacklist', payload)
+  case CLEAR_ACCOUNT_BLACKLIST:
+    return state.set('blacklistedList', [])
+  case CLEAR_ACCOUNT_FOLLOWED_BLACKLIST:
+    return state.set('followedBlacklist', [])
   default:
     return state
   }

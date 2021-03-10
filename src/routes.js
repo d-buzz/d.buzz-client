@@ -13,6 +13,12 @@ import {
   AccountFollowing,
   AccountComments,
   AccountFollow,
+  AccountMuted,
+  AccountMutedUsers,
+  AccountMutedFollowed,
+  AccountBlacklisted,
+  AccountBlacklistedUsers,
+  AccountBlacklistedFollowed,
   Notification,
   Tags,
   Search,
@@ -136,6 +142,48 @@ const routes =  [
             path: '/@:username/follow/following',
             exact: true,
             component: AccountFollowing,
+          },
+        ],
+      },
+      {
+        path: '/@:username/lists/muted',
+        component: AccountMuted,
+        routes: [
+          {
+            path: '/@:username/lists/muted',
+            exact: true,
+            component: AccountMutedUsers,
+          },
+          {
+            path: '/@:username/lists/muted/users',
+            exact: true,
+            component: AccountMutedUsers,
+          },
+          {
+            path: '/@:username/lists/muted/followed',
+            exact: true,
+            component: AccountMutedFollowed,
+          },
+        ],
+      },
+      {
+        path: '/@:username/lists/blacklisted',
+        component: AccountBlacklisted,
+        routes: [
+          {
+            path: '/@:username/lists/blacklisted',
+            exact: true,
+            component: AccountBlacklistedUsers,
+          },
+          {
+            path: '/@:username/lists/blacklisted/users',
+            exact: true,
+            component: AccountBlacklistedUsers,
+          },
+          {
+            path: '/@:username/lists/blacklisted/followed',
+            exact: true,
+            component: AccountBlacklistedFollowed,
           },
         ],
       },

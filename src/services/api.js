@@ -614,6 +614,27 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
   })
 }
 
+
+export const getAccountLists = (observer, list_type) => {
+  return new Promise((resolve, reject) => {
+    const params = { observer, follow_type: list_type }
+    api.call('bridge.get_follow_list', params, async (err, result) => {
+      if(err) {
+        reject(err)
+      } else {
+        // if(result.length > 0){
+        //   result.forEach((item, index) => {
+        //     result[index].author = item.name
+        //   })
+        //   const getProfiledata = mapFetchProfile(result)
+        //   await Promise.all([getProfiledata])
+        // }
+        resolve(result)
+      }
+    })
+  })
+}
+
 // keychain apis
 
 export const keychainSignIn = (username) => {

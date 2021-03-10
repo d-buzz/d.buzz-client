@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import Chip from '@material-ui/core/Chip'
+import { IconButton, Chip, Tab, Tabs } from '@material-ui/core'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
   ContainedButton,
+  MoreCircleIconRed,
+  CustomizedMenu,
 } from 'components/elements'
 import { broadcastNotification } from 'store/interface/actions'
 import {
@@ -25,6 +25,8 @@ import {
   clearAccountFollowers,
   clearAccountFollowing,
   clearAccountComments,
+  clearAccountBlacklist,
+  clearAccountFollowedBlacklist,
 } from 'store/profile/actions'
 import {
   followRequest,
@@ -40,6 +42,8 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
 import { ProfileSkeleton, HelmetGenerator, HiddenBuzzListModal } from 'components'
 import queryString from 'query-string'
+import ListIcon from '@material-ui/icons/List';
+
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -150,6 +154,8 @@ const Profile = (props) => {
     getFollowingRequest,
     clearAccountFollowers,
     clearAccountFollowing,
+    clearAccountBlacklist,
+    clearAccountFollowedBlacklist,
     setPageFrom,
     user,
     followRequest,
@@ -175,6 +181,7 @@ const Profile = (props) => {
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
   const [openHiddenBuzzList, setOpenHiddenBuzzList] = useState(false)
+  const [moreOptionsEl, setMoreOptionsEl] = useState(null)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -241,6 +248,8 @@ const Profile = (props) => {
       clearAccountFollowers()
       clearAccountFollowing()
       clearAccountComments()
+      clearAccountBlacklist()
+      clearAccountFollowedBlacklist()
       setProfileIsVisited()
       getProfileRequest(username)
       getAccountPostsRequest(username)
@@ -300,6 +309,53 @@ const Profile = (props) => {
     setOpenHiddenBuzzList(!openHiddenBuzzList)
   }
 
+  const handleCloseMoreOptions = () => {
+    setMoreOptionsEl(null)
+  }
+
+  const handleOpenMoreOptions = (e) => {
+    setMoreOptionsEl(e.currentTarget)
+  }
+
+  const navigateToBlackListed = () => {
+    history.push(`/@${username}/lists/blacklisted/users`)
+  }
+
+  const navigateToFollowedBlacklist = () => {
+    history.push(`/@${username}/lists/blacklisted/followed`)
+  }
+
+  const navigateToMutedUsers = () => {
+    history.push(`/@${username}/lists/muted/users`)
+  }
+
+  const navigateToFollowedMuted = () => {
+    history.push(`/@${username}/lists/muted/followed`)
+  }
+
+  const MoreOptions = [
+    {
+      label: "Blacklisted Users",
+      icon: <ListIcon fontSize="small"/>,
+      onClick: navigateToBlackListed,
+    },
+    {
+      label: "Muted Users",
+      icon: <ListIcon fontSize="small"/>,
+      onClick: navigateToMutedUsers,
+    },
+    {
+      label: "Followed Blacklists",
+      icon: <ListIcon fontSize="small"/>,
+      onClick: navigateToFollowedBlacklist,
+    },
+    {
+      label: "Followed Muted Lists",
+      icon: <ListIcon fontSize="small"/>,
+      onClick: navigateToFollowedMuted,
+    },
+  ]
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Profile' />
@@ -320,15 +376,25 @@ const Profile = (props) => {
                 {is_authenticated && (
                   <React.Fragment>
                     {loginuser === username && (
-                      <ContainedButton
-                        fontSize={14}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
-                        transparent={true}
-                        label="Hidden Buzzes"
-                        className={classes.button}
-                        onClick={handleClickOpenHiddenBuzzList}
-                      />
+                      <React.Fragment>
+                        <IconButton
+                          size="medium"
+                          style={{ float: 'right', marginTop: -5}}
+                          onClick={handleOpenMoreOptions}
+                        >
+                          <MoreCircleIconRed/>
+                        </IconButton>
+                        <ContainedButton
+                          fontSize={14}
+                          disabled={loading}
+                          style={{ float: 'right', marginTop: 5 }}
+                          transparent={true}
+                          label="Hidden Buzzes"
+                          className={classes.button}
+                          onClick={handleClickOpenHiddenBuzzList}
+                        />
+                        <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
+                      </React.Fragment>
                     )}
                     {loginuser !== username && !mutelist.includes(username) && (
                       <ContainedButton
@@ -418,7 +484,7 @@ const Profile = (props) => {
                       <b>{following}</b> Following
                     </Link> &nbsp;
                     <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
-                      <b>{followers}</b> Follower
+                      <b>{followers}</b> Followers
                     </Link> &nbsp;
                   </p>
                 </Col>
@@ -472,6 +538,8 @@ const mapDispatchToProps = (dispatch) => ({
     getFollowingRequest,
     clearAccountFollowers,
     clearAccountFollowing,
+    clearAccountBlacklist,
+    clearAccountFollowedBlacklist,
     setPageFrom,
     followRequest,
     unfollowRequest,

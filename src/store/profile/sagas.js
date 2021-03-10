@@ -32,6 +32,12 @@ import {
   getAccountCommentsFailure,
   getAccountCommentsSucess,
   setLastAccountComment,
+
+  GET_ACCOUNT_LIST_REQUEST,
+  getAccountListSuccess,
+  getAccountListFailure,
+  setAccountBlacklist,
+  setAccountFollowedBlacklist,
 } from './actions'
 
 import {
@@ -46,6 +52,7 @@ import {
   invokeFilter,
   fetchGlobalProperties,
   fetchAccounts,
+  getAccountLists,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
@@ -215,6 +222,22 @@ function* getCommentsAccountRequest(payload, meta) {
   }
 }
 
+function* getAccountListRequest(payload, meta) {
+  try {
+    const { observer, list_type } = payload
+    const data = yield call(getAccountLists, observer, list_type)
+    if(list_type === 'blacklisted'){
+      yield put(setAccountBlacklist(data))
+    }else if (list_type === 'follow_blacklist') {
+      yield put(setAccountFollowedBlacklist(data))
+    }
+
+    yield put(getAccountListSuccess(data, meta))
+  } catch (error) {
+    yield put(getAccountListFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -243,6 +266,10 @@ function* watchGetAccountCommentsRequest({ payload, meta }) {
   yield call(getCommentsAccountRequest, payload, meta)
 }
 
+function* watchGetAccountListRequest({ payload, meta }) {
+  yield call(getAccountListRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
@@ -251,4 +278,5 @@ export default function* sagas() {
   yield takeEvery(GET_FOLLOWING_REQUEST, watchGetFollowingRequest)
   yield takeEvery(CLEAR_NOTIFICATIONS_REQUEST, watchClearNotificationRequest)
   yield takeEvery(GET_ACCOUNT_COMMENTS_REQUEST, watchGetAccountCommentsRequest)
+  yield takeEvery(GET_ACCOUNT_LIST_REQUEST, watchGetAccountListRequest)
 }

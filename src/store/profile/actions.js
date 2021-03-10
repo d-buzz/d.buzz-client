@@ -243,3 +243,49 @@ export const CLEAR_ACCOUNT_COMMENTS = 'CLEAR_ACCOUNT_COMMENTS'
 export const clearAccountComments = () => ({
   type: CLEAR_ACCOUNT_COMMENTS,
 })
+
+
+export const GET_ACCOUNT_LIST_REQUEST = 'GET_ACCOUNT_LIST_REQUEST'
+export const GET_ACCOUNT_LIST_SUCCESS = 'GET_ACCOUNT_LIST_SUCCESS'
+export const GET_ACCOUNT_LIST_FAILURE = 'GET_ACCOUNT_LIST_FAILURE'
+export const getAccountListRequest = (observer, list_type) => ({
+  type: GET_ACCOUNT_LIST_REQUEST,
+  payload: { observer, list_type },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getAccountListSuccess = (response, meta) => ({
+  type: GET_ACCOUNT_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getAccountListFailure = (error, meta) => ({
+  type: GET_ACCOUNT_LIST_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_ACCOUNT_BLACKLIST = 'SET_ACCOUNT_BLACKLIST'
+export const setAccountBlacklist = (response) => ({
+  type: SET_ACCOUNT_BLACKLIST,
+  payload: response,
+})
+
+export const SET_ACCOUNT_FOLLOWED_BLACKLIST = 'SET_ACCOUNT_FOLLOWED_BLACKLIST'
+export const setAccountFollowedBlacklist = (response) => ({
+  type: SET_ACCOUNT_FOLLOWED_BLACKLIST,
+  payload: response,
+})
+
+export const CLEAR_ACCOUNT_BLACKLIST = 'CLEAR_ACCOUNT_BLACKLIST'
+export const clearAccountBlacklist = () => ({
+  type: CLEAR_ACCOUNT_COMMENTS,
+})
+
+export const CLEAR_ACCOUNT_FOLLOWED_BLACKLIST = 'CLEAR_ACCOUNT_FOLLOWED_BLACKLIST'
+export const clearAccountFollowedBlacklist = () => ({
+  type: CLEAR_ACCOUNT_FOLLOWED_BLACKLIST,
+})
