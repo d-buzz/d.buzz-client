@@ -149,9 +149,7 @@ const MuteModal = (props) => {
           setOpen(false)
           onHide()
           broadcastNotification('success', `Succesfully muted @${username}`)
-          if(muteSuccessCallback) {
-            muteSuccessCallback()
-          }
+          modalCallback()
         }else{
           broadcastNotification('error', errorMessage)
         }
@@ -164,22 +162,23 @@ const MuteModal = (props) => {
         if(result === -32000){
           const errorMessage = errorMessageComposer('unmute',result)
           broadcastNotification('error', errorMessage)
-          if(muteSuccessCallback) {
-            muteSuccessCallback()
-          }
         }else{
           if(result) {
             setOpen(false)
             onHide()
             broadcastNotification('success', `Successfully unmuted @${username}`)
-            if(muteSuccessCallback) {
-              muteSuccessCallback()
-            }
+            modalCallback()
           } else {
             broadcastNotification('error', `Failed unmuting @${username}`)
           }
         }
       })
+    }
+  }
+
+  const modalCallback = () => {
+    if(muteSuccessCallback) {
+      muteSuccessCallback()
     }
   }
 

@@ -1,31 +1,43 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { openFollowMutedDialog } from 'store/interface/actions'
 import { setAccountFollowedMutedList } from "store/profile/actions"
 
 const FollowMutedListButton = (props) => {
   const { 
-    loading,
-    disabled,
+    loading=false,
+    disabled=false,
     label, 
     username, 
     openFollowMutedDialog,
     setAccountFollowedMutedList,
     followedMuted,
+    style,
+    successCallback=null,
   } = props
+
+  const { pathname } = useLocation()
+  const mutedListRoute = (pathname.match(/\/lists\/muted\/users/g))
 
   const followMutedList = () => {
     openFollowMutedDialog(username, followMutedSuccessCallback)
   }
 
   const followMutedSuccessCallback = () => {
-    const oldList = [...followedMuted]
-    const index = oldList.findIndex(item => item.name === username)
-    if(index !== -1){
-      oldList.splice(index,1) 
-      setAccountFollowedMutedList(oldList)
+    if(successCallback){
+      successCallback()
+    }else{
+      if(mutedListRoute){
+        const oldList = [...followedMuted]
+        const index = oldList.findIndex(item => item.name === username)
+        if(index !== -1){
+          oldList.splice(index,1) 
+          setAccountFollowedMutedList(oldList)
+        }
+      }
     }
   }
 
@@ -35,7 +47,7 @@ const FollowMutedListButton = (props) => {
         fontSize={14}
         loading={loading}
         disabled={loading || disabled}
-        style={{ float: 'right', marginTop: 5 }}
+        style={style}
         transparent={true}
         label={label}
         onClick={followMutedList}

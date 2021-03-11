@@ -143,8 +143,9 @@ const AccountMutedFollowed = (props) => {
                   <div className={classes.buttonContainer}>
                     <FollowMutedListButton 
                       username={item.name} 
-                      label="unfollow muted list"
-                      disabled={!is_authenticated}/>
+                      label="Unfollow muted list"
+                      disabled={!is_authenticated}
+                      style={{ float: 'right', marginTop: 5 }}/>
                   </div>
                 </Col>
               </Row>

@@ -721,6 +721,43 @@ export const generateMuteOperation = (follower, following) => {
   })
 }
 
+export const generateBlacklistOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateUnblacklistOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unblacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
 
 export const generateFollowMutedListOperation = (follower, following) => {
   return new Promise((resolve) => {

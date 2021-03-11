@@ -51,6 +51,22 @@ import {
   UNFOLLOW_MUTED_LIST_REQUEST,
   unfollowMutedListSuccess,
   unfollowMutedListFailure,
+
+  BLACKLIST_USER_REQUEST,
+  blacklistUserSuccess,
+  blacklistUserFailure,
+
+  UNBLACKLIST_USER_REQUEST,
+  unblacklistUserSuccess,
+  unblacklistUserFailure,
+
+  FOLLOW_BLACKLISTS_REQUEST,
+  followBlacklistsSuccess,
+  followBlacklistsFailure,
+
+  UNFOLLOW_BLACKLISTS_REQUEST,
+  unfollowBlacklistsSuccess,
+  unfollowBlacklistsFailure,
 } from './actions'
 
 import {
@@ -68,6 +84,10 @@ import {
   getCensoredList,
   generateFollowMutedListOperation,
   generateUnfollowMutedListOperation,
+  generateBlacklistOperation,
+  generateUnblacklistOperation,
+  generateFollowBlacklistsOperation,
+  generateUnfollowBlacklistsOperation,
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer } from 'services/helper'
@@ -409,7 +429,6 @@ function* followMutedListRequest(payload, meta) {
     let success = false
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, follower, operation)
-      console.log({result})
       success = result.success
     } else {
       let { login_data } = user
@@ -417,7 +436,6 @@ function* followMutedListRequest(payload, meta) {
 
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operation, [wif])
-      console.log({result})
       success = result.success
     }
     
@@ -444,7 +462,6 @@ function* unfollowMutedListRequest(payload, meta) {
     let success = false
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, follower, operation)
-      console.log({result})
       success = result.success
     } else {
       let { login_data } = user
@@ -452,7 +469,6 @@ function* unfollowMutedListRequest(payload, meta) {
 
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operation, [wif])
-      console.log({result})
       success = result.success
     }
     
@@ -464,6 +480,138 @@ function* unfollowMutedListRequest(payload, meta) {
   } catch (error) {
     const errorMessage = errorMessageComposer('unfollow_muted', error)
     yield put(unfollowMutedListFailure({ success: false, errorMessage }, meta))
+  }
+}
+
+function* blacklistUserRequest(payload, meta) {
+  try {
+    const { username : following } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateBlacklistOperation, follower, following)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+    
+    if(!success) {
+      yield put(blacklistUserSuccess({ success: false, errorMessage: 'Failed to blacklist user' }, meta))
+    } else {
+      yield put(blacklistUserFailure({ success: true }, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('blacklist', error)
+    yield put(blacklistUserFailure({ success: false, errorMessage }, meta))
+  }
+}
+
+function* unblacklistUserRequest(payload, meta) {
+  try {
+    const { username : following } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateUnblacklistOperation, follower, following)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+    
+    if(!success) {
+      yield put(unblacklistUserSuccess({ success: false, errorMessage: 'Failed to unblacklist user' }, meta))
+    } else {
+      yield put(unblacklistUserFailure({ success: true }, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('unblacklist', error)
+    yield put(unblacklistUserFailure({ success: false, errorMessage }, meta))
+  }
+}
+
+function* followBlacklistsRequest(payload, meta) {
+  try {
+    const { username : following } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateFollowBlacklistsOperation, follower, following)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+    
+    if(!success) {
+      yield put(followBlacklistsSuccess({ success: false, errorMessage: 'Failed to follow blacklists' }, meta))
+    } else {
+      yield put(followBlacklistsFailure({ success: true }, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('follow_blacklist', error)
+    yield put(followBlacklistsFailure({ success: false, errorMessage }, meta))
+  }
+}
+
+function* unfollowBlacklistsRequest(payload, meta) {
+  try {
+    const { username : following } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateUnfollowBlacklistsOperation, follower, following)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+    
+    if(!success) {
+      yield put(unfollowBlacklistsSuccess({ success: false, errorMessage: 'Failed to unfollow blacklists' }, meta))
+    } else {
+      yield put(unfollowBlacklistsFailure({ success: true }, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('unfollow_blacklist', error)
+    yield put(unfollowBlacklistsFailure({ success: false, errorMessage }, meta))
   }
 }
 
@@ -511,6 +659,21 @@ function* watchUnfollowMutedListRequest({ payload, meta }) {
   yield call(unfollowMutedListRequest, payload ,meta)
 }
 
+function* watchBlacklistUserRequest({ payload, meta }) {
+  yield call(blacklistUserRequest, payload ,meta)
+}
+
+function* watchUnblacklistUserRequest({ payload, meta }) {
+  yield call(unblacklistUserRequest, payload ,meta)
+}
+
+function* watchFollowBlacklistsRequest({ payload, meta }) {
+  yield call(followBlacklistsRequest, payload ,meta)
+}
+
+function* watchUnfollowBlacklistsRequest({ payload, meta }) {
+  yield call(unfollowBlacklistsRequest, payload ,meta)
+}
 
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
@@ -524,5 +687,8 @@ export default function* sagas() {
   yield takeEvery(REMOVE_HIDDEN_BUZZ_REQUEST, watchRemoveHiddenBuzzRequest)
   yield takeEvery(FOLLOW_MUTED_LIST_REQUEST, watchFollowMutedListRequest)
   yield takeEvery(UNFOLLOW_MUTED_LIST_REQUEST, watchUnfollowMutedListRequest)
-  
+  yield takeEvery(BLACKLIST_USER_REQUEST, watchBlacklistUserRequest)
+  yield takeEvery(UNBLACKLIST_USER_REQUEST, watchUnblacklistUserRequest)
+  yield takeEvery(FOLLOW_BLACKLISTS_REQUEST, watchFollowBlacklistsRequest)
+  yield takeEvery(UNFOLLOW_BLACKLISTS_REQUEST, watchUnfollowBlacklistsRequest) 
 }

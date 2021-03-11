@@ -141,7 +141,7 @@ const AccountBlacklistedUsers = (props) => {
                       disabled={loading}
                       style={{ float: 'right', marginTop: 5 }}
                       transparent={true}
-                      label="unblacklist"
+                      label="Unblacklist"
                       className={classes.button}
                       onClick={unblacklistUser}
                     />

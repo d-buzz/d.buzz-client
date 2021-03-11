@@ -287,6 +287,22 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
       type: 'unfollow_muted',
       prefix: 'Unfollow muted list transaction failed',
     },
+    {
+      type: 'blacklist',
+      prefix: 'Blacklist transaction failed',
+    },
+    {
+      type: 'unblacklist',
+      prefix: 'Unblacklist transaction failed',
+    },
+    {
+      type: 'follow_blacklist',
+      prefix: 'Follow blacklists transaction failed',
+    },
+    {
+      type: 'unfollow_blacklist',
+      prefix: 'Unfollow blacklists transaction failed',
+    },
   ]
 
   if(type) {

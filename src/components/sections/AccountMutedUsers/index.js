@@ -98,6 +98,7 @@ const AccountMutedUsers = (props) => {
       history.replace(`/ug/@${name}/t/buzz`)
     }
   }
+
   return (
     <React.Fragment>
       <InfiniteScroll
@@ -127,8 +128,9 @@ const AccountMutedUsers = (props) => {
                   <div className={classes.buttonContainer}>
                     <MuteButton 
                       username={item.name} 
-                      label="unmute"
-                      disabled={!is_authenticated}/> 
+                      label="Unmute"
+                      disabled={!is_authenticated}
+                      style={{ float: 'right', marginTop: 5 }}/> 
                   </div>
                 </Col>
               </Row>

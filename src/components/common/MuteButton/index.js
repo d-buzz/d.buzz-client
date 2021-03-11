@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { openMuteDialog } from 'store/interface/actions'
 import { setAccountMutedList } from "store/profile/actions"
@@ -14,18 +15,29 @@ const MuteButton = (props) => {
     setAccountMutedList,
     mutedList,
     disabled=false,
+    style,
+    successCallback=null,
   } = props
+
+  const { pathname } = useLocation()
+  const mutedListRoute = (pathname.match(/\/lists\/muted\/users/g))
 
   const unmuteUser = () => {
     openMuteDialog(username, muteSuccessCallback)
   }
 
   const muteSuccessCallback = () => {
-    const oldList = [...mutedList]
-    const index = oldList.findIndex(item => item.name === username)
-    if(index !== -1){
-      oldList.splice(index,1)
-      setAccountMutedList(oldList)
+    if(successCallback){
+      successCallback()
+    }else{
+      if(mutedListRoute){
+        const oldList = [...mutedList]
+        const index = oldList.findIndex(item => item.name === username)
+        if(index !== -1){
+          oldList.splice(index,1)
+          setAccountMutedList(oldList)
+        }
+      }
     }
   }
 
@@ -35,7 +47,7 @@ const MuteButton = (props) => {
         fontSize={14}
         loading={loading}
         disabled={loading || disabled}
-        style={{ float: 'right', marginTop: 5 }}
+        style={style}
         transparent={true}
         label={label}
         onClick={unmuteUser}
