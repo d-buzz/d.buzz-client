@@ -271,6 +271,14 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
       type: 'reply',
       prefix: 'Reply transaction failed',
     },
+    {
+      type: 'mute',
+      prefix: 'Mute transaction failed',
+    },
+    {
+      type: 'unmute',
+      prefix: 'Unmute transaction failed',
+    },
   ]
 
   if(type) {

@@ -149,8 +149,9 @@ export const muteUserFailure = (response, meta) => ({
   meta,
 })
 
-export const muteUserSuccess = (meta) => ({
-  type: MUTE_USER_SUCCESS,
+export const muteUserSuccess = (response,meta) => ({
+  type: MUTE_USER_SUCCESS, 
+  payload: response,
   meta,
 })
 

@@ -60,7 +60,7 @@ import {
   getCensoredList,
 } from 'services/api'
 
-import { generateSession, readSession } from 'services/helper'
+import { generateSession, readSession, errorMessageComposer } from 'services/helper'
 
 
 function* authenticateUserRequest(payload, meta) {
@@ -341,12 +341,11 @@ function* muteUserRequest(payload, meta) {
 
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operation, [wif])
-
       success = result.success
     }
 
     if(!success) {
-      yield put(muteUserFailure('Unable to publish post', meta))
+      yield put(muteUserFailure({ success: false, errorMessage: 'Unable to mute user' }, meta))
     } else {
       const mutelist = yield select(state => state.auth.get('mutelist'))
       mutelist.push(following)
@@ -355,11 +354,12 @@ function* muteUserRequest(payload, meta) {
       opacityUsers.push(following)
       yield put(setOpacityUsers(opacityUsers))
       yield put(setMuteList(mutelist))
-      yield put(muteUserSuccess(meta))
+      yield put(muteUserSuccess({ success: true }, meta))
     }
 
   } catch(error) {
-    yield put(muteUserFailure(error, meta))
+    const errorMessage = errorMessageComposer('mute', error)
+    yield put(muteUserFailure({ success: false, errorMessage }, meta))
   }
 }
 
