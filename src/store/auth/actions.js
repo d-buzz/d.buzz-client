@@ -257,3 +257,52 @@ export const setCensorList = (list) => ({
   type: SET_CENSOR_LIST,
   payload: list,
 })
+
+export const FOLLOW_MUTED_LIST_REQUEST = 'FOLLOW_MUTED_LIST_REQUEST'
+export const FOLLOW_MUTED_LIST_SUCCESS = 'FOLLOW_MUTED_LIST_SUCCESS'
+export const FOLLOW_MUTED_LIST_FAILURE = 'FOLLOW_MUTED_LIST_FAILURE'
+
+export const followMutedListRequest = (username) => ({
+  type: FOLLOW_MUTED_LIST_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const followMutedListSuccess = (response, meta) => ({
+  type: FOLLOW_MUTED_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const followMutedListFailure = (response,meta) => ({
+  type: FOLLOW_MUTED_LIST_FAILURE, 
+  payload: response,
+  meta,
+})
+
+
+export const UNFOLLOW_MUTED_LIST_REQUEST = 'UNFOLLOW_MUTED_LIST_REQUEST'
+export const UNFOLLOW_MUTED_LIST_SUCCESS = 'UNFOLLOW_MUTED_LIST_SUCCESS'
+export const UNFOLLOW_MUTED_LIST_FAILURE = 'UNFOLLOW_MUTED_LIST_FAILURE'
+
+export const unfollowMutedListRequest = (username) => ({
+  type: UNFOLLOW_MUTED_LIST_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const unfollowMutedListSuccess = (response, meta) => ({
+  type: UNFOLLOW_MUTED_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const unfollowMutedListFailure = (response,meta) => ({
+  type: UNFOLLOW_MUTED_LIST_FAILURE, 
+  payload: response,
+  meta,
+})

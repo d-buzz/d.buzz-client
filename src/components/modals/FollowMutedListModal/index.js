@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { muteUserRequest } from 'store/auth/actions'
-import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
-import {
-  unfollowRequest,
-} from 'store/posts/actions'
+import { closeFollowMutedDialog, broadcastNotification } from 'store/interface/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { errorMessageComposer } from "services/helper"
+import { followMutedListRequest, unfollowMutedListRequest } from "store/auth/actions"
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -100,86 +96,68 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 
-const MuteModal = (props) => {
+const FollowMutedListModal = (props) => {
   const {
-    closeMuteDialog,
-    muteModal,
-    muteUserRequest,
+    closeFollowMutedDialog,
+    followMutedModal,
     loading,
+    followedMutedList,
     broadcastNotification,
-    mutelist,
-    unfollowRequest,
+    followMutedListRequest,
+    unfollowMutedListRequest,
   } = props
   const [open, setOpen] = useState(false)
-  const [username, setUsernamae] = useState(null)
-  const [isMuted, setIsMuted] = useState(false)
+  const [username, setUsername] = useState(null)
+  const [isListFollowed, setIsListFollowed] = useState(false)
   const classes = useStyles()
-  const { muteSuccessCallback } = muteModal
+  const { followMutedSuccessCallback } = followMutedModal
 
   useEffect(() => {
-    if(muteModal && muteModal.hasOwnProperty('open')) {
-      const { open, username } = muteModal
+    if(followMutedModal && followMutedModal.hasOwnProperty('open')) {
+      const { open, username } = followMutedModal
       setOpen(open)
-      setUsernamae(username)
-      if(mutelist.includes(username)) {
-        setIsMuted(true)
+      setUsername(username)
+      const list = [...followedMutedList].map((item) => { return item.name })
+      if(Object.values(list).includes(username)){
+        setIsListFollowed(true)
       }
     }
   // eslint-disable-next-line
-  }, [muteModal])
+  }, [followMutedModal])
 
   const onHide = () => {
-    closeMuteDialog()
+    closeFollowMutedDialog()
   }
 
-  // useEffect(() => {
-  //   if(mutelist.includes(username)) {
-  //     setOpen(false)
-  //     onHide()
-  //     broadcastNotification('success', `Succesfully muted @${username}`)
-  //   }
-  //   // eslint-disable-next-line
-  // }, [mutelist])
-
-  const handleClickMuteUser = () => {
-    const inMuteList = mutelist.includes(username)
-    if(!inMuteList) {
-      muteUserRequest(username).then(({ success, errorMessage }) => {
+  const handleClickFollowMutedList = () => {
+    if(!isListFollowed) {
+      followMutedListRequest(username).then(({ success, errorMessage }) => {
         if(success){
           setOpen(false)
           onHide()
-          broadcastNotification('success', `Succesfully muted @${username}`)
-          if(muteSuccessCallback) {
-            muteSuccessCallback()
-          }
+          broadcastNotification('success',`Successfully followed muted list of ${username}`)
+          modalCallback()
         }else{
           broadcastNotification('error', errorMessage)
         }
-        
-      }).catch(() => {
-        broadcastNotification('error', `Failed to mute @${username}`)
       })
     } else {
-      unfollowRequest(username).then((result) => {
-        if(result === -32000){
-          const errorMessage = errorMessageComposer('unmute',result)
-          broadcastNotification('error', errorMessage)
-          if(muteSuccessCallback) {
-            muteSuccessCallback()
-          }
+      unfollowMutedListRequest(username).then(({ success, errorMessage }) => {
+        if(success){
+          setOpen(false)
+          onHide()
+          broadcastNotification('success',`Successfully unfollowed muted list of ${username}`)
+          modalCallback()
         }else{
-          if(result) {
-            setOpen(false)
-            onHide()
-            broadcastNotification('success', `Successfully unmuted @${username}`)
-            if(muteSuccessCallback) {
-              muteSuccessCallback()
-            }
-          } else {
-            broadcastNotification('error', `Failed unmuting @${username}`)
-          }
+          broadcastNotification('error', errorMessage)
         }
       })
+    }
+  }
+
+  const modalCallback = () => {
+    if(followMutedSuccessCallback){
+      followMutedSuccessCallback()
     }
   }
 
@@ -191,21 +169,19 @@ const MuteModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  {!mutelist.includes(username) && (
+                  {!isListFollowed && (
                     <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
+                      <h6>Follow muted list?</h6>
                       <p className={classes.text}>
-                        Would you like to add <b>@{username}</b> to your list of
-                        muted users?
+                        Would you like to follow <b>@{username}</b>'s muted list?
                       </p>
                     </React.Fragment>
                   )}
-                  {mutelist.includes(username) && (
+                  {isListFollowed && (
                     <React.Fragment>
-                      <h6>Remove user to mutelist?</h6>
+                      <h6>Unfollow muted list?</h6>
                       <p className={classes.text}>
-                        Would you like to remove <b>@{username}</b> from your list of
-                        muted users?
+                        Would you like to unfollow <b>@{username}</b>'s muted list?
                       </p>
                     </React.Fragment>
                   )}
@@ -215,8 +191,7 @@ const MuteModal = (props) => {
                 <React.Fragment>
                   <h6>Operation in progress</h6>
                   <p className={classes.text}>
-                    {isMuted ? 'Removing' : 'Adding'} <b>@{username}</b> to your list of
-                    muted users
+                    {isListFollowed ? 'Unfollowing' : 'Following'} <b>@{username}</b> muted list
                   </p>
                 </React.Fragment>
               )}
@@ -226,11 +201,11 @@ const MuteModal = (props) => {
             <React.Fragment>
               <div style={{ display: 'inline-block' }}>
                 <ContainedButton
-                  onClick={handleClickMuteUser}
+                  onClick={handleClickFollowMutedList}
                   className={classes.closeButton}
                   fontSize={14}
                   transparent={true}
-                  label={isMuted ? 'Remove' : 'Add'}
+                  label={isListFollowed ? 'Unfollow' : 'Follow'}
                 />
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>
@@ -257,18 +232,18 @@ const MuteModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  muteModal: state.interfaces.get('muteDialogUser'),
-  loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
-  mutelist: state.auth.get('mutelist'),
+  followMutedModal: state.interfaces.get('followMutedListDialog'),
+  loading: pending(state, 'FOLLOW_MUTED_LIST_REQUEST') || pending(state, 'UNFOLLOW_MUTED_LIST_REQUEST'),
+  followedMutedList: state.profile.get('followedMuted'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    closeMuteDialog,
-    muteUserRequest,
+    closeFollowMutedDialog,
     broadcastNotification,
-    unfollowRequest,
+    followMutedListRequest,
+    unfollowMutedListRequest,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MuteModal)
+export default connect(mapStateToProps, mapDispatchToProps)(FollowMutedListModal)

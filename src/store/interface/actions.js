@@ -106,3 +106,28 @@ export const CLEAR_REFRESH_ROUTE_STATUS = 'CLEAR_REFRESH_ROUTE_STATUS'
 export const clearRefreshRouteStatus = () => ({
   type: CLEAR_REFRESH_ROUTE_STATUS,
 })
+
+export const OPEN_FOLLOW_MUTED_DIALOG = 'OPEN_FOLLOW_MUTED_DIALOG'
+export const CLOSE_FOLLOW_MUTED_DIALOG = 'CLOSE_FOLLOW_MUTED_DIALOG'
+
+export const openFollowMutedDialog = (username, followMutedSuccessCallback = null) => ({
+  type: OPEN_FOLLOW_MUTED_DIALOG,
+  payload: { username, followMutedSuccessCallback },
+})
+
+export const closeFollowMutedDialog = () => ({
+  type: CLOSE_FOLLOW_MUTED_DIALOG,
+})
+
+
+export const OPEN_FOLLOW_BLACKLISTS_DIALOG = 'OPEN_FOLLOW_BLACKLISTS_DIALOG'
+export const CLOSE_FOLLOW_BLACKLISTS_DIALOG = 'CLOSE_FOLLOW_BLACKLISTS_DIALOG'
+
+export const openFollowBlacklistsDialog = (username, followBlacklistsSuccessCallback = null) => ({
+  type: OPEN_FOLLOW_BLACKLISTS_DIALOG,
+  payload: { username, followBlacklistsSuccessCallback },
+})
+
+export const closeFollowBlacklistsDialog = () => ({
+  type: CLOSE_FOLLOW_BLACKLISTS_DIALOG,
+})

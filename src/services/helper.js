@@ -279,6 +279,14 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
       type: 'unmute',
       prefix: 'Unmute transaction failed',
     },
+    {
+      type: 'follow_muted',
+      prefix: 'Follow muted list transaction failed',
+    },
+    {
+      type: 'unfollow_muted',
+      prefix: 'Unfollow muted list transaction failed',
+    },
   ]
 
   if(type) {

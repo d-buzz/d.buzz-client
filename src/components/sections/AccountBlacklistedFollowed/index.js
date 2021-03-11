@@ -55,7 +55,6 @@ const useStyle = createUseStyles(theme => ({
     paddingTop: 0,
     paddingBottom: 0,
     ...theme.font,
-    color: "#e61c34",
   },
   post: {
     color: '#14171a',
@@ -80,6 +79,15 @@ const useStyle = createUseStyles(theme => ({
   },
   noData : {
     ...theme.font,
+  },
+  description : {
+    paddingRight: 5,
+    marginTop: 0,
+    marginBottom: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    ...theme.font,
+    color: "#e61c34",
   },
 }))
 
@@ -134,7 +142,7 @@ const AccountBlacklistedFollowed = (props) => {
                     </div>
                     {item.blacklist_description && 
                     (<div className={classes.content}>
-                      <p className={classes.username}>
+                      <p className={classes.description}>
                         {item.blacklist_description}
                       </p>
                     </div>)}

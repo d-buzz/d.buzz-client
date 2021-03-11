@@ -1,17 +1,14 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Avatar, ContainedButton } from 'components/elements'
+import { Avatar } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
-import {
-  setProfileIsVisited,
-} from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, MuteButton } from 'components'
 
 
 const useStyle = createUseStyles(theme => ({
@@ -86,9 +83,8 @@ const AccountMutedUsers = (props) => {
   const classes = useStyle()
   const {
     loading,
-    setProfileIsVisited,
     user,
-    mutedList : items,
+    mutedList:items,
   } = props
 
   const { is_authenticated } = user
@@ -96,18 +92,12 @@ const AccountMutedUsers = (props) => {
   const history = useHistory()
 
   const handleClickUser = (name) => () => {
-    setProfileIsVisited(false)
     if(is_authenticated) {
       history.replace(`/@${name}/t/buzz`)
     } else {
       history.replace(`/ug/@${name}/t/buzz`)
     }
   }
-
-  const unmuteUser = () => {
-
-  }
-
   return (
     <React.Fragment>
       <InfiniteScroll
@@ -116,14 +106,15 @@ const AccountMutedUsers = (props) => {
       >
         {items.map((item) => (
           <div className={classes.wrapper}>
-            <div className={classes.row} onClick={handleClickUser(item.name)}>
+            <div className={classes.row}>
               <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
+                <Col xs="auto" style={{ paddingRight: 0 }} 
+                  onClick={handleClickUser(item.name)}>
                   <div className={classes.left}>
                     <Avatar author={item.name} />
                   </div>
                 </Col>
-                <Col>
+                <Col onClick={handleClickUser(item.name)}>
                   <div className={classes.right}>
                     <div className={classes.content}>
                       <p className={classes.username}>
@@ -134,16 +125,10 @@ const AccountMutedUsers = (props) => {
                 </Col>
                 <Col xs="auto">
                   <div className={classes.buttonContainer}>
-                    <ContainedButton
-                      fontSize={14}
-                      loading={loading}
-                      disabled={loading}
-                      style={{ float: 'right', marginTop: 5 }}
-                      transparent={true}
+                    <MuteButton 
+                      username={item.name} 
                       label="unmute"
-                      className={classes.button}
-                      onClick={unmuteUser}
-                    />
+                      disabled={!is_authenticated}/> 
                   </div>
                 </Col>
               </Row>
@@ -166,7 +151,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    setProfileIsVisited,
   }, dispatch),
 })
 

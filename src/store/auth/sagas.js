@@ -43,6 +43,14 @@ import {
   removeHiddenBuzzSuccess,
 
   setCensorList,
+
+  FOLLOW_MUTED_LIST_REQUEST,
+  followMutedListSuccess,
+  followMutedListFailure,
+
+  UNFOLLOW_MUTED_LIST_REQUEST,
+  unfollowMutedListSuccess,
+  unfollowMutedListFailure,
 } from './actions'
 
 import {
@@ -58,6 +66,8 @@ import {
   fetchMuteList,
   generateMuteOperation,
   getCensoredList,
+  generateFollowMutedListOperation,
+  generateUnfollowMutedListOperation,
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer } from 'services/helper'
@@ -387,6 +397,76 @@ function* removeHiddenBuzzRequest(payload, meta) {
   yield put(removeHiddenBuzzSuccess(meta))
 }
 
+function* followMutedListRequest(payload, meta) {
+  try {
+    const { username : following } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateFollowMutedListOperation, follower, following)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      console.log({result})
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      console.log({result})
+      success = result.success
+    }
+    
+    if(!success) {
+      yield put(followMutedListFailure({ success: false, errorMessage: 'Failed to follow muted list' }, meta))
+    } else {
+      yield put(followMutedListSuccess({ success: true }, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('follow_muted', error)
+    yield put(followMutedListFailure({ success: false, errorMessage }, meta))
+  }
+}
+
+function* unfollowMutedListRequest(payload, meta) {
+  try {
+    const { username : following } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username: follower, useKeychain } = user
+
+    const operation = yield call(generateUnfollowMutedListOperation, follower, following)
+
+    let success = false
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, follower, operation)
+      console.log({result})
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      console.log({result})
+      success = result.success
+    }
+    
+    if(!success) {
+      yield put(unfollowMutedListFailure({ success: false, errorMessage: 'Failed to unfollow muted list' }, meta))
+    } else {
+      yield put(unfollowMutedListSuccess({ success: true }, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('unfollow_muted', error)
+    yield put(unfollowMutedListFailure({ success: false, errorMessage }, meta))
+  }
+}
+
 function* watchSignoutUserRequest({ meta }) {
   yield call(signoutUserRequest, meta)
 }
@@ -423,6 +503,15 @@ function* watchRemoveHiddenBuzzRequest({ payload, meta }) {
   yield call(removeHiddenBuzzRequest, payload ,meta)
 }
 
+function* watchFollowMutedListRequest({ payload, meta }) {
+  yield call(followMutedListRequest, payload ,meta)
+}
+
+function* watchUnfollowMutedListRequest({ payload, meta }) {
+  yield call(unfollowMutedListRequest, payload ,meta)
+}
+
+
 export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
@@ -433,4 +522,7 @@ export default function* sagas() {
   yield takeEvery(SWITCH_ACCOUNT_REQUEST, watchSwitchAccountRequest)
   yield takeEvery(HIDE_BUZZ_REQUEST, watchHideBuzzRequest)
   yield takeEvery(REMOVE_HIDDEN_BUZZ_REQUEST, watchRemoveHiddenBuzzRequest)
+  yield takeEvery(FOLLOW_MUTED_LIST_REQUEST, watchFollowMutedListRequest)
+  yield takeEvery(UNFOLLOW_MUTED_LIST_REQUEST, watchUnfollowMutedListRequest)
+  
 }

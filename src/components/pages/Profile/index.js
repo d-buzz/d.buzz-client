@@ -42,7 +42,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
 import { ProfileSkeleton, HelmetGenerator, HiddenBuzzListModal } from 'components'
 import queryString from 'query-string'
-import ListIcon from '@material-ui/icons/List';
+import ListIcon from '@material-ui/icons/List'
 
 
 const useStyles = createUseStyles(theme => ({

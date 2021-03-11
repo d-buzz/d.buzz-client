@@ -15,6 +15,10 @@ import {
   CLOSE_CENSOSHIP_DIALOG,
   SET_REFRESH_ROUTE_STATUS,
   CLEAR_REFRESH_ROUTE_STATUS,
+  OPEN_FOLLOW_MUTED_DIALOG,
+  CLOSE_FOLLOW_MUTED_DIALOG,
+  OPEN_FOLLOW_BLACKLISTS_DIALOG,
+  CLOSE_FOLLOW_BLACKLISTS_DIALOG,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -28,6 +32,8 @@ const defaultState = fromJS({
   hideBuzzDialog: { open: false, author: null, permlink: null },
   censorshipDialog: { open: false, author: null, permlink: null },
   refreshRouteStatus : { pathname: null, timestamp: null },
+  followMutedListDialog : { open: false, username: null },
+  followBlacklistsDialog : { open: false, username: null },
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -64,6 +70,14 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('refreshRouteStatus', payload)
   case CLEAR_REFRESH_ROUTE_STATUS:
     return state.set('refreshRouteStatus', { pathname: null, timestamp: null })
+  case OPEN_FOLLOW_MUTED_DIALOG:
+    return state.set('followMutedListDialog', { open: true, ...payload })
+  case CLOSE_FOLLOW_MUTED_DIALOG:
+    return state.set('followMutedListDialog', { open: false, username: null })
+  case OPEN_FOLLOW_BLACKLISTS_DIALOG:
+    return state.set('followBlacklistsDialog', { open: true, ...payload })
+  case CLOSE_FOLLOW_BLACKLISTS_DIALOG:
+    return state.set('followBlacklistsDialog', { open: false, username: null })
   default:
     return state
   }

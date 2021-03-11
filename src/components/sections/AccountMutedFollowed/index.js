@@ -1,14 +1,14 @@
 import React from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Avatar, ContainedButton } from 'components/elements'
+import { Avatar } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, FollowMutedListButton } from 'components'
 
 
 const useStyle = createUseStyles(theme => ({
@@ -52,7 +52,6 @@ const useStyle = createUseStyles(theme => ({
     paddingTop: 0,
     paddingBottom: 0,
     ...theme.font,
-    color: "#e61c34",
   },
   post: {
     color: '#14171a',
@@ -85,6 +84,7 @@ const useStyle = createUseStyles(theme => ({
     paddingTop: 0,
     paddingBottom: 0,
     ...theme.font,
+    color: "#e61c34",
   },
 }))
 
@@ -108,10 +108,6 @@ const AccountMutedFollowed = (props) => {
     }
   }
 
-  const unfollowMutedList = () => {
-
-  }
-
   return (
     <React.Fragment>
       <InfiniteScroll
@@ -120,14 +116,15 @@ const AccountMutedFollowed = (props) => {
       >
         {items.map((item) => (
           <div className={classes.wrapper}>
-            <div className={classes.row} onClick={handleClickUser(item.name)}>
+            <div className={classes.row}>
               <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
+                <Col xs="auto" style={{ paddingRight: 0 }} 
+                  onClick={handleClickUser(item.name)}>
                   <div className={classes.left}>
                     <Avatar author={item.name} />
                   </div>
                 </Col>
-                <Col>
+                <Col onClick={handleClickUser(item.name)}>
                   <div className={classes.right}>
                     <div className={classes.content}>
                       <p className={classes.username}>
@@ -144,16 +141,10 @@ const AccountMutedFollowed = (props) => {
                 </Col>
                 <Col xs="auto">
                   <div className={classes.buttonContainer}>
-                    <ContainedButton
-                      fontSize={14}
-                      loading={loading}
-                      disabled={loading}
-                      style={{ float: 'right', marginTop: 5 }}
-                      transparent={true}
+                    <FollowMutedListButton 
+                      username={item.name} 
                       label="unfollow muted list"
-                      className={classes.button}
-                      onClick={unfollowMutedList}
-                    />
+                      disabled={!is_authenticated}/>
                   </div>
                 </Col>
               </Row>

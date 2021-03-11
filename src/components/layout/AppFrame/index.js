@@ -16,6 +16,7 @@ import {
   LoginModal,
   HideBuzzModal,
   CensorshipModal,
+  FollowMutedListModal,
 } from 'components'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
@@ -152,6 +153,7 @@ const AppFrame = (props) => {
       <ReplyFormModal />
       <NotificationBox />
       <MuteModal />
+      <FollowMutedListModal/>
       <HideBuzzModal />
       <CensorshipModal />
       <LoginModal
