@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
 import { getSavedUserRequest } from 'store/auth/actions'
 import { getBestRpcNode, checkVersionRequest } from 'store/settings/actions'
+import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -93,8 +94,8 @@ const Init = (props) => {
         caches.delete(name)
       })
     })
-    window.history.forward(1)
-    window.location.reload(true)
+        window.history.forward(1)
+        window.location.reload(true)
   }
 
   const dismiss = () => {
@@ -104,14 +105,14 @@ const Init = (props) => {
   useEffect(() => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
-      getCensorTypesRequest().then(() => {
-        getBestRpcNode().then(() => {
-          getTrendingTagsRequest()
-          getSavedUserRequest().then(() => {
-            setInit(true)
+        getCensorTypesRequest().then(() => {
+          getBestRpcNode().then(() => {
+            getTrendingTagsRequest()
+            getSavedUserRequest().then(() => {
+              setInit(true)
+            })
           })
         })
-      })
     })
     // eslint-disable-next-line
   }, [])
