@@ -70,7 +70,7 @@ function* checkVersionRequest(meta) {
   // if(!running) {
   //   running = JSON.stringify(remote)
   // } else {
-  const { BRANCH, VERSION } = config
+    const { BRANCH, VERSION } = config
 
   const latest = (VERSION === remote[BRANCH])
   // }
