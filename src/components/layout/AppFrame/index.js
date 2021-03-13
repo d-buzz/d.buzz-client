@@ -17,6 +17,8 @@ import {
   HideBuzzModal,
   CensorshipModal,
   FollowMutedListModal,
+  BlacklistModal,
+  FollowBlacklistsModal,
 } from 'components'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
@@ -156,6 +158,8 @@ const AppFrame = (props) => {
       <FollowMutedListModal/>
       <HideBuzzModal />
       <CensorshipModal />
+      <BlacklistModal/>
+      <FollowBlacklistsModal/>
       <LoginModal
         show={showLogin}
         onHide={handleClickCloseLoginModal}

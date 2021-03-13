@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
-import { useHistory } from 'react-router-dom'
+import { bindActionCreators } from 'redux'
 import {
   RoundedField,
   SearchIcon,
@@ -9,6 +9,7 @@ import {
 import { connect } from 'react-redux'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { setAccountListSearchkey } from "store/profile/actions"
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -22,17 +23,15 @@ const SearchListsField = (props) => {
   const { 
     iconTop = -2, 
     defaultValue,
-    user,
     dispatch,
-    showButton=false,
     loadingButton=false,
     buttonLabel,
+    listType,
+    setAccountListSearchkey,
     ...otherProps
   } = props
   const [search, setSearch] = useState('')
   const classes = useStyles()
-  const history = useHistory()
-  const { is_authenticated } = user
 
   useEffect(() => {
     setSearch(defaultValue)
@@ -40,14 +39,7 @@ const SearchListsField = (props) => {
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
-      let link = ''
-      if(is_authenticated) {
-        link = '/search'
-      } else {
-        link = '/ug/search'
-      }
-      link += `/posts?q=${encodeURIComponent(search)}`
-      history.replace(link)
+      setAccountListSearchkey(listType,search)
     }
   }
 
@@ -55,6 +47,7 @@ const SearchListsField = (props) => {
     const { target } = e
     const { value } = target
     setSearch(value)
+    setAccountListSearchkey(listType,value)
   }
 
   return (
@@ -70,7 +63,7 @@ const SearchListsField = (props) => {
             onChange={onChange}
             {...otherProps}
           /></Col>
-        {showButton && 
+        {false && 
         (<Col xs="auto">
           <ContainedButton
             fontSize={14}
@@ -87,8 +80,11 @@ const SearchListsField = (props) => {
   )
 }
 
-const mapStateToProps = (state) => ({
-  user: state.auth.get('user'),
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    setAccountListSearchkey,
+  }, dispatch),
 })
 
-export default connect(mapStateToProps)(SearchListsField)
+
+export default connect(null, mapDispatchToProps)(SearchListsField)

@@ -334,3 +334,9 @@ export const checkAccountFollowsListFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_ACCOUNT_LIST_SEARCHKEY = 'SET_ACCOUNT_LIST_SEARCHKEY'
+export const setAccountListSearchkey = (list_type, keyword=null) => ({
+  type: SET_ACCOUNT_LIST_SEARCHKEY,
+  payload: { list_type, keyword },
+})

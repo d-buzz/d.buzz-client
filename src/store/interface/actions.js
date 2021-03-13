@@ -131,3 +131,16 @@ export const openFollowBlacklistsDialog = (username, followBlacklistsSuccessCall
 export const closeFollowBlacklistsDialog = () => ({
   type: CLOSE_FOLLOW_BLACKLISTS_DIALOG,
 })
+
+
+export const OPEN_BLACKLIST_DIALOG = 'OPEN_BLACKLIST_DIALOG'
+export const CLOSE_BLACKLIST_DIALOG = 'CLOSE_BLACKLIST_DIALOG'
+
+export const openBlacklistDialog = (username, blacklistSuccessCallback = null) => ({
+  type: OPEN_BLACKLIST_DIALOG,
+  payload: { username, blacklistSuccessCallback },
+})
+
+export const closeBlacklistDialog = () => ({
+  type: CLOSE_BLACKLIST_DIALOG,
+})

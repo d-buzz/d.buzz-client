@@ -1,17 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { Avatar, ContainedButton } from 'components/elements'
+import { Avatar } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { pending } from 'redux-saga-thunk'
 import { useHistory } from 'react-router-dom'
-import {
-  setProfileIsVisited,
-} from 'store/profile/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
-import { AvatarlistSkeleton } from 'components'
+import { AvatarlistSkeleton, BlacklistButton } from 'components'
 
 
 const useStyle = createUseStyles(theme => ({
@@ -86,17 +83,16 @@ const AccountBlacklistedUsers = (props) => {
   const classes = useStyle()
   const {
     loading,
-    setProfileIsVisited,
     user,
     blacklistedList : items,
+    listSearchkey,
   } = props
 
   const { is_authenticated } = user
-
   const history = useHistory()
+  const [searchkey, setSearchkey] = useState(null)
 
   const handleClickUser = (name) => () => {
-    setProfileIsVisited(false)
     if(is_authenticated) {
       history.replace(`/@${name}/t/buzz`)
     } else {
@@ -104,10 +100,17 @@ const AccountBlacklistedUsers = (props) => {
     }
   }
 
-  const unblacklistUser = () => {
+  useEffect(() => {
+   
+    if(listSearchkey && listSearchkey.list_type === 'blacklist'){
+      setSearchkey(listSearchkey.keyword)
+    }
+  // eslint-disable-next-line
+  }, [listSearchkey])
 
+  const filterItems = (item) => {
+    return searchkey && item ? item.includes(searchkey) : true
   }
-
 
   return (
     <React.Fragment>
@@ -116,40 +119,39 @@ const AccountBlacklistedUsers = (props) => {
         hasMore={false}
       >
         {items.map((item) => (
-          <div className={classes.wrapper}>
-            <div className={classes.row} onClick={handleClickUser(item.name)}>
-              <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <div className={classes.left}>
-                    <Avatar author={item.name} />
-                  </div>
-                </Col>
-                <Col>
-                  <div className={classes.right}>
-                    <div className={classes.content}>
-                      <p className={classes.username}>
-                       @{item.name}
-                      </p>
+          <React.Fragment>
+            {filterItems(item.name) && 
+            <div className={classes.wrapper}>
+              <div className={classes.row}>
+                <Row style={{ marginRight: 0, marginLeft: 0 }}>
+                  <Col xs="auto" style={{ paddingRight: 0 }} 
+                    onClick={handleClickUser(item.name)}>
+                    <div className={classes.left}>
+                      <Avatar author={item.name} />
                     </div>
-                  </div>
-                </Col>
-                <Col xs="auto">
-                  <div className={classes.buttonContainer}>
-                    <ContainedButton
-                      fontSize={14}
-                      loading={loading}
-                      disabled={loading}
-                      style={{ float: 'right', marginTop: 5 }}
-                      transparent={true}
-                      label="Unblacklist"
-                      className={classes.button}
-                      onClick={unblacklistUser}
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          </div>
+                  </Col>
+                  <Col onClick={handleClickUser(item.name)}>
+                    <div className={classes.right}>
+                      <div className={classes.content}>
+                        <p className={classes.username}>
+                       @{item.name}
+                        </p>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col xs="auto">
+                    <div className={classes.buttonContainer}>
+                      <BlacklistButton 
+                        username={item.name} 
+                        label="Unblacklist"
+                        disabled={!is_authenticated}
+                        style={{ float: 'right', marginTop: 5 }}/> 
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </div>}
+          </React.Fragment>
         ))}
         {(!loading && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
@@ -163,11 +165,11 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'GET_ACCOUNT_LIST_REQUEST'),
   blacklistedList: state.profile.get('blacklistedList'),
+  listSearchkey: state.profile.get('listSearchkey'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    setProfileIsVisited,
   }, dispatch),
 })
 

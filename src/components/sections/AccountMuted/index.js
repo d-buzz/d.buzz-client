@@ -66,6 +66,8 @@ const AccountMuted = (props) => {
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
+  const [listType, setListType] = useState('mute')
+  const [searchButtonLabel, setSearchButtonLabel] = useState('Mute')
   const { params } = match
   const { username } = params
 
@@ -93,8 +95,12 @@ const AccountMuted = (props) => {
   useEffect(() => {
     if(pathname.match(/\/lists\/muted\/users/g)) {
       setIndex(0)
+      setListType('muted')
+      setSearchButtonLabel('Muted')
     } else if(pathname.match((/\/lists\/muted\/followed/g))) {
       setIndex(1)
+      setListType('follow_muted')
+      setSearchButtonLabel('Follow muted list')
     } else {
       setIndex(0)
     }
@@ -106,7 +112,7 @@ const AccountMuted = (props) => {
       <ProfileSkeleton loading={loading} />
       <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
         <div className={classes.spacer} />
-        <SearchListsField showButton={false} buttonLabel="mute"/>
+        <SearchListsField buttonLabel={searchButtonLabel} listType={listType}/>
         <Tabs
           value={index}
           indicatorColor="primary"

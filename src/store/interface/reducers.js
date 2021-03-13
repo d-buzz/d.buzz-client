@@ -19,6 +19,8 @@ import {
   CLOSE_FOLLOW_MUTED_DIALOG,
   OPEN_FOLLOW_BLACKLISTS_DIALOG,
   CLOSE_FOLLOW_BLACKLISTS_DIALOG,
+  OPEN_BLACKLIST_DIALOG,
+  CLOSE_BLACKLIST_DIALOG,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -34,6 +36,7 @@ const defaultState = fromJS({
   refreshRouteStatus : { pathname: null, timestamp: null },
   followMutedListDialog : { open: false, username: null },
   followBlacklistsDialog : { open: false, username: null },
+  blacklistDialog: { open: false, username: null },
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -78,6 +81,10 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('followBlacklistsDialog', { open: true, ...payload })
   case CLOSE_FOLLOW_BLACKLISTS_DIALOG:
     return state.set('followBlacklistsDialog', { open: false, username: null })
+  case OPEN_BLACKLIST_DIALOG:
+    return state.set('blacklistDialog', { open: true, ...payload })
+  case CLOSE_BLACKLIST_DIALOG:
+    return state.set('blacklistDialog', { open: false, username: null })
   default:
     return state
   }

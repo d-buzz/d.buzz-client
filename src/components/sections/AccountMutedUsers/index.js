@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Avatar } from 'components/elements'
@@ -85,11 +85,12 @@ const AccountMutedUsers = (props) => {
     loading,
     user,
     mutedList:items,
+    listSearchkey,
   } = props
 
   const { is_authenticated } = user
-
   const history = useHistory()
+  const [searchkey, setSearchkey] = useState(null)
 
   const handleClickUser = (name) => () => {
     if(is_authenticated) {
@@ -99,6 +100,18 @@ const AccountMutedUsers = (props) => {
     }
   }
 
+  useEffect(() => {
+   
+    if(listSearchkey && listSearchkey.list_type === 'muted'){
+      setSearchkey(listSearchkey.keyword)
+    }
+  // eslint-disable-next-line
+  }, [listSearchkey])
+
+  const filterItems = (item) => {
+    return searchkey && item ? item.includes(searchkey) : true
+  }
+
   return (
     <React.Fragment>
       <InfiniteScroll
@@ -106,36 +119,39 @@ const AccountMutedUsers = (props) => {
         hasMore={false}
       >
         {items.map((item) => (
-          <div className={classes.wrapper}>
-            <div className={classes.row}>
-              <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                <Col xs="auto" style={{ paddingRight: 0 }} 
-                  onClick={handleClickUser(item.name)}>
-                  <div className={classes.left}>
-                    <Avatar author={item.name} />
-                  </div>
-                </Col>
-                <Col onClick={handleClickUser(item.name)}>
-                  <div className={classes.right}>
-                    <div className={classes.content}>
-                      <p className={classes.username}>
-                      @{item.name}
-                      </p>
+          <React.Fragment>
+            {filterItems(item.name) && 
+            <div className={classes.wrapper}>
+              <div className={classes.row}>
+                <Row style={{ marginRight: 0, marginLeft: 0 }}>
+                  <Col xs="auto" style={{ paddingRight: 0 }} 
+                    onClick={handleClickUser(item.name)}>
+                    <div className={classes.left}>
+                      <Avatar author={item.name} />
                     </div>
-                  </div>
-                </Col>
-                <Col xs="auto">
-                  <div className={classes.buttonContainer}>
-                    <MuteButton 
-                      username={item.name} 
-                      label="Unmute"
-                      disabled={!is_authenticated}
-                      style={{ float: 'right', marginTop: 5 }}/> 
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          </div>
+                  </Col>
+                  <Col onClick={handleClickUser(item.name)}>
+                    <div className={classes.right}>
+                      <div className={classes.content}>
+                        <p className={classes.username}>
+                      @{item.name}
+                        </p>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col xs="auto">
+                    <div className={classes.buttonContainer}>
+                      <MuteButton 
+                        username={item.name} 
+                        label="Unmute"
+                        disabled={!is_authenticated}
+                        style={{ float: 'right', marginTop: 5 }}/> 
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </div>}
+          </React.Fragment>
         ))}
         {(!loading && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
@@ -149,6 +165,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'GET_ACCOUNT_LIST_REQUEST'),
   mutedList: state.profile.get('mutedList'),
+  listSearchkey: state.profile.get('listSearchkey'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Avatar } from 'components/elements'
@@ -94,11 +94,12 @@ const AccountMutedFollowed = (props) => {
     loading,
     user,
     followedMuted : items,
+    listSearchkey,
   } = props
 
   const { is_authenticated } = user
-
   const history = useHistory()
+  const [searchkey, setSearchkey] = useState(null)
 
   const handleClickUser = (name) => () => {
     if(is_authenticated) {
@@ -108,6 +109,18 @@ const AccountMutedFollowed = (props) => {
     }
   }
 
+  useEffect(() => {
+   
+    if(listSearchkey && listSearchkey.list_type === 'follow_muted'){
+      setSearchkey(listSearchkey.keyword)
+    }
+  // eslint-disable-next-line
+  }, [listSearchkey])
+
+  const filterItems = (item) => {
+    return searchkey && item ? item.includes(searchkey) : true
+  }
+
   return (
     <React.Fragment>
       <InfiniteScroll
@@ -115,42 +128,45 @@ const AccountMutedFollowed = (props) => {
         hasMore={false}
       >
         {items.map((item) => (
-          <div className={classes.wrapper}>
-            <div className={classes.row}>
-              <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                <Col xs="auto" style={{ paddingRight: 0 }} 
-                  onClick={handleClickUser(item.name)}>
-                  <div className={classes.left}>
-                    <Avatar author={item.name} />
-                  </div>
-                </Col>
-                <Col onClick={handleClickUser(item.name)}>
-                  <div className={classes.right}>
-                    <div className={classes.content}>
-                      <p className={classes.username}>
-                      @{item.name}
-                      </p>
+          <React.Fragment>
+            {filterItems(item.name) && 
+            <div className={classes.wrapper}>
+              <div className={classes.row}>
+                <Row style={{ marginRight: 0, marginLeft: 0 }}>
+                  <Col xs="auto" style={{ paddingRight: 0 }} 
+                    onClick={handleClickUser(item.name)}>
+                    <div className={classes.left}>
+                      <Avatar author={item.name} />
                     </div>
-                    {item.muted_list_description && 
+                  </Col>
+                  <Col onClick={handleClickUser(item.name)}>
+                    <div className={classes.right}>
+                      <div className={classes.content}>
+                        <p className={classes.username}>
+                      @{item.name}
+                        </p>
+                      </div>
+                      {item.muted_list_description && 
                     (<div className={classes.content}>
                       <p className={classes.description}>
                         {item.muted_list_description}
                       </p>
                     </div>)}
-                  </div>
-                </Col>
-                <Col xs="auto">
-                  <div className={classes.buttonContainer}>
-                    <FollowMutedListButton 
-                      username={item.name} 
-                      label="Unfollow muted list"
-                      disabled={!is_authenticated}
-                      style={{ float: 'right', marginTop: 5 }}/>
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          </div>
+                    </div>
+                  </Col>
+                  <Col xs="auto">
+                    <div className={classes.buttonContainer}>
+                      <FollowMutedListButton 
+                        username={item.name} 
+                        label="Unfollow muted list"
+                        disabled={!is_authenticated}
+                        style={{ float: 'right', marginTop: 5 }}/>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </div>}
+          </React.Fragment>
         ))}
         {(!loading && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
@@ -164,6 +180,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'GET_ACCOUNT_LIST_REQUEST'),
   followedMuted: state.profile.get('followedMuted'),
+  listSearchkey: state.profile.get('listSearchkey'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

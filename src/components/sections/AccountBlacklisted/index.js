@@ -65,6 +65,8 @@ const AccountBlacklisted = (props) => {
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
+  const [listType, setListType] = useState('blacklist')
+  const [searchButtonLabel, setSearchButtonLabel] = useState('Blacklist')
   const { params } = match
   const { username } = params
 
@@ -92,8 +94,12 @@ const AccountBlacklisted = (props) => {
   useEffect(() => {
     if(pathname.match(/\/lists\/blacklisted\/users/g)) {
       setIndex(0)
+      setListType('blacklist')
+      setSearchButtonLabel('Blacklist')
     } else if(pathname.match((/\/lists\/blacklisted\/followed/g))) {
       setIndex(1)
+      setListType('follow_blacklist')
+      setSearchButtonLabel('Follow blacklist')
     } else {
       setIndex(0)
     }
@@ -105,7 +111,7 @@ const AccountBlacklisted = (props) => {
       <ProfileSkeleton loading={loading} />
       <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
         <div className={classes.spacer} />
-        <SearchListsField showButton={false} buttonLabel="blacklist"/>
+        <SearchListsField buttonLabel={searchButtonLabel} listType={listType}/>
         <Tabs
           value={index}
           indicatorColor="primary"
