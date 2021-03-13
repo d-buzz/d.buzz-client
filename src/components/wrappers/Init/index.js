@@ -2,17 +2,25 @@ import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
 import { getSavedUserRequest } from 'store/auth/actions'
 import { getBestRpcNode, checkVersionRequest } from 'store/settings/actions'
+import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
 import { getCensorTypesRequest } from 'store/settings/actions'
 import { createUseStyles } from 'react-jss'
+import config from 'config'
+
+const { VERSION } = config
 
 const useStyles = createUseStyles({
   wrapper: {
     width: '100%',
     height: '100vh',
     backgroundColor: 'white',
+  },
+  brandWrapper: {
+    margin: '0 auto',
+    paddingTop: 30,
   },
 })
 
@@ -21,28 +29,22 @@ const SplashScreen = () => {
 
   return (
     <div className={classes.wrapper}>
-      <Spinner
-        size={35}
-        loading={true}
-        style={{
-          position: 'absolute',
-          margin: 'auto',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      />
-      <BrandIcon
-        style={{
-          position: 'absolute',
-          margin: 'auto',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      />
+      <div className={classes.brandWrapper}>
+        <center>
+          <BrandIcon />
+          <Spinner
+            size={35}
+            loading={true}
+          />
+          <Typography
+            style={{ marginTop: 13 }}
+            variant="h6"
+            component="p"
+          >
+            <b>v{VERSION}</b>
+          </Typography>
+        </center>
+      </div>
     </div>
   )
 }
