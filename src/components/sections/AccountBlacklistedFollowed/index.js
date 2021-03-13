@@ -5,7 +5,7 @@ import { Avatar } from 'components/elements'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { pending } from 'redux-saga-thunk'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton, FollowBlacklistsButton } from 'components'
@@ -92,14 +92,14 @@ const AccountBlacklistedFollowed = (props) => {
   const classes = useStyle()
   const {
     loading,
-    setProfileIsVisited,
     user,
     followedBlacklist : items,
     listSearchkey,
   } = props
 
-  const { is_authenticated } = user
+  const { username:loginUser, is_authenticated } = user
   const history = useHistory()
+  const { username } = useParams()
   const [searchkey, setSearchkey] = useState(null)
 
   const handleClickUser = (name) => () => {
@@ -155,6 +155,7 @@ const AccountBlacklistedFollowed = (props) => {
                       </div>)}
                       </div>
                     </Col>
+                    {loginUser === username &&
                     <Col xs="auto">
                       <div className={classes.blacklistButtonContainer}>
                         <FollowBlacklistsButton
@@ -163,7 +164,7 @@ const AccountBlacklistedFollowed = (props) => {
                           disabled={!is_authenticated}
                           style={{ float: 'right', marginTop: 5 }}/> 
                       </div>
-                    </Col>
+                    </Col>}
                   </Row>
                 </div>
               </div>}

@@ -375,15 +375,16 @@ const Profile = (props) => {
               <Col>
                 {is_authenticated && (
                   <React.Fragment>
+                    <IconButton
+                      size="medium"
+                      style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
+                      onClick={handleOpenMoreOptions}
+                    >
+                      <MoreCircleIconRed/>
+                    </IconButton>
+                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
                     {loginuser === username && (
-                      <React.Fragment>
-                        <IconButton
-                          size="medium"
-                          style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
-                          onClick={handleOpenMoreOptions}
-                        >
-                          <MoreCircleIconRed/>
-                        </IconButton>
+                      <React.Fragment>\
                         <ContainedButton
                           fontSize={14}
                           disabled={loading}
@@ -393,7 +394,6 @@ const Profile = (props) => {
                           className={classes.button}
                           onClick={handleClickOpenHiddenBuzzList}
                         />
-                        <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
                       </React.Fragment>
                     )}
                     {loginuser !== username && !mutelist.includes(username) && (

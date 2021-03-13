@@ -156,7 +156,9 @@ const GuardedAppFrame = (props) => {
   }
 
 
-  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g)) {
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) || 
+    pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
+    pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
     title = `Profile / ${items[1]}`
   }
