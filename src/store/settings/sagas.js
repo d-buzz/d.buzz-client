@@ -70,10 +70,9 @@ function* checkVersionRequest(meta) {
   if(!running) {
     running = JSON.stringify(remote)
   } else {
-    const { prod, dev } = JSON.parse(running)
-    const { BRANCH } = config
+    const { BRANCH, VERSION } = config
 
-    latest = (BRANCH === 'dev' && dev === remote.dev) || (BRANCH === 'prod' && prod === remote.prod)
+    latest = (VERSION === remote[BRANCH])
   }
 
   if(!latest) {
