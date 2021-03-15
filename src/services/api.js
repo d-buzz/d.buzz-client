@@ -492,13 +492,18 @@ export const fetchRewardFund = (username) => {
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   // api.setOptions({ url: 'https://anyx.io' })
-
   return new Promise((resolve, reject) => {
     broadcast.voteAsync(wif, voter, author, permlink, weight)
       .then((result) => {
         resolve(result)
       }).catch((error) => {
-        reject(error.code)
+        let code = error.code
+        if(error.code === -32000){
+          if(error.message && error.message.includes('paid out is forbidden')){
+            code = -32001
+          }
+        }
+        reject(code)
       })
   })
 }
@@ -577,12 +582,10 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
     let iterator = 0
 
     api.getFollowingAsync(follower, start_following, 'blog', limit)
-      .then((result) => {
-
+      .then(async(result) => {
         if(result.length === 1 && (result[0].following === start_following)) {
           resolve([])
         }
-
         if(result.length !== 0) {
           result.forEach(async(item, index) => {
             const profileVisited = visited.filter((profile) => profile.name === item.following)
@@ -640,10 +643,16 @@ export const keychainUpvote = (username, permlink, author, weight) => {
       author,
       weight,
       response => {
-        if(response.success) {
+        if(response.success){
           resolve(response)
-        } else {
-          reject(response.error.code)
+        }else{
+          let code = response.error.code
+          if(response.error.code === -32000){
+            if(response.message && response.message.includes('paid out is forbidden')){
+              code = -32001
+            }
+          }
+          reject(code)
         }
       },
     )
