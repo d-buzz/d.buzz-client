@@ -96,6 +96,8 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
+const urlRegex = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/i
+
 const prepareTwitterEmbeds = (content) => {
   let body = content
   const mainTwitterRegex = /(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i
@@ -373,6 +375,20 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitFacebook = content.split(':')
     const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
     return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
+  } else if(content.match(urlRegex)) {
+    let body = content
+    const matchData = content.match(urlRegex)
+    
+    if (matchData) {
+      const url = `${matchData['input']}`.replace("(", "%28").replace(")", "%29")
+      body = body.replace(body, url)
+    }
+    
+    return <div
+      key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
+      className={classNames(markdownClass, assetClass)}
+      dangerouslySetInnerHTML={{ __html: renderer.render(body) }}
+    />
   } else {
     // render normally
     return <div
