@@ -111,7 +111,7 @@ const MuteModal = (props) => {
     unfollowRequest,
   } = props
   const [open, setOpen] = useState(false)
-  const [username, setUsernamae] = useState(null)
+  const [username, setUsername] = useState(null)
   const [isMuted, setIsMuted] = useState(false)
   const classes = useStyles()
   const { muteSuccessCallback } = muteModal
@@ -120,30 +120,22 @@ const MuteModal = (props) => {
     if(muteModal && muteModal.hasOwnProperty('open')) {
       const { open, username } = muteModal
       setOpen(open)
-      setUsernamae(username)
+      setUsername(username)
       if(mutelist.includes(username)) {
         setIsMuted(true)
+      }else{
+        setIsMuted(false)
       }
     }
   // eslint-disable-next-line
-  }, [muteModal])
+  }, [muteModal, mutelist])
 
   const onHide = () => {
     closeMuteDialog()
   }
 
-  // useEffect(() => {
-  //   if(mutelist.includes(username)) {
-  //     setOpen(false)
-  //     onHide()
-  //     broadcastNotification('success', `Succesfully muted @${username}`)
-  //   }
-  //   // eslint-disable-next-line
-  // }, [mutelist])
-
   const handleClickMuteUser = () => {
-    const inMuteList = mutelist.includes(username)
-    if(!inMuteList) {
+    if(!isMuted) {
       muteUserRequest(username).then(({ success, errorMessage }) => {
         if(success){
           setOpen(false)
@@ -190,7 +182,7 @@ const MuteModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  {!mutelist.includes(username) && (
+                  {!isMuted && (
                     <React.Fragment>
                       <h6>Add user to mutelist?</h6>
                       <p className={classes.text}>
@@ -199,7 +191,7 @@ const MuteModal = (props) => {
                       </p>
                     </React.Fragment>
                   )}
-                  {mutelist.includes(username) && (
+                  {isMuted && (
                     <React.Fragment>
                       <h6>Remove user to mutelist?</h6>
                       <p className={classes.text}>

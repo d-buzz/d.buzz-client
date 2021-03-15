@@ -9,6 +9,8 @@ import { useHistory, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton, MuteButton } from 'components'
+import { checkAccountExistRequest } from "store/profile/actions"
+import { showAccountSearchButton, hideAccountSearchButton } from "store/interface/actions"
 
 
 const useStyle = createUseStyles(theme => ({
@@ -86,6 +88,9 @@ const AccountMutedUsers = (props) => {
     user,
     mutedList:items,
     listSearchkey,
+    checkAccountExistRequest,
+    showAccountSearchButton,
+    hideAccountSearchButton,
   } = props
 
   const { username:loginUser, is_authenticated } = user
@@ -102,15 +107,34 @@ const AccountMutedUsers = (props) => {
   }
 
   useEffect(() => {
-   
     if(listSearchkey && listSearchkey.list_type === 'muted'){
       setSearchkey(listSearchkey.keyword)
+      checkAccountExists(listSearchkey.keyword)
     }
   // eslint-disable-next-line
   }, [listSearchkey])
 
   const filterItems = (item) => {
     return searchkey && item ? item.includes(searchkey) : true
+  }
+
+  const checkAccountExists = (keyword) => {
+    const exist = items && items.filter((item) => item.name.includes(keyword)).length > 0
+    if(!exist){
+      checkAccountExistRequest(keyword).then(({ exists }) => {
+        if(exists){
+          showAccountSearchButton('muted')
+        }else{
+          hideAccountSearchButton()
+        }
+      })
+    }else{
+      hideAccountSearchButton()
+    }
+  }
+
+  const filteredItemCount = () => {
+    return searchkey ? items.filter((item) => item.name.includes(searchkey)).length : items.length
   }
 
   return (
@@ -157,6 +181,8 @@ const AccountMutedUsers = (props) => {
         ))}
         {(!loading && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
+        {(!loading && filteredItemCount() === 0) &&
+          (<span className={classes.noData}><center><br/><h6>User not found on this list</h6></center></span>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>
@@ -172,6 +198,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
+    checkAccountExistRequest,
+    showAccountSearchButton,
+    hideAccountSearchButton,
   }, dispatch),
 })
 

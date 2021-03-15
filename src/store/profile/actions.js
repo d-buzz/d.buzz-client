@@ -340,3 +340,26 @@ export const setAccountListSearchkey = (list_type, keyword=null) => ({
   type: SET_ACCOUNT_LIST_SEARCHKEY,
   payload: { list_type, keyword },
 })
+
+export const CHECK_ACCOUNT_EXIST_REQUEST = 'CHECK_ACCOUNT_EXIST_REQUEST'
+export const CHECK_ACCOUNT_EXIST_SUCCESS = 'CHECK_ACCOUNT_EXIST_SUCCESS'
+export const CHECK_ACCOUNT_EXIST_FAILURE = 'CHECK_ACCOUNT_EXIST_FAILURE'
+export const checkAccountExistRequest = (username) => ({
+  type: CHECK_ACCOUNT_EXIST_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const checkAccountExistSuccess = (response, meta) => ({
+  type: CHECK_ACCOUNT_EXIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const checkAccountExistFailure = (error, meta) => ({
+  type: CHECK_ACCOUNT_EXIST_FAILURE,
+  payload: error,
+  meta,
+})

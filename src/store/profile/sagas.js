@@ -45,6 +45,10 @@ import {
   CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST,
   checkAccountFollowsListSuccess,
   checkAccountFollowsListFailure,
+
+  CHECK_ACCOUNT_EXIST_REQUEST,
+  checkAccountExistSuccess,
+  checkAccountExistFailure,
 } from './actions'
 
 import {
@@ -259,6 +263,20 @@ function* checkAccountFollowsListRequest(payload, meta) {
   }
 }
 
+function* checkAccountExistRequest(payload, meta) {
+  try {
+    const { username } = payload
+    let exists = false
+    const account = yield call(fetchAccounts, username)
+    if(account.length > 0){
+      exists = true
+    }
+    yield put(checkAccountExistSuccess({ username, exists, profile: account }, meta))
+  } catch (error) {
+    yield put(checkAccountExistFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -295,6 +313,10 @@ function* watchCheckAccountFollowsListRequest({ payload, meta }) {
   yield call(checkAccountFollowsListRequest, payload, meta)
 }
 
+function* watchCheckAccountExistRequest({ payload, meta }) {
+  yield call(checkAccountExistRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
@@ -305,4 +327,5 @@ export default function* sagas() {
   yield takeEvery(GET_ACCOUNT_COMMENTS_REQUEST, watchGetAccountCommentsRequest)
   yield takeEvery(GET_ACCOUNT_LIST_REQUEST, watchGetAccountListRequest)
   yield takeEvery(CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST, watchCheckAccountFollowsListRequest)
+  yield takeEvery(CHECK_ACCOUNT_EXIST_REQUEST, watchCheckAccountExistRequest)
 }

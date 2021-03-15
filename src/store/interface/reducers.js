@@ -21,6 +21,9 @@ import {
   CLOSE_FOLLOW_BLACKLISTS_DIALOG,
   OPEN_BLACKLIST_DIALOG,
   CLOSE_BLACKLIST_DIALOG,
+  SHOW_ACCOUNT_SEARCH_BUTTON,
+  HIDE_ACCOUNT_SEARCH_BUTTON,
+  SET_ACCOUNT_SEARCH_LIST_KEYWORD,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -37,6 +40,8 @@ const defaultState = fromJS({
   followMutedListDialog : { open: false, username: null },
   followBlacklistsDialog : { open: false, username: null },
   blacklistDialog: { open: false, username: null },
+  accountSearchListButton : { show : false, list_type: null },
+  accountSearchListKeyword : null,
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -85,6 +90,12 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('blacklistDialog', { open: true, ...payload })
   case CLOSE_BLACKLIST_DIALOG:
     return state.set('blacklistDialog', { open: false, username: null })
+  case SHOW_ACCOUNT_SEARCH_BUTTON:
+    return state.set('accountSearchListButton', { show: true, ...payload })
+  case HIDE_ACCOUNT_SEARCH_BUTTON:
+    return state.set('accountSearchListButton', { show: false, list_type: null })
+  case SET_ACCOUNT_SEARCH_LIST_KEYWORD:
+    return state.set('accountSearchListKeyword', payload)
   default:
     return state
   }

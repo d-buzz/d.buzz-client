@@ -25,6 +25,7 @@ import {
   CLEAR_ACCOUNT_MUTED_LIST,
   CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST,
   SET_ACCOUNT_LIST_SEARCHKEY,
+  CHECK_ACCOUNT_EXIST_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -47,6 +48,7 @@ const defaultState = fromJS({
   followedBlacklist : [],
   accountLists : {},
   listSearchkey : { list_type: null, keyword: null },
+  accountExist : {},
 })
 
 export const profile = (state = defaultState, { type, payload }) => {
@@ -103,6 +105,8 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state.set('followedMuted', [])
   case SET_ACCOUNT_LIST_SEARCHKEY:
     return state.set('listSearchkey', payload)
+  case CHECK_ACCOUNT_EXIST_SUCCESS:
+    return state.set('accountExist', payload)
   default:
     return state
   }

@@ -144,3 +144,21 @@ export const openBlacklistDialog = (username, blacklistSuccessCallback = null) =
 export const closeBlacklistDialog = () => ({
   type: CLOSE_BLACKLIST_DIALOG,
 })
+
+export const SHOW_ACCOUNT_SEARCH_BUTTON = 'SHOW_ACCOUNT_SEARCH_BUTTON'
+export const HIDE_ACCOUNT_SEARCH_BUTTON = 'HIDE_ACCOUNT_SEARCH_BUTTON'
+
+export const showAccountSearchButton = (list_type) => ({
+  type: SHOW_ACCOUNT_SEARCH_BUTTON,
+  payload: { list_type },
+})
+
+export const hideAccountSearchButton = () => ({
+  type: HIDE_ACCOUNT_SEARCH_BUTTON,
+})
+
+export const SET_ACCOUNT_SEARCH_LIST_KEYWORD = 'SET_ACCOUNT_SEARCH_LIST_KEYWORD'
+export const setAccountSearchListKeyword = (keyword) => ({
+  type: SET_ACCOUNT_SEARCH_LIST_KEYWORD,
+  payload: keyword,
+})

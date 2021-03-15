@@ -12,7 +12,6 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
 import { ProfileSkeleton, HelmetGenerator, SearchListsField } from 'components'
-import { ContainedButton } from 'components/elements'
 
 const useStyles = createUseStyles(theme => ({
   spacer: {
@@ -96,7 +95,7 @@ const AccountMuted = (props) => {
     if(pathname.match(/\/lists\/muted\/users/g)) {
       setIndex(0)
       setListType('muted')
-      setSearchButtonLabel('Muted')
+      setSearchButtonLabel('Mute')
     } else if(pathname.match((/\/lists\/muted\/followed/g))) {
       setIndex(1)
       setListType('follow_muted')

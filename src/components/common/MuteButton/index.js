@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
-import { openMuteDialog } from 'store/interface/actions'
-import { setAccountMutedList } from "store/profile/actions"
+import { openMuteDialog, setAccountSearchListKeyword } from 'store/interface/actions'
+import { setAccountMutedList, setAccountListSearchkey } from "store/profile/actions"
+import { setMuteList } from "store/auth/actions"
 
 const MuteButton = (props) => {
   const { 
@@ -17,6 +18,9 @@ const MuteButton = (props) => {
     disabled=false,
     style,
     successCallback=null,
+    setAccountSearchListKeyword,
+    setAccountListSearchkey,
+    setMuteList,
   } = props
 
   const { pathname } = useLocation()
@@ -36,7 +40,18 @@ const MuteButton = (props) => {
         if(index !== -1){
           oldList.splice(index,1)
           setAccountMutedList(oldList)
+          setMuteList(oldList)
+        }else{
+          const newData = {
+            blacklist_description: "",
+            muted_list_description: "",
+            name: username,
+          }
+          const newList = [newData, ...mutedList]
+          setAccountMutedList(newList)
         }
+        setAccountSearchListKeyword('')
+        setAccountListSearchkey('muted','')
       }
     }
   }
@@ -65,6 +80,9 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     openMuteDialog,
     setAccountMutedList,
+    setAccountSearchListKeyword,
+    setAccountListSearchkey,
+    setMuteList,
   }, dispatch),
 })
 
