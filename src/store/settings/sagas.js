@@ -64,17 +64,16 @@ function* setThemeRequest(payload, meta) {
 
 function* checkVersionRequest(meta) {
   const remote = yield call(checkVersion)
-  let  running = yield call([localStorage, localStorage.getItem], 'version')
-  let latest = false
+  // let  running = yield call([localStorage, localStorage.getItem], 'version')
+  // let latest = false
 
-  if(!running) {
-    running = JSON.stringify(remote)
-  } else {
-    const { prod, dev } = JSON.parse(running)
-    const { BRANCH } = config
+  // if(!running) {
+  //   running = JSON.stringify(remote)
+  // } else {
+  const { BRANCH, VERSION } = config
 
-    latest = (BRANCH === 'dev' && dev === remote.dev) || (BRANCH === 'prod' && prod === remote.prod)
-  }
+  const latest = (VERSION === remote[BRANCH])
+  // }
 
   if(!latest) {
     yield call([localStorage, localStorage.setItem], 'version', JSON.stringify(remote))
