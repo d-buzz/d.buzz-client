@@ -87,6 +87,12 @@ const Init = (props) => {
 
   const reload = () => {
     dismiss()
+    caches.keys().then((names) => {
+      // Delete all the cache files
+      names.forEach(name => {
+        caches.delete(name)
+      })
+    })
     window.history.forward(1)
     window.location.reload(true)
   }
