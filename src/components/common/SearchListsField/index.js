@@ -5,7 +5,12 @@ import {
   RoundedField,
   SearchIcon,
 } from 'components/elements'
-import { MuteButton, FollowMutedListButton} from "components"
+import { 
+  MuteButton, 
+  FollowMutedListButton, 
+  BlacklistButton, 
+  FollowBlacklistsButton,
+} from "components"
 import { connect } from 'react-redux'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -56,7 +61,7 @@ const SearchListsField = (props) => {
     loadingButton=false,
     buttonLabel,
     listType,
-    search,
+    search='',
     setAccountListSearchkey,
     setAccountSearchListKeyword,
     searchListButton,
@@ -109,10 +114,10 @@ const SearchListsField = (props) => {
     const { value } = target
     const val = value ? value.toLowerCase() : value
     setAccountSearchListKeyword(val)
-    setAccountListSearchkey(listType,val)
     if(!val){
       setShowButton(false)
       setShowError(false)
+      setAccountListSearchkey(listType,val)
     }
   }
 
@@ -129,7 +134,7 @@ const SearchListsField = (props) => {
             onChange={onChange}
             {...otherProps}
           />
-          {!searchLoading && <SearchError show={showError} className={classes.searchError} />}
+          {!searchLoading && search && <SearchError show={showError} className={classes.searchError} />}
         </Col>
         {(showButton || searchLoading) && 
         (<Col xs="auto">
@@ -151,6 +156,22 @@ const SearchListsField = (props) => {
                   disabled={loadingButton}
                   style={buttonStyle}/> 
               )}
+              {listType === 'blacklist' && (
+                <BlacklistButton
+                  username={search} 
+                  label={buttonLabel}
+                  loading={loadingButton}
+                  disabled={loadingButton}
+                  style={buttonStyle}/> 
+              )} 
+              {listType === 'follow_blacklist' && (
+                <FollowBlacklistsButton
+                  username={search} 
+                  label={buttonLabel}
+                  loading={loadingButton}
+                  disabled={loadingButton}
+                  style={buttonStyle}/> 
+              )} 
             </React.Fragment>}
           {searchLoading && 
           <CircularProgress

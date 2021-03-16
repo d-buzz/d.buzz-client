@@ -4,6 +4,8 @@ import Tab from '@material-ui/core/Tab'
 import { createUseStyles } from 'react-jss'
 import {
   getAccountListRequest,
+  clearAccountBlacklist,
+  clearAccountFollowedBlacklist,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -57,6 +59,8 @@ const AccountBlacklisted = (props) => {
     loading,
     route,
     getAccountListRequest,
+    clearAccountBlacklist,
+    clearAccountFollowedBlacklist,
   } = props
 
   const history = useHistory()
@@ -86,6 +90,8 @@ const AccountBlacklisted = (props) => {
 
   useEffect(() => {
     anchorTop()
+    clearAccountBlacklist()
+    clearAccountFollowedBlacklist()
     getAccountListRequest(username,'blacklisted')
     getAccountListRequest(username,'follow_blacklist')
     // eslint-disable-next-line
@@ -139,6 +145,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getAccountListRequest,
+    clearAccountBlacklist,
+    clearAccountFollowedBlacklist,
   }, dispatch),
 })
 

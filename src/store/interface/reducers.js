@@ -41,7 +41,7 @@ const defaultState = fromJS({
   followBlacklistsDialog : { open: false, username: null },
   blacklistDialog: { open: false, username: null },
   accountSearchListButton : { show : false, list_type: null },
-  accountSearchListKeyword : null,
+  accountSearchListKeyword : '',
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {

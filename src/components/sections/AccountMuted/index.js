@@ -4,6 +4,8 @@ import Tab from '@material-ui/core/Tab'
 import { createUseStyles } from 'react-jss'
 import {
   getAccountListRequest,
+  clearAccountMutedList,
+  clearAccountFollowedMutedList,
 } from 'store/profile/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -57,6 +59,8 @@ const AccountMuted = (props) => {
     loading,
     route,
     getAccountListRequest,
+    clearAccountMutedList,
+    clearAccountFollowedMutedList,
   } = props
 
   const history = useHistory()
@@ -86,6 +90,8 @@ const AccountMuted = (props) => {
 
   useEffect(() => {
     anchorTop()
+    clearAccountMutedList()
+    clearAccountFollowedMutedList()
     getAccountListRequest(username,'muted')
     getAccountListRequest(username,'follow_muted')
     // eslint-disable-next-line
@@ -138,6 +144,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getAccountListRequest,
+    clearAccountMutedList,
+    clearAccountFollowedMutedList,
   }, dispatch),
 })
 

@@ -52,9 +52,10 @@ const CustomizedMenu = (props) => {
         {items.map((item) => (
           <React.Fragment>
             <StyledMenuItem onClick={item.onClick}>
-              <ListItemIcon>
-                {item.icon}
-              </ListItemIcon>
+              {item.icon && (
+                <ListItemIcon>
+                  {item.icon}
+                </ListItemIcon>)}
               <ListItemText primary={item.label}/>
             </StyledMenuItem>
           </React.Fragment>

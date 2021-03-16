@@ -90,6 +90,7 @@ const useStyle = createUseStyles(theme => ({
   },
 }))
 
+const LIST_TYPE = 'follow_muted'
 const AccountMutedFollowed = (props) => {
   const classes = useStyle()
   const {
@@ -117,7 +118,7 @@ const AccountMutedFollowed = (props) => {
 
   useEffect(() => {
    
-    if(listSearchkey && listSearchkey.list_type === 'follow_muted'){
+    if(listSearchkey && listSearchkey.list_type === LIST_TYPE){
       setSearchkey(listSearchkey.keyword)
       checkAccountExists(listSearchkey.keyword)
     }
@@ -129,17 +130,19 @@ const AccountMutedFollowed = (props) => {
   }
 
   const checkAccountExists = (keyword) => {
-    const exist = items && items.filter((item) => item.name.includes(keyword)).length > 0
-    if(!exist){
-      checkAccountExistRequest(keyword).then(({ exists }) => {
-        if(exists){
-          showAccountSearchButton('follow_muted')
-        }else{
-          hideAccountSearchButton()
-        }
-      })
-    }else{
-      hideAccountSearchButton()
+    const exist = items && items.filter((item) => item.name === keyword).length > 0
+    if(loginUser === username){
+      if(keyword && !exist){
+        checkAccountExistRequest(keyword).then(({ exists }) => {
+          if(exists){
+            showAccountSearchButton(LIST_TYPE)
+          }else{
+            hideAccountSearchButton()
+          }
+        })
+      }else{
+        hideAccountSearchButton()
+      }
     }
   }
 
@@ -154,7 +157,7 @@ const AccountMutedFollowed = (props) => {
         hasMore={false}
       >
         {items.map((item) => (
-          <React.Fragment>
+          <React.Fragment key={`${item.name}-${Math.random(0, 100)}`}>
             {filterItems(item.name) && 
             <div className={classes.wrapper}>
               <div className={classes.row}>
@@ -195,9 +198,9 @@ const AccountMutedFollowed = (props) => {
             </div>}
           </React.Fragment>
         ))}
-        {(!loading && items.length === 0) &&
+        {(!loading && !searchkey && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
-        {(!loading && filteredItemCount() === 0) &&
+        {(!loading && searchkey && filteredItemCount() === 0) &&
           (<span className={classes.noData}><center><br/><h6>User not found on this list</h6></center></span>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />

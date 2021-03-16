@@ -9,6 +9,8 @@ import { useHistory, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton, FollowBlacklistsButton } from 'components'
+import { checkAccountExistRequest } from "store/profile/actions"
+import { showAccountSearchButton, hideAccountSearchButton } from "store/interface/actions"
 
 
 const useStyle = createUseStyles(theme => ({
@@ -88,6 +90,7 @@ const useStyle = createUseStyles(theme => ({
   },
 }))
 
+const LIST_TYPE = 'follow_blacklist'
 const AccountBlacklistedFollowed = (props) => {
   const classes = useStyle()
   const {
@@ -95,6 +98,9 @@ const AccountBlacklistedFollowed = (props) => {
     user,
     followedBlacklist : items,
     listSearchkey,
+    checkAccountExistRequest,
+    showAccountSearchButton,
+    hideAccountSearchButton,
   } = props
 
   const { username:loginUser, is_authenticated } = user
@@ -112,14 +118,36 @@ const AccountBlacklistedFollowed = (props) => {
 
   useEffect(() => {
    
-    if(listSearchkey && listSearchkey.list_type === 'follow_blacklist'){
+    if(listSearchkey && listSearchkey.list_type === LIST_TYPE){
       setSearchkey(listSearchkey.keyword)
+      checkAccountExists(listSearchkey.keyword)
     }
   // eslint-disable-next-line
   }, [listSearchkey])
 
   const filterItems = (item) => {
     return searchkey && item ? item.includes(searchkey) : true
+  }
+
+  const checkAccountExists = (keyword) => {
+    const exist = items && items.filter((item) => item.name === keyword).length > 0
+    if(loginUser === username){
+      if(keyword && !exist){
+        checkAccountExistRequest(keyword).then(({ exists }) => {
+          if(exists){
+            showAccountSearchButton(LIST_TYPE)
+          }else{
+            hideAccountSearchButton()
+          }
+        })
+      }else{
+        hideAccountSearchButton()
+      }
+    }
+  }
+
+  const filteredItemCount = () => {
+    return searchkey ? items.filter((item) => item.name.includes(searchkey)).length : items.length
   }
 
   return (
@@ -170,8 +198,10 @@ const AccountBlacklistedFollowed = (props) => {
               </div>}
           </React.Fragment>
         ))}
-        {(!loading && items.length === 0) &&
+        {(!loading && !searchkey && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
+        {(!loading && searchkey && filteredItemCount() === 0) &&
+          (<span className={classes.noData}><center><br/><h6>User not found on this list</h6></center></span>)}
       </InfiniteScroll>
       <AvatarlistSkeleton loading={loading} />
     </React.Fragment>
@@ -187,6 +217,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
+    checkAccountExistRequest,
+    showAccountSearchButton,
+    hideAccountSearchButton,
   }, dispatch),
 })
 

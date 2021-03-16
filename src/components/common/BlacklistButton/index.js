@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
-import { openBlacklistDialog } from 'store/interface/actions'
-import { setAccountBlacklist } from "store/profile/actions"
+import { openBlacklistDialog, setAccountSearchListKeyword } from 'store/interface/actions'
+import { setAccountBlacklist, setAccountListSearchkey } from "store/profile/actions"
 
 const BlacklistButton = (props) => {
   const { 
@@ -17,6 +17,8 @@ const BlacklistButton = (props) => {
     blacklistedList,
     style,
     successCallback=null,
+    setAccountSearchListKeyword,
+    setAccountListSearchkey,
   } = props
 
   const { pathname } = useLocation()
@@ -36,7 +38,17 @@ const BlacklistButton = (props) => {
         if(index !== -1){
           oldList.splice(index,1) 
           setAccountBlacklist(oldList)
+        }else{
+          const newData = {
+            blacklist_description: "",
+            muted_list_description: "",
+            name: username,
+          }
+          const newList = [newData, ...blacklistedList]
+          setAccountBlacklist(newList)
         }
+        setAccountSearchListKeyword('')
+        setAccountListSearchkey('blacklist','')
       }
     }
   }
@@ -65,6 +77,8 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     openBlacklistDialog,
     setAccountBlacklist,
+    setAccountSearchListKeyword,
+    setAccountListSearchkey,
   }, dispatch),
 })
 

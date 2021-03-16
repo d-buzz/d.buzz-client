@@ -336,22 +336,22 @@ const Profile = (props) => {
   const MoreOptions = [
     {
       label: "Blacklisted Users",
-      icon: <ListIcon fontSize="small"/>,
+      icon: '',
       onClick: navigateToBlackListed,
     },
     {
       label: "Muted Users",
-      icon: <ListIcon fontSize="small"/>,
+      icon: '',
       onClick: navigateToMutedUsers,
     },
     {
       label: "Followed Blacklists",
-      icon: <ListIcon fontSize="small"/>,
+      icon: '',
       onClick: navigateToFollowedBlacklist,
     },
     {
       label: "Followed Muted Lists",
-      icon: <ListIcon fontSize="small"/>,
+      icon: '',
       onClick: navigateToFollowedMuted,
     },
   ]

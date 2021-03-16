@@ -120,10 +120,12 @@ const FollowMutedListModal = (props) => {
       const list = [...followedMutedList].map((item) => { return item.name })
       if(Object.values(list).includes(username)){
         setIsListFollowed(true)
+      }else{
+        setIsListFollowed(false)
       }
     }
   // eslint-disable-next-line
-  }, [followMutedModal])
+  }, [followMutedModal, followedMutedList])
 
   const onHide = () => {
     closeFollowMutedDialog()
