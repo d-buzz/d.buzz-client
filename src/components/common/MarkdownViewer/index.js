@@ -184,6 +184,8 @@ const prepareThreeSpeakEmbeds = (content) => {
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
       } else if(link.includes('3speak.co/watch?v')){
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
+      } else if(link.includes('3speak.tv/watch?v')) {
+        match = link.match(/(?:https?:\/\/(?:(?:3speak\.tv\/watch\?v=(.*))))?/i)
       }
 
       if(match) {
@@ -349,7 +351,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
-    const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
+    const url = `https://3speak.tv/embed?v=${splitThreeSpeak[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}3speak`} url={url} />
   } else if(content.includes(':vimm:')){
     const splitVimm = content.split(':')
@@ -404,7 +406,7 @@ const MarkdownViewer = React.memo((props) => {
 
       if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
-      } else if(link.includes('3speak.co') || link.includes('3speak.online')) {
+      } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
         content = prepareThreeSpeakEmbeds(content)
       } else if(link.includes('www.vimm.tv')) {
         content = prepareVimmEmbeds(content)
