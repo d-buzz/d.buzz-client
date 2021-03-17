@@ -82,6 +82,7 @@ const LinkPreview = (props) => {
           && !link.includes('pbs.twimg.com')
           && !link.includes('ipfs.io')
           && !link.includes('3speak.co')
+          && !link.includes('3speak.tv')
           && !link.includes('www.vimm.tv/view')
           && !link.includes('rumble.com/embed')
           && !link.includes('lbry.tv')
@@ -93,6 +94,7 @@ const LinkPreview = (props) => {
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))/i)
+          && !link.match(/(?:https?:\/\/(?:(?:3speak\.tv\/watch\?v=(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i)
           && !link.match(/(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
