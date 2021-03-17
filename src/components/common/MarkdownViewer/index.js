@@ -3,7 +3,7 @@ import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import textParser from 'npm-text-parser'
 import classNames from 'classnames'
-import { UrlVideoEmbed, LinkPreview } from 'components'
+import { UrlVideoEmbed, LinkPreview, TikTokViewer } from 'components'
 import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
 import { TweetSkeleton } from 'components'
@@ -342,6 +342,33 @@ const prepareFacebookEmbeds = (content) => {
   return body
 }
 
+const prepareTikTokEmbeds = (content) => {
+  const tiktokRegex = /(?:https?:\/\/(?:(?:www\.tiktok\.com\/.*?\/video\/(.*?))))/i
+  const matchData = content.match(tiktokRegex)
+  const links = textParser.getUrls(content)
+
+  let body = content
+  let id = ''
+  let match = ''
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    try {
+      if (matchData) {
+        match = link.match(tiktokRegex)
+        const input = match['input']
+        const split = input.split('/')
+        id = split[5].split('?')
+
+        if (match) {
+          body = body.replace(link, `~~~~~~.^.~~~:tiktok:${id[0]}:~~~~~~.^.~~~`)
+        }
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
   if(content.includes(':twitter:')) {
@@ -373,6 +400,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitFacebook = content.split(':')
     const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
     return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
+  } else if(content.includes(':tiktok:')) {
+    const splitTiktok = content.split(':')
+    const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
+    return <TikTokViewer key={`${url}${scrollIndex}tiktok`} url={url} />
   } else {
     // render normally
     return <div
@@ -416,6 +447,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBitchuteEmbeds(content)
       } else if(link.includes('www.facebook.com')) {
         content = prepareFacebookEmbeds(content)
+      } else if(link.includes('www.tiktok.com')) {
+        content = prepareTikTokEmbeds(content)
       }
     } catch(error) { }
   })

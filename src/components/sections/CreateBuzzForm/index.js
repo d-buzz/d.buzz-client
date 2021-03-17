@@ -242,8 +242,17 @@ const CreateBuzzForm = (props) => {
         })
       }
 
+      if (content.includes('www.tiktok.com')) {
+        const tiktokRegex =/cite="(?:https?:\/\/(?:(?:www\.tiktok\.com\/.*?\/video\/(.*?))))"/i
+        const matchData = content.match(tiktokRegex)
+        if (matchData) {
+          const blockCite = matchData['input'].split('cite=')[1].split(/[ >]/)[0]
+          const url = blockCite.replace(/['"]+/g, '')
+          value = url
+        }
+      }
+
       if (value.includes("www.facebook.com")) {
-        console.log(value)
         const content = prepareFacebookEmbeds(value)
         setContent(content ? content : value)
       } else {
