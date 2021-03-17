@@ -342,6 +342,40 @@ const prepareFacebookEmbeds = (content) => {
   return body
 }
 
+const prepareAppleEmbeds = (content) => {
+  const appleRegex = /(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i
+  const appleRegexEmbed = /(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i
+  let body = content
+
+  const links = textParser.getUrls(content)
+  const matchData = content.match(appleRegexEmbed)
+
+  if (matchData) {
+    const split = content.split('/')
+    const url = `${split[4]}/${split[5]}/${split[6]}`
+    body = body.replace(body, `~~~~~~.^.~~~:apple:${url}:~~~~~~.^.~~~`)
+  } else {
+    links.forEach((link) => {
+      link = link.replace(/&amp;/g, '&')
+      let match = ''
+      let id = ''
+      
+      try {
+        if(link.match(appleRegex)){
+          const data = link.split('/')
+          match = link.match(appleRegex)
+          id = `${data[4]}/${data[5]}/${data[6]}`
+        }
+        
+        if(match){
+          body = body.replace(link, `~~~~~~.^.~~~:apple:${id}:~~~~~~.^.~~~`)
+        }
+      } catch(error) { }
+    })
+  }
+  return body
+}
+
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
   if(content.includes(':twitter:')) {
@@ -373,6 +407,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitFacebook = content.split(':')
     const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
     return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
+  } else if(content.includes(':apple:')) {
+    const splitApple = content.split(':')
+    const url = `https://embed.music.apple.com/gb/${splitApple[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}apple`} url={url} />
   } else {
     // render normally
     return <div
@@ -416,6 +454,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBitchuteEmbeds(content)
       } else if(link.includes('www.facebook.com')) {
         content = prepareFacebookEmbeds(content)
+      } else if(link.includes('music.apple.com')) {
+        content = prepareAppleEmbeds(content)
       }
     } catch(error) { }
   })

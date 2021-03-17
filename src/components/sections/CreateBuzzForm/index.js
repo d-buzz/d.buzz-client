@@ -24,7 +24,7 @@ import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
-import { invokeTwitterIntent, prepareFacebookEmbeds } from 'services/helper'
+import { invokeTwitterIntent, prepareFacebookEmbeds, prepareAppleEmbeds } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from "react-router-dom"
@@ -242,8 +242,13 @@ const CreateBuzzForm = (props) => {
         })
       }
 
+      if (e.target.value.includes('embed.music.apple.com')) {
+        value = prepareAppleEmbeds(e.target.value)
+      }
+      
+      value = value.slice(0, 280)
+      
       if (value.includes("www.facebook.com")) {
-        console.log(value)
         const content = prepareFacebookEmbeds(value)
         setContent(content ? content : value)
       } else {
@@ -431,7 +436,7 @@ const CreateBuzzForm = (props) => {
               </Box>
             </div>
           )}
-          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} onPaste={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
+          {(!publishing && !loading) && (<TextArea name='content-area' minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} onPaste={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />

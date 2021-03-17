@@ -319,3 +319,20 @@ export const prepareFacebookEmbeds = (content) => {
   
   return body
 }
+
+export const prepareAppleEmbeds = (content) => {
+  const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
+  let body = content
+  
+  const matchData = content.match(facebookRegexEmbeds)
+  
+  if (matchData) {
+    const input = matchData['input'].split('src=')[1].split(/[ >]/)[0]
+    const url = input.replace(/['"]+/g, '')
+    body = url
+    
+    return body
+  } else {
+    return body
+  }
+}

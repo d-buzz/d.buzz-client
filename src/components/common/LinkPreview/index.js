@@ -88,6 +88,7 @@ const LinkPreview = (props) => {
           && !link.includes('open.lbry.com')
           && !link.includes('www.bitchute.com')
           && !link.includes('www.facebook.com')
+          && !link.includes('music.apple.com')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
