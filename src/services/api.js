@@ -498,7 +498,6 @@ export const broadcastVote = (wif, voter, author, permlink, weight) => {
       .then((result) => {
         resolve(result)
       }).catch((error) => {
-        reject(error.code)
         let code = error.code
         if(error.code === -32000){
           if(error.message && error.message.includes('paid out is forbidden')){
