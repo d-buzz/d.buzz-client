@@ -24,8 +24,18 @@ import {
   SET_ACCOUNT_FOLLOWED_MUTED_LIST,
   CLEAR_ACCOUNT_MUTED_LIST,
   CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST,
+  CLEAR_ACCOUNT_BLACKLIST,
+  CLEAR_ACCOUNT_FOLLOWED_BLACKLIST,
   SET_ACCOUNT_LIST_SEARCHKEY,
   CHECK_ACCOUNT_EXIST_SUCCESS,
+  SET_MUTE_LIST_LAST_INDEX,
+  SET_MUTE_LIST_UNFILTERED,
+  SET_BLACKLIST_LAST_INDEX,
+  SET_BLACKLIST_UNFILTERED,
+  SET_FOLLOW_BLACKLIST_LAST_INDEX,
+  SET_FOLLOW_BLACKLIST_UNFILTERED,
+  SET_FOLLOW_MUTED_LAST_INDEX,
+  SET_FOLLOW_MUTED_UNFILTERED,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -43,12 +53,20 @@ const defaultState = fromJS({
   comments: [],
   lastComment: [],
   mutedList: [],
+  mutedListAll : [],
   blacklistedList: [],
+  blacklistedListAll: [],
   followedMuted : [],
+  followedMutedAll : [],
   followedBlacklist : [],
-  accountLists : {},
+  followedBlacklistAll : [],
+  accountLists : null,
   listSearchkey : { list_type: null, keyword: null },
   accountExist : {},
+  muteListLastIndex : 0,
+  blacklistLastIndex : 0,
+  followBlacklistLastIndex : 0,
+  followMutedLastIndex : 0,
 })
 
 export const profile = (state = defaultState, { type, payload }) => {
@@ -103,10 +121,30 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state.set('mutedList', [])
   case CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST:
     return state.set('followedMuted', [])
+  case CLEAR_ACCOUNT_BLACKLIST:
+    return state.set('blacklistedList', [])
+  case CLEAR_ACCOUNT_FOLLOWED_BLACKLIST:
+    return state.set('followedBlacklist', [])
   case SET_ACCOUNT_LIST_SEARCHKEY:
     return state.set('listSearchkey', payload)
   case CHECK_ACCOUNT_EXIST_SUCCESS:
     return state.set('accountExist', payload)
+  case SET_MUTE_LIST_LAST_INDEX:
+    return state.set('muteListLastIndex', payload)
+  case SET_MUTE_LIST_UNFILTERED:
+    return state.set('mutedListAll', payload)
+  case SET_BLACKLIST_LAST_INDEX:
+    return state.set('blacklistLastIndex', payload)
+  case SET_BLACKLIST_UNFILTERED:
+    return state.set('blacklistedListAll', payload)
+  case SET_FOLLOW_BLACKLIST_LAST_INDEX:
+    return state.set('followBlacklistLastIndex', payload)
+  case SET_FOLLOW_BLACKLIST_UNFILTERED:
+    return state.set('followedBlacklistAll', payload)
+  case SET_FOLLOW_MUTED_LAST_INDEX:
+    return state.set('followMutedLastIndex', payload)
+  case SET_FOLLOW_MUTED_UNFILTERED:
+    return state.set('followedMutedAll', payload)
   default:
     return state
   }

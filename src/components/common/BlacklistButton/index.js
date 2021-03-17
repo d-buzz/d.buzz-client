@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { openBlacklistDialog, setAccountSearchListKeyword } from 'store/interface/actions'
-import { setAccountBlacklist, setAccountListSearchkey } from "store/profile/actions"
+import { setAccountBlacklist, setAccountListSearchkey, setBlacklistUnfiltered } from "store/profile/actions"
 
 const BlacklistButton = (props) => {
   const { 
@@ -19,6 +19,8 @@ const BlacklistButton = (props) => {
     successCallback=null,
     setAccountSearchListKeyword,
     setAccountListSearchkey,
+    setBlacklistUnfiltered,
+    blacklistedListAll,
   } = props
 
   const { pathname } = useLocation()
@@ -33,19 +35,29 @@ const BlacklistButton = (props) => {
       successCallback()
     }else{
       if(blacklistRoute){
+        const newData = {
+          blacklist_description: "",
+          muted_list_description: "",
+          name: username,
+        }
         const oldList = [...blacklistedList]
         const index = oldList.findIndex(item => item.name === username)
         if(index !== -1){
           oldList.splice(index,1) 
           setAccountBlacklist(oldList)
         }else{
-          const newData = {
-            blacklist_description: "",
-            muted_list_description: "",
-            name: username,
-          }
           const newList = [newData, ...blacklistedList]
           setAccountBlacklist(newList)
+        }
+
+        const oldListAll = [...blacklistedListAll]
+        const index1 = oldListAll.findIndex(item => item.name === username)
+        if(index1 !== -1){
+          oldListAll.splice(index1,1) 
+          setBlacklistUnfiltered(oldListAll)
+        }else{
+          const newList = [newData, ...blacklistedListAll]
+          setBlacklistUnfiltered(newList)
         }
         setAccountSearchListKeyword('')
         setAccountListSearchkey('blacklist','')
@@ -70,6 +82,7 @@ const BlacklistButton = (props) => {
 
 const mapStateToProps = (state) => ({
   blacklistedList: state.profile.get('blacklistedList'),
+  blacklistedListAll: state.profile.get('blacklistedListAll'),
 })
 
 
@@ -79,6 +92,7 @@ const mapDispatchToProps = (dispatch) => ({
     setAccountBlacklist,
     setAccountSearchListKeyword,
     setAccountListSearchkey,
+    setBlacklistUnfiltered,
   }, dispatch),
 })
 

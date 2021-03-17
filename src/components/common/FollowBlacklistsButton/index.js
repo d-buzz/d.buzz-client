@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { openFollowBlacklistsDialog, setAccountSearchListKeyword } from 'store/interface/actions'
-import { setAccountFollowedBlacklist, setAccountListSearchkey } from "store/profile/actions"
+import { setAccountFollowedBlacklist, setAccountListSearchkey, setFollowBlacklistUnfiltered } from "store/profile/actions"
 
 const FollowBlacklistsButton = (props) => {
   const { 
@@ -19,6 +19,9 @@ const FollowBlacklistsButton = (props) => {
     successCallback=null,
     setAccountSearchListKeyword,
     setAccountListSearchkey,
+    setFollowBlacklistUnfiltered,
+    followedBlacklistAll,
+
   } = props
 
   const { pathname } = useLocation()
@@ -33,19 +36,29 @@ const FollowBlacklistsButton = (props) => {
       successCallback()
     }else{
       if(followBlacklistRoute){
+        const newData = {
+          blacklist_description: "",
+          muted_list_description: "",
+          name: username,
+        }
         const oldList = [...followedBlacklist]
         const index = oldList.findIndex(item => item.name === username)
         if(index !== -1){
           oldList.splice(index,1) 
           setAccountFollowedBlacklist(oldList)
         }else{
-          const newData = {
-            blacklist_description: "",
-            muted_list_description: "",
-            name: username,
-          }
           const newList = [newData, ...followedBlacklist]
           setAccountFollowedBlacklist(newList)
+        }
+
+        const oldListAll = [...followedBlacklistAll]
+        const index1 = oldListAll.findIndex(item => item.name === username)
+        if(index1 !== -1){
+          oldListAll.splice(index1,1) 
+          setFollowBlacklistUnfiltered(oldListAll)
+        }else{
+          const newList = [newData, ...followedBlacklistAll]
+          setFollowBlacklistUnfiltered(newList)
         }
         setAccountSearchListKeyword('')
         setAccountListSearchkey('follow_blacklist','')
@@ -70,6 +83,7 @@ const FollowBlacklistsButton = (props) => {
 
 const mapStateToProps = (state) => ({
   followedBlacklist: state.profile.get('followedBlacklist'),
+  followedBlacklistAll: state.profile.get('followedBlacklistAll'),
 })
 
 
@@ -79,6 +93,7 @@ const mapDispatchToProps = (dispatch) => ({
     setAccountFollowedBlacklist,
     setAccountSearchListKeyword,
     setAccountListSearchkey,
+    setFollowBlacklistUnfiltered,
   }, dispatch),
 })
 

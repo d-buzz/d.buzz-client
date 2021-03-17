@@ -49,6 +49,15 @@ import {
   CHECK_ACCOUNT_EXIST_REQUEST,
   checkAccountExistSuccess,
   checkAccountExistFailure,
+
+  setMuteListLastIndex,
+  setMuteListUnfiltered,
+  setBlacklistLastIndex,
+  setBlacklistUnfiltered,
+  setFollowBlacklistLastIndex,
+  setFollowBlacklistUnfiltered,
+  setFollowMutedLastIndex,
+  setFollowMutedUnfiltered,
 } from './actions'
 
 import {
@@ -236,16 +245,43 @@ function* getCommentsAccountRequest(payload, meta) {
 
 function* getAccountListRequest(payload, meta) {
   try {
-    const { observer, list_type } = payload
+    const { observer, list_type, lastIndex, filter } = payload
     const data = yield call(getAccountLists, observer, list_type)
+    let list = data
+    const limit = parseInt(lastIndex) + 15
+
     if(list_type === 'blacklisted'){
-      yield put(setAccountBlacklist(data))
+      if(filter){
+        const old = yield select(state => state.profile.get('blacklistedList'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setBlacklistUnfiltered(data)) // for searching
+      yield put(setBlacklistLastIndex(list.length)) // for pagination
+      yield put(setAccountBlacklist(list))
     }else if (list_type === 'follow_blacklist') {
-      yield put(setAccountFollowedBlacklist(data))
+      if(filter){
+        const old = yield select(state => state.profile.get('followedBlacklist'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setFollowBlacklistUnfiltered(data)) // for searching
+      yield put(setFollowBlacklistLastIndex(list.length))  // for pagination
+      yield put(setAccountFollowedBlacklist(list))
     }else if (list_type === 'muted') {
-      yield put(setAccountMutedList(data))
+      if(filter){
+        const old = yield select(state => state.profile.get('mutedList'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setMuteListUnfiltered(data))  // for searching
+      yield put(setMuteListLastIndex(list.length)) // for pagination
+      yield put(setAccountMutedList(list))
     }else if (list_type === 'follow_muted') {
-      yield put(setAccountFollowedMutedList(data))
+      if(filter){
+        const old = yield select(state => state.profile.get('followedMuted'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setFollowMutedUnfiltered(data))  // for searching
+      yield put(setFollowMutedLastIndex(list.length)) // for pagination
+      yield put(setAccountFollowedMutedList(list))
     }
     yield put(getAccountListSuccess(data, meta))
   } catch (error) {

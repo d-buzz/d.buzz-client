@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { useLocation } from 'react-router-dom'
 import { ContainedButton } from 'components/elements'
 import { openMuteDialog, setAccountSearchListKeyword } from 'store/interface/actions'
-import { setAccountMutedList, setAccountListSearchkey } from "store/profile/actions"
+import { setAccountMutedList, setAccountListSearchkey, setMuteListUnfiltered } from "store/profile/actions"
 import { setMuteList } from "store/auth/actions"
 
 const MuteButton = (props) => {
@@ -21,6 +21,8 @@ const MuteButton = (props) => {
     setAccountSearchListKeyword,
     setAccountListSearchkey,
     setMuteList,
+    setMuteListUnfiltered,
+    mutedListAll,
   } = props
 
   const { pathname } = useLocation()
@@ -35,6 +37,11 @@ const MuteButton = (props) => {
       successCallback()
     }else{
       if(mutedListRoute){
+        const newData = {
+          blacklist_description: "",
+          muted_list_description: "",
+          name: username,
+        }
         const oldList = [...mutedList]
         const index = oldList.findIndex(item => item.name === username)
         if(index !== -1){
@@ -42,16 +49,21 @@ const MuteButton = (props) => {
           setAccountMutedList(oldList)
           setMuteList(oldList)
         }else{
-          const newData = {
-            blacklist_description: "",
-            muted_list_description: "",
-            name: username,
-          }
           const newList = [newData, ...mutedList]
           setAccountMutedList(newList)
         }
+
+        const oldListAll = [...mutedListAll]
+        const index1 = oldListAll.findIndex(item => item.name === username)
+        if(index1 !== -1){
+          oldListAll.splice(index1,1)
+          setMuteListUnfiltered(oldListAll)
+        }else{
+          const newListAll = [newData, ...mutedListAll]
+          setMuteListUnfiltered(newListAll)
+        }
         setAccountSearchListKeyword('')
-        setAccountListSearchkey('muted','')
+        setAccountListSearchkey('muted','', true)
       }
     }
   }
@@ -73,6 +85,7 @@ const MuteButton = (props) => {
 
 const mapStateToProps = (state) => ({
   mutedList: state.profile.get('mutedList'),
+  mutedListAll: state.profile.get('mutedListAll'),
 })
 
 
@@ -83,6 +96,7 @@ const mapDispatchToProps = (dispatch) => ({
     setAccountSearchListKeyword,
     setAccountListSearchkey,
     setMuteList,
+    setMuteListUnfiltered,
   }, dispatch),
 })
 

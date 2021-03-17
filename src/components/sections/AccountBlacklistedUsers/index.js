@@ -9,7 +9,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton, BlacklistButton } from 'components'
-import { checkAccountExistRequest } from "store/profile/actions"
+import { checkAccountExistRequest, getAccountListRequest, setAccountBlacklist } from "store/profile/actions"
 import { showAccountSearchButton, hideAccountSearchButton } from "store/interface/actions"
 
 
@@ -92,6 +92,10 @@ const AccountBlacklistedUsers = (props) => {
     checkAccountExistRequest,
     showAccountSearchButton,
     hideAccountSearchButton,
+    getAccountListRequest, 
+    setAccountBlacklist,
+    blacklistedListAll,
+    blacklistLastIndex,
   } = props
 
   const { username:loginUser, is_authenticated } = user
@@ -111,29 +115,20 @@ const AccountBlacklistedUsers = (props) => {
    
     if(listSearchkey && listSearchkey.list_type === LIST_TYPE){
       setSearchkey(listSearchkey.keyword)
-      checkAccountExists(listSearchkey.keyword)
+      filterItems(listSearchkey.keyword)
     }
   // eslint-disable-next-line
   }, [listSearchkey])
 
-  const filterItems = (item) => {
-    return searchkey && item ? item.includes(searchkey) : true
-  }
-
   const checkAccountExists = (keyword) => {
-    const exist = items && items.filter((item) => item.name === keyword).length > 0
     if(loginUser === username){
-      if(keyword && !exist){
-        checkAccountExistRequest(keyword).then(({ exists }) => {
-          if(exists){
-            showAccountSearchButton(LIST_TYPE)
-          }else{
-            hideAccountSearchButton()
-          }
-        })
-      }else{
-        hideAccountSearchButton()
-      }
+      checkAccountExistRequest(keyword).then(({ exists }) => {
+        if(exists){
+          showAccountSearchButton(LIST_TYPE)
+        }else{
+          hideAccountSearchButton()
+        }
+      })
     }
   }
 
@@ -141,47 +136,69 @@ const AccountBlacklistedUsers = (props) => {
     return searchkey ? items.filter((item) => item.name.includes(searchkey)).length : items.length
   }
 
+  const loadMorePosts = () => {
+    getAccountListRequest(username,'blacklisted', blacklistLastIndex)
+  }
+
+  const filterItems = (keyword) => {
+    if(keyword){
+      const filtered = blacklistedListAll.filter((item) => item.name.includes(keyword))
+      setAccountBlacklist(filtered)
+      if(filtered.length === 0){
+        checkAccountExists(keyword)
+      }else{
+        const checkSpecific =  blacklistedListAll.filter((item) => item.name === keyword).length > 0
+        if(!checkSpecific){
+          checkAccountExists(keyword)
+        }else{
+          hideAccountSearchButton()
+        }
+      }
+    }else{
+      setAccountBlacklist(blacklistedListAll.slice(0,15))
+      hideAccountSearchButton()
+    }
+  }
+
   return (
     <React.Fragment>
       <InfiniteScroll
         dataLength={items.length || 0}
-        hasMore={false}
+        next={loadMorePosts}
+        hasMore={true}
       >
         {items.map((item) => (
-          <React.Fragment key={`${item.name}-${Math.random(0, 100)}`}>
-            {filterItems(item.name) && 
-            <div className={classes.wrapper}>
-              <div className={classes.row}>
-                <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                  <Col xs="auto" style={{ paddingRight: 0 }} 
-                    onClick={handleClickUser(item.name)}>
-                    <div className={classes.left}>
-                      <Avatar author={item.name} />
+          <div className={classes.wrapper} key={`${item.name}-${Math.random(0, 100)}`}>
+            <div className={classes.row}>
+              <Row style={{ marginRight: 0, marginLeft: 0 }}>
+                <Col xs="auto" style={{ paddingRight: 0 }} 
+                  onClick={handleClickUser(item.name)}>
+                  <div className={classes.left}>
+                    <Avatar author={item.name} />
+                  </div>
+                </Col>
+                <Col onClick={handleClickUser(item.name)}>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <p className={classes.username}>
+                   @{item.name}
+                      </p>
                     </div>
-                  </Col>
-                  <Col onClick={handleClickUser(item.name)}>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <p className={classes.username}>
-                       @{item.name}
-                        </p>
-                      </div>
-                    </div>
-                  </Col>
-                  {loginUser === username && 
-                  <Col xs="auto">
-                    <div className={classes.buttonContainer}>
-                      <BlacklistButton 
-                        username={item.name} 
-                        label="Unblacklist"
-                        disabled={!is_authenticated}
-                        style={{ float: 'right', marginTop: 5 }}/> 
-                    </div>
-                  </Col>}
-                </Row>
-              </div>
-            </div>}
-          </React.Fragment>
+                  </div>
+                </Col>
+                {loginUser === username && 
+              <Col xs="auto">
+                <div className={classes.buttonContainer}>
+                  <BlacklistButton 
+                    username={item.name} 
+                    label="Unblacklist"
+                    disabled={!is_authenticated}
+                    style={{ float: 'right', marginTop: 5 }}/> 
+                </div>
+              </Col>}
+              </Row>
+            </div>
+          </div>
         ))}
         {(!loading && !searchkey && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
@@ -197,7 +214,9 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'GET_ACCOUNT_LIST_REQUEST'),
   blacklistedList: state.profile.get('blacklistedList'),
+  blacklistedListAll: state.profile.get('blacklistedListAll'),
   listSearchkey: state.profile.get('listSearchkey'),
+  blacklistLastIndex: state.profile.get('blacklistLastIndex'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -205,6 +224,8 @@ const mapDispatchToProps = (dispatch) => ({
     checkAccountExistRequest,
     showAccountSearchButton,
     hideAccountSearchButton,
+    getAccountListRequest, 
+    setAccountBlacklist,
   }, dispatch),
 })
 

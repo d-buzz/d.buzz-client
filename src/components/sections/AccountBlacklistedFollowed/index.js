@@ -9,7 +9,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { bindActionCreators } from 'redux'
 import { AvatarlistSkeleton, FollowBlacklistsButton } from 'components'
-import { checkAccountExistRequest } from "store/profile/actions"
+import { checkAccountExistRequest, getAccountListRequest, setAccountFollowedBlacklist } from "store/profile/actions"
 import { showAccountSearchButton, hideAccountSearchButton } from "store/interface/actions"
 
 
@@ -101,6 +101,10 @@ const AccountBlacklistedFollowed = (props) => {
     checkAccountExistRequest,
     showAccountSearchButton,
     hideAccountSearchButton,
+    getAccountListRequest, 
+    setAccountFollowedBlacklist,
+    followedBlacklistAll,
+    lastIndex,
   } = props
 
   const { username:loginUser, is_authenticated } = user
@@ -117,32 +121,22 @@ const AccountBlacklistedFollowed = (props) => {
   }
 
   useEffect(() => {
-   
     if(listSearchkey && listSearchkey.list_type === LIST_TYPE){
       setSearchkey(listSearchkey.keyword)
-      checkAccountExists(listSearchkey.keyword)
+      filterItems(listSearchkey.keyword)
     }
   // eslint-disable-next-line
   }, [listSearchkey])
 
-  const filterItems = (item) => {
-    return searchkey && item ? item.includes(searchkey) : true
-  }
-
   const checkAccountExists = (keyword) => {
-    const exist = items && items.filter((item) => item.name === keyword).length > 0
     if(loginUser === username){
-      if(keyword && !exist){
-        checkAccountExistRequest(keyword).then(({ exists }) => {
-          if(exists){
-            showAccountSearchButton(LIST_TYPE)
-          }else{
-            hideAccountSearchButton()
-          }
-        })
-      }else{
-        hideAccountSearchButton()
-      }
+      checkAccountExistRequest(keyword).then(({ exists }) => {
+        if(exists){
+          showAccountSearchButton(LIST_TYPE)
+        }else{
+          hideAccountSearchButton()
+        }
+      })
     }
   }
 
@@ -150,53 +144,76 @@ const AccountBlacklistedFollowed = (props) => {
     return searchkey ? items.filter((item) => item.name.includes(searchkey)).length : items.length
   }
 
+  const loadMorePosts = () => {
+    getAccountListRequest(username, LIST_TYPE, lastIndex)
+  }
+
+  const filterItems = (keyword) => {
+    if(keyword){
+      const filtered = followedBlacklistAll.filter((item) => item.name.includes(keyword))
+      setAccountFollowedBlacklist(filtered)
+      if(filtered.length === 0){
+        checkAccountExists(keyword)
+      }else{
+        const checkSpecific =  followedBlacklistAll.filter((item) => item.name === keyword).length > 0
+        // console.log({keyword, checkSpecific})
+        if(!checkSpecific){
+          checkAccountExists(keyword)
+        }else{
+          hideAccountSearchButton()
+        }
+      }
+    }else{
+      setAccountFollowedBlacklist(followedBlacklistAll.slice(0,15))
+      hideAccountSearchButton()
+    }
+  }
+
   return (
     <React.Fragment>
       <InfiniteScroll
         dataLength={items.length || 0}
-        hasMore={false}
+        next={loadMorePosts}
+        hasMore={true}
       >
         {items.map((item) => (
-          <React.Fragment>
-            {filterItems(item.name) &&
-              <div className={classes.wrapper}>
-                <div className={classes.row}>
-                  <Row style={{ marginRight: 0, marginLeft: 0 }}>
-                    <Col xs="auto" style={{ paddingRight: 0 }}
-                      onClick={handleClickUser(item.name)}>
-                      <div className={classes.left}>
-                        <Avatar author={item.name} />
-                      </div>
-                    </Col>
-                    <Col onClick={handleClickUser(item.name)}>
-                      <div className={classes.right}>
-                        <div className={classes.content}>
-                          <p className={classes.username}>
-                        @{item.name}
-                          </p>
-                        </div>
-                        {item.blacklist_description && 
-                      (<div className={classes.content}>
-                        <p className={classes.description}>
-                          {item.blacklist_description}
-                        </p>
-                      </div>)}
-                      </div>
-                    </Col>
-                    {loginUser === username &&
-                    <Col xs="auto">
-                      <div className={classes.blacklistButtonContainer}>
-                        <FollowBlacklistsButton
-                          username={item.name} 
-                          label="Unfollow blacklist"
-                          disabled={!is_authenticated}
-                          style={{ float: 'right', marginTop: 5 }}/> 
-                      </div>
-                    </Col>}
-                  </Row>
-                </div>
-              </div>}
-          </React.Fragment>
+          <div className={classes.wrapper} key={`${item.name}-${Math.random(0, 100)}`}>
+            <div className={classes.row}>
+              <Row style={{ marginRight: 0, marginLeft: 0 }}>
+                <Col xs="auto" style={{ paddingRight: 0 }}
+                  onClick={handleClickUser(item.name)}>
+                  <div className={classes.left}>
+                    <Avatar author={item.name} />
+                  </div>
+                </Col>
+                <Col onClick={handleClickUser(item.name)}>
+                  <div className={classes.right}>
+                    <div className={classes.content}>
+                      <p className={classes.username}>
+                 @{item.name}
+                      </p>
+                    </div>
+                    {item.blacklist_description && 
+               (<div className={classes.content}>
+                 <p className={classes.description}>
+                   {item.blacklist_description}
+                 </p>
+               </div>)}
+                  </div>
+                </Col>
+                {loginUser === username &&
+             <Col xs="auto">
+               <div className={classes.blacklistButtonContainer}>
+                 <FollowBlacklistsButton
+                   username={item.name} 
+                   label="Unfollow blacklist"
+                   disabled={!is_authenticated}
+                   style={{ float: 'right', marginTop: 5 }}/> 
+               </div>
+             </Col>}
+              </Row>
+            </div>
+          </div>
         ))}
         {(!loading && !searchkey && items.length === 0) &&
           (<span className={classes.noData}><center><br/><h6>No users on this list yet</h6></center></span>)}
@@ -212,7 +229,9 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   loading: pending(state, 'GET_ACCOUNT_LIST_REQUEST'),
   followedBlacklist: state.profile.get('followedBlacklist'),
+  followedBlacklistAll: state.profile.get('followedBlacklistAll'),
   listSearchkey: state.profile.get('listSearchkey'),
+  lastIndex : state.profile.get('followBlacklistLastIndex'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -220,6 +239,8 @@ const mapDispatchToProps = (dispatch) => ({
     checkAccountExistRequest,
     showAccountSearchButton,
     hideAccountSearchButton,
+    getAccountListRequest, 
+    setAccountFollowedBlacklist,
   }, dispatch),
 })
 

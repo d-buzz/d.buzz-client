@@ -248,9 +248,9 @@ export const clearAccountComments = () => ({
 export const GET_ACCOUNT_LIST_REQUEST = 'GET_ACCOUNT_LIST_REQUEST'
 export const GET_ACCOUNT_LIST_SUCCESS = 'GET_ACCOUNT_LIST_SUCCESS'
 export const GET_ACCOUNT_LIST_FAILURE = 'GET_ACCOUNT_LIST_FAILURE'
-export const getAccountListRequest = (observer, list_type) => ({
+export const getAccountListRequest = (observer, list_type, lastIndex=0, filter=true) => ({
   type: GET_ACCOUNT_LIST_REQUEST,
-  payload: { observer, list_type },
+  payload: { observer, list_type, lastIndex, filter},
   meta: {
     thunk: true,
   },
@@ -362,4 +362,54 @@ export const checkAccountExistFailure = (error, meta) => ({
   type: CHECK_ACCOUNT_EXIST_FAILURE,
   payload: error,
   meta,
+})
+
+export const SET_MUTE_LIST_LAST_INDEX = 'SET_MUTE_LIST_LAST_INDEX'
+export const setMuteListLastIndex = (response) => ({
+  type: SET_MUTE_LIST_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_MUTE_LIST_UNFILTERED = 'SET_MUTE_LIST_UNFILTERED'
+export const setMuteListUnfiltered = (response) => ({
+  type: SET_MUTE_LIST_UNFILTERED,
+  payload: response,
+})
+
+export const SET_BLACKLIST_LAST_INDEX = 'SET_BLACKLIST_LAST_INDEX'
+export const setBlacklistLastIndex = (response) => ({
+  type: SET_BLACKLIST_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_BLACKLIST_UNFILTERED = 'SET_BLACKLIST_UNFILTERED'
+export const setBlacklistUnfiltered = (response) => ({
+  type: SET_BLACKLIST_UNFILTERED,
+  payload: response,
+})
+
+
+export const SET_FOLLOW_BLACKLIST_LAST_INDEX = 'SET_FOLLOW_BLACKLIST_LAST_INDEX'
+export const setFollowBlacklistLastIndex = (response) => ({
+  type: SET_FOLLOW_BLACKLIST_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_FOLLOW_BLACKLIST_UNFILTERED = 'SET_FOLLOW_BLACKLIST_UNFILTERED'
+export const setFollowBlacklistUnfiltered = (response) => ({
+  type: SET_FOLLOW_BLACKLIST_UNFILTERED,
+  payload: response,
+})
+
+
+export const SET_FOLLOW_MUTED_LAST_INDEX = 'SET_FOLLOW_MUTED_LAST_INDEX'
+export const setFollowMutedLastIndex = (response) => ({
+  type: SET_FOLLOW_MUTED_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_FOLLOW_MUTED_UNFILTERED = 'SET_FOLLOW_MUTED_UNFILTERED'
+export const setFollowMutedUnfiltered = (response) => ({
+  type: SET_FOLLOW_MUTED_UNFILTERED,
+  payload: response,
 })

@@ -120,10 +120,12 @@ const FollowBlacklistsModal = (props) => {
       const list = [...followedBlacklist].map((item) => { return item.name })
       if(Object.values(list).includes(username)){
         setIsListFollowed(true)
+      }else{
+        setIsListFollowed(false)
       }
     }
   // eslint-disable-next-line
-  }, [followBlacklistsDialog])
+  }, [followBlacklistsDialog,followedBlacklist])
 
   const onHide = () => {
     closeFollowBlacklistsDialog()

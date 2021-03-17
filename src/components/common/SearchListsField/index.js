@@ -84,7 +84,7 @@ const SearchListsField = (props) => {
     if(search){
       if(searchListButton && searchListButton.list_type !==null 
         && searchListButton.show === true){
-        setShowButton(searchListButton.show)
+        setShowButton(true)
       }else{
         setShowButton(false)
       }
@@ -114,9 +114,9 @@ const SearchListsField = (props) => {
     const { value } = target
     const val = value ? value.toLowerCase() : value
     setAccountSearchListKeyword(val)
+    setShowButton(false)
+    setShowError(false)
     if(!val){
-      setShowButton(false)
-      setShowError(false)
       setAccountListSearchkey(listType,val)
     }
   }
