@@ -27,6 +27,9 @@ const useStyles = createUseStyles(theme => ({
   hero: {
     paddingTop: 100,
     textAlign: 'left',
+    '@media (max-width: 400px)': {
+      paddingTop: 40,
+    },
   },
   outsideWrapper: {
     paddingTop: 50,
@@ -58,6 +61,12 @@ const useStyles = createUseStyles(theme => ({
   innerWrapper: {
     ...theme.font,
   },
+  sticky: {
+    '@media (max-width: 400px)' : {
+      zIndex: 1,
+      backgroundColor: 'white',
+    },
+  },
 }))
 
 const GetStarted = () => {
@@ -69,10 +78,10 @@ const GetStarted = () => {
         <div className={classes.wrapper}>
           <StickyContainer>
             <Row>
-              <Col xs={5} className="d-none d-md-block">
+              <Col md={5} xs={12}>
                 <Sticky>
                   {({ style }) => (
-                    <div style={{...style}}>
+                    <div style={{...style}} className={classes.sticky}>
                       <Scrollspy items={[
                         'section-1', 
                         'section-2', 
@@ -84,7 +93,7 @@ const GetStarted = () => {
                         'section-8',
                         'section-9',
                       ]} currentClassName={classes.currentLink} className={classes.sideWrapper}>
-                        <li><HashLink to="#section-1">What is DBuzz?</HashLink></li>
+                        <li><HashLink to="#section-1">What is D.Buzz?</HashLink></li>
                         <li><HashLink to="#section-2">How to Sign-up for D.Buzz?</HashLink></li>
                         <li><HashLink to="#section-3">How to Switch Accounts?</HashLink></li>
                         <li><HashLink to="#section-4">How to Mute & Unmute?</HashLink></li>
@@ -103,7 +112,7 @@ const GetStarted = () => {
                   <section id="section-1">
                     <div className={classes.hero}>
                       <div>
-                        <h3>What is DBuzz?</h3>
+                        <h3>What is D.Buzz?</h3>
                       </div>
                       <hr />
                       <div>
