@@ -158,7 +158,7 @@ const AccountFollowing = (props) => {
         hasMore={true}
       >
         {items.map((item) => (
-          <div className={classes.wrapper}>
+          <div className={classes.wrapper} key={item.following}>
             <div className={classes.row} onClick={handleClickFollowing(item.following)}>
               <Row>
                 <Col xs="auto" style={zeroPadding}>

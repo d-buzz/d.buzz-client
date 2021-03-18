@@ -313,6 +313,10 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
     errorMessage += ', you have insufficient resource credit to make this transaction, please consider retrying after recharge or after powering up hive'
   }
 
+  if(errorCode === -32001) {
+    errorMessage += ', votes evaluating for post/comment that is paid out is forbidden.'
+  }
+
   return errorMessage
 }
 

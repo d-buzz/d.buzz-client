@@ -124,7 +124,7 @@ const Init = (props) => {
         <Paper elevation={10} className={classes.versionDialog}>
           <div className={classes.dialogInner}>
             <center>
-              <Typography variant="body"><b>New version available !</b> <br /> Click reload to download the latest version of dbuzz</Typography>
+              <Typography variant="body1"><b>New version available !</b> <br /> Click reload to download the latest version of dbuzz</Typography>
               <br />
               <Button onClick={reload} variant="outlined" size="small" startIcon={<ReplayIcon />} className={classes.versionButtons} color="primary">
                 reload

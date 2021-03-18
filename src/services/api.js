@@ -498,7 +498,13 @@ export const broadcastVote = (wif, voter, author, permlink, weight) => {
       .then((result) => {
         resolve(result)
       }).catch((error) => {
-        reject(error.code)
+        let code = error.code
+        if(error.code === -32000){
+          if(error.message && error.message.includes('paid out is forbidden')){
+            code = -32001
+          }
+        }
+        reject(code)
       })
   })
 }
@@ -577,7 +583,7 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
     let iterator = 0
 
     api.getFollowingAsync(follower, start_following, 'blog', limit)
-      .then((result) => {
+      .then(async(result) => {
 
         if(result.length === 1 && (result[0].following === start_following)) {
           resolve([])
@@ -669,7 +675,13 @@ export const keychainUpvote = (username, permlink, author, weight) => {
         if(response.success) {
           resolve(response)
         } else {
-          reject(response.error.code)
+          let code = response.error.code
+          if(response.error.code === -32000){
+            if(response.message && response.message.includes('paid out is forbidden')){
+              code = -32001
+            }
+          }
+          reject(code)
         }
       },
     )

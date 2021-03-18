@@ -327,29 +327,25 @@ function* upvoteRequest(payload, meta) {
 
     const weight = percentage * 100
 
+    let success = false
     if(is_authenticated) {
       if(useKeychain) {
-
         const result = yield call(keychainUpvote, username, permlink, author, weight)
-        if(result.success) {
-          recentUpvotes = [...recentUpvotes, permlink]
-          yield put(upvoteSuccess({ success: true }, meta))
-        }
-
+        success = result.success
       } else {
-
         let { login_data } = user
         login_data = extractLoginData(login_data)
         const wif = login_data[1]
 
-        yield call(broadcastVote, wif, username, author, permlink, weight)
-        recentUpvotes = [...recentUpvotes, permlink]
-        yield put(upvoteSuccess({ success: true }, meta))
-
+        const result = yield call(broadcastVote, wif, username, author, permlink, weight)
+        success = result.id ? true : false
       }
 
-      yield put(saveReceptUpvotes(recentUpvotes))
-
+      if(success){
+        recentUpvotes = [...recentUpvotes, permlink]
+        yield put(saveReceptUpvotes(recentUpvotes))
+        yield put(upvoteSuccess({ success: true }, meta))
+      }
     } else {
       yield put(upvoteFailure({ success: false, errorMessage: 'No authentication' }, meta))
     }
