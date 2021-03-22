@@ -333,9 +333,9 @@ const Content = (props) => {
       if(href && !href.includes(hostname)) {
         window.open(href, '_blank')
       } else {
-        const split = `${href}`.split('/')
-        href = `/${split[3]}`
-        if(href !== '/undefined') {
+        const split = `${href}`.split('#')
+        href = `${split[1]}`
+        if(href !== 'undefined') {
           history.push(href)
         }
       }
