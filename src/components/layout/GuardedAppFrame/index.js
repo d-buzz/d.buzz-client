@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
-import { BackArrowIcon } from 'components/elements'
+import { BackArrowIcon, CaretIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { renderRoutes } from 'react-router-config'
 import IconButton from '@material-ui/core/IconButton'
@@ -20,6 +20,10 @@ import { bindActionCreators } from 'redux'
 import { useLastLocation } from 'react-router-last-location'
 import { useWindowDimensions } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
+import { filterNotificationRequest } from 'store/polling/actions'
+import MenuItem from '@material-ui/core/MenuItem'
+import Menu from '@material-ui/core/Menu'
+import classNames from 'classnames'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -71,6 +75,12 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     width: '100%',
   },
+  menuText: {
+    fontSize: 13,
+  },
+  right: {
+    height: 'max-content',
+  },
 }))
 
 const GuardedAppFrame = (props) => {
@@ -83,6 +93,7 @@ const GuardedAppFrame = (props) => {
     broadcastNotification,
     loading,
     count,
+    filterNotificationRequest,
   } = props
 
   const classes = useStyles()
@@ -98,7 +109,7 @@ const GuardedAppFrame = (props) => {
   const [minify, setMinify] = useState(false)
   const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
-
+  const [openCaret, setOpenCaret] = useState(false)
   
   useEffect(() => {
     setSearch(query)
@@ -193,6 +204,17 @@ const GuardedAppFrame = (props) => {
     }
   }
 
+  const openMenu = (e) => {
+    setOpenCaret(e.currentTarget)
+  }
+
+  const closeMenu = () => {
+    setOpenCaret(false)
+  }
+
+  const onChangeNotification = (name) => {
+    filterNotificationRequest(name)
+  }
 
   const handleClearNotification = () => {
     clearNotificationsRequest()
@@ -231,6 +253,31 @@ const GuardedAppFrame = (props) => {
                       </IconButton>
                     )}
                     {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+                    {title === 'Notifications' && (
+                      <IconButton onClick={openMenu} size='small'>
+                        <CaretIcon />
+                      </IconButton>
+                    )}
+                    {title === 'Notifications' && (
+                      <Col xs="auto">
+                        <div className={classNames('right-content', classes.right)}>
+                          <Menu
+                            anchorEl={openCaret}
+                            keepMounted
+                            open={Boolean(openCaret)}
+                            onClose={closeMenu}
+                          >
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('All')}>All</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Vote')}>Votes</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Mention')}>Mentions</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Follow')}>Follows</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Reply')}>Replies</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Reblog')}>Reblogs</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Transfer')}>Transfers</MenuItem>
+                          </Menu>
+                        </div>
+                      </Col>
+                    )}
                   </Navbar.Brand>
                   {title === 'Search' && (
                     <div className={classes.searchDiv}>
@@ -300,6 +347,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearSearchPosts,
     clearNotificationsRequest,
     broadcastNotification,
+    filterNotificationRequest,
   }, dispatch),
 })
 
