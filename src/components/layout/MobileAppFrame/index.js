@@ -22,7 +22,6 @@ import {
   BuzzIcon,
   SunMoonIcon,
   SearchIcon,
-  RoundedField,
 } from 'components/elements'
 import {
   BuzzFormModal,
