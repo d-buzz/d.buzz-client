@@ -40,9 +40,13 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
-import { ProfileSkeleton, HelmetGenerator, HiddenBuzzListModal } from 'components'
+import { 
+  ProfileSkeleton, 
+  HelmetGenerator, 
+  HiddenBuzzListModal,
+  EditProfileModal,
+} from 'components'
 import queryString from 'query-string'
-
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -182,6 +186,9 @@ const Profile = (props) => {
   const [openHiddenBuzzList, setOpenHiddenBuzzList] = useState(false)
   const [moreOptionsEl, setMoreOptionsEl] = useState(null)
 
+  const [moreOptions, setMoreOptions] = useState([])
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
+
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
       const hasBeenFollowed = recentFollows.filter((item) => item === username).length
@@ -257,8 +264,49 @@ const Profile = (props) => {
       getFollowersRequest(username)
       getFollowingRequest(username)
     }
+
+    setMoreButtonOptions()
+    
     // eslint-disable-next-line
   }, [username])
+
+  const setMoreButtonOptions = () => {
+    const moreOptionsList = [
+      {
+        label: "Blacklisted Users",
+        icon: '',
+        onClick: navigateToBlackListed,
+      },
+      {
+        label: "Muted Users",
+        icon: '',
+        onClick: navigateToMutedUsers,
+      },
+      {
+        label: "Followed Blacklists",
+        icon: '',
+        onClick: navigateToFollowedBlacklist,
+      },
+      {
+        label: "Followed Muted Lists",
+        icon: '',
+        onClick: navigateToFollowedMuted,
+      },
+    ]
+
+    if(username === loginuser) {
+      const options = [
+        {
+          label: "Hidden Buzzes",
+          icon: '',
+          onClick: handleClickOpenHiddenBuzzList,
+        },
+      ]
+      setMoreOptions([...options, ...moreOptionsList])
+    }else{
+      setMoreOptions(moreOptionsList)
+    }
+  }
 
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
@@ -306,6 +354,7 @@ const Profile = (props) => {
 
   const handleClickOpenHiddenBuzzList = () => {
     setOpenHiddenBuzzList(!openHiddenBuzzList)
+    handleCloseMoreOptions()
   }
 
   const handleCloseMoreOptions = () => {
@@ -314,6 +363,10 @@ const Profile = (props) => {
 
   const handleOpenMoreOptions = (e) => {
     setMoreOptionsEl(e.currentTarget)
+  }
+
+  const handleOpenEditProfileModal = () => {
+    setOpenEditProfileModal(!openEditProfileModal)
   }
 
   const navigateToBlackListed = () => {
@@ -331,29 +384,6 @@ const Profile = (props) => {
   const navigateToFollowedMuted = () => {
     history.push(`/@${username}/lists/muted/followed`)
   }
-
-  const MoreOptions = [
-    {
-      label: "Blacklisted Users",
-      icon: '',
-      onClick: navigateToBlackListed,
-    },
-    {
-      label: "Muted Users",
-      icon: '',
-      onClick: navigateToMutedUsers,
-    },
-    {
-      label: "Followed Blacklists",
-      icon: '',
-      onClick: navigateToFollowedBlacklist,
-    },
-    {
-      label: "Followed Muted Lists",
-      icon: '',
-      onClick: navigateToFollowedMuted,
-    },
-  ]
 
   return (
     <React.Fragment>
@@ -374,24 +404,31 @@ const Profile = (props) => {
               <Col>
                 {is_authenticated && (
                   <React.Fragment>
-                    <IconButton
-                      size="medium"
-                      style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
-                      onClick={handleOpenMoreOptions}
-                    >
-                      <MoreCircleIconRed/>
-                    </IconButton>
-                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
+                    {moreOptions.length > 0 && (
+                      <React.Fragment>
+                        <IconButton
+                          size="medium"
+                          style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
+                          onClick={handleOpenMoreOptions}
+                        >
+                          <MoreCircleIconRed/>
+                        </IconButton>
+                        <CustomizedMenu 
+                          anchorEl={moreOptionsEl} 
+                          handleClose={handleCloseMoreOptions} 
+                          items={moreOptions}/>
+                      </React.Fragment>
+                    )}
                     {loginuser === username && (
-                      <React.Fragment>\
+                      <React.Fragment>
                         <ContainedButton
                           fontSize={14}
                           disabled={loading}
                           style={{ float: 'right', marginTop: 5 }}
                           transparent={true}
-                          label="Hidden Buzzes"
+                          label="Edit profile"
                           className={classes.button}
-                          onClick={handleClickOpenHiddenBuzzList}
+                          onClick={handleOpenEditProfileModal}
                         />
                       </React.Fragment>
                     )}
@@ -509,6 +546,7 @@ const Profile = (props) => {
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
       <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
+      <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal}/>
     </React.Fragment>
   )
 }
