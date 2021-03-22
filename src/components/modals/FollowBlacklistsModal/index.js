@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import { muteUserRequest } from 'store/auth/actions'
-import { closeMuteDialog, broadcastNotification } from 'store/interface/actions'
-import {
-  unfollowRequest,
-} from 'store/posts/actions'
+import { closeFollowBlacklistsDialog, broadcastNotification } from 'store/interface/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { errorMessageComposer } from "services/helper"
+import { followBlacklistsRequest, unfollowBlacklistsRequest } from "store/auth/actions"
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -100,77 +96,70 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 
-const MuteModal = (props) => {
+const FollowBlacklistsModal = (props) => {
   const {
-    closeMuteDialog,
-    muteModal,
-    muteUserRequest,
+    closeFollowBlacklistsDialog,
+    followBlacklistsDialog,
     loading,
+    followedBlacklist,
     broadcastNotification,
-    mutelist,
-    unfollowRequest,
+    followBlacklistsRequest,
+    unfollowBlacklistsRequest,
   } = props
   const [open, setOpen] = useState(false)
   const [username, setUsername] = useState(null)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isListFollowed, setIsListFollowed] = useState(false)
   const classes = useStyles()
-  const { muteSuccessCallback } = muteModal
+  const { followBlacklistsSuccessCallback } = followBlacklistsDialog
 
   useEffect(() => {
-    if(muteModal && muteModal.hasOwnProperty('open')) {
-      const { open, username } = muteModal
+    if(followBlacklistsDialog && followBlacklistsDialog.hasOwnProperty('open')) {
+      const { open, username } = followBlacklistsDialog
       setOpen(open)
       setUsername(username)
-      if(mutelist.includes(username)) {
-        setIsMuted(true)
+      const list = [...followedBlacklist].map((item) => { return item.name })
+      if(Object.values(list).includes(username)){
+        setIsListFollowed(true)
       }else{
-        setIsMuted(false)
+        setIsListFollowed(false)
       }
     }
   // eslint-disable-next-line
-  }, [muteModal, mutelist])
+  }, [followBlacklistsDialog,followedBlacklist])
 
   const onHide = () => {
-    closeMuteDialog()
+    closeFollowBlacklistsDialog()
   }
 
-  const handleClickMuteUser = () => {
-    if(!isMuted) {
-      muteUserRequest(username).then(({ success, errorMessage }) => {
+  const handleClickFollowUserBlacklist = () => {
+    if(!isListFollowed) {
+      followBlacklistsRequest(username).then(({ success, errorMessage }) => {
         if(success){
           setOpen(false)
           onHide()
-          broadcastNotification('success', `Succesfully muted @${username}`)
+          broadcastNotification('success',`Successfully followed blacklist of ${username}`)
           modalCallback()
         }else{
           broadcastNotification('error', errorMessage)
         }
-        
-      }).catch(() => {
-        broadcastNotification('error', `Failed to mute @${username}`)
       })
     } else {
-      unfollowRequest(username).then((result) => {
-        if(result === -32000){
-          const errorMessage = errorMessageComposer('unmute',result)
-          broadcastNotification('error', errorMessage)
+      unfollowBlacklistsRequest(username).then(({ success, errorMessage }) => {
+        if(success){
+          setOpen(false)
+          onHide()
+          broadcastNotification('success',`Successfully unfollowed blacklist of ${username}`)
+          modalCallback()
         }else{
-          if(result) {
-            setOpen(false)
-            onHide()
-            broadcastNotification('success', `Successfully unmuted @${username}`)
-            modalCallback()
-          } else {
-            broadcastNotification('error', `Failed unmuting @${username}`)
-          }
+          broadcastNotification('error', errorMessage)
         }
       })
     }
   }
 
   const modalCallback = () => {
-    if(muteSuccessCallback) {
-      muteSuccessCallback()
+    if(followBlacklistsSuccessCallback){
+      followBlacklistsSuccessCallback()
     }
   }
 
@@ -182,21 +171,19 @@ const MuteModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  {!isMuted && (
+                  {!isListFollowed && (
                     <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
+                      <h6>Follow user blacklist?</h6>
                       <p className={classes.text}>
-                        Would you like to add <b>@{username}</b> to your list of
-                        muted users?
+                        Would you like to follow <b>@{username}</b>'s blacklist?
                       </p>
                     </React.Fragment>
                   )}
-                  {isMuted && (
+                  {isListFollowed && (
                     <React.Fragment>
-                      <h6>Remove user to mutelist?</h6>
+                      <h6>Unfollow user blacklist?</h6>
                       <p className={classes.text}>
-                        Would you like to remove <b>@{username}</b> from your list of
-                        muted users?
+                        Would you like to unfollow <b>@{username}</b>'s blacklist?
                       </p>
                     </React.Fragment>
                   )}
@@ -206,8 +193,7 @@ const MuteModal = (props) => {
                 <React.Fragment>
                   <h6>Operation in progress</h6>
                   <p className={classes.text}>
-                    {isMuted ? 'Removing' : 'Adding'} <b>@{username}</b> to your list of
-                    muted users
+                    {isListFollowed ? 'Unfollowing' : 'Following'} <b>@{username}</b> blacklist
                   </p>
                 </React.Fragment>
               )}
@@ -217,11 +203,11 @@ const MuteModal = (props) => {
             <React.Fragment>
               <div style={{ display: 'inline-block' }}>
                 <ContainedButton
-                  onClick={handleClickMuteUser}
+                  onClick={handleClickFollowUserBlacklist}
                   className={classes.closeButton}
                   fontSize={14}
                   transparent={true}
-                  label={isMuted ? 'Remove' : 'Add'}
+                  label={isListFollowed ? 'Unfollow' : 'Follow'}
                 />
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>
@@ -248,18 +234,18 @@ const MuteModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  muteModal: state.interfaces.get('muteDialogUser'),
-  loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
-  mutelist: state.auth.get('mutelist'),
+  followBlacklistsDialog: state.interfaces.get('followBlacklistsDialog'),
+  loading: pending(state, 'FOLLOW_BLACKLISTS_REQUEST') || pending(state, 'UNFOLLOW_BLACKLISTS_REQUEST'),
+  followedBlacklist: state.profile.get('followedBlacklist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    closeMuteDialog,
-    muteUserRequest,
+    closeFollowBlacklistsDialog,
     broadcastNotification,
-    unfollowRequest,
+    followBlacklistsRequest,
+    unfollowBlacklistsRequest,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MuteModal)
+export default connect(mapStateToProps, mapDispatchToProps)(FollowBlacklistsModal)
