@@ -234,7 +234,7 @@ export const getAccountCommentsFailure = (error, meta) => ({
 export const SET_LAST_ACCOUNT_COMMENT = 'SET_LAST_ACCOUNT_COMMENT'
 
 export const setLastAccountComment = (response) => ({
-  type: SET_LAST_ACCOUNT_REPLY,
+  type: SET_LAST_ACCOUNT_COMMENT,
   payload: response,
 })
 
