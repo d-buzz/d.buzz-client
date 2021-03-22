@@ -214,6 +214,7 @@ const GuardedAppFrame = (props) => {
 
   const onChangeNotification = (name) => {
     filterNotificationRequest(name)
+    setOpenCaret(false)
   }
 
   const handleClearNotification = () => {
