@@ -58,6 +58,10 @@ import {
   setFollowBlacklistUnfiltered,
   setFollowMutedLastIndex,
   setFollowMutedUnfiltered,
+
+  UPDATE_PROFILE_REQUEST,
+  updateProfileSuccess,
+  updateProfileFailure,
 } from './actions'
 
 import {
@@ -74,6 +78,7 @@ import {
   fetchAccounts,
   getAccountLists,
   checkAccountIsFollowingLists,
+  generateUpdateAccountOperation,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
@@ -313,6 +318,40 @@ function* checkAccountExistRequest(payload, meta) {
   }
 }
 
+function* updateProfileRequest(payload, meta) {
+  try {
+    const { account, posting_json_metadata } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const { username, useKeychain } = user
+
+    const operation = yield call(generateUpdateAccountOperation, account, JSON.stringify(posting_json_metadata))
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      console.log({result})
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      console.log({result})
+      success = result.success
+    }
+
+    if(success) {
+      yield put(updateProfileSuccess({success: true}, meta))
+    }else{
+      yield put(updateProfileFailure({success: false, errorMessage: 'Failed to update profile'}, meta))
+    }
+  } catch (error) {
+    yield put(updateProfileFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -353,6 +392,11 @@ function* watchCheckAccountExistRequest({ payload, meta }) {
   yield call(checkAccountExistRequest, payload, meta)
 }
 
+function* watchUpdateProfileRequest({ payload, meta }) {
+  yield call(updateProfileRequest, payload, meta)
+}
+
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
@@ -364,4 +408,5 @@ export default function* sagas() {
   yield takeEvery(GET_ACCOUNT_LIST_REQUEST, watchGetAccountListRequest)
   yield takeEvery(CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST, watchCheckAccountFollowsListRequest)
   yield takeEvery(CHECK_ACCOUNT_EXIST_REQUEST, watchCheckAccountExistRequest)
+  yield takeEvery(UPDATE_PROFILE_REQUEST, watchUpdateProfileRequest)
 }

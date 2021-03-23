@@ -413,3 +413,27 @@ export const setFollowMutedUnfiltered = (response) => ({
   type: SET_FOLLOW_MUTED_UNFILTERED,
   payload: response,
 })
+
+
+export const UPDATE_PROFILE_REQUEST = 'UPDATE_PROFILE_REQUEST'
+export const UPDATE_PROFILE_SUCCESS = 'UPDATE_PROFILE_SUCCESS'
+export const UPDATE_PROFILE_FAILURE = 'UPDATE_PROFILE_FAILURE'
+export const updateProfileRequest = (account, posting_json_metadata) => ({
+  type: UPDATE_PROFILE_REQUEST,
+  payload: { account, posting_json_metadata },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const updateProfileSuccess = (response, meta) => ({
+  type: UPDATE_PROFILE_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const updateProfileFailure = (error, meta) => ({
+  type: UPDATE_PROFILE_FAILURE,
+  payload: error,
+  meta,
+})
