@@ -62,7 +62,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   sticky: {
-    '@media (max-width: 400px)' : {
+    '@media (max-width: 500px)' : {
       zIndex: 1,
       backgroundColor: 'white',
     },
