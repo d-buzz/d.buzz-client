@@ -437,3 +437,9 @@ export const updateProfileFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const UPDATE_PROFILE_METADATA = 'UPDATE_PROFILE_METADATA'
+export const updateProfileMetadata = (metadata) => ({
+  type: UPDATE_PROFILE_METADATA,
+  payload: metadata,
+})

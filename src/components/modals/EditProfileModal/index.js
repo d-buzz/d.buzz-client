@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/IconButton'
 import { CloseIcon, ContainedButton, Avatar, TextField, AddImageIcon } from 'components/elements'
 import { uploadFileRequest } from 'store/posts/actions'
 import { updateProfileRequest } from "store/profile/actions"
+import { broadcastNotification  } from "store/interface/actions"
 import { 
   Modal,
   ModalBody,
@@ -120,10 +121,12 @@ const EditProfileModal = (props) => {
     loading,
     uploadFileRequest,
     updateProfileRequest,
+    broadcastNotification,
   } = props
   const { username } = user
-  const { metadata } = profile || ''
+  const { metadata, posting_json_metadata } = profile || ''
   const { profile: profileMeta } = metadata || ''
+  const { profile: postingProfileMeta } = posting_json_metadata || ''
   const [profileName, setProfileName] = useState('')
   const [profileCoverImage, setProfileCoverImage] = useState('')
   const [profileAbout, setProfileAbout] = useState('')
@@ -139,22 +142,22 @@ const EditProfileModal = (props) => {
 
   useEffect(() => {
     const { 
-      name, 
-      cover_image, 
+      cover_image,
+      profile_image,
       website, 
       about, 
       location,
     } = profileMeta || ''
 
+    const { name } = postingProfileMeta || '' // get fullname from get_accounts api
     setProfileName(name)
     setProfileAbout(about)
     setProfileWebsite(website)
     setProfileLocation(location)
-    if(cover_image){
-      setProfileCoverImage(`https://images.hive.blog/0x0/${cover_image}`)
-    }
+    if (cover_image) setProfileCoverImage(`https://images.hive.blog/0x0/${cover_image}`)
+    if (profile_image) setProfileAvatar(profile_image)
   // eslint-disable-next-line
-  }, [profileMeta, show])
+  }, [profileMeta, postingProfileMeta, show, username])
 
   const onChange = (e) => {
     const { target } = e
@@ -179,6 +182,8 @@ const EditProfileModal = (props) => {
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
           setProfileAvatar(lastImage)
+        }else{
+          broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
         }
       })
     }
@@ -193,6 +198,8 @@ const EditProfileModal = (props) => {
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
           setProfileCoverImage(lastImage)
+        }else{
+          broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
         }
       })
     }
@@ -245,25 +252,26 @@ const EditProfileModal = (props) => {
   }
 
   const handleSubmitForm = () => {
-    const { 
-      profile_image, 
-    } = profileMeta
-
     const metadata = {
-      profile: {
-        profile_image: profileAvatar ? profileAvatar : profile_image,
-        cover_image: profileCoverImage,
-        name: profileName,
-        about: profileAbout,
-        location: profileLocation,
-        website: profileWebsite,
+      profile : {
+        profile_image : profileAvatar ? profileAvatar : profileMeta.profile_image,
+        cover_image : profileCoverImage,
+        name : profileName,
+        about : profileAbout,
+        location : profileLocation,
+        website : profileWebsite,
+        version : 2,  // signal upgrade to posting_json_metadata
       },
     }
-    console.log({old: profileMeta, new: metadata}) 
 
-    // updateProfileRequest(username,metadata).then((response) => {
-    //   console.log(response)
-    // })
+    updateProfileRequest(username,metadata).then(({success, errorMessage}) => {
+      if(success) {
+        broadcastNotification('success','Profile updated successfully')
+        onHide()
+      }else{
+        broadcastNotification('error',errorMessage)
+      }
+    })
   }
 
   return (
@@ -409,7 +417,7 @@ const EditProfileModal = (props) => {
                         onClick={handleSubmitForm}
                         label="Save"
                         loading={loading}
-                        disabled={loading}
+                        disabled={loading || uploadCoverLoading || uploadAvatarLoading}
                         className={classes.saveButton}
                       />
                     </div>
@@ -434,6 +442,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     uploadFileRequest,
     updateProfileRequest,
+    broadcastNotification,
   }, dispatch),
 })
 

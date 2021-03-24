@@ -26,7 +26,10 @@ const Avatar = React.memo((props) => {
         height={height}
         width={height}
         className={className}
-        style={{ border: border ? '5px solid white' : 'none', backgroundColor: 'white', ...style }}
+        style={{ border: border ? '5px solid white' : 'none', 
+          backgroundColor: 'white', 
+          objectFit : avatarUrl ? "cover" : "inherit", 
+          ...style }}
       />
     </React.Fragment>
   )

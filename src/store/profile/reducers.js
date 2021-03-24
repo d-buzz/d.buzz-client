@@ -36,6 +36,7 @@ import {
   SET_FOLLOW_BLACKLIST_UNFILTERED,
   SET_FOLLOW_MUTED_LAST_INDEX,
   SET_FOLLOW_MUTED_UNFILTERED,
+  UPDATE_PROFILE_METADATA,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -145,6 +146,8 @@ export const profile = (state = defaultState, { type, payload }) => {
     return state.set('followMutedLastIndex', payload)
   case SET_FOLLOW_MUTED_UNFILTERED:
     return state.set('followedMutedAll', payload)
+  case UPDATE_PROFILE_METADATA:
+    return state.set('profile', payload)
   default:
     return state
   }

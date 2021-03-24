@@ -62,6 +62,7 @@ import {
   UPDATE_PROFILE_REQUEST,
   updateProfileSuccess,
   updateProfileFailure,
+  updateProfileMetadata,
 } from './actions'
 
 import {
@@ -88,7 +89,7 @@ function* getProfileRequest(payload, meta) {
     const profile = yield call(fetchSingleProfile, username)
     const account = yield call(fetchAccounts, username)
 
-    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares } = account[0]
+    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
     const { total_vesting_fund_hive, total_vesting_shares } = props
 
     const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
@@ -99,6 +100,7 @@ function* getProfileRequest(payload, meta) {
     profile.receiveVesting = receiveVesting.toFixed(2)
     profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
     profile.delegated = delegated.toFixed(2)
+    profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
 
     yield put(getProfileSuccess(profile, meta))
   } catch(error) {
@@ -323,6 +325,8 @@ function* updateProfileRequest(payload, meta) {
     const { account, posting_json_metadata } = payload
 
     const user = yield select(state => state.auth.get('user'))
+    const profile = yield select(state => state.profile.get('profile'))
+
     const { username, useKeychain } = user
 
     const operation = yield call(generateUpdateAccountOperation, account, JSON.stringify(posting_json_metadata))
@@ -330,7 +334,6 @@ function* updateProfileRequest(payload, meta) {
 
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
-      console.log({result})
       success = result.success
     } else {
       let { login_data } = user
@@ -338,17 +341,18 @@ function* updateProfileRequest(payload, meta) {
 
       const wif = login_data[1]
       const result = yield call(broadcastOperation, operation, [wif])
-      console.log({result})
       success = result.success
     }
 
     if(success) {
+      profile.metadata.profile = posting_json_metadata.profile
+      yield put(updateProfileMetadata(profile))
       yield put(updateProfileSuccess({success: true}, meta))
     }else{
       yield put(updateProfileFailure({success: false, errorMessage: 'Failed to update profile'}, meta))
     }
   } catch (error) {
-    yield put(updateProfileFailure(error, meta))
+    yield put(updateProfileFailure({success: false, errorMessage: error}, meta))
   }
 }
 

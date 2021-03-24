@@ -47,6 +47,8 @@ import {
   EditProfileModal,
 } from 'components'
 import queryString from 'query-string'
+import LocationOnIcon from '@material-ui/icons/LocationOn'
+import LinkIcon from '@material-ui/icons/Link'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -92,6 +94,9 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     fontSize: 14,
     ...theme.font,
+    '& span': {
+      wordBreak: 'break-all',
+    },
   },
   spacer: {
     width: '100%',
@@ -136,6 +141,9 @@ const useStyles = createUseStyles(theme => ({
   },
   followLinks: {
     ...theme.font,
+  },
+  textIcon : {
+    ...theme.textIcon,
   },
 }))
 
@@ -188,6 +196,7 @@ const Profile = (props) => {
 
   const [moreOptions, setMoreOptions] = useState([])
   const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState(null)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -321,12 +330,19 @@ const Profile = (props) => {
   }, [pathname])
 
 
-  const { metadata, stats, hivepower } = profile || ''
+  const { metadata, stats, hivepower, name: profileUsername } = profile || ''
   const { profile: profileMeta } = metadata || ''
-  const { name, cover_image, website, about } = profileMeta || ''
+  const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
 
   const { reputation = 0, isFollowed } = profile
+  
+  useEffect(() => {
+    if(username === profileUsername){
+      setAvatarUrl(profile_image)
+    }
+  // eslint-disable-next-line 
+  },[profile_image, username])
 
   const followUser = () => {
     followRequest(username).then((result) => {
@@ -398,7 +414,7 @@ const Profile = (props) => {
             <Row>
               <Col xs="auto">
                 <div className={classes.avatar}>
-                  <Avatar border={true} height="135" author={username} size="medium" />
+                  <Avatar border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl}/>
                 </div>
               </Col>
               <Col>
@@ -504,12 +520,24 @@ const Profile = (props) => {
                   </p>
                 </Col>
               </Row>
+              <div style={{ width: '100%', height: 10 }} />
               <Row>
-                <Col xs="auto">
+                <Col xs="auto" style={{ marginLeft: -5 }}>
                   <p className={classes.paragraph}>
-                    <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                      {website}
-                    </a>
+                    {profile_location && (
+                      <span className={classes.textIcon} style={{ marginRight: 10 }}>
+                        <LocationOnIcon fontSize="small" className={classes.textIcon}/> 
+                        {profile_location}
+                      </span>
+                    )}
+                    {website && (
+                      <span>
+                        <LinkIcon fontSize="small" className={classes.textIcon}/> {" "}
+                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                          {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                        </a>
+                      </span>
+                    )}
                   </p>
                 </Col>
               </Row>
@@ -517,10 +545,10 @@ const Profile = (props) => {
                 <Col xs="auto">
                   <p className={classes.paragraph}>
                     <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
-                      <b>{following}</b> Following
+                      <b>{following}</b> <span className={classes.textIcon}>Following</span>
                     </Link> &nbsp;
                     <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
-                      <b>{followers}</b> Followers
+                      <b>{followers}</b> <span className={classes.textIcon}>Followers</span>
                     </Link> &nbsp;
                   </p>
                 </Col>
