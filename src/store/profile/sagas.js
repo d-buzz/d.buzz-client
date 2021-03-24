@@ -82,6 +82,8 @@ import {
   generateUpdateAccountOperation,
 } from 'services/api'
 
+import { errorMessageComposer } from "services/helper"
+
 function* getProfileRequest(payload, meta) {
   try {
     const { username } = payload
@@ -352,7 +354,8 @@ function* updateProfileRequest(payload, meta) {
       yield put(updateProfileFailure({success: false, errorMessage: 'Failed to update profile'}, meta))
     }
   } catch (error) {
-    yield put(updateProfileFailure({success: false, errorMessage: error}, meta))
+    const errorMessage = errorMessageComposer('update_profile', error)
+    yield put(updateProfileFailure({success: false, errorMessage }, meta))
   }
 }
 
