@@ -8,6 +8,7 @@ import {
   ContainedButton,
   HeartIconRed,
   Spinner,
+  ShareIcon,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -23,6 +24,9 @@ import { openReplyModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
+import { FacebookShareButton, FacebookIcon } from 'react-share'
+import MenuItem from '@material-ui/core/MenuItem'
+import Menu from '@material-ui/core/Menu'
 
 const PrettoSlider = withStyles({
   root: {
@@ -205,6 +209,7 @@ const PostActions = (props) => {
   const [vote, setVote] = useState(voteCount)
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
+  const [openCaret, setOpenCaret] = useState(false)
 
   const { is_authenticated } = user
 
@@ -270,12 +275,20 @@ const PostActions = (props) => {
     return semantic !== '51 years ago' ? semantic : ''
   }
 
+  const openMenu = (e) => {
+    setOpenCaret(e.currentTarget)
+  }
+
+  const closeMenu = () => {
+    setOpenCaret(false)
+  }
+  
   return (
     <React.Fragment>
       {!showSlider && (
         <div>
           <Row style={{ width: '100%', ...extraPadding }}>
-            <Col xs={!isMobile ? 0 : 4}>
+            <Col xs={!isMobile ? 3 : 3}>
               {!loading && upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
@@ -319,7 +332,7 @@ const PostActions = (props) => {
                 />
               )}
             </Col>
-            <Col xs={!isMobile ? 0 : 4}>
+            <Col xs={!isMobile ? 'auto' : 3}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classNames(classes.inline, classes.icon)}
@@ -334,7 +347,7 @@ const PostActions = (props) => {
                 )}
               />
             </Col>
-            <Col xs={!isMobile ? 'auto' : 4}>
+            <Col xs={!isMobile ? 4 : 4}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
@@ -357,6 +370,40 @@ const PostActions = (props) => {
                   />
                 )}
               />
+            </Col>
+            <Col xs={!isMobile ? 2 : 2} className={!isMobile ? 'pl-5' : ''} >
+            <ActionWrapper
+                className={classes.actionWrapperSpace}
+                inlineClass={classes.inline}
+                hideStats={false}
+                stat={(
+                  <IconButton onClick={openMenu} size='small'>
+                    <ShareIcon />
+                  </IconButton>
+                )}
+              />
+              <Col xs="auto">
+                <div className={classNames('right-content', classes.right)}>
+                  <Menu
+                    anchorEl={openCaret}
+                    keepMounted
+                    open={Boolean(openCaret)}
+                    onClose={closeMenu}
+                  >
+                    <MenuItem className={classes.menuText}>
+                      <FacebookShareButton 
+                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        quote={body}
+                        onClick={() => {
+                          setOpenCaret(false)
+                        }}
+                      >
+                        <FacebookIcon size={32} round={true} className="mr-1"/>
+                      </FacebookShareButton>
+                    </MenuItem>
+                  </Menu>
+                </div>
+              </Col>
             </Col>
           </Row>
         </div>
