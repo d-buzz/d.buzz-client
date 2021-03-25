@@ -372,7 +372,7 @@ const PostActions = (props) => {
               />
             </Col>
             <Col xs={!isMobile ? 2 : 2} className={!isMobile ? 'pl-5' : ''} >
-            <ActionWrapper
+              <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
                 hideStats={false}
