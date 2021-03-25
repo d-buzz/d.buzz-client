@@ -64,7 +64,6 @@ const useStyles = createUseStyles(theme => ({
     display: 'inline-block',
     verticalAlign: 'top',
     marginTop: -10,
-    ...theme.navbar.icon,
   },
   avatar: {
     marginTop: -70,
