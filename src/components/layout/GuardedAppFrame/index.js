@@ -90,13 +90,21 @@ const GuardedAppFrame = (props) => {
   const location = useLocation()
   const lastLocation = useLastLocation()
   const params = queryString.parse(location.search) || ''
-  const [search, setSearch] = useState(params.q)
+  const query = params.q === undefined ? '' : params.q
+  const [search, setSearch] = useState(query)
   const [sideBarLeftWidth, setSideBarLeftWidth] = useState(270)
   const [sideBarRightWidth, setSideBarRightWidth] = useState(350)
   const [mainContainerWidth, setMainContainerWidth] = useState(595)
   const [minify, setMinify] = useState(false)
   const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
+
+  
+  useEffect(() => {
+    setSearch(query)
+  // eslint-disable-next-line
+  }, [query])
+
 
   useEffect(() => {
     if(width >= 1366) {
@@ -156,7 +164,9 @@ const GuardedAppFrame = (props) => {
   }
 
 
-  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g)) {
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) || 
+    pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
+    pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
     title = `Profile / ${items[1]}`
   }
@@ -194,12 +204,6 @@ const GuardedAppFrame = (props) => {
         }
       })
   }
-
-  // useEffect(() => {
-  //   if(typeof params === 'object') {
-  //     setSearch(params.q)
-  //   }
-  // }, [params])
 
   return (
     <React.Fragment>

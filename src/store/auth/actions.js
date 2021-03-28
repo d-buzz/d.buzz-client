@@ -149,8 +149,9 @@ export const muteUserFailure = (response, meta) => ({
   meta,
 })
 
-export const muteUserSuccess = (meta) => ({
-  type: MUTE_USER_SUCCESS,
+export const muteUserSuccess = (response,meta) => ({
+  type: MUTE_USER_SUCCESS, 
+  payload: response,
   meta,
 })
 
@@ -255,4 +256,153 @@ export const SET_CENSOR_LIST = 'SET_CENSOR_LIST'
 export const setCensorList = (list) => ({
   type: SET_CENSOR_LIST,
   payload: list,
+})
+
+export const FOLLOW_MUTED_LIST_REQUEST = 'FOLLOW_MUTED_LIST_REQUEST'
+export const FOLLOW_MUTED_LIST_SUCCESS = 'FOLLOW_MUTED_LIST_SUCCESS'
+export const FOLLOW_MUTED_LIST_FAILURE = 'FOLLOW_MUTED_LIST_FAILURE'
+
+export const followMutedListRequest = (username) => ({
+  type: FOLLOW_MUTED_LIST_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const followMutedListSuccess = (response, meta) => ({
+  type: FOLLOW_MUTED_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const followMutedListFailure = (response,meta) => ({
+  type: FOLLOW_MUTED_LIST_FAILURE, 
+  payload: response,
+  meta,
+})
+
+
+export const UNFOLLOW_MUTED_LIST_REQUEST = 'UNFOLLOW_MUTED_LIST_REQUEST'
+export const UNFOLLOW_MUTED_LIST_SUCCESS = 'UNFOLLOW_MUTED_LIST_SUCCESS'
+export const UNFOLLOW_MUTED_LIST_FAILURE = 'UNFOLLOW_MUTED_LIST_FAILURE'
+
+export const unfollowMutedListRequest = (username) => ({
+  type: UNFOLLOW_MUTED_LIST_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const unfollowMutedListSuccess = (response, meta) => ({
+  type: UNFOLLOW_MUTED_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const unfollowMutedListFailure = (response,meta) => ({
+  type: UNFOLLOW_MUTED_LIST_FAILURE, 
+  payload: response,
+  meta,
+})
+
+
+export const BLACKLIST_USER_REQUEST = 'BLACKLIST_USER_REQUEST'
+export const BLACKLIST_USER_SUCCESS = 'BLACKLIST_USER_SUCCESS'
+export const BLACKLIST_USER_FAILURE = 'BLACKLIST_USER_FAILURE'
+
+export const blacklistUserRequest = (username) => ({
+  type: BLACKLIST_USER_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const blacklistUserSuccess = (response, meta) => ({
+  type: BLACKLIST_USER_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const blacklistUserFailure = (response,meta) => ({
+  type: BLACKLIST_USER_FAILURE, 
+  payload: response,
+  meta,
+})
+
+
+export const UNBLACKLIST_USER_REQUEST = 'UNBLACKLIST_USER_REQUEST'
+export const UNBLACKLIST_USER_SUCCESS = 'UNBLACKLIST_USER_SUCCESS'
+export const UNBLACKLIST_USER_FAILURE = 'UNBLACKLIST_USER_FAILURE'
+
+export const unblacklistUserRequest = (username) => ({
+  type: UNBLACKLIST_USER_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const unblacklistUserSuccess = (response, meta) => ({
+  type: UNBLACKLIST_USER_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const unblacklistUserFailure = (response,meta) => ({
+  type: UNBLACKLIST_USER_FAILURE, 
+  payload: response,
+  meta,
+})
+
+
+export const FOLLOW_BLACKLISTS_REQUEST = 'FOLLOW_BLACKLISTS_REQUEST'
+export const FOLLOW_BLACKLISTS_SUCCESS = 'FOLLOW_BLACKLISTS_SUCCESS'
+export const FOLLOW_BLACKLISTS_FAILURE = 'FOLLOW_BLACKLISTS_FAILURE'
+
+export const followBlacklistsRequest = (username) => ({
+  type: FOLLOW_BLACKLISTS_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const followBlacklistsSuccess = (response, meta) => ({
+  type: FOLLOW_BLACKLISTS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const followBlacklistsFailure = (response,meta) => ({
+  type: FOLLOW_BLACKLISTS_FAILURE, 
+  payload: response,
+  meta,
+})
+
+
+export const UNFOLLOW_BLACKLISTS_REQUEST = 'UNFOLLOW_BLACKLISTS_REQUEST'
+export const UNFOLLOW_BLACKLISTS_SUCCESS = 'UNFOLLOW_BLACKLISTS_SUCCESS'
+export const UNFOLLOW_BLACKLISTS_FAILURE = 'UNFOLLOW_BLACKLISTS_FAILURE'
+
+export const unfollowBlacklistsRequest = (username) => ({
+  type: UNFOLLOW_BLACKLISTS_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const unfollowBlacklistsSuccess = (response, meta) => ({
+  type: UNFOLLOW_BLACKLISTS_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const unfollowBlacklistsFailure = (response,meta) => ({
+  type: UNFOLLOW_BLACKLISTS_FAILURE, 
+  payload: response,
+  meta,
 })

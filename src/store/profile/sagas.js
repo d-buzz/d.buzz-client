@@ -32,6 +32,32 @@ import {
   getAccountCommentsFailure,
   getAccountCommentsSucess,
   setLastAccountComment,
+
+  GET_ACCOUNT_LIST_REQUEST,
+  getAccountListSuccess,
+  getAccountListFailure,
+
+  setAccountBlacklist,
+  setAccountFollowedBlacklist,
+  setAccountMutedList,
+  setAccountFollowedMutedList,
+
+  CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST,
+  checkAccountFollowsListSuccess,
+  checkAccountFollowsListFailure,
+
+  CHECK_ACCOUNT_EXIST_REQUEST,
+  checkAccountExistSuccess,
+  checkAccountExistFailure,
+
+  setMuteListLastIndex,
+  setMuteListUnfiltered,
+  setBlacklistLastIndex,
+  setBlacklistUnfiltered,
+  setFollowBlacklistLastIndex,
+  setFollowBlacklistUnfiltered,
+  setFollowMutedLastIndex,
+  setFollowMutedUnfiltered,
 } from './actions'
 
 import {
@@ -46,6 +72,8 @@ import {
   invokeFilter,
   fetchGlobalProperties,
   fetchAccounts,
+  getAccountLists,
+  checkAccountIsFollowingLists,
 } from 'services/api'
 
 function* getProfileRequest(payload, meta) {
@@ -215,6 +243,76 @@ function* getCommentsAccountRequest(payload, meta) {
   }
 }
 
+function* getAccountListRequest(payload, meta) {
+  try {
+    const { observer, list_type, lastIndex, filter } = payload
+    const data = yield call(getAccountLists, observer, list_type)
+    let list = data
+    const limit = parseInt(lastIndex) + 15
+
+    if(list_type === 'blacklisted'){
+      if(filter){
+        const old = yield select(state => state.profile.get('blacklistedList'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setBlacklistUnfiltered(data)) // for searching
+      yield put(setBlacklistLastIndex(list.length)) // for pagination
+      yield put(setAccountBlacklist(list))
+    }else if (list_type === 'follow_blacklist') {
+      if(filter){
+        const old = yield select(state => state.profile.get('followedBlacklist'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setFollowBlacklistUnfiltered(data)) // for searching
+      yield put(setFollowBlacklistLastIndex(list.length))  // for pagination
+      yield put(setAccountFollowedBlacklist(list))
+    }else if (list_type === 'muted') {
+      if(filter){
+        const old = yield select(state => state.profile.get('mutedList'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setMuteListUnfiltered(data))  // for searching
+      yield put(setMuteListLastIndex(list.length)) // for pagination
+      yield put(setAccountMutedList(list))
+    }else if (list_type === 'follow_muted') {
+      if(filter){
+        const old = yield select(state => state.profile.get('followedMuted'))
+        list = [...old, ...data.slice(lastIndex, limit)]
+      }
+      yield put(setFollowMutedUnfiltered(data))  // for searching
+      yield put(setFollowMutedLastIndex(list.length)) // for pagination
+      yield put(setAccountFollowedMutedList(list))
+    }
+    yield put(getAccountListSuccess(data, meta))
+  } catch (error) {
+    yield put(getAccountListFailure(error, meta))
+  }
+}
+
+function* checkAccountFollowsListRequest(payload, meta) {
+  try {
+    const { observer } = payload
+    const data = yield call(checkAccountIsFollowingLists, observer)
+    yield put(checkAccountFollowsListSuccess(data, meta))
+  } catch (error) {
+    yield put(checkAccountFollowsListFailure(error, meta))
+  }
+}
+
+function* checkAccountExistRequest(payload, meta) {
+  try {
+    const { username } = payload
+    let exists = false
+    const account = yield call(fetchAccounts, username)
+    if(account.length > 0){
+      exists = true
+    }
+    yield put(checkAccountExistSuccess({ username, exists, profile: account }, meta))
+  } catch (error) {
+    yield put(checkAccountExistFailure(error, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -243,6 +341,18 @@ function* watchGetAccountCommentsRequest({ payload, meta }) {
   yield call(getCommentsAccountRequest, payload, meta)
 }
 
+function* watchGetAccountListRequest({ payload, meta }) {
+  yield call(getAccountListRequest, payload, meta)
+}
+
+function* watchCheckAccountFollowsListRequest({ payload, meta }) {
+  yield call(checkAccountFollowsListRequest, payload, meta)
+}
+
+function* watchCheckAccountExistRequest({ payload, meta }) {
+  yield call(checkAccountExistRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
@@ -251,4 +361,7 @@ export default function* sagas() {
   yield takeEvery(GET_FOLLOWING_REQUEST, watchGetFollowingRequest)
   yield takeEvery(CLEAR_NOTIFICATIONS_REQUEST, watchClearNotificationRequest)
   yield takeEvery(GET_ACCOUNT_COMMENTS_REQUEST, watchGetAccountCommentsRequest)
+  yield takeEvery(GET_ACCOUNT_LIST_REQUEST, watchGetAccountListRequest)
+  yield takeEvery(CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST, watchCheckAccountFollowsListRequest)
+  yield takeEvery(CHECK_ACCOUNT_EXIST_REQUEST, watchCheckAccountExistRequest)
 }

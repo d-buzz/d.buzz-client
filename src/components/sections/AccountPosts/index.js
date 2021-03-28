@@ -5,6 +5,15 @@ import { pending } from 'redux-saga-thunk'
 import { bindActionCreators } from 'redux'
 import { getAccountPostsRequest } from 'store/profile/actions'
 import { InfiniteList } from 'components'
+import { createUseStyles } from 'react-jss'
+
+const useStyle = createUseStyles(theme => ({
+  wrapper: {
+    '& h6': {
+      ...theme.font,
+    },
+  },
+}))
 
 const AccountPosts = (props) => {
   const {
@@ -16,7 +25,7 @@ const AccountPosts = (props) => {
     user,
     mutelist,
   } = props
-
+  const classes = useStyle()
   const loadMorePosts =  useCallback(() => {
     try {
       const { permlink, author: start_author } = last
@@ -29,14 +38,16 @@ const AccountPosts = (props) => {
 
   return (
     <React.Fragment>
-      {!muted && (
-        <React.Fragment>
-          <InfiniteList disableOpacity={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
-          {(!loading && items.length === 0) &&
+      <div className={classes.wrapper}>
+        {!muted && (
+          <React.Fragment>
+            <InfiniteList disableOpacity={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
+            {(!loading && items.length === 0) &&
           (<center><br/><h6>No Buzz's from @{author}</h6></center>)}
-        </React.Fragment>
-      )}
-      {muted && <center><br /><h6>This user is on your mutelist, unmute this user to view their buzzes</h6></center>}
+          </React.Fragment>
+        )}
+        {muted && <center><br /><h6>This user is on your mutelist, unmute this user to view their buzzes</h6></center>}
+      </div>
     </React.Fragment>
   )
 }
