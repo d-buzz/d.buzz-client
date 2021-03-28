@@ -336,7 +336,7 @@ const Profile = (props) => {
   const { followers, following } = stats || 0
 
   const { reputation = 0, isFollowed } = profile
-  
+
   useEffect(() => {
     if(username === profileUsername){
       setAvatarUrl(profile_image)
@@ -401,6 +401,53 @@ const Profile = (props) => {
     history.push(`/@${username}/lists/muted/followed`)
   }
 
+  const handleCloseMoreOptions = () => {
+    setMoreOptionsEl(null)
+  }
+
+  const handleOpenMoreOptions = (e) => {
+    setMoreOptionsEl(e.currentTarget)
+  }
+
+  const navigateToBlackListed = () => {
+    history.push(`/@${username}/lists/blacklisted/users`)
+  }
+
+  const navigateToFollowedBlacklist = () => {
+    history.push(`/@${username}/lists/blacklisted/followed`)
+  }
+
+  const navigateToMutedUsers = () => {
+    history.push(`/@${username}/lists/muted/users`)
+  }
+
+  const navigateToFollowedMuted = () => {
+    history.push(`/@${username}/lists/muted/followed`)
+  }
+
+  const MoreOptions = [
+    {
+      label: "Blacklisted Users",
+      icon: '',
+      onClick: navigateToBlackListed,
+    },
+    {
+      label: "Muted Users",
+      icon: '',
+      onClick: navigateToMutedUsers,
+    },
+    {
+      label: "Followed Blacklists",
+      icon: '',
+      onClick: navigateToFollowedBlacklist,
+    },
+    {
+      label: "Followed Muted Lists",
+      icon: '',
+      onClick: navigateToFollowedMuted,
+    },
+  ]
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Profile' />
@@ -420,23 +467,15 @@ const Profile = (props) => {
               <Col>
                 {is_authenticated && (
                   <React.Fragment>
-                    {moreOptions.length > 0 && (
-                      <React.Fragment>
-                        <IconButton
-                          size="medium"
-                          style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
-                          onClick={handleOpenMoreOptions}
-                        >
-                          <MoreCircleIconRed/>
-                        </IconButton>
-                        <CustomizedMenu 
-                          anchorEl={moreOptionsEl} 
-                          handleClose={handleCloseMoreOptions} 
-                          items={moreOptions}/>
-                      </React.Fragment>
-                    )}
+                    <IconButton
+                      size="medium"
+                      style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
+                      onClick={handleOpenMoreOptions}
+                    >
+                      <MoreCircleIconRed/>
+                    </IconButton>
+                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
                     {loginuser === username && (
-                      <React.Fragment>
                         <ContainedButton
                           fontSize={14}
                           disabled={loading}
@@ -533,9 +572,9 @@ const Profile = (props) => {
                     {website && (
                       <span>
                         <LinkIcon fontSize="small" className={classes.textIcon}/> {" "}
-                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                    <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
                           {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-                        </a>
+                    </a>
                       </span>
                     )}
                   </p>
