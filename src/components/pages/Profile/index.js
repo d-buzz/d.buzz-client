@@ -429,15 +429,15 @@ const Profile = (props) => {
                     </IconButton>
                     <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={moreOptions}/>
                     {loginuser === username && (
-                      <ContainedButton
-                        fontSize={14}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5 }}
-                        transparent={true}
+                        <ContainedButton
+                          fontSize={14}
+                          disabled={loading}
+                          style={{ float: 'right', marginTop: 5 }}
+                          transparent={true}
                         label="Edit profile"
-                        className={classes.button}
+                          className={classes.button}
                         onClick={handleOpenEditProfileModal}
-                      />
+                        />
                     )}
                     {loginuser !== username && !mutelist.includes(username) && (
                       <ContainedButton
@@ -524,9 +524,9 @@ const Profile = (props) => {
                     {website && (
                       <span>
                         <LinkIcon fontSize="small" className={classes.textIcon}/> {" "}
-                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                    <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
                           {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-                        </a>
+                    </a>
                       </span>
                     )}
                   </p>
