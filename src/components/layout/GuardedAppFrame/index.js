@@ -117,6 +117,13 @@ const GuardedAppFrame = (props) => {
   }, [query])
 
 
+  
+  useEffect(() => {
+    setSearch(query)
+  // eslint-disable-next-line
+  }, [query])
+
+
   useEffect(() => {
     if(width >= 1366) {
       setMinify(false)
