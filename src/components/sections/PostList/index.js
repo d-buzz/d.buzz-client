@@ -215,6 +215,7 @@ const PostList = React.memo((props) => {
     hiddenBuzzes,
     openCensorshipDialog,
     censorList,
+    theme,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -368,7 +369,7 @@ const PostList = React.memo((props) => {
   const opacityActivated = opacityUsers.includes(author)
 
   const handleTipClick = () => {
-    sendToBerries(author)
+    sendToBerries(author, theme)
   }
 
   const isAuthor = () => {
@@ -490,6 +491,7 @@ const mapStateToProps = (state) => ({
   opacityUsers: state.auth.get('opacityUsers'),
   hiddenBuzzes: state.auth.get('hiddenBuzzes'),
   censorList: state.auth.get('censorList'),
+  theme: state.settings.get('theme'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
