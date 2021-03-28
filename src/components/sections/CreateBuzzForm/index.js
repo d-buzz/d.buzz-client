@@ -24,7 +24,7 @@ import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
-import { invokeTwitterIntent, prepareFacebookEmbeds } from 'services/helper'
+import { invokeTwitterIntent } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from "react-router-dom"
@@ -242,13 +242,14 @@ const CreateBuzzForm = (props) => {
         })
       }
 
-      if (value.includes("www.facebook.com")) {
-        console.log(value)
-        const content = prepareFacebookEmbeds(value)
-        setContent(content ? content : value)
-      } else {
-        setContent(value)
-      }
+      setContent(value)
+      // if (value.includes("www.facebook.com")) {
+      //   console.log(value)
+      //   const content = prepareFacebookEmbeds(value)
+      //   setContent(content ? content : value)
+      // } else {
+      //   setContent(value)
+      // }
     } else if (name === 'max-payout') {
 
       if (!payoutAgreed) {
@@ -419,9 +420,9 @@ const CreateBuzzForm = (props) => {
     if (emoticon) {
       const contentAppend = `${content}${emoticon}`
       setContent(contentAppend)
-    } 
+    }
   }
-  
+
 
   return (
     <div className={containerClass}>
