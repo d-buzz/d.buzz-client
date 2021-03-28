@@ -184,6 +184,8 @@ const prepareThreeSpeakEmbeds = (content) => {
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.online\/watch\?v=(.*))))?/i)
       } else if(link.includes('3speak.co/watch?v')){
         match = link.match(/(?:https?:\/\/(?:(?:3speak\.co\/watch\?v=(.*))))?/i)
+      } else if(link.includes('3speak.tv/watch?v')) {
+        match = link.match(/(?:https?:\/\/(?:(?:3speak\.tv\/watch\?v=(.*))))?/i)
       }
 
       if(match) {
@@ -222,7 +224,7 @@ const prepareRumbleEmbed = (content) => {
       if (!id) {
         id = ''
       }
-      
+
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:rumble:${id}:~~~~~~.^.~~~`)
       }
@@ -237,7 +239,7 @@ const prepareLbryEmbeds = (content) => {
   const lbry1Regex = /(?:https?:\/\/(?:(?:open\.lbry\.com)))/i
   const lbryRegexEmbed = /(?:https?:\/\/(?:(?:lbry\.tv\/.*?\/embed\/(.*?))))/i
   let body = content
-  
+
   const links = markdownLinkExtractor(content)
 
   links.forEach((link) => {
@@ -245,7 +247,7 @@ const prepareLbryEmbeds = (content) => {
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-      
+
       if(link.match(lbryRegex) || link.match(lbry1Regex)){
         const data = link.split('/')
         match = link.match(lbryRegex) ? link.match(lbryRegex) : link.match(lbry1Regex)
@@ -253,7 +255,7 @@ const prepareLbryEmbeds = (content) => {
           const data1 = data[4].split(':')
           id = data1[0]
         }
-        
+
         if(link.match(lbryRegexEmbed)){
           match = link.split('/')
           id = match[5]
@@ -267,10 +269,10 @@ const prepareLbryEmbeds = (content) => {
   })
   return body
 }
-        
+
 const prepareBitchuteEmbeds = (content) => {
   const bitchuteRegex = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/(.*?))))/i
-  const bitchuteRegexEmbed = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/embed\/(.*?))))/i 
+  const bitchuteRegexEmbed = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/embed\/(.*?))))/i
   let body = content
 
   const links = textParser.getUrls(content)
@@ -279,7 +281,7 @@ const prepareBitchuteEmbeds = (content) => {
     link = link.replace(/&amp;/g, '&')
     let match = ''
     let id = ''
-    
+
     try {
       if(link.match(bitchuteRegex)){
         const data = link.split('/')
@@ -296,7 +298,7 @@ const prepareBitchuteEmbeds = (content) => {
       if (!id) {
         id = ''
       }
-      
+
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:bitchute:${id}:~~~~~~.^.~~~`)
       }
@@ -305,42 +307,42 @@ const prepareBitchuteEmbeds = (content) => {
   return body
 }
 
-const prepareFacebookEmbeds = (content) => {
-  const facebookRegex = /(?:https?:\/\/(?:(?:www\.facebook\.com\/(.*?))))/i
-  const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
-  let body = content
+// const prepareFacebookEmbeds = (content) => {
+//   const facebookRegex = /(?:https?:\/\/(?:(?:www\.facebook\.com\/(.*?))))/i
+//   const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
+//   let body = content
 
-  const links = textParser.getUrls(content)
+//   const links = textParser.getUrls(content)
 
-  const matchData = content.match(facebookRegexEmbeds)
-  
-  if (matchData) {
-    const input = matchData['input'].split('src=')[1].split(/[ >]/)[0]
-    const url = input.replace(/['"]+/g, '')
-    body = body.replace(body, `~~~~~~.^.~~~:facebook:${url}:${'embed'}:~~~~~~.^.~~~`)
-  } else {
-    links.forEach((link) => {
-      try {
-        link = link.replace(/&amp;/g, '&')
-        let match = ''
-        let id = ''
-        let id1 = ''
-        if(link.match(facebookRegex)){
-          match = link.match(facebookRegex)
-          const input = match['input']
-          const data = input.split('/')
-          id = data[3]
-          id1 = data[5]
-        }
+//   const matchData = content.match(facebookRegexEmbeds)
 
-        if(match){
-          body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:${id1}:~~~~~~.^.~~~`)
-        }
-      } catch(error) { }
-    })
-  }
-  return body
-}
+//   if (matchData) {
+//     const input = matchData['input'].split('src=')[1].split(/[ >]/)[0]
+//     const url = input.replace(/['"]+/g, '')
+//     body = body.replace(body, `~~~~~~.^.~~~:facebook:${url}:${'embed'}:~~~~~~.^.~~~`)
+//   } else {
+//     links.forEach((link) => {
+//       try {
+//         link = link.replace(/&amp;/g, '&')
+//         let match = ''
+//         let id = ''
+//         let id1 = ''
+//         if(link.match(facebookRegex)){
+//           match = link.match(facebookRegex)
+//           const input = match['input']
+//           const data = input.split('/')
+//           id = data[3]
+//           id1 = data[5]
+//         }
+
+//         if(match){
+//           body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:${id1}:~~~~~~.^.~~~`)
+//         }
+//       } catch(error) { }
+//     })
+//   }
+//   return body
+// }
 
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
 
@@ -349,7 +351,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
-    const url = `https://3speak.co/embed?v=${splitThreeSpeak[2]}`
+    const url = `https://3speak.tv/embed?v=${splitThreeSpeak[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}3speak`} url={url} />
   } else if(content.includes(':vimm:')){
     const splitVimm = content.split(':')
@@ -369,10 +371,12 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBitchute = content.split(':')
     const url = `https://www.bitchute.com/embed/${splitBitchute[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
-  } else if (content.includes(':facebook:')) {
-    const splitFacebook = content.split(':')
-    const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
-    return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
+
+  // else if (content.includes(':facebook:')) {
+  //   const splitFacebook = content.split(':')
+  //   const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
+  //   return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
+  // }
   } else {
     // render normally
     return <div
@@ -404,7 +408,7 @@ const MarkdownViewer = React.memo((props) => {
 
       if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
-      } else if(link.includes('3speak.co') || link.includes('3speak.online')) {
+      } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
         content = prepareThreeSpeakEmbeds(content)
       } else if(link.includes('www.vimm.tv')) {
         content = prepareVimmEmbeds(content)
@@ -414,9 +418,10 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareLbryEmbeds(content)
       } else if(link.includes('www.bitchute.com')) {
         content = prepareBitchuteEmbeds(content)
-      } else if(link.includes('www.facebook.com')) {
-        content = prepareFacebookEmbeds(content)
       }
+      // else if(link.includes('www.facebook.com')) {
+      //   content = prepareFacebookEmbeds(content)
+      // }
     } catch(error) { }
   })
 

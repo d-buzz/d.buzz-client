@@ -66,11 +66,12 @@ const Search = (props) => {
   const location = useLocation()
   const { pathname } = location
   const params = queryString.parse(location.search)
+  const query = params.q !== undefined ? params.q : ''
   const history = useHistory()
 
   useEffect(() => {
     anchorTop()
-    searchRequest(params.q)
+    searchRequest(query)
     setPageFrom(null)
   // eslint-disable-next-line
   }, [])

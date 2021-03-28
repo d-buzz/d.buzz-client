@@ -21,12 +21,14 @@ import {
   Avatar,
   BuzzIcon,
   SunMoonIcon,
+  SearchIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
   ThemeModal,
   SwitchUserModal,
   LoginModal,
+  SearchField,
 } from 'components'
 import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
@@ -35,8 +37,9 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { clearNotificationsRequest } from 'store/profile/actions'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
-import { broadcastNotification } from 'store/interface/actions'
+import { broadcastNotification, setRefreshRouteStatus } from 'store/interface/actions'
 import { signoutUserRequest, setIntentBuzz } from 'store/auth/actions'
+import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import queryString from 'query-string'
 import moment from 'moment'
@@ -74,6 +77,15 @@ const useStyles = createUseStyles(theme => ({
   walletButton: {
     marginTop: 5,
     float: 'right',
+  },
+  searchButton: {
+    marginTop: 5,
+    float: 'right',
+    '& svg': {
+      '& path': {
+        stroke: theme.left.sidebar.items.color,
+      },
+    },
   },
   navTop: {
     borderBottom: theme.border.primary,
@@ -130,12 +142,21 @@ const useStyles = createUseStyles(theme => ({
   },
   separator: {
     height: 200,
-    widt: '100%',
+    width: '100%',
+  },
+  searchDiv: {
+    display: 'inline-block',
+    verticalAlign: 'top',
+    width: '100%',
+    paddingLeft: "5px",
+    paddingRight: "5px",
+  },
+  avatarWrapper: {
+    paddingLeft: "10px",
   },
 }))
 
 const MobileAppFrame = (props) => {
-
   const {
     pathname,
     route,
@@ -148,25 +169,29 @@ const MobileAppFrame = (props) => {
     clearNotificationsRequest,
     setIntentBuzz,
     fromIntentBuzz,
+    searchRequest, 
+    clearSearchPosts,
+    setRefreshRouteStatus,
   } = props
+
+  const history = useHistory()
+  const lastLocation = useLastLocation()
+  const location = useLocation()
+
+  const params = queryString.parse(location.search) || ''
+  const timestamp = moment().unix()
+
   const { is_authenticated, username } = user
   const avatarRef = React.useRef()
   const [openAvatarMenu, setOpenAvatarMenu] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
   const [openSwitchModal, setOpenSwitchModal] = useState(false)
   const [openLoginModal, setOpenLoginModal] = useState(false)
-  const classes = useStyles()
-
-  const history = useHistory()
-  const lastLocation = useLastLocation()
-  const location = useLocation()
-
   const [open, setOpen] = useState(false)
-
-
-  const { search } = location
-  const params = queryString.parse(search) || ''
-  const timestamp = moment().unix()
+  const [disableSearchTips, setDisableSearchTips] = useState(false)
+  const query = params.q === undefined ? '' : params.q
+  const [searchkey, setSearchkey] = useState(query)
+  const classes = useStyles()
 
   let title = 'Home'
 
@@ -202,7 +227,9 @@ const MobileAppFrame = (props) => {
     title = 'Search'
   }
 
-  if (pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g)) {
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) || 
+    pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
+    pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
     title = `Profile / ${items[1]}`
   }
@@ -214,6 +241,25 @@ const MobileAppFrame = (props) => {
       history.goBack()
     }
   }
+
+  const refreshLatestRouteData = () => {
+    if(pathname.match(/^\/latest/)){
+      setRefreshRouteStatus("latest",timestamp)
+    }
+  }
+
+  const refreshTrendingRouteData = () => {
+    if(pathname.match(/^\/trending/)){
+      setRefreshRouteStatus("trending",timestamp)
+    }
+  }
+
+  const refreshHomeRouteData = () => {
+    if(pathname === "/"){
+      setRefreshRouteStatus("home",timestamp)
+    }
+  }
+
 
   const floatStyle = {
     margin: 0,
@@ -231,18 +277,24 @@ const MobileAppFrame = (props) => {
   const NavLinks = [
     {
       name: 'Home',
-      path: `/?rfsh=${timestamp}`,
+      path: "/",
       icon: <HomeIcon />,
+      preventDefault: false,
+      onClick: refreshHomeRouteData,
     },
     {
       name: 'Trending',
-      path: `/trending?rfsh=${timestamp}`,
+      path: '/trending',
       icon: <TrendingIcon />,
+      preventDefault: false,
+      onClick: refreshTrendingRouteData,
     },
     {
       name: 'Latest',
-      path: `/latest?rfsh=${timestamp}`,
+      path: "/latest",
       icon: <LatestIcon />,
+      preventDefault: false,
+      onClick: refreshLatestRouteData,
     },
     {
       name: 'Notifications',
@@ -319,35 +371,6 @@ const MobileAppFrame = (props) => {
     window.open('https://discord.gg/kCZGPs7', '_blank')
   }
 
-  const NavigationTop = () => {
-    return (
-      <Navbar className={classes.navTop} fixed="top">
-        <Navbar.Brand className={classes.navTitle}>
-          {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-            <IconButton onClick={handleClickBackButton} size="small">
-              <BackArrowIcon />
-            </IconButton>
-          )}
-          {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
-          {title === 'Notifications' && count.unread !== 0 && (
-            <ContainedButton
-              fontSize={12}
-              style={{ marginTop: -3 }}
-              transparent={true}
-              label="Clear"
-              loading={loading}
-              disabled={loading}
-              className={classes.walletButton}
-              onClick={handleClearNotification}
-            />
-          )}
-        </Navbar.Brand>
-        {is_authenticated &&
-          (<div className={classes.avatarWrapper}><span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span></div>)}
-      </Navbar>
-    )
-  }
-
   const NavigationBottom = () => {
     return (
       <Navbar className={classes.navBottom} fixed="bottom">
@@ -409,6 +432,27 @@ const MobileAppFrame = (props) => {
     }
   }
 
+  const handleClickSearchButton = () => {
+    history.push(`/search/posts?q=`)
+  }
+
+  const onChangeSearch = (e) => {
+    const { target } = e
+    const { value } = target
+    setSearchkey(value)
+  }
+
+  
+  const handleSearchKey = (e) => {
+    if(e.key === 'Enter') {
+      clearSearchPosts()
+      searchRequest(searchkey)
+      setDisableSearchTips(true)
+      history.push(`/search/posts?q=${encodeURIComponent(searchkey)}`)
+    }
+  }
+
+
   useEffect(() => {
     if (is_authenticated) {
       pollNotifRequest()
@@ -423,11 +467,66 @@ const MobileAppFrame = (props) => {
     // eslint-disable-next-line
   }, [fromIntentBuzz, is_authenticated])
 
+  useEffect(() => {
+    if(title !== 'Search'){
+      setSearchkey('')
+      clearSearchPosts()
+    }
+    // eslint-disable-next-line
+  }, [title])
+
+
   return (
     <React.Fragment>
       <div className={classes.main}>
         <React.Fragment>
-          <NavigationTop />
+          <Navbar className={classes.navTop} fixed="top">
+            <Navbar.Brand className={classes.navTitle}>
+              {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+                <IconButton onClick={handleClickBackButton} size="small">
+                  <BackArrowIcon />
+                </IconButton>
+              )}
+              {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+            </Navbar.Brand>
+            {title === 'Search' && (
+              <div className={classes.searchDiv}>
+                <SearchField
+                  disableTips={disableSearchTips}
+                  iconTop={-2}
+                  searchWrapperClass={classes.searchWrapper}
+                  style={{ fontSize: 16, height: 35 }}
+                  value={searchkey}
+                  onKeyDown={handleSearchKey}
+                  onChange={onChangeSearch}
+                  placeholder="Search D.Buzz"
+                  autoFocus
+                />
+              </div>
+            )}
+            {title === 'Notifications' && count.unread !== 0 && (
+              <ContainedButton
+                fontSize={12}
+                style={{ marginTop: -3 }}
+                transparent={true}
+                label="Clear"
+                loading={loading}
+                disabled={loading}
+                className={classes.walletButton}
+                onClick={handleClearNotification}
+              />
+            )}
+            {is_authenticated && title !== 'Search' &&
+          (<React.Fragment>
+            <IconButton onClick={handleClickSearchButton} size="small" 
+              className={classes.searchButton}>
+              <SearchIcon/>
+            </IconButton>
+            <div className={classes.avatarWrapper}>
+              <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+            </div>
+          </React.Fragment>)}
+          </Navbar>
           <React.Fragment>
             {is_authenticated && (
               <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
@@ -466,6 +565,9 @@ const mapDispatchToProps = (dispatch) => ({
     broadcastNotification,
     clearNotificationsRequest,
     setIntentBuzz,
+    searchRequest, 
+    clearSearchPosts,
+    setRefreshRouteStatus,
   }, dispatch),
 })
 

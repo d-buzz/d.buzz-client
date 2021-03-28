@@ -234,7 +234,7 @@ export const getAccountCommentsFailure = (error, meta) => ({
 export const SET_LAST_ACCOUNT_COMMENT = 'SET_LAST_ACCOUNT_COMMENT'
 
 export const setLastAccountComment = (response) => ({
-  type: SET_LAST_ACCOUNT_REPLY,
+  type: SET_LAST_ACCOUNT_COMMENT,
   payload: response,
 })
 
@@ -242,4 +242,174 @@ export const CLEAR_ACCOUNT_COMMENTS = 'CLEAR_ACCOUNT_COMMENTS'
 
 export const clearAccountComments = () => ({
   type: CLEAR_ACCOUNT_COMMENTS,
+})
+
+
+export const GET_ACCOUNT_LIST_REQUEST = 'GET_ACCOUNT_LIST_REQUEST'
+export const GET_ACCOUNT_LIST_SUCCESS = 'GET_ACCOUNT_LIST_SUCCESS'
+export const GET_ACCOUNT_LIST_FAILURE = 'GET_ACCOUNT_LIST_FAILURE'
+export const getAccountListRequest = (observer, list_type, lastIndex=0, filter=true) => ({
+  type: GET_ACCOUNT_LIST_REQUEST,
+  payload: { observer, list_type, lastIndex, filter},
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getAccountListSuccess = (response, meta) => ({
+  type: GET_ACCOUNT_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getAccountListFailure = (error, meta) => ({
+  type: GET_ACCOUNT_LIST_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_ACCOUNT_BLACKLIST = 'SET_ACCOUNT_BLACKLIST'
+export const setAccountBlacklist = (response) => ({
+  type: SET_ACCOUNT_BLACKLIST,
+  payload: response,
+})
+
+export const SET_ACCOUNT_FOLLOWED_BLACKLIST = 'SET_ACCOUNT_FOLLOWED_BLACKLIST'
+export const setAccountFollowedBlacklist = (response) => ({
+  type: SET_ACCOUNT_FOLLOWED_BLACKLIST,
+  payload: response,
+})
+
+export const SET_ACCOUNT_MUTED_LIST = 'SET_ACCOUNT_MUTED_LIST'
+export const setAccountMutedList = (response) => ({
+  type: SET_ACCOUNT_MUTED_LIST,
+  payload: response,
+})
+
+export const SET_ACCOUNT_FOLLOWED_MUTED_LIST = 'SET_ACCOUNT_FOLLOWED_MUTED_LIST'
+export const setAccountFollowedMutedList = (response) => ({
+  type: SET_ACCOUNT_FOLLOWED_MUTED_LIST,
+  payload: response,
+})
+
+export const CLEAR_ACCOUNT_BLACKLIST = 'CLEAR_ACCOUNT_BLACKLIST'
+export const clearAccountBlacklist = () => ({
+  type: CLEAR_ACCOUNT_BLACKLIST,
+})
+
+export const CLEAR_ACCOUNT_FOLLOWED_BLACKLIST = 'CLEAR_ACCOUNT_FOLLOWED_BLACKLIST'
+export const clearAccountFollowedBlacklist = () => ({
+  type: CLEAR_ACCOUNT_FOLLOWED_BLACKLIST,
+})
+
+export const CLEAR_ACCOUNT_MUTED_LIST = 'CLEAR_ACCOUNT_MUTED_LIST'
+export const clearAccountMutedList = () => ({ 
+  type: CLEAR_ACCOUNT_MUTED_LIST,
+})
+
+export const CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST = 'CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST'
+export const clearAccountFollowedMutedList = () => ({
+  type: CLEAR_ACCOUNT_FOLLOWED_MUTED_LIST,
+})
+
+export const CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST = 'CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST'
+export const CHECK_ACCOUNT_FOLLOWS_LIST_SUCCESS = 'CHECK_ACCOUNT_FOLLOWS_LIST_SUCCESS'
+export const CHECK_ACCOUNT_FOLLOWS_LIST_FAILURE = 'CHECK_ACCOUNT_FOLLOWS_LIST_FAILURE'
+export const CheckAccountFollowsListRequest = (observer) => ({
+  type: CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST,
+  payload: { observer },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const checkAccountFollowsListSuccess = (response, meta) => ({
+  type: CHECK_ACCOUNT_FOLLOWS_LIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const checkAccountFollowsListFailure = (error, meta) => ({
+  type: CHECK_ACCOUNT_FOLLOWS_LIST_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_ACCOUNT_LIST_SEARCHKEY = 'SET_ACCOUNT_LIST_SEARCHKEY'
+export const setAccountListSearchkey = (list_type, keyword=null) => ({
+  type: SET_ACCOUNT_LIST_SEARCHKEY,
+  payload: { list_type, keyword },
+})
+
+export const CHECK_ACCOUNT_EXIST_REQUEST = 'CHECK_ACCOUNT_EXIST_REQUEST'
+export const CHECK_ACCOUNT_EXIST_SUCCESS = 'CHECK_ACCOUNT_EXIST_SUCCESS'
+export const CHECK_ACCOUNT_EXIST_FAILURE = 'CHECK_ACCOUNT_EXIST_FAILURE'
+export const checkAccountExistRequest = (username) => ({
+  type: CHECK_ACCOUNT_EXIST_REQUEST,
+  payload: { username },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const checkAccountExistSuccess = (response, meta) => ({
+  type: CHECK_ACCOUNT_EXIST_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const checkAccountExistFailure = (error, meta) => ({
+  type: CHECK_ACCOUNT_EXIST_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_MUTE_LIST_LAST_INDEX = 'SET_MUTE_LIST_LAST_INDEX'
+export const setMuteListLastIndex = (response) => ({
+  type: SET_MUTE_LIST_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_MUTE_LIST_UNFILTERED = 'SET_MUTE_LIST_UNFILTERED'
+export const setMuteListUnfiltered = (response) => ({
+  type: SET_MUTE_LIST_UNFILTERED,
+  payload: response,
+})
+
+export const SET_BLACKLIST_LAST_INDEX = 'SET_BLACKLIST_LAST_INDEX'
+export const setBlacklistLastIndex = (response) => ({
+  type: SET_BLACKLIST_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_BLACKLIST_UNFILTERED = 'SET_BLACKLIST_UNFILTERED'
+export const setBlacklistUnfiltered = (response) => ({
+  type: SET_BLACKLIST_UNFILTERED,
+  payload: response,
+})
+
+
+export const SET_FOLLOW_BLACKLIST_LAST_INDEX = 'SET_FOLLOW_BLACKLIST_LAST_INDEX'
+export const setFollowBlacklistLastIndex = (response) => ({
+  type: SET_FOLLOW_BLACKLIST_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_FOLLOW_BLACKLIST_UNFILTERED = 'SET_FOLLOW_BLACKLIST_UNFILTERED'
+export const setFollowBlacklistUnfiltered = (response) => ({
+  type: SET_FOLLOW_BLACKLIST_UNFILTERED,
+  payload: response,
+})
+
+
+export const SET_FOLLOW_MUTED_LAST_INDEX = 'SET_FOLLOW_MUTED_LAST_INDEX'
+export const setFollowMutedLastIndex = (response) => ({
+  type: SET_FOLLOW_MUTED_LAST_INDEX,
+  payload: response,
+})
+
+export const SET_FOLLOW_MUTED_UNFILTERED = 'SET_FOLLOW_MUTED_UNFILTERED'
+export const setFollowMutedUnfiltered = (response) => ({
+  type: SET_FOLLOW_MUTED_UNFILTERED,
+  payload: response,
 })

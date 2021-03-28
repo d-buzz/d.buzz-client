@@ -498,7 +498,13 @@ export const broadcastVote = (wif, voter, author, permlink, weight) => {
       .then((result) => {
         resolve(result)
       }).catch((error) => {
-        reject(error.code)
+        let code = error.code
+        if(error.code === -32000){
+          if(error.message && error.message.includes('paid out is forbidden')){
+            code = -32001
+          }
+        }
+        reject(code)
       })
   })
 }
@@ -577,7 +583,7 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
     let iterator = 0
 
     api.getFollowingAsync(follower, start_following, 'blog', limit)
-      .then((result) => {
+      .then(async(result) => {
 
         if(result.length === 1 && (result[0].following === start_following)) {
           resolve([])
@@ -614,6 +620,32 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
   })
 }
 
+export const getAccountLists = (observer, list_type) => {
+  return new Promise((resolve, reject) => {
+    const params = { observer, follow_type: list_type }
+    api.call('bridge.get_follow_list', params, async (err, result) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
+export const checkAccountIsFollowingLists = (observer) => {
+  return new Promise((resolve, reject) => {
+    api.call('bridge.get_follow_list', { observer }, async (err, result) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
+
 // keychain apis
 
 export const keychainSignIn = (username) => {
@@ -643,7 +675,13 @@ export const keychainUpvote = (username, permlink, author, weight) => {
         if(response.success) {
           resolve(response)
         } else {
-          reject(response.error.code)
+          let code = response.error.code
+          if(response.error.code === -32000){
+            if(response.message && response.message.includes('paid out is forbidden')){
+              code = -32001
+            }
+          }
+          reject(code)
         }
       },
     )
@@ -691,6 +729,197 @@ export const generateMuteOperation = (follower, following) => {
       ],
     ]
 
+    resolve(operation)
+  })
+}
+
+export const generateBlacklistOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateUnblacklistOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unblacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateFollowMutedListOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["follow_muted"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateUnfollowMutedListOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unfollow_muted"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateFollowBlacklistsOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["follow_blacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateUnfollowBlacklistsOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unfollow_blacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateResetBlacklistOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_blacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+
+export const generateResetMuteListOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_mute_list"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateResetFollowMuteListOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_follow_muted_list"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
+    resolve(operation)
+  })
+}
+
+export const generateResetFollowBlacklistOperation = (follower, following) => {
+  return new Promise((resolve) => {
+    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_follow_blacklist"]}])
+
+    const operation = [
+      [
+        'custom_json',
+        {
+          'required_auths': [],
+          'required_posting_auths': [follower],
+          'id': 'follow',
+          json,
+        },
+      ],
+    ]
     resolve(operation)
   })
 }

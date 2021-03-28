@@ -106,3 +106,59 @@ export const CLEAR_REFRESH_ROUTE_STATUS = 'CLEAR_REFRESH_ROUTE_STATUS'
 export const clearRefreshRouteStatus = () => ({
   type: CLEAR_REFRESH_ROUTE_STATUS,
 })
+
+export const OPEN_FOLLOW_MUTED_DIALOG = 'OPEN_FOLLOW_MUTED_DIALOG'
+export const CLOSE_FOLLOW_MUTED_DIALOG = 'CLOSE_FOLLOW_MUTED_DIALOG'
+
+export const openFollowMutedDialog = (username, followMutedSuccessCallback = null) => ({
+  type: OPEN_FOLLOW_MUTED_DIALOG,
+  payload: { username, followMutedSuccessCallback },
+})
+
+export const closeFollowMutedDialog = () => ({
+  type: CLOSE_FOLLOW_MUTED_DIALOG,
+})
+
+
+export const OPEN_FOLLOW_BLACKLISTS_DIALOG = 'OPEN_FOLLOW_BLACKLISTS_DIALOG'
+export const CLOSE_FOLLOW_BLACKLISTS_DIALOG = 'CLOSE_FOLLOW_BLACKLISTS_DIALOG'
+
+export const openFollowBlacklistsDialog = (username, followBlacklistsSuccessCallback = null) => ({
+  type: OPEN_FOLLOW_BLACKLISTS_DIALOG,
+  payload: { username, followBlacklistsSuccessCallback },
+})
+
+export const closeFollowBlacklistsDialog = () => ({
+  type: CLOSE_FOLLOW_BLACKLISTS_DIALOG,
+})
+
+
+export const OPEN_BLACKLIST_DIALOG = 'OPEN_BLACKLIST_DIALOG'
+export const CLOSE_BLACKLIST_DIALOG = 'CLOSE_BLACKLIST_DIALOG'
+
+export const openBlacklistDialog = (username, blacklistSuccessCallback = null) => ({
+  type: OPEN_BLACKLIST_DIALOG,
+  payload: { username, blacklistSuccessCallback },
+})
+
+export const closeBlacklistDialog = () => ({
+  type: CLOSE_BLACKLIST_DIALOG,
+})
+
+export const SHOW_ACCOUNT_SEARCH_BUTTON = 'SHOW_ACCOUNT_SEARCH_BUTTON'
+export const HIDE_ACCOUNT_SEARCH_BUTTON = 'HIDE_ACCOUNT_SEARCH_BUTTON'
+
+export const showAccountSearchButton = (list_type) => ({
+  type: SHOW_ACCOUNT_SEARCH_BUTTON,
+  payload: { list_type },
+})
+
+export const hideAccountSearchButton = () => ({
+  type: HIDE_ACCOUNT_SEARCH_BUTTON,
+})
+
+export const SET_ACCOUNT_SEARCH_LIST_KEYWORD = 'SET_ACCOUNT_SEARCH_LIST_KEYWORD'
+export const setAccountSearchListKeyword = (keyword) => ({
+  type: SET_ACCOUNT_SEARCH_LIST_KEYWORD,
+  payload: keyword,
+})

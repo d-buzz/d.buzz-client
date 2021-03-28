@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
+import { errorMessageComposer } from "services/helper"
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -110,54 +111,66 @@ const MuteModal = (props) => {
     unfollowRequest,
   } = props
   const [open, setOpen] = useState(false)
-  const [username, setUsernamae] = useState(null)
+  const [username, setUsername] = useState(null)
+  const [isMuted, setIsMuted] = useState(false)
   const classes = useStyles()
+  const { muteSuccessCallback } = muteModal
 
   useEffect(() => {
     if(muteModal && muteModal.hasOwnProperty('open')) {
       const { open, username } = muteModal
       setOpen(open)
-      setUsernamae(username)
+      setUsername(username)
+      if(mutelist.includes(username)) {
+        setIsMuted(true)
+      }else{
+        setIsMuted(false)
+      }
     }
-  }, [muteModal])
+  // eslint-disable-next-line
+  }, [muteModal, mutelist])
 
   const onHide = () => {
     closeMuteDialog()
   }
 
-  // useEffect(() => {
-  //   if(mutelist.includes(username)) {
-
-  //     setOpen(false)
-  //     onHide()
-  //     broadcastNotification('success', `Succesfully muted @${username}`)
-  //   }
-  //   // eslint-disable-next-line
-  // }, [mutelist])
-
   const handleClickMuteUser = () => {
-    const inMuteList = mutelist.includes(username)
-    if(!inMuteList) {
-      muteUserRequest(username).then(() => {
-        setOpen(false)
-        onHide()
-        broadcastNotification('success', `Succesfully muted @${username}`)
-        const { muteSuccessCallback } = muteModal
-
-        if(muteSuccessCallback) {
-          muteSuccessCallback()
+    if(!isMuted) {
+      muteUserRequest(username).then(({ success, errorMessage }) => {
+        if(success){
+          setOpen(false)
+          onHide()
+          broadcastNotification('success', `Succesfully muted @${username}`)
+          modalCallback()
+        }else{
+          broadcastNotification('error', errorMessage)
         }
+        
       }).catch(() => {
-        broadcastNotification('success', `Failed to mute @${username}`)
+        broadcastNotification('error', `Failed to mute @${username}`)
       })
     } else {
       unfollowRequest(username).then((result) => {
-        if(result) {
-          broadcastNotification('success', `Successfully unmuted @${username}`)
-        } else {
-          broadcastNotification('error', `Failed unmuting @${username}`)
+        if(result === -32000){
+          const errorMessage = errorMessageComposer('unmute',result)
+          broadcastNotification('error', errorMessage)
+        }else{
+          if(result) {
+            setOpen(false)
+            onHide()
+            broadcastNotification('success', `Successfully unmuted @${username}`)
+            modalCallback()
+          } else {
+            broadcastNotification('error', `Failed unmuting @${username}`)
+          }
         }
       })
+    }
+  }
+
+  const modalCallback = () => {
+    if(muteSuccessCallback) {
+      muteSuccessCallback()
     }
   }
 
@@ -169,7 +182,7 @@ const MuteModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  {!mutelist.includes(username) && (
+                  {!isMuted && (
                     <React.Fragment>
                       <h6>Add user to mutelist?</h6>
                       <p className={classes.text}>
@@ -178,9 +191,9 @@ const MuteModal = (props) => {
                       </p>
                     </React.Fragment>
                   )}
-                  {mutelist.includes(username) && (
+                  {isMuted && (
                     <React.Fragment>
-                      <h6>Add user to mutelist?</h6>
+                      <h6>Remove user to mutelist?</h6>
                       <p className={classes.text}>
                         Would you like to remove <b>@{username}</b> from your list of
                         muted users?
@@ -193,7 +206,7 @@ const MuteModal = (props) => {
                 <React.Fragment>
                   <h6>Operation in progress</h6>
                   <p className={classes.text}>
-                    Adding <b>@{username}</b> to your list of
+                    {isMuted ? 'Removing' : 'Adding'} <b>@{username}</b> to your list of
                     muted users
                   </p>
                 </React.Fragment>
@@ -208,7 +221,7 @@ const MuteModal = (props) => {
                   className={classes.closeButton}
                   fontSize={14}
                   transparent={true}
-                  label="Add"
+                  label={isMuted ? 'Remove' : 'Add'}
                 />
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>
