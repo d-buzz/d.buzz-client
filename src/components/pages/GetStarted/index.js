@@ -64,7 +64,7 @@ const useStyles = createUseStyles(theme => ({
   sticky: {
     '@media (max-width: 500px)' : {
       zIndex: 1,
-      backgroundColor: 'white',
+      backgroundColor: theme.background.primary,
     },
   },
 }))
