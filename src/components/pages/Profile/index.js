@@ -401,53 +401,6 @@ const Profile = (props) => {
     history.push(`/@${username}/lists/muted/followed`)
   }
 
-  const handleCloseMoreOptions = () => {
-    setMoreOptionsEl(null)
-  }
-
-  const handleOpenMoreOptions = (e) => {
-    setMoreOptionsEl(e.currentTarget)
-  }
-
-  const navigateToBlackListed = () => {
-    history.push(`/@${username}/lists/blacklisted/users`)
-  }
-
-  const navigateToFollowedBlacklist = () => {
-    history.push(`/@${username}/lists/blacklisted/followed`)
-  }
-
-  const navigateToMutedUsers = () => {
-    history.push(`/@${username}/lists/muted/users`)
-  }
-
-  const navigateToFollowedMuted = () => {
-    history.push(`/@${username}/lists/muted/followed`)
-  }
-
-  const MoreOptions = [
-    {
-      label: "Blacklisted Users",
-      icon: '',
-      onClick: navigateToBlackListed,
-    },
-    {
-      label: "Muted Users",
-      icon: '',
-      onClick: navigateToMutedUsers,
-    },
-    {
-      label: "Followed Blacklists",
-      icon: '',
-      onClick: navigateToFollowedBlacklist,
-    },
-    {
-      label: "Followed Muted Lists",
-      icon: '',
-      onClick: navigateToFollowedMuted,
-    },
-  ]
-
   return (
     <React.Fragment>
       <HelmetGenerator page='Profile' />
@@ -474,18 +427,17 @@ const Profile = (props) => {
                     >
                       <MoreCircleIconRed/>
                     </IconButton>
-                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
+                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={moreOptions}/>
                     {loginuser === username && (
-                        <ContainedButton
-                          fontSize={14}
-                          disabled={loading}
-                          style={{ float: 'right', marginTop: 5 }}
-                          transparent={true}
-                          label="Edit profile"
-                          className={classes.button}
-                          onClick={handleOpenEditProfileModal}
-                        />
-                      </React.Fragment>
+                      <ContainedButton
+                        fontSize={14}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5 }}
+                        transparent={true}
+                        label="Edit profile"
+                        className={classes.button}
+                        onClick={handleOpenEditProfileModal}
+                      />
                     )}
                     {loginuser !== username && !mutelist.includes(username) && (
                       <ContainedButton
@@ -572,9 +524,9 @@ const Profile = (props) => {
                     {website && (
                       <span>
                         <LinkIcon fontSize="small" className={classes.textIcon}/> {" "}
-                    <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
                           {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-                    </a>
+                        </a>
                       </span>
                     )}
                   </p>
