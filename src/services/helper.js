@@ -238,8 +238,15 @@ export const invokeTwitterIntent = (content) => {
   window.open(`https://twitter.com/intent/tweet?text=${body}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
 }
 
-export const sendToBerries = (author) => {
-  window.open(`https://buymeberri.es/!dbuzz/@${author}`, '_blank')
+export const sendToBerries = (author, theme) => {
+  const { mode } = theme
+  let color = ''
+  if (mode === 'gray') {
+    color = '-g'
+  } else if (mode === 'night') {
+    color = '-n'
+  }
+  window.open(`https://buymeberri.es/!dbuzz${color}/@${author}`, '_blank')
 }
 
 export const truncateBody = (body) => {
