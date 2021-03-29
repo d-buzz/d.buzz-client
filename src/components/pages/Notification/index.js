@@ -53,6 +53,7 @@ const useStyle = createUseStyles(theme => ({
     },
     ...addHover(theme),
     cursor: 'pointer !important',
+    
   },
   inline: {
     display: 'inline-block',
@@ -128,6 +129,9 @@ const useStyle = createUseStyles(theme => ({
         textDecoration: 'none !important',
       },
     },
+  },
+  noData: {
+    ...theme.font,
   },
 }))
 
@@ -209,7 +213,7 @@ const Notification = (props) => {
         </React.Fragment>
       ))}
       {(!loading && notifications.length === 0) &&
-        (<center><br/><h6>You have no notifications</h6></center>)}
+        (<span className={classes.noData}><center><br/><h6>You have no notifications</h6></center></span>)}
       <Spinner loading={loading} />
     </React.Fragment>
   )
