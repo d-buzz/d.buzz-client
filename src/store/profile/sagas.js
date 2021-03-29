@@ -58,6 +58,11 @@ import {
   setFollowBlacklistUnfiltered,
   setFollowMutedLastIndex,
   setFollowMutedUnfiltered,
+
+  UPDATE_PROFILE_REQUEST,
+  updateProfileSuccess,
+  updateProfileFailure,
+  updateProfileMetadata,
 } from './actions'
 
 import {
@@ -74,7 +79,10 @@ import {
   fetchAccounts,
   getAccountLists,
   checkAccountIsFollowingLists,
+  generateUpdateAccountOperation,
 } from 'services/api'
+
+import { errorMessageComposer } from "services/helper"
 
 function* getProfileRequest(payload, meta) {
   try {
@@ -83,7 +91,7 @@ function* getProfileRequest(payload, meta) {
     const profile = yield call(fetchSingleProfile, username)
     const account = yield call(fetchAccounts, username)
 
-    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares } = account[0]
+    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
     const { total_vesting_fund_hive, total_vesting_shares } = props
 
     const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
@@ -94,6 +102,7 @@ function* getProfileRequest(payload, meta) {
     profile.receiveVesting = receiveVesting.toFixed(2)
     profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
     profile.delegated = delegated.toFixed(2)
+    profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
 
     yield put(getProfileSuccess(profile, meta))
   } catch(error) {
@@ -313,6 +322,43 @@ function* checkAccountExistRequest(payload, meta) {
   }
 }
 
+function* updateProfileRequest(payload, meta) {
+  try {
+    const { account, posting_json_metadata } = payload
+
+    const user = yield select(state => state.auth.get('user'))
+    const profile = yield select(state => state.profile.get('profile'))
+
+    const { username, useKeychain } = user
+
+    const operation = yield call(generateUpdateAccountOperation, account, JSON.stringify(posting_json_metadata))
+    let success = false
+
+    if(useKeychain) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
+
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
+
+    if(success) {
+      profile.metadata.profile = posting_json_metadata.profile
+      yield put(updateProfileMetadata(profile))
+      yield put(updateProfileSuccess({success: true}, meta))
+    }else{
+      yield put(updateProfileFailure({success: false, errorMessage: 'Failed to update profile'}, meta))
+    }
+  } catch (error) {
+    const errorMessage = errorMessageComposer('update_profile', error)
+    yield put(updateProfileFailure({success: false, errorMessage }, meta))
+  }
+}
+
 function* watchGetProfileRequest({ payload, meta }) {
   yield call(getProfileRequest, payload, meta)
 }
@@ -353,6 +399,11 @@ function* watchCheckAccountExistRequest({ payload, meta }) {
   yield call(checkAccountExistRequest, payload, meta)
 }
 
+function* watchUpdateProfileRequest({ payload, meta }) {
+  yield call(updateProfileRequest, payload, meta)
+}
+
+
 export default function* sagas() {
   yield takeEvery(GET_PROFILE_REQUEST, watchGetProfileRequest)
   yield takeEvery(GET_ACCOUNT_POSTS_REQUEST, watchGetAccountPostRequest)
@@ -364,4 +415,5 @@ export default function* sagas() {
   yield takeEvery(GET_ACCOUNT_LIST_REQUEST, watchGetAccountListRequest)
   yield takeEvery(CHECK_ACCOUNT_FOLLOWS_LIST_REQUEST, watchCheckAccountFollowsListRequest)
   yield takeEvery(CHECK_ACCOUNT_EXIST_REQUEST, watchCheckAccountExistRequest)
+  yield takeEvery(UPDATE_PROFILE_REQUEST, watchUpdateProfileRequest)
 }

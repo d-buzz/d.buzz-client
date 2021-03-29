@@ -310,6 +310,10 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
       type: 'unfollow_blacklist',
       prefix: 'Unfollow blacklists transaction failed',
     },
+    {
+      type: 'update_profile',
+      prefix: 'Update profile transaction failed',
+    },
   ]
 
   if(type) {
