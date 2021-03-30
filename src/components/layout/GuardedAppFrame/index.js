@@ -121,8 +121,6 @@ const GuardedAppFrame = (props) => {
   // eslint-disable-next-line
   }, [query])
 
-
-  
   useEffect(() => {
     setSearch(query)
   // eslint-disable-next-line
