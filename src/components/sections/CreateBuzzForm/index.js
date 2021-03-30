@@ -376,7 +376,7 @@ const CreateBuzzForm = (props) => {
           href = `${split[1]}`
         }else{
           const split = `${href}`.split('/')
-          href = split[3] ? `/${split[3]}` : ''
+          href = split[3] ? `/${split[3]}` : '/'
         }
         if(href !== '' && href !== undefined){
           history.push(href)
