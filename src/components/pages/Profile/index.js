@@ -40,16 +40,15 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
-import { 
-  ProfileSkeleton, 
-  HelmetGenerator, 
+import {
+  ProfileSkeleton,
+  HelmetGenerator,
   HiddenBuzzListModal,
   EditProfileModal,
 } from 'components'
 import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
-
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -276,7 +275,7 @@ const Profile = (props) => {
     }
 
     setMoreButtonOptions()
-    
+
     // eslint-disable-next-line
   }, [username])
 
@@ -342,7 +341,7 @@ const Profile = (props) => {
     if(username === profileUsername){
       setAvatarUrl(profile_image)
     }
-  // eslint-disable-next-line 
+  // eslint-disable-next-line
   },[profile_image, username])
 
   const followUser = () => {
@@ -401,6 +400,7 @@ const Profile = (props) => {
   const navigateToFollowedMuted = () => {
     history.push(`/@${username}/lists/muted/followed`)
   }
+
 
   return (
     <React.Fragment>
@@ -518,7 +518,7 @@ const Profile = (props) => {
                   <p className={classes.paragraph}>
                     {profile_location && (
                       <span className={classes.textIcon} style={{ marginRight: 10 }}>
-                        <LocationOnIcon fontSize="small" className={classes.textIcon}/> 
+                        <LocationOnIcon fontSize="small" className={classes.textIcon}/>
                         {profile_location}
                       </span>
                     )}

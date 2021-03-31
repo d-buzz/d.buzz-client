@@ -303,7 +303,7 @@ export const clearAccountFollowedBlacklist = () => ({
 })
 
 export const CLEAR_ACCOUNT_MUTED_LIST = 'CLEAR_ACCOUNT_MUTED_LIST'
-export const clearAccountMutedList = () => ({ 
+export const clearAccountMutedList = () => ({
   type: CLEAR_ACCOUNT_MUTED_LIST,
 })
 
