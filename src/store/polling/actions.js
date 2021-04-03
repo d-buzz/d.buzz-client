@@ -23,11 +23,11 @@ export const pollNotifCount = (response) => ({
   payload: response,
 })
 
-export const FILTER_NOTIFICATION_REQUEST = 'FILTER_NOTIFICATIONS_REQUEST'
+export const FILTER_NOTIFICATIONS_REQUEST = 'FILTER_NOTIFICATIONS_REQUEST'
 export const FILTER_NOTIFICATIONS_FAILURE = 'FILTER_NOTIFICATIONS_FAILURE'
 
 export const filterNotificationRequest = (name) => ({
-  type: FILTER_NOTIFICATION_REQUEST,
+  type: FILTER_NOTIFICATIONS_REQUEST,
   payload: { name },
   meta: {
     thunk: true,

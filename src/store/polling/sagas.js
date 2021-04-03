@@ -4,7 +4,7 @@ import {
   pollNotifSuccess,
   pollNotifFailure,
   pollNotifCount,
-  FILTER_NOTIFICATION_REQUEST,
+  FILTER_NOTIFICATIONS_REQUEST,
   filterNotificationsFailure,
 } from './actions'
 import {
@@ -56,5 +56,5 @@ function* watchFilterNotification(payload) {
 
 export default function* sagas() {
   yield takeLatest(POLL_NOTIF_REQUEST, watchPollingTasks)
-  yield takeEvery(FILTER_NOTIFICATION_REQUEST, watchFilterNotification)
+  yield takeEvery(FILTER_NOTIFICATIONS_REQUEST, watchFilterNotification)
 }
