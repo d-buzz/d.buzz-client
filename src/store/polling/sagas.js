@@ -62,6 +62,7 @@ function* watchFilterNotification(payload) {
     notification = filterNotif(notification, name)
     yield put(filterNotificationsSuccess(name))
     yield put(pollNotifSuccess(notification))
+
   } catch (error) {
     yield put(filterNotificationsFailure(error))
   }

@@ -141,6 +141,7 @@ const Notification = (props) => {
     loading,
     count,
     setPageFrom,
+    notifFilter,
   } = props
 
   const classes = useStyle()
@@ -174,7 +175,7 @@ const Notification = (props) => {
     <React.Fragment>
       {notifications.map((item, index) => (
         <React.Fragment key={index}>
-          <div className={classNames(classes.wrapper, index < count.unread ? classes.unread : '')}>
+          <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')}>
             <div className={classes.row}>
               <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
                 <Row>
@@ -212,6 +213,7 @@ const mapStateToProps = (state) => ({
   notifications: state.polling.get('notifications'),
   count: state.polling.get('count'),
   loading: pending(state, 'POLL_NOTIF_REQUEST'),
+  notifFilter: state.polling.get('notificationFilter'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
