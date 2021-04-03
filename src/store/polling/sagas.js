@@ -38,6 +38,14 @@ function* watchPollingTasks() {
   }
 }
 
+function filter(notification, name) {
+  let notifs = notification
+  if (name.toUpperCase() !== 'ALL') {
+    notifs = notifs.filter((value) => value.type === name.toLowerCase())
+  }
+  return notifs
+}
+
 function* watchFilterNotification(payload) {
   try {
     const user = yield select(state => state.auth.get('user'))
@@ -45,9 +53,7 @@ function* watchFilterNotification(payload) {
     const { payload: { name } } = payload
 
     let notification = yield call(getAccountNotifications, username)
-    if (name.toUpperCase() !== 'ALL') {
-      notification = notification.filter((value) => value.type === name.toLowerCase())
-    }
+    notification = filter(notification, name)
     yield put(pollNotifSuccess(notification))
   } catch (error) {
     yield put(filterNotificationsFailure(error))
