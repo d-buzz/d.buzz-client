@@ -4,8 +4,10 @@ import {
   pollNotifSuccess,
   pollNotifFailure,
   pollNotifCount,
+
   FILTER_NOTIFICATIONS_REQUEST,
   filterNotificationsFailure,
+  filterNotificationsSuccess,
 } from './actions'
 import {
   getAccountNotifications,
@@ -18,9 +20,13 @@ function* poll() {
   while (true) {
     try {
       const user = yield select(state => state.auth.get('user'))
+      const filter = yield select(state => state.polling.get('notificationFilter'))
       const { username } = user
 
-      const notification = yield call(getAccountNotifications, username)
+      console.log({ filter })
+
+      let notification = yield call(getAccountNotifications, username)
+      notification = filterNotif(notification, filter)
       const count = yield call(getUnreadNotificationsCount, username)
 
       yield put(pollNotifSuccess(notification))
@@ -38,7 +44,7 @@ function* watchPollingTasks() {
   }
 }
 
-function filter(notification, name) {
+function filterNotif(notification, name) {
   let notifs = notification
   if (name.toUpperCase() !== 'ALL') {
     notifs = notifs.filter((value) => value.type === name.toLowerCase())
@@ -53,7 +59,8 @@ function* watchFilterNotification(payload) {
     const { payload: { name } } = payload
 
     let notification = yield call(getAccountNotifications, username)
-    notification = filter(notification, name)
+    notification = filterNotif(notification, name)
+    yield put(filterNotificationsSuccess(name))
     yield put(pollNotifSuccess(notification))
   } catch (error) {
     yield put(filterNotificationsFailure(error))
