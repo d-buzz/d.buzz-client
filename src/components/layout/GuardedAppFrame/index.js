@@ -110,7 +110,7 @@ const GuardedAppFrame = (props) => {
   const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
   const [openCaret, setOpenCaret] = useState(false)
-  
+
   useEffect(() => {
     setSearch(query)
   // eslint-disable-next-line
@@ -185,7 +185,7 @@ const GuardedAppFrame = (props) => {
   }
 
 
-  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) || 
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) ||
     pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
     pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
@@ -222,7 +222,7 @@ const GuardedAppFrame = (props) => {
     setOpenCaret(false)
   }
 
-  const onChangeNotification = (name) => {
+  const onChangeNotification = (name) => () => {
     filterNotificationRequest(name)
     setOpenCaret(false)
   }
@@ -278,13 +278,13 @@ const GuardedAppFrame = (props) => {
                             open={Boolean(openCaret)}
                             onClose={closeMenu}
                           >
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('All')}>All</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Vote')}>Votes</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Mention')}>Mentions</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Follow')}>Follows</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Reply')}>Replies</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Reblog')}>Reblogs</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={() => onChangeNotification('Transfer')}>Transfers</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('All')}>All</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Vote')}>Votes</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Mention')}>Mentions</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Follow')}>Follows</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Reply')}>Replies</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Reblog')}>Reblogs</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Transfer')}>Transfers</MenuItem>
                           </Menu>
                         </div>
                       </Col>

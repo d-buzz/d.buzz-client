@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
-// import Chip from '@material-ui/core/Chip'
 import { setPageFrom } from 'store/posts/actions'
 import { Link } from 'react-router-dom'
 import { Avatar, Spinner } from 'components/elements'
@@ -53,7 +52,7 @@ const useStyle = createUseStyles(theme => ({
     },
     ...addHover(theme),
     cursor: 'pointer !important',
-    
+
   },
   inline: {
     display: 'inline-block',
@@ -196,16 +195,6 @@ const Notification = (props) => {
                       </div>
                     </div>
                   </Col>
-                  {/* <Col xs="auto">
-                    <Chip
-                      className={classes.chips}
-                      style={{ border: '1px solid #e53935', marginTop: -5 }}
-                      size='small'
-                      label={item.type}
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  </Col> */}
                 </Row>
               </Link>
             </div>
