@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import { Sticky } from 'react-sticky'
 import { useHistory } from 'react-router-dom'
 import { BackArrowIcon } from 'components/elements'
@@ -20,6 +19,7 @@ import { bindActionCreators } from 'redux'
 import { useLastLocation } from 'react-router-last-location'
 import { useWindowDimensions } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
+import { SideBarLeft, SideBarRight, SearchField, NotificationFilter } from 'components'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -71,6 +71,12 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     width: '100%',
   },
+  menuText: {
+    fontSize: 13,
+  },
+  right: {
+    height: 'max-content',
+  },
 }))
 
 const GuardedAppFrame = (props) => {
@@ -99,7 +105,16 @@ const GuardedAppFrame = (props) => {
   const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
 
-  
+  useEffect(() => {
+    setSearch(query)
+  // eslint-disable-next-line
+  }, [query])
+
+  useEffect(() => {
+    setSearch(query)
+  // eslint-disable-next-line
+  }, [query])
+
   useEffect(() => {
     setSearch(query)
   // eslint-disable-next-line
@@ -164,7 +179,7 @@ const GuardedAppFrame = (props) => {
   }
 
 
-  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) || 
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) ||
     pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
     pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
@@ -197,7 +212,7 @@ const GuardedAppFrame = (props) => {
   const handleClearNotification = () => {
     clearNotificationsRequest()
       .then(result => {
-        if(result.success) {
+        if(typeof result === 'object' && result.success) {
           broadcastNotification('success', 'Successfully marked all your notifications as read')
         } else {
           broadcastNotification('error', 'Failed marking all notifications as read')
@@ -231,6 +246,7 @@ const GuardedAppFrame = (props) => {
                       </IconButton>
                     )}
                     {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+                    {title === 'Notifications' && <NotificationFilter />}
                   </Navbar.Brand>
                   {title === 'Search' && (
                     <div className={classes.searchDiv}>

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
-// import Chip from '@material-ui/core/Chip'
 import { setPageFrom } from 'store/posts/actions'
 import { Link } from 'react-router-dom'
 import { Avatar, Spinner } from 'components/elements'
@@ -53,6 +52,7 @@ const useStyle = createUseStyles(theme => ({
     },
     ...addHover(theme),
     cursor: 'pointer !important',
+
   },
   inline: {
     display: 'inline-block',
@@ -129,6 +129,13 @@ const useStyle = createUseStyles(theme => ({
       },
     },
   },
+  noData: {
+    ...theme.font,
+  },
+  filteredNote: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
 }))
 
 
@@ -138,6 +145,7 @@ const Notification = (props) => {
     loading,
     count,
     setPageFrom,
+    notifFilter,
   } = props
 
   const classes = useStyle()
@@ -167,11 +175,29 @@ const Notification = (props) => {
     return link
   }
 
+  const generateFilterDescription = () => {
+    let verb = `${notifFilter.toLowerCase().charAt(0).toUpperCase()+notifFilter.toLowerCase().slice(1)}s`
+
+    if(verb === 'Replys') {
+      verb = 'Replies'
+    }
+
+    return `Showing ${verb}`
+  }
+
   return (
     <React.Fragment>
+      {notifFilter !== 'ALL' && (
+        <center>
+          <br />
+          <span className={classes.filteredNote}>
+            {generateFilterDescription()}
+          </span>
+        </center>
+      )}
       {notifications.map((item, index) => (
         <React.Fragment key={index}>
-          <div className={classNames(classes.wrapper, index < count.unread ? classes.unread : '')}>
+          <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')}>
             <div className={classes.row}>
               <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
                 <Row>
@@ -192,16 +218,6 @@ const Notification = (props) => {
                       </div>
                     </div>
                   </Col>
-                  {/* <Col xs="auto">
-                    <Chip
-                      className={classes.chips}
-                      style={{ border: '1px solid #e53935', marginTop: -5 }}
-                      size='small'
-                      label={item.type}
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  </Col> */}
                 </Row>
               </Link>
             </div>
@@ -209,7 +225,7 @@ const Notification = (props) => {
         </React.Fragment>
       ))}
       {(!loading && notifications.length === 0) &&
-        (<center><br/><h6>You have no notifications</h6></center>)}
+        (<span className={classes.noData}><center><br/><h6>You have no notifications</h6></center></span>)}
       <Spinner loading={loading} />
     </React.Fragment>
   )
@@ -219,6 +235,7 @@ const mapStateToProps = (state) => ({
   notifications: state.polling.get('notifications'),
   count: state.polling.get('count'),
   loading: pending(state, 'POLL_NOTIF_REQUEST'),
+  notifFilter: state.polling.get('notificationFilter'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

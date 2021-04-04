@@ -50,6 +50,7 @@ import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
 
+
 const useStyles = createUseStyles(theme => ({
   cover: {
     height: 270,
