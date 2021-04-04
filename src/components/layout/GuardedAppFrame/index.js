@@ -212,7 +212,7 @@ const GuardedAppFrame = (props) => {
   const handleClearNotification = () => {
     clearNotificationsRequest()
       .then(result => {
-        if(result.success) {
+        if(typeof result === 'object' && result.success) {
           broadcastNotification('success', 'Successfully marked all your notifications as read')
         } else {
           broadcastNotification('error', 'Failed marking all notifications as read')

@@ -169,7 +169,7 @@ const MobileAppFrame = (props) => {
     clearNotificationsRequest,
     setIntentBuzz,
     fromIntentBuzz,
-    searchRequest, 
+    searchRequest,
     clearSearchPosts,
     setRefreshRouteStatus,
   } = props
@@ -227,7 +227,7 @@ const MobileAppFrame = (props) => {
     title = 'Search'
   }
 
-  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) || 
+  if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) ||
     pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
     pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
@@ -341,7 +341,7 @@ const MobileAppFrame = (props) => {
   const handleClearNotification = () => {
     clearNotificationsRequest()
       .then(result => {
-        if (result.success) {
+        if (typeof result === 'object' && result.success) {
           broadcastNotification('success', 'Successfully marked all your notifications as read')
         } else {
           broadcastNotification('error', 'Failed marking all notifications as read')
@@ -442,7 +442,7 @@ const MobileAppFrame = (props) => {
     setSearchkey(value)
   }
 
-  
+
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
       clearSearchPosts()
@@ -518,7 +518,7 @@ const MobileAppFrame = (props) => {
             )}
             {is_authenticated && title !== 'Search' &&
           (<React.Fragment>
-            <IconButton onClick={handleClickSearchButton} size="small" 
+            <IconButton onClick={handleClickSearchButton} size="small"
               className={classes.searchButton}>
               <SearchIcon/>
             </IconButton>
@@ -565,7 +565,7 @@ const mapDispatchToProps = (dispatch) => ({
     broadcastNotification,
     clearNotificationsRequest,
     setIntentBuzz,
-    searchRequest, 
+    searchRequest,
     clearSearchPosts,
     setRefreshRouteStatus,
   }, dispatch),
