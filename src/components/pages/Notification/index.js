@@ -132,6 +132,10 @@ const useStyle = createUseStyles(theme => ({
   noData: {
     ...theme.font,
   },
+  filteredNote: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
 }))
 
 
@@ -173,6 +177,12 @@ const Notification = (props) => {
 
   return (
     <React.Fragment>
+      {notifFilter !== 'ALL' && (
+        <center>
+          <br />
+          <span className={classes.filteredNote}>Showing {`${notifFilter.toLowerCase()}`.charAt(0).toUpperCase() + `${notifFilter.toLowerCase()}`.slice(1)}s</span>
+        </center>
+      )}
       {notifications.map((item, index) => (
         <React.Fragment key={index}>
           <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')}>

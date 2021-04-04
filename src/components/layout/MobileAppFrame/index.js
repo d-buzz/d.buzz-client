@@ -29,6 +29,7 @@ import {
   SwitchUserModal,
   LoginModal,
   SearchField,
+  NotificationFilter,
 } from 'components'
 import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
@@ -488,6 +489,7 @@ const MobileAppFrame = (props) => {
                 </IconButton>
               )}
               {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+              {title === 'Notifications' && <NotificationFilter />}
             </Navbar.Brand>
             {title === 'Search' && (
               <div className={classes.searchDiv}>

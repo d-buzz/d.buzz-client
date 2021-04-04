@@ -54,7 +54,7 @@ const NotificationFilter = (props) => {
             open={Boolean(openCaret)}
             onClose={closeMenu}
           >
-            <MenuItem className={classes.menuText} onClick={onChangeNotification('ALL')}>All</MenuItem>
+            <MenuItem active={true} className={classes.menuText} onClick={onChangeNotification('ALL')}>All</MenuItem>
             <MenuItem className={classes.menuText} onClick={onChangeNotification('VOTE')}>Votes</MenuItem>
             <MenuItem className={classes.menuText} onClick={onChangeNotification('MENTION')}>Mentions</MenuItem>
             <MenuItem className={classes.menuText} onClick={onChangeNotification('FOLLOW')}>Follows</MenuItem>
