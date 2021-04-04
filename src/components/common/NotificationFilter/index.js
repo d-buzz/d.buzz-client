@@ -13,55 +13,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles(theme => ({
-  main: {
-    minHeight: '100vh',
-    borderLeft: theme.border.primary,
-    borderRight: theme.border.primary,
-  },
-  nav: {
-    borderBottom: theme.border.primary,
-    borderLeft: theme.border.primary,
-    borderRight: theme.border.primary,
-    backgroundColor: theme.background.primary,
-    zIndex: 2,
-    overflow: 'hidden',
-    width: '100%',
-  },
-  navTitle: {
-    fontFamily: 'Roboto, sans-serif',
-    display: 'inline-block',
-    verticalAlign: 'top',
-    ...theme.navbar.icon,
-  },
-  trendingWrapper: {
-    width: '100%',
-    minHeight: '100vh',
-    border: '1px solid #e6ecf0',
-  },
-  clearPadding: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  title: {
-    display: 'inline-block',
-    marginLeft: 5,
-    fontFamily: 'Segoe-Bold',
-    fontSize: 18,
-    color: theme.font.color,
-  },
-  searchWrapper: {
-    padding: 0,
-    margin: 0,
-  },
-  walletButton: {
-    marginTop: 5,
-    float: 'right',
-  },
-  searchDiv: {
-    display: 'inline-block',
-    verticalAlign: 'top',
-    width: '100%',
-  },
   menuText: {
     fontSize: 13,
   },
