@@ -125,7 +125,6 @@ const Init = (props) => {
           <div className={classes.dialogInner}>
             <center>
               <Typography variant="body1"><b>New version available !</b> <br /> Click reload to download the latest version of dbuzz</Typography>
-              <br />
               <Button onClick={reload} variant="outlined" size="small" startIcon={<ReplayIcon />} className={classes.versionButtons} color="primary">
                 reload
               </Button>&nbsp;
@@ -133,6 +132,7 @@ const Init = (props) => {
                 dismiss
               </Button>
             </center>
+            <br />
           </div>
         </Paper>
       </Snackbar>
