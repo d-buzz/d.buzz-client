@@ -135,6 +135,7 @@ const useStyle = createUseStyles(theme => ({
   filteredNote: {
     fontWeight: 'bold',
     fontSize: 15,
+    ...theme.font,
   },
 }))
 
