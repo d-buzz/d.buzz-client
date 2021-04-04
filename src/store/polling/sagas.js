@@ -46,7 +46,7 @@ function* watchPollingTasks() {
 
 function filterNotif(notification, name) {
   let notifs = notification
-  if (name.toUpperCase() !== 'ALL') {
+  if (name !== 'ALL') {
     notifs = notifs.filter((value) => value.type === name.toLowerCase())
   }
   return notifs
@@ -60,7 +60,7 @@ function* watchFilterNotification(payload) {
 
     let notification = yield call(getAccountNotifications, username)
     notification = filterNotif(notification, name)
-    yield put(filterNotificationsSuccess(name.toUpperCase()))
+    yield put(filterNotificationsSuccess(name))
     yield put(pollNotifSuccess(notification))
 
   } catch (error) {

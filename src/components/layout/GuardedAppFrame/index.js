@@ -278,13 +278,13 @@ const GuardedAppFrame = (props) => {
                             open={Boolean(openCaret)}
                             onClose={closeMenu}
                           >
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('All')}>All</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Vote')}>Votes</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Mention')}>Mentions</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Follow')}>Follows</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Reply')}>Replies</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Reblog')}>Reblogs</MenuItem>
-                            <MenuItem className={classes.menuText} onClick={onChangeNotification('Transfer')}>Transfers</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('ALL')}>All</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('VOTE')}>Votes</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('MENTION')}>Mentions</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('FOLLOW')}>Follows</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('REPLY')}>Replies</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('REBLOG')}>Reblogs</MenuItem>
+                            <MenuItem className={classes.menuText} onClick={onChangeNotification('TRANSFER')}>Transfers</MenuItem>
                           </Menu>
                         </div>
                       </Col>
