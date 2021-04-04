@@ -60,7 +60,7 @@ function* watchFilterNotification(payload) {
 
     let notification = yield call(getAccountNotifications, username)
     notification = filterNotif(notification, name)
-    yield put(filterNotificationsSuccess(name))
+    yield put(filterNotificationsSuccess(name.toUpperCase()))
     yield put(pollNotifSuccess(notification))
 
   } catch (error) {
