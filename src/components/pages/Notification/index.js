@@ -175,12 +175,24 @@ const Notification = (props) => {
     return link
   }
 
+  const generateFilterDescription = () => {
+    let verb = `${notifFilter.toLowerCase().charAt(0).toUpperCase()+notifFilter.toLowerCase().slice(1)}s`
+
+    if(verb === 'Replys') {
+      verb = 'Replies'
+    }
+
+    return `Showing ${verb}`
+  }
+
   return (
     <React.Fragment>
       {notifFilter !== 'ALL' && (
         <center>
           <br />
-          <span className={classes.filteredNote}>Showing {`${notifFilter.toLowerCase()}`.charAt(0).toUpperCase() + `${notifFilter.toLowerCase()}`.slice(1)}s</span>
+          <span className={classes.filteredNote}>
+            {generateFilterDescription()}
+          </span>
         </center>
       )}
       {notifications.map((item, index) => (
