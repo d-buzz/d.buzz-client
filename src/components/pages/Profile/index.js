@@ -336,7 +336,7 @@ const Profile = (props) => {
   const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
 
-  const { reputation = 0, isFollowed } = profile
+  const { isFollowed } = profile
 
   useEffect(() => {
     if(username === profileUsername){
@@ -501,7 +501,7 @@ const Profile = (props) => {
               <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                 <Col xs="auto">
                   <p className={classNames(classes.paragraph, classes.fullName)}>
-                    {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;
+                    {name || username}&nbsp;
                     <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />
                   </p>
                 </Col>
