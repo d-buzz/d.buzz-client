@@ -1305,6 +1305,15 @@ export const checkVersion = () => {
   })
 }
 
+export const getMutePattern = () => {
+  return new Promise((resolve) => {
+    axios.get('https://d.buzz/pattern.json')
+      .then(function (result) {
+        resolve(result.data)
+      })
+  })
+}
+
 export const getKeyPair = () => {
   return new Promise((resolve) => {
     axios.get(`${censorUrl}/keypair`)
