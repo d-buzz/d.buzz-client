@@ -362,20 +362,27 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickContent = (e) => {
-    const { target } = e
-    let { href } = target
-    const hostname = window.location.hostname
+    try {
+      const { target } = e
+      let { href } = target
+      const hostname = window.location.hostname
 
-    e.preventDefault()
-    if (href && !href.includes(hostname)) {
-      window.open(href, '_blank')
-    } else {
-      const split = `${href}`.split('/')
-      href = `/${split[3]}`
-      if(href !== '/undefined') {
-        history.push(href)
+      e.preventDefault()
+      if(href && !href.includes(hostname)) {
+        window.open(href, '_blank')
+      } else {
+        const split = `${href}`.split('#')
+        if(split.length === 2) {
+          href = `${split[1]}`
+        }else{
+          const split = `${href}`.split('/')
+          href = split[3] ? `/${split[3]}` : '/'
+        }
+        if(href !== '' && href !== undefined){
+          history.push(href)
+        }
       }
-    }
+    } catch (e) {}
   }
 
   const moveCaretAtEnd = (e) => {

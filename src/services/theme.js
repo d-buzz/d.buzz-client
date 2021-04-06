@@ -57,6 +57,9 @@ const night = {
   font: {
     color: 'rgb(255, 255, 255) !important',
   },
+  textIcon : {
+    color: 'rgb(136, 153, 166)',
+  },
   border: {
     primary: '1px solid rgb(56, 68, 77)',
     thick: '10px solid rgb(37, 51, 65)',
@@ -232,6 +235,9 @@ const light = {
       color: 'black',
     },
   },
+  textIcon : {
+    color: 'black',
+  },
   search: {
     background: {
       backgroundColor: '#e6ecf0',
@@ -383,6 +389,9 @@ const gray = {
   },
   font: {
     color: 'rgb(255, 255, 255) !important',
+  },
+  textIcon : {
+    color: 'rgb(136, 153, 166)',
   },
   border: {
     primary: '1px solid #2f3136',

@@ -103,6 +103,7 @@ import {
   invokeFilter,
   generateUpdateOperation,
   invokeMuteFilter,
+  getMutePattern,
 } from 'services/api'
 import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
@@ -284,11 +285,15 @@ function* getHomePostsRequest(payload, meta) {
   }
 }
 
+function patternMute(patterns, data) {
+  return data.filter((item) => !patterns.includes(`${item.body}`.trim()))
+}
+
 function* getLatestPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const { start_permlink, start_author } = payload
 
-  const params = { sort: 'created', start_permlink, start_author }
+  const params = { sort: 'created', start_permlink, start_author, limit: 50 }
   const method = 'get_ranked_posts'
 
   try {
@@ -306,10 +311,13 @@ function* getLatestPostsRequest(payload, meta) {
 
     const mutelist = yield select(state => state.auth.get('mutelist'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+    const patterns = yield call(getMutePattern)
     data = invokeMuteFilter(data, mutelist, opacityUsers)
     data = invokeHideBuzzFilter(data)
-    data.map((item) => censorCheck(item, censoredList))
 
+    data = patternMute(patterns, data)
+
+    data.map((item) => censorCheck(item, censoredList))
 
     yield put(getLatestPostsSuccess(data, meta))
   } catch(error) {

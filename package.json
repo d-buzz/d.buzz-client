@@ -1,6 +1,6 @@
 {
   "name": "d.buzz-client",
-  "version": "3.9.0",
+  "version": "3.11.0",
   "private": true,
   "dependencies": {
     "@hiveio/hive-js": "^0.8.13",
@@ -45,6 +45,7 @@
     "react-router-last-location": "^2.0.1",
     "react-scripts": "^3.4.3",
     "react-scrollspy": "^3.4.3",
+    "react-share": "^4.4.0",
     "react-sticky": "^6.0.3",
     "react-syntax-highlighter": "^15.4.3",
     "react-tag-input": "^6.2.1",

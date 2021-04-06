@@ -22,3 +22,26 @@ export const pollNotifCount = (response) => ({
   type: POLL_NOTIF_COUNT,
   payload: response,
 })
+
+export const FILTER_NOTIFICATIONS_REQUEST = 'FILTER_NOTIFICATIONS_REQUEST'
+export const FILTER_NOTIFICATIONS_SUCCESS = 'FILTER_NOTIFICATIONS_SUCCESS'
+export const FILTER_NOTIFICATIONS_FAILURE = 'FILTER_NOTIFICATIONS_FAILURE'
+
+export const filterNotificationRequest = (name) => ({
+  type: FILTER_NOTIFICATIONS_REQUEST,
+  payload: { name },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const filterNotificationsSuccess = (response) => ({
+  type: FILTER_NOTIFICATIONS_SUCCESS,
+  payload: response,
+})
+
+export const filterNotificationsFailure = (error, meta) => ({
+  type: FILTER_NOTIFICATIONS_FAILURE,
+  payload: error,
+  meta,
+})

@@ -40,8 +40,15 @@ import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
-import { ProfileSkeleton, HelmetGenerator, HiddenBuzzListModal } from 'components'
+import {
+  ProfileSkeleton,
+  HelmetGenerator,
+  HiddenBuzzListModal,
+  EditProfileModal,
+} from 'components'
 import queryString from 'query-string'
+import LocationOnIcon from '@material-ui/icons/LocationOn'
+import LinkIcon from '@material-ui/icons/Link'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -88,6 +95,9 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     fontSize: 14,
     ...theme.font,
+    '& span': {
+      wordBreak: 'break-all',
+    },
   },
   spacer: {
     width: '100%',
@@ -132,6 +142,9 @@ const useStyles = createUseStyles(theme => ({
   },
   followLinks: {
     ...theme.font,
+  },
+  textIcon : {
+    ...theme.textIcon,
   },
 }))
 
@@ -181,6 +194,10 @@ const Profile = (props) => {
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
   const [openHiddenBuzzList, setOpenHiddenBuzzList] = useState(false)
   const [moreOptionsEl, setMoreOptionsEl] = useState(null)
+
+  const [moreOptions, setMoreOptions] = useState([])
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState(null)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -257,8 +274,49 @@ const Profile = (props) => {
       getFollowersRequest(username)
       getFollowingRequest(username)
     }
+
+    setMoreButtonOptions()
+
     // eslint-disable-next-line
   }, [username])
+
+  const setMoreButtonOptions = () => {
+    const moreOptionsList = [
+      {
+        label: "Blacklisted Users",
+        icon: '',
+        onClick: navigateToBlackListed,
+      },
+      {
+        label: "Muted Users",
+        icon: '',
+        onClick: navigateToMutedUsers,
+      },
+      {
+        label: "Followed Blacklists",
+        icon: '',
+        onClick: navigateToFollowedBlacklist,
+      },
+      {
+        label: "Followed Muted Lists",
+        icon: '',
+        onClick: navigateToFollowedMuted,
+      },
+    ]
+
+    if(username === loginuser) {
+      const options = [
+        {
+          label: "Hidden Buzzes",
+          icon: '',
+          onClick: handleClickOpenHiddenBuzzList,
+        },
+      ]
+      setMoreOptions([...options, ...moreOptionsList])
+    }else{
+      setMoreOptions(moreOptionsList)
+    }
+  }
 
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
@@ -273,12 +331,19 @@ const Profile = (props) => {
   }, [pathname])
 
 
-  const { metadata, stats, hivepower } = profile || ''
+  const { metadata, stats, hivepower, name: profileUsername } = profile || ''
   const { profile: profileMeta } = metadata || ''
-  const { name, cover_image, website, about } = profileMeta || ''
+  const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
 
   const { reputation = 0, isFollowed } = profile
+
+  useEffect(() => {
+    if(username === profileUsername){
+      setAvatarUrl(profile_image)
+    }
+  // eslint-disable-next-line
+  },[profile_image, username])
 
   const followUser = () => {
     followRequest(username).then((result) => {
@@ -306,6 +371,7 @@ const Profile = (props) => {
 
   const handleClickOpenHiddenBuzzList = () => {
     setOpenHiddenBuzzList(!openHiddenBuzzList)
+    handleCloseMoreOptions()
   }
 
   const handleCloseMoreOptions = () => {
@@ -314,6 +380,10 @@ const Profile = (props) => {
 
   const handleOpenMoreOptions = (e) => {
     setMoreOptionsEl(e.currentTarget)
+  }
+
+  const handleOpenEditProfileModal = () => {
+    setOpenEditProfileModal(!openEditProfileModal)
   }
 
   const navigateToBlackListed = () => {
@@ -332,28 +402,6 @@ const Profile = (props) => {
     history.push(`/@${username}/lists/muted/followed`)
   }
 
-  const MoreOptions = [
-    {
-      label: "Blacklisted Users",
-      icon: '',
-      onClick: navigateToBlackListed,
-    },
-    {
-      label: "Muted Users",
-      icon: '',
-      onClick: navigateToMutedUsers,
-    },
-    {
-      label: "Followed Blacklists",
-      icon: '',
-      onClick: navigateToFollowedBlacklist,
-    },
-    {
-      label: "Followed Muted Lists",
-      icon: '',
-      onClick: navigateToFollowedMuted,
-    },
-  ]
 
   return (
     <React.Fragment>
@@ -368,7 +416,7 @@ const Profile = (props) => {
             <Row>
               <Col xs="auto">
                 <div className={classes.avatar}>
-                  <Avatar border={true} height="135" author={username} size="medium" />
+                  <Avatar border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl}/>
                 </div>
               </Col>
               <Col>
@@ -381,19 +429,17 @@ const Profile = (props) => {
                     >
                       <MoreCircleIconRed/>
                     </IconButton>
-                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={MoreOptions}/>
+                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={moreOptions}/>
                     {loginuser === username && (
-                      <React.Fragment>\
-                        <ContainedButton
-                          fontSize={14}
-                          disabled={loading}
-                          style={{ float: 'right', marginTop: 5 }}
-                          transparent={true}
-                          label="Hidden Buzzes"
-                          className={classes.button}
-                          onClick={handleClickOpenHiddenBuzzList}
-                        />
-                      </React.Fragment>
+                      <ContainedButton
+                        fontSize={14}
+                        disabled={loading}
+                        style={{ float: 'right', marginTop: 5 }}
+                        transparent={true}
+                        label="Edit profile"
+                        className={classes.button}
+                        onClick={handleOpenEditProfileModal}
+                      />
                     )}
                     {loginuser !== username && !mutelist.includes(username) && (
                       <ContainedButton
@@ -467,12 +513,24 @@ const Profile = (props) => {
                   </p>
                 </Col>
               </Row>
+              <div style={{ width: '100%', height: 10 }} />
               <Row>
-                <Col xs="auto">
+                <Col xs="auto" style={{ marginLeft: -5 }}>
                   <p className={classes.paragraph}>
-                    <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                      {website}
-                    </a>
+                    {profile_location && (
+                      <span className={classes.textIcon} style={{ marginRight: 10 }}>
+                        <LocationOnIcon fontSize="small" className={classes.textIcon}/>
+                        {profile_location}
+                      </span>
+                    )}
+                    {website && (
+                      <span>
+                        <LinkIcon fontSize="small" className={classes.textIcon}/> {" "}
+                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                          {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                        </a>
+                      </span>
+                    )}
                   </p>
                 </Col>
               </Row>
@@ -480,10 +538,10 @@ const Profile = (props) => {
                 <Col xs="auto">
                   <p className={classes.paragraph}>
                     <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
-                      <b>{following}</b> Following
+                      <b>{following}</b> <span className={classes.textIcon}>Following</span>
                     </Link> &nbsp;
                     <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
-                      <b>{followers}</b> Followers
+                      <b>{followers}</b> <span className={classes.textIcon}>Followers</span>
                     </Link> &nbsp;
                   </p>
                 </Col>
@@ -509,6 +567,7 @@ const Profile = (props) => {
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
       <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
+      <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal}/>
     </React.Fragment>
   )
 }

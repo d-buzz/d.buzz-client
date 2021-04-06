@@ -1089,6 +1089,21 @@ export const generatePostOperations = (account, title, body, tags, payout) => {
 
 }
 
+export const generateUpdateAccountOperation = (account, posting_json_metadata, json_metadata='') => {
+
+  return new Promise((resolve) => {
+    const op_comment = [[
+      'account_update2',
+      {
+        account,
+        json_metadata,
+        posting_json_metadata,
+      },
+    ]]
+    resolve(op_comment)
+  })
+}
+
 export const broadcastKeychainOperation = (account, operations, key = 'Posting') => {
   return new Promise((resolve, reject) => {
     window.hive_keychain.requestBroadcast(
@@ -1284,6 +1299,15 @@ export const getBestRpcNode = () => {
 export const checkVersion = () => {
   return new Promise((resolve) => {
     axios.get('https://d.buzz/version.json')
+      .then(function (result) {
+        resolve(result.data)
+      })
+  })
+}
+
+export const getMutePattern = () => {
+  return new Promise((resolve) => {
+    axios.get('https://d.buzz/pattern.json')
       .then(function (result) {
         resolve(result.data)
       })

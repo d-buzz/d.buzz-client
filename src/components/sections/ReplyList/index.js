@@ -329,9 +329,17 @@ const ReplyList = (props) => {
             setPageFrom(null)
             history.push(generateLink(author, permlink))
           } else {
-            const split = href.split('/')
-            href = `/${split[3]}`
-            history.push(href)
+            const split = `${href}`.split('#')
+            console.log(split)
+            if(split.length === 2) {
+              href = `${split[1]}`
+            }else{
+              const split = `${href}`.split('/')
+              href = split[3] ? `/${split[3]}` : '/'
+            }
+            if(href !== '' && href !== undefined){
+              history.push(href)
+            }
           }
         }
       }
@@ -409,7 +417,7 @@ const ReplyList = (props) => {
                         <div className={classes.context}>
                           <div className={classes.contextWrapper}>
                             <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
-                            <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
+                            <a target="_blank" without="true" rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>View the full reply</a>
                           </div>
                         </div>
                       )}
