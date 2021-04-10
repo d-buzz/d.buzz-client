@@ -55,41 +55,10 @@ const useStyles = createUseStyles(theme => ({
       border: '3px solid #e61c34',
     },
   },
-  darkModeButton: {
-    backgroundColor: 'rgb(21, 32, 43)',
-    '& label': {
-      fontSize: 14,
-      color: 'white',
-      display: 'block',
-    },
-  },
-  ligthModeButton: {
-    backgroundColor: 'rgb(255, 255, 255)',
-    '& label': {
-      fontSize: 14,
-      color: 'black',
-      display: 'block',
-    },
-  },
-  grayModeButton: {
-    backgroundColor: '#202225',
-    '& label': {
-      fontSize: 14,
-      color: 'white',
-      display: 'block',
-    },
-  },
-  notes: {
-    fontSize: 14,
-    ...theme.font,
-  },
   closeButton: {
     marginTop: 15,
     width: 100,
     height: 35,
-  },
-  active: {
-    border: '3px solid #e61c34',
   },
   innerModal: {
     width: '98%',
