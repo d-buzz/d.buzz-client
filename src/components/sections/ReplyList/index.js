@@ -330,7 +330,7 @@ const ReplyList = (props) => {
             history.push(generateLink(author, permlink))
           } else {
             const split = `${href}`.split('#')
-            console.log(split)
+
             if(split.length === 2) {
               href = `${split[1]}`
             }else{

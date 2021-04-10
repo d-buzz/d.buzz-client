@@ -120,7 +120,6 @@ function* censorBuzzRequest(payload, meta) {
     yield put(censorBuzzSuccess(meta))
 
   } catch(error) {
-    console.log({ error })
     yield put(censorBuzzFailure(error, meta))
   }
 }
