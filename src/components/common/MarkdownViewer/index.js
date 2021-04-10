@@ -399,12 +399,26 @@ const MarkdownViewer = React.memo((props) => {
   const original = content
   // content = prepareImages(content)
 
-  // const links = markdownLinkExtractor(content)
+  const extracted = markdownLinkExtractor(content)
+
+  extracted.forEach((item) => {
+    const link = item.replace(/\(/g, '%28').replace(/\)/g, '%29')
+    console.log({ item })
+    console.log({ link })
+    content = content.replace(item, link)
+  })
+
+  console.log({ content })
+
   const links = textParser.getUrls(content)
+
+  console.log({ links })
+
 
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
+      link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
 
       if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
