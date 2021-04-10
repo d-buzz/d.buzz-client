@@ -23,8 +23,6 @@ function* poll() {
       const filter = yield select(state => state.polling.get('notificationFilter'))
       const { username } = user
 
-      console.log({ filter })
-
       let notification = yield call(getAccountNotifications, username)
       notification = filterNotif(notification, filter)
       const count = yield call(getUnreadNotificationsCount, username)

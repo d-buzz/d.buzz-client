@@ -243,13 +243,6 @@ const CreateBuzzForm = (props) => {
       }
 
       setContent(value)
-      // if (value.includes("www.facebook.com")) {
-      //   console.log(value)
-      //   const content = prepareFacebookEmbeds(value)
-      //   setContent(content ? content : value)
-      // } else {
-      //   setContent(value)
-      // }
     } else if (name === 'max-payout') {
 
       if (!payoutAgreed) {

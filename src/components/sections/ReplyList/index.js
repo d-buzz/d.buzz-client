@@ -196,7 +196,6 @@ const ReplyList = (props) => {
     censorList,
   } = props
   const { clearAppendReply } = props
-  // replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
@@ -330,7 +329,7 @@ const ReplyList = (props) => {
             history.push(generateLink(author, permlink))
           } else {
             const split = `${href}`.split('#')
-            console.log(split)
+
             if(split.length === 2) {
               href = `${split[1]}`
             }else{
