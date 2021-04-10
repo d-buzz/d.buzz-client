@@ -361,7 +361,6 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickMuteDialog = () => {
-    // scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}
     openMuteDialog(author, muteSuccessCallback)
     setAnchorEl(null)
   }

@@ -196,7 +196,6 @@ const ReplyList = (props) => {
     censorList,
   } = props
   const { clearAppendReply } = props
-  // replies = replies.filter((reply) => reply.body.length <= 280 )
   const classes = useStyles()
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)

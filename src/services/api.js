@@ -356,7 +356,6 @@ export const fetchSingleProfile = (account) => {
         let isFollowed = false
 
         if(user && `${user}`.trim() !== '') {
-          // const { username } = readSession(user)
           if(user !== data.name) {
             isFollowed = await isFollowing(user, data.name)
           }
@@ -491,8 +490,6 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
-  // api.setOptions({ url: 'https://anyx.io' })
-
   return new Promise((resolve, reject) => {
     broadcast.voteAsync(wif, voter, author, permlink, weight)
       .then((result) => {
@@ -691,7 +688,6 @@ export const keychainUpvote = (username, permlink, author, weight) => {
 export const generateClearNotificationOperation = (username, lastNotification) => {
   return new Promise((resolve) => {
 
-    // const date = lastNotification.date
     let date = moment().utc().format()
     date = `${date}`.replace('Z', '')
 
@@ -1154,7 +1150,6 @@ export const createMeta = (tags = []) => {
 
   const meta = {
     app: 'dBuzz/v3.0.0',
-    // app: 'hiveph/v1.0.0',
     tags: uniqueTags,
   }
 
