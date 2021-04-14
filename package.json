@@ -15,6 +15,7 @@
     "crypto-js": "^4.0.0",
     "diff-match-patch": "^1.0.5",
     "emoji-mart": "^3.0.1",
+    "env-cmd": "^10.1.0",
     "immutable": "^4.0.0-rc.12",
     "lottie-react": "^2.1.0",
     "markdown-link-extractor": "^1.2.3",
@@ -64,8 +65,9 @@
     "uuid-random": "^1.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd -f .env.development react-scripts start",
+    "build:dev": "env-cmd -f .env.development react-scripts build",
+    "build:prod": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src",
