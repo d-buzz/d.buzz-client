@@ -8,7 +8,7 @@ const sagaMiddleWare = createSagaMiddleware()
 const middleWare = applyMiddleware(thunkMiddleware, sagaMiddleWare)
 let composeEnhancers = compose
 
-if(config.VERSION === 'dev') {
+if(config.ENV === 'dev') {
   composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
 }
 
