@@ -10,7 +10,7 @@ const config = {
   BUCKET: 'nathansenn-team-bucket.storage.fleek.co',
   GIPHY_API_KEY: 'ecohRlzr8FrMGrTfX8JJ4uoilgdIiZI5',
   DISABLE_MOBILE: false,
-  BRANCH: 'prod',
+  BRANCH: process.env.REACT_APP_ENV || 'dev',
 }
 
 export default config
