@@ -6,11 +6,7 @@ import config from 'config'
 
 const sagaMiddleWare = createSagaMiddleware()
 const middleWare = applyMiddleware(thunkMiddleware, sagaMiddleWare)
-let composeEnhancers = compose
-
-if(config.BRANCH === 'dev') {
-  composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
-}
+const composeEnhancers = (typeof window !== 'undefined' && config.BRANCH === 'dev' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
 
 export default createStore(
   rootReducer,
