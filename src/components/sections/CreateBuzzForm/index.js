@@ -436,9 +436,11 @@ const CreateBuzzForm = (props) => {
           <br /><br />
           <label className={classes.payoutLabel}>Max Payout: </label>
           <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
-          <Tooltip title={tooltips.payout} placement="top">
-            <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
-          </Tooltip>
+          {!isMobile && (
+            <Tooltip title={tooltips.payout} placement="top">
+              <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
+            </Tooltip>
+          )}
           <FormCheck
             name='buzz-to-twitter'
             type='checkbox'
