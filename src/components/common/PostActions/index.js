@@ -16,6 +16,7 @@ import Chip from '@material-ui/core/Chip'
 import moment from 'moment'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import { broadcastNotification } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
@@ -153,16 +154,23 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
+const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null }) => {
   return (
-    <div className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
-      <div className={inlineClass}>
+    <div className={classNames(className, inlineClass)}>
+      <div className={inlineClass} onClick={disabled ? () => {} : onClick}>
         {icon}
       </div>
-      {!hideStats && (
+      {!hideStats && !tooltip && (
         <div style={{ paddingTop: 2 }} className={inlineClass}>
           {stat}
         </div>
+      )}
+      {!hideStats  && tooltip && (
+        <Tooltip arrow title={tooltip} placement='top'>
+          <div style={{ paddingTop: 2 }} className={inlineClass}>
+            {stat}
+          </div>
+        </Tooltip>
       )}
     </div>
   )
@@ -192,6 +200,7 @@ const PostActions = (props) => {
     recomputeRowIndex = () => {},
     max_accepted_payout,
     recentUpvotes,
+    upvoteList = []
   } = props
 
   let payoutAdditionalStyle = {}
@@ -282,6 +291,28 @@ const PostActions = (props) => {
   const closeMenu = () => {
     setOpenCaret(false)
   }
+
+  const RenderUpvoteList = () => {
+
+    let list = upvoteList
+
+
+    if(vote > 15) {
+      list = list.slice(0, 14)
+      list.push({ voter: `and ${vote - 15} more`})
+    }
+
+
+    return (
+      <React.Fragment>
+        {list.map(({ voter }) => (
+          <React.Fragment>
+            <span style={{ fontSize: 12 }}>{voter}</span><br />
+          </React.Fragment>
+        ))}
+      </React.Fragment>
+    )
+  }
   
   return (
     <React.Fragment>
@@ -295,6 +326,7 @@ const PostActions = (props) => {
                   inlineClass={classes.inline}
                   icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
                   hideStats={hideStats}
+                  tooltip={vote !== 0? <RenderUpvoteList /> : null}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
                       {vote}
@@ -310,6 +342,7 @@ const PostActions = (props) => {
                   hideStats={hideStats}
                   disabled={!is_authenticated || disableUpvote}
                   onClick={handleClickShowSlider}
+                  tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
                       {vote}
