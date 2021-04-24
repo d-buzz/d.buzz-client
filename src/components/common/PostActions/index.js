@@ -152,6 +152,9 @@ const useStyles = createUseStyles(theme => ({
     color: '#e53935',
     fontSize: 14,
   },
+  votelist: {
+    fontSize: 12,
+  },
 }))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null }) => {
@@ -200,7 +203,7 @@ const PostActions = (props) => {
     recomputeRowIndex = () => {},
     max_accepted_payout,
     recentUpvotes,
-    upvoteList = []
+    upvoteList = [],
   } = props
 
   let payoutAdditionalStyle = {}
@@ -293,21 +296,18 @@ const PostActions = (props) => {
   }
 
   const RenderUpvoteList = () => {
-
     let list = upvoteList
-
 
     if(vote > 15) {
       list = list.slice(0, 14)
-      list.push({ voter: `and ${vote - 15} more`})
+      list.push({ voter: `and ${vote - 15} more ...`})
     }
-
 
     return (
       <React.Fragment>
         {list.map(({ voter }) => (
           <React.Fragment>
-            <span style={{ fontSize: 12 }}>{voter}</span><br />
+            <span className={classes.votelist}>{voter}</span><br />
           </React.Fragment>
         ))}
       </React.Fragment>
