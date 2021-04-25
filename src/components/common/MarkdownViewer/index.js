@@ -9,6 +9,9 @@ import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
 import { TweetSkeleton } from 'components'
 
+
+const FACEBOOK_APP_ID = 236880454857514
+
 const renderer = new DefaultRenderer({
   baseUrl: "https://d.buzz/",
   breaks: true,
@@ -93,6 +96,22 @@ const useStyles = createUseStyles(theme => ({
       objectFit: 'cover',
       marginTop: 5,
       border: '1px solid #ccd6dd',
+    },
+  },
+  facebookResponsive: {
+    overflow: 'hidden',
+    paddingBottom: '56.25%',
+    position: 'relative',
+    height:0,
+    marginBottom: 10,
+    '& iframe': {
+      left: 0,
+      top: 0,
+      height: '100%',
+      width: '100%',
+      position: 'absolute',
+      border: 'none', 
+      overflow: 'hidden',
     },
   },
 }))
@@ -339,45 +358,41 @@ const prepareSoundCloudEmbeds = (content) => {
   return body
 }
 
-// const prepareFacebookEmbeds = (content) => {
-//   const facebookRegex = /(?:https?:\/\/(?:(?:www\.facebook\.com\/(.*?))))/i
-//   const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
-//   let body = content
+const prepareFacebookEmbeds = (content) => {
+  const facebookRegex = /^http(?:s?):\/\/(?:www\.|web\.|m\.)?facebook\.com\/(?:video\.php\?v=\d+|.*?\/videos\/\d+)|([A-z0-9]+)\/videos(?:\/[0-9A-z].+)?\/(\d+)(?:.+)?$/gm
 
-//   const links = textParser.getUrls(content)
+  let body = content
 
-//   const matchData = content.match(facebookRegexEmbeds)
+  const links = textParser.getUrls(content)
 
-//   if (matchData) {
-//     const input = matchData['input'].split('src=')[1].split(/[ >]/)[0]
-//     const url = input.replace(/['"]+/g, '')
-//     body = body.replace(body, `~~~~~~.^.~~~:facebook:${url}:${'embed'}:~~~~~~.^.~~~`)
-//   } else {
-//     links.forEach((link) => {
-//       try {
-//         link = link.replace(/&amp;/g, '&')
-//         let match = ''
-//         let id = ''
-//         let id1 = ''
-//         if(link.match(facebookRegex)){
-//           match = link.match(facebookRegex)
-//           const input = match['input']
-//           const data = input.split('/')
-//           id = data[3]
-//           id1 = data[5]
-//         }
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
 
-//         if(match){
-//           body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:${id1}:~~~~~~.^.~~~`)
-//         }
-//       } catch(error) { }
-//     })
-//   }
-//   return body
-// }
+    try {
+      if(link.match(facebookRegex)){
+        const data = link.split('/')
+        match = link.match(facebookRegex)
+        
+        id = data[data.length-1]
+        
+      }
 
-const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
+      if (!id) {
+        id = ''
+      }
 
+      if(match){
+        // console.log({ facebookId: id })
+        body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
     return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
@@ -408,7 +423,31 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     console.log({ splitSoundcloud })
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
     return <ReactSoundCloud url={url} />
-  } else {
+  } else if (content.includes(':facebook:')) {
+    try {
+      const splitFacebook = content.split(':')
+
+      return (
+        <React.Fragment>
+          <div className={classes.facebookResponsive}>
+            <iframe 
+              title={`facebook-${splitFacebook[2]}`}
+              src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook%2Fvideos%2F${splitFacebook[2]}%2F&width=500&show_text=false&appId=${FACEBOOK_APP_ID}&height=360`}
+              width="100%" 
+              height="auto"
+              scrolling="no" 
+              frameborder="0" 
+              allowfullscreen="true" 
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+            >
+            </iframe>
+          </div>
+        </React.Fragment>
+      )
+    } catch(error) {
+      console.log({ error })
+    }
+  }else {
     // render normally
     return <div
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
@@ -428,7 +467,6 @@ const MarkdownViewer = React.memo((props) => {
   } = props
   let { content = '' } = props
   const original = content
-  // content = prepareImages(content)
 
   const extracted = markdownLinkExtractor(content)
 
@@ -465,10 +503,9 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBitchuteEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
+      } else if(link.includes('facebook.com')) {
+        content = prepareFacebookEmbeds(content)
       }
-      // else if(link.includes('www.facebook.com')) {
-      //   content = prepareFacebookEmbeds(content)
-      // }
     } catch(error) { }
   })
 
@@ -487,7 +524,7 @@ const MarkdownViewer = React.memo((props) => {
   return (
     <React.Fragment>
       {splitContent.map((item) => (
-        render(item, classes.markdown, assetClass, scrollIndex, recomputeRowIndex)
+        render(item, classes.markdown, assetClass, scrollIndex, recomputeRowIndex, classes)
       ))}
       <LinkPreview content={original} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex} />
     </React.Fragment>
