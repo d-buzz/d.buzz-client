@@ -30,8 +30,6 @@
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^3.0.2",
     "react-dom": "^16.13.1",
-    "react-facebook": "^8.1.4",
-    "react-facebook-player": "^0.1.0",
     "react-fastclick": "^3.0.2",
     "react-giphy-searchbox": "^1.5.4",
     "react-helmet": "^6.1.0",
