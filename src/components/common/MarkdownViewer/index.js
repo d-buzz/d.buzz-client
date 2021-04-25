@@ -114,6 +114,19 @@ const useStyles = createUseStyles(theme => ({
       overflow: 'hidden',
     },
   },
+  tiktokWrapper: {
+    position: 'relative',
+    paddingBottom: '140%',
+    height: 0,
+    marginBottom: 10,
+    '& iframe': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+    },
+  },
 }))
 
 const prepareTwitterEmbeds = (content) => {
@@ -384,8 +397,41 @@ const prepareFacebookEmbeds = (content) => {
       }
 
       if(match){
-        // console.log({ facebookId: id })
         body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareTiktokEmbeds = (content) => {
+  const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/g
+
+  let body = content
+
+  console.log({tiktokRegex})
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
+
+    try {
+      if(link.match(tiktokRegex)){
+        const data = link.split('/')
+        match = link.match(tiktokRegex)
+        
+        id = data[5]
+      }
+
+      if (!id) {
+        id = ''
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:tiktok:${id}:~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
@@ -447,6 +493,24 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     } catch(error) {
       console.log({ error })
     }
+  } else if (content.includes(':tiktok:')) {
+    const splitTiktok = content.split(':')
+    const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
+  
+    return (
+      <React.Fragment>
+        <div className={classes.tiktokWrapper}>
+          <iframe
+            title='Embedded Video'
+            src={url}
+            allowFullScreen={true}
+            frameBorder='0'
+            height='250'
+            width='100%'
+          ></iframe>
+        </div>
+      </React.Fragment>
+    )
   }else {
     // render normally
     return <div
@@ -505,6 +569,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {
         content = prepareFacebookEmbeds(content)
+      } else if(link.includes('tiktok.com')) {
+        content = prepareTiktokEmbeds(content)
       }
     } catch(error) { }
   })
