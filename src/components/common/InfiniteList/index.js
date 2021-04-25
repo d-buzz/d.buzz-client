@@ -75,6 +75,7 @@ class InfiniteList extends PureComponent {
               created={items[index].created}
               body={items[index].body}
               upvotes={items[index].active_votes.length}
+              upvoteList={items[index].active_votes}
               replyCount={items[index].children}
               meta={items[index].json_metadata}
               payout={items[index].payout}
