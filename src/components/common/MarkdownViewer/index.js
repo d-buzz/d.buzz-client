@@ -303,6 +303,35 @@ const prepareLbryEmbeds = (content) => {
   return body
 }
 
+const prepareOdyseeEmbeds = (content) => {
+  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com)))/i
+  let body = content
+
+  const links = markdownLinkExtractor(content)
+
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+      let match = ''
+      let id = ''
+
+      if(link.match(odyseeRegex)){
+        const data = link.split('/')
+        match = link.match(odyseeRegex)
+        if (data[4]) {
+          const data1 = data[4].split(':')
+          id = data1[0]
+        }
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:odysy:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareBitchuteEmbeds = (content) => {
   const bitchuteRegex = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/(.*?))))/i
   const bitchuteRegexEmbed = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/embed\/(.*?))))/i
@@ -511,7 +540,11 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
         </div>
       </React.Fragment>
     )
-  }else {
+  } else if (content.includes(':odysy:')) {
+    const splitOdysy = content.split(':')
+    const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}odysy`} url={url} />
+  } else {
     // render normally
     return <div
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
@@ -571,6 +604,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareFacebookEmbeds(content)
       } else if(link.includes('tiktok.com')) {
         content = prepareTiktokEmbeds(content)
+      } else if(link.includes('odysee.com')) {
+        content = prepareOdyseeEmbeds(content)
       }
     } catch(error) { }
   })
