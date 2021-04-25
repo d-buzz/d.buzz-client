@@ -47,8 +47,6 @@
     "react-scripts": "^3.4.3",
     "react-scrollspy": "^3.4.3",
     "react-share": "^4.4.0",
-    "react-soundcloud": "^0.1.1",
-    "react-soundcloud-embed": "^1.0.3",
     "react-soundcloud-embedded": "^2.0.7",
     "react-sticky": "^6.0.3",
     "react-syntax-highlighter": "^15.4.3",
