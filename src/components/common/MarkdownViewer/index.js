@@ -3,6 +3,7 @@ import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import textParser from 'npm-text-parser'
 import classNames from 'classnames'
+import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
@@ -307,6 +308,37 @@ const prepareBitchuteEmbeds = (content) => {
   return body
 }
 
+const prepareSoundCloudEmbeds = (content) => {
+  const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
+
+    try {
+      if(link.match(soundcloudRegex)){
+        const data = link.split('/')
+        match = link.match(soundcloudRegex)
+        console.log({ data })
+        id = `${data[3]}/${data[4]}`
+      }
+
+      if (!id) {
+        id = ''
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:soundcloud:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 // const prepareFacebookEmbeds = (content) => {
 //   const facebookRegex = /(?:https?:\/\/(?:(?:www\.facebook\.com\/(.*?))))/i
 //   const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
@@ -371,12 +403,11 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBitchute = content.split(':')
     const url = `https://www.bitchute.com/embed/${splitBitchute[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
-
-  // else if (content.includes(':facebook:')) {
-  //   const splitFacebook = content.split(':')
-  //   const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
-  //   return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
-  // }
+  } else if(content.includes(':soundcloud:')) {
+    const splitSoundcloud = content.split(':')
+    console.log({ splitSoundcloud })
+    const url = `https://soundcloud.com/${splitSoundcloud[2]}`
+    return <ReactSoundCloud url={url} />
   } else {
     // render normally
     return <div
@@ -432,6 +463,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareLbryEmbeds(content)
       } else if(link.includes('www.bitchute.com')) {
         content = prepareBitchuteEmbeds(content)
+      } else if(link.includes('soundcloud.com')) {
+        content = prepareSoundCloudEmbeds(content)
       }
       // else if(link.includes('www.facebook.com')) {
       //   content = prepareFacebookEmbeds(content)
