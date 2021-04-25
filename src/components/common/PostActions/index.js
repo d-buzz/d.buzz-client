@@ -9,6 +9,7 @@ import {
   HeartIconRed,
   Spinner,
   ShareIcon,
+  Avatar,
 } from 'components/elements'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -28,6 +29,8 @@ import { isMobile } from 'react-device-detect'
 import { FacebookShareButton, FacebookIcon } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Dialog from '@material-ui/core/Dialog'
 
 const PrettoSlider = withStyles({
   root: {
@@ -157,20 +160,20 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null }) => {
+const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null, statOnClick = () => {} }) => {
   return (
     <div className={classNames(className, inlineClass)}>
       <div className={inlineClass} onClick={disabled ? () => {} : onClick}>
         {icon}
       </div>
       {!hideStats && !tooltip && (
-        <div style={{ paddingTop: 2 }} className={inlineClass}>
+        <div style={{ paddingTop: 2 }} className={inlineClass} onClick={statOnClick}>
           {stat}
         </div>
       )}
       {!hideStats  && tooltip && (
         <Tooltip arrow title={tooltip} placement='top'>
-          <div style={{ paddingTop: 2 }} className={inlineClass}>
+          <div style={{ paddingTop: 2 }} className={inlineClass} onClick={statOnClick}>
             {stat}
           </div>
         </Tooltip>
@@ -222,6 +225,7 @@ const PostActions = (props) => {
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [openCaret, setOpenCaret] = useState(false)
+  const [openVoteList, setOpenVoteList] = useState(false)
 
   const { is_authenticated } = user
 
@@ -237,6 +241,14 @@ const PostActions = (props) => {
     }
     // eslint-disable-next-line
   }, [recentUpvotes, permlink])
+
+  const handleClickOpenVoteList = () => {
+    setOpenVoteList(true)
+  }
+
+  const handleClickCloseVoteList = () => {
+    setOpenVoteList(false)
+  }
 
 
   const handleClickShowSlider = () => {
@@ -327,6 +339,7 @@ const PostActions = (props) => {
                   icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
                   hideStats={hideStats}
                   tooltip={vote !== 0? <RenderUpvoteList /> : null}
+                  statOnClick={handleClickOpenVoteList}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
                       {vote}
@@ -343,6 +356,7 @@ const PostActions = (props) => {
                   disabled={!is_authenticated || disableUpvote}
                   onClick={handleClickShowSlider}
                   tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
+                  statOnClick={handleClickOpenVoteList}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
                       {vote}
@@ -466,6 +480,28 @@ const PostActions = (props) => {
           </div>
         </div>
       )}
+      <Dialog
+        onClose={handleClickCloseVoteList}
+        open={openVoteList}
+      >
+        <DialogTitle component="h4">
+          <b>Votes({vote})</b>
+        </DialogTitle>
+        <div style={{ width: 220, height: '90%', marginTop: -10 }}>
+          <div style={{ margin: '0 auto', width: '85%', marginBottom: 10, }}>
+            {upvoteList.map(({ voter }) => (
+              <React.Fragment>
+                <div style={{ width: '100%', marginBottom: 5, }}>
+                  <Avatar author={voter} height={40} />&nbsp;&nbsp;
+                  <span style={{ fontSize: 15 }}>
+                    <a style={{ color: '#d32f2f' }} href={`https://d.buzz/#/@${voter}`} target="_blank" rel="noopener noreferrer">{voter}</a>
+                  </span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </Dialog>
     </React.Fragment>
   )
 }
