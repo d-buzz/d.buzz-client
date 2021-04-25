@@ -126,7 +126,7 @@ const useStyles = createUseStyles(theme => ({
       width: '100%',
       height: '100%',
     },
-  }
+  },
 }))
 
 const prepareTwitterEmbeds = (content) => {
@@ -501,13 +501,13 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       <React.Fragment>
         <div className={classes.tiktokWrapper}>
           <iframe
-              title='Embedded Video'
-              src={url}
-              allowFullScreen={true}
-              frameBorder='0'
-              height='250'
-              width='100%'
-            ></iframe>
+            title='Embedded Video'
+            src={url}
+            allowFullScreen={true}
+            frameBorder='0'
+            height='250'
+            width='100%'
+          ></iframe>
         </div>
       </React.Fragment>
     )
