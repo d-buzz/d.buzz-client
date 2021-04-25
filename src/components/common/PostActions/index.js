@@ -158,6 +158,29 @@ const useStyles = createUseStyles(theme => ({
   votelist: {
     fontSize: 12,
   },
+  upvoteWrapper: {
+    width: 220, 
+    height: '90%', 
+    marginTop: -10,
+    backgroundColor: theme.background.primary,
+  },
+  upvoteInnerWrapper: {
+    margin: '0 auto',
+    width: '85%',
+    marginBottom: 10, 
+  },
+  upvoteListWrapper: {
+    width: '100%', 
+    marginBottom: 5, 
+  },
+  upvoteProfileLinks: {
+    fontSize: 15, 
+    color: '#d32f2f',
+  },
+  upvoteDialogTitle: {
+    backgroundColor: theme.background.primary,
+    ...theme.font,
+  },
 }))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null, statOnClick = () => {} }) => {
@@ -484,18 +507,16 @@ const PostActions = (props) => {
         onClose={handleClickCloseVoteList}
         open={openVoteList}
       >
-        <DialogTitle component="h4">
+        <DialogTitle component="h4" className={classes.upvoteDialogTitle}>
           <b>Votes({vote})</b>
         </DialogTitle>
-        <div style={{ width: 220, height: '90%', marginTop: -10 }}>
-          <div style={{ margin: '0 auto', width: '85%', marginBottom: 10, }}>
+        <div className={classes.upvoteWrapper}>
+          <div className={classes.upvoteInnerWrapper}>
             {upvoteList.map(({ voter }) => (
               <React.Fragment>
-                <div style={{ width: '100%', marginBottom: 5, }}>
+                <div className={classes.upvoteListWrapper}>
                   <Avatar author={voter} height={40} />&nbsp;&nbsp;
-                  <span style={{ fontSize: 15 }}>
-                    <a style={{ color: '#d32f2f' }} href={`https://d.buzz/#/@${voter}`} target="_blank" rel="noopener noreferrer">{voter}</a>
-                  </span>
+                  <a className={classes.upvoteProfileLinks} href={`https://d.buzz/#/@${voter}`} target="_blank" rel="noopener noreferrer">{voter}</a>
                 </div>
               </React.Fragment>
             ))}
