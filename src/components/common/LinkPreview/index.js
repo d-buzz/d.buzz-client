@@ -97,6 +97,7 @@ const LinkPreview = (props) => {
           && !link.match(/(?:https?:\/\/(?:(?:3speak\.tv\/watch\?v=(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i)
           && !link.match(/(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i)
+          && !link.match(/^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
         isValidUrl = true
