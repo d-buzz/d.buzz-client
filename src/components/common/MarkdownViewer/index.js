@@ -127,6 +127,19 @@ const useStyles = createUseStyles(theme => ({
       height: '100%',
     },
   },
+  videoWrapper: {
+    position: 'relative',
+    paddingBottom: '56.25%',
+    marginBottom: 10,
+    height: 0,
+    '& iframe': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+    },
+  },
 }))
 
 const prepareTwitterEmbeds = (content) => {
@@ -467,6 +480,27 @@ const prepareTiktokEmbeds = (content) => {
   return body
 }
 
+const prepareAppleEmbeds = (content) => {
+  const appleRegex = /(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i
+  const appleRegexEmbed = /(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+
+    const match = link.match(appleRegex) || link.match(appleRegexEmbed)
+
+    if(match){
+      const data = link.split('/')
+      const id = `${data[4]}/${data[5]}/${data[6]}`
+      body = body.replace(link, `~~~~~~.^.~~~:apple:${id}:~~~~~~.^.~~~`)
+    }
+  })
+  return body
+}
+
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
@@ -544,6 +578,24 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitOdysy = content.split(':')
     const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}odysy`} url={url} />
+  } else if(content.includes(':apple:')) {
+    const splitApple = content.split(':')
+    const url = `https://embed.music.apple.com/gb/${splitApple[2]}`
+    // return <UrlVideoEmbed key={`${url}${scrollIndex}apple`} url={url} />
+    return (
+      <React.Fragment>
+        <div className={classes.videoWrapper} >
+          <iframe
+            title='Apple Music'
+            src={url}
+            allowFullScreen={true}
+            frameBorder='0'
+            height='300'
+            width='100%'
+          ></iframe>
+        </div>
+      </React.Fragment>
+    )
   } else {
     // render normally
     return <div
@@ -606,6 +658,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareTiktokEmbeds(content)
       } else if(link.includes('odysee.com')) {
         content = prepareOdyseeEmbeds(content)
+      } else if(link.includes('music.apple.com')) {
+        content = prepareAppleEmbeds(content)
       }
     } catch(error) { }
   })
