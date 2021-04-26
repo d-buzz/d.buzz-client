@@ -100,6 +100,8 @@ const LinkPreview = (props) => {
           && !link.match(/^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/)
           && !link.match(/((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/i)
           && !link.match(/(?:https?:\/\/(?:(?:odysee\.com)))/i)
+          && !link.match(/(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i)
+          && !link.match(/(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
         url = link
         isValidUrl = true
