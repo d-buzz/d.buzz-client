@@ -24,6 +24,7 @@ import { pending } from 'redux-saga-thunk'
 import { anchorTop, calculatePayout, invokeTwitterIntent, sendToBerries } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Tooltip from '@material-ui/core/Tooltip'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
@@ -366,6 +367,25 @@ const Content = (props) => {
     return user.username && user.username === author
   }
 
+  const RenderUpvoteList = () => {
+    let list = active_votes
+
+    if(active_votes.length > 15) {
+      list = list.slice(0, 14)
+      list.push({ voter: `and ${active_votes.length - 15} more ...`})
+    }
+
+    return (
+      <React.Fragment>
+        {list.map(({ voter }) => (
+          <React.Fragment>
+            <span className={classes.votelist}>{voter}</span><br />
+          </React.Fragment>
+        ))}
+      </React.Fragment>
+    )
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -452,7 +472,9 @@ const Content = (props) => {
           <div className={classes.wrapper}>
             <Row>
               <Col>
-                <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
+                <Tooltip arrow title={<RenderUpvoteList />} placement='top'>
+                  <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
+                </Tooltip>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
               {is_authenticated && (
