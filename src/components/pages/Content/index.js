@@ -36,6 +36,7 @@ import {
   ReplylistSkeleton,
   HelmetGenerator,
   UpdateFormModal,
+  VoteListDialog,
 } from 'components'
 import Chip from '@material-ui/core/Chip'
 import { useHistory } from 'react-router-dom'
@@ -157,6 +158,7 @@ const Content = (props) => {
   const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
   const [isCensored, setIsCensored] = useState(false)
   const [censorType, setCensorType] = useState(null)
+  const [openVoteList, setOpenVoteList] = useState(false)
   const popoverAnchor = useRef(null)
   const history = useHistory()
 
@@ -386,6 +388,14 @@ const Content = (props) => {
     )
   }
 
+  const handleClickOpenVoteList = () => {
+    setOpenVoteList(true)
+  }
+
+  const handleClickOnCloseVoteList = () => {
+    setOpenVoteList(false)
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -473,7 +483,12 @@ const Content = (props) => {
             <Row>
               <Col>
                 <Tooltip arrow title={<RenderUpvoteList />} placement='top'>
-                  <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
+                  <label 
+                    className={classes.meta}
+                    onClick={handleClickOpenVoteList}
+                  >
+                    <b className={classes.strong}>{upvotes}</b> Upvotes
+                  </label>
                 </Tooltip>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
@@ -542,6 +557,11 @@ const Content = (props) => {
         onMouseEnter={openPopOver}
         onMouseLeave={closePopOver}
         profile={profile}
+      />
+      <VoteListDialog 
+        open={openVoteList}
+        onClose={handleClickOnCloseVoteList}
+        upvoteList={active_votes || []}
       />
     </React.Fragment>
   )
