@@ -9,8 +9,8 @@ import {
   HeartIconRed,
   Spinner,
   ShareIcon,
-  Avatar,
 } from 'components/elements'
+import { VoteListDialog } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
@@ -29,8 +29,6 @@ import { isMobile } from 'react-device-detect'
 import { FacebookShareButton, FacebookIcon } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Dialog from '@material-ui/core/Dialog'
 
 const PrettoSlider = withStyles({
   root: {
@@ -506,7 +504,12 @@ const PostActions = (props) => {
           </div>
         </div>
       )}
-      <Dialog
+      <VoteListDialog
+        onClose={handleClickCloseVoteList}
+        open={openVoteList}
+        upvoteList={upvoteList}
+      />
+      {/* <Dialog
         onClose={handleClickCloseVoteList}
         open={openVoteList}
       >
@@ -525,7 +528,7 @@ const PostActions = (props) => {
             ))}
           </div>
         </div>
-      </Dialog>
+      </Dialog> */}
     </React.Fragment>
   )
 }
