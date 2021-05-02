@@ -117,7 +117,6 @@ const Profile = (props) => {
     loading,
     route,
     getFollowingRequest,
-    // setPageFrom,
   } = props
 
   const history = useHistory()
@@ -147,7 +146,6 @@ const Profile = (props) => {
   const { username } = params
 
   useEffect(() => {
-    // setPageFrom(null)
     const params = queryString.parse(location.search)
 
     if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {

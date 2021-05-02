@@ -10,12 +10,14 @@ import {
   Spinner,
   ShareIcon,
 } from 'components/elements'
+import { VoteListDialog } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
 import moment from 'moment'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import { broadcastNotification } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { withStyles } from '@material-ui/core/styles'
@@ -151,18 +153,54 @@ const useStyles = createUseStyles(theme => ({
     color: '#e53935',
     fontSize: 14,
   },
+  votelist: {
+    fontSize: 12,
+  },
+  upvoteWrapper: {
+    width: 220, 
+    height: '90%', 
+    marginTop: -10,
+    backgroundColor: theme.background.primary,
+  },
+  upvoteInnerWrapper: {
+    margin: '0 auto',
+    width: '85%',
+    marginBottom: 10, 
+  },
+  upvoteListWrapper: {
+    width: '100%', 
+    marginBottom: 5, 
+  },
+  upvoteProfileLinks: {
+    fontSize: 15, 
+    color: '#d32f2f',
+    '&:hover': {
+      color: '#d32f2f',
+    },
+  },
+  upvoteDialogTitle: {
+    backgroundColor: theme.background.primary,
+    ...theme.font,
+  },
 }))
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false }) => {
+const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null, statOnClick = () => {} }) => {
   return (
-    <div className={classNames(className, inlineClass)} onClick={disabled ? () => {} : onClick}>
-      <div className={inlineClass}>
+    <div className={classNames(className, inlineClass)}>
+      <div className={inlineClass} onClick={disabled ? () => {} : onClick}>
         {icon}
       </div>
-      {!hideStats && (
-        <div style={{ paddingTop: 2 }} className={inlineClass}>
+      {!hideStats && !tooltip && (
+        <div style={{ paddingTop: 2 }} className={inlineClass} onClick={statOnClick}>
           {stat}
         </div>
+      )}
+      {!hideStats  && tooltip && (
+        <Tooltip arrow title={tooltip} placement='top'>
+          <div style={{ paddingTop: 2 }} className={inlineClass} onClick={statOnClick}>
+            {stat}
+          </div>
+        </Tooltip>
       )}
     </div>
   )
@@ -192,6 +230,7 @@ const PostActions = (props) => {
     recomputeRowIndex = () => {},
     max_accepted_payout,
     recentUpvotes,
+    upvoteList = [],
   } = props
 
   let payoutAdditionalStyle = {}
@@ -210,6 +249,7 @@ const PostActions = (props) => {
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [openCaret, setOpenCaret] = useState(false)
+  const [openVoteList, setOpenVoteList] = useState(false)
 
   const { is_authenticated } = user
 
@@ -225,6 +265,14 @@ const PostActions = (props) => {
     }
     // eslint-disable-next-line
   }, [recentUpvotes, permlink])
+
+  const handleClickOpenVoteList = () => {
+    setOpenVoteList(true)
+  }
+
+  const handleClickCloseVoteList = () => {
+    setOpenVoteList(false)
+  }
 
 
   const handleClickShowSlider = () => {
@@ -282,6 +330,25 @@ const PostActions = (props) => {
   const closeMenu = () => {
     setOpenCaret(false)
   }
+
+  const RenderUpvoteList = () => {
+    let list = upvoteList
+
+    if(vote > 15) {
+      list = list.slice(0, 14)
+      list.push({ voter: `and ${vote - 15} more ...`})
+    }
+
+    return (
+      <React.Fragment>
+        {list.map(({ voter }) => (
+          <React.Fragment>
+            <span className={classes.votelist}>{voter}</span><br />
+          </React.Fragment>
+        ))}
+      </React.Fragment>
+    )
+  }
   
   return (
     <React.Fragment>
@@ -295,6 +362,8 @@ const PostActions = (props) => {
                   inlineClass={classes.inline}
                   icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
                   hideStats={hideStats}
+                  tooltip={vote !== 0? <RenderUpvoteList /> : null}
+                  statOnClick={handleClickOpenVoteList}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
                       {vote}
@@ -310,6 +379,8 @@ const PostActions = (props) => {
                   hideStats={hideStats}
                   disabled={!is_authenticated || disableUpvote}
                   onClick={handleClickShowSlider}
+                  tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
+                  statOnClick={handleClickOpenVoteList}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
                       {vote}
@@ -433,6 +504,31 @@ const PostActions = (props) => {
           </div>
         </div>
       )}
+      <VoteListDialog
+        onClose={handleClickCloseVoteList}
+        open={openVoteList}
+        upvoteList={upvoteList}
+      />
+      {/* <Dialog
+        onClose={handleClickCloseVoteList}
+        open={openVoteList}
+      >
+        <DialogTitle component="h4" className={classes.upvoteDialogTitle}>
+          <b>Votes({vote})</b>
+        </DialogTitle>
+        <div className={classes.upvoteWrapper}>
+          <div className={classes.upvoteInnerWrapper}>
+            {upvoteList.map(({ voter }) => (
+              <React.Fragment>
+                <div className={classes.upvoteListWrapper}>
+                  <Avatar author={voter} height={40} />&nbsp;&nbsp;
+                  <a className={classes.upvoteProfileLinks} href={`https://d.buzz/#/@${voter}`} target="_blank" rel="noopener noreferrer">{voter}</a>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </Dialog> */}
     </React.Fragment>
   )
 }

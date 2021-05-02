@@ -101,7 +101,7 @@ const AccountBlacklistedFollowed = (props) => {
     checkAccountExistRequest,
     showAccountSearchButton,
     hideAccountSearchButton,
-    getAccountListRequest, 
+    getAccountListRequest,
     setAccountFollowedBlacklist,
     followedBlacklistAll,
     lastIndex,
@@ -156,7 +156,7 @@ const AccountBlacklistedFollowed = (props) => {
         checkAccountExists(keyword)
       }else{
         const checkSpecific =  followedBlacklistAll.filter((item) => item.name === keyword).length > 0
-        // console.log({keyword, checkSpecific})
+
         if(!checkSpecific){
           checkAccountExists(keyword)
         }else{
@@ -193,7 +193,7 @@ const AccountBlacklistedFollowed = (props) => {
                  @{item.name}
                       </p>
                     </div>
-                    {item.blacklist_description && 
+                    {item.blacklist_description &&
                (<div className={classes.content}>
                  <p className={classes.description}>
                    {item.blacklist_description}
@@ -205,10 +205,10 @@ const AccountBlacklistedFollowed = (props) => {
              <Col xs="auto">
                <div className={classes.blacklistButtonContainer}>
                  <FollowBlacklistsButton
-                   username={item.name} 
+                   username={item.name}
                    label="Unfollow blacklist"
                    disabled={!is_authenticated}
-                   style={{ float: 'right', marginTop: 5 }}/> 
+                   style={{ float: 'right', marginTop: 5 }}/>
                </div>
              </Col>}
               </Row>
@@ -239,7 +239,7 @@ const mapDispatchToProps = (dispatch) => ({
     checkAccountExistRequest,
     showAccountSearchButton,
     hideAccountSearchButton,
-    getAccountListRequest, 
+    getAccountListRequest,
     setAccountFollowedBlacklist,
   }, dispatch),
 })

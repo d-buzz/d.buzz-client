@@ -3,10 +3,14 @@ import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import textParser from 'npm-text-parser'
 import classNames from 'classnames'
+import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import { TwitterTweetEmbed } from 'react-twitter-embed'
 import { TweetSkeleton } from 'components'
+
+
+const FACEBOOK_APP_ID = 236880454857514
 
 const renderer = new DefaultRenderer({
   baseUrl: "https://d.buzz/",
@@ -92,6 +96,48 @@ const useStyles = createUseStyles(theme => ({
       objectFit: 'cover',
       marginTop: 5,
       border: '1px solid #ccd6dd',
+    },
+  },
+  facebookResponsive: {
+    overflow: 'hidden',
+    paddingBottom: '56.25%',
+    position: 'relative',
+    height:0,
+    marginBottom: 10,
+    '& iframe': {
+      left: 0,
+      top: 0,
+      height: '100%',
+      width: '100%',
+      position: 'absolute',
+      border: 'none', 
+      overflow: 'hidden',
+    },
+  },
+  tiktokWrapper: {
+    position: 'relative',
+    paddingBottom: '140%',
+    height: 0,
+    marginBottom: 10,
+    '& iframe': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+    },
+  },
+  videoWrapper: {
+    position: 'relative',
+    paddingBottom: '56.25%',
+    marginBottom: 10,
+    height: 0,
+    '& iframe': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
     },
   },
 }))
@@ -270,6 +316,35 @@ const prepareLbryEmbeds = (content) => {
   return body
 }
 
+const prepareOdyseeEmbeds = (content) => {
+  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com)))/i
+  let body = content
+
+  const links = markdownLinkExtractor(content)
+
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+      let match = ''
+      let id = ''
+
+      if(link.match(odyseeRegex)){
+        const data = link.split('/')
+        match = link.match(odyseeRegex)
+        if (data[4]) {
+          const data1 = data[4].split(':')
+          id = data1[0]
+        }
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:odysy:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareBitchuteEmbeds = (content) => {
   const bitchuteRegex = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/(.*?))))/i
   const bitchuteRegexEmbed = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/embed\/(.*?))))/i
@@ -307,45 +382,126 @@ const prepareBitchuteEmbeds = (content) => {
   return body
 }
 
-// const prepareFacebookEmbeds = (content) => {
-//   const facebookRegex = /(?:https?:\/\/(?:(?:www\.facebook\.com\/(.*?))))/i
-//   const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
-//   let body = content
+const prepareSoundCloudEmbeds = (content) => {
+  const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
+  let body = content
 
-//   const links = textParser.getUrls(content)
+  const links = textParser.getUrls(content)
 
-//   const matchData = content.match(facebookRegexEmbeds)
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
 
-//   if (matchData) {
-//     const input = matchData['input'].split('src=')[1].split(/[ >]/)[0]
-//     const url = input.replace(/['"]+/g, '')
-//     body = body.replace(body, `~~~~~~.^.~~~:facebook:${url}:${'embed'}:~~~~~~.^.~~~`)
-//   } else {
-//     links.forEach((link) => {
-//       try {
-//         link = link.replace(/&amp;/g, '&')
-//         let match = ''
-//         let id = ''
-//         let id1 = ''
-//         if(link.match(facebookRegex)){
-//           match = link.match(facebookRegex)
-//           const input = match['input']
-//           const data = input.split('/')
-//           id = data[3]
-//           id1 = data[5]
-//         }
+    try {
+      if(link.match(soundcloudRegex)){
+        const data = link.split('/')
+        match = link.match(soundcloudRegex)
+        console.log({ data })
+        id = `${data[3]}/${data[4]}`
+      }
 
-//         if(match){
-//           body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:${id1}:~~~~~~.^.~~~`)
-//         }
-//       } catch(error) { }
-//     })
-//   }
-//   return body
-// }
+      if (!id) {
+        id = ''
+      }
 
-const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex) => {
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:soundcloud:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
 
+const prepareFacebookEmbeds = (content) => {
+  const facebookRegex = /^http(?:s?):\/\/(?:www\.|web\.|m\.)?facebook\.com\/(?:video\.php\?v=\d+|.*?\/videos\/\d+)|([A-z0-9]+)\/videos(?:\/[0-9A-z].+)?\/(\d+)(?:.+)?$/gm
+
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
+
+    try {
+      if(link.match(facebookRegex)){
+        const data = link.split('/')
+        match = link.match(facebookRegex)
+        
+        id = data[data.length-1]
+        
+      }
+
+      if (!id) {
+        id = ''
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareTiktokEmbeds = (content) => {
+  const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/g
+
+  let body = content
+
+  console.log({tiktokRegex})
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+    let match = ''
+    let id = ''
+
+    try {
+      if(link.match(tiktokRegex)){
+        const data = link.split('/')
+        match = link.match(tiktokRegex)
+        
+        id = data[5]
+      }
+
+      if (!id) {
+        id = ''
+      }
+
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:tiktok:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareAppleEmbeds = (content) => {
+  const appleRegex = /(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i
+  const appleRegexEmbed = /(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+
+    const match = link.match(appleRegex) || link.match(appleRegexEmbed)
+
+    if(match){
+      const data = link.split('/')
+      const id = `${data[4]}/${data[5]}/${data[6]}`
+      body = body.replace(link, `~~~~~~.^.~~~:apple:${id}:~~~~~~.^.~~~`)
+    }
+  })
+  return body
+}
+
+const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
     return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
@@ -371,12 +527,75 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBitchute = content.split(':')
     const url = `https://www.bitchute.com/embed/${splitBitchute[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
+  } else if(content.includes(':soundcloud:')) {
+    const splitSoundcloud = content.split(':')
+    console.log({ splitSoundcloud })
+    const url = `https://soundcloud.com/${splitSoundcloud[2]}`
+    return <ReactSoundCloud url={url} />
+  } else if (content.includes(':facebook:')) {
+    try {
+      const splitFacebook = content.split(':')
 
-  // else if (content.includes(':facebook:')) {
-  //   const splitFacebook = content.split(':')
-  //   const url = splitFacebook[4] ? `https:${splitFacebook[3]}` : `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${splitFacebook[2]}%2Fvideos%2F${splitFacebook[3]}&width=500&show_text=false&height=300`
-  //   return <UrlVideoEmbed key={`${url}${scrollIndex}facebook`} url={url} />
-  // }
+      return (
+        <React.Fragment>
+          <div className={classes.facebookResponsive}>
+            <iframe 
+              title={`facebook-${splitFacebook[2]}`}
+              src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook%2Fvideos%2F${splitFacebook[2]}%2F&width=500&show_text=false&appId=${FACEBOOK_APP_ID}&height=360`}
+              width="100%" 
+              height="auto"
+              scrolling="no" 
+              frameborder="0" 
+              allowfullscreen="true" 
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+            >
+            </iframe>
+          </div>
+        </React.Fragment>
+      )
+    } catch(error) {
+      console.log({ error })
+    }
+  } else if (content.includes(':tiktok:')) {
+    const splitTiktok = content.split(':')
+    const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
+  
+    return (
+      <React.Fragment>
+        <div className={classes.tiktokWrapper}>
+          <iframe
+            title='Embedded Video'
+            src={url}
+            allowFullScreen={true}
+            frameBorder='0'
+            height='250'
+            width='100%'
+          ></iframe>
+        </div>
+      </React.Fragment>
+    )
+  } else if (content.includes(':odysy:')) {
+    const splitOdysy = content.split(':')
+    const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}odysy`} url={url} />
+  } else if(content.includes(':apple:')) {
+    const splitApple = content.split(':')
+    const url = `https://embed.music.apple.com/gb/${splitApple[2]}`
+    // return <UrlVideoEmbed key={`${url}${scrollIndex}apple`} url={url} />
+    return (
+      <React.Fragment>
+        <div className={classes.videoWrapper} >
+          <iframe
+            title='Apple Music'
+            src={url}
+            allowFullScreen={true}
+            frameBorder='0'
+            height='300'
+            width='100%'
+          ></iframe>
+        </div>
+      </React.Fragment>
+    )
   } else {
     // render normally
     return <div
@@ -397,14 +616,27 @@ const MarkdownViewer = React.memo((props) => {
   } = props
   let { content = '' } = props
   const original = content
-  // content = prepareImages(content)
 
-  // const links = markdownLinkExtractor(content)
+  const extracted = markdownLinkExtractor(content)
+
+  extracted.forEach((item) => {
+    const link = item.replace(/\(/g, '%28').replace(/\)/g, '%29')
+    console.log({ item })
+    console.log({ link })
+    content = content.replace(item, link)
+  })
+
+  console.log({ content })
+
   const links = textParser.getUrls(content)
+
+  console.log({ links })
+
 
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
+      link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
 
       if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
@@ -418,10 +650,17 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareLbryEmbeds(content)
       } else if(link.includes('www.bitchute.com')) {
         content = prepareBitchuteEmbeds(content)
+      } else if(link.includes('soundcloud.com')) {
+        content = prepareSoundCloudEmbeds(content)
+      } else if(link.includes('facebook.com')) {
+        content = prepareFacebookEmbeds(content)
+      } else if(link.includes('tiktok.com')) {
+        content = prepareTiktokEmbeds(content)
+      } else if(link.includes('odysee.com')) {
+        content = prepareOdyseeEmbeds(content)
+      } else if(link.includes('music.apple.com')) {
+        content = prepareAppleEmbeds(content)
       }
-      // else if(link.includes('www.facebook.com')) {
-      //   content = prepareFacebookEmbeds(content)
-      // }
     } catch(error) { }
   })
 
@@ -440,7 +679,7 @@ const MarkdownViewer = React.memo((props) => {
   return (
     <React.Fragment>
       {splitContent.map((item) => (
-        render(item, classes.markdown, assetClass, scrollIndex, recomputeRowIndex)
+        render(item, classes.markdown, assetClass, scrollIndex, recomputeRowIndex, classes)
       ))}
       <LinkPreview content={original} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex} />
     </React.Fragment>

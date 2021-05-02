@@ -158,13 +158,6 @@ function* authenticateUserRequest(payload, meta) {
 
       const session = generateSession(user)
 
-      // const isInAccountList = accounts.filter(item => item.username === username)
-
-      // if(isInAccountList.length === 0) {
-      //   users.push(session)
-      //   accounts.push({ username, keychain: useKeychain })
-      // }
-
       const accountIndex = accounts.findIndex(item => item.username === username)
 
       if(accountIndex === -1) {
@@ -199,13 +192,6 @@ function* getSavedUserRequest(meta) {
     let active = yield call([localStorage, localStorage.getItem], 'active')
     let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
     const hiddenBuzzes = []
-
-    // if(!hiddenBuzzes) {
-    //   hiddenBuzzes = []
-    // } else {
-    //   hiddenBuzzes = JSON.parse(hiddenBuzzes)
-    // }
-
 
     if(!accounts) {
       accounts = []
@@ -264,24 +250,7 @@ function* getSavedUserRequest(meta) {
 function* signoutUserRequest(meta) {
   try {
     const user = { username: '', useKeychain: false, is_authenticated: false }
-    // const active = yield call([localStorage, localStorage.getItem], 'active')
-    // let accounts = JSON.parse(yield call([localStorage, localStorage.getItem], 'accounts'))
-    // let users = JSON.parse(yield call([localStorage, localStorage.getItem], 'user'))
 
-    // accounts = accounts.filter(item => item.username !== active)
-
-    // const subtracted = []
-
-    // users.forEach((item) => {
-    //   const { username } = readSession(item)
-    //   if(username !== active) {
-    //     subtracted.push(item)
-    //   }
-    // })
-
-    // users = subtracted
-
-    // yield call([localStorage, localStorage.removeItem], 'user')
     yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([]))
     yield call([localStorage, localStorage.setItem], 'active', null)
     yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify([]))
@@ -438,7 +407,7 @@ function* followMutedListRequest(payload, meta) {
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
     }
-    
+
     if(!success) {
       yield put(followMutedListFailure({ success: false, errorMessage: 'Failed to follow muted list' }, meta))
     } else {
@@ -471,7 +440,7 @@ function* unfollowMutedListRequest(payload, meta) {
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
     }
-    
+
     if(!success) {
       yield put(unfollowMutedListFailure({ success: false, errorMessage: 'Failed to unfollow muted list' }, meta))
     } else {
@@ -504,7 +473,7 @@ function* blacklistUserRequest(payload, meta) {
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
     }
-    
+
     if(!success) {
       yield put(blacklistUserSuccess({ success: false, errorMessage: 'Failed to blacklist user' }, meta))
     } else {
@@ -537,7 +506,7 @@ function* unblacklistUserRequest(payload, meta) {
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
     }
-    
+
     if(!success) {
       yield put(unblacklistUserSuccess({ success: false, errorMessage: 'Failed to unblacklist user' }, meta))
     } else {
@@ -570,7 +539,7 @@ function* followBlacklistsRequest(payload, meta) {
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
     }
-    
+
     if(!success) {
       yield put(followBlacklistsSuccess({ success: false, errorMessage: 'Failed to follow blacklists' }, meta))
     } else {
@@ -603,7 +572,7 @@ function* unfollowBlacklistsRequest(payload, meta) {
       const result = yield call(broadcastOperation, operation, [wif])
       success = result.success
     }
-    
+
     if(!success) {
       yield put(unfollowBlacklistsSuccess({ success: false, errorMessage: 'Failed to unfollow blacklists' }, meta))
     } else {
@@ -690,5 +659,5 @@ export default function* sagas() {
   yield takeEvery(BLACKLIST_USER_REQUEST, watchBlacklistUserRequest)
   yield takeEvery(UNBLACKLIST_USER_REQUEST, watchUnblacklistUserRequest)
   yield takeEvery(FOLLOW_BLACKLISTS_REQUEST, watchFollowBlacklistsRequest)
-  yield takeEvery(UNFOLLOW_BLACKLISTS_REQUEST, watchUnfollowBlacklistsRequest) 
+  yield takeEvery(UNFOLLOW_BLACKLISTS_REQUEST, watchUnfollowBlacklistsRequest)
 }

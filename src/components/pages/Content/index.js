@@ -24,6 +24,7 @@ import { pending } from 'redux-saga-thunk'
 import { anchorTop, calculatePayout, invokeTwitterIntent, sendToBerries } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Tooltip from '@material-ui/core/Tooltip'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
@@ -35,6 +36,7 @@ import {
   ReplylistSkeleton,
   HelmetGenerator,
   UpdateFormModal,
+  VoteListDialog,
 } from 'components'
 import Chip from '@material-ui/core/Chip'
 import { useHistory } from 'react-router-dom'
@@ -156,6 +158,7 @@ const Content = (props) => {
   const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
   const [isCensored, setIsCensored] = useState(false)
   const [censorType, setCensorType] = useState(null)
+  const [openVoteList, setOpenVoteList] = useState(false)
   const popoverAnchor = useRef(null)
   const history = useHistory()
 
@@ -366,6 +369,33 @@ const Content = (props) => {
     return user.username && user.username === author
   }
 
+  const RenderUpvoteList = () => {
+    let list = active_votes
+
+    if(active_votes.length > 15) {
+      list = list.slice(0, 14)
+      list.push({ voter: `and ${active_votes.length - 15} more ...`})
+    }
+
+    return (
+      <React.Fragment>
+        {list.map(({ voter }) => (
+          <React.Fragment>
+            <span className={classes.votelist}>{voter}</span><br />
+          </React.Fragment>
+        ))}
+      </React.Fragment>
+    )
+  }
+
+  const handleClickOpenVoteList = () => {
+    setOpenVoteList(true)
+  }
+
+  const handleClickOnCloseVoteList = () => {
+    setOpenVoteList(false)
+  }
+
   return (
     <React.Fragment>
       {!loadingContent && author && (
@@ -452,7 +482,14 @@ const Content = (props) => {
           <div className={classes.wrapper}>
             <Row>
               <Col>
-                <label className={classes.meta}><b className={classes.strong}>{upvotes}</b> Upvotes</label>
+                <Tooltip arrow title={<RenderUpvoteList />} placement='top'>
+                  <label 
+                    className={classes.meta}
+                    onClick={handleClickOpenVoteList}
+                  >
+                    <b className={classes.strong}>{upvotes}</b> Upvotes
+                  </label>
+                </Tooltip>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
               {is_authenticated && (
@@ -520,6 +557,11 @@ const Content = (props) => {
         onMouseEnter={openPopOver}
         onMouseLeave={closePopOver}
         profile={profile}
+      />
+      <VoteListDialog 
+        open={openVoteList}
+        onClose={handleClickOnCloseVoteList}
+        upvoteList={active_votes || []}
       />
     </React.Fragment>
   )

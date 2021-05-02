@@ -216,6 +216,7 @@ const PostList = React.memo((props) => {
     openCensorshipDialog,
     censorList,
     theme,
+    upvoteList,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -361,7 +362,6 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickMuteDialog = () => {
-    // scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}
     openMuteDialog(author, muteSuccessCallback)
     setAnchorEl(null)
   }
@@ -450,6 +450,7 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
+                      upvoteList={upvoteList}
                       disableUpvote={disableUpvote}
                       body={body}
                       hasUpvoted={hasUpvoted}
