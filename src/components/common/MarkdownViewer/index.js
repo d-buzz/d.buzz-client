@@ -13,7 +13,7 @@ import { TweetSkeleton } from 'components'
 const FACEBOOK_APP_ID = 236880454857514
 
 const renderer = new DefaultRenderer({
-  baseUrl: "https://d.buzz/",
+  baseUrl: "https://d.buzz/#/",
   breaks: true,
   skipSanitization: false,
   allowInsecureScriptTags: false,
