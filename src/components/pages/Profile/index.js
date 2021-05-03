@@ -517,6 +517,18 @@ const Profile = (props) => {
               <Row>
                 <Col xs="auto" style={{ marginLeft: -5 }}>
                   <p className={classes.paragraph}>
+                    <span>
+                      <LinkIcon fontSize="small" className={classes.textIcon}/> {" Blogs - "}
+                      <a href={`https://blog.d.buzz/#/@${username}`} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                        https://blog.d.buzz/#/@{username}
+                      </a>
+                    </span>
+                  </p>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="auto" style={{ marginLeft: -5 }}>
+                  <p className={classes.paragraph}>
                     {profile_location && (
                       <span className={classes.textIcon} style={{ marginRight: 10 }}>
                         <LocationOnIcon fontSize="small" className={classes.textIcon}/>
