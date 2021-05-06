@@ -210,7 +210,10 @@ const Notification = (props) => {
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <div className={classes.left}>
-                      <Avatar author={actionAuthor(item.msg).replace('@', '')} />
+                      <Avatar 
+                        author={actionAuthor(item.msg).replace('@', '')}
+                        onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))}
+                      />
                     </div>
                   </Col>
                   <Col>
