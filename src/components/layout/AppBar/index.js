@@ -81,7 +81,7 @@ const AppBar = (props) => {
     <Navbar fixed="top" className={classes.nav}>
       <Container className={classes.container}>
         <Navbar.Brand>
-          {pathname !== '/ug' && (
+          {pathname !== '/ug' && pathname !== '/' && (
             <React.Fragment>
               <IconButton className={classes.backButton} onClick={handleClickBackButton} size="small">
                 <BackArrowIcon />
