@@ -1197,6 +1197,7 @@ export const searchPostAuthor = (author) => {
       if(data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
+        removeFootNote(data.results)
         data.results = data.results.filter((item) => item.body.length <= 280)
       }
 
@@ -1222,6 +1223,7 @@ export const searchPostGeneral = (query) => {
       if(data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
+        removeFootNote(data.results)
         data.results = data.results.filter((item) => item.body.length <= 280)
       }
 
