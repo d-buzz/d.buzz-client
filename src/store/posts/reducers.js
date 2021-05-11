@@ -36,6 +36,7 @@ import {
   REFLECT_UPDATED_MUTE_LIST_TRENDING,
   REFLECT_UPDATED_MUTE_LIST_HOME,
   SAVE_RECENT_UPVOTES,
+  SAVE_POST_AS_DRAFT,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -145,6 +146,8 @@ export const posts = (state = defaultState, { type, payload }) => {
     return state.set('home', payload)
   case SAVE_RECENT_UPVOTES:
     return state.set('recentUpvotes', payload)
+  case SAVE_POST_AS_DRAFT:
+    return state.set("draftPost", payload)
   default:
     return state
   }
