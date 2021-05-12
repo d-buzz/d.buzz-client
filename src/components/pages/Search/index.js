@@ -78,9 +78,9 @@ const Search = (props) => {
 
   useEffect(() => {
     if(pathname.match(/(\/search\/posts)/m)) {
-      setIndex(0)
-    } else if(pathname.match(/(\/search\/people)/m)) {
       setIndex(1)
+    } else if(pathname.match(/(\/search\/people)/m)) {
+      setIndex(0)
     }
   }, [pathname])
 
@@ -91,7 +91,7 @@ const Search = (props) => {
   const handleTabs = (index) => () => {
     let tab = 'posts'
 
-    if(index === 1) {
+    if(index === 0) {
       tab = 'people'
     }
 
@@ -115,8 +115,8 @@ const Search = (props) => {
           onChange={onChange}
           className={classes.tabContainer}
         >
-          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="People" />
+          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Users" />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's" />
         </Tabs>
       </div>
       <React.Fragment>

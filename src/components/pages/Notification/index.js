@@ -12,6 +12,7 @@ import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
+import { ContainedButton } from 'components/elements'
 
 const addHover = (theme) => {
   let style = {
@@ -186,6 +187,11 @@ const Notification = (props) => {
     return `Showing ${verb}`
   }
 
+  const handleClickViewProfile = (username) => (e) => {
+    e.preventDefault()
+    window.open(`https://d.buzz/#/@${username}`, '_blank')
+  }
+
   return (
     <React.Fragment>
       {notifFilter !== 'ALL' && (
@@ -204,7 +210,10 @@ const Notification = (props) => {
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <div className={classes.left}>
-                      <Avatar author={actionAuthor(item.msg).replace('@', '')} />
+                      <Avatar 
+                        author={actionAuthor(item.msg).replace('@', '')}
+                        onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))}
+                      />
                     </div>
                   </Col>
                   <Col>
@@ -215,8 +224,21 @@ const Notification = (props) => {
                         </label> <br />
                         <label className={classes.username}>
                           {moment(`${item.date}Z`).local().fromNow()}
-                        </label>
+                        </label><br />
                       </div>
+                    </div>
+                  </Col>
+                  <Col>
+                    <div className={classes.content}>
+                      <ContainedButton
+                        fontSize={12}
+                        disabled={loading}
+                        style={{ float: 'right' }}
+                        transparent={true}
+                        label="View profile"
+                        className={classes.button}
+                        onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))}
+                      />
                     </div>
                   </Col>
                 </Row>
