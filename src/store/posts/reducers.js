@@ -147,7 +147,7 @@ export const posts = (state = defaultState, { type, payload }) => {
   case SAVE_RECENT_UPVOTES:
     return state.set('recentUpvotes', payload)
   case SAVE_POST_AS_DRAFT:
-    return state.set("draftPost", payload)
+    return state.set('draftPost', payload)
   default:
     return state
   }
