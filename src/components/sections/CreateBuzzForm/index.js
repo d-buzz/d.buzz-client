@@ -581,6 +581,7 @@ const CreateBuzzForm = (props) => {
                 position='relative'
                 display='inline-flex'
               >
+                {content.length !== 0 && <p style={{fontWeight: 500, marginRight: 12, color: "#e61c34"}}>{280 - content.length}</p>}
                 <CircularProgress
                   classes={{
                     circle: classes.circle,
