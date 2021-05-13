@@ -158,6 +158,11 @@ const useStyles = createUseStyles(theme => ({
     animation: 'savedAsDraftAnimation 350ms',
     userSelect: 'none',
   },
+  counter: {
+    fontWeight: 500,
+    marginRight: 12,
+    color: '#e61c34',
+  },
 }))
 
 const KeyCodes = {
@@ -581,6 +586,7 @@ const CreateBuzzForm = (props) => {
                 position='relative'
                 display='inline-flex'
               >
+                {content.length !== 0 && <p className={classes.counter}>{280 - content.length}</p>}
                 <CircularProgress
                   classes={{
                     circle: classes.circle,
