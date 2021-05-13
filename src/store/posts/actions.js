@@ -216,7 +216,7 @@ export const clearContent = () => ({
   type: CLEAR_CONTENT,
 })
 
-export const CLEAR_HOME_POSTS  = 'CLEAR_HOME_POSTS'
+export const CLEAR_HOME_POSTS = 'CLEAR_HOME_POSTS'
 
 export const clearHomePosts = () => ({
   type: CLEAR_HOME_POSTS,
@@ -350,7 +350,7 @@ export const setTagsIsVisited = (visited = true) => ({
   payload: visited,
 })
 
-export const CLEAR_TAGS_POST  = 'CLEAR_TAGS_POST'
+export const CLEAR_TAGS_POST = 'CLEAR_TAGS_POST'
 
 export const clearTagsPost = () => ({
   type: CLEAR_TAGS_POST,
@@ -417,7 +417,8 @@ export const unfollowFailure = (error, meta) => ({
   meta,
 })
 
-export const SET_HAS_BEEN_UNFOLLOWED_RECENTLY = 'SET_HAS_BEEN_UNFOLLOWED_RECENTLY'
+export const SET_HAS_BEEN_UNFOLLOWED_RECENTLY =
+  'SET_HAS_BEEN_UNFOLLOWED_RECENTLY'
 
 export const setHasBeenUnfollowedRecently = (following) => ({
   type: SET_HAS_BEEN_UNFOLLOWED_RECENTLY,
@@ -430,7 +431,6 @@ export const setPageFrom = (from) => ({
   type: SET_PAGE_FROM,
   payload: from,
 })
-
 
 export const SEARCH_REQUEST = 'SEARCH_REQUEST'
 export const SEARCH_SUCCESS = 'SEARCH_SUCCESS'
@@ -461,7 +461,6 @@ export const CLEAR_SEARCH_POSTS = 'CLEAR_SEARCH_POSTS'
 export const clearSearchPosts = () => ({
   type: CLEAR_SEARCH_POSTS,
 })
-
 
 export const CLEAR_APPEND_REPLY = 'CLEAR_APPEND_REPLY'
 
@@ -554,8 +553,10 @@ export const publishUpdateFailure = (error, meta) => ({
 })
 
 export const REFLECT_UPDATED_MUTE_LIST = 'REFLECT_UPDATED_MUTE_LIST'
-export const REFLECT_UPDATED_MUTE_LIST_LATEST = 'REFLECT_UPDATED_MUTE_LIST_LATEST'
-export const REFLECT_UPDATED_MUTE_LIST_TRENDING = 'RELECT_UPDATED_MUTE_LIST_TRENDING'
+export const REFLECT_UPDATED_MUTE_LIST_LATEST =
+  'REFLECT_UPDATED_MUTE_LIST_LATEST'
+export const REFLECT_UPDATED_MUTE_LIST_TRENDING =
+  'RELECT_UPDATED_MUTE_LIST_TRENDING'
 export const REFLECT_UPDATED_MUTE_LIST_HOME = 'REFLECT_UPDATED_MUTE_LIST_HOME'
 
 export const reflectUpdateMuteList = () => ({
@@ -582,4 +583,12 @@ export const SAVE_RECENT_UPVOTES = 'SAVE_RECENT_UPVOTES'
 export const saveReceptUpvotes = (response) => ({
   type: SAVE_RECENT_UPVOTES,
   payload: response,
+})
+
+// text field to draft
+export const SAVE_POST_AS_DRAFT = 'SAVE_POST_AS_DRAFT'
+
+export const savePostAsDraft = (postContent) => ({
+  type: SAVE_POST_AS_DRAFT,
+  payload: postContent,
 })
