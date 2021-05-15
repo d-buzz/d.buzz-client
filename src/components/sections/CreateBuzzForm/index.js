@@ -75,8 +75,9 @@ const useStyles = createUseStyles(theme => ({
     left: 0,
   },
   circle: {
+    position: 'relative',
     strokeLinecap: 'round',
-    color: '#e53935',
+    transition: 'all 350ms',
   },
   previewContainer: {
     paddingTop: 10,
@@ -159,9 +160,16 @@ const useStyles = createUseStyles(theme => ({
     userSelect: 'none',
   },
   counter: {
+    position: 'absolute',
     fontWeight: 500,
+    fontSize: '0.8em',
     marginRight: 12,
-    color: '#e61c34',
+    color: '#fff',
+    width: 'fit-content',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%,-50%)',
+    animation: 'counterAnimation 350ms',
   },
 }))
 
@@ -289,6 +297,19 @@ const CreateBuzzForm = (props) => {
     savePostAsDraft(value)
     // storing the state value in the browser storage
     savePostAsDraftToStorage(value)
+  }
+
+  const updateCounter = (e) => {
+    onChange(e);
+    const countProgress = document.querySelector('.countProgress')
+        // changing progress color based on content length
+    if(content.length === 280) {
+      countProgress.style.color = '#E0245E'
+    } else if(content.length >= 260) {
+      countProgress.style.color = '#FFAD1F'
+    } else {
+      countProgress.style.color = '#e53935'
+    }
   }
 
   const handleFileSelect = () => {
@@ -469,7 +490,7 @@ const CreateBuzzForm = (props) => {
               maxLength='280'
               minRows={minRows}
               value={!draftPost ? content : draftPost}
-              onKeyUp={onChange}
+              onKeyUp={updateCounter}
               onKeyDown={onChange}
               onChange={onChange}
               onPaste={onChange}
@@ -582,19 +603,22 @@ const CreateBuzzForm = (props) => {
                 <EmojiIcon />
               </IconButton>
               <Box
-                style={{ float: 'right', marginRight: 10, paddingTop: 15 }}
+                style={{ float: 'right', marginRight: 10, paddingTop: 10}}
                 position='relative'
                 display='inline-flex'
               >
-                {content.length !== 0 && <p className={classes.counter}>{280 - content.length}</p>}
-                <CircularProgress
+                <span>
+                  <CircularProgress
+                  className='countProgress'
                   classes={{
                     circle: classes.circle,
                   }}
-                  size={30}
+                  size={content.length >= 260 ? 40 : 30}
                   value={wordCount}
                   variant='determinate'
                 />
+                {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                </span>
               </Box>
             </React.Fragment>
           )}
