@@ -161,10 +161,10 @@ const useStyles = createUseStyles(theme => ({
   },
   counter: {
     position: 'absolute',
-    fontWeight: 500,
+    fontWeight: 'bold',
     fontSize: '0.8em',
     marginRight: 12,
-    color: '#fff',
+    color: '#e61c34',
     width: 'fit-content',
     left: '50%',
     top: '50%',
