@@ -3,23 +3,23 @@
 } */
 
 @media (min-width: 768px) {
-  .container {
-    max-width: 750px;
+	.container {
+	  max-width: 750px;
+	}
   }
-}
-
+  
 @media (min-width: 992px) {
   .container {
     max-width: 1250px;
   }
 }
-
+  
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
 }
-
+  
 .pull-right {
   float: right !important;
   height: max-content !important;
@@ -116,5 +116,12 @@ a[rel="nofollow noopener"]::after {
 @keyframes savedAsDraftAnimation {
   from {
     transform: scale(0);
+  }
+}
+
+@keyframes counterAnimation {
+  from {
+    opacity: 0;
+    color:white;
   }
 }
