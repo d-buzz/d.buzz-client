@@ -23,6 +23,7 @@ import { setFromLanding } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
+
 const useStyles = createUseStyles(theme => ({
   title: {
     marginLeft: 10,
@@ -40,6 +41,7 @@ const useStyles = createUseStyles(theme => ({
 
 const Landing = (props) => {
   const classes = useStyles()
+
   const {
     clearSearchPosts,
     clearLastSearchTag,
