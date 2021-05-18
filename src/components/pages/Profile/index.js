@@ -49,6 +49,11 @@ import {
 import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+import Tooltip from '@material-ui/core/Tooltip'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import Snackbar from '@material-ui/core/Snackbar'
+import Alert from '@material-ui/lab/Alert'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -146,6 +151,9 @@ const useStyles = createUseStyles(theme => ({
   textIcon : {
     ...theme.textIcon,
   },
+  clipboard: {
+    margin: 0,
+  },
 }))
 
 const Profile = (props) => {
@@ -198,6 +206,7 @@ const Profile = (props) => {
   const [moreOptions, setMoreOptions] = useState([])
   const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(null)
+  const [copied, setCopied] = useState(false)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -402,6 +411,14 @@ const Profile = (props) => {
     history.push(`/@${username}/lists/muted/followed`)
   }
 
+  const copyReferalLink = () => {
+    setCopied(true)
+  }
+
+  const handleCloseReferalCopy = () => {
+    setCopied(false)
+  }
+
 
   return (
     <React.Fragment>
@@ -528,6 +545,24 @@ const Profile = (props) => {
               </Row>
               <Row>
                 <Col xs="auto" style={{ marginLeft: -5 }}>
+                  <Tooltip title="Click to copy referal link">
+                    <CopyToClipboard className={classes.clipboard} text={`https://${window.location.hostname}/#/?ref=${username}`} onCopy={copyReferalLink}>
+                      <p className={classes.paragraph}>
+                        <span>
+                          <FileCopyIcon fontSize="small" className={classes.textIcon}/>
+                          <span style={{ fontSize: 14 }}>{" Copy Referal - "}</span>
+                          {/* eslint-disable-next-line */}
+                          <span id="user-referal" className={classes.weblink}>
+                            https://{window.location.hostname}/#/?ref={username}
+                          </span>
+                        </span>
+                      </p>
+                    </CopyToClipboard>
+                  </Tooltip>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="auto" style={{ marginLeft: -5 }}>
                   <p className={classes.paragraph}>
                     {profile_location && (
                       <span className={classes.textIcon} style={{ marginRight: 10 }}>
@@ -580,6 +615,11 @@ const Profile = (props) => {
       </React.Fragment>
       <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
       <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal}/>
+      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
+        <Alert onClose={handleCloseReferalCopy} severity="success">
+          Referal link Successfully copied
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   )
 }
