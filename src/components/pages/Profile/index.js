@@ -543,13 +543,13 @@ const Profile = (props) => {
               </Row>
               <div style={{ width: '100%', height: 10 }} />
               <Row style={{ marginLeft: -5 }}>
-              <p className={classes.paragraph}>
-                {accountCreated && (
-                  <span className={classes.textIcon} >
-                    <DateRangeIcon fontSize="small" />&nbsp;
-                    Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
-                  </span>
-                )}
+                <p className={classes.paragraph}>
+                  {accountCreated && (
+                    <span className={classes.textIcon} >
+                      <DateRangeIcon fontSize="small" />&nbsp;
+                      Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
+                    </span>
+                  )}
                 </p>
               </Row>
               <Row>
