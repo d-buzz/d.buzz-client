@@ -49,7 +49,7 @@ import {
 import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
-import DateRangeIcon from '@material-ui/icons/DateRange';
+import DateRangeIcon from '@material-ui/icons/DateRange'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 import Tooltip from '@material-ui/core/Tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -104,7 +104,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     '& span': {
       wordBreak: 'break-all',
-    }
+    },
   },
   spacer: {
     width: '100%',
@@ -154,7 +154,7 @@ const useStyles = createUseStyles(theme => ({
 
     '&:first-child': {
       marginRight: 12,
-    }
+    },
   },
   textIcon : {
     ...theme.textIcon,
