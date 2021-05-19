@@ -592,7 +592,7 @@ const Profile = (props) => {
                     {accountCreated && (
                       <span className={classes.textIcon} style={{ marginLeft: 10 }} >
                         <DateRangeIcon fontSize="small"/>&nbsp;
-                        {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
+                        Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
                       </span>
                     )}
                   </p>
