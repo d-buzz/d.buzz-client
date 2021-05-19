@@ -261,7 +261,7 @@ const CreateBuzzForm = (props) => {
     localStorage.setItem('draft_post', content)
   }
 
-  const onChange = (e) => {
+  const onChange = (e, draftPost) => {
     const { target } = e
     const { name } = target
     let { value } = target
@@ -293,14 +293,16 @@ const CreateBuzzForm = (props) => {
       setBuzzToTwitter(!buzzToTwitter)
     }
 
-    // setting the redux state to post content
-    savePostAsDraft(value)
-    // storing the state value in the browser storage
-    savePostAsDraftToStorage(value)
+    if(draftPost === "draftPost"){
+      // setting the redux state to post content
+      savePostAsDraft(value)
+      // storing the state value in the browser storage
+      savePostAsDraftToStorage(value)
+    }
   }
 
   const updateCounter = (e) => {
-    onChange(e)
+    onChange(e, "draftPost")
     const countProgress = document.querySelector('.countProgress')
     // changing progress color based on content length
     if(content.length === 280) {
@@ -491,9 +493,9 @@ const CreateBuzzForm = (props) => {
               minRows={minRows}
               value={!draftPost ? content : draftPost}
               onKeyUp={updateCounter}
-              onKeyDown={onChange}
-              onChange={onChange}
-              onPaste={onChange}
+              onKeyDown={e => onChange(e, "draftPost")}
+              onChange={e => onChange(e, "draftPost")}
+              onPaste={e => onChange(e, "draftPost")}
               autoFocus
               onFocus={moveCaretAtEnd}
             />
