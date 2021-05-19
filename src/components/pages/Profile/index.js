@@ -49,6 +49,7 @@ import {
 import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 import Tooltip from '@material-ui/core/Tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -96,13 +97,14 @@ const useStyles = createUseStyles(theme => ({
     height: 'max-content',
   },
   paragraph: {
+    display: 'flex',
     padding: 0,
     margin: 0,
     fontSize: 14,
     ...theme.font,
     '& span': {
       wordBreak: 'break-all',
-    },
+    }
   },
   spacer: {
     width: '100%',
@@ -147,12 +149,21 @@ const useStyles = createUseStyles(theme => ({
   },
   followLinks: {
     ...theme.font,
+    marginTop: 5,
+    fontSize: "1.2em",
+
+    '&:first-child': {
+      marginRight: 12,
+    }
   },
   textIcon : {
     ...theme.textIcon,
+    display: "inline-flex",
+    alignItems: "center",
   },
   clipboard: {
     margin: 0,
+    marginBottom: 5,
   },
 }))
 
@@ -340,7 +351,7 @@ const Profile = (props) => {
   }, [pathname])
 
 
-  const { metadata, stats, hivepower, name: profileUsername } = profile || ''
+  const { metadata, stats, hivepower, name: profileUsername, created: accountCreated } = profile || ''
   const { profile: profileMeta } = metadata || ''
   const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
@@ -566,16 +577,22 @@ const Profile = (props) => {
                   <p className={classes.paragraph}>
                     {profile_location && (
                       <span className={classes.textIcon} style={{ marginRight: 10 }}>
-                        <LocationOnIcon fontSize="small" className={classes.textIcon}/>
+                        <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
                         {profile_location}
                       </span>
                     )}
                     {website && (
                       <span>
-                        <LinkIcon fontSize="small" className={classes.textIcon}/> {" "}
+                        <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
                         <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
                           {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                         </a>
+                      </span>
+                    )}
+                    {accountCreated && (
+                      <span className={classes.textIcon} style={{ marginLeft: 10 }} >
+                        <DateRangeIcon fontSize="small"/>&nbsp;
+                        {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
                       </span>
                     )}
                   </p>
