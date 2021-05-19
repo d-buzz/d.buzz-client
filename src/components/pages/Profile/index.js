@@ -542,6 +542,16 @@ const Profile = (props) => {
                 </Col>
               </Row>
               <div style={{ width: '100%', height: 10 }} />
+              <Row style={{ marginLeft: -5 }}>
+              <p className={classes.paragraph}>
+                {accountCreated && (
+                  <span className={classes.textIcon} >
+                    <DateRangeIcon fontSize="small" />&nbsp;
+                    Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
+                  </span>
+                )}
+                </p>
+              </Row>
               <Row>
                 <Col xs="auto" style={{ marginLeft: -5 }}>
                   <p className={classes.paragraph}>
@@ -587,12 +597,6 @@ const Profile = (props) => {
                         <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
                           {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                         </a>
-                      </span>
-                    )}
-                    {accountCreated && (
-                      <span className={classes.textIcon} style={{ marginLeft: 10 }} >
-                        <DateRangeIcon fontSize="small"/>&nbsp;
-                        Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
                       </span>
                     )}
                   </p>
