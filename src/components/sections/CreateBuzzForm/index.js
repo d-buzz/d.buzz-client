@@ -261,7 +261,7 @@ const CreateBuzzForm = (props) => {
     localStorage.setItem('draft_post', content)
   }
 
-  const onChange = (e, draftPost) => {
+  const onChange = (e, draft) => {
     const { target } = e
     const { name } = target
     let { value } = target
@@ -272,8 +272,10 @@ const CreateBuzzForm = (props) => {
         uploadFileRequest(fileObject).then((image) => {
           const value = image[image.length - 1]
           if (value !== undefined) {
-            const contentAppend = `${content} <br /> ![](${value})`
+            const contentAppend = `${!draftPost ? content : draftPost} <br /> ![](${value})`
             setContent(contentAppend)
+            savePostAsDraft(contentAppend)
+            savePostAsDraftToStorage(contentAppend)
           }
         })
       }
@@ -293,7 +295,7 @@ const CreateBuzzForm = (props) => {
       setBuzzToTwitter(!buzzToTwitter)
     }
 
-    if(draftPost === "draftPost"){
+    if(draft === "draftPost"){
       // setting the redux state to post content
       savePostAsDraft(value)
       // storing the state value in the browser storage
@@ -341,8 +343,11 @@ const CreateBuzzForm = (props) => {
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${content} <br /> ![](${lastImage})`
+        const contentAppend = `${!draftPost ? content : draftPost} <br /> ![](${lastImage})`
         setContent(contentAppend)
+        setContent(contentAppend)
+        savePostAsDraft(contentAppend)
+        savePostAsDraftToStorage(contentAppend)
       }
     })
   }
@@ -445,8 +450,10 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectGif = (gif) => {
     if (gif) {
-      const contentAppend = `${content} <br /> ${gif}`
+      const contentAppend = `${!draftPost ? content : draftPost} <br /> ${gif}`
       setContent(contentAppend)
+      savePostAsDraft(contentAppend)
+      savePostAsDraftToStorage(contentAppend)
     }
   }
 
@@ -462,8 +469,10 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const contentAppend = `${!draftPost ? content : draftPost}${emoticon}`
       setContent(contentAppend)
+      savePostAsDraft(contentAppend)
+      savePostAsDraftToStorage(contentAppend)
     }
   }
 
