@@ -26,6 +26,7 @@ import {
 } from 'services/api'
 
 import { errorMessageComposer } from "services/helper"
+import hive from '@hiveio/hive-js'
 
 function* getWalletBalanceRequest(payload, meta) {
   try {
@@ -99,10 +100,11 @@ function* getWalletHistoryRequest(payload, meta) {
     const { username } = payload
     
     const user = yield select(state => state.auth.get('user'))
+    const props = yield call(fetchGlobalProperties)
+
     const { username : loginUser } = user
     const result = yield call(fetchAccountTransferHistory, username, -1, 1000)
-
-    console.log({ history: result })
+    const { total_vesting_fund_hive, total_vesting_shares } = props
 
     let transfers = []
     if(result.length > 0) { 
@@ -120,7 +122,7 @@ function* getWalletHistoryRequest(payload, meta) {
           description = trx[1].op.from === loginUser ? 'Transferred to ' : 'Received from '
         }else if(trx[1].operation === 'claim_reward_balance') {
           main_user = trx[1].op.account
-          amount = parseFloat(trx[1].op.reward_hbd) > 0 ? trx[1].op.reward_hbd : trx[1].op.reward_hive
+          amount = `${parseFloat(hive.formatter.vestToHive(trx[1].op.reward_vests, total_vesting_shares, total_vesting_fund_hive)).toFixed(3)} HIVE`
           description = "Claimed rewards"
         }else if(trx[1].operation === 'interest') {
           main_user = trx[1].op.owner
