@@ -469,8 +469,10 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const contentAppend = `${!draftPost ? content : draftPost}${emoticon}`
       setContent(contentAppend)
+      savePostAsDraft(contentAppend)
+      savePostAsDraftToStorage(contentAppend)
     }
   }
 
