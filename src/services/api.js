@@ -1387,7 +1387,7 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 }
 
 export const getEstimateAccountValue = (account) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     formatter.estimateAccountValue(account).then(function (result) {
       console.log({ result })
       resolve(result)
