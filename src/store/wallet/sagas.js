@@ -36,9 +36,7 @@ function* getWalletBalanceRequest(payload, meta) {
     const props = yield call(fetchGlobalProperties)
     const account = yield call(fetchAccounts, username)
     const estAV = yield call(getEstimateAccountValue, account[0])
-
-    console.log({ account })
-
+    
     const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares } = account[0]
     const { total_vesting_fund_hive, total_vesting_shares } = props
 
@@ -165,10 +163,9 @@ function* getWalletHistoryRequest(payload, meta) {
       return arr.map(mapObj => mapObj['trx_id']).indexOf(obj['trx_id']) === pos
     })
 
-    console.log({ history })
+   
     yield put(getWalletHistorySuccess(transfers, meta))
   } catch (error) {
-    console.log({error})
     yield put(getWalletHistoryFailure(error, meta))
   }
 }
