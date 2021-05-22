@@ -36,7 +36,7 @@ function* getWalletBalanceRequest(payload, meta) {
     const props = yield call(fetchGlobalProperties)
     const account = yield call(fetchAccounts, username)
     const estAV = yield call(getEstimateAccountValue, account[0])
-    
+
     const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares } = account[0]
     const { total_vesting_fund_hive, total_vesting_shares } = props
 
@@ -60,7 +60,7 @@ function* getWalletBalanceRequest(payload, meta) {
 
 }
 
-function* claimRewardRequest(payload, meta) {
+function* claimRewardRequest(meta) {
   try {
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
@@ -174,8 +174,8 @@ function* watchGetWalletBalanceRequest({payload, meta}) {
   yield call(getWalletBalanceRequest, payload, meta)
 }
 
-function* watchClaimRewardRequest({payload, meta}) {
-  yield call(claimRewardRequest, payload, meta)
+function* watchClaimRewardRequest({meta}) {
+  yield call(claimRewardRequest,  meta)
 }
 
 function* watchGetWalletHistoryRequest({payload, meta}) {
