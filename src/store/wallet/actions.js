@@ -68,3 +68,10 @@ export const getWalletHistoryFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const SET_WALLET_HISTORY_START = 'SET_WALLET_HISTORY_START'
+
+export const setWalletHistoryStart = (page) => ({
+  type: SET_WALLET_HISTORY_START,
+  payload: page,
+})

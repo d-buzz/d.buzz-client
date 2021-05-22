@@ -6,7 +6,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import { HelmetGenerator } from 'components'
 import { Tab, Tabs } from '@material-ui/core'
-import { getWalletBalanceRequest, getWalletHistoryRequest } from "store/wallet/actions"
+import { getWalletBalanceRequest, getWalletHistoryRequest } from 'store/wallet/actions'
 import { clearRefreshRouteStatus } from 'store/interface/actions'
 
 const useStyles = createUseStyles(theme => ({

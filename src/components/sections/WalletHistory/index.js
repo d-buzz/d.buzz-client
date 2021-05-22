@@ -1,14 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { createUseStyles } from 'react-jss'
 import { pending } from 'redux-saga-thunk'
+import { createUseStyles } from 'react-jss'
 import { Row, Col } from "react-bootstrap"
 import { Avatar } from 'components/elements'
+import { getWalletHistoryRequest } from 'store/wallet/actions'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useHistory } from 'react-router-dom'
-import moment from 'moment'
 import { AvatarlistSkeleton } from "components"
+import moment from 'moment'
 
 const useStyles = createUseStyles(theme => ({
   row: {
@@ -107,8 +108,8 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const WalletHistory = (props) => {
-  const { walletHistory : items, user, loading } = props
-  const { username : loginUser } = user
+  const { walletHistory: items, user, loading, getWalletHistoryRequest } = props
+  const { username: loginUser } = user
   const classes = useStyles()
   const history = useHistory()
 
@@ -120,11 +121,17 @@ const WalletHistory = (props) => {
     history.push(`/@${username}`)
   }
 
+  const loadMoreHistory = () => {
+    getWalletHistoryRequest(loginUser)
+  }
+  
+
   return (
     <React.Fragment>
       <InfiniteScroll
         dataLength={items.length || 0}
-        hasMore={false}
+        hasMore={true}
+        next={loadMoreHistory}
       >
         {items.map((item) => (
           <div className={classes.wrapper} key={item.trx_id}>
@@ -186,13 +193,13 @@ const WalletHistory = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
-  walletHistory : state.wallet.get("walletHistory"),
-  loading: pending(state, "GET_WALLET_HISTORY_REQUEST"),
+  walletHistory : state.wallet.get('walletHistory'),
+  loading: pending(state, 'GET_WALLET_HISTORY_REQUEST'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-
+    getWalletHistoryRequest,
   }, dispatch),
 })
 
