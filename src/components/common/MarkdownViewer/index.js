@@ -601,7 +601,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <div
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
       className={classNames(markdownClass, assetClass)}
-      dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
+      dangerouslySetInnerHTML={{ __html: renderer.render(content.replace(/\$([A-Za-z-]+)/gi, n => {return `<a href=https://www.coingecko.com/en/coins/${n.replace("$", '').toLowerCase()}/usd#panel>${n}</a>`})) }}
     />
   }
 
