@@ -27,6 +27,9 @@ import {
   PrivacyPolicy,
   Disclaimer,
   Developers,
+  Wallet,
+  WalletBalances,
+  WalletHistory,
 } from 'components'
 
 const routes =  [
@@ -184,6 +187,27 @@ const routes =  [
             path: '/@:username/lists/blacklisted/followed',
             exact: true,
             component: AccountBlacklistedFollowed,
+          },
+        ],
+      },
+      {
+        path: '/@:username/wallet',
+        component: Wallet,
+        routes: [
+          {
+            path: '/@:username/wallet',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/balances',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/history',
+            exact: true,
+            component: WalletHistory,
           },
         ],
       },

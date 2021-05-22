@@ -155,6 +155,10 @@ const GuardedAppFrame = (props) => {
     title = 'Profile'
   }
 
+  if(pathname.match(/(\/wallet)/) && pathname.match(/^\/@/)) {
+    title = 'Wallet'
+  }
+
   if(pathname.match(/(\/notifications)/)) {
     title = 'Notifications'
   }
