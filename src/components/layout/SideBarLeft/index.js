@@ -21,6 +21,7 @@ import {
   PowerIcon,
   CircularBrandIcon,
   BuzzIcon,
+  WalletIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
 import IconPeople from '@material-ui/icons/People'
@@ -361,6 +362,11 @@ const SideBarLeft = (props) => {
       name: 'Notifications',
       path: `/notifications`,
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
+    },
+    {
+      name: 'Wallet',
+      icon: <WalletIcon />,
+      path: `/@${username}/wallet`,
     },
     {
       name: 'Profile',

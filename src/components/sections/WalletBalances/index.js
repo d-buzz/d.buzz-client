@@ -81,6 +81,14 @@ const useStyles = createUseStyles(theme => ({
   button: {
     height: 35,
   },
+  spin: {
+    float: 'right', 
+    paddingTop: 0,
+  },
+  rowInner: {
+    marginRight: 0,
+    marginLeft: 0,
+  },
 }))
 
 
@@ -199,7 +207,7 @@ const WalletBalances = (props) => {
               {item.id === 'pendingRewards' && <div className={classes.spacer} />}
               <div className={item.id !== 'pendingRewards' ? classes.wrapper : classes.redBottomBorder}>
                 <div className={classes.row}>
-                  <Row style={{ marginRight: 0, marginLeft: 0 }}>
+                  <Row className={classes.rowInner}>
                     <Col>
                       <div className={classes.right}>
                         <div className={classes.content}>
@@ -225,7 +233,8 @@ const WalletBalances = (props) => {
                             <Spinner 
                               size={25}
                               loading={loading}
-                              style={{ float: 'right', paddingTop: 0 }}/>}
+                              className={classes.spin}
+                            />}
                         </div>
                         {item.value2 && (
                           <div className={classes.content}>
