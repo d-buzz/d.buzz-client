@@ -69,9 +69,9 @@ const Wallet = (props) => {
   const { username } = params
 
   const handleTabs = (index) => () => {
-    let tab = "balances"
+    let tab = 'balances'
     if(index === 1){
-      tab = "history"
+      tab = 'history'
     }
     history.push(`/@${username}/wallet/${tab}`)
   }
@@ -88,7 +88,7 @@ const Wallet = (props) => {
 
 
   useEffect(() => {
-    if(refreshRouteStatus.pathname === "wallet"){
+    if(refreshRouteStatus.pathname === 'wallet'){
       getWalletBalanceRequest(username)
       clearRefreshRouteStatus()
     }
@@ -111,14 +111,14 @@ const Wallet = (props) => {
         <div className={classes.spacer} />
         <Tabs
           value={index}
-          indicatorColor="primary"
-          textColor="primary"
+          indicatorColor='primary'
+          textColor='primary'
           centered
           onChange={onChange}
           className={classes.tabContainer}
         >
-          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Balances" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="History" />
+          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label='Balances' />
+          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label='History' />
         </Tabs>
       </div>
       <React.Fragment>
