@@ -26,6 +26,7 @@ import { openReplyModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
+import { setDefaultVotingWeightRequest } from 'store/settings/actions'
 import { FacebookShareButton, FacebookIcon } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
@@ -231,6 +232,8 @@ const PostActions = (props) => {
     max_accepted_payout,
     recentUpvotes,
     upvoteList = [],
+    setDefaultVotingWeightRequest,
+    defaultUpvoteStrength,
   } = props
 
   let payoutAdditionalStyle = {}
@@ -244,12 +247,13 @@ const PostActions = (props) => {
   }
 
   const [showSlider, setShowSlider] = useState(false)
-  const [sliderValue, setSliderValue] = useState(0)
   const [vote, setVote] = useState(voteCount)
   const [loading, setLoading] = useState(false)
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [openCaret, setOpenCaret] = useState(false)
   const [openVoteList, setOpenVoteList] = useState(false)
+  
+  const [sliderValue, setSliderValue] = useState(defaultUpvoteStrength)
 
   const { is_authenticated } = user
 
@@ -265,6 +269,10 @@ const PostActions = (props) => {
     }
     // eslint-disable-next-line
   }, [recentUpvotes, permlink])
+
+  useEffect(() => {
+    setSliderValue(defaultUpvoteStrength)
+  }, [defaultUpvoteStrength])
 
   const handleClickOpenVoteList = () => {
     setOpenVoteList(true)
@@ -290,6 +298,7 @@ const PostActions = (props) => {
   }
 
   const handleChange = (e, value) => {
+    setDefaultVotingWeightRequest(value)
     setSliderValue(value)
   }
 
@@ -509,26 +518,6 @@ const PostActions = (props) => {
         open={openVoteList}
         upvoteList={upvoteList}
       />
-      {/* <Dialog
-        onClose={handleClickCloseVoteList}
-        open={openVoteList}
-      >
-        <DialogTitle component="h4" className={classes.upvoteDialogTitle}>
-          <b>Votes({vote})</b>
-        </DialogTitle>
-        <div className={classes.upvoteWrapper}>
-          <div className={classes.upvoteInnerWrapper}>
-            {upvoteList.map(({ voter }) => (
-              <React.Fragment>
-                <div className={classes.upvoteListWrapper}>
-                  <Avatar author={voter} height={40} />&nbsp;&nbsp;
-                  <a className={classes.upvoteProfileLinks} href={`https://d.buzz/#/@${voter}`} target="_blank" rel="noopener noreferrer">{voter}</a>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      </Dialog> */}
     </React.Fragment>
   )
 }
@@ -536,6 +525,7 @@ const PostActions = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   recentUpvotes: state.posts.get('recentUpvotes'),
+  defaultUpvoteStrength: state.settings.get('defaultVoteWeight'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -543,6 +533,7 @@ const mapDispatchToProps = (dispatch) => ({
     upvoteRequest,
     openReplyModal,
     broadcastNotification,
+    setDefaultVotingWeightRequest,
   }, dispatch),
 })
 

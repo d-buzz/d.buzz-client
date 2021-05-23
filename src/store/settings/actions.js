@@ -137,7 +137,8 @@ export const setDefaultVotingWeightRequest = (weight) => ({
   },
 })
 
-export const setDefaultVotingWeightSuccess = (meta) => ({
+export const setDefaultVotingWeightSuccess = (weight, meta) => ({
   type: SET_DEFAULT_VOTING_WEIGHT_SUCCESS,
+  payload: weight,
   meta,
 })

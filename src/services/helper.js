@@ -348,7 +348,7 @@ export const censorLinks = (content) => {
 }
 
 export const getDefaultVotingWeight = () => {
-  let voteWeight = localStorage.getItem('voteWeight')
+  const voteWeight = localStorage.getItem('voteWeight')
 
   if(voteWeight) {
     return voteWeight

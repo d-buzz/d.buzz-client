@@ -124,7 +124,7 @@ function* censorBuzzRequest(payload, meta) {
 function* setDefaultVotingWeightRequest(payload, meta) {
   const { weight } = payload
   yield call([localStorage, localStorage.setItem], 'voteWeight', weight)
-  yield put(setDefaultVotingWeightSuccess(meta))
+  yield put(setDefaultVotingWeightSuccess(weight, meta))
 }
 
 function* watchGetSavedThemeRequest({ payload, meta }) {
