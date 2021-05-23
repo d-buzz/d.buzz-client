@@ -501,6 +501,17 @@ const prepareAppleEmbeds = (content) => {
   return body
 }
 
+const getCoinTicker = (coin) => {
+  const data = require('../../../files/coinGeckoData.json')
+
+  for(var i=0; i<=data.length; i++){
+    if(data[i]?.symbol === coin){
+      // console.log("found at " + data[i]?.id)
+      return data[i]?.id
+    }
+  }
+}
+
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
@@ -601,7 +612,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <div
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
       className={classNames(markdownClass, assetClass)}
-      dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
+      dangerouslySetInnerHTML={{ __html: renderer.render(content.replace(/\$([A-Za-z-]+)/gi, n => {return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel>${n}</a>` : content})) }}
     />
   }
 
