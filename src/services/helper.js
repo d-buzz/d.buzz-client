@@ -346,23 +346,3 @@ export const censorLinks = (content) => {
 
   return contentCopy
 }
-
-// export const prepareFacebookEmbeds = (content) => {
-//   const facebookRegexEmbeds = /(?<=src=").*?(?=[.?"])/i
-//   let body = content
-
-//   const matchData = content.match(facebookRegexEmbeds)
-  
-//   if (matchData) {
-//     const input = matchData['input'].split('src=')[1].split(/[ >]/)[0]
-//     const url = input.replace(/['"]+/g, '')
-//     body = body.replace(body, `~~~~~~.^.~~~:facebook:${url}:${'embed'}:~~~~~~.^.~~~`)
-
-//     const splitFacebook = body.split(":")
-//     if (splitFacebook[3]) {
-//       body = `<iframe src="https:${splitFacebook[3]}"></iframe>`
-//     }
-//   }
-  
-//   return body
-// }
