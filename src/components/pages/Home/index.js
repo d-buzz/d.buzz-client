@@ -11,7 +11,6 @@ const Home = (props) => {
   const params = queryString.parse(search)
 
   useEffect(() => {
-    console.log({ params })
     if(typeof params === 'object' && typeof params.ref !== 'undefined') {
       window.location.replace(`https://hiveonboard.com/create-account?ref=${params.ref}`)
     }

@@ -4,6 +4,7 @@ import {
   GENERATE_STYLES,
   SET_RPC_NODE,
   GET_CENSOR_TYPES_SUCCESS,
+  SET_DEFAULT_VOTING_WEIGHT_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -12,6 +13,7 @@ const defaultState = fromJS({
   themeStyles: {},
   rpcNode: 'https://api.hive.blog',
   censorTypes: [],
+  defaultVoteWeight: 0,
 })
 
 export const settings = (state = defaultState, { type, payload }) => {
@@ -26,6 +28,8 @@ export const settings = (state = defaultState, { type, payload }) => {
     return state.set('rpcNode', payload)
   case GET_CENSOR_TYPES_SUCCESS:
     return state.set('censorTypes', payload)
+  case SET_DEFAULT_VOTING_WEIGHT_SUCCESS:
+    return state.set('defaultVoteWeight', payload)
   default:
     return state
   }

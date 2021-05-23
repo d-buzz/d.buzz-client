@@ -397,7 +397,6 @@ const prepareSoundCloudEmbeds = (content) => {
       if(link.match(soundcloudRegex)){
         const data = link.split('/')
         match = link.match(soundcloudRegex)
-        console.log({ data })
         id = `${data[3]}/${data[4]}`
       }
 
@@ -450,9 +449,6 @@ const prepareTiktokEmbeds = (content) => {
   const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/g
 
   let body = content
-
-  console.log({tiktokRegex})
-
   const links = textParser.getUrls(content)
 
   links.forEach((link) => {
@@ -506,7 +502,6 @@ const getCoinTicker = (coin) => {
 
   for(var i=0; i<=data.length; i++){
     if(data[i]?.symbol === coin){
-      // console.log("found at " + data[i]?.id)
       return data[i]?.id
     }
   }
@@ -540,7 +535,6 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
-    console.log({ splitSoundcloud })
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
     return <ReactSoundCloud url={url} />
   } else if (content.includes(':facebook:')) {
@@ -632,16 +626,10 @@ const MarkdownViewer = React.memo((props) => {
 
   extracted.forEach((item) => {
     const link = item.replace(/\(/g, '%28').replace(/\)/g, '%29')
-    console.log({ item })
-    console.log({ link })
     content = content.replace(item, link)
   })
 
-  console.log({ content })
-
   const links = textParser.getUrls(content)
-
-  console.log({ links })
 
 
   links.forEach((link) => {

@@ -21,6 +21,9 @@ import {
   CENSOR_BUZZ_REQUEST,
   censorBuzzSuccess,
   censorBuzzFailure,
+
+  SET_DEFAULT_VOTING_WEIGHT_REQUEST,
+  setDefaultVotingWeightSuccess,
 } from './actions'
 
 import {
@@ -118,6 +121,12 @@ function* censorBuzzRequest(payload, meta) {
   }
 }
 
+function* setDefaultVotingWeightRequest(payload, meta) {
+  const { weight } = payload
+  yield call([localStorage, localStorage.setItem], 'voteWeight', weight)
+  yield put(setDefaultVotingWeightSuccess(weight, meta))
+}
+
 function* watchGetSavedThemeRequest({ payload, meta }) {
   yield call(getSavedThemeRequest, payload, meta)
 }
@@ -142,6 +151,10 @@ function* watchCensorBuzzRequest({ payload, meta }) {
   yield call(censorBuzzRequest, payload, meta)
 }
 
+function* watchSetDefaultVotingWeightRequest({ payload, meta }) {
+  yield call(setDefaultVotingWeightRequest, payload, meta)
+}
+
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
@@ -149,4 +162,5 @@ export default function* sagas() {
   yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
   yield takeEvery(GET_CENSOR_TYPES_REQUEST, watchGetCensorTypesRequest)
   yield takeEvery(CENSOR_BUZZ_REQUEST, watchCensorBuzzRequest)
+  yield takeEvery(SET_DEFAULT_VOTING_WEIGHT_REQUEST, watchSetDefaultVotingWeightRequest)
 }
