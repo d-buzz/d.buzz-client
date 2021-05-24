@@ -22,6 +22,7 @@ import {
   BuzzIcon,
   SunMoonIcon,
   SearchIcon,
+  WalletIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
@@ -301,6 +302,11 @@ const MobileAppFrame = (props) => {
       name: 'Notifications',
       path: `/notifications`,
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
+    },
+    {
+      name: 'Wallet',
+      icon: <WalletIcon />,
+      path: `/@${username}/wallet`,
     },
     {
       name: 'Profile',
