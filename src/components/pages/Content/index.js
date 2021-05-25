@@ -463,7 +463,7 @@ const Content = (props) => {
                         <br />
                         <ul>
                           <li>
-                            <a target="_blank" without rel="noopener noreferrer" href={`https://hive.blog/@${author}/${permlink}`}>
+                            <a target="_blank" without rel="noopener noreferrer" href={`https://blog.d.buzz/#/@${author}/c/${permlink}`}>
                               <h6>View the full content</h6>
                             </a>
                           </li>
