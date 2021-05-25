@@ -383,32 +383,32 @@ const prepareBitchuteEmbeds = (content) => {
 }
 
 const prepareBannedEmbeds = (content) => {
-	const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
+  const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
   
-	let body = content
+  let body = content
   
-	const links = textParser.getUrls(content)
+  const links = textParser.getUrls(content)
   
-	links.forEach((link) => {
-	  try {
-		link = link.replace(/&amp;/g, '&')
-		let match = ''
-		let id = ''
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
   
-		if(link.match(bannedRegex)){
-		  const data = link.split('?id=')
-		  match = link.match(bannedRegex)
-		  if (data[1]) {
-			id = data[1]
-		  }
-		}
+		  if(link.match(bannedRegex)){
+		    const data = link.split('?id=')
+        match = link.match(bannedRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
   
-		if(match){
-		  body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
-		}
-	  } catch(error) { }
-	})
-	return body
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
 }
 
 const prepareSoundCloudEmbeds = (content) => {
