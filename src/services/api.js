@@ -12,6 +12,7 @@ import axios from 'axios'
 import getSlug from 'speakingurl'
 import stripHtml from 'string-strip-html'
 import moment from 'moment'
+import { ChainTypes, makeBitMaskFilter } from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
@@ -1347,5 +1348,48 @@ export const getCensoredList = () => {
       .then(function (result) {
         resolve(result.data)
       })
+  })
+}
+
+export const fetchAccountTransferHistory = (account, start=-1, limit=1000) => {
+  const op = ChainTypes.operations
+  const filter = makeBitMaskFilter(
+    [op.transfer, op.claim_reward_balance, 
+      op.transfer_from_savings, op.transfer_to_savings,
+      op.transfer_to_vesting, op.interest, op.withdraw_vesting])
+
+  return new Promise((resolve, reject) => {
+    api.getAccountHistoryAsync(account, start, limit, filter[0], filter[1])
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, reward_vests) => {
+
+  return new Promise((resolve) => {
+    const op_comment = [[
+      'claim_reward_balance',
+      {
+        account, 
+        reward_hive, 
+        reward_hbd, 
+        reward_vests,
+      },
+    ]]
+
+    resolve(op_comment)
+  })
+}
+
+export const getEstimateAccountValue = (account) => {
+  return new Promise((resolve) => {
+    formatter.estimateAccountValue(account).then(function (result) {
+      resolve(result)
+    })
   })
 }

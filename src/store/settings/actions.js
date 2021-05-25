@@ -124,3 +124,21 @@ export const censorBuzzFailure = (response, meta) => ({
   payload: response,
   meta,
 })
+
+
+export const SET_DEFAULT_VOTING_WEIGHT_REQUEST = 'SET_DEFAULT_VOTING_WEIGHT_REQUEST'
+export const SET_DEFAULT_VOTING_WEIGHT_SUCCESS = 'SET_DEFAULT_VOTING_WEIGHT_SUCCESS'
+
+export const setDefaultVotingWeightRequest = (weight) => ({
+  type: SET_DEFAULT_VOTING_WEIGHT_REQUEST,
+  payload: { weight },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const setDefaultVotingWeightSuccess = (weight, meta) => ({
+  type: SET_DEFAULT_VOTING_WEIGHT_SUCCESS,
+  payload: weight,
+  meta,
+})

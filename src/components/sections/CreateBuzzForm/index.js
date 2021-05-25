@@ -13,11 +13,11 @@ import {
   GifIcon,
   EmojiIcon,
 } from 'components/elements'
-import { clearIntentBuzz } from "store/auth/actions"
+import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal, EmojiPicker } from 'components'
+import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, publishPostRequest, setPageFrom } from 'store/posts/actions'
+import {  uploadFileRequest,  publishPostRequest,  setPageFrom, savePostAsDraft} from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -27,8 +27,8 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { invokeTwitterIntent } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
-import { useLocation } from "react-router-dom"
-import queryString from "query-string"
+import { useLocation } from 'react-router-dom'
+import queryString from 'query-string'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -75,8 +75,9 @@ const useStyles = createUseStyles(theme => ({
     left: 0,
   },
   circle: {
+    position: 'relative',
     strokeLinecap: 'round',
-    color: '#e53935',
+    transition: 'all 350ms',
   },
   previewContainer: {
     paddingTop: 10,
@@ -144,6 +145,32 @@ const useStyles = createUseStyles(theme => ({
     cursor: 'pointer',
     marginLeft: 2,
   },
+  draftPostLabel: {
+    ...theme.font,
+    lineHeight: 1.5,
+    fontSize: '1.2em',
+    color: '#e61c34',
+    float: 'right',
+    padding: '2px 10px',
+    width: 'fit-content',
+    border: '1px solid #e61c34',
+    borderRadius: '5px',
+    opacity: 0.5,
+    animation: 'savedAsDraftAnimation 350ms',
+    userSelect: 'none',
+  },
+  counter: {
+    position: 'absolute',
+    fontWeight: 'bold',
+    fontSize: '0.8em',
+    marginRight: 12,
+    color: '#e61c34',
+    width: 'fit-content',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%,-50%)',
+    animation: 'counterAnimation 350ms',
+  },
 }))
 
 const KeyCodes = {
@@ -154,7 +181,7 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
 const tooltips = {
-  payout: `This is your max accept payout for THIS buzz. You can set different max payouts for each of your buzz's. If you set you payout to "0", any rewards will be sent to the @null account.`,
+  payout: `This is your max accept payout for THIS buzz. You can set different max payouts for each of your buzz's. If you set you payout to '0', any rewards will be sent to the @null account.`,
 }
 
 const CreateBuzzForm = (props) => {
@@ -169,8 +196,8 @@ const CreateBuzzForm = (props) => {
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
 
   const location = useLocation()
-  const params = queryString.parse(location.search) || ""
-  const paramsBuzzText = params.text || ""
+  const params = queryString.parse(location.search) || ''
+  const paramsBuzzText = params.text || ''
   const {
     user,
     uploadFileRequest,
@@ -185,6 +212,8 @@ const CreateBuzzForm = (props) => {
     payoutAgreed,
     intentBuzz,
     clearIntentBuzz,
+    draftPost,
+    savePostAsDraft,
   } = props
 
   const {
@@ -219,13 +248,20 @@ const CreateBuzzForm = (props) => {
 
   useEffect(() => {
     setWordCount(Math.floor((content.length / 280) * 100))
-  }, [content, images])
+
+    // getting the draft post value from browser storage
+    savePostAsDraft(localStorage.getItem('draft_post'))
+  }, [content, images, savePostAsDraft])
 
   const closePayoutDisclaimer = () => {
     setOpenPayoutDisclaimer(false)
   }
 
-  const onChange = (e) => {
+  const savePostAsDraftToStorage = (content) => {
+    localStorage.setItem('draft_post', content)
+  }
+
+  const onChange = (e, draft) => {
     const { target } = e
     const { name } = target
     let { value } = target
@@ -236,15 +272,16 @@ const CreateBuzzForm = (props) => {
         uploadFileRequest(fileObject).then((image) => {
           const value = image[image.length - 1]
           if (value !== undefined) {
-            const contentAppend = `${content} <br /> ![](${value})`
+            const contentAppend = `${!draftPost ? content : draftPost} <br /> ![](${value})`
             setContent(contentAppend)
+            savePostAsDraft(contentAppend)
+            savePostAsDraftToStorage(contentAppend)
           }
         })
       }
 
       setContent(value)
     } else if (name === 'max-payout') {
-
       if (!payoutAgreed) {
         setOpenPayoutDisclaimer(true)
       } else {
@@ -254,23 +291,41 @@ const CreateBuzzForm = (props) => {
         value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
         setPayout(value)
       }
-
     } else if (name === 'buzz-to-twitter') {
       setBuzzToTwitter(!buzzToTwitter)
+    }
+
+    if(draft === "draftPost"){
+      // setting the redux state to post content
+      savePostAsDraft(value)
+      // storing the state value in the browser storage
+      savePostAsDraftToStorage(value)
+    }
+  }
+
+  const updateCounter = (e) => {
+    onChange(e, "draftPost")
+    const countProgress = document.querySelector('.countProgress')
+    // changing progress color based on content length
+    if(content.length === 280) {
+      countProgress.style.color = '#E0245E'
+    } else if(content.length >= 260) {
+      countProgress.style.color = '#FFAD1F'
+    } else {
+      countProgress.style.color = '#e53935'
     }
   }
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload')
     if (isMobile) {
-
       target.addEventListener('click', function () {
         const touch = new Touch({
           identifier: 'file-upload',
           target: target,
         })
 
-        const touchEvent = new TouchEvent("touchstart", {
+        const touchEvent = new TouchEvent('touchstart', {
           touches: [touch],
           view: window,
           cancelable: true,
@@ -283,26 +338,27 @@ const CreateBuzzForm = (props) => {
     target.click()
   }
 
-
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${content} <br /> ![](${lastImage})`
+        const contentAppend = `${!draftPost ? content : draftPost} <br /> ![](${lastImage})`
         setContent(contentAppend)
+        setContent(contentAppend)
+        savePostAsDraft(contentAppend)
+        savePostAsDraftToStorage(contentAppend)
       }
     })
   }
 
   const handleClickPublishPost = () => {
-
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
     }
 
     if (!checkBuzzWidgetMinCharacters()) {
-      broadcastNotification('error', `${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
+      broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
       publishPostRequest(content, tags, payout)
         .then((data) => {
@@ -338,8 +394,8 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleAddition = (tag) => {
-    tag.id = tag.id.split(" ").join("")
-    tag.text = tag.text.split(" ").join("")
+    tag.id = tag.id.split(' ').join('')
+    tag.text = tag.text.split(' ').join('')
     tag.text = tag.text.replace('#', '')
     setTags([...tags, tag])
   }
@@ -361,17 +417,17 @@ const CreateBuzzForm = (props) => {
       const hostname = window.location.hostname
 
       e.preventDefault()
-      if(href && !href.includes(hostname)) {
+      if (href && !href.includes(hostname)) {
         window.open(href, '_blank')
       } else {
         const split = `${href}`.split('#')
-        if(split.length === 2) {
+        if (split.length === 2) {
           href = `${split[1]}`
-        }else{
+        } else {
           const split = `${href}`.split('/')
           href = split[3] ? `/${split[3]}` : '/'
         }
-        if(href !== '' && href !== undefined){
+        if (href !== '' && href !== undefined) {
           history.push(href)
         }
       }
@@ -393,9 +449,11 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleSelectGif = (gif) => {
-    if(gif){
-      const contentAppend = `${content} <br /> ${gif}`
+    if (gif) {
+      const contentAppend = `${!draftPost ? content : draftPost} <br /> ${gif}`
       setContent(contentAppend)
+      savePostAsDraft(contentAppend)
+      savePostAsDraftToStorage(contentAppend)
     }
   }
 
@@ -411,11 +469,12 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const contentAppend = `${!draftPost ? content : draftPost}${emoticon}`
       setContent(contentAppend)
+      savePostAsDraft(contentAppend)
+      savePostAsDraftToStorage(contentAppend)
     }
   }
-
 
   return (
     <div className={containerClass}>
@@ -426,18 +485,48 @@ const CreateBuzzForm = (props) => {
         <div className={classNames(classes.inline, classes.right)}>
           {publishing && (
             <div style={{ width: '100%', paddingTop: 10 }}>
-              <Box position="relative" display="inline-flex">
-                <Spinner top={0} size={20} loading={publishing} />&nbsp;
-                <label className={classes.actionLabels}>broadcasting your buzz to the network, please wait ...</label>&nbsp;
+              <Box position='relative' display='inline-flex'>
+                <Spinner top={0} size={20} loading={publishing} />
+                &nbsp;
+                <label className={classes.actionLabels}>
+                  broadcasting your buzz to the network, please wait ...
+                </label>
+                &nbsp;
               </Box>
             </div>
           )}
-          {(!publishing && !loading) && (<TextArea name='content-area' maxLength="280" minRows={minRows} value={content} onKeyUp={onChange} onKeyDown={onChange} onChange={onChange} onPaste={onChange} autoFocus onFocus={moveCaretAtEnd} />)}
-          <br /><br />
+          {!publishing && !loading && (
+            <TextArea
+              name='content-area'
+              maxLength='280'
+              minRows={minRows}
+              value={!draftPost ? content : draftPost}
+              onKeyUp={updateCounter}
+              onKeyDown={e => onChange(e, "draftPost")}
+              onChange={e => onChange(e, "draftPost")}
+              onPaste={e => onChange(e, "draftPost")}
+              autoFocus
+              onFocus={moveCaretAtEnd}
+            />
+          )}
+          {draftPost && (
+            <p className={classes.draftPostLabel}>draft</p>
+          )}
+          <br />
+          <br />
           <label className={classes.payoutLabel}>Max Payout: </label>
-          <input name='max-payout' className={classes.tinyInput} type="number" onChange={onChange} value={payout} required min="0" step="any" />
+          <input
+            name='max-payout'
+            className={classes.tinyInput}
+            type='number'
+            onChange={onChange}
+            value={payout}
+            required
+            min='0'
+            step='any'
+          />
           {!isMobile && (
-            <Tooltip title={tooltips.payout} placement="top">
+            <Tooltip title={tooltips.payout} placement='top'>
               <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
             </Tooltip>
           )}
@@ -458,7 +547,7 @@ const CreateBuzzForm = (props) => {
           {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
-                placeholder="Add tags"
+                placeholder='Add tags'
                 tags={tags}
                 handleDelete={handleDelete}
                 handleAddition={handleAddition}
@@ -470,9 +559,13 @@ const CreateBuzzForm = (props) => {
           )}
           {loading && (
             <div style={{ width: '100%', paddingTop: 5 }}>
-              <Box position="relative" display="inline-flex">
-                <Spinner top={-10} size={20} loading={loading} />&nbsp;
-                <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
+              <Box position='relative' display='inline-flex'>
+                <Spinner top={-10} size={20} loading={loading} />
+                &nbsp;
+                <label className={classes.actionLabels}>
+                  uploading image, please wait ...
+                </label>
+                &nbsp;
               </Box>
             </div>
           )}
@@ -487,12 +580,12 @@ const CreateBuzzForm = (props) => {
             <React.Fragment>
               <ContainedButton
                 disabled={loading || publishing || content.length === 0}
-                label="Buzz"
+                label='Buzz'
                 className={classes.float}
                 onClick={handleClickPublishPost}
               />
               <input
-                id="file-upload"
+                id='file-upload'
                 type='file'
                 name='image'
                 accept='image/*'
@@ -501,9 +594,9 @@ const CreateBuzzForm = (props) => {
                 onChange={handleFileSelectChange}
                 style={{ display: 'none' }}
               />
-              <label htmlFor="file-upload">
+              <label htmlFor='file-upload'>
                 <IconButton
-                  size="medium"
+                  size='medium'
                   onClick={handleFileSelect}
                   disabled={(content.length + 88) > 280}
                   classes={{
@@ -514,35 +607,49 @@ const CreateBuzzForm = (props) => {
                   <UploadIcon />
                 </IconButton>
               </label>
-              <IconButton
-                size="medium"
-                onClick={handleOpenGiphy}
-              >
+              <IconButton size='medium' onClick={handleOpenGiphy}>
                 <GifIcon />
               </IconButton>
-              <IconButton
-                size="medium"
-                onClick={handleOpenEmojiPicker}
-              >
+              <IconButton size='medium' onClick={handleOpenEmojiPicker}>
                 <EmojiIcon />
               </IconButton>
-              <Box style={{ float: 'right', marginRight: 10, paddingTop: 15 }} position="relative" display="inline-flex">
-                <CircularProgress
-                  classes={{
-                    circle: classes.circle,
-                  }}
-                  size={30}
-                  value={wordCount}
-                  variant="determinate"
-                />
+              <Box
+                style={{ float: 'right', marginRight: 10, paddingTop: 10}}
+                position='relative'
+                display='inline-flex'
+              >
+                <span>
+                  <CircularProgress
+                    className='countProgress'
+                    classes={{
+                      circle: classes.circle,
+                    }}
+                    size={content.length >= 260 ? 40 : 30}
+                    value={wordCount}
+                    variant='determinate'
+                  />
+                  {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                </span>
               </Box>
             </React.Fragment>
           )}
         </div>
       </div>
-      <EmojiPicker open={openEmojiPicker} anchorEl={emojiAnchorEl} handleClose={handleCloseEmojiPicker} handleAppendContent={handleSelectEmoticon}/>
-      <GiphySearchModal show={openGiphy} onHide={closeGiphy} handleAppendContent={handleSelectGif}/>
-      <PayoutDisclaimerModal show={openPayoutDisclaimer} onHide={closePayoutDisclaimer} />
+      <EmojiPicker
+        open={openEmojiPicker}
+        anchorEl={emojiAnchorEl}
+        handleClose={handleCloseEmojiPicker}
+        handleAppendContent={handleSelectEmoticon}
+      />
+      <GiphySearchModal
+        show={openGiphy}
+        onHide={closeGiphy}
+        handleAppendContent={handleSelectGif}
+      />
+      <PayoutDisclaimerModal
+        show={openPayoutDisclaimer}
+        onHide={closePayoutDisclaimer}
+      />
     </div>
   )
 }
@@ -553,17 +660,20 @@ const mapStateToProps = (state) => ({
   loading: pending(state, 'UPLOAD_FILE_REQUEST'),
   publishing: pending(state, 'PUBLISH_POST_REQUEST'),
   payoutAgreed: state.auth.get('payoutAgreed'),
-  intentBuzz: state.auth.get("intentBuzz"),
+  intentBuzz: state.auth.get('intentBuzz'),
+  draftPost: state.posts.get('draftPost'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    uploadFileRequest,
-    publishPostRequest,
-    setPageFrom,
-    broadcastNotification,
-    clearIntentBuzz,
-  }, dispatch),
+  ...bindActionCreators(
+    {
+      uploadFileRequest,
+      publishPostRequest,
+      setPageFrom,
+      broadcastNotification,
+      clearIntentBuzz,
+      savePostAsDraft,
+    },dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBuzzForm)

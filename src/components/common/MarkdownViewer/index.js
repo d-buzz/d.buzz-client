@@ -397,7 +397,6 @@ const prepareSoundCloudEmbeds = (content) => {
       if(link.match(soundcloudRegex)){
         const data = link.split('/')
         match = link.match(soundcloudRegex)
-        console.log({ data })
         id = `${data[3]}/${data[4]}`
       }
 
@@ -450,9 +449,6 @@ const prepareTiktokEmbeds = (content) => {
   const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/g
 
   let body = content
-
-  console.log({tiktokRegex})
-
   const links = textParser.getUrls(content)
 
   links.forEach((link) => {
@@ -501,6 +497,16 @@ const prepareAppleEmbeds = (content) => {
   return body
 }
 
+const getCoinTicker = (coin) => {
+  const data = require('../../../files/coinGeckoData.json')
+
+  for(var i=0; i<=data.length; i++){
+    if(data[i]?.symbol === coin){
+      return data[i]?.id
+    }
+  }
+}
+
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
@@ -529,7 +535,6 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
-    console.log({ splitSoundcloud })
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
     return <ReactSoundCloud url={url} />
   } else if (content.includes(':facebook:')) {
@@ -601,7 +606,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <div
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
       className={classNames(markdownClass, assetClass)}
-      dangerouslySetInnerHTML={{ __html: renderer.render(content) }}
+      dangerouslySetInnerHTML={{ __html: renderer.render(content.replace(/\$([A-Za-z-]+)/gi, n => {return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel>${n}</a>` : n})) }}
     />
   }
 
@@ -621,16 +626,10 @@ const MarkdownViewer = React.memo((props) => {
 
   extracted.forEach((item) => {
     const link = item.replace(/\(/g, '%28').replace(/\)/g, '%29')
-    console.log({ item })
-    console.log({ link })
     content = content.replace(item, link)
   })
 
-  console.log({ content })
-
   const links = textParser.getUrls(content)
-
-  console.log({ links })
 
 
   links.forEach((link) => {
