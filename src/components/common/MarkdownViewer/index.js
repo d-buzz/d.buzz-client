@@ -497,6 +497,26 @@ const prepareAppleEmbeds = (content) => {
   return body
 }
 
+const prepareDTubeEmbeds = (content) => {
+  const dtubeRegex = /^https:\/\/(emb\.)?d\.tube\/(.*)/
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+
+    const match = link.match(dtubeRegex)
+
+    if (match) {
+      const data = link.split('/')
+      const id = `${data[4]}/${data[5]}`
+      body = body.replace(link, `~~~~~~.^.~~~:dtube:${id}:~~~~~~.^.~~~`)
+    }
+  })
+  return body
+}
+
 const getCoinTicker = (coin) => {
   const data = require('../../../files/coinGeckoData.json')
 
@@ -601,6 +621,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
         </div>
       </React.Fragment>
     )
+  } else if (content.includes(':dtube:')) {
+    const splitDTube = content.split(':')
+    const url = `https://emb.d.tube/#!/${splitDTube[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dtube`} url={url} />
   } else {
     // render normally
     return <div
@@ -659,6 +683,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareOdyseeEmbeds(content)
       } else if(link.includes('music.apple.com')) {
         content = prepareAppleEmbeds(content)
+      } else if (link.includes('d.tube')) {
+        content = prepareDTubeEmbeds(content)
       }
     } catch(error) { }
   })
