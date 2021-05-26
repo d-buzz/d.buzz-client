@@ -118,7 +118,7 @@ const SearchPeople = (props) => {
   return (
     <React.Fragment>
       {(items.people || []).map((item) => (
-        <div className={classes.wrapper}>
+        <div className={classes.wrapper} key={item.account}>
           <div className={classes.row}>
             <Link to={`/@${item.account}`}>
               <Row>
