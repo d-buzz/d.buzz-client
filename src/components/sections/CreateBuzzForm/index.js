@@ -353,6 +353,11 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickPublishPost = () => {
+
+    // delete post from draft
+    savePostAsDraft("")
+    savePostAsDraftToStorage("")
+
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
     }
