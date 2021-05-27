@@ -382,6 +382,35 @@ const prepareBitchuteEmbeds = (content) => {
   return body
 }
 
+const prepareBannedEmbeds = (content) => {
+  const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(bannedRegex)){
+		    const data = link.split('?id=')
+        match = link.match(bannedRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareSoundCloudEmbeds = (content) => {
   const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
   let body = content
@@ -533,6 +562,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBitchute = content.split(':')
     const url = `https://www.bitchute.com/embed/${splitBitchute[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
+  } else if(content.includes(':banned:')) {
+    const splitBanned = content.split(':')
+    const url = `https://api.banned.video/embed/${splitBanned[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -649,6 +682,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareLbryEmbeds(content)
       } else if(link.includes('www.bitchute.com')) {
         content = prepareBitchuteEmbeds(content)
+      } else if(link.includes('banned.video')) {
+        content = prepareBannedEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {
