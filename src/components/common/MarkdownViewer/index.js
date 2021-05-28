@@ -476,6 +476,7 @@ const prepareFacebookEmbeds = (content) => {
 
 const prepareTiktokEmbeds = (content) => {
   const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/g
+  const tiktokIdRegex = /[0-9]+/
 
   let body = content
   const links = textParser.getUrls(content)
@@ -487,10 +488,11 @@ const prepareTiktokEmbeds = (content) => {
 
     try {
       if(link.match(tiktokRegex)){
-        const data = link.split('/')
+        const url = new URL(link)
+        const data = url.pathname.split('/')
         match = link.match(tiktokRegex)
         
-        id = data[5]
+        id = data.reduce((a, v) => v.match(tiktokIdRegex) ? v : a)
       }
 
       if (!id) {
@@ -616,22 +618,24 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     }
   } else if (content.includes(':tiktok:')) {
     const splitTiktok = content.split(':')
-    const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
-  
-    return (
-      <React.Fragment>
-        <div className={classes.tiktokWrapper}>
-          <iframe
-            title='Embedded Video'
-            src={url}
-            allowFullScreen={true}
-            frameBorder='0'
-            height='250'
-            width='100%'
-          ></iframe>
-        </div>
-      </React.Fragment>
-    )
+    if (splitTiktok[2]) {
+      const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
+
+      return (
+        <React.Fragment>
+          <div className={classes.tiktokWrapper}>
+            <iframe
+              title='Embedded Video'
+              src={url}
+              allowFullScreen={true}
+              frameBorder='0'
+              height='250'
+              width='100%'
+            ></iframe>
+          </div>
+        </React.Fragment>
+      )
+    }
   } else if (content.includes(':odysy:')) {
     const splitOdysy = content.split(':')
     const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
