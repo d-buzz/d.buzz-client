@@ -29,6 +29,7 @@ import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -118,6 +119,7 @@ const useStyles = createUseStyles(theme => ({
     height: 25,
     width: 50,
     marginLeft: 5,
+    border: '1px solid lightgray',
     borderRadius: 5,
   },
   payoutLabel: {
@@ -144,20 +146,41 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     cursor: 'pointer',
     marginLeft: 2,
+    marginBottom: 5,
+  },
+  draftPostContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 'fit-content',
+    float: 'right',
+    opacity: 0.5,
+    animation: 'savedAsDraftAnimation 350ms',
   },
   draftPostLabel: {
     ...theme.font,
+    margin: 0,
+    marginRight: 5,
     lineHeight: 1.5,
     fontSize: '1.2em',
     color: '#e61c34',
-    float: 'right',
     padding: '2px 10px',
     width: 'fit-content',
     border: '1px solid #e61c34',
     borderRadius: '5px',
-    opacity: 0.5,
-    animation: 'savedAsDraftAnimation 350ms',
     userSelect: 'none',
+  },
+  clearDraftIcon: {
+    color: '#e61c34',
+    borderRadius: '50%',
+    cursor: 'pointer',
+  
+    '&:hover':{
+      transition: 'all 350ms',
+      padding: 5,
+      transform: 'scale(1.1)',
+      background: '#e61c34',
+      color: 'white',
+    },
   },
   counter: {
     position: 'absolute',
@@ -259,6 +282,12 @@ const CreateBuzzForm = (props) => {
 
   const savePostAsDraftToStorage = (content) => {
     localStorage.setItem('draft_post', content)
+  }
+
+  const clearDraft = () => {
+    setContent('')
+    savePostAsDraft('')
+    savePostAsDraftToStorage('')
   }
 
   const onChange = (e, draft) => {
@@ -510,7 +539,10 @@ const CreateBuzzForm = (props) => {
             />
           )}
           {draftPost && (
-            <p className={classes.draftPostLabel}>draft</p>
+            <span className={classes.draftPostContainer}>
+              <p className={classes.draftPostLabel}>draft</p>
+              <ClearIcon size={20} className={classes.clearDraftIcon} onClick={clearDraft}/>
+            </span>
           )}
           <br />
           <br />
