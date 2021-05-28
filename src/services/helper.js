@@ -355,3 +355,10 @@ export const getDefaultVotingWeight = () => {
   }
   return 0
 }
+
+export const redirectToUserProfile = () => {
+  if(window.location.href.includes("@") && !window.location.href.includes("#/@")){
+    const account = window.location.href.split("@")
+    window.location = (`/#/@${account[1].replace("#/", "")}`)
+  }
+}
