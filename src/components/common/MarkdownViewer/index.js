@@ -145,6 +145,7 @@ const useStyles = createUseStyles(theme => ({
 const prepareTwitterEmbeds = (content) => {
   let body = content
   const mainTwitterRegex = /(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i
+  const mobileTwitterRegex = /(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*))))/i
   const htmlReplacement = /<blockquote[^>]*?><p[^>]*?>(.*?)<\/p>.*?mdash; (.*)<a href="(https:\/\/twitter\.com\/.*?(.*?\/status\/(.*?))\?.*?)">(.*?)<\/a><\/blockquote>/i
 
   const links = textParser.getUrls(content)
@@ -168,6 +169,16 @@ const prepareTwitterEmbeds = (content) => {
           id = match[2]
           if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
             match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+            id = match[2]
+            id = id.slice(0, -2)
+          }
+          body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+        }
+        else if(link.match(mobileTwitterRegex)) {
+          match = link.match(mobileTwitterRegex)
+          id = match[2]
+          if(link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+            match = link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
             id = match[2]
             id = id.slice(0, -2)
           }
