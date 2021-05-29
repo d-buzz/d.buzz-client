@@ -8930,11 +8930,6 @@
 	  "name": "Cryptotipsfr"
 	},
 	{
-	  "id": "crypto-user-base",
-	  "symbol": "cub",
-	  "name": "Crypto User Base"
-	},
-	{
 	  "id": "cryptoverificationcoin",
 	  "symbol": "cvcc",
 	  "name": "CryptoVerificationCoin"
