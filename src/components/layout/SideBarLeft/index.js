@@ -46,7 +46,7 @@ const useStyles = createUseStyles(theme => ({
     width: 'max-content',
     fontSize: 18,
     padding: 8,
-    marginBottom: 15,
+    marginBottom: 8,
     ...theme.left.sidebar.items.icons,
     '& a': {
       color: theme.left.sidebar.items.color,
@@ -72,7 +72,7 @@ const useStyles = createUseStyles(theme => ({
   },
   minifyItems: {
     textAlign: 'left',
-    marginBottom: 15,
+    marginBottom: 5,
     ...theme.left.sidebar.items.icons,
     '& a': {
       color: theme.left.sidebar.items.color,
@@ -106,7 +106,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   navLinkContainer: {
-    marginTop: 20,
+    marginTop: 15,
     fontSize: 14,
   },
   bottom: {
@@ -124,6 +124,7 @@ const useStyles = createUseStyles(theme => ({
     position: 'absolute',
     bottom: 15,
     ...theme.left.sidebar.bottom.wrapperMinify,
+    left: '-120%',
   },
   inline: {
     display: 'inline-block',
