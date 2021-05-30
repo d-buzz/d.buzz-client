@@ -160,7 +160,7 @@ const Feeds = React.memo((props) => {
   }
 
   const floatingButtonStyle = {
-    marginLeft: width > 1026 && 530, right: width < 1026 && 30
+    marginLeft: width > 1026 && 530, right: width < 1026 && 30,
   }
   
   return (
@@ -180,8 +180,8 @@ const Feeds = React.memo((props) => {
         </React.Fragment>
       )}
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
-        {minify && (
-          <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={{...floatStyle, ...floatingButtonStyle}}>
+      {minify && (
+        <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={{...floatStyle, ...floatingButtonStyle}}>
           <BuzzIcon />
         </Fab>
       )}
@@ -223,7 +223,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearScrollIndex,
     clearHomePosts,
     clearRefreshRouteStatus,
-    setBuzzModalStatus
+    setBuzzModalStatus,
   }, dispatch),
 })
 
