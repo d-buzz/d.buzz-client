@@ -124,7 +124,6 @@ const useStyles = createUseStyles(theme => ({
     position: 'absolute',
     bottom: 15,
     ...theme.left.sidebar.bottom.wrapperMinify,
-    left: '-120%',
   },
   inline: {
     display: 'inline-block',
@@ -415,7 +414,7 @@ const SideBarLeft = (props) => {
                   active={location.pathname}
                 />
               ))}
-              {!is_subscribe && (
+              {!is_subscribe && !minify && (
                 <ContainedButton
                   transparent={true}
                   fontSize={14}
@@ -437,6 +436,7 @@ const SideBarLeft = (props) => {
               )}
               {minify && (
                 <IconButton
+                  style={{display: 'none'}}
                   size="medium"
                   classes={{
                     root: classes.buzzButton,

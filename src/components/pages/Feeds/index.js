@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from 'react'
-import { CreateBuzzForm, InfiniteList, HelmetGenerator } from 'components'
+import React, { useEffect, useCallback, useState } from 'react'
+import { CreateBuzzForm, InfiniteList, HelmetGenerator, BuzzFormModal } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
@@ -27,9 +27,13 @@ import {
   clearAccountReplies,
 } from 'store/profile/actions'
 import { clearScrollIndex, clearRefreshRouteStatus} from 'store/interface/actions'
-import { anchorTop } from 'services/helper'
+import { anchorTop, useWindowDimensions } from 'services/helper'
 import { isMobile } from 'react-device-detect'
-import { Link } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
+import { setBuzzModalStatus } from 'store/interface/actions'
+import { Fab } from '@material-ui/core'
+import BuzzIcon from 'components/elements/Icons/BuzzIcon'
+
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -40,6 +44,16 @@ const useStyles = createUseStyles(theme => ({
     },
   },
 }))
+
+const floatStyle = {
+  margin: 0,
+  top: 'auto',
+  bottom: 20,
+  left: 'auto',
+  position: 'fixed',
+  zIndex: 500,
+  backgroundColor: '#e61c34',
+}
 
 const Feeds = React.memo((props) => {
   const {
@@ -71,6 +85,13 @@ const Feeds = React.memo((props) => {
     clearRefreshRouteStatus,
   } = props
   const classes = useStyles()
+  const location = useLocation()
+  const history = useHistory()
+  const { pathname } = location
+  const [open, setOpen] = useState(false)
+  const [minify, setMinify] = useState(false)
+  const { width } = useWindowDimensions()
+  const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
 
   useEffect(() => {
     setPageFrom('home')
@@ -108,12 +129,40 @@ const Feeds = React.memo((props) => {
     // eslint-disable-next-line
   }, [refreshRouteStatus])
 
+  useEffect(() => {
+    if(width >= 1366) {
+      setMinify(false)
+    } else if(width >= 1026 && width < 1366) {
+      setMinify(true)
+    } else if(width >=706 && width < 1026) {
+      setMinify(true)
+    } else {
+      setMinify(true)
+    }
+  }, [width])
+
   const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
   }, [last])
 
+  const handleOpenBuzzModal = () => {
+    setOpen(true)
+  }
+
+  const onHide = () => {
+    setBuzzModalStatus(false)
+    setOpen(false)
+    if (isBuzzIntent) {
+      history.push('/')
+    }
+  }
+
+  const floatingButtonStyle = {
+    marginLeft: width > 1026 && 530, right: width < 1026 && 30
+  }
+  
   return (
     <React.Fragment>
       <HelmetGenerator page='Home' />
@@ -131,6 +180,12 @@ const Feeds = React.memo((props) => {
         </React.Fragment>
       )}
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
+        {minify && (
+          <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={{...floatStyle, ...floatingButtonStyle}}>
+          <BuzzIcon />
+        </Fab>
+      )}
+      <BuzzFormModal show={open} onHide={onHide} />
     </React.Fragment>
   )
 })
@@ -142,6 +197,8 @@ const mapStateToProps = (state) => ({
   items: state.posts.get('home'),
   last: state.posts.get('lastHome'),
   refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
+  intentBuzz: state.auth.get("intentBuzz"),
+  fromIntentBuzz: state.auth.get('fromIntentBuzz'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -166,6 +223,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearScrollIndex,
     clearHomePosts,
     clearRefreshRouteStatus,
+    setBuzzModalStatus
   }, dispatch),
 })
 
