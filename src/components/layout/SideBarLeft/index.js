@@ -364,9 +364,11 @@ const SideBarLeft = (props) => {
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
-      name: 'Wallet',
-      icon: <WalletIcon />,
-      path: `/@${username}/wallet`,
+      name: 'Theme',
+      icon: <SunMoonIcon />,
+      path: '#',
+      preventDefault: true,
+      onClick: showThemeModal,
     },
     {
       name: 'Profile',
@@ -374,11 +376,9 @@ const SideBarLeft = (props) => {
       icon: <ProfileIcon />,
     },
     {
-      name: 'Theme',
-      icon: <SunMoonIcon />,
-      path: '#',
-      preventDefault: true,
-      onClick: showThemeModal,
+      name: 'Wallet',
+      icon: <WalletIcon />,
+      path: `/@${username}/wallet`,
     },
     {
       name: 'Switch Account',
