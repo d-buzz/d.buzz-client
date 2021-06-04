@@ -91,7 +91,6 @@ const useStyles = createUseStyles(theme => ({
   },
   circle: {
     strokeLinecap: 'round',
-    color: '#e53935',
   },
   previewContainer: {
     width: '100%',
@@ -152,6 +151,26 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     fontSize: 15,
   },
+  characterCounter: {
+    position: 'relative',
+    width: '30px',
+    height: '30px',
+    float: 'right',
+    marginTop: 15,
+    marginRight: 10,
+  },
+  counter: {
+    position: 'absolute',
+    fontWeight: 'bold',
+    fontSize: '0.8em',
+    marginRight: 12,
+    color: '#e61c34',
+    width: 'fit-content',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-52%,-52%)',
+    animation: 'counterAnimation 350ms',
+  },
 }))
 
 const ReplyFormModal = (props) => {
@@ -169,8 +188,6 @@ const ReplyFormModal = (props) => {
 
   const history = useHistory()
 
-  const CircularProgressStyle = { float: 'right', marginRight: 5, marginTop: 15 }
-
   const { username } = user
   const inputRef = useRef(null)
   const [content, setContent] = useState('')
@@ -186,6 +203,9 @@ const ReplyFormModal = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+
+  const [counterColor, setCounterColor] = useState('#e53935')
+  const CircularProgressStyle = { float: 'right', color: counterColor, transform: content.length >= 260 && 'scale(1.3)' }
 
   const textAreaStyle = { width: '100%' }
   const zeroPadding = { padding: 0 }
@@ -241,6 +261,16 @@ const ReplyFormModal = (props) => {
       setBuzzToTwitter(!buzzToTwitter)
     }
   }
+
+  useEffect(() => {
+    if(content.length === 280) {
+      setCounterColor('#E0245E')
+    } else if(content.length >= 260) {
+      setCounterColor('#FFAD1F')
+    } else {
+      setCounterColor('#e53935')
+    }
+  }, [content])
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload-reply')
@@ -465,15 +495,19 @@ const ReplyFormModal = (props) => {
                       onClick={handleSubmitReply}
                       disabled={loading || `${content}`.trim() === ''}
                     />
-                    <CircularProgress
-                      style={CircularProgressStyle}
-                      classes={{
-                        circle: classes.circle,
-                      }}
-                      size={30}
-                      value={wordCount}
-                      variant="static"
-                    />
+                    <div className={classes.characterCounter}>
+                      <CircularProgress
+                        className='countProgressBar'
+                        style={CircularProgressStyle}
+                        classes={{
+                          circle: classes.circle,
+                        }}
+                        size={30}
+                        value={wordCount}
+                        variant="static"
+                      />
+                      {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                    </div>
                   </div>
                 </div>
               </Col>
