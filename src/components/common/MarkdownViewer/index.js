@@ -422,6 +422,66 @@ const prepareBannedEmbeds = (content) => {
   return body
 }
 
+const prepareDollarVigilanteEmbeds = (content) => {
+  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/videos\/watch\/(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(dollarVigilanteRegex)){
+		    const data = link.split('/')
+        match = link.match(dollarVigilanteRegex)
+        if (data[5]) {
+          id = data[5]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:dollarvigilante:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareDapplrEmbeds = (content) => {
+  const dapplrRegex = /(?:https?:\/\/(?:(?:(www\.)?cdn\.dapplr\.in\/file\/dapplr-videos\/(.*)\/(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let username = ''
+		  let id = ''
+  
+		  if(link.match(dapplrRegex)){
+		    const data = link.split('/')
+        match = link.match(dapplrRegex)
+        if (data[5] && data[6]) {
+          username = data[5]
+          id = data[6]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:dapplr:${username}/${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareSoundCloudEmbeds = (content) => {
   const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
   let body = content
@@ -599,6 +659,14 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBanned = content.split(':')
     const url = `https://api.banned.video/embed/${splitBanned[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
+  } else if(content.includes(':dollarvigilante:')) {
+    const splitDollarvigilante = content.split(':')
+    const url = `https://dollarvigilante.tv/videos/embed/${splitDollarvigilante[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dollarvigilante`} url={url} />  
+  } else if(content.includes(':dapplr:')) {
+    const splitDapplr = content.split(':')
+    const url = `https://cdn.dapplr.in/file/dapplr-videos/${splitDapplr[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dapplr`} url={url} />  
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -723,6 +791,10 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBitchuteEmbeds(content)
       } else if(link.includes('banned.video')) {
         content = prepareBannedEmbeds(content)
+      } else if(link.includes('dollarvigilante.tv')) {
+        content = prepareDollarVigilanteEmbeds(content)
+      } else if(link.includes('dapplr.in')) {
+        content = prepareDapplrEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {
