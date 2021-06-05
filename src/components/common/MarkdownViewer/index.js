@@ -328,7 +328,7 @@ const prepareLbryEmbeds = (content) => {
 }
 
 const prepareOdyseeEmbeds = (content) => {
-  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com\/@(.*?))))/i
+  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com\/@(.*?)\/(.*))))/i
   let body = content
 
   const links = markdownLinkExtractor(content)
