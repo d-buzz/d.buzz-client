@@ -453,7 +453,7 @@ const prepareDollarVigilanteEmbeds = (content) => {
 }
 
 const prepareDapplrEmbeds = (content) => {
-  const dapplrRegex = /(?:https?:\/\/(?:(?:(www\.)?cdn\.dapplr\.in\/file\/dapplr-videos\/(.*)\/(.*))))/i'
+  const dapplrRegex = /(?:https?:\/\/(?:(?:(www\.)?cdn\.dapplr\.in\/file\/dapplr-videos\/(.*)\/(.*))))/i
   
   let body = content
   
