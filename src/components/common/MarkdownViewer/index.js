@@ -452,6 +452,37 @@ const prepareDollarVigilanteEmbeds = (content) => {
   return body
 }
 
+const prepareDapplrEmbeds = (content) => {
+  const dapplrRegex = /(?:https?:\/\/(?:(?:(www\.)?cdn\.dapplr\.in\/file\/dapplr-videos\/(.*)\/(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let username = ''
+		  let id = ''
+  
+		  if(link.match(dapplrRegex)){
+		    const data = link.split('/')
+        match = link.match(dapplrRegex)
+        if (data[5] && data[6]) {
+          username = data[5]
+          id = data[6]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:dapplr:${username}/${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareSoundCloudEmbeds = (content) => {
   const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
   let body = content
@@ -633,6 +664,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitDollarvigilante = content.split(':')
     const url = `https://dollarvigilante.tv/videos/embed/${splitDollarvigilante[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}dollarvigilante`} url={url} />  
+  } else if(content.includes(':dapplr:')) {
+    const splitDapplr = content.split(':')
+    const url = `https://cdn.dapplr.in/file/dapplr-videos/${splitDapplr[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dapplr`} url={url} />  
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -759,6 +794,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBannedEmbeds(content)
       } else if(link.includes('dollarvigilante.tv')) {
         content = prepareDollarVigilanteEmbeds(content)
+      } else if(link.includes('dapplr.in')) {
+        content = prepareDapplrEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {

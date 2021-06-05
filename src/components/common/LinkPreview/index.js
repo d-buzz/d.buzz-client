@@ -90,6 +90,7 @@ const LinkPreview = (props) => {
           && !link.includes('www.bitchute.com')
           && !link.includes('www.facebook.com')
           && !link.includes('dollarvigilante.tv')
+          && !link.includes('dapplr.in')
           && link.match( /^[https][http]/)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
