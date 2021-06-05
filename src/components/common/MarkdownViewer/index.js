@@ -394,6 +394,7 @@ const prepareBitchuteEmbeds = (content) => {
 }
 
 const prepareBannedEmbeds = (content) => {
+  
   const bannedRegex = /(?:https?:\/\/(?:(?:(www\.)?banned\.video\/watch\?id=(.*))))/i
   
   let body = content
