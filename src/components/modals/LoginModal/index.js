@@ -105,7 +105,7 @@ const LoginModal = (props) => {
     const { name, value } = target
 
     if (name === 'username') {
-      setUsername(value)
+      setUsername(value.replace("@", ""))
     } else if (name === 'password') {
       setPassword(value)
     }

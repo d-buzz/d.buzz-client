@@ -46,7 +46,7 @@ const useStyles = createUseStyles(theme => ({
     width: 'max-content',
     fontSize: 18,
     padding: 8,
-    marginBottom: 15,
+    marginBottom: 8,
     ...theme.left.sidebar.items.icons,
     '& a': {
       color: theme.left.sidebar.items.color,
@@ -72,7 +72,7 @@ const useStyles = createUseStyles(theme => ({
   },
   minifyItems: {
     textAlign: 'left',
-    marginBottom: 15,
+    marginBottom: 5,
     ...theme.left.sidebar.items.icons,
     '& a': {
       color: theme.left.sidebar.items.color,
@@ -106,7 +106,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   navLinkContainer: {
-    marginTop: 20,
+    marginTop: 15,
     fontSize: 14,
   },
   bottom: {
@@ -364,9 +364,11 @@ const SideBarLeft = (props) => {
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
-      name: 'Wallet',
-      icon: <WalletIcon />,
-      path: `/@${username}/wallet`,
+      name: 'Theme',
+      icon: <SunMoonIcon />,
+      path: '#',
+      preventDefault: true,
+      onClick: showThemeModal,
     },
     {
       name: 'Profile',
@@ -374,11 +376,9 @@ const SideBarLeft = (props) => {
       icon: <ProfileIcon />,
     },
     {
-      name: 'Theme',
-      icon: <SunMoonIcon />,
-      path: '#',
-      preventDefault: true,
-      onClick: showThemeModal,
+      name: 'Wallet',
+      icon: <WalletIcon />,
+      path: `/@${username}/wallet`,
     },
     {
       name: 'Switch Account',
@@ -414,7 +414,7 @@ const SideBarLeft = (props) => {
                   active={location.pathname}
                 />
               ))}
-              {!is_subscribe && (
+              {!is_subscribe && !minify && (
                 <ContainedButton
                   transparent={true}
                   fontSize={14}
@@ -436,6 +436,7 @@ const SideBarLeft = (props) => {
               )}
               {minify && (
                 <IconButton
+                  style={{display: 'none'}}
                   size="medium"
                   classes={{
                     root: classes.buzzButton,

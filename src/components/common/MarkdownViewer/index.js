@@ -145,6 +145,7 @@ const useStyles = createUseStyles(theme => ({
 const prepareTwitterEmbeds = (content) => {
   let body = content
   const mainTwitterRegex = /(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i
+  const mobileTwitterRegex = /(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*))))/i
   const htmlReplacement = /<blockquote[^>]*?><p[^>]*?>(.*?)<\/p>.*?mdash; (.*)<a href="(https:\/\/twitter\.com\/.*?(.*?\/status\/(.*?))\?.*?)">(.*?)<\/a><\/blockquote>/i
 
   const links = textParser.getUrls(content)
@@ -168,6 +169,16 @@ const prepareTwitterEmbeds = (content) => {
           id = match[2]
           if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
             match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+            id = match[2]
+            id = id.slice(0, -2)
+          }
+          body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+        }
+        else if(link.match(mobileTwitterRegex)) {
+          match = link.match(mobileTwitterRegex)
+          id = match[2]
+          if(link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+            match = link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
             id = match[2]
             id = id.slice(0, -2)
           }
@@ -382,6 +393,35 @@ const prepareBitchuteEmbeds = (content) => {
   return body
 }
 
+const prepareBannedEmbeds = (content) => {
+  const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(bannedRegex)){
+		    const data = link.split('?id=')
+        match = link.match(bannedRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareSoundCloudEmbeds = (content) => {
   const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
   let body = content
@@ -447,6 +487,7 @@ const prepareFacebookEmbeds = (content) => {
 
 const prepareTiktokEmbeds = (content) => {
   const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/g
+  const tiktokIdRegex = /[0-9]+/
 
   let body = content
   const links = textParser.getUrls(content)
@@ -458,10 +499,11 @@ const prepareTiktokEmbeds = (content) => {
 
     try {
       if(link.match(tiktokRegex)){
-        const data = link.split('/')
+        const url = new URL(link)
+        const data = url.pathname.split('/')
         match = link.match(tiktokRegex)
         
-        id = data[5]
+        id = data.reduce((a, v) => v.match(tiktokIdRegex) ? v : a)
       }
 
       if (!id) {
@@ -492,6 +534,26 @@ const prepareAppleEmbeds = (content) => {
       const data = link.split('/')
       const id = `${data[4]}/${data[5]}/${data[6]}`
       body = body.replace(link, `~~~~~~.^.~~~:apple:${id}:~~~~~~.^.~~~`)
+    }
+  })
+  return body
+}
+
+const prepareDTubeEmbeds = (content) => {
+  const dtubeRegex = /^https:\/\/(emb\.)?d\.tube\/(.*)/
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+
+    const match = link.match(dtubeRegex)
+
+    if (match) {
+      const data = link.split('/')
+      const id = `${data[4]}/${data[5]}`
+      body = body.replace(link, `~~~~~~.^.~~~:dtube:${id}:~~~~~~.^.~~~`)
     }
   })
   return body
@@ -533,6 +595,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBitchute = content.split(':')
     const url = `https://www.bitchute.com/embed/${splitBitchute[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}bitchute`} url={url} />
+  } else if(content.includes(':banned:')) {
+    const splitBanned = content.split(':')
+    const url = `https://api.banned.video/embed/${splitBanned[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -563,22 +629,24 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     }
   } else if (content.includes(':tiktok:')) {
     const splitTiktok = content.split(':')
-    const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
-  
-    return (
-      <React.Fragment>
-        <div className={classes.tiktokWrapper}>
-          <iframe
-            title='Embedded Video'
-            src={url}
-            allowFullScreen={true}
-            frameBorder='0'
-            height='250'
-            width='100%'
-          ></iframe>
-        </div>
-      </React.Fragment>
-    )
+    if (splitTiktok[2]) {
+      const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
+
+      return (
+        <React.Fragment>
+          <div className={classes.tiktokWrapper}>
+            <iframe
+              title='Embedded Video'
+              src={url}
+              allowFullScreen={true}
+              frameBorder='0'
+              height='250'
+              width='100%'
+            ></iframe>
+          </div>
+        </React.Fragment>
+      )
+    }
   } else if (content.includes(':odysy:')) {
     const splitOdysy = content.split(':')
     const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
@@ -601,6 +669,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
         </div>
       </React.Fragment>
     )
+  } else if (content.includes(':dtube:')) {
+    const splitDTube = content.split(':')
+    const url = `https://emb.d.tube/#!/${splitDTube[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dtube`} url={url} />
   } else {
     // render normally
     return <div
@@ -649,6 +721,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareLbryEmbeds(content)
       } else if(link.includes('www.bitchute.com')) {
         content = prepareBitchuteEmbeds(content)
+      } else if(link.includes('banned.video')) {
+        content = prepareBannedEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {
@@ -659,6 +733,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareOdyseeEmbeds(content)
       } else if(link.includes('music.apple.com')) {
         content = prepareAppleEmbeds(content)
+      } else if (link.includes('d.tube')) {
+        content = prepareDTubeEmbeds(content)
       }
     } catch(error) { }
   })

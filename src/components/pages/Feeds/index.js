@@ -31,6 +31,7 @@ import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 import { Link } from 'react-router-dom'
 
+
 const useStyles = createUseStyles(theme => ({
   wrapper: {
     ...theme.font,
@@ -113,7 +114,7 @@ const Feeds = React.memo((props) => {
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
   }, [last])
-
+  
   return (
     <React.Fragment>
       <HelmetGenerator page='Home' />
@@ -136,7 +137,6 @@ const Feeds = React.memo((props) => {
 })
 
 const mapStateToProps = (state) => ({
-  buzzModalStatus: state.interfaces.get('buzzModalStatus'),
   loading: pending(state, 'GET_HOME_POSTS_REQUEST'),
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),

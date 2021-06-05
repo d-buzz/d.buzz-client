@@ -304,9 +304,10 @@ const MobileAppFrame = (props) => {
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
-      name: 'Wallet',
-      icon: <WalletIcon />,
-      path: `/@${username}/wallet`,
+      name: 'Display',
+      icon: <SunMoonIcon />,
+      onClick: showThemeModal,
+      type: 'action',
     },
     {
       name: 'Profile',
@@ -314,10 +315,9 @@ const MobileAppFrame = (props) => {
       icon: <ProfileIcon />,
     },
     {
-      name: 'Display',
-      icon: <SunMoonIcon />,
-      onClick: showThemeModal,
-      type: 'action',
+      name: 'Wallet',
+      icon: <WalletIcon />,
+      path: `/@${username}/wallet`,
     },
   ]
   const isActivePath = (path, current) => {
