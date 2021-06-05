@@ -10,7 +10,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import queryString from 'query-string'
 import { clearNotificationsRequest } from 'store/profile/actions'
-import { broadcastNotification } from 'store/interface/actions'
+import { broadcastNotification, setBuzzModalStatus } from 'store/interface/actions'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { ContainedButton } from 'components/elements'
 import { useLocation } from 'react-router-dom'
@@ -20,6 +20,9 @@ import { useLastLocation } from 'react-router-last-location'
 import { useWindowDimensions } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { SideBarLeft, SideBarRight, SearchField, NotificationFilter } from 'components'
+import BuzzFormModal from 'components/modals/BuzzFormModal'
+import { Fab } from '@material-ui/core'
+import BuzzIcon from 'components/elements/Icons/BuzzIcon'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -79,6 +82,16 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
+const floatStyle = {
+  margin: 0,
+  top: 'auto',
+  bottom: 20,
+  left: 'auto',
+  position: 'fixed',
+  zIndex: 500,
+  backgroundColor: '#e61c34',
+}
+
 const GuardedAppFrame = (props) => {
   const {
     route,
@@ -104,6 +117,8 @@ const GuardedAppFrame = (props) => {
   const [minify, setMinify] = useState(false)
   const [hideSideBarRight, setHideSideBarRight] = useState(false)
   const { width } = useWindowDimensions()
+  const [open, setOpen] = useState(false)
+  const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
 
   useEffect(() => {
     setSearch(query)
@@ -213,6 +228,22 @@ const GuardedAppFrame = (props) => {
       })
   }
 
+  const handleOpenBuzzModal = () => {
+    setOpen(true)
+  }
+
+  const onHide = () => {
+    setBuzzModalStatus(false)
+    setOpen(false)
+    if (isBuzzIntent) {
+      history.push('/')
+    }
+  }
+
+  const floatingButtonStyle = {
+    marginLeft: width > 1026 && 530, right: width < 1026 && 30,
+  }
+
   return (
     <React.Fragment>
       <Row style={{ padding: 0, margin: 0 }}>
@@ -276,6 +307,12 @@ const GuardedAppFrame = (props) => {
             <div className={classes.main}>
               <React.Fragment>
                 {renderRoutes(route.routes)}
+                {minify && (
+                  <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={{...floatStyle, ...floatingButtonStyle}}>
+                    <BuzzIcon />
+                  </Fab>
+                )}
+                <BuzzFormModal show={open} onHide={onHide} />
               </React.Fragment>
             </div>
           </div>
@@ -301,6 +338,7 @@ const GuardedAppFrame = (props) => {
 const mapStateToProps = (state) => ({
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
   count: state.polling.get('count'),
+  buzzModalStatus: state.interfaces.get('buzzModalStatus'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -309,6 +347,7 @@ const mapDispatchToProps = (dispatch) => ({
     clearSearchPosts,
     clearNotificationsRequest,
     broadcastNotification,
+    setBuzzModalStatus,
   }, dispatch),
 })
 

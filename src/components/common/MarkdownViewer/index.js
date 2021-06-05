@@ -394,6 +394,7 @@ const prepareBitchuteEmbeds = (content) => {
 }
 
 const prepareBannedEmbeds = (content) => {
+  
   const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
   
   let body = content
@@ -416,6 +417,35 @@ const prepareBannedEmbeds = (content) => {
   
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareDollarVigilanteEmbeds = (content) => {
+  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/videos\/watch\/(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(dollarVigilanteRegex)){
+		    const data = link.split('/')
+        match = link.match(dollarVigilanteRegex)
+        if (data[5]) {
+          id = data[5]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:dollarvigilante:${id}:~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
@@ -599,6 +629,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBanned = content.split(':')
     const url = `https://api.banned.video/embed/${splitBanned[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
+  } else if(content.includes(':dollarvigilante:')) {
+    const splitDollarvigilante = content.split(':')
+    const url = `https://dollarvigilante.tv/videos/embed/${splitDollarvigilante[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dollarvigilante`} url={url} />  
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -723,6 +757,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBitchuteEmbeds(content)
       } else if(link.includes('banned.video')) {
         content = prepareBannedEmbeds(content)
+      } else if(link.includes('dollarvigilante.tv')) {
+        content = prepareDollarVigilanteEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {
