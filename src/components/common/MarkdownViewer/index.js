@@ -8,7 +8,6 @@ import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import TwitterEmbed from '../TwitterEmbed'
 
-
 const FACEBOOK_APP_ID = 236880454857514
 
 const renderer = new DefaultRenderer({
@@ -99,7 +98,7 @@ const useStyles = createUseStyles(theme => ({
   },
   facebookResponsive: {
     overflow: 'hidden',
-    paddingBottom: '56.25%',
+    paddingBottom: '72.25%',
     position: 'relative',
     height:0,
     marginBottom: 10,
@@ -545,7 +544,8 @@ const prepareSoundCloudEmbeds = (content) => {
 }
 
 const prepareFacebookEmbeds = (content) => {
-  const facebookRegex = /^http(?:s?):\/\/(?:www\.|web\.|m\.)?facebook\.com\/(?:video\.php\?v=\d+|.*?\/videos\/\d+)|([A-z0-9]+)\/videos(?:\/[0-9A-z].+)?\/(\d+)(?:.+)?$/gm
+  const facebookRegex = /^https?:\/\/(www\.|web\.|m\.)?facebook\.com.*\/(video(s)?|watch|story)(\.php?|\/).+$/gm
+  const facebookIdRegex = /[0-9]+/
 
   let body = content
 
@@ -558,10 +558,9 @@ const prepareFacebookEmbeds = (content) => {
 
     try {
       if(link.match(facebookRegex)){
-        const data = link.split('/')
         match = link.match(facebookRegex)
         
-        id = data[data.length-1]
+        id = link.match(facebookIdRegex)[0]
         
       }
 
@@ -700,38 +699,37 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   } else if(content.includes(':dapplr:')) {
     const splitDapplr = content.split(':')
     const url = `https://cdn.dapplr.in/file/dapplr-videos/${splitDapplr[2]}`
-    return <UrlVideoEmbed key={`${url}${scrollIndex}dapplr`} url={url} />  
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dapplr`} url={url} /> 
   } else if(content.includes(':freeworldnews:')) {
     const splitFreeWorldNews = content.split(':')
     const url = `https://api.banned.video/embed/${splitFreeWorldNews[2]}`
-    return <UrlVideoEmbed key={`${url}${scrollIndex}freeworldnews`} url={url} /> 
+    return <UrlVideoEmbed key={`${url}${scrollIndex}freeworldnews`} url={url} />
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
     return <ReactSoundCloud url={url} />
   } else if (content.includes(':facebook:')) {
-    try {
-      const splitFacebook = content.split(':')
-
+    const splitFacebook = content.split(':')
+    if (splitFacebook[2]) {
+      const url = `https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook%2Fvideos%2F${splitFacebook[2]}%2F&width=500&show_text=false&appId=${FACEBOOK_APP_ID}&height=360`
+      
       return (
-        <React.Fragment>
+        <React.Fragment key={`${url}${scrollIndex}facebook`}>
           <div className={classes.facebookResponsive}>
             <iframe 
               title={`facebook-${splitFacebook[2]}`}
-              src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook%2Fvideos%2F${splitFacebook[2]}%2F&width=500&show_text=false&appId=${FACEBOOK_APP_ID}&height=360`}
-              width="100%" 
-              height="auto"
-              scrolling="no" 
-              frameborder="0" 
-              allowfullscreen="true" 
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+              src={url}
+              width='100%' 
+              height='0'
+              scrolling='no' 
+              frameBorder='0' 
+              allowFullScreen={true} 
+              allow='autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share'
             >
             </iframe>
           </div>
         </React.Fragment>
       )
-    } catch(error) {
-      console.log({ error })
     }
   } else if (content.includes(':tiktok:')) {
     const splitTiktok = content.split(':')
@@ -739,7 +737,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       const url = `https://www.tiktok.com/embed/v2/${splitTiktok[2]}?lang=en-US`
 
       return (
-        <React.Fragment>
+        <React.Fragment key={`${url}${scrollIndex}tiktok`}>
           <div className={classes.tiktokWrapper}>
             <iframe
               title='Embedded Video'
@@ -762,7 +760,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const url = `https://embed.music.apple.com/gb/${splitApple[2]}`
     // return <UrlVideoEmbed key={`${url}${scrollIndex}apple`} url={url} />
     return (
-      <React.Fragment>
+      <React.Fragment key={`${url}${scrollIndex}apple`}>
         <div className={classes.videoWrapper} >
           <iframe
             title='Apple Music'
