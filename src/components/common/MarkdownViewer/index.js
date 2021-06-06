@@ -483,6 +483,35 @@ const prepareDapplrEmbeds = (content) => {
   return body
 }
 
+const prepareFreeWorldNewsEmbeds = (content) => {
+  const freeWorldNewsRegex = /(?:https?:\/\/(?:(?:freeworldnews\.tv\/watch\?id=(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(freeWorldNewsRegex)){
+		    const data = link.split('?id=')
+        match = link.match(freeWorldNewsRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:freeworldnews:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
 const prepareSoundCloudEmbeds = (content) => {
   const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
   let body = content
@@ -668,6 +697,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitDapplr = content.split(':')
     const url = `https://cdn.dapplr.in/file/dapplr-videos/${splitDapplr[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}dapplr`} url={url} />  
+  } else if(content.includes(':freeworldnews:')) {
+    const splitFreeWorldNews = content.split(':')
+    const url = `https://api.banned.video/embed/${splitFreeWorldNews[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}freeworldnews`} url={url} /> 
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -796,6 +829,8 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareDollarVigilanteEmbeds(content)
       } else if(link.includes('dapplr.in')) {
         content = prepareDapplrEmbeds(content)
+      } else if(link.includes('freeworldnews.tv')) {
+        content = prepareFreeWorldNewsEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {
