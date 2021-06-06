@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import { useHistory } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
@@ -20,7 +20,6 @@ import {
   ContainedButton,
   Avatar,
   BuzzIcon,
-  SunMoonIcon,
   SearchIcon,
   WalletIcon,
 } from 'components/elements'
@@ -31,11 +30,13 @@ import {
   LoginModal,
   SearchField,
   NotificationFilter,
+  MoreMenu,
 } from 'components'
 import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { clearNotificationsRequest } from 'store/profile/actions'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -156,6 +157,12 @@ const useStyles = createUseStyles(theme => ({
   avatarWrapper: {
     paddingLeft: "10px",
   },
+  menu: {
+    '& li': {
+      fontSize: 18,
+      fontWeight: '500 !important',
+    },
+  },
 }))
 
 const MobileAppFrame = (props) => {
@@ -193,6 +200,8 @@ const MobileAppFrame = (props) => {
   const [disableSearchTips, setDisableSearchTips] = useState(false)
   const query = params.q === undefined ? '' : params.q
   const [searchkey, setSearchkey] = useState(query)
+  const [openMoreMenu, setOpenMoreMenu] = useState(false)
+  const moreMenuRef = useRef()
   const classes = useStyles()
 
   let title = 'Home'
@@ -262,6 +271,13 @@ const MobileAppFrame = (props) => {
     }
   }
 
+  const handleClickOpenMoreMenu = () => {
+    setOpenMoreMenu(true)
+  }
+
+  const handleClickCloseOpenMoreMenu = () => {
+    setOpenMoreMenu(false)
+  }
 
   const floatStyle = {
     margin: 0,
@@ -304,12 +320,6 @@ const MobileAppFrame = (props) => {
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
-      name: 'Display',
-      icon: <SunMoonIcon />,
-      onClick: showThemeModal,
-      type: 'action',
-    },
-    {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
       icon: <ProfileIcon />,
@@ -318,6 +328,13 @@ const MobileAppFrame = (props) => {
       name: 'Wallet',
       icon: <WalletIcon />,
       path: `/@${username}/wallet`,
+    },
+    {
+      name: 'More'  ,
+      icon: <MoreHorizIcon ref={moreMenuRef} />,
+      path: '#',
+      preventDefault: true,
+      onClick: handleClickOpenMoreMenu,
     },
   ]
   const isActivePath = (path, current) => {
@@ -416,7 +433,6 @@ const MobileAppFrame = (props) => {
         classes={{ root: classes.avatarMenuWrapper }}
       >
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
-        <MenuItem onClick={showSwitchModal}>Switch Account</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/getstarted`}>Get Started</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/tos`}>Terms of Service</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/developers`}>Developers</MenuItem>
@@ -554,6 +570,22 @@ const MobileAppFrame = (props) => {
       <ThemeModal show={openTheme} onHide={onHideTheme} />
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} fromIntentBuzz={fromIntentBuzz} buzzIntentCallback={handleSetBuzzIntent} />
+      <MoreMenu 
+        anchor={moreMenuRef}
+        className={classes.menu}
+        open={openMoreMenu}
+        onClose={handleClickCloseOpenMoreMenu}
+        items={[
+          {
+            onClick: showThemeModal,
+            text: 'Theme',
+          },
+          {
+            onClick: showSwitchModal,
+            text: 'Switch Account',
+          },
+        ]}
+      />
     </React.Fragment>
   )
 }
