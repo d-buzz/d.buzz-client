@@ -24,7 +24,7 @@ import { useHistory } from 'react-router-dom'
 import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
-import { invokeTwitterIntent } from 'services/helper'
+import { invokeTwitterIntent, calculateOverhead } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
@@ -173,7 +173,7 @@ const useStyles = createUseStyles(theme => ({
     color: '#e61c34',
     borderRadius: '50%',
     cursor: 'pointer',
-  
+
     '&:hover':{
       transition: 'all 350ms',
       padding: 5,
@@ -217,6 +217,7 @@ const CreateBuzzForm = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [overhead, setOverhehad] = useState(0)
 
   const location = useLocation()
   const params = queryString.parse(location.search) || ''
@@ -270,7 +271,12 @@ const CreateBuzzForm = (props) => {
   }
 
   useEffect(() => {
-    setWordCount(Math.floor((content.length / 280) * 100))
+    const overhead = calculateOverhead(content)
+
+    setOverhehad(overhead)
+
+    const length = content.length - overhead
+    setWordCount(Math.floor((length / 280) * 100))
 
     // getting the draft post value from browser storage
     savePostAsDraft(localStorage.getItem('draft_post'))
@@ -532,7 +538,7 @@ const CreateBuzzForm = (props) => {
           {!publishing && !loading && (
             <TextArea
               name='content-area'
-              maxLength='280'
+              maxLength={280 + overhead}
               minRows={minRows}
               value={!draftPost ? content : draftPost}
               onKeyUp={updateCounter}

@@ -14,6 +14,7 @@ import stripHtml from 'string-strip-html'
 import moment from 'moment'
 import { ChainTypes, makeBitMaskFilter } from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
+import { calculateOverhead } from 'services/helper'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -38,7 +39,10 @@ export const hashBuffer = (buffer) => {
 
 export const invokeFilter = (item) => {
   const body = stripHtml(item.body)
-  return (body.length <= 280 && item.category === `${appConfig.TAG}`)
+  const overhead = calculateOverhead(body)
+
+  const length = body.length - overhead
+  return (length <= 280 && item.category === `${appConfig.TAG}`)
 }
 
 export const removeFootNote = (data) => {
@@ -1354,7 +1358,7 @@ export const getCensoredList = () => {
 export const fetchAccountTransferHistory = (account, start=-1, limit=1000) => {
   const op = ChainTypes.operations
   const filter = makeBitMaskFilter(
-    [op.transfer, op.claim_reward_balance, 
+    [op.transfer, op.claim_reward_balance,
       op.transfer_from_savings, op.transfer_to_savings,
       op.transfer_to_vesting, op.interest, op.withdraw_vesting])
 
@@ -1375,9 +1379,9 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
     const op_comment = [[
       'claim_reward_balance',
       {
-        account, 
-        reward_hive, 
-        reward_hbd, 
+        account,
+        reward_hive,
+        reward_hbd,
         reward_vests,
       },
     ]]
