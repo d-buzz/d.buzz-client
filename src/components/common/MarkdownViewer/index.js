@@ -328,7 +328,7 @@ const prepareLbryEmbeds = (content) => {
 }
 
 const prepareOdyseeEmbeds = (content) => {
-  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com)))/i
+  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com\/@(.*?)\/(.*))))/i
   let body = content
 
   const links = markdownLinkExtractor(content)
@@ -394,7 +394,6 @@ const prepareBitchuteEmbeds = (content) => {
 }
 
 const prepareBannedEmbeds = (content) => {
-  
   const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
   
   let body = content
