@@ -6,6 +6,7 @@ import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import stripHtml from 'string-strip-html'
 import textParser from 'npm-text-parser'
+import getUrls from 'get-urls'
 
 const dmp = new diff_match_patch()
 
@@ -361,4 +362,20 @@ export const redirectToUserProfile = () => {
     const account = window.location.href.split("@")
     window.location = (`/#/@${account[1].replace("#/", "")}`)
   }
+}
+
+export const calculateOverhead = (content) => {
+  let urls = Array.from(getUrls(content))
+
+  let overhead = 0
+
+  if(urls.length > 3) {
+    urls = urls.slice(0, 2)
+  }
+
+  urls.forEach((item) => {
+    overhead += item.length
+  })
+
+  return overhead
 }
