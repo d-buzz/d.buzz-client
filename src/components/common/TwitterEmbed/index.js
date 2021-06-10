@@ -31,7 +31,7 @@ function TwitterEmbed(props) {
   const getTheme =() => {
     const theme = localStorage.getItem('theme')
     let mode = ''
-    if(theme.includes('night') || theme.includes('gray')){
+    if(theme?.includes('night') || theme?.includes('gray')){
       mode = 'dark'
     }
     else {
