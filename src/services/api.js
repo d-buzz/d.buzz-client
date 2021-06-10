@@ -1151,7 +1151,7 @@ export const slug = (text) => {
 
 export const createMeta = (tags = []) => {
 
-  const uniqueTags = [ ...new Set(tags.map(item => item.text)) ]
+  const uniqueTags = [ ...new Set(tags.map(item => item)) ]
 
   const meta = {
     app: 'dBuzz/v3.0.0',
