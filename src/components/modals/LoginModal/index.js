@@ -71,6 +71,21 @@ const useStyles = createUseStyles(theme => ({
     whiteSpace: 'nowrap',
     fontSize: 14,
   },
+  username: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  usernameHint: {
+    margin: 0,
+    marginRight: 5,
+    padding: '3px 15px',
+    paddingBottom: 6,
+    background: '#E6ECF0',
+    border: '1px solid #CED4DA',
+    borderRadius: 25,
+    userSelect: 'none',
+  },
 }))
 
 const FormSpacer = () => {
@@ -94,7 +109,7 @@ const LoginModal = (props) => {
   } = props
 
   const classes = useStyles()
-  const [username, setUsername] = useState()
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState()
   const [useKeychain, setUseKeychain] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
@@ -193,14 +208,17 @@ const LoginModal = (props) => {
             </center>
           </div>
           <FormLabel className={classes.label}>Username</FormLabel>
-          <FormControl
-            disabled={loading}
-            name="username"
-            type="text"
-            value={username}
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-          />
+          <div className={classes.username}>
+            <b className={classes.usernameHint}>@</b>
+            <FormControl
+              disabled={loading}
+              name="username"
+              type="text"
+              value={username}
+              onChange={onChange}
+              onKeyDown={onKeyDown}
+            />
+          </div>
           <FormSpacer />
           {!useKeychain && (
             <React.Fragment>
