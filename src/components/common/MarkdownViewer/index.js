@@ -6,8 +6,7 @@ import classNames from 'classnames'
 import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
-import { TwitterTweetEmbed } from 'react-twitter-embed'
-import { TweetSkeleton } from 'components'
+import TwitterEmbed from '../TwitterEmbed'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -166,27 +165,27 @@ const prepareTwitterEmbeds = (content) => {
 
         if(link.match(mainTwitterRegex)) {
           match = link.match(mainTwitterRegex)
-          id = match[2]
+          id = `${match[1]}&${match[2]}`
           if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
             match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
-            id = match[2]
+            id = `${match[1]}&${match[2]}`
             id = id.slice(0, -2)
           }
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
         else if(link.match(mobileTwitterRegex)) {
           match = link.match(mobileTwitterRegex)
-          id = match[2]
+          id = `${match[1]}&${match[2]}`
           if(link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
             match = link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
-            id = match[2]
+            id = `${match[1]}&${match[2]}`
             id = id.slice(0, -2)
           }
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
 
         if(match) {
-          const id = match[2]
+          const id = `${match[1]}&${match[2]}`
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
       } catch(e) { }
@@ -661,7 +660,7 @@ const getCoinTicker = (coin) => {
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
-    return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
+    return <TwitterEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} />
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.tv/embed?v=${splitThreeSpeak[2]}`
