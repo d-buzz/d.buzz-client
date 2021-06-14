@@ -343,13 +343,17 @@ const prepareOdyseeEmbeds = (content) => {
         const data = link.split('/')
         match = link.match(odyseeRegex)
         if (data[4]) {
-          const data1 = data[4].split(':')
-          id = data1[0]
+          const data1 = data[4].split(':')[0]
+          if(data[4].includes('?')){
+            id = data[4]
+          } else {
+            id = data1
+          }
         }
       }
 
       if(match){
-        body = body.replace(link, `~~~~~~.^.~~~:odysy:${id}:~~~~~~.^.~~~`)
+        body = body.replace(link, `~~~~~~.^.~~~^odysy^${id}^~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
@@ -748,8 +752,8 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
         </React.Fragment>
       )
     }
-  } else if (content.includes(':odysy:')) {
-    const splitOdysy = content.split(':')
+  } else if (content.includes('^odysy^')) {
+    const splitOdysy = content.split('^')
     const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}odysy`} url={url} />
   } else if(content.includes(':apple:')) {
