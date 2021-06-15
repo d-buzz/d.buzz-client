@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
 import Row from 'react-bootstrap/Row'
@@ -17,19 +17,19 @@ import {
   ProfileIcon,
   ContainedButton,
   Avatar,
+  SunMoonIcon,
   PowerIcon,
   CircularBrandIcon,
   BuzzIcon,
   WalletIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
+import IconPeople from '@material-ui/icons/People'
 import {
   BuzzFormModal,
   ThemeModal,
   SwitchUserModal,
   LoginModal,
-  MoreMenu,
 } from 'components'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -166,12 +166,6 @@ const useStyles = createUseStyles(theme => ({
   logoutButtonMinify: {
     ...theme.left.sidebar.bottom.wrapper,
   },
-  menu: {
-    '& li': {
-      fontSize: 18,
-      fontWeight: '500 !important',
-    },
-  },
 }))
 
 
@@ -269,16 +263,12 @@ const SideBarLeft = (props) => {
   const { pathname } = location
   const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
   const timestamp = moment().unix()
-  const [openMoreMenu, setOpenMoreMenu] = useState(false)
-  const moreMenuRef = useRef()
 
   const showThemeModal = () => {
-    handleClickCloseOpenMoreMenu()
     setOpenTheme(true)
   }
 
   const showSwitchModal = () => {
-    handleClickCloseOpenMoreMenu()
     setOpenSwitchModal(true)
   }
 
@@ -346,14 +336,6 @@ const SideBarLeft = (props) => {
     }
   }
 
-  const handleClickOpenMoreMenu = () => {
-    setOpenMoreMenu(true)
-  }
-
-  const handleClickCloseOpenMoreMenu = () => {
-    setOpenMoreMenu(false)
-  }
-
   const NavLinks = [
     {
       name: 'Home',
@@ -382,6 +364,13 @@ const SideBarLeft = (props) => {
       icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
     },
     {
+      name: 'Theme',
+      icon: <SunMoonIcon />,
+      path: '#',
+      preventDefault: true,
+      onClick: showThemeModal,
+    },
+    {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
       icon: <ProfileIcon />,
@@ -392,11 +381,11 @@ const SideBarLeft = (props) => {
       path: `/@${username}/wallet`,
     },
     {
-      name: 'More'  ,
-      icon: <MoreHorizIcon ref={moreMenuRef} />,
+      name: 'Switch Account',
+      icon: <IconPeople />,
       path: '#',
       preventDefault: true,
-      onClick: handleClickOpenMoreMenu,
+      onClick: showSwitchModal,
     },
   ]
 
@@ -506,22 +495,6 @@ const SideBarLeft = (props) => {
       <ThemeModal show={openTheme} onHide={onHideTheme} />
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} />
-      <MoreMenu 
-        anchor={moreMenuRef}
-        className={classes.menu}
-        open={openMoreMenu}
-        onClose={handleClickCloseOpenMoreMenu}
-        items={[
-          {
-            onClick: showThemeModal,
-            text: 'Theme',
-          },
-          {
-            onClick: showSwitchModal,
-            text: 'Switch Account',
-          },
-        ]}
-      />
     </React.Fragment>
   )
 }
