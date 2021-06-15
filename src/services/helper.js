@@ -6,9 +6,13 @@ import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import stripHtml from 'string-strip-html'
 import textParser from 'npm-text-parser'
-import getUrls from 'get-urls'
 
 const dmp = new diff_match_patch()
+
+export const getUrls = (text) => {
+  const regexUrls = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[/w@?^=%&/~+#-(a-z)(A-Z)(0-9)])?/gm
+  return text.match(regexUrls) !== null ? text.match(regexUrls) : []
+}
 
 export const anchorTop = () => {
   window.scrollTo(0, 0)
@@ -365,7 +369,7 @@ export const redirectToUserProfile = () => {
 }
 
 export const calculateOverhead = (content) => {
-  let urls = Array.from(getUrls(content))
+  let urls = getUrls(content)
 
   let overhead = 0
 
