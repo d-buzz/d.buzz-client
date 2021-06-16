@@ -9,6 +9,11 @@ import textParser from 'npm-text-parser'
 
 const dmp = new diff_match_patch()
 
+export const getUrls = (text) => {
+  const regexUrls = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[/w@?^=%&/~+#-(a-z)(A-Z)(0-9)])?/gm
+  return text.match(regexUrls) !== null ? text.match(regexUrls) : []
+}
+
 export const anchorTop = () => {
   window.scrollTo(0, 0)
 }
@@ -361,4 +366,20 @@ export const redirectToUserProfile = () => {
     const account = window.location.href.split("@")
     window.location = (`/#/@${account[1].replace("#/", "")}`)
   }
+}
+
+export const calculateOverhead = (content) => {
+  let urls = getUrls(content)
+
+  let overhead = 0
+
+  if(urls.length > 3) {
+    urls = urls.slice(0, 2)
+  }
+
+  urls.forEach((item) => {
+    overhead += item.length
+  })
+
+  return overhead
 }

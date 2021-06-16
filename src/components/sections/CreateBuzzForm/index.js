@@ -21,10 +21,10 @@ import {  uploadFileRequest,  publishPostRequest,  setPageFrom, savePostAsDraft}
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { WithContext as ReactTags } from 'react-tag-input'
+// import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
 import FormCheck from 'react-bootstrap/FormCheck'
-import { invokeTwitterIntent } from 'services/helper'
+import { invokeTwitterIntent, calculateOverhead } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
@@ -173,7 +173,7 @@ const useStyles = createUseStyles(theme => ({
     color: '#e61c34',
     borderRadius: '50%',
     cursor: 'pointer',
-  
+
     '&:hover':{
       transition: 'all 350ms',
       padding: 5,
@@ -196,12 +196,12 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const KeyCodes = {
-  comma: 188,
-  enter: 13,
-}
+// const KeyCodes = {
+//   comma: 188,
+//   enter: 13,
+// }
 
-const delimiters = [KeyCodes.comma, KeyCodes.enter]
+// const delimiters = [KeyCodes.comma, KeyCodes.enter]
 
 const tooltips = {
   payout: `This is your max accept payout for THIS buzz. You can set different max payouts for each of your buzz's. If you set you payout to '0', any rewards will be sent to the @null account.`,
@@ -217,6 +217,7 @@ const CreateBuzzForm = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [overhead, setOverhehad] = useState(0)
 
   const location = useLocation()
   const params = queryString.parse(location.search) || ''
@@ -260,6 +261,8 @@ const CreateBuzzForm = (props) => {
   const [content, setContent] = useState(wholeIntent)
   const [tags, setTags] = useState(buzzIntentTags)
 
+  console.log({ tags })
+
   const history = useHistory()
   let containerClass = classes.container
   let minRows = 2
@@ -270,11 +273,17 @@ const CreateBuzzForm = (props) => {
   }
 
   useEffect(() => {
-    setWordCount(Math.floor((content.length / 280) * 100))
+    const overhead = calculateOverhead(content)
+
+    setOverhehad(overhead)
+
+    const length = content.length - overhead
+    setWordCount(Math.floor((length / 280) * 100))
 
     // getting the draft post value from browser storage
     savePostAsDraft(localStorage.getItem('draft_post'))
-  }, [content, images, savePostAsDraft])
+    setTags(extractAllHashtags(draftPost || content))
+  }, [content, draftPost, images, savePostAsDraft])
 
   const closePayoutDisclaimer = () => {
     setOpenPayoutDisclaimer(false)
@@ -308,7 +317,6 @@ const CreateBuzzForm = (props) => {
           }
         })
       }
-
       setContent(value)
     } else if (name === 'max-payout') {
       if (!payoutAgreed) {
@@ -382,7 +390,6 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickPublishPost = () => {
-
     // delete post from draft
     savePostAsDraft("")
     savePostAsDraftToStorage("")
@@ -423,26 +430,26 @@ const CreateBuzzForm = (props) => {
     return passed
   }
 
-  const handleDelete = (i) => {
-    setTags(tags.filter((tag, index) => index !== i))
-  }
+  // const handleDelete = (i) => {
+  //   setTags(tags.filter((tag, index) => index !== i))
+  // }
 
-  const handleAddition = (tag) => {
-    tag.id = tag.id.split(' ').join('')
-    tag.text = tag.text.split(' ').join('')
-    tag.text = tag.text.replace('#', '')
-    setTags([...tags, tag])
-  }
+  // const handleAddition = (tag) => {
+  //   tag.id = tag.id.split(' ').join('')
+  //   tag.text = tag.text.split(' ').join('')
+  //   tag.text = tag.text.replace('#', '')
+  //   setTags([...tags, tag])
+  // }
 
-  const handleDrag = (tag, currPos, newPos) => {
-    const tagsArray = [...tags]
-    const newTags = tagsArray.slice()
+  // const handleDrag = (tag, currPos, newPos) => {
+  //   const tagsArray = [...tags]
+  //   const newTags = tagsArray.slice()
 
-    newTags.splice(currPos, 1)
-    newTags.splice(newPos, 0, tag)
+  //   newTags.splice(currPos, 1)
+  //   newTags.splice(newPos, 0, tag)
 
-    setTags(newTags)
-  }
+  //   setTags(newTags)
+  // }
 
   const handleClickContent = (e) => {
     try {
@@ -510,6 +517,18 @@ const CreateBuzzForm = (props) => {
     }
   }
 
+  const extractAllHashtags = (value) => {
+    let hashtags = value.match(/#\w+/g)
+
+    if(hashtags === null)  {
+      hashtags = []
+    } else {
+      hashtags = hashtags.map((item) => item.replace("#", ''))
+    }
+
+    return hashtags
+  }
+
   return (
     <div className={containerClass}>
       <div className={classes.row}>
@@ -532,7 +551,7 @@ const CreateBuzzForm = (props) => {
           {!publishing && !loading && (
             <TextArea
               name='content-area'
-              maxLength='280'
+              maxLength={280 + overhead}
               minRows={minRows}
               value={!draftPost ? content : draftPost}
               onKeyUp={updateCounter}
@@ -581,7 +600,7 @@ const CreateBuzzForm = (props) => {
             </label>
           )}
           <br />
-          {!publishing && content.length !== 0 && (
+          {/* {!publishing && content.length !== 0 && (
             <div style={{ width: '100%', paddingBottom: 5 }}>
               <ReactTags
                 placeholder='Add tags'
@@ -593,7 +612,7 @@ const CreateBuzzForm = (props) => {
                 autofocus={false}
               />
             </div>
-          )}
+          )} */}
           {loading && (
             <div style={{ width: '100%', paddingTop: 5 }}>
               <Box position='relative' display='inline-flex'>

@@ -399,16 +399,18 @@ function* publishPostRequest(payload, meta) {
     const { tags, payout } = payload
     let { body } = payload
 
-    body = footnote(body)
-
     const user = yield select(state => state.auth.get('user'))
     const { username, useKeychain } = user
 
     let title = stripHtml(body)
+    title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+    title = `${title}`.trim()
 
     if(title.length > 70) {
       title = `${title.substr(0, 70)} ...`
     }
+
+    body = footnote(body)
 
     const operations = yield call(generatePostOperations, username, title, body, tags, payout)
 

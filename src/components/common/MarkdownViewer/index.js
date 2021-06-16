@@ -6,8 +6,7 @@ import classNames from 'classnames'
 import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
-import { TwitterTweetEmbed } from 'react-twitter-embed'
-import { TweetSkeleton } from 'components'
+import TwitterEmbed from '../TwitterEmbed'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -166,27 +165,27 @@ const prepareTwitterEmbeds = (content) => {
 
         if(link.match(mainTwitterRegex)) {
           match = link.match(mainTwitterRegex)
-          id = match[2]
+          id = `${match[1]}&${match[2]}`
           if(link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
             match = link.match(/(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
-            id = match[2]
+            id = `${match[1]}&${match[2]}`
             id = id.slice(0, -2)
           }
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
         else if(link.match(mobileTwitterRegex)) {
           match = link.match(mobileTwitterRegex)
-          id = match[2]
+          id = `${match[1]}&${match[2]}`
           if(link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
             match = link.match(/(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
-            id = match[2]
+            id = `${match[1]}&${match[2]}`
             id = id.slice(0, -2)
           }
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
 
         if(match) {
-          const id = match[2]
+          const id = `${match[1]}&${match[2]}`
           body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
         }
       } catch(e) { }
@@ -328,7 +327,7 @@ const prepareLbryEmbeds = (content) => {
 }
 
 const prepareOdyseeEmbeds = (content) => {
-  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com)))/i
+  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com\/@(.*?)\/(.*))))/i
   let body = content
 
   const links = markdownLinkExtractor(content)
@@ -343,13 +342,17 @@ const prepareOdyseeEmbeds = (content) => {
         const data = link.split('/')
         match = link.match(odyseeRegex)
         if (data[4]) {
-          const data1 = data[4].split(':')
-          id = data1[0]
+          const data1 = data[4].split(':')[0]
+          if(data[4].includes('?')){
+            id = data[4]
+          } else {
+            id = data1
+          }
         }
       }
 
       if(match){
-        body = body.replace(link, `~~~~~~.^.~~~:odysy:${id}:~~~~~~.^.~~~`)
+        body = body.replace(link, `~~~~~~.^.~~~^odysy^${id}^~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
@@ -416,6 +419,95 @@ const prepareBannedEmbeds = (content) => {
   
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareDollarVigilanteEmbeds = (content) => {
+  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/videos\/watch\/(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(dollarVigilanteRegex)){
+		    const data = link.split('/')
+        match = link.match(dollarVigilanteRegex)
+        if (data[5]) {
+          id = data[5]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:dollarvigilante:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareDapplrEmbeds = (content) => {
+  const dapplrRegex = /(?:https?:\/\/(?:(?:(www\.)?cdn\.dapplr\.in\/file\/dapplr-videos\/(.*)\/(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let username = ''
+		  let id = ''
+  
+		  if(link.match(dapplrRegex)){
+		    const data = link.split('/')
+        match = link.match(dapplrRegex)
+        if (data[5] && data[6]) {
+          username = data[5]
+          id = data[6]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:dapplr:${username}/${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
+
+const prepareFreeWorldNewsEmbeds = (content) => {
+  const freeWorldNewsRegex = /(?:https?:\/\/(?:(?:freeworldnews\.tv\/watch\?id=(.*))))/i
+  
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(freeWorldNewsRegex)){
+		    const data = link.split('?id=')
+        match = link.match(freeWorldNewsRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:freeworldnews:${id}:~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
@@ -572,7 +664,7 @@ const getCoinTicker = (coin) => {
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
-    return <TwitterTweetEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} onLoad={() => recomputeRowIndex(scrollIndex)} placeholder={<TweetSkeleton />}/>
+    return <TwitterEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} />
   } else if(content.includes(':threespeak:')) {
     const splitThreeSpeak = content.split(':')
     const url = `https://3speak.tv/embed?v=${splitThreeSpeak[2]}`
@@ -599,6 +691,18 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitBanned = content.split(':')
     const url = `https://api.banned.video/embed/${splitBanned[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
+  } else if(content.includes(':dollarvigilante:')) {
+    const splitDollarvigilante = content.split(':')
+    const url = `https://dollarvigilante.tv/videos/embed/${splitDollarvigilante[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dollarvigilante`} url={url} />  
+  } else if(content.includes(':dapplr:')) {
+    const splitDapplr = content.split(':')
+    const url = `https://cdn.dapplr.in/file/dapplr-videos/${splitDapplr[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}dapplr`} url={url} />  
+  } else if(content.includes(':freeworldnews:')) {
+    const splitFreeWorldNews = content.split(':')
+    const url = `https://api.banned.video/embed/${splitFreeWorldNews[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}freeworldnews`} url={url} /> 
   } else if(content.includes(':soundcloud:')) {
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
@@ -647,8 +751,8 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
         </React.Fragment>
       )
     }
-  } else if (content.includes(':odysy:')) {
-    const splitOdysy = content.split(':')
+  } else if (content.includes('^odysy^')) {
+    const splitOdysy = content.split('^')
     const url = `https://odysee.com/$/embed/${splitOdysy[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}odysy`} url={url} />
   } else if(content.includes(':apple:')) {
@@ -723,6 +827,12 @@ const MarkdownViewer = React.memo((props) => {
         content = prepareBitchuteEmbeds(content)
       } else if(link.includes('banned.video')) {
         content = prepareBannedEmbeds(content)
+      } else if(link.includes('dollarvigilante.tv')) {
+        content = prepareDollarVigilanteEmbeds(content)
+      } else if(link.includes('dapplr.in')) {
+        content = prepareDapplrEmbeds(content)
+      } else if(link.includes('freeworldnews.tv')) {
+        content = prepareFreeWorldNewsEmbeds(content)
       } else if(link.includes('soundcloud.com')) {
         content = prepareSoundCloudEmbeds(content)
       } else if(link.includes('facebook.com')) {

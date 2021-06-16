@@ -1,6 +1,6 @@
 {
   "name": "d.buzz-client",
-  "version": "3.15.0",
+  "version": "3.16.0",
   "private": true,
   "dependencies": {
     "@hiveio/hive-js": "^0.8.13",
@@ -16,6 +16,7 @@
     "diff-match-patch": "^1.0.5",
     "emoji-mart": "^3.0.1",
     "env-cmd": "^10.1.0",
+    "get-urls": "^10.0.0",
     "immutable": "^4.0.0-rc.12",
     "lottie-react": "^2.1.0",
     "markdown-link-extractor": "^1.2.3",

@@ -93,9 +93,9 @@ const Init = (props) => {
       names.forEach(name => {
         caches.delete(name)
       })
+      window.history.forward(1)
+      window.location.reload(true)
     })
-    window.history.forward(1)
-    window.location.reload(true)
   }
 
   const dismiss = () => {
