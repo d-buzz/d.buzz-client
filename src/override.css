@@ -125,3 +125,18 @@ a[rel="nofollow noopener"]::after {
     color:white;
   }
 }
+
+* {
+  scroll-behavior: smooth;
+}
+
+*::-webkit-scrollbar {
+  background: transparent;
+  width: 15px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: gray;
+  width: 15px;
+  border-radius: 30px;
+}
