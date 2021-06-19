@@ -18,18 +18,6 @@ function TwitterEmbed(props) {
   const { tweetId } = props
   const username = tweetId.split('&')[0]
   const id = tweetId.split('&')[1]
-  
-  const getTheme =() => {
-    const theme = localStorage.getItem('theme')
-    let mode = ''
-    if(theme?.includes('night') || theme?.includes('gray')){
-      mode = 'dark'
-    }
-    else {
-      mode = 'light'
-    }
-    return mode
-  }
 
   return (
     <React.Fragment>
