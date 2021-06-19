@@ -156,7 +156,6 @@ const useStyles = createUseStyles(theme => ({
     opacity: 0.8,
     animation: 'savedAsDraftAnimation 350ms',
     cursor: 'pointer',
-  
     '&:hover':{
       transition: 'all 350ms',
       opacity: 1,
@@ -178,7 +177,6 @@ const useStyles = createUseStyles(theme => ({
     color: '#e61c34',
     borderRadius: '50%',
     cursor: 'pointer',
-    
     '&:hover':{
       transition: 'all 350ms',
       background: '#e61c34',
