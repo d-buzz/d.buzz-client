@@ -18,6 +18,18 @@ function TwitterEmbed(props) {
   const { tweetId } = props
   const username = tweetId.split('&')[0]
   const id = tweetId.split('&')[1]
+  
+  const getTheme =() => {
+    const theme = localStorage.getItem('theme')
+    let mode = ''
+    if(theme?.includes('night') || theme?.includes('gray')){
+      mode = 'dark'
+    }
+    else {
+      mode = 'light'
+    }
+    return mode
+  }
 
   return (
     <React.Fragment>
@@ -25,7 +37,7 @@ function TwitterEmbed(props) {
         <iframe
           className='twitterEmbedWrapper'
           title='Embedded Tweet'
-          src={`http://localhost:3000/#/twitterEmbed&https://twitter.com/${username}/status/${id}`}
+          src={`/#/twitterEmbed&https://twitter.com/${username}/status/${id}`}
           allowFullScreen={true}
           frameBorder='0'
           width='100%'
