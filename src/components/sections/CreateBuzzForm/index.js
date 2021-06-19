@@ -173,7 +173,12 @@ const useStyles = createUseStyles(theme => ({
     border: '1px solid #e61c34',
     borderRadius: '5px',
     userSelect: 'none',
-  
+  },
+  clearDraftIcon: {
+    color: '#e61c34',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    
     '&:hover':{
       transition: 'all 350ms',
       background: '#e61c34',
