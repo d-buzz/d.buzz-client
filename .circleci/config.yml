@@ -1,10 +1,4 @@
 
-orbs:
-  discord: antonioned/discord@0.1.0
-commands:
-  send_status: discord/status
-  common_scripts:
-
 
 jobs:
   test_build_prod:
@@ -40,6 +34,10 @@ jobs:
 
 workflows:
   version: 2
+  orbs:
+    discord: antonioned/discord@0.1.0
+  commands:
+    send_status: discord/status
   environment_builds:
     jobs:
     - test_build_dev
