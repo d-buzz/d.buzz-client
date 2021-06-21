@@ -1,16 +1,13 @@
 version: 2
 
-executors:
-  global-executor:
-    docker:
-        - image: node:14.7.0
-    working_directory: /tmp/dbuzz-client
-
 orbs:
   discord: antonioned/discord@0.1.0
 
 jobs:
   test_build_prod:
+      docker:
+        - image: node:14.7.0
+      working_directory: /tmp/dbuzz-client
       commands:
         send_status: discord/status
       executor: global-executor
@@ -26,6 +23,9 @@ jobs:
           only: master
 
   test_build_dev:
+      docker:
+        - image: node:14.7.0
+      working_directory: /tmp/dbuzz-client
       commands:
         send_status: discord/status
       executor: global-executor
