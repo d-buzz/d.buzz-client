@@ -1,3 +1,4 @@
+import TweetLoader from 'components/skeleton/TweetLoader'
 import React, { useEffect } from 'react'
 
 function TwitterEmbedAPI() {
@@ -29,7 +30,7 @@ function TwitterEmbedAPI() {
   return (
 	  <React.Fragment>
 		  <blockquote className='twitter-tweet' data-theme={getTheme()} data-height="100">
-			  <a href={tweetUrl} > </a>
+			  <a href={tweetUrl}> <TweetLoader /> </a>
 		  </blockquote>
 	  </React.Fragment>
   )

@@ -126,6 +126,15 @@ a[rel="nofollow noopener"]::after {
   }
 }
 
+@keyframes twitterLoader {
+  from {
+    transform: scale(0.8)
+  }
+  to {
+    transform: scale(1)
+  }
+}
+
 * {
   scroll-behavior: smooth;
 }
