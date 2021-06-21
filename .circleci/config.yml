@@ -48,6 +48,8 @@ workflows:
             branches:
               only: master
       - deploy_build_dev:
+          requires:
+            - test_build_dev
           filters:
             branches:
               only: dev
