@@ -3,15 +3,20 @@ version: 2.1
 orbs:
   discord: antonioned/discord@0.1.0
 
+commands:
+  common-steps:
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run lint
+
 jobs:
   prod_build_test:
       docker:
         - image: node:14.7.0
       working_directory: /tmp/dbuzz-client
       steps:
-        - checkout
-        - run: npm install
-        - run: npm run lint
+        - common-steps
         - run: npm run build:prod
         - discord/status:
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
@@ -21,9 +26,7 @@ jobs:
         - image: node:14.7.0
       working_directory: /tmp/dbuzz-client
       steps:
-        - checkout
-        - run: npm install
-        - run: npm run lint
+        - common-steps
         - run: npm run build:dev
         - discord/status:
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
