@@ -28,6 +28,13 @@ jobs:
         - discord/status:
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
 
+  deploy_build_dev:
+      machine:
+        enabled: true
+      steps:
+        - run:
+            name: Deploy over SSH
+            command: ssh ubuntu@51.75.93.8 'sudo rm -R dbuzz-dev-buid/ && git clone -b dev https://github.com/d-buzz/d.buzz-client.git && cd dbuzz-dev-buid/  && docker-compose -f docker-compose.dev.yml up -d --build'
 
 workflows:
   environment_builds:
