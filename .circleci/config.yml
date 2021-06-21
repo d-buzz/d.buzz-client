@@ -6,10 +6,11 @@ executors:
         - image: node:14.7.0
     working_directory: /tmp/dbuzz-client
 
+orbs:
+  discord: antonioned/discord@0.1.0
+
 jobs:
   test_build_prod:
-      orbs:
-        discord: antonioned/discord@0.1.0
       commands:
         send_status: discord/status
       executor: global-executor
@@ -25,8 +26,6 @@ jobs:
           only: master
 
   test_build_dev:
-      orbs:
-        discord: antonioned/discord@0.1.0
       commands:
         send_status: discord/status
       executor: global-executor
