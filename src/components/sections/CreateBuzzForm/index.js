@@ -153,14 +153,18 @@ const useStyles = createUseStyles(theme => ({
     alignItems: 'center',
     height: 'fit-content',
     float: 'right',
-    opacity: 0.5,
+    opacity: 0.8,
     animation: 'savedAsDraftAnimation 350ms',
+    cursor: 'pointer',
+    '&:hover':{
+      transition: 'all 350ms',
+      opacity: 1,
+    },
   },
   draftPostLabel: {
     ...theme.font,
     margin: 0,
     marginRight: 5,
-    lineHeight: 1.5,
     fontSize: '1.2em',
     color: '#e61c34',
     padding: '2px 10px',
@@ -168,19 +172,14 @@ const useStyles = createUseStyles(theme => ({
     border: '1px solid #e61c34',
     borderRadius: '5px',
     userSelect: 'none',
+    transition: 'all 350ms',
+    '&:hover':{
+      background: '#e61c34',
+      color: '#ffffff',
+    },
   },
   clearDraftIcon: {
-    color: '#e61c34',
-    borderRadius: '50%',
-    cursor: 'pointer',
-
-    '&:hover':{
-      transition: 'all 350ms',
-      padding: 5,
-      transform: 'scale(1.1)',
-      background: '#e61c34',
-      color: 'white',
-    },
+    marginBottom: 3,
   },
   counter: {
     position: 'absolute',
@@ -563,9 +562,8 @@ const CreateBuzzForm = (props) => {
             />
           )}
           {draftPost && (
-            <span className={classes.draftPostContainer}>
-              <p className={classes.draftPostLabel}>draft</p>
-              <ClearIcon size={20} className={classes.clearDraftIcon} onClick={clearDraft}/>
+            <span className={classes.draftPostContainer} onClick={clearDraft}>
+              <p className={classes.draftPostLabel}><ClearIcon size={20} className={classes.clearDraftIcon} /> draft</p>
             </span>
           )}
           <br />
