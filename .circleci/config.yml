@@ -1,10 +1,18 @@
 
 
-jobs:
-  test_build_prod:
-      docker:
+executors:
+  global-executor:
+    orbs:
+      discord: antonioned/discord@0.1.0
+    commands:
+      send_status: discord/status
+    docker:
         - image: node:14.7.0
       working_directory: /tmp/dbuzz-client
+
+jobs:
+  test_build_prod:
+      executor: global-executor
       steps:
         - checkout
         - run: npm install
@@ -17,9 +25,7 @@ jobs:
           only: master
 
   test_build_dev:
-      docker:
-        - image: node:14.7.0
-      working_directory: /tmp/dbuzz-client
+      executor: global-executor
       steps:
         - checkout
         - run: npm install
@@ -34,10 +40,6 @@ jobs:
 
 workflows:
   version: 2
-  orbs:
-    discord: antonioned/discord@0.1.0
-  commands:
-    send_status: discord/status
   environment_builds:
     jobs:
     - test_build_dev
