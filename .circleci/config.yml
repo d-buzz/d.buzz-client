@@ -15,9 +15,6 @@ jobs:
         - run: npm run build:prod
         - discord/status:
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
-      filters:
-        branches:
-          only: master
 
   test_build_dev:
       docker:
@@ -30,13 +27,16 @@ jobs:
         - run: npm run build:dev
         - discord/status:
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
-      filters:
-        branches:
-          ignore: master
 
 
 workflows:
   environment_builds:
     jobs:
       - test_build_dev
+        filters:
+        branches:
+          ignore: master
       - test_build_prod
+        filters:
+        branches:
+          only: master
