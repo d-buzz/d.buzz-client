@@ -10,7 +10,6 @@ jobs:
       working_directory: /tmp/dbuzz-client
       commands:
         send_status: discord/status
-      executor: global-executor
       steps:
         - checkout
         - run: npm install
@@ -28,7 +27,6 @@ jobs:
       working_directory: /tmp/dbuzz-client
       commands:
         send_status: discord/status
-      executor: global-executor
       steps:
         - checkout
         - run: npm install
