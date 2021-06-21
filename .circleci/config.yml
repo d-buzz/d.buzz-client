@@ -34,7 +34,7 @@ jobs:
       steps:
         - run:
             name: Deploy over SSH
-            command: ssh ubuntu@51.75.93.8 'sudo rm -R dbuzz-dev-build/ && git clone -b dev git@github.com:d-buzz/d.buzz-client.git dbuzz-dev-build && cd dbuzz-dev-build/  && docker-compose -f docker-compose.dev.yml up -d --build'
+            command: ssh ubuntu@51.75.93.8 'sudo rm -R dbuzz-dev-build/ && git clone -b dev git@github.com:d-buzz/d.buzz-client.git dbuzz-dev-build && cd dbuzz-dev-build/  && sudo docker-compose -f docker-compose.dev.yml up -d --build'
 
 workflows:
   environment_builds:
