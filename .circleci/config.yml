@@ -1,34 +1,45 @@
-version: 2.1
+
 orbs:
   discord: antonioned/discord@0.1.0
 commands:
   send_status: discord/status
+  common_scripts:
+    - checkout
+    - run: npm install
+    - run: npm run lint
+    - run: npm run build:prod
 
 jobs:
-  test-build-prod:
-    steps:
-      - run: npm run build:prod
-    filters:
-      branches:
-        only: master
-  test-build-dev:
-    steps:
-      - run: npm run build:dev
-    filters:
-      branches:
-        ignore: master
+  test_build_prod:
+      docker:
+        - image: node:14.7.0
+      working_directory: /tmp/dbuzz-client
+      steps:
+        - common_scripts
+        - send_status:
+            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+      filters:
+        branches:
+          only: master
 
-
-jobs:
-  build:
-    docker:
-      - image: node:14.7.0
-    working_directory: /tmp/dbuzz-client
-    steps:
+  test_build_dev:
+      docker:
+        - image: node:14.7.0
+      working_directory: /tmp/dbuzz-client
+      steps:
       - checkout
-      - run: npm install
-      - run: npm run lint
-      - test-build-prod
-      - test-build-dev
+      - common_scripts
+      - run: npm run build:dev
       - send_status:
           webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+      filters:
+        branches:
+          ignore: master
+
+
+workflows:
+  version: 2
+  environment_builds:
+    jobs:
+    - test_build_dev
+    - test_build_prod
