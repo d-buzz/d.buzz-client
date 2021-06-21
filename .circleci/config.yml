@@ -6,12 +6,14 @@ commands:
 
 jobs:
   test-build-prod:
-    - run: npm run build:prod
+    steps:
+      - run: npm run build:prod
     filters:
       branches:
         only: master
   test-build-dev:
-    - run: npm run build:dev
+    steps:
+      - run: npm run build:dev
     filters:
       branches:
         ignore: master
