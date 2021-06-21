@@ -1,3 +1,5 @@
+version: 2.1
+
 orbs:
   discord: antonioned/discord@0.1.0
 
@@ -34,7 +36,6 @@ jobs:
 
 
 workflows:
-  version: 2
   environment_builds:
     jobs:
       - test_build_dev
