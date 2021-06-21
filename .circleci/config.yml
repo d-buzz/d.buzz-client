@@ -1,10 +1,9 @@
 version: 2
 
-orbs:
-  discord: antonioned/discord@0.1.0
-
 jobs:
   test_build_prod:
+      orbs:
+        discord: antonioned/discord@0.1.0
       docker:
         - image: node:14.7.0
       working_directory: /tmp/dbuzz-client
@@ -20,6 +19,8 @@ jobs:
           only: master
 
   test_build_dev:
+      orbs:
+        discord: antonioned/discord@0.1.0
       docker:
         - image: node:14.7.0
       working_directory: /tmp/dbuzz-client
