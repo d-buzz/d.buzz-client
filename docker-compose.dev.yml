@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  sample-prod:
+  development-build:
     container_name: dbuzz-development
     build:
       context: .
