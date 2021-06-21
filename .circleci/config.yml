@@ -32,11 +32,11 @@ jobs:
 workflows:
   environment_builds:
     jobs:
-      - test_build_dev
-        filters:
-        branches:
-          ignore: master
-      - test_build_prod
-        filters:
-        branches:
-          only: master
+      - test_build_dev:
+          filters:
+            branches:
+              ignore: master
+      - test_build_prod:
+          filters:
+            branches:
+              only: master
