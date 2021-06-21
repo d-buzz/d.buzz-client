@@ -17,7 +17,7 @@ COPY . ./
 RUN npm run build:dev
 
 # copy build to nginx
-FROM nginx:stable-alpine
+FROM nginx:latest
 COPY --from=build /app/build /usr/share/nginx/html
 
 # copy nginx config
