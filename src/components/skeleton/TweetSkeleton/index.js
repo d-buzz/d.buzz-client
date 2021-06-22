@@ -14,7 +14,7 @@ const TweetSkeleton = () => {
   return(
     <React.Fragment>
       <div className={classes.wrapper}>
-        <Skeleton height={150} />
+        <Skeleton height={250} />
       </div>
     </React.Fragment>
   )

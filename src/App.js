@@ -7,6 +7,8 @@ import { LastLocationProvider } from 'react-router-last-location'
 import { createUseStyles } from 'react-jss'
 import { Helmet } from 'react-helmet'
 import { redirectToUserProfile } from 'services/helper'
+import { useLocation } from 'react-router-dom'
+import TwitterEmbedAPI from 'components/pages/TwitterEmbedAPI'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -25,6 +27,8 @@ const AppWrapper = ({ children }) => {
 }
 
 const App = () => {
+  const { pathname } = useLocation()
+  const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
 
   useEffect(() => {
     // redirect to user profile if link only contains @username
@@ -43,13 +47,15 @@ const App = () => {
       </Helmet>
       <LastLocationProvider>
         <ThemeLoader>
-          <Init>
-            <AuthGuard>
-              <AppWrapper>
-                {renderRoutes(routes)}
-              </AppWrapper>
-            </AuthGuard>
-          </Init>
+          {!twitterEmbedRoutes ?
+            <Init>
+              <AuthGuard>
+                <AppWrapper>
+                  {renderRoutes(routes)}
+                </AppWrapper>
+              </AuthGuard>
+            </Init> :
+            <TwitterEmbedAPI />}
         </ThemeLoader>
       </LastLocationProvider>
     </React.Fragment>
