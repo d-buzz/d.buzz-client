@@ -181,6 +181,14 @@ const useStyles = createUseStyles(theme => ({
   clearDraftIcon: {
     marginBottom: 3,
   },
+  characterCounter: {
+    position: 'relative',
+    width: '30px',
+    height: '30px',
+    float: 'right',
+    marginTop: 2,
+    marginRight: 10,
+  },
   counter: {
     position: 'absolute',
     fontWeight: 'bold',
@@ -190,7 +198,7 @@ const useStyles = createUseStyles(theme => ({
     width: 'fit-content',
     left: '50%',
     top: '50%',
-    transform: 'translate(-50%,-50%)',
+    transform: 'translate(-52%,-52%)',
     animation: 'counterAnimation 350ms',
   },
 }))
@@ -260,6 +268,9 @@ const CreateBuzzForm = (props) => {
   const [content, setContent] = useState(wholeIntent)
   const [tags, setTags] = useState(buzzIntentTags)
 
+  const [counterColor, setCounterColor] = useState('#e53935')
+  const CircularProgressStyle = { float: 'right', color: counterColor, transform: content.length >= 260 && 'scale(1.3)' }
+
   console.log({ tags })
 
   const history = useHistory()
@@ -283,6 +294,16 @@ const CreateBuzzForm = (props) => {
     savePostAsDraft(localStorage.getItem('draft_post'))
     setTags(extractAllHashtags(draftPost || content))
   }, [content, draftPost, images, savePostAsDraft])
+
+  useEffect(() => {
+    if(content.length === 280) {
+      setCounterColor('#E0245E')
+    } else if(content.length >= 260) {
+      setCounterColor('#FFAD1F')
+    } else {
+      setCounterColor('#e53935')
+    }
+  }, [content])
 
   const closePayoutDisclaimer = () => {
     setOpenPayoutDisclaimer(false)
@@ -339,18 +360,18 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const updateCounter = (e) => {
-    onChange(e, "draftPost")
-    const countProgress = document.querySelector('.countProgress')
-    // changing progress color based on content length
-    if(content.length === 280) {
-      countProgress.style.color = '#E0245E'
-    } else if(content.length >= 260) {
-      countProgress.style.color = '#FFAD1F'
-    } else {
-      countProgress.style.color = '#e53935'
-    }
-  }
+  // const updateCounter = (e) => {
+  //   onChange(e, "draftPost")
+  //   const countProgress = document.querySelector('.countProgress')
+  //   // changing progress color based on content length
+  //   if(content.length === 280) {
+  //     countProgress.style.color = '#E0245E'
+  //   } else if(content.length >= 260) {
+  //     countProgress.style.color = '#FFAD1F'
+  //   } else {
+  //     countProgress.style.color = '#e53935'
+  //   }
+  // }
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload')
@@ -553,7 +574,6 @@ const CreateBuzzForm = (props) => {
               maxLength={280 + overhead}
               minRows={minRows}
               value={!draftPost ? content : draftPost}
-              onKeyUp={updateCounter}
               onKeyDown={e => onChange(e, "draftPost")}
               onChange={e => onChange(e, "draftPost")}
               onPaste={e => onChange(e, "draftPost")}
@@ -672,18 +692,19 @@ const CreateBuzzForm = (props) => {
                 position='relative'
                 display='inline-flex'
               >
-                <span>
+                <div className={classes.characterCounter}>
                   <CircularProgress
-                    className='countProgress'
+                    className='countProgressBar'
+                    style={CircularProgressStyle}
                     classes={{
                       circle: classes.circle,
                     }}
-                    size={content.length >= 260 ? 40 : 30}
+                    size={30}
                     value={wordCount}
-                    variant='determinate'
+                    variant='static'
                   />
                   {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
-                </span>
+                </div>
               </Box>
             </React.Fragment>
           )}
