@@ -344,8 +344,6 @@ const CreateBuzzForm = (props) => {
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
 
-  console.log({ tags })
-
   let containerClass = classes.container
   let minRows = 2
 
