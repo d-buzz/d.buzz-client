@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  development-build:
+    container_name: dbuzz-development
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3002:3002'

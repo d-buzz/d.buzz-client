@@ -27,9 +27,10 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import { setDefaultVotingWeightRequest } from 'store/settings/actions'
-import { FacebookShareButton, FacebookIcon } from 'react-share'
+import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, WhatsappShareButton, WhatsappIcon, LinkedinShareButton, LinkedinIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, TwitterIcon } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
+import { invokeTwitterIntent } from 'services/helper'
 
 const PrettoSlider = withStyles({
   root: {
@@ -183,6 +184,10 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: theme.background.primary,
     ...theme.font,
   },
+  shareIcon: {
+    padding: 8,
+    background: 'red',
+  },
 }))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null, statOnClick = () => {} }) => {
@@ -235,6 +240,8 @@ const PostActions = (props) => {
     setDefaultVotingWeightRequest,
     defaultUpvoteStrength,
   } = props
+
+  const FACEBOOK_APP_ID = 236880454857514
 
   let payoutAdditionalStyle = {}
   let iconDetails = {}
@@ -471,6 +478,15 @@ const PostActions = (props) => {
                     onClose={closeMenu}
                   >
                     <MenuItem className={classes.menuText}>
+                      <TwitterShareButton 
+                        onClick={() => {
+                          setOpenCaret(false)
+                        }}
+                      >
+                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(body)} />
+                      </TwitterShareButton>
+                    </MenuItem>
+                    <MenuItem className={classes.menuText}>
                       <FacebookShareButton 
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
                         quote={body}
@@ -478,8 +494,45 @@ const PostActions = (props) => {
                           setOpenCaret(false)
                         }}
                       >
-                        <FacebookIcon size={32} round={true} className="mr-1"/>
+                        <FacebookIcon size={32} round={true} />
                       </FacebookShareButton>
+                    </MenuItem>
+                    <MenuItem className={classes.menuText}>
+                      <FacebookMessengerShareButton 
+                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        appId={FACEBOOK_APP_ID}
+                        onClick={() => {
+                          setOpenCaret(false)
+                        }}
+                      >
+                        <FacebookMessengerIcon size={32} round={true} />
+                      </FacebookMessengerShareButton>
+                    </MenuItem>
+                    <MenuItem>
+                      <TelegramShareButton
+                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        title={body}
+                        onClick={() => {setOpenCaret(false)}}>
+                        <TelegramIcon size={32} round={true} />
+                      </TelegramShareButton>
+                    </MenuItem>
+                    <MenuItem>
+                      <WhatsappShareButton
+                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        title={body}
+                        onClick={() => {setOpenCaret(false)}}>
+                        <WhatsappIcon size={32} round={true} />
+                      </WhatsappShareButton>
+                    </MenuItem>
+                    <MenuItem>
+                      <LinkedinShareButton
+                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        title={body}
+                        summary={body}
+                        source={'DBuzz'}
+                        onClick={() => {setOpenCaret(false)}}>
+                        <LinkedinIcon size={32} round={true} />
+                      </LinkedinShareButton>
                     </MenuItem>
                   </Menu>
                 </div>

@@ -1,18 +1,68 @@
 version: 2.1
-orbs:
-  discord: antonioned/discord@0.1.0
-commands:
-  send_status: discord/status
-jobs:
-  build:
+
+executors:
+  docker-executor:
     docker:
       - image: node:14.7.0
     working_directory: /tmp/dbuzz-client
+
+orbs:
+  discord: antonioned/discord@0.1.0
+
+commands:
+  common-steps:
     steps:
       - checkout
       - run: npm install
       - run: npm run lint
-      - run: npm run build:prod
-      - run: npm run build:dev
-      - send_status:
-          webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+
+jobs:
+  prod_build_test:
+      executor: docker-executor
+      steps:
+        - common-steps
+        - run: npm run build:prod
+        - discord/status:
+            success_message: test build success on master branch
+            failure_message: test build failed on master branch
+            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+
+  dev_build_test:
+      executor: docker-executor
+      steps:
+        - common-steps
+        - run: npm run build:dev
+        - discord/status:
+            success_message: test build success on non master branch
+            failure_message: test build failed on non master branch
+            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+
+  dev_build_deploy:
+      machine:
+        enabled: true
+      steps:
+        - run:
+            name: Deploy over SSH
+            command: ssh ubuntu@51.75.93.8 'sudo docker container stop $(sudo docker container ls -aq) || true && sudo docker container rm $(sudo docker container ls -aq) || true && sudo docker image prune -f -a || true && sudo rm -R dbuzz-dev-build/ && git clone -b dev git@github.com:d-buzz/d.buzz-client.git dbuzz-dev-build && cd dbuzz-dev-build/  && sudo docker-compose -f docker-compose.dev.yml up -d --build'
+        - discord/status:
+            success_message: development build successfully deployed on https://next.d.buzz
+            failure_message: development build was not deployed on https://next.d.buzz
+            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+
+workflows:
+  environment_builds:
+    jobs:
+      - dev_build_test:
+          filters:
+            branches:
+              ignore: master
+      - prod_build_test:
+          filters:
+            branches:
+              only: master
+      - dev_build_deploy:
+          requires:
+            - dev_build_test
+          filters:
+            branches:
+              only: dev
