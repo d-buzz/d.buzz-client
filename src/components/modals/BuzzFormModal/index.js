@@ -1,10 +1,14 @@
-import React from 'react'
+import React, {useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
 import { CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { CreateBuzzForm } from 'components'
+import { setBuzzConfirmModalStatus } from 'store/interface/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import BuzzConfirmModal from '../BuzzConfirmModal'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -25,14 +29,28 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   modalBody: {
-    paddingLeft: 0,
-    paddingRight: 0,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 }))
 
 const BuzzFormModal = (props) => {
   const { show, onHide } = props
+  const [open, setOpen] = useState(false)
   const classes = useStyles()
+
+  const onHideConfirmModal = () => {
+    setBuzzConfirmModalStatus(false)
+    setOpen(false)
+  }
+
+  const handleBuzzModal = () => {
+    onHide()
+
+    // open confrim modal before deleting buzzes
+    setBuzzConfirmModalStatus(true)
+    setOpen(true)
+  }
 
   return (
     <React.Fragment>
@@ -45,14 +63,22 @@ const BuzzFormModal = (props) => {
         animation={false}
       >
         <ModalBody className={classes.modalBody}>
-          <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={onHide}>
+          <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={handleBuzzModal}>
             <CloseIcon />
           </IconButton>
           <CreateBuzzForm modal={true} hideModalCallback={onHide} />
         </ModalBody>
       </Modal>
+      <BuzzConfirmModal show={open} onHide={onHideConfirmModal}/>
     </React.Fragment>
   )
 }
 
-export default BuzzFormModal
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
+    {
+      setBuzzConfirmModalStatus,
+    },dispatch),
+})
+
+export default connect(null, mapDispatchToProps)(BuzzFormModal)

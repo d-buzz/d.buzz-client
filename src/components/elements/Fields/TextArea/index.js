@@ -18,8 +18,9 @@ const useStyles = createUseStyles(theme => ({
 
 const TextArea = (props) => {
   const classes = useStyles()
+  const { buzzId } = props
   const {
-    label = 'What\'s buzzing?',
+    label = buzzId === 1 ? 'What\'s buzzing?' : 'Add another Buzz',
     minRows = 2,
   } = props
 
