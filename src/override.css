@@ -135,6 +135,18 @@ a[rel="nofollow noopener"]::after {
   }
 }
 
+@keyframes buzzLoading {
+  0% {
+    transform: scale(0.8)
+  }
+  80% {
+    transform: scale(1)
+  }
+  100% {
+    transform: scale(0.8)
+  }
+}
+
 * {
   scroll-behavior: smooth;
 }

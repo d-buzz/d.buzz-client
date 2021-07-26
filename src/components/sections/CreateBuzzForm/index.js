@@ -17,7 +17,7 @@ import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
 import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
-import {  uploadFileRequest,  publishPostRequest,  setPageFrom, savePostAsDraft} from 'store/posts/actions'
+import { uploadFileRequest,  publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, publishReplyRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -29,7 +29,10 @@ import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import ClearIcon from '@material-ui/icons/Clear'
+import { setBuzzModalStatus } from 'store/interface/actions'
+import { BuzzFormModal } from 'components'
+import AddIcon from '@material-ui/icons/Add'
+import CloseIcon from 'components/elements/Icons/CloseIcon'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -79,6 +82,10 @@ const useStyles = createUseStyles(theme => ({
     position: 'relative',
     strokeLinecap: 'round',
     transition: 'all 350ms',
+  },
+  circleBg: {
+    position: 'relative',
+    strokeLinecap: 'round',
   },
   previewContainer: {
     paddingTop: 10,
@@ -181,8 +188,12 @@ const useStyles = createUseStyles(theme => ({
   clearDraftIcon: {
     marginBottom: 3,
   },
-  characterCounter: {
+  characterCounterBg: {
     position: 'relative',
+    marginTop: 2,
+  },
+  characterCounter: {
+    position: 'absolute',
     width: '30px',
     height: '30px',
     float: 'right',
@@ -201,6 +212,53 @@ const useStyles = createUseStyles(theme => ({
     transform: 'translate(-52%,-52%)',
     animation: 'counterAnimation 350ms',
   },
+  colDivider: {
+    width: 0.5,
+    height: 32,
+    margin: '0 15px',
+    background: '#B9CAD3',
+  },
+  addThreadIcon: {
+    display: 'grid',
+    placeItems: 'center',
+    width: 35,
+    height: 35,
+    color: '#e61c34',
+    border: '1px solid #e61c34',
+    borderRadius: '50%',
+    transform: 'translateY(-2px)',
+    cursor: 'pointer',
+
+    '&:hover': {
+      background: 'rgba(230, 28, 52, 0.1)',
+    },
+  },
+  loadingContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '50px 0',
+
+    '& span': {
+      fontSize: '1.2em',
+      fontWeight: 600,
+      marginTop: '10px',
+    },
+
+    '& span:nth-child(3)': {
+      fontSize: 15,
+      color: '#808080',
+    },
+
+    '& img': {
+      height: '100px',
+      width: '100px',
+      animation: 'buzzLoading infinite 850ms',
+      pointerEvents: 'none',
+    },
+  },
+
 }))
 
 // const KeyCodes = {
@@ -225,8 +283,16 @@ const CreateBuzzForm = (props) => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [overhead, setOverhehad] = useState(0)
+  const [open, setOpen] = useState(false)
+  const [currentBuzz, setCurrentBuzz] = useState(1)
+  const [threadCount, setThreadCount] = useState(1)
+  const [buzzLoading, setBuzzLoading] = useState(false)
 
   const location = useLocation()
+  const history = useHistory()
+  const { pathname } = location
+  const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
+
   const params = queryString.parse(location.search) || ''
   const paramsBuzzText = params.text || ''
   const {
@@ -245,6 +311,11 @@ const CreateBuzzForm = (props) => {
     clearIntentBuzz,
     draftPost,
     savePostAsDraft,
+    buzzModalStatus,
+    setBuzzModalStatus,
+    buzzThreads,
+    updateBuzzThreads,
+    publishReplyRequest,
   } = props
 
   const {
@@ -265,21 +336,41 @@ const CreateBuzzForm = (props) => {
       })
     }
   }
+
   const [content, setContent] = useState(wholeIntent)
   const [tags, setTags] = useState(buzzIntentTags)
 
   const [counterColor, setCounterColor] = useState('#e53935')
-  const CircularProgressStyle = { float: 'right', color: counterColor, transform: content.length >= 260 && 'scale(1.3)' }
+  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
+  const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
 
   console.log({ tags })
 
-  const history = useHistory()
   let containerClass = classes.container
   let minRows = 2
 
   if (modal) {
     containerClass = classes.containerModal
     minRows = 5
+  }
+
+  const handleClickBuzz = () => {
+    const buzzId = buzzThreads ? Object.keys(buzzThreads).length + 1 : 1
+    if(buzzThreads[buzzId-1].content !== ''){
+      createThread(buzzId, '')
+    }
+    if(!buzzModalStatus) {
+      setBuzzModalStatus(true)
+      setOpen(true)
+    }
+  }
+
+  const onHide = () => {
+    setBuzzModalStatus(false)
+    setOpen(false)
+    if (isBuzzIntent) {
+      history.push('/')
+    }
   }
 
   useEffect(() => {
@@ -309,17 +400,39 @@ const CreateBuzzForm = (props) => {
     setOpenPayoutDisclaimer(false)
   }
 
-  const savePostAsDraftToStorage = (content) => {
-    localStorage.setItem('draft_post', content)
+  // const savePostAsDraftToStorage = (content) => {
+  //   localStorage.setItem('draft_post', content)
+  // }
+
+  // const clearDraft = () => {
+  //   setContent('')
+  //   savePostAsDraft('')
+  //   savePostAsDraftToStorage('')
+  // }
+
+  // dbuzz threads
+
+  const createThread = (count, content) => {
+    const buzzData = {}
+    buzzData[count] = {id: count, content: content}
+    updateBuzzThreads({...buzzThreads, ...buzzData})
   }
 
-  const clearDraft = () => {
-    setContent('')
-    savePostAsDraft('')
-    savePostAsDraftToStorage('')
+  const handleAddBuzz = (buzzId, content) => {
+    if(buzzThreads !== null){
+      createThread(buzzId, content)
+      setThreadCount(buzzId)
+    }
   }
 
-  const onChange = (e, draft) => {
+  const handleDeleteBuzz = (buzzId) => {
+    delete buzzThreads[buzzId]
+    const threads = {...buzzThreads}
+    updateBuzzThreads(threads)
+    setThreadCount(buzzId)
+  }
+
+  const onChange = (e, draft, buzzId) => {
     const { target } = e
     const { name } = target
     let { value } = target
@@ -330,10 +443,12 @@ const CreateBuzzForm = (props) => {
         uploadFileRequest(fileObject).then((image) => {
           const value = image[image.length - 1]
           if (value !== undefined) {
-            const contentAppend = `${!draftPost ? content : draftPost} <br /> ![](${value})`
+            const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ![](${value})`
+            createThread(currentBuzz, contentAppend)
             setContent(contentAppend)
-            savePostAsDraft(contentAppend)
-            savePostAsDraftToStorage(contentAppend)
+
+            // savePostAsDraft(contentAppend)
+            // savePostAsDraftToStorage(contentAppend)
           }
         })
       }
@@ -348,16 +463,20 @@ const CreateBuzzForm = (props) => {
         value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
         setPayout(value)
       }
-    } else if (name === 'buzz-to-twitter') {
-      setBuzzToTwitter(!buzzToTwitter)
-    }
+    } 
+    // else if (name === 'buzz-to-twitter') {
+    //   setBuzzToTwitter(!buzzToTwitter)
+    // }
 
-    if(draft === "draftPost"){
-      // setting the redux state to post content
-      savePostAsDraft(value)
-      // storing the state value in the browser storage
-      savePostAsDraftToStorage(value)
-    }
+    setCurrentBuzz(buzzId)
+    handleAddBuzz(buzzId, value)
+
+    // if(draft === "draftPost"){
+    //   // setting the redux state to post content
+    //   savePostAsDraft(value)
+    //   // storing the state value in the browser storage
+    //   savePostAsDraftToStorage(value)
+    // }
   }
 
   // const updateCounter = (e) => {
@@ -400,19 +519,19 @@ const CreateBuzzForm = (props) => {
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${!draftPost ? content : draftPost} <br /> ![](${lastImage})`
+        const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ![](${lastImage})`
+        createThread(currentBuzz, contentAppend)
         setContent(contentAppend)
-        setContent(contentAppend)
-        savePostAsDraft(contentAppend)
-        savePostAsDraftToStorage(contentAppend)
+        // savePostAsDraft(contentAppend)
+        // savePostAsDraftToStorage(contentAppend)
       }
     })
   }
 
   const handleClickPublishPost = () => {
     // delete post from draft
-    savePostAsDraft("")
-    savePostAsDraftToStorage("")
+    // savePostAsDraft("")
+    // savePostAsDraftToStorage("")
 
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
@@ -421,17 +540,46 @@ const CreateBuzzForm = (props) => {
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
-      publishPostRequest(content, tags, payout)
+      setBuzzLoading(true)
+      publishPostRequest(buzzThreads[1].content, tags, payout)
         .then((data) => {
           if (data.success) {
             setPageFrom(null)
             const { author, permlink } = data
-            hideModalCallback()
+            // hideModalCallback()
             clearIntentBuzz()
             broadcastNotification('success', 'You successfully published a post')
-            history.push(`/@${author}/c/${permlink}`)
+
+            if(threadCount === 1) {
+              setBuzzLoading(false)
+              hideModalCallback()
+              updateBuzzThreads({1: {id: 1, content: ''}})
+              history.push(`/@${author}/c/${permlink}`)
+            }
+
+            if(threadCount > 1) {
+              for(let i = 2; i<=threadCount; i++){
+                setTimeout(() => {
+                  publishReplyRequest(author, permlink, buzzThreads[i].content, 'list', 0)
+                    .then(({ success, errorMessage }) => {
+                      if(success) {
+                        broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                        if(i === threadCount-1){
+                          setBuzzLoading(false)
+                          hideModalCallback()
+                          updateBuzzThreads({1: {id: 1, content: ''}})
+                          history.push(`/@${author}/c/${permlink}`)
+                        }
+                      } else {
+                        broadcastNotification('error', errorMessage)
+                      }
+                    })       
+                }, i*5000)
+              }
+            }
           } else {
             broadcastNotification('error', data.errorMessage)
+            setBuzzLoading(false)
           }
         })
     }
@@ -511,10 +659,11 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectGif = (gif) => {
     if (gif) {
-      const contentAppend = `${!draftPost ? content : draftPost} <br /> ${gif}`
+      const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ${gif}`
+      createThread(currentBuzz, contentAppend)
       setContent(contentAppend)
-      savePostAsDraft(contentAppend)
-      savePostAsDraftToStorage(contentAppend)
+      // savePostAsDraft(contentAppend)
+      // savePostAsDraftToStorage(contentAppend)
     }
   }
 
@@ -530,10 +679,11 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${!draftPost ? content : draftPost}${emoticon}`
+      const contentAppend = `${content}${emoticon}`
+      createThread(currentBuzz, contentAppend)
       setContent(contentAppend)
-      savePostAsDraft(contentAppend)
-      savePostAsDraftToStorage(contentAppend)
+      // savePostAsDraft(contentAppend)
+      // savePostAsDraftToStorage(contentAppend)
     }
   }
 
@@ -549,167 +699,225 @@ const CreateBuzzForm = (props) => {
     return hashtags
   }
 
+  // useEffect(() => {
+  //   if(buzzThreads){
+  //     // console.log(Object.values(buzzThreads))
+  //   }
+  // }, [buzzThreads])
+
+  // useEffect(() => {
+  //   alert(currentBuzz)
+  // }, [currentBuzz])
+
   return (
     <div className={containerClass}>
-      <div className={classes.row}>
-        <div className={classNames(classes.inline, classes.left)}>
-          <Avatar author={user.username} />
-        </div>
-        <div className={classNames(classes.inline, classes.right)}>
-          {publishing && (
-            <div style={{ width: '100%', paddingTop: 10 }}>
-              <Box position='relative' display='inline-flex'>
-                <Spinner top={0} size={20} loading={publishing} />
-                &nbsp;
-                <label className={classes.actionLabels}>
-                  broadcasting your buzz to the network, please wait ...
-                </label>
-                &nbsp;
-              </Box>
-            </div>
-          )}
-          {!publishing && !loading && (
-            <TextArea
-              name='content-area'
-              maxLength={280 + overhead}
-              minRows={minRows}
-              value={!draftPost ? content : draftPost}
-              onKeyDown={e => onChange(e, "draftPost")}
-              onChange={e => onChange(e, "draftPost")}
-              onPaste={e => onChange(e, "draftPost")}
-              autoFocus
-              onFocus={moveCaretAtEnd}
-            />
-          )}
-          {draftPost && (
-            <span className={classes.draftPostContainer} onClick={clearDraft}>
-              <p className={classes.draftPostLabel}><ClearIcon size={20} className={classes.clearDraftIcon} /> draft</p>
-            </span>
-          )}
-          <br />
-          <br />
-          <label className={classes.payoutLabel}>Max Payout: </label>
-          <input
-            name='max-payout'
-            className={classes.tinyInput}
-            type='number'
-            onChange={onChange}
-            value={payout}
-            required
-            min='0'
-            step='any'
-          />
-          {!isMobile && (
-            <Tooltip title={tooltips.payout} placement='top'>
-              <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
-            </Tooltip>
-          )}
-          <FormCheck
-            name='buzz-to-twitter'
-            type='checkbox'
-            label='Buzz to Twitter'
-            checked={buzzToTwitter}
-            onChange={onChange}
-            className={classNames(classes.checkBox, classes.label)}
-          />
-          {buzzToTwitter && (
-            <label className={classes.payoutNote}>
-              Twitter intent will open after you click <b>Buzz</b>
-            </label>
-          )}
-          <br />
-          {/* {!publishing && content.length !== 0 && (
-            <div style={{ width: '100%', paddingBottom: 5 }}>
-              <ReactTags
-                placeholder='Add tags'
-                tags={tags}
-                handleDelete={handleDelete}
-                handleAddition={handleAddition}
-                handleDrag={handleDrag}
-                delimiters={delimiters}
-                autofocus={false}
-              />
-            </div>
-          )} */}
-          {loading && (
-            <div style={{ width: '100%', paddingTop: 5 }}>
-              <Box position='relative' display='inline-flex'>
-                <Spinner top={-10} size={20} loading={loading} />
-                &nbsp;
-                <label className={classes.actionLabels}>
-                  uploading image, please wait ...
-                </label>
-                &nbsp;
-              </Box>
-            </div>
-          )}
-          {content.length !== 0 && (
-            <div className={classes.previewContainer} onClick={handleClickContent}>
-              <h6 className={classes.previewTitle}>Buzz preview</h6>
-              <MarkdownViewer content={content} minifyAssets={false} />
-              <div className={classes.separator} />
-            </div>
-          )}
-          {!publishing && (
-            <React.Fragment>
-              <ContainedButton
-                disabled={loading || publishing || content.length === 0}
-                label='Buzz'
-                className={classes.float}
-                onClick={handleClickPublishPost}
-              />
-              <input
-                id='file-upload'
-                type='file'
-                name='image'
-                accept='image/*'
-                multiple={false}
-                ref={inputRef}
-                onChange={handleFileSelectChange}
-                style={{ display: 'none' }}
-              />
-              <label htmlFor='file-upload'>
-                <IconButton
-                  size='medium'
-                  onClick={handleFileSelect}
-                  disabled={(content.length + 88) > 280}
-                  classes={{
-                    root: classes.root,
-                    disabled: classes.disabled,
-                  }}
-                >
-                  <UploadIcon />
-                </IconButton>
-              </label>
-              <IconButton size='medium' onClick={handleOpenGiphy}>
-                <GifIcon />
-              </IconButton>
-              <IconButton size='medium' onClick={handleOpenEmojiPicker}>
-                <EmojiIcon />
-              </IconButton>
-              <Box
-                style={{ float: 'right', marginRight: 10, paddingTop: 10}}
-                position='relative'
-                display='inline-flex'
-              >
-                <div className={classes.characterCounter}>
-                  <CircularProgress
-                    className='countProgressBar'
-                    style={CircularProgressStyle}
-                    classes={{
-                      circle: classes.circle,
-                    }}
-                    size={30}
-                    value={wordCount}
-                    variant='static'
+      {!buzzLoading &&
+        <div className={classes.row}>
+          <div className={classNames(classes.inline, classes.left)}>
+            <Avatar author={user.username} />
+          </div>
+          <div className={classNames(classes.inline, classes.right)}>
+            {publishing && (
+              <div style={{ width: '100%', paddingTop: 10 }}>
+                <Box position='relative' display='inline-flex'>
+                  <Spinner top={0} size={20} loading={publishing} />
+                  &nbsp;
+                  <label className={classes.actionLabels}>
+                    broadcasting your buzz to the network, please wait ...
+                  </label>
+                  &nbsp;
+                </Box>
+              </div>
+            )}
+            {!publishing && !loading && (
+              <span>
+                {!buzzThreads && (
+                  <TextArea
+                    buzzId={1}
+                    name='content-area'
+                    maxLength={280 + overhead}
+                    minRows={minRows}
+                    value={content}
+                    onKeyDown={e => onChange(e, "draftPost", 1)}
+                    onChange={e => onChange(e, "draftPost", 1)}
+                    onPaste={e => onChange(e, "draftPost", 1)}
+                    autoFocus
+                    onFocus={moveCaretAtEnd}
                   />
-                  {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
-                </div>
-              </Box>
-            </React.Fragment>
-          )}
-        </div>
-      </div>
+                )}
+                {buzzThreads &&
+                Object.values(buzzThreads).map(item => (
+                  <span key={item.id} style={{position: 'relative'}}>
+                    {item.id === Object.values(buzzThreads).length && item.id !== 1 && 
+                    <IconButton style={{position: 'absolute', top: 22, right: 2, float: 'right'}} onClick={() => handleDeleteBuzz(item.id)}>
+                      <CloseIcon />
+                    </IconButton>}
+                    <TextArea
+                      buzzId={item.id}
+                      name='content-area'
+                      maxLength={280 + overhead}
+                      minRows={minRows}
+                      value={item.content}
+                      onKeyDown={e => onChange(e, "draftPost", item.id)}
+                      onChange={e => onChange(e, "draftPost", item.id)}
+                      onPaste={e => onChange(e, "draftPost", item.id)}
+                      autoFocus
+                      onFocus={(e) => {
+                        moveCaretAtEnd(e)
+                        setCurrentBuzz(item.id)
+                      }}
+                    />
+                  </span>
+                ))}
+              </span>
+            )}
+            {/* {draftPost && (
+              <span className={classes.draftPostContainer} onClick={clearDraft}>
+                <p className={classes.draftPostLabel}><ClearIcon size={20} className={classes.clearDraftIcon} /> draft</p>
+              </span>
+            )} */}
+            <br />
+            <br />
+            <label className={classes.payoutLabel}>Max Payout: </label>
+            <input
+              name='max-payout'
+              className={classes.tinyInput}
+              type='number'
+              onChange={onChange}
+              value={payout}
+              required
+              min='0'
+              step='any'
+            />
+            {!isMobile && (
+              <Tooltip title={tooltips.payout} placement='top'>
+                <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
+              </Tooltip>
+            )}
+            <FormCheck
+              name='buzz-to-twitter'
+              type='checkbox'
+              label='Buzz to Twitter'
+              checked={buzzToTwitter}
+              onChange={() => setBuzzToTwitter(!buzzToTwitter)}
+              className={classNames(classes.checkBox, classes.label)}
+            />
+            {buzzToTwitter && (
+              <label className={classes.payoutNote}>
+                Twitter intent will open after you click <b>Buzz</b>
+              </label>
+            )}
+            <br />
+            {/* {!publishing && content.length !== 0 && (
+              <div style={{ width: '100%', paddingBottom: 5 }}>
+                <ReactTags
+                  placeholder='Add tags'
+                  tags={tags}
+                  handleDelete={handleDelete}
+                  handleAddition={handleAddition}
+                  handleDrag={handleDrag}
+                  delimiters={delimiters}
+                  autofocus={false}
+                />
+              </div>
+            )} */}
+            {loading && (
+              <div style={{ width: '100%', paddingTop: 5 }}>
+                <Box position='relative' display='inline-flex'>
+                  <Spinner top={-10} size={20} loading={loading} />
+                  &nbsp;
+                  <label className={classes.actionLabels}>
+                    uploading image, please wait ...
+                  </label>
+                  &nbsp;
+                </Box>
+              </div>
+            )}
+            {content.length !== 0 && (
+              <div className={classes.previewContainer} onClick={handleClickContent}>
+                <h6 className={classes.previewTitle}>Buzz preview</h6>
+                <MarkdownViewer content={content} minifyAssets={false} />
+                <div className={classes.separator} />
+              </div>
+            )}
+            {!publishing && (
+              <React.Fragment>
+                <ContainedButton
+                  disabled={loading || publishing || content.length === 0}
+                  label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
+                  className={classes.float}
+                  onClick={handleClickPublishPost}
+                />
+                <input
+                  id='file-upload'
+                  type='file'
+                  name='image'
+                  accept='image/*'
+                  multiple={false}
+                  ref={inputRef}
+                  onChange={handleFileSelectChange}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor='file-upload'>
+                  <IconButton
+                    size='medium'
+                    onClick={handleFileSelect}
+                    disabled={(content.length + 88) > 280}
+                    classes={{
+                      root: classes.root,
+                      disabled: classes.disabled,
+                    }}
+                  >
+                    <UploadIcon />
+                  </IconButton>
+                </label>
+                <IconButton size='medium' onClick={handleOpenGiphy}>
+                  <GifIcon />
+                </IconButton>
+                <IconButton size='medium' onClick={handleOpenEmojiPicker}>
+                  <EmojiIcon />
+                </IconButton>
+                {content && 
+                <Box
+                  style={{ float: 'right', marginRight: 10, paddingTop: 10}}
+                  position='relative'
+                  display='inline-flex'
+                >
+                  <div className={classes.characterCounterBg}>
+                    <CircularProgress
+                      className={classes.circleBg}
+                      size={30}
+                      value={100}
+                      variant='static'
+                      style={counterDefaultStyles}
+                    />
+                  </div>
+                  <div className={classes.characterCounter}>
+                    <CircularProgress
+                      className='countProgressBar'
+                      style={CircularProgressStyle}
+                      classes={{
+                        circle: classes.circle,
+                      }}
+                      size={30}
+                      value={wordCount}
+                      variant='static'
+                    />
+                    {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                  </div>
+                  <div className={classes.colDivider}> </div>
+                  <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
+                </Box>}
+              </React.Fragment>
+            )}
+          </div>
+        </div>}
+      {buzzLoading &&
+        <div className={classes.loadingContainer}>
+          <img src={`${window.location.origin}/images/d.buzz-icon-512.png`} alt='buzzLoading'/>
+          <span>Broadcasting your {threadCount > 1 ? 'thread' : 'buzz'}...</span>
+          {threadCount > 1 && <span>This can take upto 5-10 secs</span>}
+        </div>}
       <EmojiPicker
         open={openEmojiPicker}
         anchorEl={emojiAnchorEl}
@@ -725,6 +933,8 @@ const CreateBuzzForm = (props) => {
         show={openPayoutDisclaimer}
         onHide={closePayoutDisclaimer}
       />
+      <BuzzFormModal show={open} onHide={onHide} />
+
     </div>
   )
 }
@@ -737,6 +947,8 @@ const mapStateToProps = (state) => ({
   payoutAgreed: state.auth.get('payoutAgreed'),
   intentBuzz: state.auth.get('intentBuzz'),
   draftPost: state.posts.get('draftPost'),
+  buzzModalStatus: state.interfaces.get('buzzModalStatus'),
+  buzzThreads: state.posts.get('buzzThreads'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -748,6 +960,9 @@ const mapDispatchToProps = (dispatch) => ({
       broadcastNotification,
       clearIntentBuzz,
       savePostAsDraft,
+      setBuzzModalStatus,
+      updateBuzzThreads,
+      publishReplyRequest,
     },dispatch),
 })
 
