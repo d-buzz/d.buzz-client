@@ -33,6 +33,7 @@ import { setBuzzModalStatus } from 'store/interface/actions'
 import { BuzzFormModal } from 'components'
 import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
+import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -212,6 +213,13 @@ const useStyles = createUseStyles(theme => ({
     transform: 'translate(-52%,-52%)',
     animation: 'counterAnimation 350ms',
   },
+  closeBuzzButton: {
+    position: 'absolute',
+    top: 22,
+    right: 2,
+    float: 'right',
+    animation: 'closeBuzzButtonAnimation 450ms',
+  },
   colDivider: {
     width: 0.5,
     height: 32,
@@ -239,16 +247,13 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: '50px 0',
+    animation: 'buzzLoadingContainer 450ms',
 
-    '& span': {
+    '& .title': {
       fontSize: '1.2em',
       fontWeight: 600,
       marginTop: '10px',
-    },
-
-    '& span:nth-child(3)': {
-      fontSize: 15,
-      color: '#808080',
+      ...theme.font,
     },
 
     '& img': {
@@ -258,7 +263,29 @@ const useStyles = createUseStyles(theme => ({
       pointerEvents: 'none',
     },
   },
+  publishThreadButton: {
+    marginTop: 15,
+    display: 'flex',
+    alignItems: 'center',
+    lineHeight: 1.5,
+    fontSize: 18,
+    color: '#ffffff',
+    padding: '8px 25px',
+    background: '#E61C34',
+    border: 'none',
+    borderRadius: 5,
+    userSelect: 'none',
+    cursor: 'pointer',
 
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
+
+    '&:hover:enabled': {
+      background: '#B71C1C',
+    },
+  },
 }))
 
 // const KeyCodes = {
@@ -284,9 +311,14 @@ const CreateBuzzForm = (props) => {
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [overhead, setOverhehad] = useState(0)
   const [open, setOpen] = useState(false)
+  const [isThread, setIsThread] = useState(false)
   const [currentBuzz, setCurrentBuzz] = useState(1)
   const [threadCount, setThreadCount] = useState(1)
+  const [nextBuzz, setNextBuzz] = useState(0)
+  const [publishedBuzzes, setPublishedBuzzes] = useState(0)
+  const [buzzData, setBuzzData] = useState(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
+  const [buzzing, setBuzzing] = useState(false)
 
   const location = useLocation()
   const history = useHistory()
@@ -353,8 +385,9 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickBuzz = () => {
+    setContent('')
     const buzzId = buzzThreads ? Object.keys(buzzThreads).length + 1 : 1
-    if(buzzThreads[buzzId-1].content !== ''){
+    if(buzzThreads[buzzId-1].content !== '' && buzzThreads[1].content !== ''){
       createThread(buzzId, '')
     }
     if(!buzzModalStatus) {
@@ -420,54 +453,78 @@ const CreateBuzzForm = (props) => {
     if(buzzThreads !== null){
       createThread(buzzId, content)
       setThreadCount(buzzId)
+      buzzId === 2 && setIsThread(true)
     }
   }
 
   const handleDeleteBuzz = (buzzId) => {
     delete buzzThreads[buzzId]
-    const threads = {...buzzThreads}
-    updateBuzzThreads(threads)
-    setThreadCount(buzzId)
+    const buzzData = {}
+    let count = 0
+    // count all buzzes and redefine ids
+    Object.values(buzzThreads).map((buzz) => {
+      count++
+      buzzData[count] = {id: count, content: buzz.content}
+      updateBuzzThreads({...buzzData})
+      return null
+    })
+    setContent('')
+    setThreadCount(threadCount-1)
+    setCurrentBuzz(Object.keys(buzzThreads).length)
+    buzzId === 2 && setIsThread(false)
+  }
+
+  const handleMaxPayout = (e) => {
+    const { target } = e
+    let { value } = target
+
+    if (!payoutAgreed) {
+      setOpenPayoutDisclaimer(true)
+    } else {
+      if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+        value = 0.00
+      }
+      value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
+      setPayout(value)
+    }
   }
 
   const onChange = (e, draft, buzzId) => {
     const { target } = e
     const { name } = target
-    let { value } = target
+    const { value } = target
 
     if (name === 'content-area') {
-      if (e?.clipboardData?.files?.length) {
-        const fileObject = e.clipboardData.files[0]
-        uploadFileRequest(fileObject).then((image) => {
-          const value = image[image.length - 1]
-          if (value !== undefined) {
-            const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ![](${value})`
-            createThread(currentBuzz, contentAppend)
-            setContent(contentAppend)
+      // if (e?.clipboardData?.files?.length) {
+      //   const fileObject = e.clipboardData.files[0]
+      //   uploadFileRequest(fileObject).then((image) => {
+      //     const value = image[image.length - 1]
+      //     if (value !== undefined) {
+      //       const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ![](${value})`
+      //       createThread(currentBuzz, contentAppend)
+      //       setContent(contentAppend)
 
-            // savePostAsDraft(contentAppend)
-            // savePostAsDraftToStorage(contentAppend)
-          }
-        })
-      }
+      //       // savePostAsDraft(contentAppend)
+      //       // savePostAsDraftToStorage(contentAppend)
+      //     }
+      //   })
+      // }
       setContent(value)
-    } else if (name === 'max-payout') {
-      if (!payoutAgreed) {
-        setOpenPayoutDisclaimer(true)
-      } else {
-        if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
-          value = 0.00
-        }
-        value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
-        setPayout(value)
-      }
-    } 
+    }
+    // else if (name === 'max-payout') {
+    //   if (!payoutAgreed) {
+    //     setOpenPayoutDisclaimer(true)
+    //   } else {
+    //     if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+    //       value = 0.00
+    //     }
+    //     value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
+    //     setPayout(value)
+    //   }
+    // } 
     // else if (name === 'buzz-to-twitter') {
     //   setBuzzToTwitter(!buzzToTwitter)
     // }
-
-    setCurrentBuzz(buzzId)
-    handleAddBuzz(buzzId, value)
 
     // if(draft === "draftPost"){
     //   // setting the redux state to post content
@@ -475,6 +532,8 @@ const CreateBuzzForm = (props) => {
     //   // storing the state value in the browser storage
     //   savePostAsDraftToStorage(value)
     // }
+    setCurrentBuzz(buzzId)
+    handleAddBuzz(buzzId, value)
   }
 
   // const updateCounter = (e) => {
@@ -490,40 +549,100 @@ const CreateBuzzForm = (props) => {
   //   }
   // }
 
-  const handleFileSelect = () => {
-    const target = document.getElementById('file-upload')
-    if (isMobile) {
-      target.addEventListener('click', function () {
-        const touch = new Touch({
-          identifier: 'file-upload',
-          target: target,
-        })
+  // const handleFileSelect = () => {
+  //   const target = document.getElementById('file-upload')
+  //   if (isMobile) {
+  //     target.addEventListener('click', function () {
+  //       const touch = new Touch({
+  //         identifier: 'file-upload',
+  //         target: target,
+  //       })
 
-        const touchEvent = new TouchEvent('touchstart', {
-          touches: [touch],
-          view: window,
-          cancelable: true,
-          bubbles: true,
-        })
+  //       const touchEvent = new TouchEvent('touchstart', {
+  //         touches: [touch],
+  //         view: window,
+  //         cancelable: true,
+  //         bubbles: true,
+  //       })
 
-        target.dispatchEvent(touchEvent)
-      })
-    }
-    target.click()
-  }
+  //       target.dispatchEvent(touchEvent)
+  //     })
+  //   }
+  //   target.click()
+  // }
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ![](${lastImage})`
+        const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ![](${lastImage})`
         createThread(currentBuzz, contentAppend)
         setContent(contentAppend)
+        document.getElementById('file-upload').value = ''
+
+        // set the thread if its the thread
+        if(Object.keys(buzzThreads).length > 1){
+          setIsThread(true)
+          setThreadCount(Object.keys(buzzThreads).length)
+        }
         // savePostAsDraft(contentAppend)
         // savePostAsDraftToStorage(contentAppend)
       }
     })
+  }
+
+  const resetBuzzForm = () => {
+    updateBuzzThreads({1: {id: 1, content: ''}})
+    setContent('')
+    setIsThread(false)
+    setCurrentBuzz(1)
+    setThreadCount(1)
+    setNextBuzz(0)
+    setPublishedBuzzes(0)
+    setBuzzData(null)
+    setBuzzLoading(false)
+    setBuzzing(false)
+  }
+
+  const handlePublishThread = () => {
+    if(isThread) {
+      setBuzzing(true)
+      if(buzzThreads[nextBuzz]?.content !== '') {
+        publishReplyRequest(buzzData?.author, buzzData?.permlink, buzzThreads[nextBuzz]?.content, 'list', 0)
+          .then(({ success, errorMessage }) => {
+            if(success) {
+              setPublishedBuzzes(publishedBuzzes+1)
+              setNextBuzz(nextBuzz-1)
+              broadcastNotification('success', `Succesfully replied to @${buzzData?.author}/${buzzData?.permlink}`)
+              setBuzzing(false)
+              if(nextBuzz === 2){
+                hideModalCallback()
+                history.push(`/@${buzzData?.author}/c/${buzzData?.permlink}`)
+                resetBuzzForm()
+                setTimeout(() => {
+                  window.location.reload(true)
+                }, 3000)
+              }
+            } else {
+              broadcastNotification('error', errorMessage)
+            }
+          })
+      } else {
+        setPublishedBuzzes(publishedBuzzes+1)
+        setNextBuzz(nextBuzz-1)
+        broadcastNotification('success', 'This buzz was skipped because it was empty!')
+        setBuzzing(false)
+        if(nextBuzz === 2){
+          hideModalCallback()
+          history.push(`/@${buzzData?.author}/c/${buzzData?.permlink}`)
+          resetBuzzForm()
+          setTimeout(() => {
+            window.location.reload(true)
+          }, 3000)
+        }
+      }
+    }
   }
 
   const handleClickPublishPost = () => {
@@ -539,6 +658,7 @@ const CreateBuzzForm = (props) => {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
       setBuzzLoading(true)
+      setBuzzing(true)
       publishPostRequest(buzzThreads[1].content, tags, payout)
         .then((data) => {
           if (data.success) {
@@ -547,33 +667,15 @@ const CreateBuzzForm = (props) => {
             // hideModalCallback()
             clearIntentBuzz()
             broadcastNotification('success', 'You successfully published a post')
+            setPublishedBuzzes(1)
+            setNextBuzz(threadCount)
+            setBuzzData({author: author, permlink: permlink})
+            setBuzzing(false)
 
-            if(threadCount === 1) {
-              setBuzzLoading(false)
+            if(!isThread) {
               hideModalCallback()
-              updateBuzzThreads({1: {id: 1, content: ''}})
+              resetBuzzForm()
               history.push(`/@${author}/c/${permlink}`)
-            }
-
-            if(threadCount > 1) {
-              for(let i = 2; i<=threadCount; i++){
-                setTimeout(() => {
-                  publishReplyRequest(author, permlink, buzzThreads[i].content, 'list', 0)
-                    .then(({ success, errorMessage }) => {
-                      if(success) {
-                        broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-                        if(i === threadCount-1){
-                          setBuzzLoading(false)
-                          hideModalCallback()
-                          updateBuzzThreads({1: {id: 1, content: ''}})
-                          history.push(`/@${author}/c/${permlink}`)
-                        }
-                      } else {
-                        broadcastNotification('error', errorMessage)
-                      }
-                    })       
-                }, i*5000)
-              }
             }
           } else {
             broadcastNotification('error', data.errorMessage)
@@ -657,7 +759,7 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectGif = (gif) => {
     if (gif) {
-      const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ${gif}`
+      const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${gif}`
       createThread(currentBuzz, contentAppend)
       setContent(contentAppend)
       // savePostAsDraft(contentAppend)
@@ -707,6 +809,26 @@ const CreateBuzzForm = (props) => {
   //   alert(currentBuzz)
   // }, [currentBuzz])
 
+  useEffect(() => {
+    // setup an empty thread on page load
+    if(!buzzThreads){
+      setIsThread(false)
+      createThread(1, '')
+      setCurrentBuzz(1)
+      setThreadCount(1)
+    }
+
+    // clear content when buzz is discarded
+    if(buzzThreads){
+      if(buzzThreads[1]?.content === ''){
+        content && setContent('')
+        setCurrentBuzz(1)
+        setThreadCount(1)
+      }
+    }
+  // eslint-disable-next-line
+  }, [buzzThreads])
+
   return (
     <div className={containerClass}>
       {!buzzLoading &&
@@ -746,8 +868,8 @@ const CreateBuzzForm = (props) => {
                 {buzzThreads &&
                 Object.values(buzzThreads).map(item => (
                   <span key={item.id} style={{position: 'relative'}}>
-                    {item.id === Object.values(buzzThreads).length && item.id !== 1 && 
-                    <IconButton style={{position: 'absolute', top: 22, right: 2, float: 'right'}} onClick={() => handleDeleteBuzz(item.id)}>
+                    {item.content === '' && item.id !== 1 && 
+                    <IconButton className={classes.closeBuzzButton} onClick={() => handleDeleteBuzz(item.id)}>
                       <CloseIcon />
                     </IconButton>}
                     <TextArea
@@ -762,6 +884,7 @@ const CreateBuzzForm = (props) => {
                       autoFocus
                       onFocus={(e) => {
                         moveCaretAtEnd(e)
+                        setContent(item.content)
                         setCurrentBuzz(item.id)
                       }}
                     />
@@ -781,7 +904,7 @@ const CreateBuzzForm = (props) => {
               name='max-payout'
               className={classes.tinyInput}
               type='number'
-              onChange={onChange}
+              onChange={handleMaxPayout}
               value={payout}
               required
               min='0'
@@ -859,7 +982,7 @@ const CreateBuzzForm = (props) => {
                 <label htmlFor='file-upload'>
                   <IconButton
                     size='medium'
-                    onClick={handleFileSelect}
+                    onClick={() => inputRef.current.click()}
                     disabled={(content.length + 88) > 280}
                     classes={{
                       root: classes.root,
@@ -913,8 +1036,9 @@ const CreateBuzzForm = (props) => {
       {buzzLoading &&
         <div className={classes.loadingContainer}>
           <img src={`${window.location.origin}/images/d.buzz-icon-512.png`} alt='buzzLoading'/>
-          <span>Broadcasting your {threadCount > 1 ? 'thread' : 'buzz'}...</span>
-          {threadCount > 1 && <span>This can take upto 5-10 secs</span>}
+          <span className='title'>Broadcasting your {isThread ? 'thread' : 'buzz'}...</span>
+          {/* {isThread && <span>This can take upto 5-10 secs</span>} */}
+          {isThread && <button className={classes.publishThreadButton} onClick={handlePublishThread} disabled={buzzing}>Buzz {publishedBuzzes} of {threadCount} <ArrowForwardRoundedIcon style={{marginLeft: 8}}/></button>}
         </div>}
       <EmojiPicker
         open={openEmojiPicker}
