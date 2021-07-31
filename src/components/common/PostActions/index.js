@@ -225,6 +225,7 @@ const PostActions = (props) => {
     hasUpvoted = false,
     user,
     body = null,
+    bodyWithNoLinks = body.replace(/<[^>]*>/gi, '').replace(/!([A-Za-z0-9-[():\]/._?&#@]+)/gi, ''),
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
@@ -483,13 +484,13 @@ const PostActions = (props) => {
                           setOpenCaret(false)
                         }}
                       >
-                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(body)} />
+                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(bodyWithNoLinks)} />
                       </TwitterShareButton>
                     </MenuItem>
                     <MenuItem className={classes.menuText}>
                       <FacebookShareButton 
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        quote={body}
+                        quote={bodyWithNoLinks}
                         onClick={() => {
                           setOpenCaret(false)
                         }}
@@ -510,8 +511,8 @@ const PostActions = (props) => {
                     </MenuItem>
                     <MenuItem>
                       <TelegramShareButton
-                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        title={body}
+                        url={' '}
+                        title={`${bodyWithNoLinks}\n\nhttps://d.buzz/#/@${author}/c/${permlink}`}
                         onClick={() => {setOpenCaret(false)}}>
                         <TelegramIcon size={32} round={true} />
                       </TelegramShareButton>
@@ -519,7 +520,7 @@ const PostActions = (props) => {
                     <MenuItem>
                       <WhatsappShareButton
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        title={body}
+                        title={bodyWithNoLinks+'\n\n'}
                         onClick={() => {setOpenCaret(false)}}>
                         <WhatsappIcon size={32} round={true} />
                       </WhatsappShareButton>
@@ -527,8 +528,8 @@ const PostActions = (props) => {
                     <MenuItem>
                       <LinkedinShareButton
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        title={body}
-                        summary={body}
+                        title={bodyWithNoLinks}
+                        summary={bodyWithNoLinks}
                         source={'DBuzz'}
                         onClick={() => {setOpenCaret(false)}}>
                         <LinkedinIcon size={32} round={true} />
