@@ -20,7 +20,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MuteIcon from '@material-ui/icons/VolumeOff'
 import Chip from '@material-ui/core/Chip'
 import { Link, useHistory } from 'react-router-dom'
-import { truncateBody } from 'services/helper'
+import { calculateOverhead, truncateBody } from 'services/helper'
 import stripHtml from 'string-strip-html'
 import { censorLinks } from 'services/helper'
 
@@ -200,6 +200,7 @@ const ReplyList = (props) => {
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
   const history = useHistory()
+  const [overhead, setOverhead] = useState(0)
 
   useEffect(() => {
     countReplies(replies)
@@ -362,6 +363,11 @@ const ReplyList = (props) => {
     }
 
     useEffect(() => {
+      const overhead = calculateOverhead(reply.body)
+      setOverhead(overhead)
+    }, [reply.body])
+
+    useEffect(() => {
       if(censorList.length !== 0 && author && permlink) {
         const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
 
@@ -412,7 +418,7 @@ const ReplyList = (props) => {
                     )}
                     <div onClick={handleOpenContent}>
                       <MarkdownViewer minifyAssets={false} content={content} />
-                      {`${stripHtml(content)}`.length > 280 && (
+                      {`${stripHtml(reply.body)}`.length - overhead > 280 && (
                         <div className={classes.context}>
                           <div className={classes.contextWrapper}>
                             <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>

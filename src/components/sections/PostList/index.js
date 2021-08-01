@@ -202,7 +202,7 @@ const PostList = React.memo((props) => {
     title = null,
     disableProfileLink = false,
     disableUserMenu = false,
-    disableUpvote = false,
+    // disableUpvote = false,
     openUserDialog,
     saveScrollIndex,
     scrollIndex,
@@ -273,7 +273,6 @@ const PostList = React.memo((props) => {
       }
     }
   }, [censorList, author, permlink])
-
 
   useEffect(() => {
     if(!isMobile) {
@@ -431,7 +430,7 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
+                  {!isAuthor() && !muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
                       <ExpandMoreIcon  className={classes.moreIcon} />
                     </IconButton>
@@ -451,7 +450,7 @@ const PostList = React.memo((props) => {
                   <div className={classes.actionWrapper}>
                     <PostActions
                       upvoteList={upvoteList}
-                      disableUpvote={disableUpvote}
+                      // disableUpvote={disableUpvote}
                       body={body}
                       hasUpvoted={hasUpvoted}
                       author={author}
@@ -466,17 +465,19 @@ const PostList = React.memo((props) => {
                     />
                   </div>
                 )}
-                <Menu
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={closeMenu}
-                >
-                  <MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>
-                  {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
-                  {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
-                  {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
-                </Menu>
+                {!isAuthor &&
+                  <Menu
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={closeMenu}
+                  >
+                    {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
+                    {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                    {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
+                    {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
+                  </Menu>
+                }
               </div>
             </Col>
           </Row>

@@ -318,11 +318,11 @@ const SideBarLeft = (props) => {
     setOpenLoginModal(false)
   }
 
-  const refreshLatestRouteData = () => {
-    if(pathname.match(/^\/latest/)){
-      setRefreshRouteStatus("latest",timestamp)
-    }
-  }
+  // const refreshLatestRouteData = () => {
+  //   if(pathname.match(/^\/latest/)){
+  //     setRefreshRouteStatus("latest",timestamp)
+  //   }
+  // }
 
   const refreshTrendingRouteData = () => {
     if(pathname.match(/^\/trending/)){
@@ -356,7 +356,8 @@ const SideBarLeft = (props) => {
       path: "/latest",
       icon: <LatestIcon />,
       preventDefault: false,
-      onClick: refreshLatestRouteData,
+      // onClick: refreshLatestRouteData,
+      onClick: () => window.location.reload(true),
     },
     {
       name: 'Notifications',
