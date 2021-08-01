@@ -148,7 +148,7 @@ const useStyles = createUseStyles(theme => ({
       '& .errorIcon': {
         fontSize: '8em !important',
       },
-      },
+    },
 
     '& .errorIcon': {
       fontSize: '6em !important',
@@ -607,7 +607,7 @@ const Content = (props) => {
 
       {invalidBuzz && !loadingContent && !loadingReplies && 
         <div className={classes.invalidBuzz}>
-        <ReportProblemRoundedIcon className='errorIcon' />
+          <ReportProblemRoundedIcon className='errorIcon' />
           <span>Hmm...this page doesn’t exist. Try searching for something else.</span>
         </div>}
     </React.Fragment>

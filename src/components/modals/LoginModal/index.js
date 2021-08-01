@@ -157,10 +157,10 @@ const LoginModal = (props) => {
           onHide()
         }
       })
-      setTimeout(() => {
-        setHasAuthenticationError(true)
-        setLoading(false)
-      }, 10000)
+    setTimeout(() => {
+      setHasAuthenticationError(true)
+      setLoading(false)
+    }, 10000)
   }
 
   const isDisabled = () => {
