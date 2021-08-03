@@ -168,6 +168,10 @@ const night = {
     color: '#172e3f',
     highlight: 'rgb(56 68 77 / 31%)',
   },
+  seeMoreReplies: {
+    background: '#192734',
+    color: '#ffffff',
+  },
 }
 
 const light = {
@@ -329,6 +333,10 @@ const light = {
     },
   },
   skeleton: { },
+  seeMoreReplies: {
+    background: '#F5F8FA',
+    color: '#778694',
+  },
 }
 
 const gray = {
@@ -499,6 +507,10 @@ const gray = {
   skeleton: {
     color: '#2f3136',
     highlight: '#36393fed',
+  },
+  seeMoreReplies: {
+    background: '#282A2D',
+    color: '#ffffff',
   },
 }
 
