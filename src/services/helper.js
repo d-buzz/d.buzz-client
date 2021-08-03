@@ -11,7 +11,7 @@ const dmp = new diff_match_patch()
 
 export const getUrls = (text) => {
   const regexUrls = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[/w@?^=%&/~+#-(a-z)(A-Z)(0-9)])?/gm
-  return text.match(regexUrls) !== null ? text.match(regexUrls) : []
+  return text?.match(regexUrls) !== null ? text?.match(regexUrls) : []
 }
 
 export const anchorTop = () => {
@@ -254,8 +254,27 @@ export const sendToBerries = (author, theme) => {
   window.open(`https://buymeberri.es/!dbuzz${color}/@${author}`, '_blank')
 }
 
+export const calculateOverhead = (content) => {
+  let urls = getUrls(content)
+
+  let overhead = 0
+
+  if(urls?.length > 3) {
+    urls = urls?.slice(0, 2)
+  }
+
+  if(urls){
+    urls.forEach((item) => {
+      overhead += item.length
+    })
+  }
+
+  return overhead
+}
+
 export const truncateBody = (body) => {
-  const bodyLength = `${stripHtml(body)}`.length
+  const overhead = calculateOverhead(body)
+  const bodyLength = `${stripHtml(body)}`.length - overhead
 
   if(bodyLength > 280) {
     body = stripHtml(body)
@@ -366,20 +385,4 @@ export const redirectToUserProfile = () => {
     const account = window.location.href.split("@")
     window.location = (`/#/@${account[1].replace("#/", "")}`)
   }
-}
-
-export const calculateOverhead = (content) => {
-  let urls = getUrls(content)
-
-  let overhead = 0
-
-  if(urls.length > 3) {
-    urls = urls.slice(0, 2)
-  }
-
-  urls.forEach((item) => {
-    overhead += item.length
-  })
-
-  return overhead
 }

@@ -414,7 +414,8 @@ const CreateBuzzForm = (props) => {
 
     // getting the draft post value from browser storage
     savePostAsDraft(localStorage.getItem('draft_post'))
-    setTags(extractAllHashtags(draftPost || content))
+    buzzThreads && setTags(extractAllHashtags(buzzThreads[1].content))
+    // eslint-disable-next-line
   }, [content, draftPost, images, savePostAsDraft])
 
   useEffect(() => {

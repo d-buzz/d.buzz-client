@@ -89,7 +89,6 @@ const useStyles = createUseStyles(theme => ({
   },
   circle: {
     strokeLinecap: 'round',
-    color: '#e53935',
   },
   previewContainer: {
     width: '100%',
@@ -142,6 +141,26 @@ const useStyles = createUseStyles(theme => ({
   actionWrapper: {
     width: '100%',
   },
+  characterCounter: {
+    position: 'relative',
+    width: '30px',
+    height: '30px',
+    float: 'right',
+    marginTop: 15,
+    marginRight: 10,
+  },
+  counter: {
+    position: 'absolute',
+    fontWeight: 'bold',
+    fontSize: '0.8em',
+    marginRight: 12,
+    color: '#e61c34',
+    width: 'fit-content',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-52%,-52%)',
+    animation: 'counterAnimation 350ms',
+  },
 }))
 
 const UpdateFormModal = (props) => {
@@ -160,8 +179,6 @@ const UpdateFormModal = (props) => {
     uploadFileRequest,
   } = props
 
-  const CircularProgressStyle = { float: 'right', marginRight: 5, marginTop: 15 }
-
   const { username } = user
   const inputRef = useRef(null)
   const [content, setContent] = useState('')
@@ -175,6 +192,20 @@ const UpdateFormModal = (props) => {
   const iconButtonStyle = { marginTop: -5 }
   const inputFile = { display: 'none' }
   const replyButtonStyle = { width: 85 }
+
+  const [counterColor, setCounterColor] = useState('#e53935')
+  const CircularProgressStyle = { float: 'right', color: counterColor, transform: content.length >= 260 && 'scale(1.3)' }
+
+
+  useEffect(() => {
+    if(content.length === 280) {
+      setCounterColor('#E0245E')
+    } else if(content.length >= 260) {
+      setCounterColor('#FFAD1F')
+    } else {
+      setCounterColor('#e53935')
+    }
+  }, [content])
 
   useEffect(() => {
     if(body && body !== '') {
@@ -229,11 +260,11 @@ const UpdateFormModal = (props) => {
     publishUpdateRequest(permlink, content)
       .then((success) => {
         if(success) {
-          broadcastNotification('success', `Post successfully edited`)
+          broadcastNotification('success', `Buzz successfully edited`)
           onSuccess(content)
           onClose()
         } else {
-          broadcastNotification('error', `Post failed to edited`)
+          broadcastNotification('error', `Buzz failed to edited`)
         }
       })
   }
@@ -364,15 +395,19 @@ const UpdateFormModal = (props) => {
                       onClick={handleClickSubmitUpdate}
                       disabled={loading || `${content}`.trim() === ''}
                     />
-                    <CircularProgress
-                      style={CircularProgressStyle}
-                      classes={{
-                        circle: classes.circle,
-                      }}
-                      size={30}
-                      value={wordCount}
-                      variant="static"
-                    />
+                    <div className={classes.characterCounter}>
+                      <CircularProgress
+                        className='countProgressBar'
+                        style={CircularProgressStyle}
+                        classes={{
+                          circle: classes.circle,
+                        }}
+                        size={30}
+                        value={wordCount}
+                        variant="static"
+                      />
+                      {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                    </div>
                   </div>
                 </div>
               </Col>
