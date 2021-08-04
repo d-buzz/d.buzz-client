@@ -614,10 +614,10 @@ const CreateBuzzForm = (props) => {
           .then(({ success, errorMessage }) => {
             if(success) {
               setPublishedBuzzes(publishedBuzzes+1)
-              setNextBuzz(nextBuzz-1)
+              setNextBuzz(nextBuzz+1)
               broadcastNotification('success', `Succesfully replied to @${buzzData?.author}/${buzzData?.permlink}`)
               setBuzzing(false)
-              if(nextBuzz === 2){
+              if(nextBuzz === threadCount){
                 hideModalCallback()
                 history.push(`/@${buzzData?.author}/c/${buzzData?.permlink}`)
                 resetBuzzForm()
@@ -631,10 +631,10 @@ const CreateBuzzForm = (props) => {
           })
       } else {
         setPublishedBuzzes(publishedBuzzes+1)
-        setNextBuzz(nextBuzz-1)
+        setNextBuzz(nextBuzz+1)
         broadcastNotification('success', 'This buzz was skipped because it was empty!')
         setBuzzing(false)
-        if(nextBuzz === 2){
+        if(nextBuzz === threadCount){
           hideModalCallback()
           history.push(`/@${buzzData?.author}/c/${buzzData?.permlink}`)
           resetBuzzForm()
@@ -669,7 +669,7 @@ const CreateBuzzForm = (props) => {
             clearIntentBuzz()
             broadcastNotification('success', 'You successfully published a post')
             setPublishedBuzzes(1)
-            setNextBuzz(threadCount)
+            setNextBuzz(2)
             setBuzzData({author: author, permlink: permlink})
             setBuzzing(false)
 
