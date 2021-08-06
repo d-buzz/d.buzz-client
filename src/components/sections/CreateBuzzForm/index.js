@@ -390,7 +390,7 @@ const CreateBuzzForm = (props) => {
     if(buzzThreads[buzzId-1].content !== '' && buzzThreads[1].content !== ''){
       createThread(buzzId, '')
     }
-    if(!buzzModalStatus) {
+    if(!buzzModalStatus && !isMobile) {
       setBuzzModalStatus(true)
       setOpen(true)
     }
@@ -550,27 +550,27 @@ const CreateBuzzForm = (props) => {
   //   }
   // }
 
-  // const handleFileSelect = () => {
-  //   const target = document.getElementById('file-upload')
-  //   if (isMobile) {
-  //     target.addEventListener('click', function () {
-  //       const touch = new Touch({
-  //         identifier: 'file-upload',
-  //         target: target,
-  //       })
+  const handleFileSelect = () => {
+    const target = document.getElementById('file-upload')
+    if (isMobile) {
+      target.addEventListener('click', function () {
+        const touch = new Touch({
+          identifier: 'file-upload',
+          target: target,
+        })
 
-  //       const touchEvent = new TouchEvent('touchstart', {
-  //         touches: [touch],
-  //         view: window,
-  //         cancelable: true,
-  //         bubbles: true,
-  //       })
+        const touchEvent = new TouchEvent('touchstart', {
+          touches: [touch],
+          view: window,
+          cancelable: true,
+          bubbles: true,
+        })
 
-  //       target.dispatchEvent(touchEvent)
-  //     })
-  //   }
-  //   target.click()
-  // }
+        target.dispatchEvent(touchEvent)
+      })
+    }
+    inputRef.current.click()
+  }
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
@@ -983,7 +983,7 @@ const CreateBuzzForm = (props) => {
                 <label htmlFor='file-upload'>
                   <IconButton
                     size='medium'
-                    onClick={() => inputRef.current.click()}
+                    onClick={handleFileSelect}
                     disabled={(content.length + 88) > 280}
                     classes={{
                       root: classes.root,

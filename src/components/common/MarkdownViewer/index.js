@@ -661,6 +661,10 @@ const getCoinTicker = (coin) => {
   }
 }
 
+const checkForImageUrl = (n) => {
+  return !n.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i) && !n.match(/ipfs\.io\/ipfs\/.*/i)
+}
+
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
   content.replace(/^[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/gi, n => `<a href=http://${n}>${n}</a>`)
 
@@ -780,31 +784,16 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const url = `https://emb.d.tube/#!/${splitDTube[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}dtube`} url={url} />
   } else {
-    // render coingecko tickers
-    if(content.match(/\$([A-Za-z-]+)/gi)){
-      return <div
-        key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
-        className={classNames(markdownClass, assetClass)}
-        dangerouslySetInnerHTML={{ __html: renderer.render(
-          content.replace(/\$([A-Za-z-]+)/gi, n => {return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel>${n}</a>` : n}))}}
-      />
-    // render non (http/https/www) links
-    } else if(content.match(/^[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/gi)){
-      return <div
-        key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
-        className={classNames(markdownClass, assetClass)}
-        dangerouslySetInnerHTML={{ __html: renderer.render(
-          content.replace(/^[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/gi, n => `<a href=http://${n}>${n}</a>`))}}
-      />
-    }
     // render normally
-    else {
-      return <div
-        key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
-        className={classNames(markdownClass, assetClass)}
-        dangerouslySetInnerHTML={{ __html: renderer.render(content)}}
-      />
-    }
+    return <div
+      key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
+      className={classNames(markdownClass, assetClass)}
+      dangerouslySetInnerHTML={{ __html: renderer.render(
+        content
+          .replace(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[/w@?^=%&/~+#-(a-z)(A-Z)(0-9)]){1}?/gm, n => checkForImageUrl(n) ? `[${n}](${n.startsWith('http') ? n : `http://${n}`})` : n)
+          .replace(/\$([A-Za-z-]+)/gi, n => {return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel>${n}</a>` : n}),
+      )}}
+    />
   }
 
 }
