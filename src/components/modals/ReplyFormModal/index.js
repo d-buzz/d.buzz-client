@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
-import { invokeTwitterIntent } from 'services/helper'
+import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -198,6 +198,7 @@ const ReplyFormModal = (props) => {
   const [permlink, setPermlink] = useState('')
   const [body, setBody] = useState('')
   const [wordCount, setWordCount] = useState(0)
+  const [overhead, setOverhead] = useState(0)
   const [replyDone, setReplyDone] = useState(false)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
   const [openGiphy, setOpenGiphy] = useState(false)
@@ -215,7 +216,12 @@ const ReplyFormModal = (props) => {
 
 
   useEffect(() => {
-    setWordCount(Math.floor((content.length/280) * 100))
+    const overhead = calculateOverhead(content)
+
+    setOverhead(overhead)
+
+    const length = content.length - overhead
+    setWordCount(Math.floor((length / 280) * 100))
   }, [content])
 
   useEffect(() => {
@@ -263,13 +269,14 @@ const ReplyFormModal = (props) => {
   }
 
   useEffect(() => {
-    if(content.length === 280) {
+    if(content.length - overhead === 280) {
       setCounterColor('#E0245E')
-    } else if(content.length >= 260) {
+    } else if(content.length - overhead >= 260) {
       setCounterColor('#FFAD1F')
     } else {
       setCounterColor('#e53935')
     }
+    // eslint-disable-next-line
   }, [content])
 
   const handleFileSelect = () => {
@@ -429,7 +436,7 @@ const ReplyFormModal = (props) => {
                     <TextArea
                       style={textAreaStyle}
                       minRows={3}
-                      maxLength="280"
+                      maxLength={280 + overhead}
                       label="Buzz your reply"
                       value={content}
                       onKeyUp={handleOnChange}
@@ -506,7 +513,7 @@ const ReplyFormModal = (props) => {
                         value={wordCount}
                         variant="static"
                       />
-                      {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                      {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
                     </div>
                   </div>
                 </div>

@@ -135,6 +135,33 @@ a[rel="nofollow noopener"]::after {
   }
 }
 
+@keyframes closeBuzzButtonAnimation {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes buzzLoading {
+  0% {
+    transform: scale(0.8)
+  }
+  80% {
+    transform: scale(1)
+  }
+  100% {
+    transform: scale(0.8)
+  }
+}
+
+@keyframes buzzLoadingContainer {
+  from {
+    opacity: 0;
+    transform: scale(0);
+    background: #E61C34;
+  }
+}
+
 * {
   scroll-behavior: smooth;
 }

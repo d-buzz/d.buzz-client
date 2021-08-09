@@ -21,7 +21,7 @@ import {
 } from 'components'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
-import { anchorTop, calculatePayout, invokeTwitterIntent, sendToBerries } from 'services/helper'
+import { anchorTop, calculateOverhead, calculatePayout, invokeTwitterIntent, sendToBerries } from 'services/helper'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -41,6 +41,7 @@ import {
 import Chip from '@material-ui/core/Chip'
 import { useHistory } from 'react-router-dom'
 import { truncateBody, censorLinks } from 'services/helper'
+import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -130,6 +131,29 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 5,
     marginBottom: 5,
   },
+  invalidBuzz: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#E61C34',
+    fontWeight: 600,
+    fontSize: '1.2em',
+    gap: 20,
+
+    '@media (max-width: 480px)': {
+      textAlign: 'center',
+
+      '& .errorIcon': {
+        fontSize: '8em !important',
+      },
+    },
+
+    '& .errorIcon': {
+      fontSize: '6em !important',
+    },
+  },
 }))
 
 const Content = (props) => {
@@ -161,6 +185,8 @@ const Content = (props) => {
   const [openVoteList, setOpenVoteList] = useState(false)
   const popoverAnchor = useRef(null)
   const history = useHistory()
+  const [overhead, setOverhead] = useState(0)
+  const [invalidBuzz, setInvalidBuzz] = useState(false)
 
 
   const {
@@ -192,6 +218,19 @@ const Content = (props) => {
   let upvotes = 0
   let hasUpvoted = false
   let payout_at = cashout_time
+
+  useEffect(() => {
+    const overhead = calculateOverhead(content.body)
+    setOverhead(overhead)
+
+    // check for invalid buzz
+    if(!content.body && !loadingContent && !loadingReplies){
+      setInvalidBuzz(true)
+    } else {
+      setInvalidBuzz(false)
+    }
+    // eslint-disable-next-line
+  }, [content.body])
 
   useEffect(() => {
     checkHasUpdateAuthorityRequest(username)
@@ -406,7 +445,7 @@ const Content = (props) => {
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
-              {depth !== 0 && parent_author !== null && !(body.length > 280) && (
+              {depth !== 0 && parent_author !== null && !(content.body.length - overhead > 280) && (
                 <Row>
                   <Col>
                     <div className={classes.context}>
@@ -454,7 +493,7 @@ const Content = (props) => {
                 <MarkdownViewer content={originalContent} minifyAssets={false} />
               </div>
               <PostTags meta={meta} />
-              {(`${stripHtml(body)}`.length > 280) && (
+              {(`${stripHtml(content.body)}`.length - overhead > 280) && (
                 <Row>
                   <Col>
                     <div className={classes.context}>
@@ -565,6 +604,12 @@ const Content = (props) => {
         onClose={handleClickOnCloseVoteList}
         upvoteList={active_votes || []}
       />
+
+      {invalidBuzz && !loadingContent && !loadingReplies && 
+        <div className={classes.invalidBuzz}>
+          <ReportProblemRoundedIcon className='errorIcon' />
+          <span>Hmm...this page doesn’t exist. Try searching for something else.</span>
+        </div>}
     </React.Fragment>
   )
 }

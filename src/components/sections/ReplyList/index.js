@@ -20,7 +20,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MuteIcon from '@material-ui/icons/VolumeOff'
 import Chip from '@material-ui/core/Chip'
 import { Link, useHistory } from 'react-router-dom'
-import { truncateBody } from 'services/helper'
+import { calculateOverhead, truncateBody } from 'services/helper'
 import stripHtml from 'string-strip-html'
 import { censorLinks } from 'services/helper'
 
@@ -171,6 +171,28 @@ const useStyles = createUseStyles(theme => ({
   muteButton: {
     float: 'right',
   },
+  seeMoreRepliesButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '15px 0',
+    width: '100%',
+    fontFamily: 'Segoe-Bold',
+    cursor: 'pointer',
+
+    '&:hover': {
+      background: theme.seeMoreReplies.background,
+    },
+
+    '& span': {
+      display: 'flex',
+      alignItems: 'center',
+      width: 'fit-content',
+      padding: '8px 25px',
+      borderRadius: 8,
+      userSelect: 'none',
+      ...theme.seeMoreReplies,
+    },
+  },
 }))
 
 const countReplies = async (replies = []) => {
@@ -200,6 +222,7 @@ const ReplyList = (props) => {
   const [replyCounter, setReplyCounter] = useState(0)
   const [repliesState, setRepliesState] = useState(replies)
   const history = useHistory()
+  const [overhead, setOverhead] = useState(0)
 
   useEffect(() => {
     countReplies(replies)
@@ -362,6 +385,11 @@ const ReplyList = (props) => {
     }
 
     useEffect(() => {
+      const overhead = calculateOverhead(reply.body)
+      setOverhead(overhead)
+    }, [reply.body])
+
+    useEffect(() => {
       if(censorList.length !== 0 && author && permlink) {
         const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
 
@@ -382,9 +410,9 @@ const ReplyList = (props) => {
               <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent}>
                 <div className={classes.left}>
                   <Avatar author={author} />
-                  {replies.length !== 0 && (
+                  {/* {replies.length !== 0 && (
                     <div className={classes.thread} />
-                  )}
+                  )} */}
                 </div>
               </Col>
               <Col>
@@ -412,7 +440,7 @@ const ReplyList = (props) => {
                     )}
                     <div onClick={handleOpenContent}>
                       <MarkdownViewer minifyAssets={false} content={content} />
-                      {`${stripHtml(content)}`.length > 280 && (
+                      {`${stripHtml(reply.body)}`.length - overhead > 280 && (
                         <div className={classes.context}>
                           <div className={classes.contextWrapper}>
                             <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
@@ -443,11 +471,14 @@ const ReplyList = (props) => {
           </div>
         </div>
         {replies.length !== 0 && (
-          <React.Fragment>
-            {replies.map((reply, index) => (
-              <RenderReplies key={index} reply={reply} treeHistory={`${treeHistory}|${index}`}/>
-            ))}
-          </React.Fragment>
+          // <React.Fragment>
+          //   {replies.map((reply, index) => (
+          //     <RenderReplies key={index} reply={reply} treeHistory={`${treeHistory}|${index}`}/>
+          //   ))}
+          // </React.Fragment>
+          <div className={classes.seeMoreRepliesButton} onClick={handleOpenContent}>
+            <span>view more replies on this...</span>
+          </div>
         )}
       </React.Fragment>
     )
@@ -462,7 +493,7 @@ const ReplyList = (props) => {
           </p>
         </center>
       )}
-      {repliesState.map((reply, index) => (
+      {repliesState.slice(0).reverse().map((reply, index) => (
         <div key={index} className={classes.wrapper}>
           <RenderReplies reply={reply} treeHistory={index} />
         </div>

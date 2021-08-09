@@ -40,10 +40,10 @@ const App = () => {
       <Helmet>
         <meta property="og:title" content="D.Buzz" />
         <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
-        <meta property="og:image" content="https://d.buzz/dbuzz.svg" />
+        <meta property="og:image" content="https://d.buzz/dbuzz.png" />
         <meta property="title" content="D.Buzz" />
         <meta property="description" content="D.Buzz | Micro-blogging for HIVE" />
-        <meta property="image" content="https://d.buzz/dbuzz.svg" />
+        <meta property="image" content="https://d.buzz/dbuzz.png" />
       </Helmet>
       <LastLocationProvider>
         <ThemeLoader>

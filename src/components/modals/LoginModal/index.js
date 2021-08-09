@@ -10,7 +10,7 @@ import { authenticateUserRequest } from 'store/auth/actions'
 import { Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { pending } from 'redux-saga-thunk'
+// import { pending } from 'redux-saga-thunk'
 import classNames from 'classnames'
 import { hasCompatibleKeychain } from 'services/helper'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
@@ -100,7 +100,7 @@ const LoginModal = (props) => {
     show,
     onHide,
     authenticateUserRequest,
-    loading,
+    // loading,
     fromIntentBuzz,
     buzzIntentCallback = () => { },
     accounts,
@@ -114,15 +114,16 @@ const LoginModal = (props) => {
   const [useKeychain, setUseKeychain] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const onChange = (e) => {
     const { target } = e
     const { name, value } = target
 
     if (name === 'username') {
-      setUsername(value.replace("@", ""))
+      setUsername(value.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''))
     } else if (name === 'password') {
-      setPassword(value)
+      setPassword(value.replace(/[\s]/gi, ''))
     }
     setHasAuthenticationError(false)
   }
@@ -142,17 +143,24 @@ const LoginModal = (props) => {
   }
 
   const handleClickLogin = () => {
+    setLoading(true)
     authenticateUserRequest(username, password, useKeychain)
       .then(({ is_authenticated }) => {
         if (!is_authenticated) {
           setHasAuthenticationError(true)
+          setLoading(false)
         } else {
           if (fromIntentBuzz && buzzIntentCallback) {
             buzzIntentCallback()
+            setLoading(false)
           }
           onHide()
         }
       })
+    setTimeout(() => {
+      setHasAuthenticationError(true)
+      setLoading(false)
+    }, 10000)
   }
 
   const isDisabled = () => {
@@ -322,7 +330,7 @@ const LoginModal = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  loading: pending(state, 'AUTHENTICATE_USER_REQUEST'),
+  // loading: pending(state, 'AUTHENTICATE_USER_REQUEST'),
   accounts: state.auth.get('accounts'),
   user: state.auth.get('user'),
 })
