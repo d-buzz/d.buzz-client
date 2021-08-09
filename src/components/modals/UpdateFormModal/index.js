@@ -17,6 +17,7 @@ import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
+import { calculateOverhead } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -186,6 +187,7 @@ const UpdateFormModal = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [overhead, setOverhead] = useState(0)
 
   const textAreaStyle = { width: '100%' }
   const zeroPadding = { padding: 0 }
@@ -198,13 +200,14 @@ const UpdateFormModal = (props) => {
 
 
   useEffect(() => {
-    if(content.length === 280) {
+    if(content.length - overhead === 280) {
       setCounterColor('#E0245E')
-    } else if(content.length >= 260) {
+    } else if(content.length - overhead >= 260) {
       setCounterColor('#FFAD1F')
     } else {
       setCounterColor('#e53935')
     }
+    // eslint-disable-next-line
   }, [content])
 
   useEffect(() => {
@@ -215,7 +218,12 @@ const UpdateFormModal = (props) => {
 
 
   useEffect(() => {
-    setWordCount(Math.floor((content.length/280) * 100))
+    const overhead = calculateOverhead(content)
+
+    setOverhead(overhead)
+
+    const length = content.length - overhead
+    setWordCount(Math.floor((length / 280) * 100))
   }, [content])
 
 
@@ -339,7 +347,7 @@ const UpdateFormModal = (props) => {
                     <TextArea
                       style={textAreaStyle}
                       minRows={3}
-                      maxLength="280"
+                      maxLength={280 + overhead}
                       label="Buzz your reply"
                       value={content}
                       onKeyUp={handleOnChange}
@@ -406,7 +414,7 @@ const UpdateFormModal = (props) => {
                         value={wordCount}
                         variant="static"
                       />
-                      {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                      {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
                     </div>
                   </div>
                 </div>
