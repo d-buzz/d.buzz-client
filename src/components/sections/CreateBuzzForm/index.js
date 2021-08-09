@@ -309,7 +309,7 @@ const CreateBuzzForm = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
-  const [overhead, setOverhehad] = useState(0)
+  const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
   const [isThread, setIsThread] = useState(false)
   const [currentBuzz, setCurrentBuzz] = useState(1)
@@ -407,7 +407,7 @@ const CreateBuzzForm = (props) => {
   useEffect(() => {
     const overhead = calculateOverhead(content)
 
-    setOverhehad(overhead)
+    setOverhead(overhead)
 
     const length = content.length - overhead
     setWordCount(Math.floor((length / 280) * 100))
@@ -419,13 +419,14 @@ const CreateBuzzForm = (props) => {
   }, [content, draftPost, images, savePostAsDraft])
 
   useEffect(() => {
-    if(content.length === 280) {
+    if(content.length - overhead === 280) {
       setCounterColor('#E0245E')
-    } else if(content.length >= 260) {
+    } else if(content.length - overhead >= 260) {
       setCounterColor('#FFAD1F')
     } else {
       setCounterColor('#e53935')
     }
+    // eslint-disable-next-line
   }, [content])
 
   const closePayoutDisclaimer = () => {
@@ -1025,7 +1026,7 @@ const CreateBuzzForm = (props) => {
                       value={wordCount}
                       variant='static'
                     />
-                    {content.length >= 260 && <p className={classes.counter}>{280 - content.length}</p>}
+                    {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
                   </div>
                   <div className={classes.colDivider}> </div>
                   <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
