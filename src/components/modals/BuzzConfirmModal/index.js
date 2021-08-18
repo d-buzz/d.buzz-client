@@ -37,11 +37,13 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
 
   	'& .title': {
+      color: theme.font.color,
       fontSize: '1.5em',
       fontWeight: 800,
     },
 
     '& .description': {
+      color: theme.font.color,
       marginTop: 5,
       fontSize: '1.2em',
       fontWeight: 400,

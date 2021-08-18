@@ -6,7 +6,6 @@ import {
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
-  MarkdownViewer,
   PostTags,
   PostActions,
 } from 'components'
@@ -32,6 +31,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import Chip from '@material-ui/core/Chip'
 import { sendToBerries, censorLinks } from 'services/helper'
+import Renderer from 'components/common/Renderer'
 
 const addHover = (theme) => {
   let style = {
@@ -441,7 +441,7 @@ const PostList = React.memo((props) => {
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                      <MarkdownViewer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      <Renderer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
                       <PostTags meta={meta} highlightTag={highlightTag} />
                     </div>
                   )}

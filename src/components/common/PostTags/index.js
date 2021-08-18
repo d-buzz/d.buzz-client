@@ -6,6 +6,9 @@ import { Link, useHistory } from 'react-router-dom'
 
 const useStyle = createUseStyles({
   tags: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '5px 15px',
     wordBreak: 'break-word !important',
     width: '100%',
     height: 'max-content',
@@ -14,21 +17,27 @@ const useStyle = createUseStyles({
     '& a': {
       display: 'inline-block',
       whiteSpace: 'nowrap',
+      textDecoration: 'none',
     },
   },
   default: {
+    padding: '3px 6px',
+    borderRadius: 8,
+    background: '#E65768',
     marginRight: 5,
-    color: '#d32f2f !important',
+    marginBottom: 5,
+    color: '#ffffff !important',
     wordBreak: 'break-word !important',
     whiteSpace: 'nowrap',
+    lineHeight: 1.2,
   },
   highlighted: {
     backgroundColor: '#d32f2f',
-    borderRadius: 10,
-    paddingLeft: 2,
-    paddingRight: 2,
-    paddingBottom: 2,
-    color: 'white !important',
+    borderRadius: 8,
+    padding: '3px 6px',
+    color: '#ffffff !important',
+    lineHeight: 1.2,
+    fontSize: 20,
   },
 })
 

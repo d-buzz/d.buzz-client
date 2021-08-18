@@ -16,18 +16,35 @@ import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import ReplayIcon from '@material-ui/icons/Replay'
 import CloseIcon from '@material-ui/icons/Close'
+import { getTheme } from 'services/helper'
+import BrandIconDark from 'components/elements/Icons/BrandIconDark'
 
 const { VERSION } = config
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
+    display: 'grid',
+    placeItems: 'center',
     width: '100%',
     height: '100vh',
-    backgroundColor: 'white',
+    backgroundColor: theme.background.primary,
   },
   brandWrapper: {
     margin: '0 auto',
     paddingTop: 30,
+    color: theme.font.color,
+  },
+  version: {
+    position: 'absolute',
+    bottom: 45,
+    left: 0,
+    right: 0,
+    margin: 'auto !important',
+    padding: '5px 15px',
+    width: 'fit-content',
+    borderRadius: 8,
+    ...theme.context.view,
+    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
   },
   versionDialog: {
     backgroundColor: `${theme.background.primary} !important`,
@@ -48,12 +65,14 @@ const useStyles = createUseStyles(theme => ({
 
 const SplashScreen = () => {
   const classes = useStyles()
+  const theme = getTheme()
 
   return (
     <div className={classes.wrapper}>
       <div className={classes.brandWrapper}>
         <center>
-          <BrandIcon />
+          {theme === 'light' && (<BrandIcon height={60}/>)}
+          {theme === 'dark' && (<BrandIconDark height={60}/>)}
           <Spinner
             size={35}
             loading={true}
@@ -62,6 +81,7 @@ const SplashScreen = () => {
             style={{ marginTop: 13 }}
             variant="h6"
             component="p"
+            className={classes.version}
           >
             <b>v{VERSION}</b>
           </Typography>

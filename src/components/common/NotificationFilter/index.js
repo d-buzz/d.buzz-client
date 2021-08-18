@@ -19,6 +19,24 @@ const useStyles = createUseStyles(theme => ({
   right: {
     height: 'max-content',
   },
+  menu: {
+    '& .MuiPaper-root': {
+      background: theme.background.primary,
+    },
+    '& ul':{
+      background: theme.background.primary,
+    },
+    '& li': {
+      fontSize: 18,
+      fontWeight: '500 !important',
+      background: theme.background.primary,
+      color: theme.font.color,
+
+      '&:hover': {
+        ...theme.context.view,
+      },
+    },
+  },
 }))
 
 const NotificationFilter = (props) => {
@@ -53,6 +71,7 @@ const NotificationFilter = (props) => {
             keepMounted
             open={Boolean(openCaret)}
             onClose={closeMenu}
+            className={classes.menu}
           >
             <MenuItem active={true} className={classes.menuText} onClick={onChangeNotification('ALL')}>All</MenuItem>
             <MenuItem className={classes.menuText} onClick={onChangeNotification('VOTE')}>Votes</MenuItem>

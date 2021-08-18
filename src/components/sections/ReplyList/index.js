@@ -6,7 +6,6 @@ import {
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
-  MarkdownViewer,
   PostTags,
   PostActions,
 } from 'components'
@@ -23,6 +22,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { calculateOverhead, truncateBody } from 'services/helper'
 import stripHtml from 'string-strip-html'
 import { censorLinks } from 'services/helper'
+import Renderer from 'components/common/Renderer'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -67,14 +67,25 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   note: {
-    marginTop: -10,
+    marginTop: -3,
     fontSize: 14,
     ...theme.font,
   },
   username: {
-    color: '#657786',
+    color: '#E61C34',
     paddingBottom: 0,
-    fontSize: 14,
+    '&:hover': {
+      color: '#E61C34',
+    },
+  },
+  usernameStyle: {
+    padding: '2px 5px',
+    background: 'rgba(255, 235, 238, 0.8)',
+    borderRadius: 5,
+    
+    '& a': {
+      textDecoration: 'none',
+    },
   },
   post: {
     color: '#14171a',
@@ -434,12 +445,12 @@ const ReplyList = (props) => {
                         <MuteIcon  className={classes.muteIcon} />
                       </IconButton>
                     )}
-                    <p className={classes.note}>Replying to <a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></p>
+                    <p className={classes.note}>Replying to  <b className={classes.usernameStyle}><a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></b></p>
                     {isCensored && (
                       <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
                     )}
                     <div onClick={handleOpenContent}>
-                      <MarkdownViewer minifyAssets={false} content={content} />
+                      <Renderer minifyAssets={false} content={content} />
                       {`${stripHtml(reply.body)}`.length - overhead > 280 && (
                         <div className={classes.context}>
                           <div className={classes.contextWrapper}>
