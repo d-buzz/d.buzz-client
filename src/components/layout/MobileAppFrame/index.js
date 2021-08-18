@@ -158,9 +158,21 @@ const useStyles = createUseStyles(theme => ({
     paddingLeft: "10px",
   },
   menu: {
+    '& .MuiPaper-root': {
+      background: theme.background.primary,
+    },
+    '& ul':{
+      background: theme.background.primary,
+    },
     '& li': {
       fontSize: 18,
       fontWeight: '500 !important',
+      background: theme.background.primary,
+      color: theme.font.color,
+
+      '&:hover': {
+        ...theme.context.view,
+      },
     },
   },
 }))

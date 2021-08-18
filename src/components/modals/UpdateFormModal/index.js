@@ -11,13 +11,14 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { uploadFileRequest } from 'store/posts/actions'
 import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
 import { publishUpdateRequest } from 'store/posts/actions'
-import { MarkdownViewer, GiphySearchModal, EmojiPicker } from 'components'
+import { GiphySearchModal, EmojiPicker } from 'components'
 import { Spinner, CloseIcon, GifIcon, EmojiIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { calculateOverhead } from 'services/helper'
+import Renderer from 'components/common/Renderer'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -89,6 +90,12 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 10,
   },
   circle: {
+    position: 'relative',
+    strokeLinecap: 'round',
+    transition: 'all 350ms',
+  },
+  circleBg: {
+    position: 'relative',
     strokeLinecap: 'round',
   },
   previewContainer: {
@@ -142,12 +149,25 @@ const useStyles = createUseStyles(theme => ({
   actionWrapper: {
     width: '100%',
   },
-  characterCounter: {
+  // characterCounter: {
+  //   position: 'relative',
+  //   width: '30px',
+  //   height: '30px',
+  //   float: 'right',
+  //   marginTop: 15,
+  //   marginRight: 10,
+  // },
+  characterCounterBg: {
     position: 'relative',
+    marginTop: 2,
+    float: 'right',
+  },
+  characterCounter: {
+    position: 'absolute',
     width: '30px',
     height: '30px',
     float: 'right',
-    marginTop: 15,
+    marginTop: 2,
     marginRight: 10,
   },
   counter: {
@@ -196,8 +216,8 @@ const UpdateFormModal = (props) => {
   const replyButtonStyle = { width: 85 }
 
   const [counterColor, setCounterColor] = useState('#e53935')
-  const CircularProgressStyle = { float: 'right', color: counterColor, transform: content.length >= 260 && 'scale(1.3)' }
-
+  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
+  const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
 
   useEffect(() => {
     if(content.length - overhead === 280) {
@@ -367,7 +387,7 @@ const UpdateFormModal = (props) => {
                   {content.length !== 0 && (
                     <div className={classes.previewContainer}>
                       <h6>Reply preview</h6>
-                      <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                      <Renderer content={content} minifyAssets={true} onModal={true}/>
                       <hr />
                     </div>
                   )}
@@ -403,19 +423,34 @@ const UpdateFormModal = (props) => {
                       onClick={handleClickSubmitUpdate}
                       disabled={loading || `${content}`.trim() === ''}
                     />
-                    <div className={classes.characterCounter}>
-                      <CircularProgress
-                        className='countProgressBar'
-                        style={CircularProgressStyle}
-                        classes={{
-                          circle: classes.circle,
-                        }}
-                        size={30}
-                        value={wordCount}
-                        variant="static"
-                      />
-                      {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
-                    </div>
+                    <Box
+                      style={{ float: 'right', marginRight: 15, paddingTop: 10}}
+                      position='relative'
+                      display='inline-flex'
+                    >
+                      <div className={classes.characterCounterBg}>
+                        <CircularProgress
+                          className={classes.circleBg}
+                          size={30}
+                          value={100}
+                          variant='static'
+                          style={counterDefaultStyles}
+                        />
+                      </div>
+                      <div className={classes.characterCounter}>
+                        <CircularProgress
+                          className='countProgressBar'
+                          style={CircularProgressStyle}
+                          classes={{
+                            circle: classes.circle,
+                          }}
+                          size={30}
+                          value={wordCount}
+                          variant="static"
+                        />
+                        {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
+                      </div>
+                    </Box>
                   </div>
                 </div>
               </Col>

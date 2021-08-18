@@ -15,7 +15,7 @@ import {
 } from 'components/elements'
 import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
-import { MarkdownViewer, PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
+import { PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest,  publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, publishReplyRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
@@ -34,6 +34,8 @@ import { BuzzFormModal } from 'components'
 import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded'
+import Renderer from 'components/common/Renderer'
+import Switch from 'components/elements/Switch'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -116,6 +118,10 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: 'lightgray !important',
   },
   previewTitle: {
+    marginBottom: 20,
+    display: 'flex',
+    gap: '20px',
+    alignItems: 'center',
     ...theme.preview.title,
   },
   separator: {
@@ -288,6 +294,7 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
+
 // const KeyCodes = {
 //   comma: 188,
 //   enter: 13,
@@ -371,6 +378,8 @@ const CreateBuzzForm = (props) => {
 
   const [content, setContent] = useState(wholeIntent)
   const [tags, setTags] = useState(buzzIntentTags)
+
+  const [buzzPreview, setBuzzPreview] = useState(false)
 
   const [counterColor, setCounterColor] = useState('#e53935')
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
@@ -578,7 +587,7 @@ const CreateBuzzForm = (props) => {
     uploadFileRequest(files).then((image) => {
       const lastImage = image[image.length - 1]
       if (lastImage !== undefined) {
-        const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ![](${lastImage})`
+        const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
         createThread(currentBuzz, contentAppend)
         setContent(contentAppend)
         document.getElementById('file-upload').value = ''
@@ -958,8 +967,11 @@ const CreateBuzzForm = (props) => {
             )}
             {content.length !== 0 && (
               <div className={classes.previewContainer} onClick={handleClickContent}>
-                <h6 className={classes.previewTitle}>Buzz preview</h6>
-                <MarkdownViewer content={content} minifyAssets={false} />
+                <h6 className={classes.previewTitle}>
+                  Buzz preview
+                  <Switch size={25} state={buzzPreview} onChange={setBuzzPreview} />
+                </h6>
+                {buzzPreview && <Renderer content={content} minifyAssets={false} />}
                 <div className={classes.separator} />
               </div>
             )}
