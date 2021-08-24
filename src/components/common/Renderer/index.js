@@ -17,7 +17,7 @@ const useStyles = createUseStyles(theme => ({
   inputArea: {
     width: '100%',
     height: '85%',
-    padding: '25px 0',
+    padding: '15px 0',
     fontSize: '14 !important',
     outlineWidth: 0,
     border: 'none',
@@ -850,7 +850,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // render usernames
       .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
     // render hashtags 
-      .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
+      .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-_]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
     // render crypto tickers
       .replace(/\$([A-Za-z-]+)/gi, n => { return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b>[${n}](https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel)</b>` : n })
     // render web images links

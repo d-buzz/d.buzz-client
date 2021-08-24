@@ -292,6 +292,43 @@ const useStyles = createUseStyles(theme => ({
       background: '#B71C1C',
     },
   },
+  imageAlert: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 0,
+    background: '#FF9800',
+    padding: 20,
+    borderRadius: 15,
+    textAlign: 'center',
+    height: 'fit-content',
+
+    '& .heading':{
+      fontSize: '1.2em',
+      fontWeight: 800,
+    },
+
+    '& .content': {
+      fontSize: '1em',
+    },
+
+    '& .button': {
+      marginTop: 50,
+      fontSize: '1.2em',
+      width: 'fit-content',
+      padding: '5px 12px',
+      borderRadius: 8,
+      background: '#7E4B00',
+      color: 'white',
+      userSelect: 'none',
+      cursor: 'pointer',
+    },
+  },
 }))
 
 
@@ -382,8 +419,15 @@ const CreateBuzzForm = (props) => {
   const [buzzPreview, setBuzzPreview] = useState(false)
 
   const [counterColor, setCounterColor] = useState('#e53935')
-  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
+  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
+
+  const buzzTextBoxRef = useRef(null)
+
+  const [cursorPosition, setCursorPosition] = useState(null)
+
+  const [imageSize, setImageSize] = useState(0)
+  const [imageAlert, setImageAlert] = useState(false)
 
   let containerClass = classes.container
   let minRows = 2
@@ -545,6 +589,8 @@ const CreateBuzzForm = (props) => {
     // }
     setCurrentBuzz(buzzId)
     handleAddBuzz(buzzId, value)
+
+    setCursorPosition(target.selectionStart)
   }
 
   // const updateCounter = (e) => {
@@ -584,23 +630,34 @@ const CreateBuzzForm = (props) => {
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
-    uploadFileRequest(files).then((image) => {
-      const lastImage = image[image.length - 1]
-      if (lastImage !== undefined) {
-        const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
-        createThread(currentBuzz, contentAppend)
-        setContent(contentAppend)
-        document.getElementById('file-upload').value = ''
-
-        // set the thread if its the thread
-        if(Object.keys(buzzThreads).length > 1){
-          setIsThread(true)
-          setThreadCount(Object.keys(buzzThreads).length)
+    const fileSize = files.size / 1e+6
+    setImageSize(Number(fileSize.toFixed(1)))
+    if(fileSize < 1){
+      uploadFileRequest(files).then((image) => {
+        const lastImage = image[image.length - 1]
+        if (lastImage !== undefined) {
+          const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
+          createThread(currentBuzz, contentAppend)
+          setContent(contentAppend)
+          document.getElementById('file-upload').value = ''
+  
+          // set the thread if its the thread
+          if(Object.keys(buzzThreads).length > 1){
+            setIsThread(true)
+            setThreadCount(Object.keys(buzzThreads).length)
+          }
+          // savePostAsDraft(contentAppend)
+          // savePostAsDraftToStorage(contentAppend)
+          setImageSize(0)
         }
-        // savePostAsDraft(contentAppend)
-        // savePostAsDraftToStorage(contentAppend)
-      }
-    })
+      }) 
+    }
+    else {
+      setImageAlert(true)
+      setTimeout(() => {
+        setImageAlert(false)
+      }, 5000)
+    }
   }
 
   const resetBuzzForm = () => {
@@ -790,9 +847,13 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const cursor = cursorPosition
+      const contentAppend = buzzThreads[currentBuzz].content.slice(0, cursor) + emoticon + buzzThreads[currentBuzz].content.slice(cursor)
       createThread(currentBuzz, contentAppend)
       setContent(contentAppend)
+
+      emoticon.length === 2 && setCursorPosition(cursorPosition+2)
+      emoticon.length === 4 && setCursorPosition(cursorPosition+4)
       // savePostAsDraft(contentAppend)
       // savePostAsDraftToStorage(contentAppend)
     }
@@ -884,6 +945,7 @@ const CreateBuzzForm = (props) => {
                       <CloseIcon />
                     </IconButton>}
                     <TextArea
+                      ref={buzzTextBoxRef}
                       buzzId={item.id}
                       name='content-area'
                       maxLength={280 + overhead}
@@ -894,10 +956,12 @@ const CreateBuzzForm = (props) => {
                       onPaste={e => onChange(e, "draftPost", item.id)}
                       autoFocus
                       onFocus={(e) => {
-                        moveCaretAtEnd(e)
+                        // moveCaretAtEnd(e)
                         setContent(item.content)
                         setCurrentBuzz(item.id)
                       }}
+                      onKeyUp={(e) => setCursorPosition(e.target.selectionStart)}
+                      onClick={(e) => setCursorPosition(e.target.selectionStart)}
                     />
                   </span>
                 ))}
@@ -959,7 +1023,7 @@ const CreateBuzzForm = (props) => {
                   <Spinner top={-10} size={20} loading={loading} />
                   &nbsp;
                   <label className={classes.actionLabels}>
-                    uploading image, please wait ...
+                    uploading image, please wait ...({`${imageSize}MB`})
                   </label>
                   &nbsp;
                 </Box>
@@ -1009,9 +1073,10 @@ const CreateBuzzForm = (props) => {
                 <IconButton size='medium' onClick={handleOpenGiphy}>
                   <GifIcon />
                 </IconButton>
+                {!isMobile &&
                 <IconButton size='medium' onClick={handleOpenEmojiPicker}>
                   <EmojiIcon />
-                </IconButton>
+                </IconButton>}
                 {content && 
                 <Box
                   style={{ float: 'right', marginRight: 10, paddingTop: 10}}
@@ -1070,7 +1135,12 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} />
-
+      {imageAlert &&
+        <div className={classes.imageAlert}>
+          <span className='heading'>NOTICE</span>
+          <span className='content'>Please upload images less than 1MB. <br /> <b>This limit is only temporary and will be removed in due time.</b><br />Thank you for understanding.</span>
+          <span className='button' onClick={() => setImageAlert(false)}>GOT IT</span>
+        </div>}
     </div>
   )
 }
