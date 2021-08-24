@@ -1,5 +1,4 @@
 import React from 'react'
-import { DefaultRenderer } from 'steem-content-renderer'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import textParser from 'npm-text-parser'
 import classNames from 'classnames'
@@ -7,28 +6,24 @@ import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import TwitterEmbed from '../TwitterEmbed'
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
 
 
 const FACEBOOK_APP_ID = 236880454857514
 
-const renderer = new DefaultRenderer({
-  baseUrl: "https://d.buzz/#/",
-  breaks: true,
-  skipSanitization: false,
-  allowInsecureScriptTags: false,
-  addNofollowToLinks: true,
-  doNotShowImages: false,
-  ipfsPrefix: "https://images.hive.blog/0x0/",
-  assetsWidth: 640,
-  assetsHeight: 480,
-  imageProxyFn: (url) => `https://images.hive.blog/0x0/${url}`,
-  usertagUrlFn: (account) => "/@" + account,
-  hashtagUrlFn: (hashtag) => `/tags?q=${hashtag}`,
-  isLinkSafeFn: (url) => url.match(/^\//g),
-})
-
 const useStyles = createUseStyles(theme => ({
-  markdown: {
+  inputArea: {
+    width: '100%',
+    height: '85%',
+    padding: '25px 0',
+    fontSize: '14 !important',
+    outlineWidth: 0,
+    border: 'none',
+    resize: 'none',
+    // whiteSpace: 'pre-wrap',
+
     wordBreak: 'break-word !important',
     ...theme.markdown.paragraph,
     '& a': {
@@ -36,15 +31,29 @@ const useStyles = createUseStyles(theme => ({
       color: '#d32f2f !important',
     },
     '& p': {
+      width: '100%',
       wordWrap: 'break-word',
       fontSize: 14,
     },
-    fontSize: '14 !important',
     '& blockquote': {
       padding: '10px 12px',
       margin: '0 0 20px',
       fontSize: 13,
       borderLeft: '5px solid #eee',
+    },
+
+    '&:disabled': {
+      background: '#ffffff',
+      color: '#000000',
+    },
+
+    '& img': {
+      width: '100%',
+      minHeight: '100px',
+      background: 'url(https://lh5.googleusercontent.com/proxy/Kugtd7u8R3BaCPSA6vPYQ7FKR5VNycupTnmfGuy9FEFnFgDfxokCT0W5cuk2FDQtowppQlCsDGA0r9f-nU2-a6-vD59JmAjfKwr9=s0-d)',
+      backgroundSize: '150px',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
     },
   },
   preview: {
@@ -139,7 +148,52 @@ const useStyles = createUseStyles(theme => ({
       height: '100%',
     },
   },
+  usernameStyle: {
+    padding: '2px 5px',
+    background: 'rgba(255, 235, 238, 0.8)',
+    borderRadius: 5,
+    
+    '& a': {
+      textDecoration: 'none',
+    },
+  },
 }))
+
+const prepareYoutubeEmbeds = (content) => {
+  const youtubeRegex = /(https?:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+/i
+
+  let body = content
+  
+  const links = textParser.getUrls(content)
+  
+  links.forEach((link) => {
+    try {
+      link = link.replace(/&amp;/g, '&')
+		  let match = ''
+		  let id = ''
+  
+		  if(link.match(youtubeRegex) && link.includes('.be')){
+		    const data = link.split('.be/')
+        match = link.match(youtubeRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
+		  else if(link.match(youtubeRegex) && link.includes('watch')){
+		    const data = link.split('?v=')
+        match = link.match(youtubeRegex)
+        if (data[1]) {
+          id = data[1]
+        }
+      }
+  
+      if(match){
+        body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
+      }
+    } catch(error) { }
+  })
+  return body
+}
 
 const prepareTwitterEmbeds = (content) => {
   let body = content
@@ -663,7 +717,11 @@ const getCoinTicker = (coin) => {
 
 const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowIndex, classes) => {  
 
-  if(content.includes(':twitter:')) {
+  if(content.includes(':youtube:')) {
+    const splitYoutube = content.split(':')
+    const url = `https://www.youtube.com/embed/${splitYoutube[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}3speak`} url={url} />
+  } else if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
     return <TwitterEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} />
   } else if(content.includes(':threespeak:')) {
@@ -780,19 +838,40 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <UrlVideoEmbed key={`${url}${scrollIndex}dtube`} url={url} />
   } else {
     // render normally
-    return <div
+
+    const checkForImage = (n) => {
+      return !n.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i) && !n.match(/ipfs\.io\/ipfs\/.*/i)
+    }   
+
+    // render content (supported for all browsers)
+    content = content
+    // render all urls
+      .replace(/(?![^()]*\))(?![^[\]]*])((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*/gi, n => checkForImage(n) ? `[${n}](${n.startsWith('http') ? n : `http://${n}`})` : n)
+    // render usernames
+      .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
+    // render hashtags 
+      .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
+    // render crypto tickers
+      .replace(/\$([A-Za-z-]+)/gi, n => { return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b>[${n}](https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel)</b>` : n })
+    // render web images links
+      .replace(/(?![^()]*\))(?![^[\]]*])(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => `![](${n})`)
+    // render IPFS images
+      .replace(/(?![^()]*\))(?![^[\]]*])(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
+    // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
+
+    return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
-      className={classNames(markdownClass, assetClass)}
-      dangerouslySetInnerHTML={{ __html: renderer.render(
-        content
-          .replace(/\$([A-Za-z-]+)/gi, n => {return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel>${n}</a>` : n}),
-      )}}
+      skipHtml={true}
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw]}
+      children={content}
+      className={classNames(markdownClass, assetClass, classes.inputArea)}
     />
   }
 
 }
 
-const MarkdownViewer = React.memo((props) => {
+const Renderer = React.memo((props) => {
   const classes = useStyles()
   const {
     minifyAssets = true,
@@ -816,8 +895,9 @@ const MarkdownViewer = React.memo((props) => {
     try {
       link = link.replace(/&amp;/g, '&')
       link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
-
-      if(link.includes('twitter.com')) {
+      if(link.includes('youtube.com') ||link.includes('youtu.be')) {
+        content = prepareYoutubeEmbeds(content)
+      } else if(link.includes('twitter.com')) {
         content = prepareTwitterEmbeds(content)
       } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
         content = prepareThreeSpeakEmbeds(content)
@@ -864,7 +944,6 @@ const MarkdownViewer = React.memo((props) => {
 
   splitContent = splitContent.filter((item) => item !== '')
 
-
   return (
     <React.Fragment>
       {splitContent.map((item) => (
@@ -875,4 +954,4 @@ const MarkdownViewer = React.memo((props) => {
   )
 })
 
-export default MarkdownViewer
+export default Renderer

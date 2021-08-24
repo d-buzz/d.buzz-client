@@ -1,5 +1,6 @@
 import TweetLoader from 'components/skeleton/TweetLoader'
 import React, { useEffect } from 'react'
+import { getTheme } from 'services/helper'
 
 function TwitterEmbedAPI() {
   const tweetUrl = window.location.href.split('&')[1]
@@ -14,18 +15,6 @@ function TwitterEmbedAPI() {
       document.body.removeChild(script)
     }
   }, [])
-
-  const getTheme =() => {
-    const theme = localStorage.getItem('theme')
-    let mode = ''
-    if(theme?.includes('night') || theme?.includes('gray')){
-      mode = 'dark'
-    }
-    else {
-      mode = 'light'
-    }
-    return mode
-  }
 
   return (
 	  <React.Fragment>

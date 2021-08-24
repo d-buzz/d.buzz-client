@@ -13,7 +13,6 @@ import { createUseStyles } from 'react-jss'
 import { Avatar, MoreIcon } from 'components/elements'
 import { openCensorshipDialog } from 'store/interface/actions'
 import {
-  MarkdownViewer,
   PostTags,
   PostActions,
   ReplyList,
@@ -42,6 +41,7 @@ import Chip from '@material-ui/core/Chip'
 import { useHistory } from 'react-router-dom'
 import { truncateBody, censorLinks } from 'services/helper'
 import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded'
+import Renderer from 'components/common/Renderer'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -490,7 +490,7 @@ const Content = (props) => {
                 {isCensored && (
                   <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
                 )}
-                <MarkdownViewer content={originalContent} minifyAssets={false} />
+                <Renderer content={originalContent} minifyAssets={false} />
               </div>
               <PostTags meta={meta} />
               {(`${stripHtml(content.body)}`.length - overhead > 280) && (

@@ -10,7 +10,7 @@ import classNames from 'classnames'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { publishReplyRequest, uploadFileRequest } from 'store/posts/actions'
 import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
-import { MarkdownViewer, GiphySearchModal, EmojiPicker } from 'components'
+import { GiphySearchModal, EmojiPicker } from 'components'
 import { Spinner, CloseIcon, GifIcon, EmojiIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -19,6 +19,7 @@ import { pending } from 'redux-saga-thunk'
 import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
+import Renderer from 'components/common/Renderer'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -78,10 +79,19 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   username: {
-    color: '#657786',
+    color: '#E61C34',
     paddingBottom: 0,
     '&:hover': {
-      color: '#657786',
+      color: '#E61C34',
+    },
+  },
+  usernameStyle: {
+    padding: '2px 5px',
+    background: 'rgba(255, 235, 238, 0.8)',
+    borderRadius: 5,
+    
+    '& a': {
+      textDecoration: 'none',
     },
   },
   float: {
@@ -409,9 +419,9 @@ const ReplyFormModal = (props) => {
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to <a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></p>
+                  <p>Replying to <b className={classes.usernameStyle}><a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></b></p>
                   <div className={classes.previewContainer}>
-                    <MarkdownViewer content={body} minifyAssets={true} onModal={true}/>
+                    <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>
                 </div>
               </Col>
@@ -465,7 +475,7 @@ const ReplyFormModal = (props) => {
                     <div className={classes.previewContainer}>
                       <h6>Reply preview</h6>
                       <div onClick={handleClickContent}>
-                        <MarkdownViewer content={content} minifyAssets={true} onModal={true}/>
+                        <Renderer content={content} minifyAssets={true} onModal={true}/>
                       </div>
                       <hr />
                     </div>

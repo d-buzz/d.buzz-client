@@ -386,3 +386,15 @@ export const redirectToUserProfile = () => {
     window.location = (`/#/@${account[1].replace("#/", "")}`)
   }
 }
+
+export const getTheme =() => {
+  const theme = localStorage.getItem('theme')
+  let mode = ''
+  if(theme?.includes('night') || theme?.includes('gray')){
+    mode = 'dark'
+  }
+  else {
+    mode = 'light'
+  }
+  return mode
+}

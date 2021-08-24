@@ -188,6 +188,24 @@ const useStyles = createUseStyles(theme => ({
     padding: 8,
     background: 'red',
   },
+  menu: {
+    '& .MuiPaper-root': {
+      background: theme.background.primary,
+    },
+    '& ul':{
+      background: theme.background.primary,
+    },
+    '& li': {
+      fontSize: 18,
+      fontWeight: '500 !important',
+      background: theme.background.primary,
+      color: theme.font.color,
+
+      '&:hover': {
+        ...theme.context.view,
+      },
+    },
+  },
 }))
 
 const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null, statOnClick = () => {} }) => {
@@ -477,6 +495,7 @@ const PostActions = (props) => {
                     keepMounted
                     open={Boolean(openCaret)}
                     onClose={closeMenu}
+                    className={classes.menu}
                   >
                     <MenuItem className={classes.menuText}>
                       <TwitterShareButton 
