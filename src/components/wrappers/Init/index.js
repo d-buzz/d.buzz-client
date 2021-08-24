@@ -23,10 +23,11 @@ const { VERSION } = config
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
+    overflow: 'hidden',
     display: 'grid',
     placeItems: 'center',
     width: '100%',
-    height: '100vh',
+    height: '80vh',
     backgroundColor: theme.background.primary,
   },
   brandWrapper: {
@@ -45,6 +46,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 8,
     ...theme.context.view,
     boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
+    border: '1px solid lightgray',
   },
   versionDialog: {
     backgroundColor: `${theme.background.primary} !important`,

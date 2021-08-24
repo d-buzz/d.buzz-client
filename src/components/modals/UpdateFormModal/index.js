@@ -216,7 +216,7 @@ const UpdateFormModal = (props) => {
   const replyButtonStyle = { width: 85 }
 
   const [counterColor, setCounterColor] = useState('#e53935')
-  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
+  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
 
   useEffect(() => {

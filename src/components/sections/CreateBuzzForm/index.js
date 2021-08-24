@@ -382,8 +382,12 @@ const CreateBuzzForm = (props) => {
   const [buzzPreview, setBuzzPreview] = useState(false)
 
   const [counterColor, setCounterColor] = useState('#e53935')
-  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length >= 260 && 'rotate(-85deg) scale(1.3)' }
+  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
+
+  const buzzTextBoxRef = useRef(null)
+
+  const [cursorPosition, setCursorPosition] = useState(null)
 
   let containerClass = classes.container
   let minRows = 2
@@ -545,6 +549,8 @@ const CreateBuzzForm = (props) => {
     // }
     setCurrentBuzz(buzzId)
     handleAddBuzz(buzzId, value)
+
+    setCursorPosition(target.selectionStart)
   }
 
   // const updateCounter = (e) => {
@@ -790,9 +796,13 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const cursor = cursorPosition
+      const contentAppend = buzzThreads[currentBuzz].content.slice(0, cursor) + emoticon + buzzThreads[currentBuzz].content.slice(cursor)
       createThread(currentBuzz, contentAppend)
       setContent(contentAppend)
+
+      emoticon.length === 2 && setCursorPosition(cursorPosition+2)
+      emoticon.length === 4 && setCursorPosition(cursorPosition+4)
       // savePostAsDraft(contentAppend)
       // savePostAsDraftToStorage(contentAppend)
     }
@@ -884,6 +894,7 @@ const CreateBuzzForm = (props) => {
                       <CloseIcon />
                     </IconButton>}
                     <TextArea
+                      ref={buzzTextBoxRef}
                       buzzId={item.id}
                       name='content-area'
                       maxLength={280 + overhead}
@@ -894,10 +905,12 @@ const CreateBuzzForm = (props) => {
                       onPaste={e => onChange(e, "draftPost", item.id)}
                       autoFocus
                       onFocus={(e) => {
-                        moveCaretAtEnd(e)
+                        // moveCaretAtEnd(e)
                         setContent(item.content)
                         setCurrentBuzz(item.id)
                       }}
+                      onKeyUp={(e) => setCursorPosition(e.target.selectionStart)}
+                      onClick={(e) => setCursorPosition(e.target.selectionStart)}
                     />
                   </span>
                 ))}
@@ -1009,9 +1022,10 @@ const CreateBuzzForm = (props) => {
                 <IconButton size='medium' onClick={handleOpenGiphy}>
                   <GifIcon />
                 </IconButton>
+                {!isMobile &&
                 <IconButton size='medium' onClick={handleOpenEmojiPicker}>
                   <EmojiIcon />
-                </IconButton>
+                </IconButton>}
                 {content && 
                 <Box
                   style={{ float: 'right', marginRight: 10, paddingTop: 10}}
@@ -1070,7 +1084,6 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} />
-
     </div>
   )
 }

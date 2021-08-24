@@ -329,24 +329,28 @@ const PostActions = (props) => {
   }
 
   const handleClickUpvote = () => {
-    if(replyRef === 'list') {
-      recomputeRowIndex(scrollIndex)
+    if(sliderValue > 0) {
+      if(replyRef === 'list') {
+        recomputeRowIndex(scrollIndex)
+      }
+      setShowSlider(false)
+      setLoading(true)
+      upvoteRequest(author, permlink, sliderValue)
+        .then(({ success, errorMessage }) => {
+          if(success) {
+            setVote(vote + 1)
+            setUpvoted(true)
+            setLoading(false)
+            broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+          } else {
+            setUpvoted(false)
+            broadcastNotification('error', errorMessage)
+            setLoading(false)
+          }
+        })
+    } else {
+      broadcastNotification('error', 'Voting cannot done with 0% Power!')
     }
-    setShowSlider(false)
-    setLoading(true)
-    upvoteRequest(author, permlink, sliderValue)
-      .then(({ success, errorMessage }) => {
-        if(success) {
-          setVote(vote + 1)
-          setUpvoted(true)
-          setLoading(false)
-          broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
-        } else {
-          setUpvoted(false)
-          broadcastNotification('error', errorMessage)
-          setLoading(false)
-        }
-      })
   }
 
   const handleClickReply = () => {
