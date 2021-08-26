@@ -180,6 +180,24 @@ const useStyle = createUseStyles(theme => ({
   chip: {
     float: 'right',
   },
+  menu: {
+    '& .MuiPaper-root': {
+      background: theme.background.primary,
+    },
+    '& ul':{
+      background: theme.background.primary,
+    },
+    '& li': {
+      fontSize: 18,
+      fontWeight: '500 !important',
+      background: theme.background.primary,
+      color: theme.font.color,
+
+      '&:hover': {
+        ...theme.context.view,
+      },
+    },
+  },
 }))
 
 
@@ -465,12 +483,13 @@ const PostList = React.memo((props) => {
                     />
                   </div>
                 )}
-                {!isAuthor &&
+                {!isAuthor() &&
                   <Menu
                     anchorEl={anchorEl}
                     keepMounted
                     open={Boolean(anchorEl)}
                     onClose={closeMenu}
+                    className={classes.menu}
                   >
                     {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}

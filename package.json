@@ -10,6 +10,7 @@
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
+    "browser-image-compression": "^1.0.15",
     "caesar-shift": "^1.0.0",
     "classnames": "^2.2.6",
     "crypto-js": "^4.0.0",

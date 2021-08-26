@@ -10,6 +10,7 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   searchWrapper: {
+    minHeight: '100vh',
     '& h6': {
       ...theme.font,
     },

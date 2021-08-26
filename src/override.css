@@ -169,6 +169,15 @@ a[rel="nofollow noopener"]::after {
   }
 }
 
+@keyframes skeleton-loading {
+  0% {
+    background: hsl(200, 20%, 70%); 
+  }
+  100% {
+    background: hsl(200, 20%, 95%); 
+  }
+}
+
 * {
   scroll-behavior: smooth;
 }
