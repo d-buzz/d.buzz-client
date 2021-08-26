@@ -36,6 +36,7 @@ import CloseIcon from 'components/elements/Icons/CloseIcon'
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded'
 import Renderer from 'components/common/Renderer'
 import Switch from 'components/elements/Switch'
+import imageCompression from 'browser-image-compression'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -345,32 +346,11 @@ const tooltips = {
 
 const CreateBuzzForm = (props) => {
   const classes = useStyles()
-  const inputRef = useRef(null)
-  const [wordCount, setWordCount] = useState(0)
-  const [payout, setPayout] = useState(1.000)
-  const [buzzToTwitter, setBuzzToTwitter] = useState(false)
-  const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
-  const [openGiphy, setOpenGiphy] = useState(false)
-  const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
-  const [emojiAnchorEl, setEmojianchorEl] = useState(null)
-  const [overhead, setOverhead] = useState(0)
-  const [open, setOpen] = useState(false)
-  const [isThread, setIsThread] = useState(false)
-  const [currentBuzz, setCurrentBuzz] = useState(1)
-  const [threadCount, setThreadCount] = useState(1)
-  const [nextBuzz, setNextBuzz] = useState(0)
-  const [publishedBuzzes, setPublishedBuzzes] = useState(0)
-  const [buzzData, setBuzzData] = useState(null)
-  const [buzzLoading, setBuzzLoading] = useState(false)
-  const [buzzing, setBuzzing] = useState(false)
-
-  const location = useLocation()
   const history = useHistory()
+  const location = useLocation()
   const { pathname } = location
   const isBuzzIntent = pathname.match(/^\/intent\/buzz/)
 
-  const params = queryString.parse(location.search) || ''
-  const paramsBuzzText = params.text || ''
   const {
     user,
     uploadFileRequest,
@@ -394,6 +374,28 @@ const CreateBuzzForm = (props) => {
     publishReplyRequest,
   } = props
 
+  // states & refs
+  const inputRef = useRef(null)
+  const [wordCount, setWordCount] = useState(0)
+  const [payout, setPayout] = useState(1.000)
+  const [buzzToTwitter, setBuzzToTwitter] = useState(false)
+  const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
+  const [openGiphy, setOpenGiphy] = useState(false)
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
+  const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [overhead, setOverhead] = useState(0)
+  const [open, setOpen] = useState(false)
+
+  // buzz states
+  const [isThread, setIsThread] = useState(false)
+  const [currentBuzz, setCurrentBuzz] = useState(1)
+  const [threadCount, setThreadCount] = useState(1)
+  const [nextBuzz, setNextBuzz] = useState(0)
+  const [publishedBuzzes, setPublishedBuzzes] = useState(0)
+  const [buzzData, setBuzzData] = useState(null)
+  const [buzzLoading, setBuzzLoading] = useState(false)
+  const [buzzing, setBuzzing] = useState(false)
+
   const {
     text = '',
     url = '',
@@ -401,9 +403,28 @@ const CreateBuzzForm = (props) => {
     origin_app_name = '',
     min_chars = 0,
   } = intentBuzz
+  
+  const params = queryString.parse(location.search) || ''
+  const paramsBuzzText = params.text || ''
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
   const buzzIntentTags = []
+
+  // buzz text box states, ref & style
+  const buzzTextBoxRef = useRef(null)
+  const [content, setContent] = useState(wholeIntent)
+  const [tags, setTags] = useState(buzzIntentTags)
+  const [buzzPreview, setBuzzPreview] = useState(true)
+  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
+  const [counterColor, setCounterColor] = useState('#e53935')
+  const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
+
+  // cursor state
+  const [cursorPosition, setCursorPosition] = useState(null)
+
+  // image states
+  const [imageSize, setImageSize] = useState(0)
+
   if (wholeIntent && hashtags) {
     const intentTags = hashtags.split(',')
     if (intentTags) {
@@ -412,22 +433,6 @@ const CreateBuzzForm = (props) => {
       })
     }
   }
-
-  const [content, setContent] = useState(wholeIntent)
-  const [tags, setTags] = useState(buzzIntentTags)
-
-  const [buzzPreview, setBuzzPreview] = useState(false)
-
-  const [counterColor, setCounterColor] = useState('#e53935')
-  const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
-  const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
-
-  const buzzTextBoxRef = useRef(null)
-
-  const [cursorPosition, setCursorPosition] = useState(null)
-
-  const [imageSize, setImageSize] = useState(0)
-  const [imageAlert, setImageAlert] = useState(false)
 
   let containerClass = classes.container
   let minRows = 2
@@ -486,16 +491,6 @@ const CreateBuzzForm = (props) => {
     setOpenPayoutDisclaimer(false)
   }
 
-  // const savePostAsDraftToStorage = (content) => {
-  //   localStorage.setItem('draft_post', content)
-  // }
-
-  // const clearDraft = () => {
-  //   setContent('')
-  //   savePostAsDraft('')
-  //   savePostAsDraftToStorage('')
-  // }
-
   // dbuzz threads
 
   const createThread = (count, content) => {
@@ -550,61 +545,11 @@ const CreateBuzzForm = (props) => {
     const { value } = target
 
     if (name === 'content-area') {
-      // if (e?.clipboardData?.files?.length) {
-      //   const fileObject = e.clipboardData.files[0]
-      //   uploadFileRequest(fileObject).then((image) => {
-      //     const value = image[image.length - 1]
-      //     if (value !== undefined) {
-      //       const contentAppend = `${buzzThreads[currentBuzz].content} <br /> ![](${value})`
-      //       createThread(currentBuzz, contentAppend)
-      //       setContent(contentAppend)
-
-      //       // savePostAsDraft(contentAppend)
-      //       // savePostAsDraftToStorage(contentAppend)
-      //     }
-      //   })
-      // }
       setContent(value)
     }
-    // else if (name === 'max-payout') {
-    //   if (!payoutAgreed) {
-    //     setOpenPayoutDisclaimer(true)
-    //   } else {
-    //     if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
-    //       value = 0.00
-    //     }
-    //     value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
-    //     setPayout(value)
-    //   }
-    // } 
-    // else if (name === 'buzz-to-twitter') {
-    //   setBuzzToTwitter(!buzzToTwitter)
-    // }
-
-    // if(draft === "draftPost"){
-    //   // setting the redux state to post content
-    //   savePostAsDraft(value)
-    //   // storing the state value in the browser storage
-    //   savePostAsDraftToStorage(value)
-    // }
     setCurrentBuzz(buzzId)
     handleAddBuzz(buzzId, value)
-
-    setCursorPosition(target.selectionStart)
   }
-
-  // const updateCounter = (e) => {
-  //   onChange(e, "draftPost")
-  //   const countProgress = document.querySelector('.countProgress')
-  //   // changing progress color based on content length
-  //   if(content.length === 280) {
-  //     countProgress.style.color = '#E0245E'
-  //   } else if(content.length >= 260) {
-  //     countProgress.style.color = '#FFAD1F'
-  //   } else {
-  //     countProgress.style.color = '#e53935'
-  //   }
-  // }
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload')
@@ -628,12 +573,31 @@ const CreateBuzzForm = (props) => {
     inputRef.current.click()
   }
 
-  const handleFileSelectChange = (event) => {
-    const files = event.target.files[0]
-    const fileSize = files.size / 1e+6
-    setImageSize(Number(fileSize.toFixed(1)))
-    if(fileSize < 1){
-      uploadFileRequest(files).then((image) => {
+  const handleImageCompression = async (image) => {
+    let compressedFile = null
+  
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    }
+    try {
+      compressedFile = await imageCompression(image, options)
+    } catch (error) {
+      console.log(error)
+    }
+    
+    return compressedFile !== null && compressedFile
+  }
+
+  const handleFileSelectChange = async(event) => {
+    const image = event.target.files[0]
+    const fileSize = image.size / 1e+6
+    setImageSize(Number(fileSize.toFixed(2)))
+    
+    await handleImageCompression(image).then((uri) => {
+      setImageSize(Number((uri.size / 1e+6).toFixed(2)))
+      uploadFileRequest(uri).then((image) => {
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
           const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
@@ -651,13 +615,16 @@ const CreateBuzzForm = (props) => {
           setImageSize(0)
         }
       }) 
-    }
-    else {
-      setImageAlert(true)
-      setTimeout(() => {
-        setImageAlert(false)
-      }, 5000)
-    }
+    })
+
+    // if(fileSize < 1){
+    // }
+    // else {
+    //   setImageAlert(true)
+    //   setTimeout(() => {
+    //     setImageAlert(false)
+    //   }, 5000)
+    // }
   }
 
   const resetBuzzForm = () => {
@@ -811,11 +778,11 @@ const CreateBuzzForm = (props) => {
     } catch (e) {}
   }
 
-  const moveCaretAtEnd = (e) => {
-    var temp_value = e.target.value
-    e.target.value = ''
-    e.target.value = temp_value
-  }
+  // const moveCaretAtEnd = (e) => {
+  //   var temp_value = e.target.value
+  //   e.target.value = ''
+  //   e.target.value = temp_value
+  // }
 
   const closeGiphy = () => {
     setOpenGiphy(false)
@@ -827,7 +794,7 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectGif = (gif) => {
     if (gif) {
-      const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${gif}`
+      const contentAppend = `${buzzThreads[currentBuzz]?.content} \n <br /> ${gif}`
       createThread(currentBuzz, contentAppend)
       setContent(contentAppend)
       // savePostAsDraft(contentAppend)
@@ -871,16 +838,6 @@ const CreateBuzzForm = (props) => {
     return hashtags
   }
 
-  // useEffect(() => {
-  //   if(buzzThreads){
-  //     // console.log(Object.values(buzzThreads))
-  //   }
-  // }, [buzzThreads])
-
-  // useEffect(() => {
-  //   alert(currentBuzz)
-  // }, [currentBuzz])
-
   useEffect(() => {
     // setup an empty thread on page load
     if(!buzzThreads){
@@ -896,6 +853,9 @@ const CreateBuzzForm = (props) => {
         content && setContent('')
         setCurrentBuzz(1)
         setThreadCount(1)
+        localStorage.setItem('emptyBuzz', true)
+      } else {
+        localStorage.setItem('emptyBuzz', false)
       }
     }
   // eslint-disable-next-line
@@ -934,7 +894,6 @@ const CreateBuzzForm = (props) => {
                     onChange={e => onChange(e, "draftPost", 1)}
                     onPaste={e => onChange(e, "draftPost", 1)}
                     autoFocus
-                    onFocus={moveCaretAtEnd}
                   />
                 )}
                 {buzzThreads &&
@@ -956,11 +915,9 @@ const CreateBuzzForm = (props) => {
                       onPaste={e => onChange(e, "draftPost", item.id)}
                       autoFocus
                       onFocus={(e) => {
-                        // moveCaretAtEnd(e)
                         setContent(item.content)
                         setCurrentBuzz(item.id)
                       }}
-                      onKeyUp={(e) => setCursorPosition(e.target.selectionStart)}
                       onClick={(e) => setCursorPosition(e.target.selectionStart)}
                     />
                   </span>
@@ -1135,12 +1092,12 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} />
-      {imageAlert &&
+      {/* {imageAlert &&
         <div className={classes.imageAlert}>
           <span className='heading'>NOTICE</span>
           <span className='content'>Please upload images less than 1MB. <br /> <b>This limit is only temporary and will be removed in due time.</b><br />Thank you for understanding.</span>
           <span className='button' onClick={() => setImageAlert(false)}>GOT IT</span>
-        </div>}
+        </div>} */}
     </div>
   )
 }

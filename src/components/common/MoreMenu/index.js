@@ -26,7 +26,7 @@ const MoreMenu = (props) => {
   }
  
   useEffect(() => {
-    console.log(open, themeModal, switchUserModal)
+    // console.log(open, themeModal, switchUserModal)
     setcallFunc(callFunc)
     if(!open && !themeModal && !switchUserModal){
       setOverflow('scroll')

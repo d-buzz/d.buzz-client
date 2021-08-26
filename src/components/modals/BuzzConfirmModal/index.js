@@ -89,7 +89,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function BuzzConfirmModal(props) {
-  const { show, onHide, updateBuzzThreads, setBuzzModalStatus } = props
+  const { show, onHide, updateBuzzThreads, buzzThreads, setBuzzModalStatus } = props
   const classes = useStyles()
 
   const handleOnHide = () => {
@@ -114,7 +114,7 @@ function BuzzConfirmModal(props) {
       >
         <ModalBody className={classes.modalBody}>
           <div className={classes.confirmModalBody}>
-            <span className='title'>Discard thread?</span>
+            <span className='title'>Discard {buzzThreads && Object.keys(buzzThreads).length > 1 ? 'Thread' : 'Buzz'}?</span>
             <p className='description'>This can’t be undone and you’ll lose your draft.</p>
             <div className="modalButtons">
               <span className="cancel modalButton" onClick={onCancel}>Cancel</span>
@@ -127,6 +127,10 @@ function BuzzConfirmModal(props) {
   )
 }
 
+const mapStateToProps = (state) => ({
+  buzzThreads: state.posts.get('buzzThreads'),
+})
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
     {
@@ -135,4 +139,4 @@ const mapDispatchToProps = (dispatch) => ({
     },dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(BuzzConfirmModal)
+export default connect(mapStateToProps, mapDispatchToProps)(BuzzConfirmModal)

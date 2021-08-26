@@ -100,6 +100,7 @@ const useStyle = createUseStyles(theme => ({
     },
   },
   searchWrapper: {
+    minHeight: '100vh',
     '& h6': {
       ...theme.font,
     },
