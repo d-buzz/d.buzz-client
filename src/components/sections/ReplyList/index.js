@@ -421,9 +421,9 @@ const ReplyList = (props) => {
               <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent}>
                 <div className={classes.left}>
                   <Avatar author={author} />
-                  {/* {replies.length !== 0 && (
+                  {replies.length !== 0 && (
                     <div className={classes.thread} />
-                  )} */}
+                  )}
                 </div>
               </Col>
               <Col>
@@ -482,14 +482,15 @@ const ReplyList = (props) => {
           </div>
         </div>
         {replies.length !== 0 && (
-          // <React.Fragment>
-          //   {replies.map((reply, index) => (
-          //     <RenderReplies key={index} reply={reply} treeHistory={`${treeHistory}|${index}`}/>
-          //   ))}
-          // </React.Fragment>
-          <div className={classes.seeMoreRepliesButton} onClick={handleOpenContent}>
-            <span>view more replies on this...</span>
-          </div>
+          <React.Fragment>
+            {replies.map((reply, index) => (
+              <RenderReplies key={index} reply={reply} treeHistory={`${treeHistory}|${index}`}/>
+            ))}
+          </React.Fragment>
+          
+        // <div className={classes.seeMoreRepliesButton} onClick={handleOpenContent}>
+        //   <span>view more replies on this...</span>
+        // </div> 
         )}
       </React.Fragment>
     )

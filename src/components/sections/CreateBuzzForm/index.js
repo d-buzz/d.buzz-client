@@ -385,6 +385,7 @@ const CreateBuzzForm = (props) => {
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
+  const [compressing, setCompressing] = useState(false) 
 
   // buzz states
   const [isThread, setIsThread] = useState(false)
@@ -594,8 +595,11 @@ const CreateBuzzForm = (props) => {
     const image = event.target.files[0]
     const fileSize = image.size / 1e+6
     setImageSize(Number(fileSize.toFixed(2)))
+
+    setCompressing(true)
     
     await handleImageCompression(image).then((uri) => {
+      setCompressing(false)
       setImageSize(Number((uri.size / 1e+6).toFixed(2)))
       uploadFileRequest(uri).then((image) => {
         const lastImage = image[image.length - 1]
@@ -974,6 +978,18 @@ const CreateBuzzForm = (props) => {
                 />
               </div>
             )} */}
+            {compressing && (
+              <div style={{ width: '100%', paddingTop: 5 }}>
+                <Box position='relative' display='inline-flex'>
+                  <Spinner top={-10} size={20} loading={loading} />
+                  &nbsp;
+                  <label className={classes.actionLabels}>
+                    compressing ...({`${imageSize}MB`})
+                  </label>
+                  &nbsp;
+                </Box>
+              </div>
+            )}
             {loading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
                 <Box position='relative' display='inline-flex'>
