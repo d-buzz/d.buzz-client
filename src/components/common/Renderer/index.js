@@ -845,7 +845,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       .replace(/(?![^()]*\))(?![^[\]]*])((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*/gi, n => checkForImage(n) ? `[${n}](${n.startsWith('http') ? n : `http://${n}`})` : n)
     // render usernames
       .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
-    // render hashtags 
+      // render hashtags 
       .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-_]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
     // render crypto tickers
       .replace(/\$([A-Za-z-]+)/gi, n => { return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b>[${n}](https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel)</b>` : n })
@@ -853,7 +853,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       .replace(/(?![^()]*\))(?![^[\]]*])(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => `![](${n})`)
     // render IPFS images
       .replace(/(?![^()]*\))(?![^[\]]*])(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
-    // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
+      // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
@@ -887,7 +887,7 @@ const Renderer = React.memo((props) => {
   const links = textParser.getUrls(content)
 
   const loadImages = () => {
-    const imagesRegex = /(?:(?:https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+)|(?:https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp)))/gi
+    const imagesRegex = /(?:(?:https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+)|(?:https?:\/\/([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*\.(?:png|jpg|gif|jpeg|bmp)))/gi
     if(content.match(imagesRegex)){
       content.match(imagesRegex).forEach(image => {
         const imageClass = image

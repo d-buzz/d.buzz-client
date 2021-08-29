@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Feeds, Landing } from 'components'
 import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
+import { setWhatsNewModalStatus } from 'store/interface/actions'
+import WhatsNewModal from 'components/modals/WhatsNewModal'
+import { updates } from 'updates'
 
 const Home = (props) => {
   const { user } = props
   const { is_authenticated } = user
   const { search } = useLocation()
   const params = queryString.parse(search)
+  const [open, setOpen] = useState(true)
+  const updatesModalStatus = localStorage.getItem('updatesModal')
+  const status = updates.status
 
   useEffect(() => {
     if(typeof params === 'object' && typeof params.ref !== 'undefined') {
@@ -16,10 +22,21 @@ const Home = (props) => {
     }
   }, [params])
 
+  const onHide = () => {
+    setWhatsNewModalStatus(false)
+    setOpen(false)
+  }
+
+  const handleOnWhatsNewModalHide = () => {
+    onHide()
+    localStorage.setItem('updatesModal', 'visited')
+  }
+
   return (
     <div>
       {is_authenticated && <Feeds />}
       {!is_authenticated && <Landing />}
+      {is_authenticated && status && !updatesModalStatus && <WhatsNewModal show={open} onHide={handleOnWhatsNewModalHide}/>}
     </div>
   )
 }
