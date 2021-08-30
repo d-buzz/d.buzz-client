@@ -6,7 +6,6 @@ import { CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { CreateBuzzForm } from 'components'
 import { setBuzzConfirmModalStatus } from 'store/interface/actions'
-import { updateBuzzThreads } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BuzzConfirmModal from '../BuzzConfirmModal'
@@ -36,7 +35,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const BuzzFormModal = (props) => {
-  const { show, onHide, buzzThreads, updateBuzzThreads } = props
+  const { show, onHide } = props
   const [open, setOpen] = useState(false)
   const classes = useStyles()
 
@@ -47,7 +46,6 @@ const BuzzFormModal = (props) => {
 
   const handleBuzzModal = () => {
     onHide()
-    updateBuzzThreads({1: {id: 1, content: ''}})
 
     if(localStorage.getItem('emptyBuzz') === "false"){
       // open confrim modal before deleting buzzes
@@ -78,16 +76,11 @@ const BuzzFormModal = (props) => {
   )
 }
 
-const mapStateToProps = (state) => ({
-  buzzThreads: state.posts.get('buzzThreads'),
-})
-
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
     {
-      updateBuzzThreads,
       setBuzzConfirmModalStatus,
     },dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(BuzzFormModal)
+export default connect(null, mapDispatchToProps)(BuzzFormModal)
