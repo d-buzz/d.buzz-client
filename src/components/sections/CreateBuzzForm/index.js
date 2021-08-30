@@ -550,8 +550,6 @@ const CreateBuzzForm = (props) => {
     }
     setCurrentBuzz(buzzId)
     handleAddBuzz(buzzId, value)
-
-    setCursorPosition(target.selectionStart)
   }
 
   const handleFileSelect = () => {
