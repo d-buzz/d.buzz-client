@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import markdownLinkExtractor from 'markdown-link-extractor'
 import textParser from 'npm-text-parser'
 import classNames from 'classnames'
@@ -17,7 +17,7 @@ const useStyles = createUseStyles(theme => ({
   inputArea: {
     width: '100%',
     height: '85%',
-    padding: '25px 0',
+    padding: '15px 0',
     fontSize: '14 !important',
     outlineWidth: 0,
     border: 'none',
@@ -49,11 +49,7 @@ const useStyles = createUseStyles(theme => ({
 
     '& img': {
       width: '100%',
-      minHeight: '100px',
-      background: 'url(https://lh5.googleusercontent.com/proxy/Kugtd7u8R3BaCPSA6vPYQ7FKR5VNycupTnmfGuy9FEFnFgDfxokCT0W5cuk2FDQtowppQlCsDGA0r9f-nU2-a6-vD59JmAjfKwr9=s0-d)',
-      backgroundSize: '150px',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
+      animation: 'skeleton-loading 1s linear infinite alternate',
     },
   },
   preview: {
@@ -61,7 +57,7 @@ const useStyles = createUseStyles(theme => ({
   },
   minified: {
     '& img': {
-      height: 300,
+      height: '300px !important',
       width: '100%',
       objectFit: 'cover',
       marginTop: 5,
@@ -840,7 +836,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // render normally
 
     const checkForImage = (n) => {
-      return !n.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i) && !n.match(/ipfs\.io\/ipfs\/.*/i)
+      return !n.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i) && !n.match(/ipfs\.io\/ipfs\/[a-zA-Z0-9]+/gi)
     }   
 
     // render content (supported for all browsers)
@@ -849,15 +845,15 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       .replace(/(?![^()]*\))(?![^[\]]*])((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*/gi, n => checkForImage(n) ? `[${n}](${n.startsWith('http') ? n : `http://${n}`})` : n)
     // render usernames
       .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
-    // render hashtags 
-      .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
+      // render hashtags 
+      .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-_]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
     // render crypto tickers
       .replace(/\$([A-Za-z-]+)/gi, n => { return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b>[${n}](https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel)</b>` : n })
     // render web images links
       .replace(/(?![^()]*\))(?![^[\]]*])(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => `![](${n})`)
     // render IPFS images
       .replace(/(?![^()]*\))(?![^[\]]*])(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
-    // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
+      // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
@@ -889,6 +885,36 @@ const Renderer = React.memo((props) => {
   })
 
   const links = textParser.getUrls(content)
+
+  const loadImages = () => {
+    const imagesRegex = /(?:(?:https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+)|(?:https?:\/\/([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*\.(?:png|jpg|gif|jpeg|bmp)))/gi
+    if(content.match(imagesRegex)){
+      content.match(imagesRegex).forEach(image => {
+        const imageClass = image
+        const imageEl = document.querySelector(`img[src$="${imageClass}"]`)
+        if(imageEl){
+          imageEl.style.height = '300px'
+          imageEl.style.opacity = '0.5'
+          imageEl.onload = () => {
+            imageEl.style.background = 'none'
+            imageEl.style.animation = 'none'
+            imageEl.style.opacity = '1'
+            imageEl.style.height = 'inherit'
+          }
+          imageEl.onerror = () => {
+            imageEl.src = `${window.location.origin}/noimage.jpg`
+            imageEl.style.animation = 'none'
+            imageEl.style.opacity = '1'
+          }
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    loadImages()
+    // eslint-disable-next-line
+  }, [content])
 
 
   links.forEach((link) => {

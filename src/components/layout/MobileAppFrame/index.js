@@ -51,10 +51,6 @@ const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 55,
   },
-  avatarMenuWrapper: {
-    backgroundColor: `${theme.background.primary} !important`,
-    ...theme.font,
-  },
   minifyItems: {
     textAlign: 'left',
     width: 60,
@@ -173,6 +169,16 @@ const useStyles = createUseStyles(theme => ({
       '&:hover': {
         ...theme.context.view,
       },
+    },
+    '& a': {
+      color: theme.font.color,
+    },
+  },
+  moreButton: {
+    color: theme.left.sidebar.items.color,
+
+    '&:hover': {
+      color: '#E53935',
     },
   },
 }))
@@ -343,7 +349,7 @@ const MobileAppFrame = (props) => {
     },
     {
       name: 'More'  ,
-      icon: <MoreHorizIcon ref={moreMenuRef} />,
+      icon: <MoreHorizIcon className={classes.moreButton} ref={moreMenuRef} />,
       path: '#',
       preventDefault: true,
       onClick: handleClickOpenMoreMenu,
@@ -442,7 +448,7 @@ const MobileAppFrame = (props) => {
         keepMounted
         open={openAvatarMenu}
         onClose={handleCloseAvatar}
-        classes={{ root: classes.avatarMenuWrapper }}
+        className={classes.menu}
       >
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/getstarted`}>Get Started</MenuItem>

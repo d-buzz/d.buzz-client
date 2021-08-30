@@ -47,9 +47,11 @@ const BuzzFormModal = (props) => {
   const handleBuzzModal = () => {
     onHide()
 
-    // open confrim modal before deleting buzzes
-    setBuzzConfirmModalStatus(true)
-    setOpen(true)
+    if(localStorage.getItem('emptyBuzz') === "false"){
+      // open confrim modal before deleting buzzes
+      setBuzzConfirmModalStatus(true)
+      setOpen(true)
+    }
   }
 
   return (

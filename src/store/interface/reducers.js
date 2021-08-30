@@ -25,6 +25,7 @@ import {
   HIDE_ACCOUNT_SEARCH_BUTTON,
   SET_ACCOUNT_SEARCH_LIST_KEYWORD,
   SET_BUZZ_CONFIRM_MODAL_STATUS,
+  SET_WHATS_NEW_MODAL_STATUS,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -63,6 +64,8 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('scrollIndex', -1)
   case SET_BUZZ_MODAL_STATUS:
     return state.set('buzzModalStatus', payload)
+  case SET_WHATS_NEW_MODAL_STATUS:
+    return state.set('whatsNewModalStatus', payload)
   case SET_BUZZ_CONFIRM_MODAL_STATUS:
     return state.set('buzzConfirmModalStatus', payload)
   case OPEN_MUTE_DIALOG:
