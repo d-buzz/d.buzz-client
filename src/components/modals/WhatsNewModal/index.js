@@ -68,6 +68,14 @@ const useStyles = createUseStyles(theme => ({
         marginLeft: 10,
       },
     },
+
+    '& .updatesRow':{
+      width: '100%',
+    },
+    
+    '& .updatesInfo':{
+      color: theme.font.color,
+    },
   },
 }))
 
@@ -76,6 +84,7 @@ function WhatsNewModal(props) {
   const classes = useStyles()
   const { VERSION } = config
   const changes = updates.changes
+  const improvements = updates.improvements
   const fixes = updates.fixes
   const alert = new Audio(`${window.location.origin}/alert.wav`)
 
@@ -100,14 +109,18 @@ function WhatsNewModal(props) {
               <CloseIcon />
             </IconButton>
             <span className='title'>What's new? <span role="img" aria-label='' description=''>🎉</span></span>
-            <span className='whatsNew'>
+            {changes && <span className='whatsNew updatesRow'>
               <span className='heading'>NEW FEATURES</span>
               <Renderer content={changes}/>
-            </span>
-            <span className='bugFixes'>
+            </span>}
+            {improvements && <span className='improvements updatesRow'>
+              <span className='heading'>IMPROVEMENTS</span>
+              <Renderer content={improvements} />
+            </span>}
+            {fixes && <span className='bugFixes updatesRow'>
               <span className='heading'>BUG FIXES</span>
               <Renderer content={fixes} />
-            </span>
+            </span>}
 
             <div className="updatesInfo">you're on <b>v{VERSION}</b></div>
           </div>
