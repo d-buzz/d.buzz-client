@@ -835,22 +835,36 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   } else {
     // render normally
 
+    const checkForMarkdownDefaults = (n) => {
+      return !n.startsWith('[') && !n.startsWith('(') && !n.startsWith(']') && !n.startsWith(')')
+    }
+
     const checkForImage = (n) => {
       return !n.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i) && !n.match(/ipfs\.io\/ipfs\/[a-zA-Z0-9]+/gi)
-    }   
+    }
+
+    const checkForValidURL = (n) => {
+      return !n.startsWith('@')
+      && !n.startsWith('#')
+      && checkForMarkdownDefaults(n)
+    }
+
+    const checkForValidImage = (n) => {
+      return !n.includes(')')
+    }
 
     // render content (supported for all browsers)
     content = content
     // render all urls
-      .replace(/(?![^()]*\))(?![^[\]]*])((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*/gi, n => checkForImage(n) ? `[${n}](${n.startsWith('http') ? n : `http://${n}`})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*|(\]\S+)|(\)\S+)/gi, n => checkForImage(n) && checkForValidURL(n) ? `[${n}](${n.startsWith('http') ? n : `https://${n}`})` : n)
     // render usernames
-      .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
+      .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-.]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
       // render hashtags 
-      .replace(/(?![^()]*\))(?![^[\]]*])#([A-Za-z0-9-_]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
+      .replace(/(?![^()]*\))(?![^[\]]*])#([\w\d!@%^&*)(+=._-]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
     // render crypto tickers
       .replace(/\$([A-Za-z-]+)/gi, n => { return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b>[${n}](https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel)</b>` : n })
     // render web images links
-      .replace(/(?![^()]*\))(?![^[\]]*])(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => `![](${n})`)
+      .replace(/!(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))|(\]\S+)|(\)\S+)/gi, n => checkForValidImage(n) ? `![](${n})` : n)
     // render IPFS images
       .replace(/(?![^()]*\))(?![^[\]]*])(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
       // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)

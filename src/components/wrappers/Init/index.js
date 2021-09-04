@@ -118,6 +118,9 @@ const Init = (props) => {
       window.history.forward(1)
       window.location.reload(true)
     })
+
+    // reset updates modal
+    localStorage.removeItem('updatesModal')
   }
 
   const dismiss = () => {
