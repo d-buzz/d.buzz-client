@@ -831,7 +831,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const extractAllHashtags = (value) => {
-    let hashtags = value.match(/#\w+/g)
+    let hashtags = value.match(/(?![^()]*\))(?![^[\]]*])#([\w\d!@%^&*)(+=._-]+)/gi)
 
     if(hashtags === null)  {
       hashtags = []
