@@ -55,13 +55,15 @@ import Tooltip from '@material-ui/core/Tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
+import PersonIcon from '@material-ui/icons/Person'
 
 
 const useStyles = createUseStyles(theme => ({
   cover: {
     height: 270,
     width: '100%',
-    backgroundColor: '#ffebee',
+    background: 'transparent',
+    objectFit: 'cover',
     overFlow: 'hidden',
     '& img': {
       height: '100%',
@@ -72,6 +74,13 @@ const useStyles = createUseStyles(theme => ({
   },
   avatar: {
     marginTop: -70,
+
+    '& img': {
+      backgroundColor: `${theme.background.primary} !important`,
+    },
+  },
+  avatarStyles: {
+    borderColor: `${theme.background.primary} !important`,
   },
   walletButton: {
     marginTop: 5,
@@ -86,10 +95,13 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   userName: {
-    fontSize: 16,
+    display: 'flex',
     padding: 0,
-    marginTop: -20,
+    margin: 0,
+    marginBottom: 15,
+    fontSize: 14,
     ...theme.font,
+    color: 'rgb(136, 153, 166) !important',
   },
   wrapper: {
     width: '95%',
@@ -165,6 +177,54 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     marginBottom: 5,
   },
+  usernameStyle: {
+    border: '1px solid rgba(230, 28, 52, 0.2)',
+    margin: '5px 2px',
+    padding: '1px 5px',
+    paddingBottom: 2,
+    background: 'rgba(255, 235, 238, 0.8)',
+    borderRadius: 5,
+    transition: 'opacity 250ms',
+
+    '& a': {
+      textDecoration: 'none',
+      color: '#E61C34 !important',
+    },
+
+    '&:hover': {
+      opacity: 0.8,
+    },
+  },
+  invalidUser: {
+    display: 'flex',
+    width: '100%',
+    height: '80vh',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#E61C34',
+    fontWeight: 600,
+    fontSize: '1.2em',
+    gap: 20,
+
+    '& .errorHint': {
+      fontSize:'0.8em',
+      opacity: 0.8,
+      fontWeight: 400,
+    },
+
+    '@media (max-width: 480px)': {
+      textAlign: 'center',
+
+      '& .userIcon': {
+        fontSize: '8em !important',
+      },
+    },
+
+    '& .userIcon': {
+      fontSize: '8em !important',
+    },
+  },
 }))
 
 const Profile = (props) => {
@@ -218,6 +278,7 @@ const Profile = (props) => {
   const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [invalidUser, setInvalidUser] = useState(false)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -358,12 +419,22 @@ const Profile = (props) => {
 
   const { reputation = 0, isFollowed } = profile
 
+  const userAbout = about.replace(/@([A-Za-z0-9-.]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
+
   useEffect(() => {
     if(username === profileUsername){
       setAvatarUrl(profile_image)
     }
   // eslint-disable-next-line
   },[profile_image, username])
+
+  // check for invalid user
+  useEffect(() => {
+    getProfileRequest(username).then((result) => {
+      result.toString() === ('RPCError: Invalid parameters') && setInvalidUser(true)
+    })
+    // eslint-disable-next-line
+  }, [username])
 
   const followUser = () => {
     followRequest(username).then((result) => {
@@ -432,216 +503,233 @@ const Profile = (props) => {
 
 
   return (
-    <React.Fragment>
-      <HelmetGenerator page='Profile' />
-      <ProfileSkeleton loading={loading} />
-      {!loading && (
+    <>
+      {!invalidUser ?
         <React.Fragment>
-          <div className={classes.cover}>
-            {cover_image !== '' && (<img src={`https://images.hive.blog/0x0/${cover_image}`} alt="cover"/>)}
-          </div>
-          <div className={classes.wrapper}>
-            <Row>
-              <Col xs="auto">
-                <div className={classes.avatar}>
-                  <Avatar border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl}/>
-                </div>
-              </Col>
-              <Col>
-                {is_authenticated && (
-                  <React.Fragment>
-                    <IconButton
-                      size="medium"
-                      style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
-                      onClick={handleOpenMoreOptions}
-                    >
-                      <MoreCircleIconRed/>
-                    </IconButton>
-                    <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={moreOptions}/>
-                    {loginuser === username && (
-                      <ContainedButton
-                        fontSize={14}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5 }}
-                        transparent={true}
-                        label="Edit profile"
-                        className={classes.button}
-                        onClick={handleOpenEditProfileModal}
-                      />
-                    )}
-                    {loginuser !== username && !mutelist.includes(username) && (
-                      <ContainedButton
-                        fontSize={14}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
-                        transparent={true}
-                        label="Mute"
-                        className={classes.button}
-                        onClick={openMuteModal}
-                      />
-                    )}
-                    {loginuser !== username && mutelist.includes(username) && (
-                      <ContainedButton
-                        fontSize={14}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
-                        transparent={true}
-                        label="Unmute"
-                        className={classes.button}
-                        onClick={openMuteModal}
-                      />
-                    )}
-                    {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
-                      <ContainedButton
-                        fontSize={14}
-                        loading={loadingFollow}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5 }}
-                        transparent={true}
-                        label="Follow"
-                        className={classes.button}
-                        onClick={followUser}
-                      />
-                    )}
-                    {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
-                      <ContainedButton
-                        fontSize={14}
-                        loading={loadingFollow}
-                        disabled={loading}
-                        style={{ float: 'right', marginTop: 5 }}
-                        transparent={true}
-                        label="Unfollow"
-                        className={classes.button}
-                        onClick={unfollowUser}
-                      />
-                    )}
-                  </React.Fragment>
-                )}
-              </Col>
-            </Row>
-          </div>
-        </React.Fragment>
-      )}
-      <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
-        <div className={classNames(classes.wrapper)}>
+          <HelmetGenerator page='Profile' />
+          <ProfileSkeleton loading={loading} />
           {!loading && (
             <React.Fragment>
-              <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-                <Col xs="auto">
-                  <p className={classNames(classes.paragraph, classes.fullName)}>
-                    {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;
-                    <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />
-                  </p>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs="auto">
-                  <p className={classes.paragraph}>
-                    {about}
-                  </p>
-                </Col>
-              </Row>
-              <div style={{ width: '100%', height: 10 }} />
-              <Row style={{ marginLeft: -5 }}>
-                <p className={classes.paragraph}>
-                  {accountCreated && (
-                    <span className={classes.textIcon} >
-                      <DateRangeIcon fontSize="small" />&nbsp;
-                      Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
-                    </span>
-                  )}
-                </p>
-              </Row>
-              <Row>
-                <Col xs="auto" style={{ marginLeft: -5 }}>
-                  <p className={classes.paragraph}>
-                    <span>
-                      <LinkIcon fontSize="small" className={classes.textIcon}/> {" Blogs - "}
-                      <a href={`https://blog.d.buzz/#/@${username}`} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                        https://blog.d.buzz/#/@{username}
-                      </a>
-                    </span>
-                  </p>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs="auto" style={{ marginLeft: -5 }}>
-                  <Tooltip title="Click to copy referal link">
-                    <CopyToClipboard className={classes.clipboard} text={`https://${window.location.hostname}/#/?ref=${username}`} onCopy={copyReferalLink}>
-                      <p className={classes.paragraph}>
-                        <span>
-                          <FileCopyIcon fontSize="small" className={classes.textIcon}/>
-                          <span style={{ fontSize: 14 }}>{" Copy Referal - "}</span>
-                          {/* eslint-disable-next-line */}
-                          <span id="user-referal" className={classes.weblink}>
-                            https://{window.location.hostname}/#/?ref={username}
-                          </span>
-                        </span>
-                      </p>
-                    </CopyToClipboard>
-                  </Tooltip>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs="auto" style={{ marginLeft: -5 }}>
-                  <p className={classes.paragraph}>
-                    {profile_location && (
-                      <span className={classes.textIcon} style={{ marginRight: 10 }}>
-                        <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                        {profile_location}
-                      </span>
+              <div className={classes.cover}>
+                <img src={cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `${window.location.origin}/dbuzz_full.png`} alt="cover" style={{borderRadius: cover_image ? '0 0 25px 25px' : ''}} onError={(e) => e.target.src = `${window.location.origin}/dbuzz_full.png`} />
+              </div>
+              <div className={classes.wrapper}>
+                <Row>
+                  <Col xs="auto">
+                    <div className={classes.avatar}>
+                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl}/>
+                    </div>
+                  </Col>
+                  <Col>
+                    {is_authenticated && (
+                      <React.Fragment>
+                        <IconButton
+                          size="medium"
+                          style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
+                          onClick={handleOpenMoreOptions}
+                        >
+                          <MoreCircleIconRed/>
+                        </IconButton>
+                        <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={moreOptions}/>
+                        {loginuser === username && (
+                          <ContainedButton
+                            fontSize={14}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5 }}
+                            transparent={true}
+                            label="Edit profile"
+                            className={classes.button}
+                            onClick={handleOpenEditProfileModal}
+                          />
+                        )}
+                        {loginuser !== username && !mutelist.includes(username) && (
+                          <ContainedButton
+                            fontSize={14}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                            transparent={true}
+                            label="Mute"
+                            className={classes.button}
+                            onClick={openMuteModal}
+                          />
+                        )}
+                        {loginuser !== username && mutelist.includes(username) && (
+                          <ContainedButton
+                            fontSize={14}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                            transparent={true}
+                            label="Unmute"
+                            className={classes.button}
+                            onClick={openMuteModal}
+                          />
+                        )}
+                        {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
+                          <ContainedButton
+                            fontSize={14}
+                            loading={loadingFollow}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5 }}
+                            transparent={true}
+                            label="Follow"
+                            className={classes.button}
+                            onClick={followUser}
+                          />
+                        )}
+                        {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
+                          <ContainedButton
+                            fontSize={14}
+                            loading={loadingFollow}
+                            disabled={loading}
+                            style={{ float: 'right', marginTop: 5 }}
+                            transparent={true}
+                            label="Unfollow"
+                            className={classes.button}
+                            onClick={unfollowUser}
+                          />
+                        )}
+                      </React.Fragment>
                     )}
-                    {website && (
-                      <span>
-                        <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                        <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                          {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-                        </a>
-                      </span>
-                    )}
-                  </p>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs="auto">
-                  <p className={classes.paragraph}>
-                    <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
-                      <b>{following}</b> <span className={classes.textIcon}>Following</span>
-                    </Link> &nbsp;
-                    <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
-                      <b>{followers}</b> <span className={classes.textIcon}>Followers</span>
-                    </Link> &nbsp;
-                  </p>
-                </Col>
-              </Row>
+                  </Col>
+                </Row>
+              </div>
             </React.Fragment>
           )}
-        </div>
-        <div className={classes.spacer} />
-        <Tabs
-          value={index}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-          onChange={onChange}
-          className={classes.tabContainer}
-        >
-          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
-          <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
-        </Tabs>
-      </div>
-      <React.Fragment>
-        {renderRoutes(route.routes, { author: username })}
-      </React.Fragment>
-      <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
-      <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal}/>
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
-        <Alert onClose={handleCloseReferalCopy} severity="success">
-          Referal link Successfully copied
-        </Alert>
-      </Snackbar>
-    </React.Fragment>
+          <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
+            <div className={classNames(classes.wrapper)}>
+              {!loading && (
+                <React.Fragment>
+                  <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+                    <Col xs="auto">
+                      <p className={classNames(classes.paragraph, classes.fullName)}>
+                        {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;
+                        <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+                    {name &&
+                      <Col xs="auto">
+                        <p className={classes.userName}>
+                          @{username}
+                        </p>
+                      </Col>}
+                  </Row>
+                  <Row>
+                    <Col xs="auto">
+                      <p className={classes.paragraph}>
+                        <div dangerouslySetInnerHTML={{ __html: userAbout }} />
+                      </p>
+                    </Col>
+                  </Row>
+                  <div style={{ width: '100%', height: 10 }} />
+                  <Row style={{ marginLeft: -5 }}>
+                    <p className={classes.paragraph}>
+                      {accountCreated && (
+                        <span className={classes.textIcon} >
+                          <DateRangeIcon fontSize="small" />&nbsp;
+                          Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
+                        </span>
+                      )}
+                    </p>
+                  </Row>
+                  <Row>
+                    <Col xs="auto" style={{ marginLeft: -5 }}>
+                      <p className={classes.paragraph}>
+                        <span>
+                          <LinkIcon fontSize="small" className={classes.textIcon}/> {" Blogs - "}
+                          <a href={`https://blog.d.buzz/#/@${username}`} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                            https://blog.d.buzz/#/@{username}
+                          </a>
+                        </span>
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="auto" style={{ marginLeft: -5 }}>
+                      <Tooltip title="Click to copy referal link">
+                        <CopyToClipboard className={classes.clipboard} text={`https://${window.location.hostname}/#/?ref=${username}`} onCopy={copyReferalLink}>
+                          <p className={classes.paragraph}>
+                            <span>
+                              <FileCopyIcon fontSize="small" className={classes.textIcon}/>
+                              <span style={{ fontSize: 14 }}>{" Copy Referal - "}</span>
+                              {/* eslint-disable-next-line */}
+                              <span id="user-referal" className={classes.weblink}>
+                                https://{window.location.hostname}/#/?ref={username}
+                              </span>
+                            </span>
+                          </p>
+                        </CopyToClipboard>
+                      </Tooltip>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="auto" style={{ marginLeft: -5 }}>
+                      <p className={classes.paragraph}>
+                        {profile_location && (
+                          <span className={classes.textIcon} style={{ marginRight: 10 }}>
+                            <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
+                            {profile_location}
+                          </span>
+                        )}
+                        {website && (
+                          <span>
+                            <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
+                            <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                              {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                            </a>
+                          </span>
+                        )}
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="auto">
+                      <p className={classes.paragraph}>
+                        <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
+                          <b>{following}</b> <span className={classes.textIcon}>Following</span>
+                        </Link> &nbsp;
+                        <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
+                          <b>{followers}</b> <span className={classes.textIcon}>Followers</span>
+                        </Link> &nbsp;
+                      </p>
+                    </Col>
+                  </Row>
+                </React.Fragment>
+              )}
+            </div>
+            <div className={classes.spacer} />
+            <Tabs
+              value={index}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+              onChange={onChange}
+              className={classes.tabContainer}
+            >
+              <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
+              <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
+              <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
+            </Tabs>
+          </div>
+          <React.Fragment>
+            {renderRoutes(route.routes, { author: username })}
+          </React.Fragment>
+          <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
+          <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal}/>
+          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
+            <Alert onClose={handleCloseReferalCopy} severity="success">
+              Referal link Successfully copied
+            </Alert>
+          </Snackbar>
+        </React.Fragment> :
+
+        <div className={classes.invalidUser}>
+          <PersonIcon className='userIcon' />
+          <span className='errorTitle'>This account doesn’t exist.</span>
+          <span className='errorHint'>Try searching for another.</span>
+        </div>}
+    </>
   )
 }
 

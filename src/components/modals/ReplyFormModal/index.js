@@ -220,6 +220,9 @@ const ReplyFormModal = (props) => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
 
+  // cursor state
+  const [cursorPosition, setCursorPosition] = useState(null)
+
   const [counterColor, setCounterColor] = useState('#e53935')
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
@@ -393,8 +396,12 @@ const ReplyFormModal = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const cursor = cursorPosition
+      const contentAppend = content.slice(0, cursor) + emoticon + content.slice(cursor)
       setContent(contentAppend)
+
+      emoticon.length === 2 && setCursorPosition(cursorPosition+2)
+      emoticon.length === 4 && setCursorPosition(cursorPosition+4)
     } 
   }
 
@@ -455,9 +462,16 @@ const ReplyFormModal = (props) => {
                       maxLength={280 + overhead}
                       label="Buzz your reply"
                       value={content}
-                      onKeyUp={handleOnChange}
-                      onKeyDown={handleOnChange}
+                      onKeyUp={e => {
+                        handleOnChange(e)
+                        setCursorPosition(e.target.selectionStart)
+                      }}
+                      onKeyDown={e => {
+                        handleOnChange(e)
+                        setCursorPosition(e.target.selectionStart)
+                      }}
                       onChange={handleOnChange}
+                      onClick={(e) => setCursorPosition(e.target.selectionStart)}
                     />
                   )}
                   <FormCheck

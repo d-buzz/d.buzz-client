@@ -16,6 +16,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '15px 15px',
     display: 'flex',
     marginBottom: 10,
+    cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.preview.hover.color,
     },
