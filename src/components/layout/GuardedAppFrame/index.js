@@ -102,6 +102,7 @@ const GuardedAppFrame = (props) => {
     broadcastNotification,
     loading,
     count,
+    setBuzzModalStatus,
   } = props
 
   const classes = useStyles()
@@ -229,6 +230,7 @@ const GuardedAppFrame = (props) => {
   }
 
   const handleOpenBuzzModal = () => {
+    setBuzzModalStatus(true)
     setOpen(true)
   }
 

@@ -37,6 +37,8 @@ import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded'
 import Renderer from 'components/common/Renderer'
 import Switch from 'components/elements/Switch'
 import imageCompression from 'browser-image-compression'
+import ImagesContainer from '../ImagesContainer'
+import ViewImageModal from 'components/modals/ViewImageModal'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -390,7 +392,7 @@ const CreateBuzzForm = (props) => {
   // buzz states
   const [isThread, setIsThread] = useState(false)
   const [currentBuzz, setCurrentBuzz] = useState(1)
-  const [threadCount, setThreadCount] = useState(1)
+  const [threadCount, setThreadCount] = useState(buzzThreads ? Object.keys(buzzThreads).length : 1)
   const [nextBuzz, setNextBuzz] = useState(0)
   const [publishedBuzzes, setPublishedBuzzes] = useState(0)
   const [buzzData, setBuzzData] = useState(null)
@@ -425,6 +427,7 @@ const CreateBuzzForm = (props) => {
 
   // image states
   const [imageSize, setImageSize] = useState(0)
+  const [viewImageUrl, setViewImageUrl] = useState('')
 
   if (wholeIntent && hashtags) {
     const intentTags = hashtags.split(',')
@@ -447,7 +450,8 @@ const CreateBuzzForm = (props) => {
     setContent('')
     const buzzId = buzzThreads ? Object.keys(buzzThreads).length + 1 : 1
     if(buzzThreads[buzzId-1].content !== '' && buzzThreads[1].content !== ''){
-      createThread(buzzId, '')
+      createThread(buzzId, '', [])
+      setThreadCount(buzzId)
     }
     if(!buzzModalStatus && !isMobile) {
       setBuzzModalStatus(true)
@@ -494,16 +498,21 @@ const CreateBuzzForm = (props) => {
 
   // dbuzz threads
 
-  const createThread = (count, content) => {
+  const createThread = (count, content, images) => {
     const buzzData = {}
-    buzzData[count] = {id: count, content: content}
-    updateBuzzThreads({...buzzThreads, ...buzzData})
+
+    if(content === 'image'){
+      buzzData[count] = {id: count, content: buzzThreads[count]?.content, images: images}
+      updateBuzzThreads({...buzzThreads, ...buzzData})
+    } else {
+      buzzData[count] = {id: count, content: content, images: images}
+      updateBuzzThreads({...buzzThreads, ...buzzData})
+    }
   }
 
-  const handleAddBuzz = (buzzId, content) => {
+  const handleUpdateBuzz = (buzzId, content) => {
     if(buzzThreads !== null){
-      createThread(buzzId, content)
-      setThreadCount(buzzId)
+      createThread(buzzId, content, buzzThreads[buzzId]?.images)
       buzzId === 2 && setIsThread(true)
     }
   }
@@ -549,7 +558,7 @@ const CreateBuzzForm = (props) => {
       setContent(value)
     }
     setCurrentBuzz(buzzId)
-    handleAddBuzz(buzzId, value)
+    handleUpdateBuzz(buzzId, value)
   }
 
   const handleFileSelect = () => {
@@ -593,20 +602,22 @@ const CreateBuzzForm = (props) => {
 
   const handleFileSelectChange = async(event) => {
     const image = event.target.files[0]
+
     const fileSize = image.size / 1e+6
+
     setImageSize(Number(fileSize.toFixed(2)))
 
     setCompressing(true)
-    
+
     await handleImageCompression(image).then((uri) => {
       setCompressing(false)
       setImageSize(Number((uri.size / 1e+6).toFixed(2)))
       uploadFileRequest(uri).then((image) => {
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
-          const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
-          createThread(currentBuzz, contentAppend)
-          setContent(contentAppend)
+          // const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
+          createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, lastImage])
+          // setContent(contentAppend)
           document.getElementById('file-upload').value = ''
   
           // set the thread if its the thread
@@ -621,6 +632,7 @@ const CreateBuzzForm = (props) => {
       }) 
     })
 
+
     // if(fileSize < 1){
     // }
     // else {
@@ -632,7 +644,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const resetBuzzForm = () => {
-    updateBuzzThreads({1: {id: 1, content: ''}})
+    updateBuzzThreads({1: {id: 1, content: '', images:[]}})
     setContent('')
     setIsThread(false)
     setCurrentBuzz(1)
@@ -645,10 +657,12 @@ const CreateBuzzForm = (props) => {
   }
 
   const handlePublishThread = () => {
+    const buzzContent = buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz].content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz].content
+
     if(isThread) {
       setBuzzing(true)
       if(buzzThreads[nextBuzz]?.content !== '') {
-        publishReplyRequest(buzzData?.author, buzzData?.permlink, buzzThreads[nextBuzz]?.content, 'list', 0)
+        publishReplyRequest(buzzData?.author, buzzData?.permlink, buzzContent, 'list', 0)
           .then(({ success, errorMessage }) => {
             if(success) {
               setPublishedBuzzes(publishedBuzzes+1)
@@ -693,12 +707,14 @@ const CreateBuzzForm = (props) => {
       invokeTwitterIntent(content)
     }
 
+    const buzzContent = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
+
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
       setBuzzLoading(true)
       setBuzzing(true)
-      publishPostRequest(buzzThreads[1].content, tags, payout)
+      publishPostRequest(buzzContent, tags, payout)
         .then((data) => {
           if (data.success) {
             setPageFrom(null)
@@ -799,7 +815,7 @@ const CreateBuzzForm = (props) => {
   const handleSelectGif = (gif) => {
     if (gif) {
       const contentAppend = `${buzzThreads[currentBuzz]?.content} \n <br /> ${gif}`
-      createThread(currentBuzz, contentAppend)
+      createThread(currentBuzz, contentAppend, buzzThreads[currentBuzz]?.images)
       setContent(contentAppend)
       // savePostAsDraft(contentAppend)
       // savePostAsDraftToStorage(contentAppend)
@@ -820,7 +836,7 @@ const CreateBuzzForm = (props) => {
     if (emoticon) {
       const cursor = cursorPosition
       const contentAppend = buzzThreads[currentBuzz].content.slice(0, cursor) + emoticon + buzzThreads[currentBuzz].content.slice(cursor)
-      createThread(currentBuzz, contentAppend)
+      createThread(currentBuzz, contentAppend, buzzThreads[currentBuzz]?.images)
       setContent(contentAppend)
 
       emoticon.length === 2 && setCursorPosition(cursorPosition+2)
@@ -846,7 +862,7 @@ const CreateBuzzForm = (props) => {
     // setup an empty thread on page load
     if(!buzzThreads){
       setIsThread(false)
-      createThread(1, '')
+      createThread(1, '', [])
       setCurrentBuzz(1)
       setThreadCount(1)
     }
@@ -914,7 +930,14 @@ const CreateBuzzForm = (props) => {
                       maxLength={280 + overhead}
                       minRows={minRows}
                       value={item.content}
-                      onKeyDown={e => onChange(e, "draftPost", item.id)}
+                      onKeyUp={e => {
+                        onChange(e, "draftPost", item.id)
+                        setCursorPosition(e.target.selectionStart)
+                      }}
+                      onKeyDown={e => {
+                        onChange(e, "draftPost", item.id)
+                        setCursorPosition(e.target.selectionStart)
+                      }}
                       onChange={e => onChange(e, "draftPost", item.id)}
                       onPaste={e => onChange(e, "draftPost", item.id)}
                       autoFocus
@@ -1002,6 +1025,12 @@ const CreateBuzzForm = (props) => {
                 </Box>
               </div>
             )}
+
+            {/* IMAGES ROW */}
+            {buzzThreads && buzzThreads[currentBuzz]?.images?.length >= 1 && (
+              <ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} />
+            )}
+
             {content.length !== 0 && (
               <div className={classes.previewContainer} onClick={handleClickContent}>
                 <h6 className={classes.previewTitle}>
@@ -1047,7 +1076,7 @@ const CreateBuzzForm = (props) => {
                   <GifIcon />
                 </IconButton>
                 {!isMobile &&
-                <IconButton size='medium' onClick={handleOpenEmojiPicker}>
+                <IconButton style={{ backgroundColor: openEmojiPicker ? '#D3D3D3' : ''}} size='medium' onClick={handleOpenEmojiPicker}>
                   <EmojiIcon />
                 </IconButton>}
                 {content && 
@@ -1108,6 +1137,7 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} />
+      <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
       {/* {imageAlert &&
         <div className={classes.imageAlert}>
           <span className='heading'>NOTICE</span>

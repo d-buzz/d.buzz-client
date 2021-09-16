@@ -132,8 +132,9 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: 5,
   },
   invalidBuzz: {
-    width: '100%',
     display: 'flex',
+    width: '100%',
+    height: '80vh',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
@@ -141,6 +142,12 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 600,
     fontSize: '1.2em',
     gap: 20,
+
+    '& .errorHint': {
+      fontSize:'0.8em',
+      opacity: 0.8,
+      fontWeight: 400,
+    },
 
     '@media (max-width: 480px)': {
       textAlign: 'center',
@@ -151,7 +158,7 @@ const useStyles = createUseStyles(theme => ({
     },
 
     '& .errorIcon': {
-      fontSize: '6em !important',
+      fontSize: '8em !important',
     },
   },
 }))
@@ -608,7 +615,8 @@ const Content = (props) => {
       {invalidBuzz && !loadingContent && !loadingReplies && 
         <div className={classes.invalidBuzz}>
           <ReportProblemRoundedIcon className='errorIcon' />
-          <span>Hmm...this page doesn’t exist. Try searching for something else.</span>
+          <span className='errorTitle'>Hmm...this page doesn’t exist.</span>
+          <span className='errorHint'>Try searching for something else.</span>
         </div>}
     </React.Fragment>
   )

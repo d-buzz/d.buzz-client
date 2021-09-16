@@ -110,6 +110,10 @@ const Init = (props) => {
 
   const reload = () => {
     dismiss()
+    
+    // reset updates modal
+    localStorage.removeItem('updatesModal')
+
     caches.keys().then((names) => {
       // Delete all the cache files
       names.forEach(name => {
@@ -118,9 +122,6 @@ const Init = (props) => {
       window.history.forward(1)
       window.location.reload(true)
     })
-
-    // reset updates modal
-    localStorage.removeItem('updatesModal')
   }
 
   const dismiss = () => {
