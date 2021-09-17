@@ -419,7 +419,7 @@ const Profile = (props) => {
 
   const { reputation = 0, isFollowed } = profile
 
-  const userAbout = about.replace(/@([A-Za-z0-9-.]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
+  const userAbout = about ? about.replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
 
   useEffect(() => {
     if(username === profileUsername){
