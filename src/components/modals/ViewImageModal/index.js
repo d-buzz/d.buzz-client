@@ -27,17 +27,16 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    height: '80vh',
+    height: '100vh',
     
     '& img': {
-      maxHeight: 600,
+      maxHeight: '80%',
       maxWidth: '100%',
       borderRadius: 15,
     },
   },
   closeImageButton: {
-    marginTop: '35px !important',
+    marginTop: '-20px !important',
     color: '#ffffff !important',
     backgroundColor: '#E61C34 !important',
     fontSize: '2em !important',
@@ -60,7 +59,7 @@ const ViewImageModal = (props) => {
       >
         <ModalBody>
           <div className={classes.imageModal}>
-            <img src={imageUrl} alt='modal_image' />
+            {imageUrl ? <img src={imageUrl} alt='modal_image' /> : null}
             <IconButton className={classes.closeImageButton} onClick={() => onHide('')}>
               <CloseIcon />
             </IconButton>
