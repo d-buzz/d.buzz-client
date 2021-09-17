@@ -145,12 +145,20 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   usernameStyle: {
-    padding: '2px 5px',
+    border: '1px solid rgba(230, 28, 52, 0.2)',
+    margin: '5px 2px',
+    padding: '1px 5px',
+    paddingBottom: 2,
     background: 'rgba(255, 235, 238, 0.8)',
     borderRadius: 5,
+    transition: 'opacity 250ms',
     
     '& a': {
       textDecoration: 'none',
+    },
+
+    '&:hover': {
+      opacity: 0.8,
     },
   },
 }))
@@ -706,7 +714,7 @@ const getCoinTicker = (coin) => {
 
   for(var i=0; i<=data.length; i++){
     if(data[i]?.symbol === coin){
-      return data[i]?.id
+      return {id: data[i]?.id, name: data[i]?.name}
     }
   }
 }
@@ -836,7 +844,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // render normally
 
     const checkForMarkdownDefaults = (n) => {
-      return !n.startsWith('[') && !n.startsWith('(') && !n.startsWith(']') && !n.startsWith(')')
+      return !n.startsWith('[') && !n.startsWith('(')
     }
 
     const checkForImage = (n) => {
@@ -849,24 +857,36 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       && checkForMarkdownDefaults(n)
     }
 
+    const checkForValidUserName = (n) => {
+      return !n.startsWith('/@')
+    }
+
+    const checkForValidHashTag = (n) => {
+      return !n.startsWith('/#')
+    }
+
+    const checkForValidCryptoTicker = (n) => {
+      return !n.startsWith('/$')
+    }
+
     const checkForValidImage = (n) => {
-      return !n.includes(')')
+      return checkForMarkdownDefaults(n)
     }
 
     // render content (supported for all browsers)
     content = content
     // render all urls
-      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*|(\]\S+)|(\)\S+)/gi, n => checkForImage(n) && checkForValidURL(n) ? `[${n}](${n.startsWith('http') ? n : `https://${n}`})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a href='${n.startsWith('http') ? n : `https://${n}`}'>${n}</a>` : n)
     // render usernames
-      .replace(/(?![^()]*\))(?![^[\]]*])@([A-Za-z0-9-.]+)/gi, n => `<b className=${classes.usernameStyle}>[${n}](${window.location.origin}/${n})</b>`)
+      .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
       // render hashtags 
-      .replace(/(?![^()]*\))(?![^[\]]*])#([\w\d!@%^&*)(+=._-]+)/gi, n => `<b>[${n}](${window.location.origin}/tags?q=${n.replace('#', '')})</b>`)
+      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
     // render crypto tickers
-      .replace(/\$([A-Za-z-]+)/gi, n => { return getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b>[${n}](https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase())}/usd#panel)</b>` : n })
+      .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // render web images links
-      .replace(/!(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))|(\]\S+)|(\)\S+)/gi, n => checkForValidImage(n) ? `![](${n})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) ? `![](${n})` : n)
     // render IPFS images
-      .replace(/(?![^()]*\))(?![^[\]]*])(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => checkForValidImage(n) ? `![](${n})` : n)
       // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
 
     return <ReactMarkdown
