@@ -1133,6 +1133,7 @@ export const broadcastOperation = (operations, keys) => {
       keys,
       (error, result) => {
         if(error) {
+          console.log(error)
           reject(error.code)
         } else {
           resolve({

@@ -39,6 +39,7 @@ import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
 import { setBuzzModalStatus, setRefreshRouteStatus } from 'store/interface/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 import moment from 'moment'
+import SettingsModal from 'components/modals/SettingsModal'
 
 const useStyles = createUseStyles(theme => ({
   items: {
@@ -283,6 +284,7 @@ const SideBarLeft = (props) => {
   const [open, setOpen] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
   const [openSwitchModal, setOpenSwitchModal] = useState(false)
+  const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const classes = useStyles()
   const location = useLocation()
@@ -301,6 +303,11 @@ const SideBarLeft = (props) => {
   const showSwitchModal = () => {
     handleClickCloseOpenMoreMenu()
     setOpenSwitchModal(true)
+  }
+
+  const showSettingsModal = () => {
+    handleClickCloseOpenMoreMenu()
+    setOpenSettingsModal(true)
   }
 
   useEffect(() => {
@@ -338,6 +345,10 @@ const SideBarLeft = (props) => {
 
   const onHideSwitchModal = () => {
     setOpenSwitchModal(false)
+  }
+
+  const onHideSettingsModal = () => {
+    setOpenSettingsModal(false)
   }
 
   const addUserCallBack = () => {
@@ -527,6 +538,7 @@ const SideBarLeft = (props) => {
       <BuzzFormModal show={open} onHide={onHide} />
       <ThemeModal show={openTheme} onHide={onHideTheme} />
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
+      <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} />
       <MoreMenu
         themeModal={openTheme}
@@ -543,6 +555,10 @@ const SideBarLeft = (props) => {
           {
             onClick: showSwitchModal,
             text: 'Switch Account',
+          },
+          {
+            onClick: showSettingsModal,
+            text: 'Settings',
           },
         ]}
       />
