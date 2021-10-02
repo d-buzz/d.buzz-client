@@ -69,6 +69,7 @@ const defaultState = fromJS({
   contentRedirect: null,
   recentUpvotes: [],
   opacityUsers: [],
+  buzzTitle: '',
 })
 
 export const posts = (state = defaultState, { type, payload }) => {
