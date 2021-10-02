@@ -8,7 +8,7 @@ const updates = {
 `,
 
   improvements: `
-  - Addional sharing option to copy buzz link to clipboard.
+  - Additional sharing option to copy buzz link to clipboard.
   `,
   
   fixes: `
