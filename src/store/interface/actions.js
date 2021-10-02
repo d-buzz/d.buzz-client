@@ -176,3 +176,11 @@ export const setAccountSearchListKeyword = (keyword) => ({
   type: SET_ACCOUNT_SEARCH_LIST_KEYWORD,
   payload: keyword,
 })
+
+// buzz title
+export const BUZZ_TITLE_MODAL = 'BUZZ_TITLE'
+
+export const setBuzzTitleModalStatus = (title) => ({
+  type: BUZZ_TITLE_MODAL,
+  payload: title,
+})

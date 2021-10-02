@@ -26,6 +26,7 @@ import {
   SET_ACCOUNT_SEARCH_LIST_KEYWORD,
   SET_BUZZ_CONFIRM_MODAL_STATUS,
   SET_WHATS_NEW_MODAL_STATUS,
+  BUZZ_TITLE_MODAL,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -44,6 +45,7 @@ const defaultState = fromJS({
   blacklistDialog: { open: false, username: null },
   accountSearchListButton : { show : false, list_type: null },
   accountSearchListKeyword : '',
+  buzzTitleModalStatus: false,
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {
@@ -102,6 +104,8 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('accountSearchListButton', { show: false, list_type: null })
   case SET_ACCOUNT_SEARCH_LIST_KEYWORD:
     return state.set('accountSearchListKeyword', payload)
+  case BUZZ_TITLE_MODAL:
+    return state.set('buzzTitleModalStatus', payload)
   default:
     return state
   }
