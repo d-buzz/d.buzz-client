@@ -12,7 +12,6 @@ import {
   Spinner,
   GifIcon,
   EmojiIcon,
-  TitleIcon,
 } from 'components/elements'
 import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
@@ -30,7 +29,7 @@ import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import { setBuzzModalStatus, setBuzzTitleModalStatus } from 'store/interface/actions'
+import { setBuzzModalStatus } from 'store/interface/actions'
 import { BuzzFormModal } from 'components'
 import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
@@ -40,7 +39,6 @@ import Switch from 'components/elements/Switch'
 import imageCompression from 'browser-image-compression'
 import ImagesContainer from '../ImagesContainer'
 import ViewImageModal from 'components/modals/ViewImageModal'
-import BuzzTitleModal from 'components/modals/BuzzTitleModal'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -390,8 +388,6 @@ const CreateBuzzForm = (props) => {
   const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
   const [compressing, setCompressing] = useState(false) 
-  const [openBuzzTitleModal, setOpenBuzzTitleModal] = useState(false)
-  const [buzzTitle, setBuzzTitle] = useState('')
 
   // buzz states
   const [isThread, setIsThread] = useState(false)
@@ -463,22 +459,12 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const handleBuzzTitleModalOpen = () => {
-    setBuzzTitleModalStatus(true)
-    setOpenBuzzTitleModal(true)
-  }
-
   const onHide = () => {
     setBuzzModalStatus(false)
     setOpen(false)
     if (isBuzzIntent) {
       history.push('/')
     }
-  }
-
-  const onBuzzTitleModalHide = () => {
-    setBuzzTitleModalStatus(false)
-    setOpenBuzzTitleModal(false)
   }
 
   useEffect(() => {
@@ -1051,7 +1037,7 @@ const CreateBuzzForm = (props) => {
                   Buzz preview
                   <Switch size={25} state={buzzPreview} onChange={setBuzzPreview} />
                 </h6>
-                {buzzPreview && <Renderer content={buzzTitle ? `<h3>${buzzTitle}</h3><br/><span>${content}</span>` : content} minifyAssets={false} />}
+                {buzzPreview && <Renderer content={content} minifyAssets={false} />}
                 <div className={classes.separator} />
               </div>
             )}
@@ -1094,9 +1080,6 @@ const CreateBuzzForm = (props) => {
                 <IconButton style={{ backgroundColor: openEmojiPicker ? '#D3D3D3' : ''}} size='medium' onClick={handleOpenEmojiPicker}>
                   <EmojiIcon />
                 </IconButton>}
-                <IconButton size='medium' onClick={handleBuzzTitleModalOpen}>
-                  <TitleIcon />
-                </IconButton>
                 {content && 
                 <Box
                   style={{ float: 'right', marginRight: 10, paddingTop: 10}}
@@ -1156,7 +1139,6 @@ const CreateBuzzForm = (props) => {
       />
       <BuzzFormModal show={open} onHide={onHide} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
-      <BuzzTitleModal title={buzzTitle} setTitle={setBuzzTitle} show={openBuzzTitleModal} onHide={onBuzzTitleModalHide} />
       {/* {imageAlert &&
         <div className={classes.imageAlert}>
           <span className='heading'>NOTICE</span>
@@ -1191,7 +1173,6 @@ const mapDispatchToProps = (dispatch) => ({
       setBuzzModalStatus,
       updateBuzzThreads,
       publishReplyRequest,
-      setBuzzTitleModalStatus,
     },dispatch),
 })
 

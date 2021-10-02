@@ -596,7 +596,7 @@ export const savePostAsDraft = (postContent) => ({
 // buzz threads
 export const BUZZ_THREADS = 'BUZZ_THREADS'
 
-export const updateBuzzThreads = (title) => ({
+export const updateBuzzThreads = (buzz) => ({
   type: BUZZ_THREADS,
-  payload: title,
+  payload: buzz,
 })
