@@ -12,7 +12,7 @@ const updates = {
   `,
   
   fixes: `
-  - Fixed buzz posting error.
+  - Fixed buzz not posting issue.
   - Other minor bug fixes.
   `,
 }
