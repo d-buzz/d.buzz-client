@@ -86,6 +86,7 @@ function WhatsNewModal(props) {
   const changes = updates.changes
   const improvements = updates.improvements
   const fixes = updates.fixes
+  const upcoming = updates.upcoming
   const alert = new Audio(`${window.location.origin}/alert.wav`)
 
   useEffect(() => {
@@ -110,16 +111,24 @@ function WhatsNewModal(props) {
             </IconButton>
             <span className='title'>What's new? <span role="img" aria-label='' description=''>🎉</span></span>
             {changes && <span className='whatsNew updatesRow'>
-              <span className='heading'>NEW FEATURES</span>
-              <Renderer content={changes}/>
+              {/* eslint-disable-next-line */}
+              <span className='heading'>NEW FEATURES ✨</span>
+              <Renderer content={changes} minifyAssets={false} loader={false} />
             </span>}
             {improvements && <span className='improvements updatesRow'>
-              <span className='heading'>IMPROVEMENTS</span>
+              {/* eslint-disable-next-line */}
+              <span className='heading'>IMPROVEMENTS 💡</span>
               <Renderer content={improvements} />
             </span>}
             {fixes && <span className='bugFixes updatesRow'>
-              <span className='heading'>BUG FIXES</span>
+              {/* eslint-disable-next-line */}
+              <span className='heading'>BUG FIXES 🔨</span>
               <Renderer content={fixes} />
+            </span>}
+            {upcoming && <span className='upcoming updatesRow'>
+              {/* eslint-disable-next-line */}
+              <span className='heading'>UPCOMING UPDATES ⏳</span>
+              <Renderer content={upcoming} />
             </span>}
 
             <div className="updatesInfo">you're on <b>v{VERSION}</b></div>

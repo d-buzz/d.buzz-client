@@ -177,10 +177,25 @@ export const setAccountSearchListKeyword = (keyword) => ({
   payload: keyword,
 })
 
-// buzz title
+// buzz title modal
 export const BUZZ_TITLE_MODAL = 'BUZZ_TITLE'
 
-export const setBuzzTitleModalStatus = (title) => ({
+export const setBuzzTitleModalStatus = (status) => ({
   type: BUZZ_TITLE_MODAL,
-  payload: title,
+  payload: status,
+})
+
+// drafts modal
+export const DRAFTS_MODAL = 'DRAFTS_MODAL'
+
+export const setDraftsModalStatus = (status) => ({
+  type: DRAFTS_MODAL,
+  payload: status,
+})
+
+export const SAVE_DRAFTS_MODAL = 'SAVE_DRAFTS_MODAL'
+
+export const setSaveDraftsModalStatus = (status) => ({
+  type: SAVE_DRAFTS_MODAL,
+  payload: status,
 })

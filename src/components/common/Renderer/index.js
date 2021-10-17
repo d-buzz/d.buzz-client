@@ -907,6 +907,7 @@ const Renderer = React.memo((props) => {
     minifyAssets = true,
     scrollIndex = -1,
     recomputeRowIndex = () => {},
+    loader = true,
   } = props
   let { content = '' } = props
   const original = content
@@ -926,7 +927,7 @@ const Renderer = React.memo((props) => {
       content.match(imagesRegex).forEach(image => {
         const imageClass = image
         const imageEl = document.querySelector(`img[src$="${imageClass}"]`)
-        if(imageEl){
+        if(imageEl && loader){
           imageEl.style.height = '300px'
           imageEl.style.opacity = '0.5'
           imageEl.onload = () => {
@@ -940,6 +941,13 @@ const Renderer = React.memo((props) => {
             imageEl.style.animation = 'none'
             imageEl.style.opacity = '1'
           }
+        } else {
+          imageEl.style.background = 'none'
+          imageEl.style.animation = 'none'
+          imageEl.style.opacity = '1'
+          imageEl.style.height = 'inherit'
+          imageEl.style.border = 'none'
+          imageEl.style.pointerEvents = 'none'
         }
       })
     }

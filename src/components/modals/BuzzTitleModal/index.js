@@ -67,6 +67,10 @@ const BuzzTitleModal = (props) => {
   } = props
   const classes = useStyles()
 
+  const handleSetTitle = () => {
+    setTitle(title)
+    onHide()
+  }
   return (
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
@@ -85,7 +89,7 @@ const BuzzTitleModal = (props) => {
             </div>
             <center>
               <ContainedButton
-                onClick={onHide}
+                onClick={handleSetTitle}
                 className={classes.closeButton}
                 fontSize={14}
                 label="Set"

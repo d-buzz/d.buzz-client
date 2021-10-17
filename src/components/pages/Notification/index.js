@@ -81,6 +81,7 @@ const useStyle = createUseStyles(theme => ({
     marginTop: 0,
     marginBottom: 0,
     paddingBottom: 0,
+    cursor: 'pointer',
   },
   post: {
     color: '#14171a',
@@ -137,6 +138,15 @@ const useStyle = createUseStyles(theme => ({
     fontWeight: 'bold',
     fontSize: 15,
     ...theme.font,
+  },
+  button: {
+    '&:hover': {
+      background: '#E61C34',
+
+      '& label': {
+        color: '#ffffff !important',
+      },
+    },
   },
 }))
 

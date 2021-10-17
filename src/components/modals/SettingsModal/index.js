@@ -3,6 +3,10 @@ import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
+import config from 'config'
+import { checkVersionRequest } from 'store/settings/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -60,6 +64,7 @@ const useStyles = createUseStyles(theme => ({
         '& .title': {
           fontSize: '1.2em',
           fontWeight: '600',
+          color: theme.font.color,
         },
 
         '& .toggle': {
@@ -79,16 +84,69 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  versionContainer: {
+    borderTop: '1px solid lightgray',
+    padding: 15,
+    marginTop: 15,
+    display: 'flex',
+    flexDirection: 'column',
+
+    '& .current_version': {
+      fontSize: '1.2em',
+      color: '#E61C34',
+      fontWeight: 500,
+    },
+    '& .check_updates_button, .updates_avaialble': {
+      marginTop: 8,
+      marginBottom: 15,
+      width: '100%',
+      padding: '8px 0',
+      color: '#ffffff',
+      fontSize: '1.35em',
+      fontWeight: 'bold',
+      borderRadius: 5,
+      background: '#E61C34',
+      userSelect: 'none',
+      cursor: 'pointer',
+
+      '&:hover': {
+        background: '#B71C1C',
+      },
+    },
+
+    '& .up_to_date_button': {
+      marginTop: 8,
+      marginBottom: 15,
+      width: '100%',
+      padding: '8px 0',
+      color: '#ffffff',
+      fontSize: '1.35em',
+      fontWeight: 'bold',
+      borderRadius: 5,
+      background: '#E61C34',
+      userSelect: 'none',
+    },
+
+    '& .check_again_text': {
+      fontWeight: 500,
+      fontSize: '0.95em',
+    },
+  },
 }))
 
 const SettingsModal = (props) => {
   const {
     show,
     onHide,
+    checkVersionRequest,
   } = props
   const classes = useStyles()
 
+  const { VERSION } = config
+
   const [embedsStatus, setEmbedsStatus] = useState(localStorage.getItem('showEmbeds') ? localStorage.getItem('showEmbeds') : true)
+  const [isLatest, setIsLatest] = useState(null)
+  const [updatesAvailable, setUpdatesAvailable] = useState(false)
 
   useEffect(() => {
     localStorage.setItem('showEmbeds', embedsStatus)
@@ -102,6 +160,37 @@ const SettingsModal = (props) => {
     }
   }
 
+  const reload = () => {
+    dismiss()
+    
+    // reset updates modal
+    localStorage.removeItem('updatesModal')
+
+    caches.keys().then((names) => {
+      // Delete all the cache files
+      names.forEach(name => {
+        caches.delete(name)
+      })
+      window.history.forward(1)
+      window.location.reload(true)
+    })
+  }
+
+  const checkForUpdates = () => {
+    checkVersionRequest().then((isLatest) => {
+      setIsLatest(isLatest)
+      if(isLatest !== true) {
+        setUpdatesAvailable(true)
+      } else {
+        setUpdatesAvailable(false)
+      }
+    })
+  }
+
+  const dismiss = () => {
+    setIsLatest(true)
+  }
+
   return (
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
@@ -111,19 +200,29 @@ const SettingsModal = (props) => {
               <h6>Settings</h6>
             </center>
             <div className={classes.settings}>
-              <div className="items">
-                <div className="item">
-                  <span className="title">Show Embeds</span>
-                  <span className="toggle" onClick={handleEmbedsToggle}>{embedsStatus === true ? 'Disable' : 'Enable'}</span>
+              <div className='items'>
+                <div className='item'>
+                  <span className='title'>Show Embeds</span>
+                  <span className='toggle' onClick={handleEmbedsToggle}>{embedsStatus === true ? 'Disable' : 'Enable'}</span>
                 </div>
               </div>
             </div>
+            <center>
+              <div className={classes.versionContainer}>
+                <span className='current_version'>You're on {VERSION}</span>
+                <span className='check_updates_button' onClick={checkForUpdates} hidden={isLatest || updatesAvailable}>CHECK FOR UPDATES</span>
+                <span className='up_to_date_button' hidden={!isLatest}>AlREADY UPDATE TO DATE</span>
+                {/* eslint-disable-next-line */}
+                <span className='check_again_text' hidden={!isLatest}>No updates avaialable. Check again later <span role="img">👋</span></span>
+                <span className='updates_avaialble' onClick={reload} hidden={isLatest || !updatesAvailable}>UPDATES AVAILABLE</span>
+              </div>
+            </center>
             <center>
               <ContainedButton
                 onClick={onHide}
                 className={classes.closeButton}
                 fontSize={14}
-                label="Done"
+                label='Done'
               />
             </center>
           </div>
@@ -133,4 +232,10 @@ const SettingsModal = (props) => {
   )
 }
 
-export default SettingsModal
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    checkVersionRequest,
+  }, dispatch),
+})
+
+export default connect(null, mapDispatchToProps)(SettingsModal)

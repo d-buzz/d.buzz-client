@@ -77,6 +77,12 @@ const SideBarRight = (props) => {
       imagePath: `${window.location.origin}/discord.png`,
       url: 'https://discord.gg/kCZGPs7',
     },
+    {
+      name: 'Element',
+      label: '#d.buzz:matrix.org',
+      imagePath: `${window.location.origin}/element.png`,
+      url: 'https://dbuzz.chat/',
+    },
     // {
     //   name: 'Facebook',
     //   label: 'dbuzzAPP',
