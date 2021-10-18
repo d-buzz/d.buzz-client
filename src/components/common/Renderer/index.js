@@ -958,7 +958,7 @@ const Renderer = React.memo((props) => {
     // eslint-disable-next-line
   }, [content])
 
-  if(localStorage.getItem('showEmbeds') === 'true') {
+  if(localStorage.getItem('showEmbeds') === 'enabled') {
     links.forEach((link) => {
       try {
         link = link.replace(/&amp;/g, '&')

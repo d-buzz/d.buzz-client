@@ -59,7 +59,16 @@ const useStyles = createUseStyles(theme => ({
 
       '& .item': {
         display: 'flex',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        padding: 15,
+        background: theme.context.view.backgroundColor,
+        borderRadius: 8,
+
+        '& .toggle_container': {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
 
         '& .title': {
           fontSize: '1.2em',
@@ -80,6 +89,12 @@ const useStyles = createUseStyles(theme => ({
           '&:hover': {
             background: '#B71C1C',
           },
+        },
+
+        '& .description': {
+          width: '60%',
+          color: theme.font.color,
+          fontSize: '0.8em',
         },
       },
     },
@@ -144,7 +159,7 @@ const SettingsModal = (props) => {
 
   const { VERSION } = config
 
-  const [embedsStatus, setEmbedsStatus] = useState(localStorage.getItem('showEmbeds') ? localStorage.getItem('showEmbeds') : true)
+  const [embedsStatus, setEmbedsStatus] = useState(localStorage.getItem('showEmbeds') ? localStorage.getItem('showEmbeds') : 'enabled')
   const [isLatest, setIsLatest] = useState(null)
   const [updatesAvailable, setUpdatesAvailable] = useState(false)
 
@@ -153,10 +168,10 @@ const SettingsModal = (props) => {
   }, [embedsStatus])
 
   const handleEmbedsToggle = () => {
-    if(embedsStatus === true){
-      setEmbedsStatus(false)
+    if(embedsStatus === 'enabled'){
+      setEmbedsStatus('disabled')
     } else {
-      setEmbedsStatus(true)
+      setEmbedsStatus('enabled')
     }
   }
 
@@ -202,8 +217,11 @@ const SettingsModal = (props) => {
             <div className={classes.settings}>
               <div className='items'>
                 <div className='item'>
-                  <span className='title'>Show Embeds</span>
-                  <span className='toggle' onClick={handleEmbedsToggle}>{embedsStatus === true ? 'Disable' : 'Enable'}</span>
+                  <div className="toggle_container">
+                    <span className='title'>Show Video Embeds</span>
+                    <span className='toggle' onClick={handleEmbedsToggle}>{embedsStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                  </div>
+                  <div className="description">All the video embeds are <b>{embedsStatus}</b></div>
                 </div>
               </div>
             </div>

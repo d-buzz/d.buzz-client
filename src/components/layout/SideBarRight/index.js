@@ -73,7 +73,7 @@ const SideBarRight = (props) => {
   const SocialMediaLinks = [
     {
       name: 'Discord',
-      label: 'dbuzzAPP',
+      label: '@dbuzzAPP',
       imagePath: `${window.location.origin}/discord.png`,
       url: 'https://discord.gg/kCZGPs7',
     },
@@ -111,7 +111,7 @@ const SideBarRight = (props) => {
       <div style={{ paddingTop: 15 }}>
         <ListGroup label="Catch us on">
           {SocialMediaLinks.map((item) => (
-            <ListLink key={`${item.name}-links`} title={item.name} label={`@${item.label}`} imagePath={item.imagePath} href={item.url} />
+            <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath} href={item.url} />
           ))}
         </ListGroup>
       </div>
