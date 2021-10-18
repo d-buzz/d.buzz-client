@@ -10,7 +10,7 @@ const useStyles = createUseStyles(theme => ({
       marginLeft: 15,
       height: 45,
       width: 45,
-      objectFit: 'cover',
+      objectFit: 'contain',
       border: 'none !important',
     },
   },
