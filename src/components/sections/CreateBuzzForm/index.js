@@ -24,13 +24,13 @@ import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 // import { WithContext as ReactTags } from 'react-tag-input'
 import { isMobile } from 'react-device-detect'
-import FormCheck from 'react-bootstrap/FormCheck'
+// import FormCheck from 'react-bootstrap/FormCheck'
 import { invokeTwitterIntent, calculateOverhead } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import { setBuzzModalStatus, setBuzzTitleModalStatus } from 'store/interface/actions'
+import { setBuzzModalStatus, setBuzzTitleModalStatus, setDraftsModalStatus, setSaveDraftsModalStatus } from 'store/interface/actions'
 import { BuzzFormModal } from 'components'
 import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
@@ -41,6 +41,9 @@ import imageCompression from 'browser-image-compression'
 import ImagesContainer from '../ImagesContainer'
 import ViewImageModal from 'components/modals/ViewImageModal'
 import BuzzTitleModal from 'components/modals/BuzzTitleModal'
+import DraftsIcon from 'components/elements/Icons/DraftsIcon'
+import DraftsModal from 'components/modals/DraftsModal'
+import SaveDraftModal from 'components/modals/SaveDraftModal'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -334,6 +337,54 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
   },
+  draftsContainer: {
+    display: 'flex',
+    float: 'right',
+
+    '& .save_draft_button': {
+      lineHeight: 1,
+      padding: '10px 13px',
+      background: '#e61c34',
+      color: '#ffffff',
+      borderRadius: 35,
+      fontSize: '0.8em',
+      fontWeight: 700,
+      userSelect: 'none',
+      textTransform: 'uppercase',
+      cursor: 'pointer',
+
+      '&:hover': {
+        background: '#B71C1C',
+      },
+    },
+  },
+  buzzToTwitterToggle: {
+    margin: '8px 0',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: 165,
+    background: '#E65768',
+    borderRadius: 5,
+    padding: '5px 10px',
+    cursor: 'pointer',
+
+    '& .icon': {
+      height: 25,
+      width: 25,
+      objectFit: 'contain',
+      userSelect: 'none',
+      pointerEvents: 'none',
+    },
+
+    '& .title': {
+      lineHeight: 1,
+      fontSize: '0.95em',
+      color: 'white',
+      fontWeight: 'bold',
+      userSelect: 'none',
+    },
+  },
 }))
 
 
@@ -392,6 +443,8 @@ const CreateBuzzForm = (props) => {
   const [compressing, setCompressing] = useState(false) 
   const [openBuzzTitleModal, setOpenBuzzTitleModal] = useState(false)
   const [buzzTitle, setBuzzTitle] = useState('')
+  const [openDraftsModal, setOpenDraftsModal] = useState(false)
+  const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
 
   // buzz states
   const [isThread, setIsThread] = useState(false)
@@ -402,6 +455,9 @@ const CreateBuzzForm = (props) => {
   const [buzzData, setBuzzData] = useState(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [buzzing, setBuzzing] = useState(false)
+  const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
+  const [draftData, setDraftData] = useState(null)
+  const [selectedDraft, setSelectedDraft] = useState('')
 
   const {
     text = '',
@@ -425,6 +481,7 @@ const CreateBuzzForm = (props) => {
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const [counterColor, setCounterColor] = useState('#e53935')
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
+  const BuzzToTwitterToggleStyle = { opacity: !buzzToTwitter ? 0.5 : 1 }
 
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
@@ -468,6 +525,19 @@ const CreateBuzzForm = (props) => {
     setOpenBuzzTitleModal(true)
   }
 
+  const handleDraftsModalOpen = () => {
+    setDraftsModalStatus(true)
+    setOpenDraftsModal(true)
+  }
+
+  const handleSaveDraftsModalOpen = () => {
+    setSaveDraftsModalStatus(true)
+    setOpenSaveDraftsModal(true)
+    setDraftData({
+      content: buzzThreads[1].content,
+    })
+  }
+
   const onHide = () => {
     setBuzzModalStatus(false)
     setOpen(false)
@@ -479,6 +549,16 @@ const CreateBuzzForm = (props) => {
   const onBuzzTitleModalHide = () => {
     setBuzzTitleModalStatus(false)
     setOpenBuzzTitleModal(false)
+  }
+
+  const OnDraftsModalHide = () => {
+    setDraftsModalStatus(false)
+    setOpenDraftsModal(false)
+  }
+
+  const OnSaveDraftsModalHide = () => {
+    setSaveDraftsModalStatus(false)
+    setOpenSaveDraftsModal(false)
   }
 
   useEffect(() => {
@@ -721,7 +801,8 @@ const CreateBuzzForm = (props) => {
       invokeTwitterIntent(content)
     }
 
-    const buzzContent = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
+    // eslint-disable-next-line
+    const buzzContent = buzzThreads[1]?.images?.length >= 1 ? `<h3>${buzzTitle}</h3>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `<h3>${buzzTitle}</h3>`+'\n'+buzzThreads[1].content
 
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
@@ -895,6 +976,26 @@ const CreateBuzzForm = (props) => {
   // eslint-disable-next-line
   }, [buzzThreads])
 
+  useEffect(() => {
+    if(selectedDraft !== '') {
+      handleUpdateBuzz(1, selectedDraft)
+    }
+    // eslint-disable-next-line
+  }, [selectedDraft])
+
+  const checkInDrafts = () => {
+    let found = false
+    drafts.forEach(draft => {
+      if(buzzThreads) {
+        if(draft.content === buzzThreads[1]?.content) {
+          found = true
+        }
+      }
+    })
+
+    return found
+  }
+
   return (
     <div className={containerClass}>
       {!buzzLoading &&
@@ -972,6 +1073,10 @@ const CreateBuzzForm = (props) => {
             )} */}
             <br />
             <br />
+            {buzzThreads && buzzThreads[1].content &&
+              <div className={classes.draftsContainer}>
+                <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
+              </div>}
             <label className={classes.payoutLabel}>Max Payout: </label>
             <input
               name='max-payout'
@@ -988,14 +1093,22 @@ const CreateBuzzForm = (props) => {
                 <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
               </Tooltip>
             )}
-            <FormCheck
+            {/* <FormCheck
               name='buzz-to-twitter'
               type='checkbox'
               label='Buzz to Twitter'
               checked={buzzToTwitter}
               onChange={() => setBuzzToTwitter(!buzzToTwitter)}
               className={classNames(classes.checkBox, classes.label)}
-            />
+            /> */}
+            <div
+              className={classes.buzzToTwitterToggle}
+              style={{...BuzzToTwitterToggleStyle}}
+              onClick={() => setBuzzToTwitter(!buzzToTwitter)}
+            >
+              <img className='icon' src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon" />
+              <div className='title'>Buzz to Twitter</div>
+            </div>
             {buzzToTwitter && (
               <label className={classes.payoutNote}>
                 Twitter intent will open after you click <b>Buzz</b>
@@ -1051,7 +1164,7 @@ const CreateBuzzForm = (props) => {
                   Buzz preview
                   <Switch size={25} state={buzzPreview} onChange={setBuzzPreview} />
                 </h6>
-                {buzzPreview && <Renderer content={buzzTitle ? `<h3>${buzzTitle}</h3><br/><span>${content}</span>` : content} minifyAssets={false} />}
+                {buzzPreview && <Renderer content={buzzTitle ? `<h3>${buzzTitle}</h3>\n<span>${content}</span>` : content} minifyAssets={false} />}
                 <div className={classes.separator} />
               </div>
             )}
@@ -1096,6 +1209,9 @@ const CreateBuzzForm = (props) => {
                 </IconButton>}
                 <IconButton size='medium' onClick={handleBuzzTitleModalOpen}>
                   <TitleIcon />
+                </IconButton>
+                <IconButton size='medium' onClick={handleDraftsModalOpen}>
+                  <DraftsIcon />
                 </IconButton>
                 {content && 
                 <Box
@@ -1157,6 +1273,8 @@ const CreateBuzzForm = (props) => {
       <BuzzFormModal show={open} onHide={onHide} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
       <BuzzTitleModal title={buzzTitle} setTitle={setBuzzTitle} show={openBuzzTitleModal} onHide={onBuzzTitleModalHide} />
+      <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
+      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
       {/* {imageAlert &&
         <div className={classes.imageAlert}>
           <span className='heading'>NOTICE</span>
@@ -1192,6 +1310,8 @@ const mapDispatchToProps = (dispatch) => ({
       updateBuzzThreads,
       publishReplyRequest,
       setBuzzTitleModalStatus,
+      setDraftsModalStatus,
+      setSaveDraftsModalStatus,
     },dispatch),
 })
 

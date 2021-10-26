@@ -40,7 +40,6 @@ const useStyles = createUseStyles({
     backgroundSize: '85%',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: '45% 73%',
-    backgroundImage: `url("./../../dbuzz.png")`,
   },
   footer: {
     position: 'relative',

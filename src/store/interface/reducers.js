@@ -27,6 +27,8 @@ import {
   SET_BUZZ_CONFIRM_MODAL_STATUS,
   SET_WHATS_NEW_MODAL_STATUS,
   BUZZ_TITLE_MODAL,
+  DRAFTS_MODAL,
+  SAVE_DRAFTS_MODAL,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -106,6 +108,10 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('accountSearchListKeyword', payload)
   case BUZZ_TITLE_MODAL:
     return state.set('buzzTitleModalStatus', payload)
+  case DRAFTS_MODAL:
+    return state.set('draftsModalStatus', payload)
+  case SAVE_DRAFTS_MODAL:
+    return state.set('saveDraftsModalStatus', payload)
   default:
     return state
   }
