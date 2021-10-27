@@ -942,12 +942,14 @@ const Renderer = React.memo((props) => {
             imageEl.style.opacity = '1'
           }
         } else {
-          imageEl.style.background = 'none'
-          imageEl.style.animation = 'none'
-          imageEl.style.opacity = '1'
-          imageEl.style.height = 'inherit'
-          imageEl.style.border = 'none'
-          imageEl.style.pointerEvents = 'none'
+          if(imageEl) {
+            imageEl.style.background = 'none'
+            imageEl.style.animation = 'none'
+            imageEl.style.opacity = '1'
+            imageEl.style.height = 'inherit'
+            imageEl.style.border = 'none'
+            imageEl.style.pointerEvents = 'none'
+          }
         }
       })
     }
