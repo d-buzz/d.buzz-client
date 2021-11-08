@@ -107,7 +107,8 @@ const LinkPreview = (props) => {
           && !link.match(/(?:https?:\/\/(?:(?:odysee\.com)))/i)
           && !link.match(/(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i)
-          && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)) {
+          && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)
+          && JSON.parse(localStorage.getItem('settings')).linkPreviewsStatus === 'enabled') {
         url = link
         isValidUrl = true
         break
