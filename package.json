@@ -1,6 +1,6 @@
 {
   "name": "d.buzz-client",
-  "version": "3.24.2",
+  "version": "3.25.0",
   "private": true,
   "dependencies": {
     "@hiveio/hive-js": "^2.0.4",
