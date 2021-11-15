@@ -1174,7 +1174,7 @@ const CreateBuzzForm = (props) => {
               <React.Fragment>
                 <ContainedButton
                   // eslint-disable-next-line
-                  disabled={loading || publishing || (buzzThreads && buzzThreads[currentBuzz].images.length === 0 && content.length === 0) && true}
+                  disabled={loading || publishing || (buzzThreads && buzzThreads[currentBuzz].images?.length === 0 && content?.length === 0) && true}
                   label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
                   className={classes.float}
                   onClick={handleClickPublishPost}

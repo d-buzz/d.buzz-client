@@ -884,10 +884,9 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // render web images links
-      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) ? `![](${n})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('settings'))?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
     // render IPFS images
-      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => checkForValidImage(n) ? `![](${n})` : n)
-      // .replace(/(?:https?:\/\/(?:images\.hive\.blog\/0x0\/https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => `![](${n})`)
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('settings'))?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
@@ -960,7 +959,7 @@ const Renderer = React.memo((props) => {
     // eslint-disable-next-line
   }, [content])
 
-  if(localStorage.getItem('showEmbeds') === 'enabled') {
+  if(JSON.parse(localStorage.getItem('settings'))?.videoEmbedsStatus !== 'disabled') {
     links.forEach((link) => {
       try {
         link = link.replace(/&amp;/g, '&')

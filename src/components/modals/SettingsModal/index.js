@@ -63,6 +63,7 @@ const useStyles = createUseStyles(theme => ({
         padding: 15,
         background: theme.context.view.backgroundColor,
         borderRadius: 8,
+        margin: '5px 0',
 
         '& .toggle_container': {
           display: 'flex',
@@ -145,6 +146,7 @@ const useStyles = createUseStyles(theme => ({
     '& .check_again_text': {
       fontWeight: 500,
       fontSize: '0.95em',
+      color: theme.font.color,
     },
   },
 }))
@@ -159,19 +161,60 @@ const SettingsModal = (props) => {
 
   const { VERSION } = config
 
-  const [embedsStatus, setEmbedsStatus] = useState(localStorage.getItem('showEmbeds') ? localStorage.getItem('showEmbeds') : 'enabled')
+  const [videoEmbedsStatus, setVideoEmbedsStatus] = useState('enabled')
+  const [linkPreviewsStatus, setLinkPreviewsStatus] = useState('enabled')
+  const [showImagesStatus, setShowImagesStatus] = useState('enabled')
   const [isLatest, setIsLatest] = useState(null)
   const [updatesAvailable, setUpdatesAvailable] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem('showEmbeds', embedsStatus)
-  }, [embedsStatus])
+    if(localStorage.getItem('settings')) {
+      // set the states on page load
+      setVideoEmbedsStatus(JSON.parse(localStorage.getItem('settings')).videoEmbedsStatus)
+      setLinkPreviewsStatus(JSON.parse(localStorage.getItem('settings')).linkPreviewsStatus)
+      setShowImagesStatus(JSON.parse(localStorage.getItem('settings')).showImagesStatus)
+    } else {
+      // create setting variables for the first time
+      localStorage.setItem('settings', JSON.stringify({
+        videoEmbedsStatus: videoEmbedsStatus,
+        linkPreviewsStatus: linkPreviewsStatus,
+        showImagesStatus: showImagesStatus,
+      }))
+    }
+    // eslint-disable-next-line
+  }, [])
+  
+  useEffect(() => {
+    // set the local storage variables
+    localStorage.setItem('settings', JSON.stringify({
+      videoEmbedsStatus: videoEmbedsStatus,
+      linkPreviewsStatus: linkPreviewsStatus,
+      showImagesStatus: showImagesStatus,
+    }))
+  }, [videoEmbedsStatus,linkPreviewsStatus,showImagesStatus])
 
   const handleEmbedsToggle = () => {
-    if(embedsStatus === 'enabled'){
-      setEmbedsStatus('disabled')
+    if(videoEmbedsStatus === 'enabled'){
+      setVideoEmbedsStatus('disabled')
+
     } else {
-      setEmbedsStatus('enabled')
+      setVideoEmbedsStatus('enabled')
+    }
+  }
+  
+  const handleLinkPreviewToggle = () => {
+    if(linkPreviewsStatus === 'enabled'){
+      setLinkPreviewsStatus('disabled')
+    } else {
+      setLinkPreviewsStatus('enabled')
+    }
+  }
+
+  const handleShowImagesToggle = () => {
+    if(showImagesStatus === 'enabled'){
+      setShowImagesStatus('disabled')
+    } else {
+      setShowImagesStatus('enabled')
     }
   }
 
@@ -219,15 +262,29 @@ const SettingsModal = (props) => {
                 <div className='item'>
                   <div className="toggle_container">
                     <span className='title'>Show Video Embeds</span>
-                    <span className='toggle' onClick={handleEmbedsToggle}>{embedsStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                    <span className='toggle' onClick={handleEmbedsToggle}>{videoEmbedsStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
                   </div>
-                  <div className="description">All the video embeds are <b>{embedsStatus}</b></div>
+                  <div className="description">All the video embeds are <b>{videoEmbedsStatus}</b></div>
+                </div>
+                <div className='item'>
+                  <div className="toggle_container">
+                    <span className='title'>Show Link Previews</span>
+                    <span className='toggle' onClick={handleLinkPreviewToggle}>{linkPreviewsStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                  </div>
+                  <div className="description">All the link previews are <b>{linkPreviewsStatus}</b></div>
+                </div>
+                <div className='item'>
+                  <div className="toggle_container">
+                    <span className='title'>Show Images</span>
+                    <span className='toggle' onClick={handleShowImagesToggle}>{showImagesStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                  </div>
+                  <div className="description">All the images are <b>{showImagesStatus}</b></div>
                 </div>
               </div>
             </div>
             <center>
               <div className={classes.versionContainer}>
-                <span className='current_version'>You're on {VERSION}</span>
+                <span className='current_version'>You're on v{VERSION}</span>
                 <span className='check_updates_button' onClick={checkForUpdates} hidden={isLatest || updatesAvailable}>CHECK FOR UPDATES</span>
                 <span className='up_to_date_button' hidden={!isLatest}>AlREADY UPDATE TO DATE</span>
                 {/* eslint-disable-next-line */}

@@ -117,7 +117,7 @@ function BuzzConfirmModal(props) {
             <span className='title'>Discard {buzzThreads && Object.keys(buzzThreads).length > 1 ? 'Thread' : 'Buzz'}?</span>
             <p className='description'>This can’t be undone and you’ll lose your draft.</p>
             <div className="modalButtons">
-              <span className="cancel modalButton" onClick={onCancel}>Cancel</span>
+              <span className="cancel modalButton" onClick={onCancel}>Keep</span>
               <span className="discard modalButton" onClick={handleOnHide}>Discard</span>
             </div>
           </div>
