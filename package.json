@@ -1,5 +1,6 @@
 {
   "name": "d.buzz-client",
+  "homepage": ".",
   "version": "3.25.0",
   "private": true,
   "dependencies": {
