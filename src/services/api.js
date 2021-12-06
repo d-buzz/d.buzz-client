@@ -1301,7 +1301,7 @@ export const getBestRpcNode = () => {
 
 export const checkVersion = () => {
   return new Promise((resolve) => {
-    axios.get('https://d.buzz/version.json')
+    axios.get('https://endpoint.d.buzz/version.json')
       .then(function (result) {
         resolve(result.data)
       })
@@ -1310,7 +1310,7 @@ export const checkVersion = () => {
 
 export const getMutePattern = () => {
   return new Promise((resolve) => {
-    axios.get('https://d.buzz/pattern.json')
+    axios.get('https://endpoint.d.buzz/pattern.json')
       .then(function (result) {
         resolve(result.data)
       })
