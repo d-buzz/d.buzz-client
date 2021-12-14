@@ -7,6 +7,8 @@ import config from 'config'
 import { checkVersionRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+import { CircularProgress } from '@material-ui/core'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -78,6 +80,8 @@ const useStyles = createUseStyles(theme => ({
         },
 
         '& .toggle': {
+          display: 'grid',
+          placeItems: 'center',
           padding: '5px 15px',
           fontSize: '1.2em',
           fontWeight: '600',
@@ -86,6 +90,7 @@ const useStyles = createUseStyles(theme => ({
           borderRadius: 25,
           userSelect: 'none',
           cursor: 'pointer',
+          minWidth: 100,
 
           '&:hover': {
             background: '#B71C1C',
@@ -149,6 +154,13 @@ const useStyles = createUseStyles(theme => ({
       color: theme.font.color,
     },
   },
+  loading: {
+    display: 'grid',
+    placeItems: 'center',
+    height: '100%',
+    width: '100%',
+    padding: '5px 0',
+  },
 }))
 
 const SettingsModal = (props) => {
@@ -156,66 +168,106 @@ const SettingsModal = (props) => {
     show,
     onHide,
     checkVersionRequest,
+    user,
   } = props
   const classes = useStyles()
 
   const { VERSION } = config
 
-  const [videoEmbedsStatus, setVideoEmbedsStatus] = useState('enabled')
-  const [linkPreviewsStatus, setLinkPreviewsStatus] = useState('enabled')
-  const [showImagesStatus, setShowImagesStatus] = useState('enabled')
+  const [videoEmbedsStatus, setVideoEmbedsStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings.videoEmbedsStatus)
+  const [linkPreviewsStatus, setLinkPreviewsStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings.linkPreviewsStatus)
+  const [showImagesStatus, setShowImagesStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings.showImagesStatus)
   const [isLatest, setIsLatest] = useState(null)
   const [updatesAvailable, setUpdatesAvailable] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
+  // eslint-disable-next-line
+  const [customUserData, setCustomUserData] = useState(JSON.parse(localStorage.getItem('customUserData')))
 
   useEffect(() => {
-    if(localStorage.getItem('settings')) {
-      // set the states on page load
-      setVideoEmbedsStatus(JSON.parse(localStorage.getItem('settings')).videoEmbedsStatus)
-      setLinkPreviewsStatus(JSON.parse(localStorage.getItem('settings')).linkPreviewsStatus)
-      setShowImagesStatus(JSON.parse(localStorage.getItem('settings')).showImagesStatus)
-    } else {
-      // create setting variables for the first time
-      localStorage.setItem('settings', JSON.stringify({
-        videoEmbedsStatus: videoEmbedsStatus,
-        linkPreviewsStatus: linkPreviewsStatus,
-        showImagesStatus: showImagesStatus,
-      }))
-    }
-    // eslint-disable-next-line
-  }, [])
-  
+    setVideoEmbedsStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus)
+    setLinkPreviewsStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus)
+    setShowImagesStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus)  
+  }, [show])
+
   useEffect(() => {
     // set the local storage variables
-    localStorage.setItem('settings', JSON.stringify({
-      videoEmbedsStatus: videoEmbedsStatus,
-      linkPreviewsStatus: linkPreviewsStatus,
-      showImagesStatus: showImagesStatus,
-    }))
+    if(JSON.parse(localStorage.getItem('customUserData'))?.settings) {
+      localStorage.setItem('customUserData', JSON.stringify(
+        {
+          ...customUserData,
+          settings: {...customUserData?.settings, videoEmbedsStatus, linkPreviewsStatus, showImagesStatus},
+        },
+      ))
+    }
+    // eslint-disable-next-line
   }, [videoEmbedsStatus,linkPreviewsStatus,showImagesStatus])
 
-  const handleEmbedsToggle = () => {
+  const handleDisableEnableToggles = (bool) => {
+    if(!bool) {
+      for (let t=0; t<=document.querySelectorAll('.toggle').length - 1; t++) {
+        document.querySelectorAll('.toggle')[t].style.pointerEvents = 'none'
+      }
+    } else {
+      for (let t=0; t<=document.querySelectorAll('.toggle').length - 1; t++) {
+        document.querySelectorAll('.toggle')[t].style.pointerEvents = 'all'
+      }
+    }
+  }
+
+  const handleUpdateSettings = () => {
+    setLoading(true)
+    const { username } = user
+    getUserCustomData(username).then(res => {
+      const userData = {...res[0], settings: {
+        ...res[0].settings,
+        videoEmbedsStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus,
+        linkPreviewsStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus,
+        showImagesStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus,
+      }}
+      const responseData = { username: username, userData: [userData] }
+      if(res) {
+        updateUserCustomData(responseData).then(() => {
+          // alert('datbase updated')
+          setSelectedItem(null)
+          setLoading(false)
+          handleDisableEnableToggles(true)
+        })
+      }
+    })
+  }
+
+  const handleVideoEmbedsToggle = () => {
+    handleDisableEnableToggles(false)
+    setSelectedItem('videoEmbedsToggle')
     if(videoEmbedsStatus === 'enabled'){
       setVideoEmbedsStatus('disabled')
-
     } else {
       setVideoEmbedsStatus('enabled')
     }
+    handleUpdateSettings()
   }
   
   const handleLinkPreviewToggle = () => {
+    handleDisableEnableToggles(false)
+    setSelectedItem('linkPreviewToggle')
     if(linkPreviewsStatus === 'enabled'){
       setLinkPreviewsStatus('disabled')
     } else {
       setLinkPreviewsStatus('enabled')
     }
+    handleUpdateSettings()
   }
-
+  
   const handleShowImagesToggle = () => {
+    handleDisableEnableToggles(false)
+    setSelectedItem('showImagesToggle')
     if(showImagesStatus === 'enabled'){
       setShowImagesStatus('disabled')
     } else {
       setShowImagesStatus('enabled')
     }
+    handleUpdateSettings()
   }
 
   const reload = () => {
@@ -262,21 +314,21 @@ const SettingsModal = (props) => {
                 <div className='item'>
                   <div className="toggle_container">
                     <span className='title'>Show Video Embeds</span>
-                    <span className='toggle' onClick={handleEmbedsToggle}>{videoEmbedsStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                    <span className='toggle' onClick={handleVideoEmbedsToggle}>{!(loading && selectedItem === 'videoEmbedsToggle') ? videoEmbedsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                   </div>
                   <div className="description">All the video embeds are <b>{videoEmbedsStatus}</b></div>
                 </div>
                 <div className='item'>
                   <div className="toggle_container">
                     <span className='title'>Show Link Previews</span>
-                    <span className='toggle' onClick={handleLinkPreviewToggle}>{linkPreviewsStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                    <span className='toggle' onClick={handleLinkPreviewToggle}>{!(loading && selectedItem === 'linkPreviewToggle') ? linkPreviewsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                   </div>
                   <div className="description">All the link previews are <b>{linkPreviewsStatus}</b></div>
                 </div>
                 <div className='item'>
                   <div className="toggle_container">
                     <span className='title'>Show Images</span>
-                    <span className='toggle' onClick={handleShowImagesToggle}>{showImagesStatus === 'enabled' ? 'Disable' : 'Enable'}</span>
+                    <span className='toggle' onClick={handleShowImagesToggle}>{!(loading && selectedItem === 'showImagesToggle') ? showImagesStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                   </div>
                   <div className="description">All the images are <b>{showImagesStatus}</b></div>
                 </div>
@@ -313,4 +365,8 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(SettingsModal)
+const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsModal)
