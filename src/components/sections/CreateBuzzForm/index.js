@@ -358,31 +358,40 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  buzzOptions: {
+    marginTop: 15,
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    
+    '& .title': {
+      fontSize: '0.95rem',
+      fontWeight: 600,
+      color: theme.font.color,
+    },
+
+    '& .buzzToToggle': {
+      width: '100%',
+    },
+  },
+
   buzzToTwitterToggle: {
     margin: '8px 0',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: 165,
+    display: 'grid',
+    placeItems: 'center',
+    // width: 165,
+    height: 38,
+    width: 38,
     background: '#E65768',
-    borderRadius: 5,
-    padding: '5px 10px',
+    borderRadius: '50%',
     cursor: 'pointer',
-
+    
     '& .icon': {
-      height: 25,
+      paddingLeft: 2,
       width: 25,
       objectFit: 'contain',
       userSelect: 'none',
       pointerEvents: 'none',
-    },
-
-    '& .title': {
-      lineHeight: 1,
-      fontSize: '0.95em',
-      color: 'white',
-      fontWeight: 'bold',
-      userSelect: 'none',
     },
   },
 }))
@@ -802,7 +811,7 @@ const CreateBuzzForm = (props) => {
     }
 
     // eslint-disable-next-line
-    const buzzContentWithTitle = buzzThreads[1]?.images?.length >= 1 ? `<h3>${buzzTitle}</h3>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `<h3>${buzzTitle}</h3>`+'\n'+buzzThreads[1].content
+    const buzzContentWithTitle = buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content
     const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
     const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
 
@@ -1103,19 +1112,24 @@ const CreateBuzzForm = (props) => {
               onChange={() => setBuzzToTwitter(!buzzToTwitter)}
               className={classNames(classes.checkBox, classes.label)}
             /> */}
-            <div
-              className={classes.buzzToTwitterToggle}
-              style={{...BuzzToTwitterToggleStyle}}
-              onClick={() => setBuzzToTwitter(!buzzToTwitter)}
-            >
-              <img className='icon' src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon" />
-              <div className='title'>Buzz to Twitter</div>
+            <div className={classes.buzzOptions}>
+              <span className='title'>ALSO BUZZ TO</span>
+              <span className='titter buzzToToggle'>
+                <div
+                  className={classes.buzzToTwitterToggle}
+                  style={{...BuzzToTwitterToggleStyle}}
+                  onClick={() => setBuzzToTwitter(!buzzToTwitter)}
+                >
+                  <img className='icon' src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon" />
+                  {/* <div className='title'>Buzz to Twitter</div> */}
+                </div>
+                {buzzToTwitter && (
+                  <label className={classes.payoutNote}>
+                    Twitter intent will open after you click <b>Buzz</b>
+                  </label>
+                )}
+              </span>
             </div>
-            {buzzToTwitter && (
-              <label className={classes.payoutNote}>
-                Twitter intent will open after you click <b>Buzz</b>
-              </label>
-            )}
             <br />
             {/* {!publishing && content.length !== 0 && (
               <div style={{ width: '100%', paddingBottom: 5 }}>
@@ -1166,7 +1180,7 @@ const CreateBuzzForm = (props) => {
                   Buzz preview
                   <Switch size={25} state={buzzPreview} onChange={setBuzzPreview} />
                 </h6>
-                {buzzPreview && <Renderer content={buzzTitle ? `<h3>${buzzTitle}</h3>\n<span>${content}</span>` : content} minifyAssets={false} />}
+                {buzzPreview && <Renderer content={buzzTitle ? `## ${buzzTitle} <br/>\n` + content : content} minifyAssets={false} />}
                 <div className={classes.separator} />
               </div>
             )}
@@ -1174,7 +1188,7 @@ const CreateBuzzForm = (props) => {
               <React.Fragment>
                 <ContainedButton
                   // eslint-disable-next-line
-                  disabled={loading || publishing || (buzzThreads && buzzThreads[currentBuzz].images?.length === 0 && content?.length === 0) && true}
+                  disabled={loading || publishing || (buzzThreads && buzzThreads[currentBuzz]?.images?.length === 0 && content?.length === 0) && true}
                   label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
                   className={classes.float}
                   onClick={handleClickPublishPost}

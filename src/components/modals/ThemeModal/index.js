@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { ContainedButton } from 'components/elements'
@@ -8,6 +8,8 @@ import { getTheme } from 'services/theme'
 import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+import { CircularProgress } from '@material-ui/core'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -84,6 +86,21 @@ const useStyles = createUseStyles(theme => ({
   active: {
     border: '3px solid #e61c34',
   },
+  themeLoadingContainer: {
+    width: '100%',
+    height: 150,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.font.color,
+    
+    '& .title': {
+      marginTop: 15,
+      fontSize: '1.2rem',
+      color: theme.font.color,
+    },
+  },
 }))
 
 const THEME = {
@@ -99,16 +116,44 @@ const ThemeModal = (props) => {
     setThemeRequest,
     generateStyles,
     theme,
+    user,
   } = props
   const { mode } = theme
   const classes = useStyles()
+  const [loading, setLoading] = useState(false)
 
   const handleClickSetTheme = (mode) => () => {
+    setLoading(true)
     setThemeRequest(mode)
       .then(({ mode }) => {
         const theme = getTheme(mode)
         generateStyles(theme)
+        handleUpdateTheme(mode)
       })
+  }
+  
+  const handleUpdateTheme = (theme) => {
+    const { username } = user
+    
+    getUserCustomData(username)
+      .then(res => {
+        const userData = {
+          ...res[0],
+          settings: {
+            ...res[0].settings,
+            theme,
+          },
+        }
+        const responseData = { username, userData: [userData] }
+        
+        if(res) {
+          updateUserCustomData(responseData)
+            .then(() => {
+              setLoading(false)
+            })
+        }
+      })
+
   }
 
   return (
@@ -124,33 +169,40 @@ const ThemeModal = (props) => {
                 Display settings affect all of your Dbuzz accounts on this browser. These settings are only visible to you.
               </label>
             </center>
-            <div
-              onClick={handleClickSetTheme(THEME.NIGHT)}
-              className={classNames(classes.button, classes.darkModeButton, mode === 'night' ? classes.active : '')}
-            >
-              <center>
-                <label>Nightshade</label>
-                <label>Dark and Shady, reduced brightness</label>
-              </center>
-            </div>
-            <div
-              onClick={handleClickSetTheme(THEME.LIGHT)}
-              className={classNames(classes.button, classes.ligthModeButton, mode === 'light' ? classes.active : '')}
-            >
-              <center>
-                <label>Daylight</label>
-                <label>Light and bright, default theme</label>
-              </center>
-            </div>
-            <div
-              onClick={handleClickSetTheme(THEME.GRAY)}
-              className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
-            >
-              <center>
-                <label>Granite</label>
-                <label>Dark and Gray, reduced brightness</label>
-              </center>
-            </div>
+            {!loading ?
+              <>
+                <div
+                  onClick={handleClickSetTheme(THEME.NIGHT)}
+                  className={classNames(classes.button, classes.darkModeButton, mode === 'night' ? classes.active : '')}
+                >
+                  <center>
+                    <label>Nightshade</label>
+                    <label>Dark and Shady, reduced brightness</label>
+                  </center>
+                </div>
+                <div
+                  onClick={handleClickSetTheme(THEME.LIGHT)}
+                  className={classNames(classes.button, classes.ligthModeButton, mode === 'light' ? classes.active : '')}
+                >
+                  <center>
+                    <label>Daylight</label>
+                    <label>Light and bright, default theme</label>
+                  </center>
+                </div>
+                <div
+                  onClick={handleClickSetTheme(THEME.GRAY)}
+                  className={classNames(classes.button, classes.grayModeButton, mode === 'gray' ? classes.active : '')}
+                >
+                  <center>
+                    <label>Granite</label>
+                    <label>Dark and Gray, reduced brightness</label>
+                  </center>
+                </div>
+              </> :
+              <div className={classes.themeLoadingContainer}>
+                <CircularProgress color='#ffffff' style={{height: 50, width: 50}} />
+                <span className='title'>Syncing your theme...</span>
+              </div>}
           </div>
           <center>
             <ContainedButton
@@ -168,6 +220,7 @@ const ThemeModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
+  user: state.auth.get('user'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -2,19 +2,16 @@ const updates = {
   status: true,
 
   changes: `
-  <br />
+  ### DBuzz Decentralized Database is here 🔒
+  * From now all your settings including app theme will be synced among devices.
+  * Our new features will use this database system to store custom data.
+  * There's more to come in our upcoming updates.
 
-  ![](https://ipfs.io/ipfs/QmPgV1kEa2qBXHxvw6Kt6uRVyJtMbYNTWYyV9L5MEUmH6K)
-  <br />
-  ### <center> New Options in Setting Modal ⚙ </center>
-
-  <center>We have new options in our settings modal including:</center><br />
-
-  - Enable / Disable Link Previews
-  - Enable / Disable Images
+  ###### Thanks for being beta a tester of this feature 🧪
 `,
   
   fixes: `
+  - Fixed images not rendering after adding a title.
   - Few minor bug fixes and improvements to make DBuzz even better.
   `,
 

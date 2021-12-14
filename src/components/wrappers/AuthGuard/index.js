@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useLocation, Redirect } from 'react-router-dom'
+import { getUserCustomData, initilizeUserInDatabase } from 'services/database/api'
 
 const AuthGuard = (props) => {
   const { children, user, fromLanding } = props
@@ -15,6 +16,30 @@ const AuthGuard = (props) => {
   const isGuardedRoute = () => {
     return pathname.match(/^(\/latest)/g) || pathname.match(/^(\/trending)/g)
   }
+
+  // DECENTRALIZED DATABASE
+
+  useEffect(() => {
+    const { username } = user
+
+    if(username) {
+      getUserCustomData(username).then(data => {
+        if(data !== 'User not found') {
+          localStorage.setItem('customUserData', JSON.stringify(...data))
+        } else {
+          // initialize datbase here
+          initilizeUserInDatabase(username).then(() => {
+            console.log('new user initialized')
+          })
+        }
+      })
+    } else {
+      
+      // guest
+      console.log('logged out')
+    }
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <React.Fragment>
