@@ -121,6 +121,7 @@ const ThemeModal = (props) => {
   // const { mode } = theme
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
+
   const customUserData = JSON.parse(localStorage.getItem('customUserData'))
   const mode = JSON.parse(localStorage.getItem('customUserData'))?.settings?.theme
 
@@ -148,6 +149,30 @@ const ThemeModal = (props) => {
           settings: {
             ...res[0].settings,
             theme: theme,
+          },
+        }
+        const responseData = { username, userData: [userData] }
+        
+        if(res) {
+          updateUserCustomData(responseData)
+            .then(() => {
+              setLoading(false)
+            })
+        }
+      })
+
+  }
+  
+  const handleUpdateTheme = (theme) => {
+    const { username } = user
+    
+    getUserCustomData(username)
+      .then(res => {
+        const userData = {
+          ...res[0],
+          settings: {
+            ...res[0].settings,
+            theme,
           },
         }
         const responseData = { username, userData: [userData] }
