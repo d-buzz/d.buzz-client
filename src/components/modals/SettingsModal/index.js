@@ -191,14 +191,13 @@ const SettingsModal = (props) => {
   }, [show])
 
   useEffect(() => {
+    const data = {
+      ...customUserData,
+      settings: {...customUserData?.settings, videoEmbedsStatus, linkPreviewsStatus, showImagesStatus},
+    }
     // set the local storage variables
-    if(JSON.parse(localStorage.getItem('customUserData'))?.settings) {
-      localStorage.setItem('customUserData', JSON.stringify(
-        {
-          ...customUserData,
-          settings: {...customUserData?.settings, videoEmbedsStatus, linkPreviewsStatus, showImagesStatus},
-        },
-      ))
+    if(customUserData?.settings) {
+      localStorage.setItem('customUserData', JSON.stringify({...data}))
     }
     // eslint-disable-next-line
   }, [videoEmbedsStatus,linkPreviewsStatus,showImagesStatus])

@@ -1,13 +1,15 @@
 import axios from "axios"
+import getUserAccount from "./getUserAccount"
 
 export const initilizeUserInDatabase = async(username) => {
 
-  const user = {username, userData: [{username, settings: {theme: JSON.parse(localStorage.getItem('theme')).mode, ...JSON.parse(localStorage.getItem('settings'))}}]}
+  const defaultSettings = {theme: 'light', videoEmbedsStatus: 'enabled', linkPreviewsStatus: 'enabled', showImagesStatus: 'enabled' }
+
+  const user = {username: username, userData: [{username: getUserAccount(), settings: {...defaultSettings}}]}
   const res = await axios.post(`${process.env.REACT_APP_DATABASE_API}/post`, { ...user }, { headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY } })
 
   // set local variables
-  const customUserData = {username, settings: {theme: JSON.parse(localStorage.getItem('theme')).mode, ...JSON.parse(localStorage.getItem('settings'))}}
-  localStorage.setItem('customUserData', JSON.stringify(customUserData))
+  localStorage.setItem('customUserData', JSON.stringify({username: getUserAccount(), settings: {...defaultSettings}}))
 
   return res.data
 }
