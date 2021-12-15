@@ -162,30 +162,6 @@ const ThemeModal = (props) => {
       })
 
   }
-  
-  const handleUpdateTheme = (theme) => {
-    const { username } = user
-    
-    getUserCustomData(username)
-      .then(res => {
-        const userData = {
-          ...res[0],
-          settings: {
-            ...res[0].settings,
-            theme,
-          },
-        }
-        const responseData = { username, userData: [userData] }
-        
-        if(res) {
-          updateUserCustomData(responseData)
-            .then(() => {
-              setLoading(false)
-            })
-        }
-      })
-
-  }
 
   return (
     <React.Fragment>
