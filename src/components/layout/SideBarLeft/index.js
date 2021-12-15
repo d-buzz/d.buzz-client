@@ -40,6 +40,7 @@ import { setBuzzModalStatus, setRefreshRouteStatus } from 'store/interface/actio
 import { pollNotifRequest } from 'store/polling/actions'
 import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
+import { getTheme } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   items: {
@@ -273,7 +274,7 @@ const SideBarLeft = (props) => {
     loading,
     pollNotifRequest,
     count = 0,
-    theme,
+    // theme,
     minify,
     setBuzzModalStatus,
     intentBuzz,
@@ -294,6 +295,7 @@ const SideBarLeft = (props) => {
   const timestamp = moment().unix()
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
   const moreMenuRef = useRef()
+  const theme = getTheme()
 
   const showThemeModal = () => {
     handleClickCloseOpenMoreMenu()
@@ -440,8 +442,8 @@ const SideBarLeft = (props) => {
           <LinkContainer >
             <NavbarBrand href="/">
               <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
-                {theme.mode === 'light' && !minify && (<BrandIcon />)}
-                {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
+                {theme === 'light' && !minify && (<BrandIcon />)}
+                {theme === 'dark' && !minify && (<BrandIconDark />)}
                 {minify && (<CircularBrandIcon />)}
               </div>
             </NavbarBrand>

@@ -8,20 +8,26 @@ import { ThemeProvider } from 'components'
 const ThemeLoader = (props) => {
   const {
     children,
-    getSavedThemeRequest,
+    // getSavedThemeRequest,
     generateStyles,
   } = props
 
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    getSavedThemeRequest()
-      .then(({ mode }) => {
-        const theme = getTheme(mode)
-        document.body.style.backgroundColor = theme.background.primary
-        generateStyles(theme)
-        setLoaded(true)
-      })
+    // getSavedThemeRequest()
+    //   .then(({ mode }) => {
+    //     const theme = getTheme(mode)
+    //     document.body.style.backgroundColor = theme.background.primary
+    //     generateStyles(theme)
+    //     setLoaded(true)
+    //   })
+    const mode = JSON.parse(localStorage.getItem('customUserData'))?.settings?.theme
+    const theme = getTheme(mode)
+    document.body.style.backgroundColor = theme.background.primary
+    generateStyles(theme)
+    setLoaded(true)
+    
     // eslint-disable-next-line
   }, [])
 

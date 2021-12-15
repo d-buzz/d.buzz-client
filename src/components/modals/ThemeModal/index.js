@@ -113,23 +113,54 @@ const ThemeModal = (props) => {
   const {
     show,
     onHide,
-    setThemeRequest,
+    // setThemeRequest,
     generateStyles,
-    theme,
+    // theme,
     user,
   } = props
-  const { mode } = theme
+  // const { mode } = theme
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
 
+  const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+  const mode = JSON.parse(localStorage.getItem('customUserData'))?.settings?.theme
+
   const handleClickSetTheme = (mode) => () => {
     setLoading(true)
-    setThemeRequest(mode)
-      .then(({ mode }) => {
-        const theme = getTheme(mode)
-        generateStyles(theme)
-        handleUpdateTheme(mode)
+    // setThemeRequest(mode)
+    //   .then(({ mode }) => {
+    //     const theme = getTheme(mode)
+    //     generateStyles(theme)
+    //   })
+    const data = { ...customUserData, settings: { ...customUserData?.settings, theme: mode } }
+    localStorage.setItem('customUserData', JSON.stringify({...data}))
+    const theme = getTheme(mode)
+    generateStyles(theme)
+    handleUpdateTheme(mode)
+  }
+  
+  const handleUpdateTheme = (theme) => {
+    const { username } = user
+    
+    getUserCustomData(username)
+      .then(res => {
+        const userData = {
+          ...res[0],
+          settings: {
+            ...res[0].settings,
+            theme: theme,
+          },
+        }
+        const responseData = { username, userData: [userData] }
+        
+        if(res) {
+          updateUserCustomData(responseData)
+            .then(() => {
+              setLoading(false)
+            })
+        }
       })
+
   }
   
   const handleUpdateTheme = (theme) => {
