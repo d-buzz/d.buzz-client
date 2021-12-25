@@ -124,7 +124,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
         </div>
       </div>
     </React.Fragment>

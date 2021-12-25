@@ -1,17 +1,18 @@
+const { default: config } = require("config")
+
 const updates = {
   status: true,
 
   changes: `
-  ### DBuzz Decentralized Database is here 🔒
-  * From now all your settings including app theme will be synced among devices.
-  * Our new features will use this database system to store custom data.
-  * There's more to come in our upcoming updates.
-
-  ###### Thanks for being beta a tester of this feature 🧪
+  ### Buzz Title Bar ✏
+  * Now you can add a custom buzz title of upto 60 characters.
+  * We've removed the additional buzz title modal.
+  * Just click on <b>Title</b> button to open the title bar. 
+  ${config.VERSION.includes('dev') ? '###### Thanks for being beta a tester of this feature 🧪': ''}
 `,
   
   fixes: `
-  - Fixed images not rendering after adding a title.
+  - Fixed content trucating because of title, now title and content will be calculated before publishing a buzz.
   - Few minor bug fixes and improvements to make DBuzz even better.
   `,
 

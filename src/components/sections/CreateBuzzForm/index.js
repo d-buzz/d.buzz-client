@@ -40,7 +40,7 @@ import Switch from 'components/elements/Switch'
 import imageCompression from 'browser-image-compression'
 import ImagesContainer from '../ImagesContainer'
 import ViewImageModal from 'components/modals/ViewImageModal'
-import BuzzTitleModal from 'components/modals/BuzzTitleModal'
+// import BuzzTitleModal from 'components/modals/BuzzTitleModal'
 import DraftsIcon from 'components/elements/Icons/DraftsIcon'
 import DraftsModal from 'components/modals/DraftsModal'
 import SaveDraftModal from 'components/modals/SaveDraftModal'
@@ -55,7 +55,7 @@ const useStyles = createUseStyles(theme => ({
     borderTop: theme.border.primary,
   },
   row: {
-    width: '98%',
+    width: '95%',
     margin: '0 auto',
     paddingTop: 15,
     marginBottom: 10,
@@ -394,6 +394,37 @@ const useStyles = createUseStyles(theme => ({
       pointerEvents: 'none',
     },
   },
+  titleBox: {
+    display: 'flex',
+    width: '100%',
+    padding: 8,
+    fontSize: '2rem',
+    background: theme.background.primary,
+    boxShadow: `0 0px 0 ${theme.font.color}`,
+    transition: 'border 350ms',
+    marginBottom: '25px',
+    outlineWidth: 0,
+
+    '&:focus-within': {
+      boxShadow: `0 2px 0 ${theme.font.color}`,
+    },
+
+    '& input': {
+      background: theme.background.primary,
+      border: 'none',
+      color: theme.font.color,
+      width: '90%',
+    },
+    
+    '& span': {
+      display: 'grid',
+      placeItems: 'center',
+      color: theme.font.color,
+      width: '10%',
+      textAlign: 'center',
+      fontSize: '1rem',
+    },
+  },
 }))
 
 
@@ -450,11 +481,10 @@ const CreateBuzzForm = (props) => {
   const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
   const [compressing, setCompressing] = useState(false) 
-  const [openBuzzTitleModal, setOpenBuzzTitleModal] = useState(false)
-  const [buzzTitle, setBuzzTitle] = useState('')
+  const [showBuzzTitle, setShowBuzzTitle] = useState(false)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
-
+  
   // buzz states
   const [isThread, setIsThread] = useState(false)
   const [currentBuzz, setCurrentBuzz] = useState(1)
@@ -467,7 +497,7 @@ const CreateBuzzForm = (props) => {
   const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
   const [draftData, setDraftData] = useState(null)
   const [selectedDraft, setSelectedDraft] = useState('')
-
+  
   const {
     text = '',
     url = '',
@@ -481,7 +511,7 @@ const CreateBuzzForm = (props) => {
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
   const buzzIntentTags = []
-
+  
   // buzz text box states, ref & style
   const buzzTextBoxRef = useRef(null)
   const [content, setContent] = useState(wholeIntent)
@@ -491,6 +521,10 @@ const CreateBuzzForm = (props) => {
   const [counterColor, setCounterColor] = useState('#e53935')
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
   const BuzzToTwitterToggleStyle = { opacity: !buzzToTwitter ? 0.5 : 1 }
+  const [buzzTitle, setBuzzTitle] = useState('')
+  const [buzzLength, setBuzzLength] = useState(content.length + buzzTitle.length - overhead)
+  const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length + buzzTitle.length - overhead))
+  const [buzzImages, setBuzzImages] = useState(0)
 
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
@@ -529,9 +563,12 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const handleBuzzTitleModalOpen = () => {
-    setBuzzTitleModalStatus(true)
-    setOpenBuzzTitleModal(true)
+  const handleBuzzTitleToggle = () => {
+    if(showBuzzTitle === false) {
+      setShowBuzzTitle(true)
+    } else {
+      setShowBuzzTitle(false)
+    }
   }
 
   const handleDraftsModalOpen = () => {
@@ -555,11 +592,6 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const onBuzzTitleModalHide = () => {
-    setBuzzTitleModalStatus(false)
-    setOpenBuzzTitleModal(false)
-  }
-
   const OnDraftsModalHide = () => {
     setDraftsModalStatus(false)
     setOpenDraftsModal(false)
@@ -575,29 +607,46 @@ const CreateBuzzForm = (props) => {
 
     setOverhead(overhead)
 
-    const length = content.length - overhead
+    const length = (content.length + buzzTitle.length) - overhead
     setWordCount(Math.floor((length / 280) * 100))
 
     // getting the draft post value from browser storage
     savePostAsDraft(localStorage.getItem('draft_post'))
     buzzThreads && setTags(extractAllHashtags(buzzThreads[1].content))
     // eslint-disable-next-line
-  }, [content, draftPost, images, savePostAsDraft])
+  }, [content, buzzTitle, draftPost, images, savePostAsDraft])
 
   useEffect(() => {
-    if(content.length - overhead === 280) {
+    const length = (content.length + buzzTitle.length) - overhead
+
+    if(length === 280) {
       setCounterColor('#E0245E')
-    } else if(content.length - overhead >= 260) {
+    } else if(length > 280) {
+      setCounterColor('transparent')
+    } else if(length >= 260) {
       setCounterColor('#FFAD1F')
     } else {
       setCounterColor('#e53935')
     }
     // eslint-disable-next-line
-  }, [content])
+  }, [content, buzzTitle])
 
   const closePayoutDisclaimer = () => {
     setOpenPayoutDisclaimer(false)
   }
+
+  useEffect(() => {
+    setBuzzLength(content.length + buzzTitle.length - overhead)
+    setBuzzRemaingChars(280 - (content.length + buzzTitle.length - overhead))
+    // eslint-disable-next-line
+  }, [content, buzzTitle])
+
+  useEffect(() => {
+    if(buzzThreads) {
+      setBuzzImages(buzzThreads[currentBuzz]?.images.length)
+    }
+    // eslint-disable-next-line
+  }, [buzzThreads])
 
   // dbuzz threads
 
@@ -991,7 +1040,7 @@ const CreateBuzzForm = (props) => {
     if(selectedDraft !== '') {
       handleUpdateBuzz(1, selectedDraft)
     }
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   }, [selectedDraft])
 
   const checkInDrafts = () => {
@@ -1011,6 +1060,11 @@ const CreateBuzzForm = (props) => {
     <div className={containerClass}>
       {!buzzLoading &&
         <div className={classes.row}>
+          {showBuzzTitle &&
+            <div className={classes.titleBox} tabindex={0}>
+              <input type='text' maxLength={60} placeholder='Buzz Title' value={buzzTitle} onChange={e => setBuzzTitle(e.target.value)} />
+              <span className='counter'>{buzzTitle.length}/60</span>
+            </div>}
           <div className={classNames(classes.inline, classes.left)}>
             <Avatar author={user.username} />
           </div>
@@ -1033,7 +1087,7 @@ const CreateBuzzForm = (props) => {
                   <TextArea
                     buzzId={1}
                     name='content-area'
-                    maxLength={280 + overhead}
+                    maxLength={220 + (60 - buzzTitle.length)}
                     minRows={minRows}
                     value={content}
                     onKeyDown={e => onChange(e, "draftPost", 1)}
@@ -1053,7 +1107,7 @@ const CreateBuzzForm = (props) => {
                       ref={buzzTextBoxRef}
                       buzzId={item.id}
                       name='content-area'
-                      maxLength={280 + overhead}
+                      maxLength={220 + (60 - buzzTitle.length)}
                       minRows={minRows}
                       value={item.content}
                       onKeyUp={e => {
@@ -1188,7 +1242,7 @@ const CreateBuzzForm = (props) => {
               <React.Fragment>
                 <ContainedButton
                   // eslint-disable-next-line
-                  disabled={loading || publishing || (buzzThreads && buzzThreads[currentBuzz]?.images?.length === 0 && content?.length === 0) && true}
+                  disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
                   label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
                   className={classes.float}
                   onClick={handleClickPublishPost}
@@ -1207,7 +1261,7 @@ const CreateBuzzForm = (props) => {
                   <IconButton
                     size='medium'
                     onClick={handleFileSelect}
-                    disabled={(content.length + 88) > 280}
+                    // disabled={(content.length + buzzTitle.length + 88 - overhead) > 280}
                     classes={{
                       root: classes.root,
                       disabled: classes.disabled,
@@ -1223,7 +1277,7 @@ const CreateBuzzForm = (props) => {
                 <IconButton style={{ backgroundColor: openEmojiPicker ? '#D3D3D3' : ''}} size='medium' onClick={handleOpenEmojiPicker}>
                   <EmojiIcon />
                 </IconButton>}
-                <IconButton size='medium' onClick={handleBuzzTitleModalOpen}>
+                <IconButton size='medium' onClick={handleBuzzTitleToggle}>
                   <TitleIcon />
                 </IconButton>
                 <IconButton size='medium' onClick={handleDraftsModalOpen}>
@@ -1255,7 +1309,7 @@ const CreateBuzzForm = (props) => {
                       value={wordCount}
                       variant='static'
                     />
-                    {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
+                    {buzzLength >= 260 && <p className={classes.counter}>{buzzRemainingChars}</p>}
                   </div>
                   <div className={classes.colDivider}> </div>
                   <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
@@ -1288,7 +1342,6 @@ const CreateBuzzForm = (props) => {
       />
       <BuzzFormModal show={open} onHide={onHide} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
-      <BuzzTitleModal title={buzzTitle} setTitle={setBuzzTitle} show={openBuzzTitleModal} onHide={onBuzzTitleModalHide} />
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
       {/* {imageAlert &&

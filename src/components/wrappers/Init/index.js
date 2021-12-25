@@ -63,6 +63,22 @@ const useStyles = createUseStyles(theme => ({
   versionButtons: {
     ...theme.font,
   },
+  betaTitleContainer: {
+    margin: '15px 0',
+    display: 'grid',
+    placeItems: 'center',
+  },
+  betaTitle: {
+    width: 'fit-content',
+    background: '#E61C34',
+    borderRadius: 5,
+    textAlign: 'center',
+    color: '#ffffff',
+    padding: '0 3px',
+    fontSize: '0.95em',
+    fontWeight: 600,
+    userSelect: 'none',
+  },
 }))
 
 const SplashScreen = () => {
@@ -75,6 +91,10 @@ const SplashScreen = () => {
         <center>
           {theme === 'light' && (<BrandIcon height={60}/>)}
           {theme === 'dark' && (<BrandIconDark height={60}/>)}
+          {config.VERSION.includes('dev') &&
+              <div className={classes.betaTitleContainer}>
+                {<span className={classes.betaTitle}>BETA</span>}
+              </div>}
           <Spinner
             size={35}
             loading={true}
