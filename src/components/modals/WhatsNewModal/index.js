@@ -109,7 +109,7 @@ function WhatsNewModal(props) {
             <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5, alignSelf: 'flex-end' }} onClick={onHide}>
               <CloseIcon />
             </IconButton>
-            <span className='title'>What's new? <span role="img" aria-label='' description=''>🎉</span></span>
+            <span className='title'>What's new? <span role="img" aria-label='celebration icon'>🎉</span></span>
             {changes && <span className='whatsNew updatesRow'>
               {/* eslint-disable-next-line */}
               <span className='heading'>NEW FEATURES ✨</span>

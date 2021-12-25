@@ -104,6 +104,11 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '1.15em',
     textAlign: 'center',
   },
+  draftDesc: {
+    marginTop: 15,
+    fontSize: '0.85em',
+    color: theme.font.color,
+  },
 }))
 
 const DraftsModal = (props) => {
@@ -154,6 +159,9 @@ const DraftsModal = (props) => {
                   </span>
                 </div>
               ))}
+            <center className={classes.draftDesc}>
+              all drafts are currenly stored offline
+            </center>
           </div>
         </ModalBody>
       </Modal>
