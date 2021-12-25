@@ -12,7 +12,7 @@ const updates = {
 `,
   
   fixes: `
-  - Fixed content trucating because of title, now title and content will be calculated before publishing a buzz.
+  - Fixed content truncating because of title, now title and the content will be calculated before publishing a buzz.
   - Few minor bug fixes and improvements to make DBuzz even better.
   `,
 
