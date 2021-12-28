@@ -397,7 +397,8 @@ const useStyles = createUseStyles(theme => ({
   titleBox: {
     display: 'flex',
     width: '100%',
-    padding: 8,
+    padding: 5,
+    paddingTop: 0,
     fontSize: '2rem',
     background: theme.background.primary,
     boxShadow: `0 0px 0 ${theme.font.color}`,
@@ -1060,11 +1061,6 @@ const CreateBuzzForm = (props) => {
     <div className={containerClass}>
       {!buzzLoading &&
         <div className={classes.row}>
-          {showBuzzTitle &&
-            <div className={classes.titleBox} tabindex={0}>
-              <input type='text' maxLength={60} placeholder='Buzz Title' value={buzzTitle} onChange={e => setBuzzTitle(e.target.value)} />
-              <span className='counter'>{buzzTitle.length}/60</span>
-            </div>}
           <div className={classNames(classes.inline, classes.left)}>
             <Avatar author={user.username} />
           </div>
@@ -1083,11 +1079,16 @@ const CreateBuzzForm = (props) => {
             )}
             {!publishing && !loading && (
               <span>
+                {showBuzzTitle &&
+                  <div className={classes.titleBox} tabindex={0}>
+                    <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => setBuzzTitle(e.target.value)} />
+                    <span className='counter'>{buzzTitle.length}/60</span>
+                  </div>}
                 {!buzzThreads && (
                   <TextArea
                     buzzId={1}
                     name='content-area'
-                    maxLength={220 + (60 - buzzTitle.length)}
+                    maxLength={220 + (60 - buzzTitle.length) + overhead}
                     minRows={minRows}
                     value={content}
                     onKeyDown={e => onChange(e, "draftPost", 1)}
@@ -1107,7 +1108,7 @@ const CreateBuzzForm = (props) => {
                       ref={buzzTextBoxRef}
                       buzzId={item.id}
                       name='content-area'
-                      maxLength={220 + (60 - buzzTitle.length)}
+                      maxLength={220 + (60 - buzzTitle.length) + overhead}
                       minRows={minRows}
                       value={item.content}
                       onKeyUp={e => {
