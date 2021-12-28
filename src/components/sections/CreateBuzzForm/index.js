@@ -1079,11 +1079,11 @@ const CreateBuzzForm = (props) => {
             )}
             {!publishing && !loading && (
               <span>
-                 {showBuzzTitle &&
-                    <div className={classes.titleBox} tabindex={0}>
-                      <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => setBuzzTitle(e.target.value)} />
-                      <span className='counter'>{buzzTitle.length}/60</span>
-                    </div>}
+                {showBuzzTitle &&
+                  <div className={classes.titleBox} tabindex={0}>
+                    <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => setBuzzTitle(e.target.value)} />
+                    <span className='counter'>{buzzTitle.length}/60</span>
+                  </div>}
                 {!buzzThreads && (
                   <TextArea
                     buzzId={1}
