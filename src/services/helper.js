@@ -388,13 +388,14 @@ export const redirectToUserProfile = () => {
 }
 
 export const getTheme =() => {
-  const theme = localStorage.getItem('theme')
+  const theme = JSON.parse(localStorage.getItem('customUserData'))?.settings?.theme
   let mode = ''
-  if(theme?.includes('night') || theme?.includes('gray')){
+
+  if(theme && (theme === 'gray' || theme === 'night') ) {
     mode = 'dark'
-  }
-  else {
+  } else {
     mode = 'light'
   }
+
   return mode
 }

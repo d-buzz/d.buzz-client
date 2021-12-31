@@ -40,6 +40,8 @@ import { setBuzzModalStatus, setRefreshRouteStatus } from 'store/interface/actio
 import { pollNotifRequest } from 'store/polling/actions'
 import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
+import { getTheme } from 'services/helper'
+import config from 'config'
 
 const useStyles = createUseStyles(theme => ({
   items: {
@@ -194,6 +196,21 @@ const useStyles = createUseStyles(theme => ({
       color: '#E53935',
     },
   },
+  betaTitleContainer: {
+    display: 'grid',
+    placeItems: 'center',
+  },
+  betaTitle: {
+    width: 'fit-content',
+    background: '#E61C34',
+    borderRadius: 5,
+    textAlign: 'center',
+    color: '#ffffff',
+    padding: '0 3px',
+    fontSize: '0.65em',
+    fontWeight: 600,
+    userSelect: 'none',
+  },
 }))
 
 
@@ -273,7 +290,7 @@ const SideBarLeft = (props) => {
     loading,
     pollNotifRequest,
     count = 0,
-    theme,
+    // theme,
     minify,
     setBuzzModalStatus,
     intentBuzz,
@@ -294,6 +311,7 @@ const SideBarLeft = (props) => {
   const timestamp = moment().unix()
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
   const moreMenuRef = useRef()
+  const theme = getTheme()
 
   const showThemeModal = () => {
     handleClickCloseOpenMoreMenu()
@@ -440,11 +458,15 @@ const SideBarLeft = (props) => {
           <LinkContainer >
             <NavbarBrand href="/">
               <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
-                {theme.mode === 'light' && !minify && (<BrandIcon />)}
-                {(theme.mode === 'night' || theme.mode === 'gray') && !minify && (<BrandIconDark />)}
+                {theme === 'light' && !minify && (<BrandIcon />)}
+                {theme === 'dark' && !minify && (<BrandIconDark />)}
                 {minify && (<CircularBrandIcon />)}
               </div>
             </NavbarBrand>
+            {config.VERSION.includes('dev') &&
+              <div className={classes.betaTitleContainer} style={{width: !minify ? 180 : 40}}>
+                {<span className={classes.betaTitle}>BETA</span>}
+              </div>}
             <div className={classes.navLinkContainer}>
               {NavLinks.map((item) => (
                 <NavLinkWrapper

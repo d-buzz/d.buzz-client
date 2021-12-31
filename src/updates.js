@@ -1,20 +1,18 @@
+const { default: config } = require("config")
+
 const updates = {
   status: true,
 
   changes: `
-  <br />
-
-  ![](https://ipfs.io/ipfs/QmPgV1kEa2qBXHxvw6Kt6uRVyJtMbYNTWYyV9L5MEUmH6K)
-  <br />
-  ### <center> New Options in Setting Modal ⚙ </center>
-
-  <center>We have new options in our settings modal including:</center><br />
-
-  - Enable / Disable Link Previews
-  - Enable / Disable Images
+  ### Buzz Title Bar ✏
+  * Now you can add a custom buzz title of upto 60 characters.
+  * We've removed the additional buzz title modal.
+  * Just click on <b>Title</b> button to open the title bar. 
+  ${config.VERSION.includes('dev') ? '###### Thanks for being beta a tester of this feature 🧪': ''}
 `,
   
   fixes: `
+  - Fixed content truncating because of title, now title and the content will be calculated before publishing a buzz.
   - Few minor bug fixes and improvements to make DBuzz even better.
   `,
 
