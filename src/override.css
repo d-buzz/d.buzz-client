@@ -192,3 +192,15 @@ a[rel="nofollow noopener"]::after {
   width: 15px;
   border-radius: 30px;
 }
+
+@keyframes eventContainerAnimation {
+  0% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: 0 20px 80px rgba(209, 84, 22, 0.5);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
