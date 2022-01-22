@@ -8,6 +8,7 @@ const useStyles = createUseStyles({
     minWidth: 60,
     width: props => props.size >= 25 && props.size*2+5,
     height: props => props.size >= 25 ? props.size : 25,
+    transform: 'scale(0.88)',
   },
   track: {
     display: 'flex',
@@ -16,8 +17,8 @@ const useStyles = createUseStyles({
     position: 'relative',
     height: '100%',
     width: '100%',
-    background: '#E61C34',
-    boxShadow: '0 0 0 3px #E61C34',
+    background: '#e74b5d',
+    boxShadow: '0 0 0 3px #e74b5d',
     borderRadius: props => props.size >= 25 ? props.size : 25,
     cursor: 'pointer',
   },

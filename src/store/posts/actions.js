@@ -264,6 +264,30 @@ export const uploadFileError = (error, meta) => ({
   meta,
 })
 
+export const UPLOAD_VIDEO_REQUEST = 'UPLOAD_VIDEO_REQUEST'
+export const UPLOAD_VIDEO_SUCCESS = 'UPLOAD_VIDEO_SUCCESS'
+export const UPLOAD_VIDEO_FAILURE = 'UPLOAD_VIDEO_FAILURE'
+
+export const uploadVideoRequest = (video) => ({
+  type: UPLOAD_VIDEO_REQUEST,
+  payload: { video },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const uploadVideoSuccess = (response, meta) => ({
+  type: UPLOAD_VIDEO_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const uploadVideoError = (error, meta) => ({
+  type: UPLOAD_VIDEO_FAILURE,
+  payload: error,
+  meta,
+})
+
 export const PUBLISH_POST_REQUEST = 'PUBLISH_POST_REQUEST'
 export const PUBLISH_POST_SUCCESS = 'PUBLISH_POST_SUCCESS'
 export const PUBLISH_POST_FAILURE = 'PUBLISH_POST_FAILURE'
