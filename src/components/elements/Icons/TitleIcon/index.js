@@ -7,7 +7,7 @@ const TitleIcon = ({ height = 25, top = 0, style = 0 }) => {
       preserveAspectRatio="xMidYMid meet">
    
       <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
-        fill="#E61C34" stroke="none">
+        fill="#e74b5d" stroke="none">
         <path d="M515 4903 c-55 -7 -138 -34 -195 -63 -133 -67 -248 -202 -292 -343
         l-23 -72 0 -1865 0 -1865 23 -72 c57 -183 209 -329 408 -390 56 -17 149 -18
         2124 -18 1977 0 2068 1 2125 18 194 60 335 192 403 378 l27 74 3 1842 c3 2024

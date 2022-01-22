@@ -81,7 +81,7 @@ const SideBarRight = (props) => {
       name: 'Element',
       label: '#d.buzz:matrix.org',
       imagePath: `${window.location.origin}/element.png`,
-      url: 'https://dbuzz.chat/',
+      url: 'https://matrix.to/#/#d.buzz:matrix.org',
     },
     // {
     //   name: 'Facebook',

@@ -9,6 +9,7 @@ import TwitterEmbed from '../TwitterEmbed'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+import VideoPreview from '../VideoPreview'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -709,6 +710,25 @@ const prepareDTubeEmbeds = (content) => {
   return body
 }
 
+const prepareDBuzzVideos = (content) => {
+  const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/(.*\?dbuzz_video)/i
+  let body = content
+
+  const links = textParser.getUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+
+    const match = link.match(dbuzzVideos)
+
+    if (match) {
+      const id = match[1]
+      body = body.replace(link, `~~~~~~.^.~~~:dbuzz-video:${id}:~~~~~~.^.~~~`)
+    }
+  })
+  return body
+}
+
 const getCoinTicker = (coin) => {
   const data = require('../../../files/coinGeckoData.json')
 
@@ -770,6 +790,9 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     const splitSoundcloud = content.split(':')
     const url = `https://soundcloud.com/${splitSoundcloud[2]}`
     return <ReactSoundCloud url={url} />
+  } else if(content.includes(':dbuzz-video:')) {
+    const url = content.split(':')[2]
+    return <VideoPreview key={`${url}${scrollIndex}dbuzz-video`} url={`https://ipfs.io/ipfs/${url}`}/>
   } else if (content.includes(':facebook:')) {
     try {
       const splitFacebook = content.split(':')
@@ -870,7 +893,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     }
 
     const checkForValidImage = (n) => {
-      return checkForMarkdownDefaults(n)
+      return checkForMarkdownDefaults(n) && !n.includes('?dbuzz_video')
     }
 
     // render content (supported for all browsers)
@@ -998,6 +1021,8 @@ const Renderer = React.memo((props) => {
           content = prepareAppleEmbeds(content)
         } else if (link.includes('d.tube')) {
           content = prepareDTubeEmbeds(content)
+        } else if (link.includes('dbuzz_video')) {
+          content = prepareDBuzzVideos(content)
         }
       } catch(error) { }
     })
