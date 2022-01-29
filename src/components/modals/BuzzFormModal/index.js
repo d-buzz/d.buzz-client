@@ -5,10 +5,11 @@ import IconButton from '@material-ui/core/IconButton'
 import { CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { CreateBuzzForm } from 'components'
-import { setBuzzConfirmModalStatus } from 'store/interface/actions'
+import { setBuzzConfirmModalStatus, setSaveDraftsModalStatus } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import BuzzConfirmModal from '../BuzzConfirmModal'
+import SaveDraftModal from '../SaveDraftModal'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -32,16 +33,57 @@ const useStyles = createUseStyles(theme => ({
     paddingLeft: 15,
     paddingRight: 15,
   },
+  draftsContainer: {
+    width: '100%',
+    display: 'inline',
+    
+    '& .save_draft_button': {
+      float: 'right',
+      lineHeight: 1,
+      padding: '10px 13px',
+      border: '2px solid #e74b5d',
+      color: '#e74b5d',
+      borderRadius: 35,
+      fontSize: '0.8em',
+      fontWeight: 700,
+      userSelect: 'none',
+      textTransform: 'uppercase',
+      cursor: 'pointer',
+      transition: 'all 250ms',
+      margin: '0 15px',
+      transform: 'translateY(-5px)',
+
+      '&:hover': {
+        opacity: 0.8,
+      },
+    },
+  },
 }))
 
 const BuzzFormModal = (props) => {
-  const { show, onHide } = props
+  const { show, onHide, setContent, buzzThreads } = props
   const [open, setOpen] = useState(false)
   const classes = useStyles()
+  const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
+  const [draftData, setDraftData] = useState(null)
+  const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
 
   const onHideConfirmModal = () => {
     setBuzzConfirmModalStatus(false)
     setOpen(false)
+    console.log(setContent)
+  }
+
+  const handleSaveDraftsModalOpen = () => {
+    setSaveDraftsModalStatus(true)
+    setOpenSaveDraftsModal(true)
+    setDraftData({
+      content: buzzThreads[1].content,
+    })
+  }
+  const OnSaveDraftsModalHide = () => {
+    setSaveDraftsModalStatus(false)
+    setOpenSaveDraftsModal(false)
   }
 
   const handleBuzzModal = () => {
@@ -52,6 +94,19 @@ const BuzzFormModal = (props) => {
       setBuzzConfirmModalStatus(true)
       setOpen(true)
     }
+  }
+
+  const checkInDrafts = () => {
+    let found = false
+    drafts.forEach(draft => {
+      if(buzzThreads) {
+        if(draft.content === buzzThreads[1]?.content) {
+          found = true
+        }
+      }
+    })
+
+    return found
   }
 
   return (
@@ -68,13 +123,22 @@ const BuzzFormModal = (props) => {
           <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={handleBuzzModal}>
             <CloseIcon />
           </IconButton>
+          {buzzThreads && buzzThreads[1].content &&
+          <div className={classes.draftsContainer}>
+            <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
+          </div>}
           <CreateBuzzForm modal={true} hideModalCallback={onHide} />
         </ModalBody>
       </Modal>
-      <BuzzConfirmModal show={open} onHide={onHideConfirmModal}/>
+      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
+      <BuzzConfirmModal show={open} onHide={onHideConfirmModal} setContent={setContent}/>
     </React.Fragment>
   )
 }
+
+const mapStateToProps = (state) => ({
+  buzzThreads: state.posts.get('buzzThreads'),
+})
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
@@ -83,4 +147,4 @@ const mapDispatchToProps = (dispatch) => ({
     },dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(BuzzFormModal)
+export default connect(mapStateToProps, mapDispatchToProps)(BuzzFormModal)

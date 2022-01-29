@@ -18,7 +18,7 @@ import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
 import { PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, publishReplyRequest } from 'store/posts/actions'
+import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -67,7 +67,8 @@ const useStyles = createUseStyles(theme => ({
   },
   right: {
     minHeight: 55,
-    width: 'calc(100% - 65px)',
+    // width: 'calc(100% - 65px)',
+    width: '100%',
   },
   inline: {
     display: 'inline-block',
@@ -100,11 +101,13 @@ const useStyles = createUseStyles(theme => ({
     strokeLinecap: 'round',
   },
   previewContainer: {
-    paddingTop: 10,
-    width: '100%',
+    marginTop: 10,
+    width: 'calc(100% - 65px)',
+    float: 'right',
     height: 'max-content',
     paddingBottom: 10,
-    borderTop: `2px solid ${theme.context.view.backgroundColor}`,
+    borderTop: `0.5px solid ${theme.font.color}`,
+    // borderBottom: `0.5px solid ${theme.font.color}`,
     '& img': {
       border: '1px solid #ccd6dd',
       borderRadius: '16px 16px',
@@ -257,6 +260,7 @@ const useStyles = createUseStyles(theme => ({
     right: 2,
     float: 'right',
     animation: 'closeBuzzButtonAnimation 450ms',
+    zIndex: 99,
   },
   colDivider: {
     width: 0.5,
@@ -433,48 +437,70 @@ const useStyles = createUseStyles(theme => ({
   titleBox: {
     display: 'flex',
     width: '100%',
-    padding: 5,
-    paddingTop: 0,
     fontSize: '2rem',
     background: theme.background.primary,
     boxShadow: `0 0px 0 ${theme.font.color}`,
     transition: 'border 350ms',
-    marginBottom: '25px',
+    marginBottom: '15px',
     outlineWidth: 0,
 
-    '&:focus-within': {
-      boxShadow: `0 2px 0 ${theme.font.color}`,
-    },
-
-    '& input': {
-      background: theme.background.primary,
-      border: 'none',
-      color: theme.font.color,
-      width: '90%',
+    '& .userAvatar': {
+      transition: 'all 250ms',
+      '&:hover': {
+        opacity: 0.8,
+        cursor: 'pointer',
+      },
     },
     
-    '& span': {
-      display: 'grid',
-      placeItems: 'center',
-      color: theme.font.color,
-      width: '10%',
-      textAlign: 'center',
-      fontSize: '1rem',
+    '& .titleContainer': {
+      display: 'flex',
+      width: '100%',
+      marginLeft: 10,
+      paddingBottom: 5,
+
+      '&:focus-within': {
+        boxShadow: `0 2px 0 ${theme.font.color}`,
+      },
+
+      '& input': {
+        background: theme.background.primary,
+        border: 'none',
+        color: theme.font.color,
+        width: '90%',
+        paddingRight: 10,
+      },
+      
+      '& span': {
+        alignSelf: 'center',
+        justifySelf: 'center',
+        display: 'grid',
+        placeItems: 'center',
+        color: theme.font.color,
+        width: '10%',
+        height: 'fit-content',
+        textAlign: 'center',
+        fontSize: '1rem',
+        borderRadius: 5,
+        background: theme.context.view.backgroundColor,
+      },
     },
+    
   },
   buzzCustomizeOptions: {
     display: 'inline-flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
-    margin: '15px 0',
+    width: 'calc(100% - 65px)',
+    float: 'right',
+    margin: '5px 0',
   },
   buzzPublishingOptions: {
     display: 'inline-flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
-    padding: 10,
+    width: 'calc(100% - 65px)',
+    float: 'right',
+    padding: '10px 0',
 
     '@media (max-width: 480px)': {
       margin: '10px 0',
@@ -512,7 +538,80 @@ const useStyles = createUseStyles(theme => ({
   buzzTextBox: {
     display: 'flex',
     position: 'relative',
-    width: '100%',
+    // width: '100%',
+    width: props => props.showBuzzTitle ? 'calc(100% - 65px)' : '',
+    marginLeft: props => props.showBuzzTitle ? 65 : '',
+    transition: 'all 250ms',
+
+    '&:focus-within': {
+      background: theme.context.view.backgroundColor,
+      padding: 10,
+      borderRadius: 8,
+      marginBottom: 8,
+    },
+    
+    '& .buzzBoxes': {
+      width: '100%',
+
+      '& .buzzArea1': {
+        '&:after': {
+          display: props => props.buzzThreads ? props.buzzThreads[2] ? 'block' : 'none' : 'none',
+          position: 'absolute',
+          content: '""',
+          left: '-15px',
+          top: '-10px',
+          width: '2px',
+          height: '100%',
+          margin: '5px 0',
+          borderRadius: '50%',
+          opacity: 0.5,
+        },
+
+        '& .userAvatar': {
+          transition: 'all 250ms',
+          '&:hover': {
+            opacity: 0.8,
+            cursor: 'pointer',
+          },
+        },
+      },
+            
+      '& .buzzArea': {
+        position: 'relative',
+        display: 'flex',
+        width: '100%',
+        // border: props => props.buzzThreads ? props.buzzThreads[2] ? '2px solid white' : 'none' : 'none',
+        // margin: props => props.buzzThreads ? props.buzzThreads[2] ? 15 : 'none' : 'none',
+        
+        '&:after': {
+          position: 'absolute',
+          content: '""',
+          left: '-15px',
+          top: '-10px',
+          width: '2px',
+          height: '100%',
+          margin: '5px 0',
+          borderRadius: '50%',
+          background: theme.font.color,
+        },
+
+        '& .userAvatar': {
+          marginRight: 15,
+          maxWidth: 'fit-content',
+          transition: 'all 250ms',
+          '&:hover': {
+            opacity: 0.8,
+            cursor: 'pointer',
+          },
+        },
+        
+      },
+
+      '& .noMargin': {
+        width: '100% !important',
+        margin: '0 !important',
+      },
+    },
 
     '& .buzz_counter': {
       position: 'absolute',
@@ -543,7 +642,6 @@ const tooltips = {
 }
 
 const CreateBuzzForm = (props) => {
-  const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
   const { pathname } = location
@@ -569,7 +667,9 @@ const CreateBuzzForm = (props) => {
     buzzModalStatus,
     setBuzzModalStatus,
     buzzThreads,
+    buzzTitle,
     updateBuzzThreads,
+    updateBuzzTitle,
     publishReplyRequest,
   } = props
 
@@ -586,10 +686,11 @@ const CreateBuzzForm = (props) => {
   const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
   const [compressing, setCompressing] = useState(false) 
-  const [showBuzzTitle, setShowBuzzTitle] = useState(false)
+  const [showBuzzTitle, setShowBuzzTitle] = useState(true)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
   const [videoUploading, setVideoUploading] = useState(false)
+  
   
   // buzz states
   const [isThread, setIsThread] = useState(false)
@@ -627,19 +728,19 @@ const CreateBuzzForm = (props) => {
   const [counterColor, setCounterColor] = useState('#e53935')
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
   const BuzzToTwitterToggleStyle = { opacity: !buzzToTwitter ? 0.5 : 1 }
-  const [buzzTitle, setBuzzTitle] = useState('')
+  // const [buzzTitle, setBuzzTitle] = useState('')
   const [buzzLength, setBuzzLength] = useState(content.length + buzzTitle.length - overhead)
   const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length + buzzTitle.length - overhead))
   const [buzzImages, setBuzzImages] = useState(0)
   const isVideoAttached = content.includes('dbuzz_video')
-
+  
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
-
+  
   // image states
   const [imageSize, setImageSize] = useState(0)
   const [viewImageUrl, setViewImageUrl] = useState('')
-
+  
   if (wholeIntent && hashtags) {
     const intentTags = hashtags.split(',')
     if (intentTags) {
@@ -649,9 +750,11 @@ const CreateBuzzForm = (props) => {
     }
   }
 
+  const classes = useStyles({showBuzzTitle, buzzThreads})
+  
   let containerClass = classes.container
   let minRows = 2
-
+  
   if (modal) {
     containerClass = classes.containerModal
     minRows = 5
@@ -1164,6 +1267,24 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleVideoSelect = () => {
+    const target = document.getElementById('video-upload')
+    if (isMobile) {
+      target.addEventListener('click', function () {
+        const touch = new Touch({
+          identifier: 'video-upload',
+          target: target,
+        })
+
+        const touchEvent = new TouchEvent('touchstart', {
+          touches: [touch],
+          view: window,
+          cancelable: true,
+          bubbles: true,
+        })
+
+        target.dispatchEvent(touchEvent)
+      })
+    }
     videoInputRef.current.click()
   }
 
@@ -1200,15 +1321,15 @@ const CreateBuzzForm = (props) => {
 
   return (
     <div className={containerClass}>
-      {buzzThreads && buzzThreads[1].content &&
+      {!buzzModalStatus && buzzThreads && buzzThreads[1].content &&
       <div className={classes.draftsContainer}>
         <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
       </div>}
       {!buzzLoading &&
         <div className={classes.row}>
-          <div className={classNames(classes.inline, classes.left)}>
+          {/* <div className={classNames(classes.inline, classes.left)}>
             <Avatar author={user.username} />
-          </div>
+          </div> */}
           <div className={classNames(classes.inline, classes.right)}>
             {publishing && (
               <div style={{ width: '100%', paddingTop: 10 }}>
@@ -1226,55 +1347,67 @@ const CreateBuzzForm = (props) => {
               <span className={classes.buzzBox}>
                 {showBuzzTitle &&
                   <div className={classes.titleBox} tabindex={0}>
-                    <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => setBuzzTitle(e.target.value)} />
-                    <span className='counter'>{buzzTitle.length}/60</span>
+                    <Avatar author={user.username} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
+                    <span className="titleContainer">
+                      <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
+                      <span className='counter'>{buzzTitle.length}/60</span>
+                    </span>
                   </div>}
-                <span className={classes.buzzTextBox}>
-                  {!buzzThreads && (
-                    <TextArea
-                      buzzId={1}
-                      name='content-area'
-                      maxLength={220 + (60 - buzzTitle.length) + overhead}
-                      minRows={minRows}
-                      value={content}
-                      onKeyDown={e => onChange(e, "draftPost", 1)}
-                      onChange={e => onChange(e, "draftPost", 1)}
-                      onPaste={e => onChange(e, "draftPost", 1)}
-                      autoFocus
-                    />
-                  )}
-                  {buzzThreads &&
-                    Object.values(buzzThreads).map(item => (
-                      <span key={item.id} style={{position: 'relative', width: '100%'}}>
-                        {item.content === '' && item.id !== 1 && 
-                          <IconButton className={classes.closeBuzzButton} onClick={() => handleDeleteBuzz(item.id)}>
-                            <CloseIcon />
-                          </IconButton>}
-                        <TextArea
-                          ref={buzzTextBoxRef}
-                          buzzId={item.id}
-                          name='content-area'
-                          maxLength={220 + (60 - buzzTitle.length) + overhead}
-                          minRows={minRows}
-                          value={item.content}
-                          onKeyUp={e => {
-                            onChange(e, "draftPost", item.id)
-                            setCursorPosition(e.target.selectionStart)
-                          }}
-                          onKeyDown={e => {
-                            onChange(e, "draftPost", item.id)
-                            setCursorPosition(e.target.selectionStart)
-                          }}
-                          onChange={e => onChange(e, "draftPost", item.id)}
-                          onPaste={e => onChange(e, "draftPost", item.id)}
-                          autoFocus
-                          onFocus={(e) => {
-                            setContent(item.content)
-                            setCurrentBuzz(item.id)
-                          }}
-                          onClick={(e) => setCursorPosition(e.target.selectionStart)}
-                        />
-                      </span>))}
+                <div className={classes.buzzTextBox}>
+                  <span className='buzzBoxes'>
+                    {/* <Avatar author={user.username} /> */}
+                    {!buzzThreads && (
+                      <TextArea
+                        buzzId={1}
+                        name='content-area'
+                        maxLength={220 + (60 - buzzTitle.length) + overhead}
+                        minRows={minRows}
+                        value={content}
+                        onKeyDown={e => onChange(e, "draftPost", 1)}
+                        onChange={e => onChange(e, "draftPost", 1)}
+                        onPaste={e => onChange(e, "draftPost", 1)}
+                        // autoFocus
+                      />
+                    )}
+                    {buzzThreads &&
+                      Object.values(buzzThreads).map(item => (
+                        <span key={item.id} style={{position: 'relative', width: '100%'}}>
+                          {item.content === '' && item.id !== 1 && 
+                            <IconButton className={classes.closeBuzzButton} onClick={() => handleDeleteBuzz(item.id)}>
+                              <CloseIcon />
+                            </IconButton>}
+                          <span className={`buzzArea buzzArea${item.id} ${showBuzzTitle === false ? 'noMargin' : ''}`}>
+                            {item.id === 1 && showBuzzTitle === false && <Avatar className='userAvatar' author={user.username} style={{width: showBuzzTitle === false ? 'fit-content' : 'inherit'}} onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>}
+                            {item.id !== 1 && <Avatar className='userAvatar' author={user.username} onClick={() => window.location = `${window.location.origin}/@${user.username}`} />}
+                            <TextArea
+                              ref={buzzTextBoxRef}
+                              buzzId={item.id}
+                              name='content-area'
+                              maxLength={220 + (60 - buzzTitle.length) + overhead}
+                              minRows={minRows}
+                              value={item.content}
+                              onKeyUp={e => {
+                                onChange(e, "draftPost", item.id)
+                                setCursorPosition(e.target.selectionStart)
+                              }}
+                              onKeyDown={e => {
+                                onChange(e, "draftPost", item.id)
+                                setCursorPosition(e.target.selectionStart)
+                              }}
+                              onChange={e => onChange(e, "draftPost", item.id)}
+                              onPaste={e => onChange(e, "draftPost", item.id)}
+                              // autoFocus
+                              onFocus={(e) => {
+                                setContent(item.content)
+                                setCurrentBuzz(item.id)
+                              }}
+                              onClick={(e) => {
+                                setCursorPosition(e.target.selectionStart)
+                              }}
+                            />
+                          </span>
+                        </span>))}
+                  </span>
                   {content && 
                     <div>
                       <Box
@@ -1307,9 +1440,8 @@ const CreateBuzzForm = (props) => {
                         </div>
                       </Box>
                     </div>}
-                </span>
-              </span>
-            )}
+                </div>
+              </span>)}
             {/* {draftPost && (
               <span className={classes.draftPostContainer} onClick={clearDraft}>
                 <p className={classes.draftPostLabel}><ClearIcon size={20} className={classes.clearDraftIcon} /> draft</p>
@@ -1323,7 +1455,7 @@ const CreateBuzzForm = (props) => {
               onChange={() => setBuzzToTwitter(!buzzToTwitter)}
               className={classNames(classes.checkBox, classes.label)}
             /> */}
-            <br />
+            {/* <br /> */}
             {/* {!publishing && content.length !== 0 && (
               <div style={{ width: '100%', paddingBottom: 5 }}>
                 <ReactTags
@@ -1391,17 +1523,19 @@ const CreateBuzzForm = (props) => {
                     onChange={handleFileSelectChange}
                     hidden
                   />
-                  <IconButton
-                    size='medium'
-                    onClick={handleFileSelect}
-                    disabled={isVideoAttached}
-                    classes={{
-                      root: classes.root,
-                      disabled: classes.disabled,
-                    }}
-                  >
-                    <UploadIcon />
-                  </IconButton>
+                  <Tooltip title="Image" placement='top-start'>
+                    <IconButton
+                      size='medium'
+                      onClick={handleFileSelect}
+                      disabled={isVideoAttached}
+                      classes={{
+                        root: classes.root,
+                        disabled: classes.disabled,
+                      }}
+                    >
+                      <UploadIcon />
+                    </IconButton>
+                  </Tooltip>
                   <input
                     id='video-upload'
                     type='file'
@@ -1412,22 +1546,32 @@ const CreateBuzzForm = (props) => {
                     onChange={handleVideoUpload}
                     hidden
                   />
-                  <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached} classes={{ disabled: classes.disabled }}>
-                    <VideoUploadIcon />
-                  </IconButton>
-                  <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached} classes={{ disabled: classes.disabled }}>
-                    <GifIcon />
-                  </IconButton>
+                  <Tooltip title="Video" placement='top-start'>
+                    <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached} classes={{ disabled: classes.disabled }}>
+                      <VideoUploadIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="GIF" placement='top-start'>
+                    <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached} classes={{ disabled: classes.disabled }}>
+                      <GifIcon />
+                    </IconButton>
+                  </Tooltip>
                   {!isMobile &&
-                  <IconButton style={{ backgroundColor: openEmojiPicker ? '#D3D3D3' : ''}} size='medium' onClick={handleOpenEmojiPicker}>
-                    <EmojiIcon />
-                  </IconButton>}
-                  <IconButton style={{ backgroundColor: showBuzzTitle ? '#D3D3D3' : ''}} size='medium' onClick={handleBuzzTitleToggle}>
-                    <TitleIcon />
-                  </IconButton>
-                  <IconButton size='medium' onClick={handleDraftsModalOpen}>
-                    <DraftsIcon />
-                  </IconButton>
+                  <Tooltip title="Emoji" placement='top-start'>
+                    <IconButton style={{ backgroundColor: openEmojiPicker ? '#D3D3D3' : ''}} size='medium' onClick={handleOpenEmojiPicker}>
+                      <EmojiIcon />
+                    </IconButton>
+                  </Tooltip>}
+                  <Tooltip title="Buzz Title" placement='top-start'>
+                    <IconButton style={{ backgroundColor: showBuzzTitle ? '#D3D3D3' : ''}} size='medium' onClick={handleBuzzTitleToggle}>
+                      <TitleIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Drafts" placement='top-start'>
+                    <IconButton size='medium' onClick={handleDraftsModalOpen}>
+                      <DraftsIcon />
+                    </IconButton>
+                  </Tooltip>
                 </span>
                 {content.length !== 0 &&
                   <span className={classes.previewTitle}>
@@ -1490,30 +1634,29 @@ const CreateBuzzForm = (props) => {
                 </div>
               </React.Fragment>
             </div>
-            <div className={classes.publishBuzzOptionMobile}>
-              {content && 
-                <div style={{display: 'inline-flex'}}>
-                  <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
-                  <div className={classes.colDivider}> </div>
-                </div>}
-              <ContainedButton
-                // eslint-disable-next-line
-                disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
-                label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
-                style={{margin: 0}}
-                onClick={handleClickPublishPost}
-              />
-            </div>
             <div>
               <React.Fragment>
                 {content.length !== 0 && buzzPreview && (
                   <div className={classes.previewContainer} onClick={handleClickContent}>
                     <Renderer content={buzzTitle ? `## ${buzzTitle} <br/>\n` + content : content} minifyAssets={false} />
-                    <div className={classes.separator} />
                   </div>
                 )}
               </React.Fragment>
             </div>
+          </div>
+          <div className={classes.publishBuzzOptionMobile}>
+            {content && 
+              <div style={{display: 'inline-flex'}}>
+                <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
+                <div className={classes.colDivider}> </div>
+              </div>}
+            <ContainedButton
+              // eslint-disable-next-line
+              disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
+              label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
+              style={{margin: 0}}
+              onClick={handleClickPublishPost}
+            />
           </div>
         </div>}
       {buzzLoading &&
@@ -1538,7 +1681,7 @@ const CreateBuzzForm = (props) => {
         show={openPayoutDisclaimer}
         onHide={closePayoutDisclaimer}
       />
-      <BuzzFormModal show={open} onHide={onHide} />
+      <BuzzFormModal show={open} onHide={onHide} setContent={setContent} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
@@ -1562,6 +1705,7 @@ const mapStateToProps = (state) => ({
   draftPost: state.posts.get('draftPost'),
   buzzModalStatus: state.interfaces.get('buzzModalStatus'),
   buzzThreads: state.posts.get('buzzThreads'),
+  buzzTitle: state.posts.get('buzzTitle'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1576,6 +1720,7 @@ const mapDispatchToProps = (dispatch) => ({
       savePostAsDraft,
       setBuzzModalStatus,
       updateBuzzThreads,
+      updateBuzzTitle,
       publishReplyRequest,
       setBuzzTitleModalStatus,
       setDraftsModalStatus,

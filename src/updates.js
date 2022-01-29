@@ -10,12 +10,16 @@ const updates = {
 `,
   
   fixes: `
+  - Fixed video upload button not working on mobile devices.
+  - Fixed buzz title resets on opening buzz modal.
   - Few minor bug fixes and improvements to make DBuzz even better.
   `,
 
   improvements: `
   ### UI Refresh of Buzz Box
   * We have refreshed the UI of our buzz box to make it more clean for our users.
+  ### UI Improvement of Buzz Threads Box
+  * We have refreshed the UI of our buzz threads box, now it will show a clear view of each connected buzz.
 `,
 
   upcoming: `
