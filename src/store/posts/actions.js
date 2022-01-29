@@ -624,3 +624,11 @@ export const updateBuzzThreads = (title) => ({
   type: BUZZ_THREADS,
   payload: title,
 })
+
+// buzz title
+export const BUZZ_TITLE = 'BUZZ_TITLE'
+
+export const updateBuzzTitle = (title) => ({
+  type: BUZZ_TITLE,
+  payload: title,
+})

@@ -89,7 +89,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function BuzzConfirmModal(props) {
-  const { show, onHide, updateBuzzThreads, buzzThreads, setBuzzModalStatus } = props
+  const { show, onHide, updateBuzzThreads, buzzThreads, setBuzzModalStatus, setContent } = props
   const classes = useStyles()
 
   const handleOnHide = () => {
@@ -100,6 +100,7 @@ function BuzzConfirmModal(props) {
 
   const onCancel = () => {
     onHide()
+    setContent('')
   }
 
   return (

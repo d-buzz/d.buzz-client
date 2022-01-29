@@ -66,7 +66,7 @@ const night = {
     background: 'rgb(56, 68, 77)',
   },
   textArea: {
-    backgroundColor: 'rgb(21, 32, 43)',
+    // backgroundColor: 'rgb(21, 32, 43)',
     color: 'white',
     borderBottom: '1px solid rgb(56, 68, 77)',
     '&::placeholder': {
@@ -232,7 +232,7 @@ const light = {
     background: '#e6ecf0',
   },
   textArea: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     color: 'black',
     borderBottom: '1px solid #e6ecf0',
     '&::placeholder': {
@@ -407,7 +407,7 @@ const gray = {
     background: 'rgb(56, 68, 77)',
   },
   textArea: {
-    backgroundColor: '#202225',
+    // backgroundColor: '#202225',
     color: 'white',
     borderBottom: '1px solid rgb(56, 68, 77)',
     '&::placeholder': {
