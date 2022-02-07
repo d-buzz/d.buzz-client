@@ -244,9 +244,9 @@ export const UPLOAD_FILE_REQUEST = 'UPLOAD_FILE_REQUEST'
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS'
 export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE'
 
-export const uploadFileRequest = (file) => ({
+export const uploadFileRequest = (file, progress) => ({
   type: UPLOAD_FILE_REQUEST,
-  payload: { file },
+  payload: { file, progress },
   meta: {
     thunk: true,
   },
@@ -268,9 +268,9 @@ export const UPLOAD_VIDEO_REQUEST = 'UPLOAD_VIDEO_REQUEST'
 export const UPLOAD_VIDEO_SUCCESS = 'UPLOAD_VIDEO_SUCCESS'
 export const UPLOAD_VIDEO_FAILURE = 'UPLOAD_VIDEO_FAILURE'
 
-export const uploadVideoRequest = (video) => ({
+export const uploadVideoRequest = (video, progress) => ({
   type: UPLOAD_VIDEO_REQUEST,
-  payload: { video },
+  payload: { video, progress },
   meta: {
     thunk: true,
   },

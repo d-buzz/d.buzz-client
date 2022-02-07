@@ -25,6 +25,7 @@
     "moment": "^2.27.0",
     "npm-text-parser": "^1.0.8",
     "query-string": "^6.13.1",
+    "rc-resize-observer": "^1.2.0",
     "react": "^16.13.1",
     "react-app-polyfill": "^2.0.0",
     "react-bootstrap": "^1.1.1",
