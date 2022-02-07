@@ -13,6 +13,7 @@ import {
   SET_ACCOUNT_LIST,
   SET_HIDDEN_BUZZES,
   SET_CENSOR_LIST,
+  SET_HAS_QR_CODE,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -27,6 +28,7 @@ const defaultState = fromJS({
   accounts: [],
   hiddenBuzzes: [],
   censorList: [],
+  hasQRCode: {}
 })
 
 export const auth = (state = defaultState, { type, payload }) => {
@@ -59,6 +61,8 @@ export const auth = (state = defaultState, { type, payload }) => {
     return state.set('hiddenBuzzes', payload)
   case SET_CENSOR_LIST:
     return state.set('censorList', payload)
+  case SET_HAS_QR_CODE:
+    return state.set('hasQRCode', payload)
   default:
     return state
   }
