@@ -1253,7 +1253,7 @@ export const checkIfImage = (links) => {
   })
 }
 
-export const uploadIpfsImage = async(data) => {
+export const uploadIpfsImage = async(data, progress) => {
   const formData = new FormData()
   formData.append('image', data)
   return new Promise(async(resolve, reject) => {
@@ -1263,6 +1263,11 @@ export const uploadIpfsImage = async(data) => {
       key: 'image',
       headers: {'Content-Type': 'multipart/form-data' },
       data: formData,
+      onUploadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent
+        const percent = Math.floor( (loaded * 100) / total )
+        progress(percent)
+      },
     }).then(async(result) => {
       const data = result.data
       resolve(data)
@@ -1273,7 +1278,7 @@ export const uploadIpfsImage = async(data) => {
   })
 }
 
-export const uploadVideo = async(data, username) => {
+export const uploadVideo = async(data, username, progress) => {
   const formData = new FormData()
   formData.append('username', username)
   formData.append('video', data)
@@ -1284,6 +1289,11 @@ export const uploadVideo = async(data, username) => {
       key: 'video',
       headers: {'Content-Type': 'multipart/form-data' },
       data: formData,
+      onUploadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent
+        const percent = Math.floor( (loaded * 100) / total )
+        progress(percent)
+      },
     }).then(async(result) => {
       const data = result.data
       resolve(data)

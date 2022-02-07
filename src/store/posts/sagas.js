@@ -374,11 +374,11 @@ function* fileUploadRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
     const { is_authenticated } = user
-    const { file } = payload
+    const { file, progress } = payload
 
     if(is_authenticated) {
 
-      const result = yield call(uploadIpfsImage, file)
+      const result = yield call(uploadIpfsImage, file, progress)
 
       let images = []
 
@@ -403,11 +403,11 @@ function* videoUploadRequest(payload, meta) {
   try {
     const user = yield select(state => state.auth.get('user'))
     const { is_authenticated } = user
-    const { video } = payload
+    const { video, progress } = payload
 
     if(is_authenticated) {
 
-      const result = yield call(uploadVideo, video, user.username)
+      const result = yield call(uploadVideo, video, user.username, progress)
       
       const ipfsHash = result.hashV0
 
