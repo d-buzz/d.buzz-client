@@ -34,7 +34,7 @@ const useStyles = createUseStyles(theme => ({
     cursor: 'pointer',
     '& hover': {
       cursor: 'pointer',
-    }
+    },
   },
   label: {
     fontFamily: 'Segoe-Bold',
@@ -124,13 +124,13 @@ const LoginModal = (props) => {
   const [qrCode, setQRCode] = useState(null)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [seconds, setSeconds] = useState(100);
+  const [seconds, setSeconds] = useState(100)
   
   useEffect(() => {
     if (seconds > 0) {
       const intervalId = setInterval(() => {
-        setSeconds(seconds - 1);
-      }, 1000);
+        setSeconds(seconds - 1)
+      }, 1000)
       return () => clearInterval(intervalId)
     } else {
       handleClickBack()
@@ -186,36 +186,36 @@ const LoginModal = (props) => {
   const handleClickLogin = () => {
     setLoading(true)
     authenticateUserRequest(username, password, useKeychain, useHAS)
-    .then(({ is_authenticated }) => {
-      if (useHAS) {
-        setTimeout(() => {
-          setLoading(false)
-          const rawQR = localStorage.getItem('hasQRcode')
-          setQRCode(rawQR)
-          if (!is_authenticated) {
-            setHasAuthenticationError(true)
+      .then(({ is_authenticated }) => {
+        if (useHAS) {
+          setTimeout(() => {
             setLoading(false)
-          } else {
+            const rawQR = localStorage.getItem('hasQRcode')
+            setQRCode(rawQR)
+            if (!is_authenticated) {
+              setHasAuthenticationError(true)
+              setLoading(false)
+            } else {
             // if (fromIntentBuzz && buzzIntentCallback) {
             //   buzzIntentCallback()
             //   setLoading(false)
             // }
+              onHide()
+            }
+          }, 1000)
+        } else if (!useHAS) {
+          if (!is_authenticated) {
+            setHasAuthenticationError(true)
+            setLoading(false)
+          } else {
+            if (fromIntentBuzz && buzzIntentCallback) {
+              buzzIntentCallback()
+              setLoading(false)
+            }
             onHide()
           }
-        }, 1000)
-      } else if (!useHAS) {
-        if (!is_authenticated) {
-          setHasAuthenticationError(true)
-          setLoading(false)
-        } else {
-          if (fromIntentBuzz && buzzIntentCallback) {
-            buzzIntentCallback()
-            setLoading(false)
-          }
-          onHide()
         }
-      }
-    })
+      })
       
     // setTimeout(() => {
     //   setHasAuthenticationError(true)
@@ -426,24 +426,24 @@ const LoginModal = (props) => {
                     size="120"
                   />
                 
-                <br />
-                <br />
-            <h1>{seconds}</h1>
-                <ProgressBar animated now={seconds} />
+                  <br />
+                  <br />
+                  <h1>{seconds}</h1>
+                  <ProgressBar animated now={seconds} />
 
-                {!loading && (
-                  <ContainedButton
-                  onClick={handleClickBack}
-                  transparent={true}
-                  className={classes.loginButton}
-                  fontSize={15}
-                  label="Go Back"
-                />
-                )}
+                  {!loading && (
+                    <ContainedButton
+                      onClick={handleClickBack}
+                      transparent={true}
+                      className={classes.loginButton}
+                      fontSize={15}
+                      label="Go Back"
+                    />
+                  )}
 
-                {loading && (
-                  <Spinner size={40} loading={true} />
-                )}
+                  {loading && (
+                    <Spinner size={40} loading={true} />
+                  )}
                 </center>
               </div>
             </React.Fragment>

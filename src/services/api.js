@@ -27,7 +27,7 @@ const censorUrl = `${appConfig.CENSOR_API}`
 const APP_META = {
   name: config.APP_NAME,
   description: config.APP_DESCRIPTION,
-  icon: config.APP_ICON
+  icon: config.APP_ICON,
 }
 
 
@@ -679,7 +679,7 @@ export const hasMessageReciever = () => {
     
     /** recieved authentication msg */
     if (m.type === 'authentication') {
-      console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m);
+      console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m)
 
       /** Authentication approved */
       if (m.msg?.status === "authentified") {
@@ -705,7 +705,7 @@ export const hasMessageReciever = () => {
         // window.alert(`${ m.msg.data?.challenge }`);
 
         /** Force update DOM for Keychain extension */
-        this.ref.detectChanges();
+        this.ref.detectChanges()
 
       /** Authentication error */
       } else {
@@ -714,7 +714,7 @@ export const hasMessageReciever = () => {
         // window.alert(`${ m.error?.msg }`);
 
         /** Force update DOM for Keychain extension */
-        this.ref.detectChanges();
+        this.ref.detectChanges()
       }
     }
   

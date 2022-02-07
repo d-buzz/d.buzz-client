@@ -58,14 +58,14 @@ export const SET_WS_NODE_HAS = 'SET_WS_NODE_HAS'
 export const getWSNodeHAS = () => ({
   type: GET_WS_NODE_HAS,
   meta: {
-    thunk: true
-  }
+    thunk: true,
+  },
 })
 
 export const setWSNodeHAS = (response, meta) => ({
   type: SET_WS_NODE_HAS,
   payload: response,
-  meta
+  meta,
 })
 
 export const GET_BEST_RPC_NODE = 'GET_BEST_RPC_NODE'

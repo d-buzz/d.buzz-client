@@ -28,7 +28,7 @@ const defaultState = fromJS({
   accounts: [],
   hiddenBuzzes: [],
   censorList: [],
-  hasQRCode: {}
+  hasQRCode: {},
 })
 
 export const auth = (state = defaultState, { type, payload }) => {

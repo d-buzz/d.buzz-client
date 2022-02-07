@@ -52,27 +52,27 @@ export const INIT_WS_HAS_CONNECTION_FAILURE = 'INIT_WS_HAS_CONNECTION_FAILURE'
 export const initWSHASConnectionRequest = () => ({
   type: INIT_WS_HAS_CONNECTION_REQUEST,
   meta: {
-    thunk: true
-  }
+    thunk: true,
+  },
 })
 
 export const initWSHASConnectionSuccess = (response, meta) => ({
   type: INIT_WS_HAS_CONNECTION_SUCCESS,
   payload: response,
-  meta
+  meta,
 })
 
 export const initWSHASConnectionFailure = (error, meta) => ({
   type: INIT_WS_HAS_CONNECTION_FAILURE,
   payload: error,
-  meta
+  meta,
 })
 
 export const SET_HAS_QR_CODE = 'SET_HAS_QR_CODE'
 
 export const setHASQRCode = (qrCode) => ({
   type: SET_HAS_QR_CODE,
-  payload: qrCode
+  payload: qrCode,
 })
 
 
@@ -96,7 +96,7 @@ export const getSavedUserSuccess = (response, meta) => ({
 export const getSavedUserFailure = (error, meta) => ({
   type: GET_SAVED_USER_FAILURE,
   payload: error,
-  meta
+  meta,
 })
 
 export const SUBSCRIBE_REQUEST = 'SUBSCRIBE_REQUEST'

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
-import { getSavedUserRequest, initWSHASConnectionRequest, } from 'store/auth/actions'
+import { getSavedUserRequest, initWSHASConnectionRequest } from 'store/auth/actions'
 import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest, getWSNodeHAS } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'

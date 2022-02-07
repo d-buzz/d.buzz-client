@@ -144,7 +144,7 @@ function* authenticateUserRequest(payload, meta) {
         /** recieved authentication msg */
         if (m.type === 'authentication')  {
           
-          console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m);
+          console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m)
           
           /** Authentication approved */
           if (m.msg?.status === "authentified") {
@@ -190,7 +190,7 @@ function* authenticateUserRequest(payload, meta) {
             // window.alert(`${ m.msg.data?.challenge }`);
     
             /** Force update DOM for Keychain extension */
-            this.ref.detectChanges();
+            this.ref.detectChanges()
     
           /** Authentication error */
           } else {
@@ -199,7 +199,7 @@ function* authenticateUserRequest(payload, meta) {
             // window.alert(`${ m.error?.msg }`);
     
             /** Force update DOM for Keychain extension */
-            this.ref.detectChanges();
+            this.ref.detectChanges()
           }
         }
       })
