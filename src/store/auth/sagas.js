@@ -67,6 +67,11 @@ import {
   UNFOLLOW_BLACKLISTS_REQUEST,
   unfollowBlacklistsSuccess,
   unfollowBlacklistsFailure,
+
+  INIT_WS_HAS_CONNECTION_REQUEST,
+  initWSHASConnectionSuccess,
+  initWSHASConnectionFailure,
+
 } from './actions'
 
 import {
@@ -88,17 +93,20 @@ import {
   generateUnblacklistOperation,
   generateFollowBlacklistsOperation,
   generateUnfollowBlacklistsOperation,
+  hiveAuthenticationService,
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer } from 'services/helper'
+import { HiveAuthClient, hacMsg } from "@mintrawa/hive-auth-client"
 
 
 function* authenticateUserRequest(payload, meta) {
-  const { password, useKeychain } = payload
+  const { password, useKeychain, useHAS } = payload
   let { username } = payload
   username = `${username}`.toLowerCase()
 
-  const user = { username, useKeychain, is_authenticated: false, is_subscribe: false }
+
+  const user = { username, useKeychain, useHAS, is_authenticated: false, is_subscribe: false }
 
   let users = yield call([localStorage, localStorage.getItem], 'user')
   let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
@@ -123,6 +131,78 @@ function* authenticateUserRequest(payload, meta) {
       if(data.success) {
         user.is_authenticated = true
       }
+    } else if(useHAS) {
+      yield call(hiveAuthenticationService, username)
+      
+      hacMsg.subscribe((m) => {
+        /** generate QR Code */
+        if (m.type === 'qr_code') {
+          const hasQRCode = "has://auth_req/" + (m).msg
+          localStorage.setItem('hasQRcode', hasQRCode)
+        }
+
+        /** recieved authentication msg */
+        if (m.type === 'authentication')  {
+          
+          console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m);
+          
+          /** Authentication approved */
+          if (m.msg?.status === "authentified") {
+            user.is_authenticated = true
+
+            const is_subscribe = getCommunityRole(username)
+            user.is_subscribe = is_subscribe
+            user.active = true
+
+            // let mutelist = fetchMuteList(username)
+
+            // mutelist = [...new Set(mutelist.map(item => item.following))]
+
+            // setMuteList(mutelist)
+
+            const session = generateSession(user)
+            console.log('sessiong', session)
+
+            const accountIndex = accounts.findIndex(item => item.username === username)
+
+            if(accountIndex === -1) {
+              accounts.push({ username, keychain: useKeychain, has: useHAS })
+            } else {
+              accounts[accountIndex].keychain = useKeychain
+            }
+
+            users.push(session)
+
+            localStorage.clear()
+            localStorage.setItem('user', JSON.stringify(users))
+            localStorage.setItem('active', username)
+            localStorage.setItem('accounts', JSON.stringify(accounts))
+            setAccountList(accounts)
+
+            window.location.reload()
+        
+            authenticateUserSuccess(user, meta)
+    
+          /** Authentication rejected */
+          } else if (m.msg?.status === "rejected") {
+            // this.loader = false;
+            // this.qrHAS = undefined;
+            // window.alert(`${ m.msg.data?.challenge }`);
+    
+            /** Force update DOM for Keychain extension */
+            this.ref.detectChanges();
+    
+          /** Authentication error */
+          } else {
+            // this.loader = false;
+            // this.qrHAS = undefined;
+            // window.alert(`${ m.error?.msg }`);
+    
+            /** Force update DOM for Keychain extension */
+            this.ref.detectChanges();
+          }
+        }
+      })
     } else {
 
       let profile = yield call(fetchProfile, [username])
@@ -161,7 +241,7 @@ function* authenticateUserRequest(payload, meta) {
       const accountIndex = accounts.findIndex(item => item.username === username)
 
       if(accountIndex === -1) {
-        accounts.push({ username, keychain: useKeychain })
+        accounts.push({ username, keychain: useKeychain, has: useHAS })
       } else {
         accounts[accountIndex].keychain = useKeychain
       }
@@ -186,7 +266,7 @@ function* authenticateUserRequest(payload, meta) {
 }
 
 function* getSavedUserRequest(meta) {
-  let user = { username: '', useKeychain: false, is_authenticated: false }
+  let user = { username: '', useKeychain: false, useHAS: false, is_authenticated: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     let active = yield call([localStorage, localStorage.getItem], 'active')
@@ -244,6 +324,20 @@ function* getSavedUserRequest(meta) {
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
     yield put(getSavedUserFailure(user, meta))
+  }
+}
+
+function* initWSHASConnectionRequest(meta) {
+  try {
+    let hasServer = localStorage.getItem('websocketHAS')
+    hasServer = hasServer.split()
+    
+    /** Initialize the HIVE auth client */
+    const result  = HiveAuthClient(hasServer, { debug: true, delay: 200 })
+    yield put(initWSHASConnectionSuccess(result, meta))
+    
+  } catch(error) {
+    yield put(initWSHASConnectionFailure(error, meta))
   }
 }
 
@@ -596,6 +690,10 @@ function* watchGetSavedUserRequest({ meta }) {
   yield call(getSavedUserRequest, meta)
 }
 
+function* watchInitWSHASConnectionRequest({ meta }) {
+  yield call(initWSHASConnectionRequest, meta)
+}
+
 function* watchSubscribeRequest({ meta }) {
   yield call(subscribeRequest, meta)
 }
@@ -648,6 +746,7 @@ export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
+  yield takeEvery(INIT_WS_HAS_CONNECTION_REQUEST, watchInitWSHASConnectionRequest)
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)
   yield takeEvery(MUTE_USER_REQUEST, watchMuteUserRequest)
