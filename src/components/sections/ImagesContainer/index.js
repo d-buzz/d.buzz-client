@@ -11,13 +11,15 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     margin: '15px 0',
-    width: '100%',
     height: '185px',
     padding: 10,
-    borderRadius: 15,
     background: theme.context.view.backgroundColor,
-    border: '1px solid lightgray',
+    border: `2px solid ${theme.context.view.backgroundColor}`,
+    borderRadius: 8,
     overflow: 'hidden',
+    width: props => props.showBuzzTitle ? 'calc(100% - 58px)' : '100%',
+    float: 'right',
+    transition: 'all 250ms',
 
     '& .images': {
       display: 'flex',
@@ -36,7 +38,7 @@ const useStyles = createUseStyles(theme => ({
       },
     },
     
-    '& .image': {
+    '& .media': {
       position: 'relative',
       transition: 'all 250ms',
       cursor: 'pointer',
@@ -74,14 +76,21 @@ const useStyles = createUseStyles(theme => ({
         objectFit: 'cover',
         borderRadius: '8px',
         opacity: '1 !important',
-
+      },
+      '& video': {
+        height: '150px !important',
+        width: '150px !important',
+        objectFit: 'cover',
+        borderRadius: '8px',
+        opacity: '1 !important',
       },
     },
   },
 }))
 
 const ImagesContainer = (props) => {
-  const classes = useStyles()
+  const showBuzzTitle = props.showBuzzTitle
+  const classes = useStyles({showBuzzTitle})
 
   const { buzzId, buzzImages, updateBuzzThreads, buzzThreads, viewFullImage } = props
 
@@ -118,11 +127,15 @@ const ImagesContainer = (props) => {
     <div className={classes.imagesContainer}>
       <span className='images'>
         {buzzImages.map(image => ( 
-          <div className="image">
-            <img key={image} src={image} alt={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
-            <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
-          </div>
-        ))}
+          !image.endsWith('?dbuzz_video') ?
+            <div className="media">
+              <img key={image} src={image} alt={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
+            </div> :
+            <div className="media">
+              <video key={image} src={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
+            </div>))}
       </span>
     </div>
   )

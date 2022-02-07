@@ -21,6 +21,7 @@ import config from 'config'
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
+const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 
 const APP_META = {
@@ -1324,10 +1325,9 @@ export const checkIfImage = (links) => {
   })
 }
 
-export const uploadIpfsImage = async(data) => {
+export const uploadIpfsImage = async(data, progress) => {
   const formData = new FormData()
   formData.append('image', data)
-
   return new Promise(async(resolve, reject) => {
     axios({
       method: 'POST',
@@ -1335,6 +1335,37 @@ export const uploadIpfsImage = async(data) => {
       key: 'image',
       headers: {'Content-Type': 'multipart/form-data' },
       data: formData,
+      onUploadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent
+        const percent = Math.floor( (loaded * 100) / total )
+        progress(percent)
+      },
+    }).then(async(result) => {
+      const data = result.data
+      resolve(data)
+
+    }).catch((error) => {
+      reject(error)
+    })
+  })
+}
+
+export const uploadVideo = async(data, username, progress) => {
+  const formData = new FormData()
+  formData.append('username', username)
+  formData.append('video', data)
+  return new Promise(async(resolve, reject) => {
+    axios({
+      method: 'POST',
+      url: `${videoUrl}/upload`,
+      key: 'video',
+      headers: {'Content-Type': 'multipart/form-data' },
+      data: formData,
+      onUploadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent
+        const percent = Math.floor( (loaded * 100) / total )
+        progress(percent)
+      },
     }).then(async(result) => {
       const data = result.data
       resolve(data)

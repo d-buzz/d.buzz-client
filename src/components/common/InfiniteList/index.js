@@ -11,6 +11,7 @@ import { PostList, PostlistSkeleton } from 'components'
 import { clearScrollIndex } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import ResizeObserver from 'rc-resize-observer'
 
 class InfiniteList extends PureComponent {
   constructor() {
@@ -62,33 +63,37 @@ class InfiniteList extends PureComponent {
           columnIndex={0}
           rowIndex={index}
         >
-          <div style={style}>
-            <PostList
-              disableOpacity={disableOpacity}
-              displayTitle={title}
-              title={items[index].title}
-              unguardedLinks={unguardedLinks}
-              profileRef="home"
-              active_votes={items[index].active_votes}
-              author={items[index].author}
-              permlink={items[index].permlink}
-              created={items[index].created}
-              body={items[index].body}
-              upvotes={items[index].active_votes.length}
-              upvoteList={items[index].active_votes}
-              replyCount={items[index].children}
-              meta={items[index].json_metadata}
-              payout={items[index].payout}
-              total_payout_value={items[index].total_payout_value}
-              pending_payout_value={items[index].pending_payout_value}
-              max_accepted_payout={items[index].max_accepted_payout}
-              payoutAt={items[index].payout_at}
-              cashout_time={items[index].cashout_time}
-              scrollIndex={index}
-              recomputeRowIndex={recomputeRowIndex}
-              muteTrigger={muteTrigger}
-            />
-          </div>
+          {({measure}) => (
+            <ResizeObserver onResize={measure}>
+              <div style={style}>
+                <PostList
+                  disableOpacity={disableOpacity}
+                  displayTitle={title}
+                  title={items[index].title}
+                  unguardedLinks={unguardedLinks}
+                  profileRef="home"
+                  active_votes={items[index].active_votes}
+                  author={items[index].author}
+                  permlink={items[index].permlink}
+                  created={items[index].created}
+                  body={items[index].body}
+                  upvotes={items[index].active_votes.length}
+                  upvoteList={items[index].active_votes}
+                  replyCount={items[index].children}
+                  meta={items[index].json_metadata}
+                  payout={items[index].payout}
+                  total_payout_value={items[index].total_payout_value}
+                  pending_payout_value={items[index].pending_payout_value}
+                  max_accepted_payout={items[index].max_accepted_payout}
+                  payoutAt={items[index].payout_at}
+                  cashout_time={items[index].cashout_time}
+                  scrollIndex={index}
+                  recomputeRowIndex={recomputeRowIndex}
+                  muteTrigger={muteTrigger}
+                />
+              </div>
+            </ResizeObserver>
+          )}
         </CellMeasurer>
       )
     }

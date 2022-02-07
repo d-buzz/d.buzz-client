@@ -360,7 +360,7 @@ const PostActions = (props) => {
 
   const getPayoutDate = (date) => {
     const semantic =  moment(`${date}Z`).local().fromNow()
-    return semantic !== '51 years ago' ? semantic : ''
+    return semantic !== '52 years ago' ? semantic : ''
   }
 
   const openMenu = (e) => {

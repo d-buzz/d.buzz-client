@@ -34,6 +34,10 @@ import {
   UPLOAD_FILE_REQUEST,
   uploadFileSuccess,
   uploadFileError,
+  
+  UPLOAD_VIDEO_REQUEST,
+  uploadVideoSuccess,
+  uploadVideoError,
 
   PUBLISH_POST_REQUEST,
   publishPostSuccess,
@@ -104,6 +108,7 @@ import {
   generateUpdateOperation,
   invokeMuteFilter,
   getMutePattern,
+  uploadVideo,
 } from 'services/api'
 import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
@@ -369,11 +374,11 @@ function* fileUploadRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
     const { is_authenticated } = user
-    const { file } = payload
+    const { file, progress } = payload
 
     if(is_authenticated) {
 
-      const result = yield call(uploadIpfsImage, file)
+      const result = yield call(uploadIpfsImage, file, progress)
 
       let images = []
 
@@ -391,6 +396,27 @@ function* fileUploadRequest(payload, meta) {
     }
   } catch (error) {
     yield put(uploadFileError(error, meta))
+  }
+}
+
+function* videoUploadRequest(payload, meta) {
+  try {
+    const user = yield select(state => state.auth.get('user'))
+    const { is_authenticated } = user
+    const { video, progress } = payload
+
+    if(is_authenticated) {
+
+      const result = yield call(uploadVideo, video, user.username, progress)
+      
+      const ipfsHash = result.hashV0
+
+      yield put(uploadVideoSuccess(ipfsHash, meta))
+    } else {
+      yield put(uploadVideoError('authentication required', meta))
+    }
+  } catch (error) {
+    yield put(uploadVideoError(error, meta))
   }
 }
 
@@ -801,6 +827,10 @@ function* watchUploadFileUploadRequest({ payload, meta }) {
   yield call(fileUploadRequest, payload, meta)
 }
 
+function* watchUploadVideoRequest({ payload, meta }) {
+  yield call(videoUploadRequest, payload, meta)
+}
+
 function* watchPublishPostRequest({ payload, meta }) {
   yield call(publishPostRequest, payload, meta)
 }
@@ -847,6 +877,7 @@ export default function* sagas() {
   yield takeEvery(GET_TRENDING_TAGS_REQUEST, watchGetTrendingTagsRequest)
   yield takeEvery(UPVOTE_REQUEST, watchUpvoteRequest)
   yield takeEvery(UPLOAD_FILE_REQUEST, watchUploadFileUploadRequest)
+  yield takeEvery(UPLOAD_VIDEO_REQUEST, watchUploadVideoRequest)
   yield takeEvery(PUBLISH_POST_REQUEST, watchPublishPostRequest)
   yield takeEvery(PUBLISH_REPLY_REQUEST, watchPublishReplyRequest)
   yield takeEvery(GET_SEARCH_TAG_REQUEST, watchGetSearchTags)

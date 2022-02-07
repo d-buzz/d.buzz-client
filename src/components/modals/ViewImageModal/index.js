@@ -34,6 +34,11 @@ const useStyles = createUseStyles(theme => ({
       maxWidth: '100%',
       borderRadius: 15,
     },
+    '& video': {
+      maxHeight: '80%',
+      maxWidth: '100%',
+      borderRadius: 15,
+    },
   },
   closeImageButton: {
     marginTop: '-20px !important',
@@ -59,7 +64,7 @@ const ViewImageModal = (props) => {
       >
         <ModalBody>
           <div className={classes.imageModal}>
-            {imageUrl ? <img src={imageUrl} alt='modal_image' /> : null}
+            {imageUrl ? !imageUrl.endsWith('?dbuzz_video') ? <img src={imageUrl} alt='modal_image' /> : <video src={imageUrl} controls/> : null}
             <IconButton className={classes.closeImageButton} onClick={() => onHide('')}>
               <CloseIcon />
             </IconButton>

@@ -38,6 +38,7 @@ import {
   SAVE_RECENT_UPVOTES,
   SAVE_POST_AS_DRAFT,
   BUZZ_THREADS,
+  BUZZ_TITLE,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -152,6 +153,8 @@ export const posts = (state = defaultState, { type, payload }) => {
     return state.set('draftPost', payload)
   case BUZZ_THREADS:
     return state.set('buzzThreads', payload)
+  case BUZZ_TITLE:
+    return state.set('buzzTitle', payload)
   default:
     return state
   }
