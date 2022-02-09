@@ -10,13 +10,16 @@ import {
 import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
+import HttpsRedirect from 'react-https-redirect'
 
 initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      <App />
+      <HttpsRedirect>
+        <App />
+      </HttpsRedirect>
     </Router>
   </Provider>,
   document.getElementById('root'),

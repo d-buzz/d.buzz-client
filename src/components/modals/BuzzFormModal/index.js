@@ -71,7 +71,6 @@ const BuzzFormModal = (props) => {
   const onHideConfirmModal = () => {
     setBuzzConfirmModalStatus(false)
     setOpen(false)
-    console.log(setContent)
   }
 
   const handleSaveDraftsModalOpen = () => {
@@ -127,7 +126,7 @@ const BuzzFormModal = (props) => {
           <div className={classes.draftsContainer}>
             <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
           </div>}
-          <CreateBuzzForm modal={true} hideModalCallback={onHide} />
+          <CreateBuzzForm modal={true} hideModalCallback={onHide} buzzThreads={buzzThreads}/>
         </ModalBody>
       </Modal>
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />

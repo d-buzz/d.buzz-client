@@ -666,6 +666,18 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 5,
     marginRight: 15,
   },
+  preparingVideo: {
+    margin: '25px auto',
+    width: 'fit-content',
+    color: theme.font.color,
+    fontSize: '1.2em',
+    fontWeight: 600,
+    textAlign: 'center',
+    padding: '5px 25px',
+    borderRadius: 50,
+    backgroundColor: theme.context.view.backgroundColor,
+    animation: 'showFade infinite 1.5s',
+  },
 }))
 
 
@@ -738,10 +750,11 @@ const CreateBuzzForm = (props) => {
   const [showBuzzTitle, setShowBuzzTitle] = useState(true)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
-  const [videoUploading, setVideoUploading] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
+  const [videoUploading, setVideoUploading] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
   const [videoUploadProgress, setVideoUploadProgress] = useState(0)
+  const [videoLimit, setVideoLimit] = useState(false)
   
   
   // buzz states
@@ -1354,6 +1367,7 @@ const CreateBuzzForm = (props) => {
         if(duration <= 60 && file.size <= 150000000) {
           uploadVideoRequest(file, setVideoUploadProgress).then(video => {
             setVideoUploading(false)
+            setVideoLimit(true)
             createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `https://ipfs.io/ipfs/${video}?dbuzz_video`])
           })
         } else {
@@ -1494,16 +1508,18 @@ const CreateBuzzForm = (props) => {
             )}
             {videoUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
-                <div className={classes.uploadProgressBar}>
-                  <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={videoUploadProgress} />
-                  <span className='progressPercent' style={{color: 'white'}}>{videoUploadProgress}%</span>
-                </div>
+                {videoUploadProgress !== 100 ?
+                  <div className={classes.uploadProgressBar}>
+                    <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={videoUploadProgress} />
+                    <span className='progressPercent' style={{color: 'white'}}>{videoUploadProgress}%</span>
+                  </div> :
+                  <div className={classes.preparingVideo}>Preparing Video</div>}
               </div>
             )}
 
             {/* IMAGES ROW */}
             {buzzThreads && buzzThreads[currentBuzz]?.images?.length >= 1 && (
-              <ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} showBuzzTitle={showBuzzTitle}/>
+              <ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} showBuzzTitle={showBuzzTitle} setVideoLimit={setVideoLimit}/>
             )}
 
             {!publishing && (
@@ -1543,7 +1559,7 @@ const CreateBuzzForm = (props) => {
                     hidden
                   />
                   <Tooltip title="Video" placement='top-start'>
-                    <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached || videoUploading || imageUploading} classes={{ disabled: classes.disabled }}>
+                    <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached || videoUploading || imageUploading || videoLimit} classes={{ disabled: classes.disabled }}>
                       <VideoUploadIcon />
                     </IconButton>
                   </Tooltip>
@@ -1679,7 +1695,7 @@ const CreateBuzzForm = (props) => {
         show={openPayoutDisclaimer}
         onHide={closePayoutDisclaimer}
       />
-      <BuzzFormModal show={open} onHide={onHide} setContent={setContent} />
+      <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
