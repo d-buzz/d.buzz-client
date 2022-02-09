@@ -112,6 +112,18 @@ a[rel="nofollow noopener"]::after {
   margin: 0px 1px 0px 1px;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 /* Animations */
 @keyframes savedAsDraftAnimation {
   from {
@@ -146,6 +158,10 @@ a[rel="nofollow noopener"]::after {
   from {
     opacity: 0;
     transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -202,5 +218,18 @@ a[rel="nofollow noopener"]::after {
   }
   100% {
     box-shadow: none;
+  }
+}
+
+@keyframes showFade {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.98)
+  }
+  100% {
+    opacity: 1;
   }
 }

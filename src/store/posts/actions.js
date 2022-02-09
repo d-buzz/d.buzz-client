@@ -244,9 +244,9 @@ export const UPLOAD_FILE_REQUEST = 'UPLOAD_FILE_REQUEST'
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS'
 export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE'
 
-export const uploadFileRequest = (file) => ({
+export const uploadFileRequest = (file, progress) => ({
   type: UPLOAD_FILE_REQUEST,
-  payload: { file },
+  payload: { file, progress },
   meta: {
     thunk: true,
   },
@@ -260,6 +260,30 @@ export const uploadFileSuccess = (response, meta) => ({
 
 export const uploadFileError = (error, meta) => ({
   type: UPLOAD_FILE_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const UPLOAD_VIDEO_REQUEST = 'UPLOAD_VIDEO_REQUEST'
+export const UPLOAD_VIDEO_SUCCESS = 'UPLOAD_VIDEO_SUCCESS'
+export const UPLOAD_VIDEO_FAILURE = 'UPLOAD_VIDEO_FAILURE'
+
+export const uploadVideoRequest = (video, progress) => ({
+  type: UPLOAD_VIDEO_REQUEST,
+  payload: { video, progress },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const uploadVideoSuccess = (response, meta) => ({
+  type: UPLOAD_VIDEO_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const uploadVideoError = (error, meta) => ({
+  type: UPLOAD_VIDEO_FAILURE,
   payload: error,
   meta,
 })
@@ -598,5 +622,13 @@ export const BUZZ_THREADS = 'BUZZ_THREADS'
 
 export const updateBuzzThreads = (title) => ({
   type: BUZZ_THREADS,
+  payload: title,
+})
+
+// buzz title
+export const BUZZ_TITLE = 'BUZZ_TITLE'
+
+export const updateBuzzTitle = (title) => ({
+  type: BUZZ_TITLE,
   payload: title,
 })

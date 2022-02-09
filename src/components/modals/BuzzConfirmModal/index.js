@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
-import { updateBuzzThreads } from 'store/posts/actions'
+import { updateBuzzThreads, updateBuzzTitle } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { setBuzzModalStatus } from 'store/interface/actions'
@@ -89,17 +89,21 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function BuzzConfirmModal(props) {
-  const { show, onHide, updateBuzzThreads, buzzThreads, setBuzzModalStatus } = props
+  const { show, onHide, updateBuzzThreads, buzzThreads, setBuzzModalStatus, setContent, updateBuzzTitle } = props
   const classes = useStyles()
 
   const handleOnHide = () => {
     onHide()
     updateBuzzThreads({1: {id: 1, content: ''}})
     setBuzzModalStatus(false)
+    updateBuzzTitle('')
   }
 
   const onCancel = () => {
     onHide()
+    if(setContent) {
+      setContent('')
+    }
   }
 
   return (
@@ -136,6 +140,7 @@ const mapDispatchToProps = (dispatch) => ({
     {
       updateBuzzThreads,
       setBuzzModalStatus,
+      updateBuzzTitle,
     },dispatch),
 })
 
