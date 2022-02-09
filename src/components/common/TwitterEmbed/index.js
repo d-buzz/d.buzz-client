@@ -47,7 +47,7 @@ function TwitterEmbed(props) {
           width='100%'
           height='300'
           onLoad={showTweet}
-        >hi</iframe>
+        />
       </div>
     </React.Fragment>
   )

@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   field: {
-    fontSize: 15,
+    fontSize: 18,
     resize: 'none',
     width: '100%',
     '&:focus': {
@@ -13,6 +13,10 @@ const useStyles = createUseStyles(theme => ({
     border: 'none',
     paddingTop: 5,
     ...theme.textArea,
+    color: theme.font.color,
+    backgroundColor: 'transparent',
+    borderBottom: 'none',
+    transition: 'all 250ms',
   },
 }))
 

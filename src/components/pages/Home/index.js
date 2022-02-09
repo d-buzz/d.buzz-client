@@ -18,6 +18,7 @@ const Home = (props) => {
   const status = updates.status
   const eventsModalStatus = localStorage.getItem('eventsModal')
   const [eventsModal, setEventsModal] = useState(true)
+  const eventsModalActivated = false
   
   useEffect(() => {
     if(typeof params === 'object' && typeof params.ref !== 'undefined') {
@@ -45,7 +46,7 @@ const Home = (props) => {
       {is_authenticated && <Feeds />}
       {!is_authenticated && <Landing />}
       {is_authenticated && status && !updatesModalStatus && <WhatsNewModal show={open} onHide={handleOnWhatsNewModalHide}/>}
-      {is_authenticated && !open && !eventsModalStatus && eventsModal && <EventsModal show={!eventsModalStatus} onHide={handleOnEventsModalHide}/>}
+      {is_authenticated && !open && !eventsModalStatus && eventsModal && eventsModalActivated && <EventsModal show={!eventsModalStatus} onHide={handleOnEventsModalHide}/>}
     </div>
   )
 }
