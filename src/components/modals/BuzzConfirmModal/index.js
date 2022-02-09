@@ -101,7 +101,9 @@ function BuzzConfirmModal(props) {
 
   const onCancel = () => {
     onHide()
-    setContent('')
+    if(setContent) {
+      setContent('')
+    }
   }
 
   return (

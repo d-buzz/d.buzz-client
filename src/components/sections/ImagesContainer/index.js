@@ -92,7 +92,7 @@ const ImagesContainer = (props) => {
   const showBuzzTitle = props.showBuzzTitle
   const classes = useStyles({showBuzzTitle})
 
-  const { buzzId, buzzImages, updateBuzzThreads, buzzThreads, viewFullImage } = props
+  const { buzzId, buzzImages, updateBuzzThreads, buzzThreads, viewFullImage, setVideoLimit} = props
 
   const createThread = (count, content, images) => {
     const buzzData = {}
@@ -117,6 +117,7 @@ const ImagesContainer = (props) => {
       for(let i = 0; i < buzzThreads[buzzId]?.images?.length; i++) {
         if(buzzThreads[buzzId]?.images[i] === imageUrl){
           handleUpdateBuzz(buzzId, buzzThreads[buzzId]?.content, buzzThreads[buzzId]?.images.splice(i,1))
+          setVideoLimit(false)
         }
       }
     }

@@ -122,7 +122,7 @@ const LoginModal = (props) => {
     const { name, value } = target
 
     if (name === 'username') {
-      setUsername(value.replace(/[@!#$%^&*()+=/\\~`,;:"'_-\s]/gi, ''))
+      setUsername(value.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''))
     } else if (name === 'password') {
       setPassword(value.replace(/[\s]/gi, ''))
     }
