@@ -97,7 +97,8 @@ import {
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer } from 'services/helper'
-import { HiveAuthClient, hacMsg } from "@mintrawa/hive-auth-client"
+import { HiveAuthClient, hacMsg, hacGetAccounts } from "@mintrawa/hive-auth-client"
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 
 function* authenticateUserRequest(payload, meta) {
@@ -178,28 +179,20 @@ function* authenticateUserRequest(payload, meta) {
             localStorage.setItem('active', username)
             localStorage.setItem('accounts', JSON.stringify(accounts))
             setAccountList(accounts)
+     
+            const origin = window.location.origin
 
-            window.location.reload()
-        
+            window.location.href = origin + '#/latest' 
+
             authenticateUserSuccess(user, meta)
     
           /** Authentication rejected */
           } else if (m.msg?.status === "rejected") {
-            // this.loader = false;
-            // this.qrHAS = undefined;
-            // window.alert(`${ m.msg.data?.challenge }`);
-    
-            /** Force update DOM for Keychain extension */
-            this.ref.detectChanges()
+           window.location.reload()
     
           /** Authentication error */
           } else {
-            // this.loader = false;
-            // this.qrHAS = undefined;
-            // window.alert(`${ m.error?.msg }`);
-    
-            /** Force update DOM for Keychain extension */
-            this.ref.detectChanges()
+            window.location.reload()
           }
         }
       })
@@ -329,12 +322,46 @@ function* getSavedUserRequest(meta) {
 
 function* initWSHASConnectionRequest(meta) {
   try {
-    let hasServer = localStorage.getItem('websocketHAS')
-    hasServer = hasServer.split()
+    /** Initial Implementation for HAC */
+    // let hasServer = localStorage.getItem('websocketHAS')
+    // hasServer = hasServer.split()
     
-    /** Initialize the HIVE auth client */
-    const result  = HiveAuthClient(hasServer, { debug: true, delay: 200 })
-    yield put(initWSHASConnectionSuccess(result, meta))
+    // /** Initialize the HIVE auth client */
+    // const result  = HiveAuthClient(hasServer, { debug: true, delay: 200 })
+    // yield put(initWSHASConnectionSuccess(result, meta))
+
+
+    const fingerPrintRequest = FingerprintJS.load({ monitoring: false })
+
+
+    fingerPrintRequest.then(fingerPrint => fingerPrint.get())
+    .then(result => {
+      sessionStorage.setItem('hacPwd', result.visitorId)
+      const current = localStorage.getItem('active')
+
+      if (current) {
+        let hacAccount = hacGetAccounts(current, result.visitorId)
+        console.log('hacAccount',hacAccount[0])
+
+        if (hacAccount[0]) {
+          const has_expire = hacAccount[0].has?.has_expire
+          const expire = has_expire ? new Date(has_expire) : 1
+
+          console.log('expire', expire)
+
+          const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 5000 })
+          initWSHASConnectionSuccess(result, meta)
+          // window.location.href('')
+        } else {
+          const result = HiveAuthClient(undefined, { debug: true, delay: 500 })
+          initWSHASConnectionSuccess(result, meta)
+        }
+      } else {
+        const result = HiveAuthClient(undefined, { debug: true, delay: 500 })
+        initWSHASConnectionSuccess(result, meta)
+      }
+
+    }).catch( error => console.log(error))
     
   } catch(error) {
     yield put(initWSHASConnectionFailure(error, meta))
