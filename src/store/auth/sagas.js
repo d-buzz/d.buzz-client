@@ -173,8 +173,7 @@ function* authenticateUserRequest(payload, meta) {
             }
 
             users.push(session)
-
-            localStorage.clear()
+            localStorage.setItem('current', username)
             localStorage.setItem('user', JSON.stringify(users))
             localStorage.setItem('active', username)
             localStorage.setItem('accounts', JSON.stringify(accounts))
@@ -341,7 +340,6 @@ function* initWSHASConnectionRequest(meta) {
 
       if (current) {
         let hacAccount = hacGetAccounts(current, result.visitorId)
-        console.log('hacAccount',hacAccount[0])
 
         if (hacAccount[0]) {
           const has_expire = hacAccount[0].has?.has_expire
