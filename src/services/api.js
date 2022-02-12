@@ -15,7 +15,7 @@ import moment from 'moment'
 import { ChainTypes, makeBitMaskFilter } from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import { calculateOverhead } from 'services/helper'
-import { hacUserAuth, hacMsg } from "@mintrawa/hive-auth-client"
+import { hacUserAuth, hacVote } from "@mintrawa/hive-auth-client"
 import config from 'config'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
@@ -663,63 +663,17 @@ export const checkAccountIsFollowingLists = (observer) => {
 export const hiveAuthenticationService = (username) => {
   const challenge = JSON.stringify({ token: uuidv4() })
   const hacModule = "has"
-  const pwd = '520c5c9b-bd58-4253-850a-1fa591a2dabd'
+  const hacPwd = sessionStorage.getItem('hacPwd')
   
-  hacUserAuth(username, APP_META, pwd, {key_type: 'posting', value: challenge}, hacModule)
+  hacUserAuth(username, APP_META, hacPwd, {key_type: 'posting', value: challenge}, hacModule)
   
 }
 
-export const hasMessageReciever = () => {
-  hacMsg.subscribe((m) => {
-    /** generate QR Code */
-    if (m.type === 'qr_code') {
-      const hasQRCode = "has://auth_req/" + (m).msg
-      localStorage.setItem('hasQRcode', hasQRCode)
-    }
-    
-    /** recieved authentication msg */
-    if (m.type === 'authentication') {
-      console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m)
 
-      /** Authentication approved */
-      if (m.msg?.status === "authentified") {
-        // this.loader = false;
-        // this.qrHAS = undefined;
-        const fuckyou = 'fuckyou'
-        return fuckyou
-
-        // localStorage.setItem('current', this.username!);
-
-        /** emit username */
-        // this.appService.emitUserLogin(this.username!);
-
-        /** Navigate to operations page (use ngZone because of Keychain) */
-        // this.zone.run(()=> {
-        //   this.router.navigate(['/operations']);
-        // });
-
-      /** Authentication rejected */
-      } else if (m.msg?.status === "rejected") {
-        // this.loader = false;
-        // this.qrHAS = undefined;
-        // window.alert(`${ m.msg.data?.challenge }`);
-
-        /** Force update DOM for Keychain extension */
-        this.ref.detectChanges()
-
-      /** Authentication error */
-      } else {
-        // this.loader = false;
-        // this.qrHAS = undefined;
-        // window.alert(`${ m.error?.msg }`);
-
-        /** Force update DOM for Keychain extension */
-        this.ref.detectChanges()
-      }
-    }
-  
-  })
+export const hacUpvote = (author, permlink, weight) => {
+  hacVote(author, permlink, parseInt(weight))
 }
+
 
 // keychain apis
 
