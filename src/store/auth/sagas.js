@@ -173,6 +173,7 @@ function* authenticateUserRequest(payload, meta) {
             }
 
             users.push(session)
+            localStorage.removeItem('hasQRcode')
             localStorage.setItem('current', username)
             localStorage.setItem('user', JSON.stringify(users))
             localStorage.setItem('active', username)
@@ -321,17 +322,7 @@ function* getSavedUserRequest(meta) {
 
 function* initWSHASConnectionRequest(meta) {
   try {
-    /** Initial Implementation for HAC */
-    // let hasServer = localStorage.getItem('websocketHAS')
-    // hasServer = hasServer.split()
-    
-    // /** Initialize the HIVE auth client */
-    // const result  = HiveAuthClient(hasServer, { debug: true, delay: 200 })
-    // yield put(initWSHASConnectionSuccess(result, meta))
-
-
     const fingerPrintRequest = FingerprintJS.load({ monitoring: false })
-
 
     fingerPrintRequest.then(fingerPrint => fingerPrint.get())
     .then(result => {
@@ -368,8 +359,9 @@ function* initWSHASConnectionRequest(meta) {
 
 function* signoutUserRequest(meta) {
   try {
-    const user = { username: '', useKeychain: false, is_authenticated: false }
+    const user = { username: '', useKeychain: false, useHAS: false, is_authenticated: false }
 
+    yield call([localStorage, localStorage.setItem], 'hac', JSON.stringify([]))
     yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([]))
     yield call([localStorage, localStorage.setItem], 'active', null)
     yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify([]))
