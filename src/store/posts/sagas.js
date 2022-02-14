@@ -114,6 +114,7 @@ import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
+import { hacMsg, hacVote } from "@mintrawa/hive-auth-client"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -331,20 +332,54 @@ function* getLatestPostsRequest(payload, meta) {
 }
 
 function* upvoteRequest(payload, meta) {
-
+  const { author, permlink, percentage } = payload
+  const user = yield select(state => state.auth.get('user'))
+  const { username, is_authenticated, useHAS, useKeychain } = user
+  let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
+  const weight = percentage * 100
+  
   try {
-    const { author, permlink, percentage } = payload
-    const user = yield select(state => state.auth.get('user'))
-    const { username, is_authenticated, useKeychain } = user
-    let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
-
-    const weight = percentage * 100
-
     let success = false
     if(is_authenticated) {
       if(useKeychain) {
         const result = yield call(keychainUpvote, username, permlink, author, weight)
         success = result.success
+      } else if (useHAS) {
+        /** NOTE:: bug for the the notification for upvoting, HAC module uses RXJS for the request and having compatibilty issues on REDUX */
+
+        hacVote(author, permlink, parseInt(percentage))
+        localStorage(localStorage.setItem('hasVoted', JSON.stringify([])))
+        
+        hacMsg.subscribe(m => {
+          if (m.type === 'sign_wait') {
+            /** should set the the loader when time hits zero */
+            console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+          }
+
+          if (m.type === 'tx_result') {
+            console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg : null)
+
+            if (m.msg?.status === 'accepted') {
+              console.log('rest')
+              localStorage.setItem('hasVoted', true)
+              upvoteSuccess({ success: true }, meta)
+            } else {
+              const errorMessage = errorMessageComposer('upvote')
+              upvoteFailure({ success: false, errorMessage }, meta)
+            }
+          }
+        })
+
+        const hasVoted = localStorage.getItem('hasVoted')
+
+        recentUpvotes = [...recentUpvotes, permlink]
+        yield put(saveReceptUpvotes(recentUpvotes))
+        setTimeout(() => {
+          if (hasVoted === true) {
+            upvoteSuccess({ success: true }, meta)
+          }
+        }, 3000)
+
       } else {
         let { login_data } = user
         login_data = extractLoginData(login_data)
