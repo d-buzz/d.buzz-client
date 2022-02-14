@@ -139,11 +139,7 @@ const BuzzFormModal = (props) => {
           <div className={classes.draftsContainer}>
             <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
           </div>}
-<<<<<<< HEAD
-          <CreateBuzzForm modal={true} hideModalCallback={onHide} />
-=======
           <CreateBuzzForm modal={true} hideModalCallback={onHide} buzzThreads={buzzThreads}/>
->>>>>>> 600721e44b4dd2de295fec08252584f4d3112fad
         </ModalBody>
       </Modal>
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
