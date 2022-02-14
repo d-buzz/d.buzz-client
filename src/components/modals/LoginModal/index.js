@@ -178,7 +178,6 @@ const LoginModal = (props) => {
   const handleClickBack = () => {
     setSeconds(100)
     setQRCode(null)
-    localStorage.removeItem('hac')
     localStorage.removeItem('hasQRcode')
   }
 
