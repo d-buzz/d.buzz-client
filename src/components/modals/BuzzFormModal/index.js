@@ -86,18 +86,6 @@ const BuzzFormModal = (props) => {
     setOpenSaveDraftsModal(false)
   }
 
-  const handleSaveDraftsModalOpen = () => {
-    setSaveDraftsModalStatus(true)
-    setOpenSaveDraftsModal(true)
-    setDraftData({
-      content: buzzThreads[1].content,
-    })
-  }
-  const OnSaveDraftsModalHide = () => {
-    setSaveDraftsModalStatus(false)
-    setOpenSaveDraftsModal(false)
-  }
-
   const handleBuzzModal = () => {
     onHide()
 

@@ -186,7 +186,7 @@ function* authenticateUserRequest(payload, meta) {
     
           /** Authentication rejected */
           } else if (m.msg?.status === "rejected") {
-           window.location.reload()
+            window.location.reload()
     
           /** Authentication error */
           } else {
@@ -323,32 +323,32 @@ function* initWSHASConnectionRequest(meta) {
     const fingerPrintRequest = FingerprintJS.load({ monitoring: false })
 
     fingerPrintRequest.then(fingerPrint => fingerPrint.get())
-    .then(result => {
-      sessionStorage.setItem('hacPwd', result.visitorId)
-      const current = localStorage.getItem('active')
+      .then(result => {
+        sessionStorage.setItem('hacPwd', result.visitorId)
+        const current = localStorage.getItem('active')
 
-      if (current) {
-        let hacAccount = hacGetAccounts(current, result.visitorId)
+        if (current) {
+          const hacAccount = hacGetAccounts(current, result.visitorId)
 
-        if (hacAccount[0]) {
-          const has_expire = hacAccount[0].has?.has_expire
-          const expire = has_expire ? new Date(has_expire) : 1
+          if (hacAccount[0]) {
+            const has_expire = hacAccount[0].has?.has_expire
+            const expire = has_expire ? new Date(has_expire) : 1
 
-          console.log('expire', expire)
+            console.log('expire', expire)
 
-          const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 3000 })
-          initWSHASConnectionSuccess(result, meta)
+            const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 3000 })
+            initWSHASConnectionSuccess(result, meta)
           // window.location.href('')
+          } else {
+            const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
+            initWSHASConnectionSuccess(result, meta)
+          }
         } else {
           const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
           initWSHASConnectionSuccess(result, meta)
         }
-      } else {
-        const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
-        initWSHASConnectionSuccess(result, meta)
-      }
 
-    }).catch( error => console.log(error))
+      }).catch( error => console.log(error))
     
   } catch(error) {
     yield put(initWSHASConnectionFailure(error, meta))
