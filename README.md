@@ -3,7 +3,9 @@ Frontend for Dbuzz community
 
 ### Contribution
 
-All development will be on the ```dev``` branch, ```master``` branch will only be updated for production.
+All development will be on the ```dev``` branch.
+
+When all the bugs will be fixed on ```dev``` branch the stable code will be pushed to ```stable``` branch and ```master``` branch will only be updated for production via ```stable``` branch.
 
 1. Clone ```dev``` branch ```git clone -b dev https://github.com/d-buzz/d.buzz-client.git```
 2. Create branch

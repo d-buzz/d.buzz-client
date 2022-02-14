@@ -220,3 +220,16 @@ input[type=number] {
     box-shadow: none;
   }
 }
+
+@keyframes showFade {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.98)
+  }
+  100% {
+    opacity: 1;
+  }
+}

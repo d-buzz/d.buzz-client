@@ -1,12 +1,14 @@
 import { IconButton } from '@material-ui/core'
-import Renderer from 'components/common/Renderer'
+import axios from 'axios'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
+import ThemeProvider from 'components/wrappers/ThemeProvider'
 import config from 'config'
-import { updates } from 'updates'
 import React, { useEffect } from 'react'
+import { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
+import Skeleton from 'react-loading-skeleton'
 import { connect } from 'react-redux'
 
 const useStyles = createUseStyles(theme => ({
@@ -37,6 +39,7 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    color: theme.font.color,
 
     '& ul': {
       padding: '0 0 0 20px !important',
@@ -53,7 +56,7 @@ const useStyles = createUseStyles(theme => ({
       display: 'flex',
       alignItems: 'center',
       color: '#E61C34',
-      marginTop: 5,
+      margin: '5px 0',
       fontSize: '1.2em',
       fontWeight: 700,
       width: '100%',
@@ -75,7 +78,40 @@ const useStyles = createUseStyles(theme => ({
     
     '& .updatesInfo':{
       color: theme.font.color,
+      padding: '5px 10px',
+      backgroundColor: theme.context.view.backgroundColor,
+      borderRadius: 5,
     },
+  },
+  change: {
+    margin: '5px 0',
+
+    '& .title': {
+      fontSize: '1.5em',
+      fontWeight: 700,
+    },
+
+    '& .description': {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  headerImage: {
+    width: '100%',
+    marginBottom: 25,
+  },
+  betaTesterCredit: {
+    display: 'flex',
+    width: 'fit-content',
+    padding: '5px 10px',
+    color: theme.font.color,
+    backgroundColor: theme.context.view.backgroundColor,
+    borderRadius: 5,
+    margin: '15px auto',
+  },
+  updatesLoader: {
+    width: '100%',
+    height: '100%',
   },
 }))
 
@@ -83,21 +119,43 @@ function WhatsNewModal(props) {
   const { show, onHide } = props
   const classes = useStyles()
   const { VERSION } = config
-  const changes = updates.changes
-  const improvements = updates.improvements
-  const fixes = updates.fixes
-  const upcoming = updates.upcoming
+  const [updates, setUpdates] = useState(null)
+  const header = updates?.headerImageUrl
+  const changes = updates?.changes
+  const improvements = updates?.improvements
+  const fixes = updates?.fixes
+  const upcoming = updates?.upcoming
+
   const alert = new Audio(`${window.location.origin}/alert.wav`)
+  alert.volume = 0.15
 
   useEffect(() => {
-    alert.play()
+    if(VERSION.includes('dev')) {
+      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/dev-updates.json')
+        .then(response => {
+          setUpdates(response.data)
+          alert.play()
+        })
+        .catch((err) => {
+          onHide()
+        })
+    } else {
+      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/stable-updates.json')
+        .then(response => {
+          setUpdates(response.data)
+          alert.play()
+        })
+        .catch((err) => {
+          onHide()
+        })
+    }
     // eslint-disable-next-line
   }, [])
 
   return (
     <React.Fragment>
       <Modal
-        backdrop="static"
+        backdrop='static'
         keyboard={false}
         show={show}
         onHide={onHide}
@@ -109,29 +167,60 @@ function WhatsNewModal(props) {
             <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5, alignSelf: 'flex-end' }} onClick={onHide}>
               <CloseIcon />
             </IconButton>
-            <span className='title'>What's new? <span role="img" aria-label='celebration icon'>🎉</span></span>
-            {changes && <span className='whatsNew updatesRow'>
-              {/* eslint-disable-next-line */}
-              <span className='heading'>NEW FEATURES ✨</span>
-              <Renderer content={changes} minifyAssets={false} loader={false} />
-            </span>}
-            {improvements && <span className='improvements updatesRow'>
-              {/* eslint-disable-next-line */}
-              <span className='heading'>IMPROVEMENTS 💡</span>
-              <Renderer content={improvements} />
-            </span>}
-            {fixes && <span className='bugFixes updatesRow'>
-              {/* eslint-disable-next-line */}
-              <span className='heading'>BUG FIXES 🔨</span>
-              <Renderer content={fixes} />
-            </span>}
-            {upcoming && <span className='upcoming updatesRow'>
-              {/* eslint-disable-next-line */}
-              <span className='heading'>UPCOMING UPDATES ⏳</span>
-              <Renderer content={upcoming} />
-            </span>}
-
-            <div className="updatesInfo">you're on <b>v{VERSION}</b></div>
+            {header && <img className={classes.headerImage} src={header} alt='headerImage'/>}
+            <span className='title'>What's new in this update? <span role='img' aria-label='celebration icon'>🎉</span></span>
+            {updates ? 
+              <div className='updates'>
+                {changes?.length > 0 && <span className='whatsNew updatesRow'>
+                  {/* eslint-disable-next-line */}
+                  <span className='heading'>NEW FEATURES ✨</span>
+                  {changes.map(({title, description}) => (
+                    <div className={classes.change}>
+                      <span className='title'>{title}</span>
+                      <ul className='description'>
+                        {description.map(item => (
+                          <li className='descriptionItem'>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </span>}
+                {improvements?.length > 0 && <span className='improvements updatesRow'>
+                  {/* eslint-disable-next-line */}
+                  <span className='heading'>IMPROVEMENTS 💡</span>
+                  <ul>
+                    {improvements.map(item => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </span>}
+                {fixes?.length > 0 && <span className='bugFixes updatesRow'>
+                  {/* eslint-disable-next-line */}
+                  <span className='heading'>BUG FIXES 🔨</span>
+                  <ul>
+                    {fixes.map(item => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </span>}
+                {upcoming?.length > 0 && <span className='upcoming updatesRow'>
+                  {/* eslint-disable-next-line */}
+                  <span className='heading'>UPCOMING UPDATES ⏳</span>
+                  <ul>
+                    {upcoming.map(item => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </span>}
+              </div> : 
+              <span className={classes.updatesLoader}>
+                <ThemeProvider>
+                  <Skeleton height={60} width={'100%'} count={3}/>
+                </ThemeProvider>
+              </span>}
+            {/* eslint-disable-next-line */}
+            {VERSION.includes('dev') ? <span className={classes.betaTesterCredit}>Thanks for being beta a tester of this update 🧪</span> : ''}
+            <div className='updatesInfo'>you're on <b>v{VERSION}</b></div>
           </div>
         </ModalBody>
       </Modal>
