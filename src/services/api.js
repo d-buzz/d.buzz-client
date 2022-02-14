@@ -671,9 +671,8 @@ export const hiveAuthenticationService = (username) => {
 
 
 export const hacUpvote = (author, permlink, weight) => {
-  hacVote(author, permlink, parseInt(weight))
+  return hacVote(author, permlink, weight)
 }
-
 
 // keychain apis
 
