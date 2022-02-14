@@ -145,7 +145,7 @@ function* authenticateUserRequest(payload, meta) {
         /** recieved authentication msg */
         if (m.type === 'authentication')  {
           
-          console.log('%c|> HAC authentication msg |>', 'color: goldenrod', m)
+          console.log('%c[HAC authentication msg]', 'color: goldenrod', m)
           
           /** Authentication approved */
           if (m.msg?.status === "authentified") {
@@ -162,7 +162,6 @@ function* authenticateUserRequest(payload, meta) {
             // setMuteList(mutelist)
 
             const session = generateSession(user)
-            console.log('sessiong', session)
 
             const accountIndex = accounts.findIndex(item => item.username === username)
 
@@ -180,11 +179,10 @@ function* authenticateUserRequest(payload, meta) {
             localStorage.setItem('accounts', JSON.stringify(accounts))
             setAccountList(accounts)
      
+            authenticateUserSuccess(user, meta)
             const origin = window.location.origin
 
             window.location.href = origin + '#/latest' 
-
-            authenticateUserSuccess(user, meta)
     
           /** Authentication rejected */
           } else if (m.msg?.status === "rejected") {
@@ -338,15 +336,15 @@ function* initWSHASConnectionRequest(meta) {
 
           console.log('expire', expire)
 
-          const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 5000 })
+          const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 3000 })
           initWSHASConnectionSuccess(result, meta)
           // window.location.href('')
         } else {
-          const result = HiveAuthClient(undefined, { debug: true, delay: 500 })
+          const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
           initWSHASConnectionSuccess(result, meta)
         }
       } else {
-        const result = HiveAuthClient(undefined, { debug: true, delay: 500 })
+        const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
         initWSHASConnectionSuccess(result, meta)
       }
 
