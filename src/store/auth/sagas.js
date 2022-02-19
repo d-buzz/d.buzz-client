@@ -340,10 +340,13 @@ function* initWSHASConnectionRequest(meta) {
             initWSHASConnectionSuccess(result, meta)
           // window.location.href('')
           } else {
+            /** clear hac value and localstorage */
+            localStorage.clear()
             const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
             initWSHASConnectionSuccess(result, meta)
           }
         } else {
+          localStorage.clear()
           const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
           initWSHASConnectionSuccess(result, meta)
         }
