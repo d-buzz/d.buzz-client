@@ -97,7 +97,7 @@ import {
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer } from 'services/helper'
-import { HiveAuthClient, hacMsg, hacGetAccounts } from "@mintrawa/hive-auth-client"
+import { HiveAuthClient, hacMsg, hacGetAccounts, hacGetConnectionStatus } from "@mintrawa/hive-auth-client"
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 
@@ -336,16 +336,19 @@ function* initWSHASConnectionRequest(meta) {
 
             console.log('expire', expire)
 
+            hacGetConnectionStatus()
             const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 3000 })
             initWSHASConnectionSuccess(result, meta)
           // window.location.href('')
           } else {
+            hacGetConnectionStatus()
             /** clear hac value and localstorage */
             localStorage.clear()
             const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
             initWSHASConnectionSuccess(result, meta)
           }
         } else {
+          hacGetConnectionStatus()
           localStorage.clear()
           const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
           initWSHASConnectionSuccess(result, meta)
