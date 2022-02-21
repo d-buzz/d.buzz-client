@@ -109,6 +109,8 @@ import {
   invokeMuteFilter,
   getMutePattern,
   uploadVideo,
+  createMeta,
+  createPermlink,
 } from 'services/api'
 import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
@@ -553,7 +555,7 @@ function* publishReplyRequest(payload, meta) {
   try {
     const { parent_author, parent_permlink, ref, treeHistory } = payload
     const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
+    const { username, useKeychain, useHAS } = user
 
     let { body } = payload
 
@@ -567,6 +569,42 @@ function* publishReplyRequest(payload, meta) {
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
+    } else if (useHAS) {
+      console.log('test')
+      const json_metadata = createMeta()
+      let permlink = createPermlink(body.substring(0, 100))
+      permlink = `re-${permlink}`
+
+      hacManualTransaction("posting", ["comment", {
+        "author": username,
+        "title": '',
+        "body": `${body.trim()}`,
+        parent_author,
+        parent_permlink,
+        permlink,
+        json_metadata,
+      }])
+
+      hacMsg.subscribe(m => {
+        if (m.type === 'sign_wait') {
+          /** should set the the loader when time hits zero */
+          console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+        }
+  
+        if (m.type === 'tx_result') {
+          console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg : null)
+  
+          if (m.msg?.status === 'accepted') {
+            console.log('has replied')
+            // localStorage.setItem('hasVoted', true)
+            success = true
+          } else {
+            // const errorMessage = errorMessageComposer('upvote')
+            // upvoteFailure({ success: false, errorMessage }, meta)
+          }
+        }
+      })
+
     } else {
       let { login_data } = user
       login_data = extractLoginData(login_data)
@@ -644,6 +682,7 @@ function* followRequest(payload, meta) {
   let success = false
   
   if (useHAS && is_authenticated) {
+    console.log('testing')
     hacManualTransaction("posting", ["custom_json", {
       "required_auths": [],
       "required_posting_auths": [`${username}`],
