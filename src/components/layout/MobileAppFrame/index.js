@@ -46,6 +46,7 @@ import { searchRequest, clearSearchPosts } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import queryString from 'query-string'
 import moment from 'moment'
+import SettingsModal from 'components/modals/SettingsModal'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -213,6 +214,7 @@ const MobileAppFrame = (props) => {
   const [openAvatarMenu, setOpenAvatarMenu] = useState(false)
   const [openTheme, setOpenTheme] = useState(false)
   const [openSwitchModal, setOpenSwitchModal] = useState(false)
+  const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const [open, setOpen] = useState(false)
   const [disableSearchTips, setDisableSearchTips] = useState(false)
@@ -396,8 +398,17 @@ const MobileAppFrame = (props) => {
     setOpenSwitchModal(true)
   }
 
+  const showSettingsModal = () => {
+    handleClickCloseOpenMoreMenu()
+    setOpenSettingsModal(true)
+  }
+
   const onHideSwitchModal = () => {
     setOpenSwitchModal(false)
+  }
+
+  const onHideSettingsModal = () => {
+    setOpenSettingsModal(false)
   }
 
   const addUserCallBack = () => {
@@ -587,6 +598,7 @@ const MobileAppFrame = (props) => {
       </div>
       <ThemeModal show={openTheme} onHide={onHideTheme} />
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
+      <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} fromIntentBuzz={fromIntentBuzz} buzzIntentCallback={handleSetBuzzIntent} />
       <MoreMenu 
         anchor={moreMenuRef}
@@ -601,6 +613,10 @@ const MobileAppFrame = (props) => {
           {
             onClick: showSwitchModal,
             text: 'Switch Account',
+          },
+          {
+            onClick: showSettingsModal,
+            text: 'Settings',
           },
         ]}
       />
