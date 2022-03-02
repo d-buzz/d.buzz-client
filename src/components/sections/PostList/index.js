@@ -470,7 +470,7 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {!isAuthor() && !muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
+                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} className={classes.iconButton} style={{ float: 'right' }} size='small'>
                       <MoreHoriz  className={classes.moreIcon} />
                     </IconButton>
@@ -505,7 +505,7 @@ const PostList = React.memo((props) => {
                     />
                   </div>
                 )}
-                {!isAuthor() && user.is_authenticated &&
+                {user.is_authenticated &&
                   <Menu
                     anchorEl={anchorEl}
                     keepMounted
@@ -513,7 +513,7 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
-                    {!isAuthor() && (<MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to a Pocket</MenuItem>)}
+                    {(<MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to a Pocket</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}

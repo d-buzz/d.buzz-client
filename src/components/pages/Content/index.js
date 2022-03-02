@@ -608,6 +608,7 @@ const Content = (props) => {
               {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
+                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
                   <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
                 </React.Fragment>
