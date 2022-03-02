@@ -172,6 +172,14 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 'bold',
     animation: 'zoomIn 350ms',
   },
+  noPocketsAvailable: {
+    margin: '15px 0',
+    fontSize: '1.5em',
+    color: '#ffffff',
+    padding: '5px 25px',
+    background: '#E61C3455',
+    borderRadius: 8,
+  },
 }))
 
 function AddToPocketModal(props) {
@@ -185,8 +193,11 @@ function AddToPocketModal(props) {
   useEffect(() => {
     getUserCustomData(user.username)
       .then(res => {
+        console.log(res)
         if(res[0].pockets) {
           setPockets([...res[0].pockets])
+        } else {
+          setPockets([])
         }
       })
     // eslint-disable-next-line
@@ -241,7 +252,6 @@ function AddToPocketModal(props) {
       })
   }
 
-
   return (
     <React.Fragment>
       <Modal
@@ -268,9 +278,11 @@ function AddToPocketModal(props) {
                     ))}
                   </div>
                 </React.Fragment> :
-                <div className={classes.loadingPocketsContainer}>
-                  <Spinner loading={true} size={50}/>
-                </div> :
+                pockets.length === 0 ?
+                  <div className={classes.noPocketsAvailable}>No pockets available</div> :
+                  <div className={classes.loadingPocketsContainer}>
+                    <Spinner loading={true} size={50}/>
+                  </div> :
               <div className={classes.addingPocketContainer}>
                 <div className="label">Adding buzz to {selectedPocket.pocketName} pocket...</div>
                 <Spinner loading={loading} size={50}/>
