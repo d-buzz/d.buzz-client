@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
-import { getSavedUserRequest } from 'store/auth/actions'
-import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest } from 'store/settings/actions'
+import { getSavedUserRequest, initWSHASConnectionRequest } from 'store/auth/actions'
+import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest, getWSNodeHAS } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -118,6 +118,8 @@ const Init = (props) => {
     getSavedUserRequest,
     getTrendingTagsRequest,
     getBestRpcNode,
+    getWSNodeHAS,
+    initWSHASConnectionRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -151,8 +153,11 @@ const Init = (props) => {
   useEffect(() => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
+      setIsLatest(true)
       getCensorTypesRequest().then(() => {
         getBestRpcNode().then(() => {
+          getWSNodeHAS()
+          initWSHASConnectionRequest()
           const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 0
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getTrendingTagsRequest()
@@ -195,6 +200,8 @@ const mapDispatchToProps = (dispatch) => ({
     getTrendingTagsRequest,
     getSavedUserRequest,
     getBestRpcNode,
+    getWSNodeHAS,
+    initWSHASConnectionRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     setDefaultVotingWeightRequest,
