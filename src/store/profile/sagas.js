@@ -80,9 +80,11 @@ import {
   getAccountLists,
   checkAccountIsFollowingLists,
   generateUpdateAccountOperation,
+  hasClearNotificationService,
 } from 'services/api'
 
 import { errorMessageComposer } from "services/helper"
+import { hacMsg } from "@mintrawa/hive-auth-client"
 
 function* getProfileRequest(payload, meta) {
   try {
@@ -189,47 +191,88 @@ function* getFollowingRequest(payload, meta) {
 }
 
 function* clearNotificationRequest(meta) {
-  try {
-    const user = yield select(state => state.auth.get('user'))
-    const notifications = yield select(state => state.polling.get('notifications'))
-    const { username, useKeychain } = user
-    const lastNotification = notifications[0]
+  const user = yield select(state => state.auth.get('user'))
+  const notifications = yield select(state => state.polling.get('notifications'))
+  const { username, useKeychain, useHAS, is_authenticated } = user
+  const lastNotification = notifications[0]
+  let success = false
 
-    const operation = yield call(generateClearNotificationOperation, username, lastNotification)
+  if (useHAS && is_authenticated) {
+    yield call(hasClearNotificationService, username, lastNotification)
+    success = true
 
-    let success = false
-
-    if(lastNotification.length !== 0) {
-      if(useKeychain) {
-        const result = yield call(broadcastKeychainOperation, username, operation)
-        success = result.success
-      } else {
-        let { login_data } = user
-        login_data = extractLoginData(login_data)
-
-        const wif = login_data[1]
-        const result = yield call(broadcastOperation, operation, [wif])
-        success = result.success
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
       }
 
-      let old = yield select(state => state.polling.get('count'))
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+            success = true
+        
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-      if(success) {
-        old = {
-          success: true,
-          lastread: '',
-          unread: 0,
+          clearNotificationsFailure(error, meta)
         }
-      } else {
-        old.success = success
+        
       }
-      yield put(clearNotificationsSuccess(old, meta))
+      
+    })
+    let old = yield select(state => state.polling.get('count'))
+
+    if(success) {
+      old = {
+        success: true,
+        lastread: '',
+        unread: 0,
+      }
     } else {
-      yield put(clearNotificationsFailure('failed to clear notification', meta))
+      old.success = success
     }
-  } catch(error) {
-    yield put(clearNotificationsFailure(error, meta))
+
+    yield put(clearNotificationsSuccess(old, meta))
+  } else {
+    try {
+
+      const operation = yield call(generateClearNotificationOperation, username, lastNotification)
+  
+  
+      if(lastNotification.length !== 0) {
+        if(useKeychain) {
+          const result = yield call(broadcastKeychainOperation, username, operation)
+          success = result.success
+        } else {
+          let { login_data } = user
+          login_data = extractLoginData(login_data)
+  
+          const wif = login_data[1]
+          const result = yield call(broadcastOperation, operation, [wif])
+          success = result.success
+        }
+  
+        let old = yield select(state => state.polling.get('count'))
+  
+        if(success) {
+          old = {
+            success: true,
+            lastread: '',
+            unread: 0,
+          }
+        } else {
+          old.success = success
+        }
+        yield put(clearNotificationsSuccess(old, meta))
+      } else {
+        yield put(clearNotificationsFailure('failed to clear notification', meta))
+      }
+    } catch(error) {
+      yield put(clearNotificationsFailure(error, meta))
+    }
   }
+ 
 }
 
 function* getCommentsAccountRequest(payload, meta) {
