@@ -15,12 +15,21 @@ import moment from 'moment'
 import { ChainTypes, makeBitMaskFilter } from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import { calculateOverhead } from 'services/helper'
+import { hacUserAuth, hacVote, hacManualTransaction } from "@mintrawa/hive-auth-client"
+import config from 'config'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
+
+const APP_META = {
+  name: config.APP_NAME,
+  description: config.APP_DESCRIPTION,
+  icon: config.APP_ICON,
+}
+
 
 const visited = []
 
@@ -646,6 +655,128 @@ export const checkAccountIsFollowingLists = (observer) => {
       }
     })
   })
+}
+
+
+// has apis
+
+export const hiveAuthenticationService = (username) => {
+  const challenge = JSON.stringify({ token: uuidv4() })
+  const hacModule = "has"
+  const hacPwd = sessionStorage.getItem('hacPwd')
+  
+  hacUserAuth(username, APP_META, hacPwd, {key_type: 'posting', value: challenge}, hacModule)
+  
+}
+
+export const hasFollowService = (username, following) => {
+  hacManualTransaction("posting", ["custom_json", {
+    "required_auths": [],
+    "required_posting_auths": [`${username}`],
+    "id": "follow",
+    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}]),
+  }])
+}
+
+export const hasUnFollowService = (username, following) => {
+  hacManualTransaction("posting", ["custom_json", {
+    "required_auths": [],
+    "required_posting_auths": [`${username}`],
+    "id": "follow",
+    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}]),
+  }])
+}
+
+export const hasUpvoteService = (author, permlink, weight) => {
+  return hacVote(author, permlink, parseInt(weight))
+}
+
+export const hasReplyService = (username, body, parent_author, parent_permlink, json_metadata, permlink) => {
+  hacManualTransaction("posting", ["comment", {
+    "author": username,
+    "title": '',
+    "body": `${body.trim()}`,
+    parent_author,
+    parent_permlink,
+    permlink,
+    json_metadata,
+  }])
+}
+
+export const hasClearNotificationService = (username, lastNotification) => {
+  let date = moment().utc().format()
+  date = `${date}`.replace('Z', '')
+
+  const json = JSON.stringify(["setLastRead",{ date }])
+  hacManualTransaction("posting", ["custom_json", {
+    'required_auths': [],
+    'required_posting_auths': [username],
+    'id': 'notify',
+    json,
+  }])
+}
+
+
+export const hasPostService = (operations) => {
+  console.log('wrdd')
+  hacManualTransaction("posting", operations)
+}
+
+export const hasGeneratePostService = (account, title, tags, body, payout, permlink) => {
+  const json_metadata = createMeta(tags)
+
+  const operations = []
+
+  return new Promise((resolve) => {
+    const op_comment = [
+      'comment',
+      {
+        'author': account,
+        'title': stripHtml(title),
+        'body': `${body.trim()}`,
+        'parent_author': '',
+        'parent_permlink': `${appConfig.TAG}`,
+        permlink,
+        json_metadata,
+      },
+    ]
+
+    operations.push(op_comment)
+
+    const max_accepted_payout = `${payout.toFixed(3)} HBD`
+    const extensions = []
+
+
+    if(payout === 0) {
+      extensions.push([
+        0,
+        { beneficiaries:
+          [
+            { account: 'null', weight: 10000 },
+          ],
+        },
+      ])
+    }
+
+
+    const op_comment_options = [
+      'comment_options',
+      {
+        'author': account,
+        permlink,
+        max_accepted_payout,
+        'percent_hbd': 5000,
+        'allow_votes': true,
+        'allow_curation_rewards': true,
+        extensions,
+      },
+    ]
+
+    operations.push(op_comment_options)
+
+    resolve(operations)
+  })
+
 }
 
 
