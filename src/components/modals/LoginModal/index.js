@@ -32,8 +32,13 @@ const useStyles = createUseStyles(theme => ({
   },
   checkBox: {
     cursor: 'pointer',
+
     '& hover': {
       cursor: 'pointer',
+    },
+
+    '& .label': {
+      color: theme.font.color,
     },
   },
   label: {
@@ -306,7 +311,7 @@ const LoginModal = (props) => {
               )}
               {hasInstalledKeychain && (
                 <React.Fragment>
-                  <span className="checkBox">
+                  <span className={classes.checkBox}>
                     <Checkbox 
                       id="checkbox"
                       type="checkbox"
@@ -316,10 +321,10 @@ const LoginModal = (props) => {
                       onChange={handleClickHAS}
                       icon={<HiveAuthenticationServiceIcon/>} 
                     />
-                    Login With Hive Authentication Service
+                    <span className="label">Login With Hive Authentication Service</span>
                   </span>
                   <br />
-                  <span className="checkBox">
+                  <span className={classes.checkBox}>
                     <Checkbox 
                       id="checkbox"
                       type="checkbox"
@@ -329,7 +334,7 @@ const LoginModal = (props) => {
                       onChange={handleClickKeychain}
                       icon={<HiveKeyChainIcon/>} 
                     />
-                    Login With Hive Keychain
+                    <span className="label">Login With Hive Keychain</span>
                   </span>
                 </React.Fragment>
               )}
