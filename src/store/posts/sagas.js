@@ -111,12 +111,18 @@ import {
   uploadVideo,
   createMeta,
   createPermlink,
+  hasFollowService,
+  hasUnFollowService,
+  hasUpvoteService,
+  hasReplyService,
+  hasPostService,
+  hasGeneratePostService,
 } from 'services/api'
 import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
-import { hacMsg, hacVote, hacManualTransaction } from "@mintrawa/hive-auth-client"
+import { hacMsg } from "@mintrawa/hive-auth-client"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -339,71 +345,64 @@ function* upvoteRequest(payload, meta) {
   const { username, is_authenticated, useHAS, useKeychain } = user
   let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
   const weight = percentage * 100
-  
-  try {
-    let success = false
-    if(is_authenticated) {
-      if(useKeychain) {
-        const result = yield call(keychainUpvote, username, permlink, author, weight)
-        success = result.success
-      } else if (useHAS) {
-        /** NOTE:: bug for the the notification for upvoting, HAC module uses RXJS for the request and having compatibilty issues on REDUX */
+  let success = false
 
-        hacVote(author, permlink, parseInt(percentage))
-        localStorage(localStorage.setItem('hasVoted', JSON.stringify([])))
+  if (useHAS && is_authenticated) { 
+    yield call(hasUpvoteService, author, permlink, percentage)
+    
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+      }
+
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+            
         
-        hacMsg.subscribe(m => {
-          if (m.type === 'sign_wait') {
-            /** should set the the loader when time hits zero */
-            console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-          }
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-          if (m.type === 'tx_result') {
-            console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg : null)
+          followFailure(error, meta)
+        }
+        
+      }
+      
+    })
 
-            if (m.msg?.status === 'accepted') {
-              console.log('rest')
-              localStorage.setItem('hasVoted', true)
-              upvoteSuccess({ success: true }, meta)
-            } else {
-              const errorMessage = errorMessageComposer('upvote')
-              upvoteFailure({ success: false, errorMessage }, meta)
-            }
-          }
-        })
+    yield put(upvoteSuccess({ success: true }, meta))
+    
+  } else {
+    try {
+      if(is_authenticated) {
+        if(useKeychain) {
+          const result = yield call(keychainUpvote, username, permlink, author, weight)
+          success = result.success
+        } else {
+          let { login_data } = user
+          login_data = extractLoginData(login_data)
+          const wif = login_data[1]
 
-        const hasVoted = localStorage.getItem('hasVoted')
+          const result = yield call(broadcastVote, wif, username, author, permlink, weight)
+          success = result.id ? true : false
+        }
 
-        recentUpvotes = [...recentUpvotes, permlink]
-        yield put(saveReceptUpvotes(recentUpvotes))
-        setTimeout(() => {
-          if (hasVoted === true) {
-            upvoteSuccess({ success: true }, meta)
-          }
-        }, 3000)
-
+        if(success){
+          recentUpvotes = [...recentUpvotes, permlink]
+          yield put(saveReceptUpvotes(recentUpvotes))
+          yield put(upvoteSuccess({ success: true }, meta))
+        }
       } else {
-        let { login_data } = user
-        login_data = extractLoginData(login_data)
-        const wif = login_data[1]
-
-        const result = yield call(broadcastVote, wif, username, author, permlink, weight)
-        success = result.id ? true : false
+        yield put(upvoteFailure({ success: false, errorMessage: 'No authentication' }, meta))
       }
 
-      if(success){
-        recentUpvotes = [...recentUpvotes, permlink]
-        yield put(saveReceptUpvotes(recentUpvotes))
-        yield put(upvoteSuccess({ success: true }, meta))
-      }
-    } else {
-      yield put(upvoteFailure({ success: false, errorMessage: 'No authentication' }, meta))
+    } catch(error) {
+      const errorMessage = errorMessageComposer('upvote', error)
+      yield put(upvoteFailure({ success: false, errorMessage }, meta))
     }
-
-  } catch(error) {
-    const errorMessage = errorMessageComposer('upvote', error)
-    yield put(upvoteFailure({ success: false, errorMessage }, meta))
   }
+
 }
 
 function* fileUploadRequest(payload, meta) {
@@ -458,85 +457,86 @@ function* videoUploadRequest(payload, meta) {
 }
 
 function* publishPostRequest(payload, meta) {
-  try {
-    const { tags, payout } = payload
-    let { body } = payload
+  const { tags, payout } = payload
+  let { body } = payload
+  let success = false
 
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
+  const user = yield select(state => state.auth.get('user'))
+  const { username, useKeychain, useHAS, is_authenticated } = user
 
-    let title = stripHtml(body)
-    title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-    title = `${title}`.trim()
+  let title = stripHtml(body)
+  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+  title = `${title}`.trim()
 
-    if(title.length > 70) {
-      title = `${title.substr(0, 70)} ...`
-    }
+  if(title.length > 70) {
+    title = `${title.substr(0, 70)} ...`
+  }
 
-    body = footnote(body)
+  body = footnote(body)
+  if (useHAS && is_authenticated) {
+    const permlink = createPermlink(title)
+    console.log(permlink)
+    
+    const operations = yield call(hasGeneratePostService, username, title, tags, body, payout, permlink)
+    console.log('this', operations[0])
+    yield call(hasPostService, operations[0])
+    success = true
+    const comment = operations[0]
+    const json_metadata = comment[1].json_metadata
 
-    const operations = yield call(generatePostOperations, username, title, body, tags, payout)
+    let currentDatetime = moment().toISOString()
+    currentDatetime = currentDatetime.replace('Z', '')
 
-    let success = false
-    const comment_options = operations[1]
-    const permlink = comment_options[1].permlink
-
-    if(useKeychain) {
-      const result = yield call(broadcastKeychainOperation, username, operations)
-      success = result.success
-
-      if(!success) {
-        yield put(publishPostFailure('Unable to publish post', meta))
-      }
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
-
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operations, [wif])
-
-      success = result.success
-    }
-
-    if(success) {
-      const comment = operations[0]
-      const json_metadata = comment[1].json_metadata
-
-      let currentDatetime = moment().toISOString()
-      currentDatetime = currentDatetime.replace('Z', '')
-
-      let cashout_time = moment().add(7, 'days').toISOString()
-      cashout_time = cashout_time.replace('Z', '')
-
-      let body = comment[1].body
-      body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-
-
-      const content = {
-        author: username,
-        category: 'hive-193084',
-        permlink,
-        title: comment[1].title,
-        body: body,
-        replies: [],
-        total_payout_value: '0.000 HBD',
-        curator_payout_value: '0.000 HBD',
-        pending_payout_value: '0.000 HBD',
-        active_votes: [],
-        root_author: "",
-        parent_author: null,
-        parent_permlink: "hive-190384",
-        root_permlink: permlink,
-        root_title: title,
-        json_metadata,
-        children: 0,
-        created: currentDatetime,
-        cashout_time,
-        max_accepted_payout: `${payout.toFixed(3)} HBD`,
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
       }
 
-      yield put(setContentRedirect(content))
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+            
+        
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
+
+          publishPostFailure(error, meta)
+        } 
+      }
+    })
+
+    let cashout_time = moment().add(7, 'days').toISOString()
+    cashout_time = cashout_time.replace('Z', '')
+
+    let bodyOperation = comment[1].body
+    bodyOperation = bodyOperation.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+
+
+    const content = {
+      author: username,
+      category: 'hive-193084',
+      permlink,
+      title: comment[1].title,
+      body: bodyOperation,
+      replies: [],
+      total_payout_value: '0.000 HBD',
+      curator_payout_value: '0.000 HBD',
+      pending_payout_value: '0.000 HBD',
+      active_votes: [],
+      root_author: "",
+      parent_author: null,
+      parent_permlink: "hive-190384",
+      root_permlink: permlink,
+      root_title: title,
+      json_metadata,
+      children: 0,
+      created: currentDatetime,
+      cashout_time,
+      max_accepted_payout: `${payout.toFixed(3)} HBD`,
     }
+
+    yield put(setContentRedirect(content))
 
     const data = {
       success,
@@ -545,121 +545,231 @@ function* publishPostRequest(payload, meta) {
     }
 
     yield put(publishPostSuccess(data, meta))
-  } catch (error) {
-    const errorMessage = errorMessageComposer('post', error)
-    yield put(publishPostFailure({ errorMessage }, meta))
+  } else {
+    try {
+
+      const operations = yield call(generatePostOperations, username, title, body, tags, payout)
+  
+      const comment_options = operations[1]
+      const permlink = comment_options[1].permlink
+  
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operations)
+        success = result.success
+  
+        if(!success) {
+          yield put(publishPostFailure('Unable to publish post', meta))
+        }
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+  
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operations, [wif])
+  
+        success = result.success
+      }
+  
+      if(success) {
+        const comment = operations[0]
+        const json_metadata = comment[1].json_metadata
+  
+        let currentDatetime = moment().toISOString()
+        currentDatetime = currentDatetime.replace('Z', '')
+  
+        let cashout_time = moment().add(7, 'days').toISOString()
+        cashout_time = cashout_time.replace('Z', '')
+  
+        let body = comment[1].body
+        body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+  
+  
+        const content = {
+          author: username,
+          category: 'hive-193084',
+          permlink,
+          title: comment[1].title,
+          body: body,
+          replies: [],
+          total_payout_value: '0.000 HBD',
+          curator_payout_value: '0.000 HBD',
+          pending_payout_value: '0.000 HBD',
+          active_votes: [],
+          root_author: "",
+          parent_author: null,
+          parent_permlink: "hive-190384",
+          root_permlink: permlink,
+          root_title: title,
+          json_metadata,
+          children: 0,
+          created: currentDatetime,
+          cashout_time,
+          max_accepted_payout: `${payout.toFixed(3)} HBD`,
+        }
+  
+        yield put(setContentRedirect(content))
+      }
+  
+      const data = {
+        success,
+        author: username,
+        permlink,
+      }
+  
+      yield put(publishPostSuccess(data, meta))
+    } catch (error) {
+      const errorMessage = errorMessageComposer('post', error)
+      yield put(publishPostFailure({ errorMessage }, meta))
+    }
   }
 }
 
 function* publishReplyRequest(payload, meta) {
-  try {
-    const { parent_author, parent_permlink, ref, treeHistory } = payload
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain, useHAS } = user
+  const { parent_author, parent_permlink, ref, treeHistory } = payload
+  const user = yield select(state => state.auth.get('user'))
+  const { username, useKeychain, useHAS, is_authenticated } = user
+  let { body } = payload
+  body = footnote(body)
 
-    let { body } = payload
+  let replyData = {}
 
-    body = footnote(body)
-
-    let replyData = {}
-
-    let success = false
-    const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
-
-    if(useKeychain) {
-      const result = yield call(broadcastKeychainOperation, username, operation)
-      success = result.success
-    } else if (useHAS) {
-      console.log('test')
-      const json_metadata = createMeta()
-      let permlink = createPermlink(body.substring(0, 100))
-      permlink = `re-${permlink}`
-
-      hacManualTransaction("posting", ["comment", {
-        "author": username,
-        "title": '',
-        "body": `${body.trim()}`,
-        parent_author,
-        parent_permlink,
-        permlink,
-        json_metadata,
-      }])
-
-      hacMsg.subscribe(m => {
-        if (m.type === 'sign_wait') {
-          /** should set the the loader when time hits zero */
-          console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-        }
+  let success = false
   
-        if (m.type === 'tx_result') {
-          console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg : null)
-  
-          if (m.msg?.status === 'accepted') {
-            console.log('has replied')
-            // localStorage.setItem('hasVoted', true)
-            success = true
-          } else {
-            // const errorMessage = errorMessageComposer('upvote')
-            // upvoteFailure({ success: false, errorMessage }, meta)
-          }
-        }
-      })
-
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
-
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operation, [wif])
-      success = result.success
-    }
-
-    if(success) {
-      const meta = operation[0]
-
-      let currentDatetime = moment().toISOString()
-      currentDatetime = currentDatetime.replace('Z', '')
-
-      const reply = {
-        author: username,
-        category: 'hive-193084',
-        permlink: meta[1].permlink,
-        title: meta[1].title,
-        body: meta[1].body,
-        replies: [],
-        total_payout_value: '0.000 HBD',
-        curator_payout_value: '0.000 HBD',
-        pending_payout_value: '0.000 HBD',
-        active_votes: [],
-        parent_author,
-        parent_permlink,
-        root_author: parent_author,
-        root_permlink: parent_permlink,
-        children: 0,
-        created: currentDatetime,
+  if (useHAS && is_authenticated) {
+    const json_metadata = createMeta()
+    let permlink = createPermlink(body.substring(0, 100))
+    permlink = `re-${permlink}`
+    yield call(hasReplyService, username, body, parent_author, parent_permlink, json_metadata, permlink)
+    success = true
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
       }
 
-      reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+            
+            success = true
+            
+        
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-      reply.refMeta = {
+          publishPostFailure(error, meta)
+        } 
+      }
+    })
+    let currentDatetime = moment().toISOString()
+    currentDatetime = currentDatetime.replace('Z', '')
+  
+    const reply = {
+      author: username,
+      category: 'hive-193084',
+      permlink: permlink,
+      title: '',
+      body:`${body.trim()}`,
+      replies: [],
+      total_payout_value: '0.000 HBD',
+      curator_payout_value: '0.000 HBD',
+      pending_payout_value: '0.000 HBD',
+      active_votes: [],
+      parent_author,
+      parent_permlink,
+      root_author: parent_author,
+      root_permlink: parent_permlink,
+      children: 0,
+      created: currentDatetime,
+    }
+  
+    reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+  
+    reply.refMeta = {
         ref,
         author: parent_author,
         permlink: parent_permlink,
         treeHistory,
       }
-      replyData = reply
-    }
-
+      
+    replyData = reply
+    
+  
     const data = {
       success,
       reply: replyData,
     }
+      
 
     yield put(publishReplySuccess(data, meta))
-  } catch(error) {
-    const errorMessage = errorMessageComposer('reply', error)
-    yield put(publishReplyFailure({ errorMessage }, meta))
+
+
+  } 
+  else {
+    try {
+      
+      const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
+  
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operation)
+        success = result.success
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+  
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operation, [wif])
+        success = result.success
+      }
+  
+      if(success) {
+        const meta = operation[0]
+  
+        let currentDatetime = moment().toISOString()
+        currentDatetime = currentDatetime.replace('Z', '')
+  
+        const reply = {
+          author: username,
+          category: 'hive-193084',
+          permlink: meta[1].permlink,
+          title: meta[1].title,
+          body: meta[1].body,
+          replies: [],
+          total_payout_value: '0.000 HBD',
+          curator_payout_value: '0.000 HBD',
+          pending_payout_value: '0.000 HBD',
+          active_votes: [],
+          parent_author,
+          parent_permlink,
+          root_author: parent_author,
+          root_permlink: parent_permlink,
+          children: 0,
+          created: currentDatetime,
+        }
+  
+        reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+  
+        reply.refMeta = {
+          ref,
+          author: parent_author,
+          permlink: parent_permlink,
+          treeHistory,
+        }
+        replyData = reply
+      }
+  
+      const data = {
+        success,
+        reply: replyData,
+      }
+  
+      yield put(publishReplySuccess(data, meta))
+    } catch(error) {
+      const errorMessage = errorMessageComposer('reply', error)
+      yield put(publishReplyFailure({ errorMessage }, meta))
+    }
   }
+
 }
 
 function* getSearchTags(payload, meta) {
@@ -681,49 +791,59 @@ function* followRequest(payload, meta) {
   const operation = yield call(generateFollowOperation, username, following)
   let success = false
   
+  
+
   if (useHAS && is_authenticated) {
-    console.log('testing')
-    hacManualTransaction("posting", ["custom_json", {
-      "required_auths": [],
-      "required_posting_auths": [`${username}`],
-      "id": "follow",
-      "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}])
-    }])
+    let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+    let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
 
-    // localStorage(localStorage.setItem('hasFollowed', JSON.stringify([])))
+    yield call(hasFollowService, username, following)
+    
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+      }
+
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+            if(!Array.isArray(recentUnfollows)) {
+              recentUnfollows = []
+            } else {
+              const index = recentUnfollows.findIndex((item) => item === following)
+              if(index) {
+                recentUnfollows.splice(index, 1)
+              }
+            }
         
-    // hacMsg.subscribe(m => {
-    //   if (m.type === 'sign_wait') {
-    //     /** should set the the loader when time hits zero */
-    //     console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-    //   }
+            if(!Array.isArray(recentFollows)) {
+              recentFollows = []
+            }
+            recentFollows.push(following)
+            setHasBeenFollowedRecently(recentFollows)
+            setHasBeenUnfollowedRecently(recentUnfollows)
+        
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-    //   if (m.type === 'tx_result') {
-    //     console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg : null)
+          followFailure(error, meta)
+        }
+        
+      }
+      
+    })
+    
+    if (success) {
+      console.log('succe', success)
+      yield put(followSuccess(success, meta))
+    } else {
+      const error = 'transaction error'
+      yield put(followFailure(error, meta))
+    }
 
-    //     if (m.msg?.status === 'accepted') {
-    //       console.log('true')
-    //       // localStorage.setItem('hasVoted', true)
-    //       success = true
-    //     } else {
-    //       const errorMessage = errorMessageComposer('upvote')
-    //       upvoteFailure({ success: false, errorMessage }, meta)
-    //     }
-    //   }
-    // })
-
-    // const hasVoted = localStorage.getItem('hasVoted')
-
-    // recentUpvotes = [...recentUpvotes, permlink]
-    // yield put(saveReceptUpvotes(recentUpvotes))
-    // setTimeout(() => {
-    //   if (hasVoted === true) {
-    //     upvoteSuccess({ success: true }, meta)
-    //   }
-    // }, 3000)
-
-
-  } else {
+  } 
+  else {
     try {
 
       if(useKeychain) {
@@ -775,46 +895,54 @@ function* unfollowRequest(payload, meta) {
   let success = false
 
   if (useHAS && is_authenticated) {
-    hacManualTransaction("posting", ["custom_json", {
-      "required_auths": [],
-      "required_posting_auths": [`${username}`],
-      "id": "follow",
-      "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}])
-    }])
+    let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+    let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+    yield call(hasUnFollowService, username, following)
 
-    // localStorage(localStorage.setItem('hasFollowed', JSON.stringify([])))
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+      }
+
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+          if(!Array.isArray(recentFollows)) {
+            recentFollows = []
+          } else {
+            const index = recentFollows.findIndex((item) => item === following)
+            if(index) {
+              recentFollows.splice(index, 1)
+            }
+          }
+  
+          if(!Array.isArray(recentUnfollows)) {
+            recentUnfollows = []
+          }
+          recentUnfollows.push(following)
+  
+          setHasBeenFollowedRecently(recentFollows)
+          setHasBeenUnfollowedRecently(recentUnfollows)
         
-    // hacMsg.subscribe(m => {
-    //   if (m.type === 'sign_wait') {
-    //     /** should set the the loader when time hits zero */
-    //     console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-    //   }
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-    //   if (m.type === 'tx_result') {
-    //     console.log('%c[HAC Sign Wait]', 'color: goldenrod', m.msg? m.msg : null)
-
-    //     if (m.msg?.status === 'accepted') {
-    //       console.log('true')
-    //       // localStorage.setItem('hasVoted', true)
-    //       success = true
-    //     } else {
-    //       const errorMessage = errorMessageComposer('upvote')
-    //       upvoteFailure({ success: false, errorMessage }, meta)
-    //     }
-    //   }
-    // })
-
-    // const hasVoted = localStorage.getItem('hasVoted')
-
-    // recentUpvotes = [...recentUpvotes, permlink]
-    // yield put(saveReceptUpvotes(recentUpvotes))
-    // setTimeout(() => {
-    //   if (hasVoted === true) {
-    //     upvoteSuccess({ success: true }, meta)
-    //   }
-    // }, 3000)
-
-
+          followFailure(error, meta)
+        }
+        
+      }
+      
+    })
+    
+    if (success) {
+      console.log('succe', success)
+      yield put(unfollowSuccess(success, meta))
+    } else {
+      const error = 'transaction error'
+      yield put(unfollowFailure(error, meta))
+    }
+    
   } else {
     try {
       if(useKeychain) {
