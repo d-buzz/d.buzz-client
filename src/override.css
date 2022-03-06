@@ -101,6 +101,23 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   cursor: pointer;
 }
 
+button:focus {
+  outline: 0;
+}
+
+.CircularProgressbar-path {
+  stroke: red;
+}
+
+.CircularProgressbar-trail {
+  stroke: gray;
+}
+
+.MuiTabs-indicator {
+  height: 4px !important;
+  border-radius: 10px;
+}
+
 @font-face {
   font-family: "Segoe-Bold";
   src: url("fonts/Segoe-Bold.woff");
@@ -185,6 +202,18 @@ input[type=number] {
   }
 }
 
+@keyframes pocketsLoader {
+  0% {
+    transform: scale(0.8)
+  }
+  80% {
+    transform: scale(1)
+  }
+  100% {
+    transform: scale(0.8)
+  }
+}
+
 @keyframes skeleton-loading {
   0% {
     background: hsl(200, 20%, 70%); 
@@ -231,5 +260,14 @@ input[type=number] {
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes pocketNameInputAnimation {
+  0% {
+    box-shadow: inherit;
+  }
+  100% {
+    box-shadow: 0 0 0 3px #FF625E,
   }
 }
