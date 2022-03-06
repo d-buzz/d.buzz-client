@@ -125,6 +125,7 @@ const LoginModal = (props) => {
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
   const [seconds, setSeconds] = useState(100)
+  // const [hasExpiredDelay, setHasExpiredDelay] = useState(false)
   
   useEffect(() => {
     if (seconds > 0) {
@@ -187,21 +188,21 @@ const LoginModal = (props) => {
     authenticateUserRequest(username, password, useKeychain, useHAS)
       .then(({ is_authenticated }) => {
         if (useHAS) {
-          setTimeout(() => {
+          let hasExpiredDelay = 100
+          const hasExpiredDelayInterval = setInterval(() => {
+            hasExpiredDelay -= 1
             setLoading(false)
             const rawQR = localStorage.getItem('hasQRcode')
             setQRCode(rawQR)
-            if (!is_authenticated) {
-              setHasAuthenticationError(true)
-              setLoading(false)
-            } else {
-            // if (fromIntentBuzz && buzzIntentCallback) {
-            //   buzzIntentCallback()
-            //   setLoading(false)
-            // }
+
+            if (hasExpiredDelay === 0) {
+              clearInterval(hasExpiredDelayInterval)
+              hasExpiredDelay = 100
+              localStorage.removeItem('hasQRcode')
               onHide()
             }
-          }, 1000)
+          }, 1000)  
+
         } else if (!useHAS) {
           if (!is_authenticated) {
             setHasAuthenticationError(true)
