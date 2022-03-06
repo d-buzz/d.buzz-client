@@ -56,10 +56,10 @@ export const hasConnectionRequest = () => ({
 
 export const hasConnectionSuccess = (response) => ({
   type: HAS_CONNECTION_SUCCESS,
-  payload: response
+  payload: response,
 })
 
 export const hasConnectionFailure = (error) => ({
   type: HAS_CONNECTION_FAILURE,
-  payload: error
+  payload: error,
 })

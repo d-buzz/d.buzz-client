@@ -674,7 +674,7 @@ export const hasFollowService = (username, following) => {
     "required_auths": [],
     "required_posting_auths": [`${username}`],
     "id": "follow",
-    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}])
+    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}]),
   }])
 }
 
@@ -683,7 +683,7 @@ export const hasUnFollowService = (username, following) => {
     "required_auths": [],
     "required_posting_auths": [`${username}`],
     "id": "follow",
-    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}])
+    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}]),
   }])
 }
 

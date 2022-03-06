@@ -359,7 +359,7 @@ function* upvoteRequest(payload, meta) {
       if (m.type === 'tx_result') {
         console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
         if (m.msg?.status === 'accepted') {
-            
+          console.log('accepted')    
         
         } else if (m.msg?.status === 'error') { 
           const error = m.msg?.status.error
@@ -496,7 +496,7 @@ function* publishPostRequest(payload, meta) {
       if (m.type === 'tx_result') {
         console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
         if (m.msg?.status === 'accepted') {
-            
+          console.log('accepted')    
         
         } else if (m.msg?.status === 'error') { 
           const error = m.msg?.status.error
@@ -651,7 +651,7 @@ function* publishReplyRequest(payload, meta) {
         console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
         if (m.msg?.status === 'accepted') {
             
-            success = true
+          success = true
             
         
         } else if (m.msg?.status === 'error') { 
@@ -686,11 +686,11 @@ function* publishReplyRequest(payload, meta) {
     reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
   
     reply.refMeta = {
-        ref,
-        author: parent_author,
-        permlink: parent_permlink,
-        treeHistory,
-      }
+      ref,
+      author: parent_author,
+      permlink: parent_permlink,
+      treeHistory,
+    }
       
     replyData = reply
     
@@ -791,7 +791,6 @@ function* followRequest(payload, meta) {
   const operation = yield call(generateFollowOperation, username, following)
   let success = false
   
-  
 
   if (useHAS && is_authenticated) {
     let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
@@ -808,21 +807,21 @@ function* followRequest(payload, meta) {
       if (m.type === 'tx_result') {
         console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
         if (m.msg?.status === 'accepted') {
-            if(!Array.isArray(recentUnfollows)) {
-              recentUnfollows = []
-            } else {
-              const index = recentUnfollows.findIndex((item) => item === following)
-              if(index) {
-                recentUnfollows.splice(index, 1)
-              }
+          if(!Array.isArray(recentUnfollows)) {
+            recentUnfollows = []
+          } else {
+            const index = recentUnfollows.findIndex((item) => item === following)
+            if(index) {
+              recentUnfollows.splice(index, 1)
             }
+          }
         
-            if(!Array.isArray(recentFollows)) {
-              recentFollows = []
-            }
-            recentFollows.push(following)
-            setHasBeenFollowedRecently(recentFollows)
-            setHasBeenUnfollowedRecently(recentUnfollows)
+          if(!Array.isArray(recentFollows)) {
+            recentFollows = []
+          }
+          recentFollows.push(following)
+          setHasBeenFollowedRecently(recentFollows)
+          setHasBeenUnfollowedRecently(recentUnfollows)
         
         } else if (m.msg?.status === 'error') { 
           const error = m.msg?.status.error

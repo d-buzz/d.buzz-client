@@ -210,7 +210,7 @@ function* clearNotificationRequest(meta) {
       if (m.type === 'tx_result') {
         console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
         if (m.msg?.status === 'accepted') {
-            success = true
+          success = true
         
         } else if (m.msg?.status === 'error') { 
           const error = m.msg?.status.error
