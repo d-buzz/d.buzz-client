@@ -25,15 +25,13 @@ import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import classNames from 'classnames'
-// import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import MoreHoriz from '@material-ui/icons/MoreHoriz'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import Chip from '@material-ui/core/Chip'
 import { sendToBerries, censorLinks } from 'services/helper'
 import Renderer from 'components/common/Renderer'
-import AddToPocketModal from 'components/modals/AddToPocketModal'
 
 const addHover = (theme) => {
   let style = {
@@ -165,10 +163,6 @@ const useStyle = createUseStyles(theme => ({
   },
   iconButton: {
     ...theme.iconButton.hover,
-    transition: 'all 250ms',
-    '&:hover': {
-      background: 'rgba(230, 28, 52, 0.05) !important',
-    },
   },
   berries: {
     width: 120,
@@ -176,9 +170,6 @@ const useStyle = createUseStyles(theme => ({
   },
   moreIcon: {
     ...theme.font,
-    '&:hover': {
-      color: '#E61C34 !important',
-    },
   },
   menuText: {
     fontSize: 13,
@@ -244,7 +235,6 @@ const PostList = React.memo((props) => {
     censorList,
     theme,
     upvoteList,
-    item,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -290,8 +280,7 @@ const PostList = React.memo((props) => {
   const [isCensored, setIsCensored] = useState(false)
   const [censorType, setCensorType] = useState(null)
   const popoverAnchor = useRef(null)
-  const [addToPocketModal, setAddToPocketModal] = useState(false)
-  const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
+
   useEffect(() => {
     if(censorList.length !== 0 && author && permlink) {
       const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
@@ -429,17 +418,6 @@ const PostList = React.memo((props) => {
     return opacityUsers.includes(author)
   }
 
-  const handleAddToPocket = () => {
-    setAddToPocketModal(true)
-    setAnchorEl(null)
-    setSelectedAddToPocketBuzz(item)
-  }
-  
-  const onHideAddToPocketModal = () => {
-    setAddToPocketModal(false)
-    setSelectedAddToPocketBuzz(null)
-  }
-
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -470,9 +448,9 @@ const PostList = React.memo((props) => {
                   <label className={classes.username}>
                     &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
                   </label>
-                  {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
-                    <IconButton onClick={openMenu} className={classes.iconButton} style={{ float: 'right' }} size='small'>
-                      <MoreHoriz  className={classes.moreIcon} />
+                  {!isAuthor() && !muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
+                    <IconButton onClick={openMenu} style={{ float: 'right' }} size='small'>
+                      <ExpandMoreIcon  className={classes.moreIcon} />
                     </IconButton>
                   )}
                   {isCensored && (
@@ -505,7 +483,7 @@ const PostList = React.memo((props) => {
                     />
                   </div>
                 )}
-                {user.is_authenticated &&
+                {!isAuthor() &&
                   <Menu
                     anchorEl={anchorEl}
                     keepMounted
@@ -513,7 +491,6 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
-                    {(<MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to a Pocket</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
@@ -524,7 +501,6 @@ const PostList = React.memo((props) => {
           </Row>
         </div>
       </div>
-      <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
     </React.Fragment>
   )
 })

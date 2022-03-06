@@ -10,7 +10,7 @@ import {
   checkHasUpdateAuthorityRequest,
 } from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
-import { Avatar } from 'components/elements'
+import { Avatar, MoreIcon } from 'components/elements'
 import { openCensorshipDialog } from 'store/interface/actions'
 import {
   PostTags,
@@ -26,6 +26,7 @@ import Col from 'react-bootstrap/Col'
 import Tooltip from '@material-ui/core/Tooltip'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import classNames from 'classnames'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import stripHtml from 'string-strip-html'
@@ -41,9 +42,6 @@ import { useHistory } from 'react-router-dom'
 import { truncateBody, censorLinks } from 'services/helper'
 import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded'
 import Renderer from 'components/common/Renderer'
-import { IconButton } from '@material-ui/core'
-import MoreHoriz from '@material-ui/icons/MoreHoriz'
-import AddToPocketModal from 'components/modals/AddToPocketModal'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -115,9 +113,6 @@ const useStyles = createUseStyles(theme => ({
     paddingTop: 10,
     paddingBottom: 2,
   },
-  menuText: {
-    fontSize: 13,
-  },
   threeDotWrapper: {
     height: '100%',
     width: 'auto',
@@ -126,21 +121,11 @@ const useStyles = createUseStyles(theme => ({
     ...theme.icon,
     ...theme.font,
   },
-  moreIcon: {
-    ...theme.font,
-    '&:hover': {
-      color: '#E61C34 !important',
-    },
-  },
   iconCursor: {
     cursor: 'pointer',
   },
   iconButton: {
     ...theme.iconButton.hover,
-    transition: 'all 250ms',
-    '&:hover': {
-      background: 'rgba(230, 28, 52, 0.05) !important',
-    },
   },
   chip: {
     marginTop: 5,
@@ -176,24 +161,6 @@ const useStyles = createUseStyles(theme => ({
       fontSize: '8em !important',
     },
   },
-  menu: {
-    '& .MuiPaper-root': {
-      background: theme.background.primary,
-    },
-    '& ul':{
-      background: theme.background.primary,
-    },
-    '& li': {
-      fontSize: 18,
-      fontWeight: '500 !important',
-      background: theme.background.primary,
-      color: theme.font.color,
-
-      '&:hover': {
-        ...theme.context.view,
-      },
-    },
-  },
 }))
 
 const Content = (props) => {
@@ -227,8 +194,6 @@ const Content = (props) => {
   const history = useHistory()
   const [overhead, setOverhead] = useState(0)
   const [invalidBuzz, setInvalidBuzz] = useState(false)
-  const [addToPocketModal, setAddToPocketModal] = useState(false)
-  const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
 
 
   const {
@@ -434,7 +399,7 @@ const Content = (props) => {
   }
 
   const handleTipClick = () => {
-    sendToBerries(author, '')
+    sendToBerries(author)
   }
 
   const censorCallBack = () => () => {
@@ -477,17 +442,6 @@ const Content = (props) => {
 
   const handleClickOnCloseVoteList = () => {
     setOpenVoteList(false)
-  }
-
-  const handleAddToPocket = () => {
-    setAddToPocketModal(true)
-    setAnchorEl(null)
-    setSelectedAddToPocketBuzz(content)
-  }
-  
-  const onHideAddToPocketModal = () => {
-    setAddToPocketModal(false)
-    setSelectedAddToPocketBuzz(null)
   }
 
   return (
@@ -538,11 +492,6 @@ const Content = (props) => {
                     </p>
                   </div>
                 </Col>
-                {is_authenticated && (
-                  <IconButton className={classes.iconButton} style={{float: 'right', width: 'fit-content', height: 'fit-content', marginRight: 25}} onClick={handleClickMore} size='small'>
-                    <MoreHoriz className={classes.moreIcon} />
-                  </IconButton>
-                )}
               </Row>
               <div onClick={handleClickContent}>
                 {isCensored && (
@@ -591,24 +540,24 @@ const Content = (props) => {
                 </Tooltip>
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
+              {is_authenticated && (
+                <Col xs="auto">
+                  <div className={classNames(classes.threeDotWrapper, classes.icon)} onClick={handleClickMore}>
+                    <MoreIcon className={classes.iconCursor} />
+                  </div>
+                </Col>
+              )}
             </Row>
             <Menu
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={hanldeCloseMore}
-              className={classes.menu}
             >
-              {!hasUpdateAuthority && (
-                <React.Fragment>
-                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
-                  <MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>
-                </React.Fragment>
-              )}
+              {!hasUpdateAuthority && (<MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>)}
               {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
-                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
                   <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
                 </React.Fragment>
@@ -669,7 +618,6 @@ const Content = (props) => {
           <span className='errorTitle'>Hmm...this page doesn’t exist.</span>
           <span className='errorHint'>Try searching for something else.</span>
         </div>}
-      <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
     </React.Fragment>
   )
 }

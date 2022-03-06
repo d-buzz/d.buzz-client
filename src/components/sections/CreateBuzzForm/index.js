@@ -1365,16 +1365,11 @@ const CreateBuzzForm = (props) => {
         // console.log(file);
         
         if(duration <= 60 && file.size <= 150000000) {
-          uploadVideoRequest(file, setVideoUploadProgress)
-            .then(video => {
-              setVideoUploading(false)
-              if(video.toString() !== 'Error: Network Error') {
-                setVideoLimit(true)
-                createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `https://ipfs.io/ipfs/${video}?dbuzz_video`])
-              } else {
-                broadcastNotification('error', 'Video upload failed, please try re-uploading!')
-              }
-            })
+          uploadVideoRequest(file, setVideoUploadProgress).then(video => {
+            setVideoUploading(false)
+            setVideoLimit(true)
+            createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `https://ipfs.io/ipfs/${video}?dbuzz_video`])
+          })
         } else {
           setVideoUploading(false)
           broadcastNotification('error', 'Video should be 60 seconds or less.')

@@ -24,9 +24,6 @@ import {
 
   SET_DEFAULT_VOTING_WEIGHT_REQUEST,
   setDefaultVotingWeightSuccess,
-
-  GET_WS_NODE_HAS,
-  setWSNodeHAS,
 } from './actions'
 
 import {
@@ -89,13 +86,6 @@ function* getBestRPCNode(meta) {
   yield put(setRpcNode(node, meta))
 }
 
-function* getWSNodeHASRequest(meta) {
-  const hasServer = config.HAS_WS
-  yield call([localStorage, localStorage.setItem], 'websocketHAS', hasServer)
-
-  yield put(setWSNodeHAS(hasServer, meta))
-}
-
 function* getCensorTypesRequest(meta) {
   const types = yield call(getCensorTypes)
   yield put(getCensorTypesSuccess(types, meta))
@@ -149,10 +139,6 @@ function* watchGetBestRPCNode({ meta }) {
   yield call(getBestRPCNode, meta)
 }
 
-function* watchGetWSNodeHAS({ meta }) {
-  yield call(getWSNodeHASRequest, meta)
-}
-
 function* watchCheckVersionRequest({ meta }) {
   yield call(checkVersionRequest, meta)
 }
@@ -173,7 +159,6 @@ export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
   yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
-  yield takeEvery(GET_WS_NODE_HAS, watchGetWSNodeHAS)
   yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
   yield takeEvery(GET_CENSOR_TYPES_REQUEST, watchGetCensorTypesRequest)
   yield takeEvery(CENSOR_BUZZ_REQUEST, watchCensorBuzzRequest)

@@ -272,7 +272,6 @@ const NavLinkWrapper = (props) => {
           <Link to={path} onClick={preventLink}>
             <IconButton
               size="medium"
-              style={{width: 55, height: 55}}
             >
               {icon}
             </IconButton>

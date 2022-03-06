@@ -67,7 +67,6 @@ const Tags = (props) => {
 
   useEffect(() => {
     setResults(items.results || [])
-    console.log(items)
   // eslint-disable-next-line
   }, [items])
 
