@@ -45,3 +45,21 @@ export const filterNotificationsFailure = (error, meta) => ({
   payload: error,
   meta,
 })
+
+export const HAS_CONNECTION_REQUEST = 'HAS_CONNECTION_REQUEST'
+export const HAS_CONNECTION_SUCCESS = 'HAS_CONNECTION_SUCCESS'
+export const HAS_CONNECTION_FAILURE = 'HAS_CONNECTION_FAILURE'
+
+export const hasConnectionRequest = () => ({
+  type: HAS_CONNECTION_REQUEST,
+})
+
+export const hasConnectionSuccess = (response) => ({
+  type: HAS_CONNECTION_SUCCESS,
+  payload: response
+})
+
+export const hasConnectionFailure = (error) => ({
+  type: HAS_CONNECTION_FAILURE,
+  payload: error
+})
