@@ -57,6 +57,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
 
+
 const useStyles = createUseStyles(theme => ({
   cover: {
     height: 270,
@@ -318,8 +319,6 @@ const Profile = (props) => {
       tab = 'comments'
     } else if (index === 2) {
       tab = 'replies'
-    } else if (index === 3) {
-      tab = 'pockets'
     }
 
     history.push(`/@${username}/t/${tab}/`)
@@ -407,8 +406,6 @@ const Profile = (props) => {
       setIndex(1)
     } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(2)
-    } else if(pathname.match(/(\/t\/pockets\/)$|(\/t\/pockets)$/m)) {
-      setIndex(3)
     } else {
       setIndex(0)
     }
@@ -713,7 +710,6 @@ const Profile = (props) => {
               <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
               <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
               <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
-              <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets" />
             </Tabs>
           </div>
           <React.Fragment>

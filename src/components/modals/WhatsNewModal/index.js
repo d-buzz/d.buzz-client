@@ -129,13 +129,9 @@ function WhatsNewModal(props) {
   const alert = new Audio(`${window.location.origin}/alert.wav`)
   alert.volume = 0.15
 
-  const headers = {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}
-
   useEffect(() => {
     if(VERSION.includes('dev')) {
-      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/dev-updates.json', {
-        headers,
-      })
+      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/dev-updates.json')
         .then(response => {
           setUpdates(response.data)
           alert.play()
@@ -144,9 +140,7 @@ function WhatsNewModal(props) {
           onHide()
         })
     } else {
-      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/stable-updates.json', {
-        headers,
-      })
+      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/stable-updates.json')
         .then(response => {
           setUpdates(response.data)
           alert.play()

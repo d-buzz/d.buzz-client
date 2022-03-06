@@ -90,7 +90,6 @@ class InfiniteList extends PureComponent {
                   scrollIndex={index}
                   recomputeRowIndex={recomputeRowIndex}
                   muteTrigger={muteTrigger}
-                  item={items[index]}
                 />
               </div>
             </ResizeObserver>

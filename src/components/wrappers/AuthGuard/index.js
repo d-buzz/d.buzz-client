@@ -36,7 +36,7 @@ const AuthGuard = (props) => {
     } else {
       
       // guest
-      console.log('%c[CURRENT SESSION]: ', 'color: goldenrod', 'Logged Out')
+      console.log('logged out')
     }
     // eslint-disable-next-line
   }, [])
