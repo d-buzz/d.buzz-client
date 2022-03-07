@@ -1413,7 +1413,7 @@ const CreateBuzzForm = (props) => {
                     <Avatar author={user.username} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
                     <span className="titleContainer">
                       <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
-                      <span className='counter'>{buzzTitle.length}/60</span>
+                      {buzzTitle && <span className='counter'>{buzzTitle.length}/60</span>}
                     </span>
                   </div>}
                 <div className={classes.buzzTextBox}>

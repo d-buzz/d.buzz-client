@@ -250,10 +250,10 @@ const GuardedAppFrame = (props) => {
     <React.Fragment>
       <Row style={{ padding: 0, margin: 0 }}>
         <Col xs="auto" className={classes.clearPadding}>
-          <div style={{ width: sideBarLeftWidth }}>
+          <div style={{ width: sideBarLeftWidth, marginRight: 18 }}>
             <Sticky>
               {({ style }) => (
-                <div style={{...style}}>
+                <div style={{...style }}>
                   <SideBarLeft minify={minify} />
                 </div>
               )}
@@ -321,7 +321,7 @@ const GuardedAppFrame = (props) => {
         </Col>
         {!hideSideBarRight && (
           <Col xs="auto">
-            <div style={{ width: sideBarRightWidth }}>
+            <div style={{ width: sideBarRightWidth, marginLeft: 18}}>
               <Sticky>
                 {({ style }) => (
                   <div style={style}>

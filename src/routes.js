@@ -241,6 +241,11 @@ const routes =  [
             exact: true,
             component: AccountPockets,
           },
+          {
+            path: '/@:username/t/pockets/:pocketId',
+            exact: true,
+            component: AccountPockets,
+          },
         ],
       },
     ],

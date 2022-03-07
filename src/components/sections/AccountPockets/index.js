@@ -9,6 +9,8 @@ import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import Tooltip from '@material-ui/core/Tooltip'
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded'
 import KeyboardArrowUpRoundedIcon from '@material-ui/icons/KeyboardArrowUpRounded'
+import DeletePocketConfirmModal from 'components/modals/DeletePocketConfirmModal'
+import { useHistory } from 'react-router'
 
 const useStyle = createUseStyles(theme => ({
   wrapper: {
@@ -65,7 +67,7 @@ const useStyle = createUseStyles(theme => ({
       fontSize: '3.5em',
     },
   },
-  noPocketsFound: {
+  notFound: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -81,6 +83,19 @@ const useStyle = createUseStyles(theme => ({
       textAlign: 'center',
       color: theme.font.color,
       fontSize: '1.5em',
+      fontWeight: 600,
+      
+      '@media (max-width: 480px)': {
+        fontSize: '1.05em',
+      },
+    },
+
+    '& .noBuzzesFoundText': {
+      marginTop: 15,
+      width: '100%',
+      textAlign: 'center',
+      color: 'theme.font.color',
+      fontSize: '1.25em',
       fontWeight: 600,
     },
   },
@@ -200,44 +215,64 @@ const AccountsPockets = (props) => {
     user,
   } = props
 
+  const history = useHistory()
+
   const [loading, setLoading] = useState(false)
   const [openCreatePocketModal, setOpenCreatePocketModal] = useState(false)
   const [userData, setUserData] = useState(null)
   const [pockets, setPockets] = useState([])
-  const [selectedPocket, setSelectedPocket] = useState(0)
+  const [selectedPocket, setSelectedPocket] = useState({index: 0})
   const [pocketBuzzes, setPocketBuzzes] = useState([])
   const [openMoreOptions, setOpenMoreOptions] = useState(false)
+  const [openDeletePocketModal, setOpenDeletePocketModal] = useState(false)
   const moreOptionsRef = useRef()
   
   const classes = useStyle()
-
-  const loadPockets = () => {
+  
+  const updatePocketRoute = (id) => {
+    if(id) {
+      history.push(`/@${author}/t/pockets/${id}/`)
+    } else {
+      history.push(`/@${author}/t/pockets`)
+    }
+  }
+  
+  const loadPockets = (slug) => {
     setLoading(true)
     getUserCustomData(author)
       .then(res => {
-        if(res[0].pockets) {
+        if(res[0]?.pockets?.length > 0) {
+          // if has slug thenfind index else the index is 0
+          const index = res[0].pockets.findIndex(obj => obj.pocketSlug === slug) >= 0 ? res[0].pockets.findIndex(obj => obj.pocketSlug === slug) : 0
+
           setUserData(res[0])
           setPockets([...res[0].pockets])
-          setSelectedPocket(0)
-          setPocketBuzzes(res[0].pockets[0]?.pocketBuzzes)
+          setSelectedPocket({index, id: res[0].pockets[index].pocketId, name: res[0].pockets[index].pocketName, slug: res[0].pockets[index].pocketSlug})
+          setPocketBuzzes(res[0].pockets[index]?.pocketBuzzes.reverse())
+          updatePocketRoute(res[0].pockets[index].pocketSlug)
           setLoading(false)
         } else {
           setPockets([])
+          setSelectedPocket({index: 0})
+          setPocketBuzzes([])
+          updatePocketRoute()
           setLoading(false)
         }
       })
   }
 
   useEffect(() => {
-    if(!openCreatePocketModal) {
+    const pocketSlug = window.location.hash.split('/pockets/')[1]?.replaceAll('/', '')
+    if(pocketSlug) {
+      loadPockets(pocketSlug)
+    } else {
       loadPockets()
     }
     // eslint-disable-next-line
-  }, [openCreatePocketModal])
+  }, [])
 
   const handleSelectPocket = (pocket) => {
-    setSelectedPocket(pockets.indexOf(pocket))
-    setPocketBuzzes(pocket.pocketBuzzes)
+    loadPockets(pocket.pocketSlug)
   }
 
   const handleMoreOption = () => {
@@ -248,12 +283,13 @@ const AccountsPockets = (props) => {
     setOpenMoreOptions(false)
     setOpenCreatePocketModal(true)
   }
+  
   const handleDeletePocket = () => {
-    setOpenMoreOptions(false)
+    setOpenDeletePocketModal(false)
     setLoading(true)
 
     const pocketsArray = [...pockets]
-    const pocketIndex = selectedPocket
+    const pocketIndex = selectedPocket.index
 
     if (pocketIndex > -1) {
       pocketsArray.splice(pocketIndex, 1)
@@ -262,8 +298,13 @@ const AccountsPockets = (props) => {
 	  const customUserData = { username: user.username, userData: [{...userData, pockets: pocketsArray}] }
 
     updateUserCustomData(customUserData).then(() => {
-      loadPockets()
+      loadPockets(selectedPocket.slug)
     })
+  }
+
+  const handleOnClickDeletePocket = () => {
+    setOpenMoreOptions(false)
+    setOpenDeletePocketModal(true)
   }
 
   const PocketIcon = () => (
@@ -282,11 +323,10 @@ const AccountsPockets = (props) => {
           <>
             <div className={classes.tabsContainer}>
               <Tabs
-                value={selectedPocket}
+                value={selectedPocket.index}
                 indicatorColor="primary"
                 textColor="primary"
                 centered
-                // onChange={onChange}
                 className={classes.tabContainer}
                 variant="scrollable"
                 scrollButtons="auto"
@@ -295,7 +335,7 @@ const AccountsPockets = (props) => {
                   <Tab key={pocket.pocketId} disableTouchRipple className={classes.tabs} label={pocket.pocketName} onClick={() => handleSelectPocket(pocket)} />
                 ))}
               </Tabs>
-              <div>
+              {author === user.username && <div>
                 <Tooltip title="Options" placement='bottom-center' className={classes.moreOptionsButton}>
                   <IconButton onClick={handleMoreOption} ref={moreOptionsRef}>
                     {!openMoreOptions ? <ExpandMoreRoundedIcon className='icon' /> : <KeyboardArrowUpRoundedIcon className='iconUp' />}
@@ -317,12 +357,16 @@ const AccountsPockets = (props) => {
                     horizontal: 'center',
                   }}
                 >
-                  {pockets.length < 5 && <MenuItem onClick={handleAddPocket}>Add pocket</MenuItem>}
-                  <MenuItem onClick={handleDeletePocket}>Delete pocket</MenuItem>
+                  {pockets.length < 5 && <MenuItem onClick={handleAddPocket}>Create pocket</MenuItem>}
+                  <MenuItem onClick={handleOnClickDeletePocket}>Delete pocket</MenuItem>
                 </Menu>
-              </div>
+              </div>}
             </div>
-            <InfiniteList loading={loading} items={pocketBuzzes} onScroll={() => {}} />
+            {pocketBuzzes.length > 0 ?
+              <InfiniteList loading={loading} items={pocketBuzzes} onScroll={() => {}} loadPockets={loadPockets}/> :
+              <div className={classes.notFound}>
+                <span className="noBuzzesFoundText">There are no buzzes in this pocket!</span>
+              </div>}
           </>
           :
           author === user.username ?
@@ -337,7 +381,7 @@ const AccountsPockets = (props) => {
                 you don't have any pockets, create one to add buzzes
               </span>
             </div> :
-            <div className={classes.noPocketsFound}>
+            <div className={classes.notFound}>
               <PocketIcon />
               <span className='noPocketsFoundText'>{author} haven't created any pockets yet!</span>
             </div> :
@@ -345,7 +389,8 @@ const AccountsPockets = (props) => {
             <PocketLoader />
           </div>}
       </div>
-      <CreatePocketModal show={openCreatePocketModal} onHide={setOpenCreatePocketModal} user={user} pockets={pockets}/>
+      <CreatePocketModal show={openCreatePocketModal} onHide={setOpenCreatePocketModal} user={user} pockets={pockets} loadPockets={loadPockets}/>
+      <DeletePocketConfirmModal show={openDeletePocketModal} onHide={setOpenDeletePocketModal} pocket={selectedPocket.name} handleDeletePocket={handleDeletePocket} />
     </React.Fragment>
   )
 }

@@ -14,8 +14,10 @@ export const initilizeUserInDatabase = async(username) => {
   return res.data
 }
 
+const headers = {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}
+
 export const getUserCustomData = async(username) => {
-  const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get`, { params: { username: username }, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY } })
+  const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get`, { params: { username: username }, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY, ...headers } })
 
   return res.data
 }
