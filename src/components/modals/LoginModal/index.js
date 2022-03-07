@@ -130,7 +130,7 @@ const LoginModal = (props) => {
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
   /* eslint-disable */
-  const [hasExpiredDelay, setHasExpiredDelay] = useState(100)
+  let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
   
   const onChange = (e) => {
     const { target } = e
