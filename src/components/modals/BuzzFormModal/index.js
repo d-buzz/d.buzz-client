@@ -71,6 +71,7 @@ const BuzzFormModal = (props) => {
   const onHideConfirmModal = () => {
     setBuzzConfirmModalStatus(false)
     setOpen(false)
+    console.log(setContent)
   }
 
   const handleSaveDraftsModalOpen = () => {
