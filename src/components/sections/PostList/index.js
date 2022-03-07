@@ -34,6 +34,8 @@ import Chip from '@material-ui/core/Chip'
 import { sendToBerries, censorLinks } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
+import { getUserCustomData } from 'services/database/api'
+import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
 
 const addHover = (theme) => {
   let style = {
@@ -245,6 +247,7 @@ const PostList = React.memo((props) => {
     theme,
     upvoteList,
     item,
+    loadPockets,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -291,7 +294,25 @@ const PostList = React.memo((props) => {
   const [censorType, setCensorType] = useState(null)
   const popoverAnchor = useRef(null)
   const [addToPocketModal, setAddToPocketModal] = useState(false)
+  const [removeFromPocketConfirmModal, setRemoveFromPocketConfirmModal] = useState(false)
   const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
+  const [seletedRemoveFromPocketBuzz, setSeletedRemoveFromPocketBuzz] = useState(null)
+  const [pockets, setPockets] = useState([])
+
+  useEffect(() => {
+    if(!removeFromPocketConfirmModal || !addToPocketModal) {
+      getUserCustomData(user.username)
+        .then(res => {
+          if(res[0].pockets) {
+            setPockets([...res[0].pockets])
+          } else {
+            setPockets([])
+          }
+        })
+    }
+    // eslint-disable-next-line
+  }, [removeFromPocketConfirmModal, addToPocketModal])
+
   useEffect(() => {
     if(censorList.length !== 0 && author && permlink) {
       const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
@@ -440,6 +461,31 @@ const PostList = React.memo((props) => {
     setSelectedAddToPocketBuzz(null)
   }
 
+  const onHideRemoveFromPocketConfirmModal = () => {
+    setRemoveFromPocketConfirmModal(false)
+    setSeletedRemoveFromPocketBuzz(null)
+  }
+
+  const handleRemoveFromPocket = () => {
+    setAnchorEl(null)
+    setRemoveFromPocketConfirmModal(true)
+    setSeletedRemoveFromPocketBuzz(item)
+  }
+
+  const getPocket = () => {
+    let pocketObject = null
+
+    pockets.forEach(pocket => {
+      const hasThisBuzz = pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined
+
+      if(hasThisBuzz) {
+        pocketObject = pocket
+      }
+    })
+
+    return pocketObject
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -513,7 +559,8 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
-                    {(<MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to a Pocket</MenuItem>)}
+                    <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>
+                    {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {getPocket().pocketName}</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
@@ -525,6 +572,7 @@ const PostList = React.memo((props) => {
         </div>
       </div>
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
+      <RemoveFromPocketConfirmModal show={removeFromPocketConfirmModal} onHide={onHideRemoveFromPocketConfirmModal} user={user} buzz={seletedRemoveFromPocketBuzz} pocket={getPocket()} loadPockets={loadPockets}/>
     </React.Fragment>
   )
 })

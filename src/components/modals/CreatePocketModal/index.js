@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import Spinner from 'components/elements/progress/Spinner'
 import { CircularProgress } from '@material-ui/core'
+import moment from 'moment'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -55,10 +56,6 @@ const useStyles = createUseStyles(theme => ({
         '&:disabled': {
           opacity: '0.5',
           cursor: 'none',
-
-          '&:hover': {
-            background: '#E61C34',
-          },
         },
       },
 
@@ -82,9 +79,15 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
           background: '#EDF0F2',
         },
+
+        '&:disabled': {
+          '&:hover': {
+            background: '#F5F8FA',
+          },
+        },
       },
   
-      '& .discard': {
+      '& .select': {
         display: 'grid',
         placeItems: 'center',
         background: '#E61C34',
@@ -100,7 +103,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     margin: '15px 0',
 
-    '& .tryAgainText': {
+    '& .errorText': {
       display: 'flex',
       justifyContent: 'center',
       marginBottom: 15,
@@ -109,6 +112,14 @@ const useStyles = createUseStyles(theme => ({
       fontWeight: 'bold',
       color: '#E61C34',
       animation: 'zoomIn 350ms',
+    },
+
+    '& .tryAgainText': {
+      fontSize: '0.95em',
+    },
+
+    '& .pocketAlreadyText': {
+      fontSize: '1.05em',
     },
 
     '& .pocketName': {
@@ -147,30 +158,50 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function CreatePocketModal(props) {
-  const { show, onHide, user } = props
+  const { show, onHide, user, loadPockets } = props
   const [pocketName, setPocketName] = useState('')
+  const [pocketSlug, setPocketSlug] = useState('')
   const [loading, setLoading] = useState(false)
   const [tryAgain, setTryAgain] = useState(false)
   const [fetching, setFetching] = useState(false)
   const [userData, setUserData] = useState(null)
+  const [pocketNames, setPocketNames] = useState([])
+  const [pocketAlreadyExists, setPocketAlreadyExists] = useState(false)
   const classes = useStyles()
 
   useEffect(() => {
-    setFetching(true)
-    getUserCustomData(user.username)
-      .then(res => {
-        setUserData(res)
-        setFetching(false)
-      })
+    if(show) {
+      setFetching(true)
+      getUserCustomData(user.username)
+        .then(res => {
+          setUserData(res)
+          setFetching(false)
+
+          res[0].pockets.forEach((pocket) => {
+            setPocketNames(pocketNames => [...pocketNames, pocket.pocketName])
+          })
+        })
+    }
     // eslint-disable-next-line
   }, [show])
+
+  const handlePocketNameOnChange = (pocketName) => {
+    setPocketName(pocketName)
+    setPocketSlug(pocketName.replace('-', '').replace(/\s+/g, '-').toLowerCase())
+    if(!pocketNames.includes(pocketName)) {
+      setPocketAlreadyExists(false)
+    } else {
+      setPocketAlreadyExists(true)
+    }
+  }
 
   const handleOnAdd = () => {
     if(pocketName) {
       setLoading(true)
       const pockets = [...(userData[0].pockets || []), {
-        pocketId: userData[0]?.pockets ? `${user.username}Pocket${Object.keys(userData[0]?.pockets).length+1}` : `${user.username}Pocket1`,
+        pocketId: moment().format(),
         pocketName: pocketName,
+        pocketSlug: pocketSlug,
         pocketBuzzes: [],
       }]
 
@@ -189,7 +220,9 @@ function CreatePocketModal(props) {
   
       const customUserData = { username: user.username, userData: [{...userData[0], pockets}] }
       updateUserCustomData(customUserData).then(() => {
+        loadPockets(pocketSlug)
         setPocketName('')
+        setPocketSlug('')
         setLoading(false)
         onHide(!true)
         setTryAgain(false)
@@ -229,8 +262,9 @@ function CreatePocketModal(props) {
             {!loading ?
               <React.Fragment>
                 <div className={classes.createPocketContainer}>
-                  {tryAgain && <span className='tryAgainText'>An error occurd while creating your pocket, please try again!</span>}
-                  <input type="text" maxLength={20} id='pocketNameInput' className="pocketName" placeholder="Pocket Name" value={pocketName} onChange={e => setPocketName(e.target.value)} />
+                  {tryAgain && <span className='tryAgainText errorText'>An error occurd while creating your pocket, please try again!</span>}
+                  {pocketAlreadyExists && <span className='pocketExistsText errorText'>A pocket with the same name already exists!</span>}
+                  <input type="text" maxLength={20} id='pocketNameInput' className="pocketName" placeholder="Pocket Name" value={pocketName} onChange={e => handlePocketNameOnChange(e.target.value)} />
                 </div>
               </React.Fragment> :
               <div className={classes.creatingPocketContainer}>
@@ -239,7 +273,7 @@ function CreatePocketModal(props) {
               </div>}
             <div className='modalButtons'>
               <button className='cancel modalButton' onClick={onCancel}>Cancel</button>
-              {<button className='discard modalButton' onClick={handleOnAdd} disabled={!pocketName || fetching}>{!fetching ? 'Create' : <CircularProgress size={25} color="#ffffff" className={classes.fetchingProgress} />}</button>}
+              <button className='select modalButton' onClick={handleOnAdd} disabled={!pocketName || fetching || loading || pocketAlreadyExists}>{!fetching ? 'Create' : <CircularProgress size={25} color="#ffffff" />}</button>
             </div>
           </div>
         </ModalBody>

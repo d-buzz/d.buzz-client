@@ -108,10 +108,6 @@ const useStyles = createUseStyles(theme => ({
         '&:disabled': {
           opacity: '0.5',
           cursor: 'none',
-
-          '&:hover': {
-            background: '#E61C34',
-          },
         },
       },
 
@@ -135,9 +131,15 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
           background: '#EDF0F2',
         },
+
+        '&:disabled': {
+          '&:hover': {
+            background: '#F5F8FA',
+          },
+        },
       },
   
-      '& .discard': {
+      '& .select': {
         background: '#E61C34',
         color: '#ffffff',
   
@@ -193,7 +195,6 @@ function AddToPocketModal(props) {
   useEffect(() => {
     getUserCustomData(user.username)
       .then(res => {
-        console.log(res)
         if(res[0].pockets) {
           setPockets([...res[0].pockets])
         } else {
@@ -218,13 +219,17 @@ function AddToPocketModal(props) {
       document.querySelectorAll(`.pocket`)[p].classList.remove('activePocket')
     }
   }
+
+  const getPocketIndex = (pocket) => {
+    return pockets.findIndex((p) => p.pocketId === pocket.pocketId)
+  }
   
   const handleSelectPocket = (pocket) => {
     const hasThisBuzz = pocket.pocketBuzzes.find((b) => b.permlink === buzz.permlink) !== undefined
     if(!hasThisBuzz) {
       resetPockets()
-      document.querySelector(`.pocket${pocket.pocketId}`).classList.add('activePocket')
-      setSelectedPocket({pocketId: pocket.pocketId, pocketName: pocket.pocketName})
+      document.querySelector(`.pocket${getPocketIndex(pocket)}`).classList.add('activePocket')
+      setSelectedPocket({index: getPocketIndex(pocket), pocketId: pocket.pocketId, pocketName: pocket.pocketName})
       setMessage('')
     } else {
       setMessage('This pocket already has this buzz!')
@@ -237,8 +242,7 @@ function AddToPocketModal(props) {
       .then((data) => {
         // add buzz to the specified pocket
         const pockets = data[0].pockets
-        const pocketId = selectedPocket.pocketId.match(/\d+/g)-1
-        pockets[pocketId].pocketBuzzes.push(buzz)
+        pockets[selectedPocket.index].pocketBuzzes.push(buzz)
 
         // prepare data to be updated
         const resData = { username: user.username, userData: [{username: data[0].username, settings: data[0].settings, pockets: [...pockets]}] }
@@ -272,7 +276,7 @@ function AddToPocketModal(props) {
                   {message && <div className={classes.message}>{message}</div>}
                   <div className='pockets'>
                     {pockets.map(pocket => (
-                      <div key={pocket.pocketId} className={`pocket pocket${pocket.pocketId}`} onClick={() => handleSelectPocket(pocket)}>
+                      <div key={pocket.pocketId} className={`pocket pocket${getPocketIndex(pocket)}`} onClick={() => handleSelectPocket(pocket)}>
                         <span className='pocketName'>{pocket.pocketName}</span>
                       </div>
                     ))}
@@ -288,8 +292,8 @@ function AddToPocketModal(props) {
                 <Spinner loading={loading} size={50}/>
               </div>}
             <div className='modalButtons'>
-              <button className='cancel modalButton' onClick={onCancel}>Cancel</button>
-              <button className='discard modalButton' onClick={handleOnAdd} disabled={!selectedPocket || loading}>Add</button>
+              <button className='cancel modalButton' onClick={onCancel} disabled={loading}>Cancel</button>
+              <button className='select modalButton' onClick={handleOnAdd} disabled={!selectedPocket || loading}>Add</button>
             </div>
           </div>
         </ModalBody>
