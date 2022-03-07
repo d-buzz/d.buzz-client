@@ -129,8 +129,8 @@ const LoginModal = (props) => {
   const [qrCode, setQRCode] = useState(null)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
+  /* eslint-disable */
+  const [hasExpiredDelay, setHasExpiredDelay] = useState(100)
   
   const onChange = (e) => {
     const { target } = e
