@@ -407,7 +407,7 @@ const Profile = (props) => {
       setIndex(1)
     } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(2)
-    } else if(pathname.match(/(\/t\/pockets\/)$|(\/t\/pockets)$/m)) {
+    } else if(pathname.match(/(\/t\/pockets)$|(\/t\/pockets)$/m) || pathname.match(/(\/t\/pockets\/.*)$|(\/t\/pockets\/.*)$/m)) {
       setIndex(3)
     } else {
       setIndex(0)
