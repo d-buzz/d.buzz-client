@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
@@ -129,19 +129,8 @@ const LoginModal = (props) => {
   const [qrCode, setQRCode] = useState(null)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [seconds, setSeconds] = useState(100)
-  // const [hasExpiredDelay, setHasExpiredDelay] = useState(false)
-  
-  useEffect(() => {
-    if (seconds > 0) {
-      const intervalId = setInterval(() => {
-        setSeconds(seconds - 1)
-      }, 1000)
-      return () => clearInterval(intervalId)
-    } else {
-      handleClickBack()
-    }
-  },[seconds])
+
+  let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
   
   const onChange = (e) => {
     const { target } = e
@@ -182,7 +171,6 @@ const LoginModal = (props) => {
   }
 
   const handleClickBack = () => {
-    setSeconds(100)
     setQRCode(null)
     localStorage.removeItem('hasQRcode')
   }
@@ -193,18 +181,22 @@ const LoginModal = (props) => {
     authenticateUserRequest(username, password, useKeychain, useHAS)
       .then(({ is_authenticated }) => {
         if (useHAS) {
-          let hasExpiredDelay = 100
+          
           const hasExpiredDelayInterval = setInterval(() => {
+            // console.log('this', hasExpiredDelay)
             hasExpiredDelay -= 1
+            setHasExpiredDelay(hasExpiredDelay)
+
             setLoading(false)
             const rawQR = localStorage.getItem('hasQRcode')
             setQRCode(rawQR)
 
             if (hasExpiredDelay === 0) {
+              console.log('sample hit')
               clearInterval(hasExpiredDelayInterval)
-              hasExpiredDelay = 100
+              setHasExpiredDelay(100)
               localStorage.removeItem('hasQRcode')
-              onHide()
+              handleClickBack()
             }
           }, 1000)  
 
@@ -426,15 +418,16 @@ const LoginModal = (props) => {
                 <center>
                   <h3 className={classes.label}>Login to D.Buzz!</h3>
                   <h6> Open your Hive Keychain Mobile to scan the QRcode and approve the request</h6>
+                  <br />
                   <QRCode 
                     value={qrCode}
-                    size="120"
+                    size="150"
                   />
                 
                   <br />
                   <br />
-                  <h1>{seconds}</h1>
-                  <ProgressBar animated now={seconds} />
+                  <h1>{hasExpiredDelay}</h1>
+                  <ProgressBar animated now={hasExpiredDelay} />
 
                   {!loading && (
                     <ContainedButton
