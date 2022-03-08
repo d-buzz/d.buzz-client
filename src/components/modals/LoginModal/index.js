@@ -21,6 +21,7 @@ import { signOnHiveonboard } from 'services/helper'
 import { SuccessConfirmation } from 'components/elements'
 import { Checkbox } from '@material-ui/core'
 import { ProgressBar } from 'react-bootstrap'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
 
 const useStyles = createUseStyles(theme => ({
@@ -302,61 +303,76 @@ const LoginModal = (props) => {
                 </React.Fragment>
               )}
               {hasInstalledKeychain && (
-                <React.Fragment>
-                  <span className={classes.checkBox}>
-                    <Checkbox 
-                      id="checkbox"
-                      type="checkbox"
-                      name="HAS"
-                      checked={useHAS}
-                      disabled={useKeychain}
-                      onChange={handleClickHAS}
-                      icon={<HiveAuthenticationServiceIcon/>} 
-                    />
-                    <span className="label">Login With Hive Authentication Service</span>
-                  </span>
+                <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="HAS"
+                        checked={useHAS}
+                        disabled={useKeychain}
+                        onChange={handleClickHAS}
+                        icon={<HiveAuthenticationServiceIcon/>} 
+                      />
+                    }
+                    label="Login With Hive Authentication Service"
+                  />
                   <br />
-                  <span className={classes.checkBox}>
-                    <Checkbox 
-                      id="checkbox"
-                      type="checkbox"
-                      name="keychain"
-                      checked={useKeychain}
-                      disabled={useHAS}
-                      onChange={handleClickKeychain}
-                      icon={<HiveKeyChainIcon/>} 
-                    />
-                    <span className="label">Login With Hive Keychain</span>
-                  </span>
-                </React.Fragment>
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="keychain"
+                        checked={useKeychain}
+                        disabled={useHAS}
+                        onChange={handleClickKeychain}
+                        icon={<HiveKeyChainIcon/>} 
+                      />
+                    }
+                    label=" Login With Hive Keychain"
+                  />
+                </div>
               )}
               {!hasInstalledKeychain && !isMobile && (
                 <React.Fragment>
-                  <span className="checkBox">
-                    <Checkbox 
-                      id="checkbox"
-                      type="checkbox"
-                      name="HAS"
-                      checked={useHAS}
-                      disabled={useKeychain}
-                      onChange={handleClickHAS}
-                      icon={<HiveAuthenticationServiceIcon/>} 
-                    />
-                    Login With Hive Authentication Service
-                  </span>
+                 <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="HAS"
+                        checked={useHAS}
+                        disabled={useKeychain}
+                        onChange={handleClickHAS}
+                        icon={<HiveAuthenticationServiceIcon/>} 
+                      />
+                    }
+                    label="Login With Hive Authentication Service"
+                  />
                   <br />
-                  <span className="checkBox">
-                    <Checkbox 
-                      id="checkbox"
-                      type="checkbox"
-                      name="keychain"
-                      checked={useKeychain}
-                      disabled={useHAS}
-                      onChange={handleClickKeychain}
-                      icon={<HiveKeyChainIcon/>} 
-                    />
-                    Login With Hive Keychain
-                  </span>
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="keychain"
+                        checked={useKeychain}
+                        disabled={useHAS}
+                        onChange={handleClickKeychain}
+                        icon={<HiveKeyChainIcon/>} 
+                      />
+                    }
+                    label=" Login With Hive Keychain"
+                  />
+                 </div>
+                  
                   <FormSpacer />
                   {useKeychain && (
                     <React.Fragment>
