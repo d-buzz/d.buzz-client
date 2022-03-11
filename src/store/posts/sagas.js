@@ -457,7 +457,7 @@ function* videoUploadRequest(payload, meta) {
 }
 
 function* publishPostRequest(payload, meta) {
-  const { tags, payout } = payload
+  const { tags, payout, perm } = payload
   let { body } = payload
   let success = false
 
@@ -474,8 +474,9 @@ function* publishPostRequest(payload, meta) {
 
   body = footnote(body)
   if (useHAS && is_authenticated) {
-    const permlink = createPermlink(title)
-    console.log(permlink)
+    console.log('PRE PERM', perm)
+    const permlink = perm ? perm : createPermlink(title)
+    console.log('POST PERM', permlink)
     
     const operations = yield call(hasGeneratePostService, username, title, tags, body, payout, permlink)
     console.log('this', operations[0])
