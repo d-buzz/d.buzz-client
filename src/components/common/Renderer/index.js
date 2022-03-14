@@ -711,6 +711,7 @@ const prepareDTubeEmbeds = (content) => {
 }
 
 const prepareDBuzzVideos = (content) => {
+  const oldDbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/(.*\?dbuzz_video)/i
   const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/.*\?dbuzz_video=https:\/\/ipfs\.io\/ipfs\/([a-zA-Z0-9]+)/i
   let body = content
 
@@ -719,10 +720,16 @@ const prepareDBuzzVideos = (content) => {
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
 
-    const match = link.match(dbuzzVideos)
+    let match
+
+    if(link.match(oldDbuzzVideos) && link.match(dbuzzVideos)) {
+      match = link.match(dbuzzVideos)[1]
+    } else if(link.match(oldDbuzzVideos) && !link.match(dbuzzVideos)) {
+      match = link.match(oldDbuzzVideos)[1].replace('?dbuzz_video', '')
+    }
 
     if (match) {
-      const id = match[1]
+      const id = match
       body = body.replace(link, `~~~~~~.^.~~~:dbuzz-video:${id}:~~~~~~.^.~~~`)
     }
   })
