@@ -18,7 +18,7 @@ import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
 import { PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest } from 'store/posts/actions'
+import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest, setContentRedirect } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -46,6 +46,8 @@ import SaveDraftModal from 'components/modals/SaveDraftModal'
 import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
 import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
+import { publishPostWithHAS } from 'services/api'
+import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -731,6 +733,7 @@ const CreateBuzzForm = (props) => {
     updateBuzzThreads,
     updateBuzzTitle,
     publishReplyRequest,
+    setContentRedirect,
   } = props
 
   // states & refs
@@ -1148,30 +1151,72 @@ const CreateBuzzForm = (props) => {
     } else {
       setBuzzLoading(true)
       setBuzzing(true)
-      publishPostRequest(buzzContent, tags, payout)
-        .then((data) => {
-          if (data.success) {
-            setPageFrom(null)
-            const { author, permlink } = data
-            // hideModalCallback()
-            clearIntentBuzz()
-            broadcastNotification('success', 'You successfully published a post')
-            setPublishedBuzzes(1)
-            setNextBuzz(2)
-            setBuzzData({author: author, permlink: permlink})
-            setBuzzing(false)
-            updateBuzzTitle('')
 
-            if(!isThread) {
-              hideModalCallback()
-              resetBuzzForm()
-              history.push(`/@${author}/c/${permlink}`)
+      if(user.useHAS) {
+        publishPostWithHAS(user, buzzContent, tags, payout)
+          .then((data) => {
+            console.log(data)
+            setContentRedirect(data.content)
+
+            hacMsg.subscribe(m => {
+              if (m.type === 'sign_wait') {
+                console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+              }
+              if (m.type === 'tx_result') {
+                console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+                if (m.msg?.status === 'accepted') {
+                  const status = m.msg?.status
+                  console.log(status)
+                  // success
+                  const { author, permlink } = data
+                  broadcastNotification('success', 'You successfully published a post')
+                  setBuzzLoading(false)
+                  setBuzzing(false)
+                  updateBuzzTitle('')
+                  clearIntentBuzz()
+                  resetBuzzForm()
+                  hideModalCallback()
+                  history.push(`/@${author}/c/${permlink}`)
+                } else if (m.msg?.status === 'rejected') {
+                  const status = m.msg?.status
+                  console.log(status)
+                  // error
+                  broadcastNotification('error', 'Your HiveAuth post transaction is rejected.')
+                  setBuzzLoading(false)
+                } else if (m.msg?.status === 'error') { 
+                  const error = m.msg?.status.error
+                  console.log(error)
+                  broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                } 
+              }
+            })
+          })
+      } else {
+        publishPostRequest(buzzContent, tags, payout)
+          .then((data) => {
+            if (data.success) {
+              setPageFrom(null)
+              const { author, permlink } = data
+              // hideModalCallback()
+              clearIntentBuzz()
+              broadcastNotification('success', 'You successfully published a post')
+              setPublishedBuzzes(1)
+              setNextBuzz(2)
+              setBuzzData({author: author, permlink: permlink})
+              setBuzzing(false)
+              updateBuzzTitle('')
+  
+              if(!isThread) {
+                hideModalCallback()
+                resetBuzzForm()
+                history.push(`/@${author}/c/${permlink}`)
+              }
+            } else {
+              broadcastNotification('error', data.errorMessage)
+              setBuzzLoading(false)
             }
-          } else {
-            broadcastNotification('error', data.errorMessage)
-            setBuzzLoading(false)
-          }
-        })
+          })
+      }
     }
   }
 
@@ -1738,6 +1783,7 @@ const mapDispatchToProps = (dispatch) => ({
       setBuzzTitleModalStatus,
       setDraftsModalStatus,
       setSaveDraftsModalStatus,
+      setContentRedirect,
     },dispatch),
 })
 

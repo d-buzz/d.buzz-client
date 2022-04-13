@@ -779,6 +779,122 @@ export const hasGeneratePostService = (account, title, tags, body, payout, perml
 
 }
 
+const footnote = (body) => {
+  const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
+  body = `${body} ${footnoteAppend}`
+
+  return body
+}
+
+export const publishPostWithHAS = async(user, body, tags, payout) => {
+
+  let title = stripHtml(body)
+  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+  title = `${title}`.trim()
+
+  if(title.length > 70) {
+    title = `${title.substr(0, 70)} ...`
+  }
+
+  body = footnote(body)
+
+  const permlink = createPermlink(title)
+
+  const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
+  console.log(operations)
+  hasPostService(operations[0])
+  const comment = operations[0]
+  const json_metadata = comment[1].json_metadata
+  
+  let currentDatetime = moment().toISOString()
+  currentDatetime = currentDatetime.replace('Z', '')
+
+  let cashout_time = moment().add(7, 'days').toISOString()
+  cashout_time = cashout_time.replace('Z', '')
+
+  let bodyOperation = comment[1].body
+  bodyOperation = bodyOperation.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+
+
+  const content = {
+    author: user.username,
+    category: 'hive-193084',
+    permlink,
+    title: comment[1].title,
+    body: bodyOperation,
+    replies: [],
+    total_payout_value: '0.000 HBD',
+    curator_payout_value: '0.000 HBD',
+    pending_payout_value: '0.000 HBD',
+    active_votes: [],
+    root_author: "",
+    parent_author: null,
+    parent_permlink: "hive-190384",
+    root_permlink: permlink,
+    root_title: title,
+    json_metadata,
+    children: 0,
+    created: currentDatetime,
+    cashout_time,
+    max_accepted_payout: `${payout.toFixed(3)} HBD`,
+  }
+
+  const data = {
+    author: user.username,
+    permlink,
+    content,
+  }
+
+  return data
+}
+
+export const publishReplyWithHAS = async(username, body, parent_author, parent_permlink, ref, treeHistory) => {
+  body = footnote(body)
+  let replyData = {}
+  const json_metadata = createMeta()
+  let permlink = createPermlink(body.substring(0, 100))
+  permlink = `re-${permlink}`
+  hasReplyService(username, body, parent_author, parent_permlink, json_metadata, permlink)
+  let currentDatetime = moment().toISOString()
+  currentDatetime = currentDatetime.replace('Z', '')
+
+  const reply = {
+    author: username,
+    category: 'hive-193084',
+    permlink: permlink,
+    title: '',
+    body:`${body.trim()}`,
+    replies: [],
+    total_payout_value: '0.000 HBD',
+    curator_payout_value: '0.000 HBD',
+    pending_payout_value: '0.000 HBD',
+    active_votes: [],
+    parent_author,
+    parent_permlink,
+    root_author: parent_author,
+    root_permlink: parent_permlink,
+    children: 0,
+    created: currentDatetime,
+  }
+
+  reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+
+  reply.refMeta = {
+    ref,
+    author: parent_author,
+    permlink: parent_permlink,
+    treeHistory,
+  }
+    
+  replyData = reply
+  
+
+  const data = {
+    reply: replyData,
+  }
+
+  return data
+}
 
 // keychain apis
 

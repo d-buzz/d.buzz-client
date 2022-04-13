@@ -20,6 +20,8 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
+import { publishReplyWithHAS } from 'services/api'
+import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -192,7 +194,6 @@ const ReplyFormModal = (props) => {
   const classes = useStyles()
   const {
     user,
-    loading,
     uploading,
     modalData,
     closeReplyModal,
@@ -219,6 +220,7 @@ const ReplyFormModal = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
@@ -333,16 +335,52 @@ const ReplyFormModal = (props) => {
       invokeTwitterIntent(content)
     }
 
-    publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-      .then(({ success, errorMessage }) => {
-        if(success) {
-          broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-          setReplyDone(true)
-          closeReplyModal()
-        } else {
-          broadcastNotification('error', errorMessage)
-        }
-      })
+    setLoading(true)
+
+    if(user.useHAS) {
+      publishReplyWithHAS(user.username, content, author, permlink, replyRef, treeHistory)
+        .then((data) => {
+          console.log(data)
+          hacMsg.subscribe(m => {
+   
+            if (m.type === 'sign_wait') {
+              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+            }
+        
+            if (m.type === 'tx_result') {
+              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+              if (m.msg?.status === 'accepted') {                  
+                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                setReplyDone(true)
+                setLoading(false)
+                closeReplyModal()
+              } else if (m.msg?.status === 'rejected') {
+                const status = m.msg?.status
+                console.log(status)
+                setLoading(false)
+                // error
+                broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
+              } else if (m.msg?.status === 'error') { 
+                const error = m.msg?.status.error
+                console.log(error)
+                setLoading(false)
+                broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+              } 
+            }
+          })
+        })
+    } else {
+      publishReplyRequest(author, permlink, content, replyRef, treeHistory)
+        .then(({ success, errorMessage }) => {
+          if(success) {
+            broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+            setReplyDone(true)
+            closeReplyModal()
+          } else {
+            broadcastNotification('error', errorMessage)
+          }
+        })
+    }
   }
 
   const handleClickContent = (e) => {
@@ -576,7 +614,6 @@ const ReplyFormModal = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   modalData: state.interfaces.get('replyModalData'),
-  loading: pending(state, 'PUBLISH_REPLY_REQUEST'),
   uploading: pending(state, 'UPLOAD_FILE_REQUEST'),
 })
 
