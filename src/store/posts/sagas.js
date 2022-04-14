@@ -422,7 +422,7 @@ function* videoUploadRequest(payload, meta) {
 }
 
 function* publishPostRequest(payload, meta) {
-  const { tags, payout } = payload
+  const { tags, payout, perm } = payload
   let { body } = payload
   let success = false
 

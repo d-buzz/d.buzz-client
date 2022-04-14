@@ -64,7 +64,7 @@ const ViewImageModal = (props) => {
       >
         <ModalBody>
           <div className={classes.imageModal}>
-            {imageUrl ? !imageUrl.endsWith('?dbuzz_video') ? <img src={imageUrl} alt='modal_image' /> : <video src={imageUrl} controls/> : null}
+            {imageUrl ? !imageUrl.includes('?dbuzz_video=') ? <img src={imageUrl} alt='modal_image' /> : <video src={imageUrl.split('?dbuzz_video=')[1]} controls/> : null}
             <IconButton className={classes.closeImageButton} onClick={() => onHide('')}>
               <CloseIcon />
             </IconButton>
