@@ -1152,6 +1152,7 @@ const CreateBuzzForm = (props) => {
     } else {
       setBuzzLoading(true)
       setBuzzing(true)
+      
       if(user.useHAS) {
         publishPostWithHAS(user, buzzContent, tags, payout)
           .then((data) => {
