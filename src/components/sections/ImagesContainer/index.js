@@ -128,13 +128,13 @@ const ImagesContainer = (props) => {
     <div className={classes.imagesContainer}>
       <span className='images'>
         {buzzImages.map(image => ( 
-          !image.endsWith('?dbuzz_video') ?
+          !image.includes('?dbuzz_video=') ?
             <div className="media">
               <img key={image} src={image} alt={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div> :
             <div className="media">
-              <video key={image} src={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <video key={image} src={image.split('?dbuzz_video=')[1]} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div>))}
       </span>
