@@ -2,9 +2,9 @@ export const AUTHENTICATE_USER_REQUEST = 'AUTHENTICATE_USER_REQUEST'
 export const AUTHENTICATE_USER_SUCCESS = 'AUTHENTICATE_USER_SUCCESS'
 export const AUTHENTICATE_USER_FAILURE = 'AUTHENTICATE_USER_FAILURE'
 
-export const authenticateUserRequest = (username, password, useKeychain) => ({
+export const authenticateUserRequest = (username, password, useKeychain, useHAS) => ({
   type: AUTHENTICATE_USER_REQUEST,
-  payload: { username, password, useKeychain },
+  payload: { username, password, useKeychain, useHAS },
   meta: {
     thunk: true,
   },
@@ -45,6 +45,37 @@ export const signoutUserFailure = (error, meta) => ({
   meta,
 })
 
+export const INIT_WS_HAS_CONNECTION_REQUEST = 'INIT_WS_HAS_CONNECTION_REQUEST'
+export const INIT_WS_HAS_CONNECTION_SUCCESS = 'INIT_WS_HAS_CONNECTION_SUCCESS'
+export const INIT_WS_HAS_CONNECTION_FAILURE = 'INIT_WS_HAS_CONNECTION_FAILURE'
+
+export const initWSHASConnectionRequest = () => ({
+  type: INIT_WS_HAS_CONNECTION_REQUEST,
+  meta: {
+    thunk: true,
+  },
+})
+
+export const initWSHASConnectionSuccess = (response, meta) => ({
+  type: INIT_WS_HAS_CONNECTION_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const initWSHASConnectionFailure = (error, meta) => ({
+  type: INIT_WS_HAS_CONNECTION_FAILURE,
+  payload: error,
+  meta,
+})
+
+export const SET_HAS_QR_CODE = 'SET_HAS_QR_CODE'
+
+export const setHASQRCode = (qrCode) => ({
+  type: SET_HAS_QR_CODE,
+  payload: qrCode,
+})
+
+
 export const GET_SAVED_USER_REQUEST = 'GET_SAVED_USER_REQUEST'
 export const GET_SAVED_USER_SUCCESS = 'GET_SAVED_USER_SUCCESS'
 export const GET_SAVED_USER_FAILURE = 'GET_SAVED_USER_FAILURE'
@@ -65,9 +96,7 @@ export const getSavedUserSuccess = (response, meta) => ({
 export const getSavedUserFailure = (error, meta) => ({
   type: GET_SAVED_USER_FAILURE,
   payload: error,
-  meta: {
-    thunk: true,
-  },
+  meta,
 })
 
 export const SUBSCRIBE_REQUEST = 'SUBSCRIBE_REQUEST'

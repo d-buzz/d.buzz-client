@@ -211,13 +211,18 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 600,
     userSelect: 'none',
   },
+  navBar: {
+    display: 'flex !important',
+    flexDirection: 'column !important',
+    alignItems: 'center !important',
+  },
 }))
 
 
-const LinkContainer = ({ children }) => {
+const LinkContainer = ({ children, className }) => {
   return (
     <div style={{ width: 'auto' }}>
-      <div>
+      <div className={className}>
         {children}
       </div>
     </div>
@@ -272,6 +277,7 @@ const NavLinkWrapper = (props) => {
           <Link to={path} onClick={preventLink}>
             <IconButton
               size="medium"
+              style={{width: 55, height: 55}}
             >
               {icon}
             </IconButton>
@@ -453,9 +459,9 @@ const SideBarLeft = (props) => {
   return (
     <React.Fragment>
       <div style={{ height: '100vh', width: '50px' }}>
-        <Nav className="flex-row">
-          <LinkContainer >
-            <NavbarBrand href="/">
+        <Nav className='flex-row'>
+          <LinkContainer className={classes.navBar}>
+            <NavbarBrand href="/" style={{marginRight: 0, alignSelf: minify ? 'center' : 'flex-start'}}>
               <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
                 {theme === 'light' && !minify && (<BrandIcon />)}
                 {theme === 'dark' && !minify && (<BrandIconDark />)}

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
-import FormCheck from 'react-bootstrap/FormCheck'
 import FormControl from 'react-bootstrap/FormControl'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
@@ -11,6 +10,7 @@ import { Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import { pending } from 'redux-saga-thunk'
+import QRCode from 'qrcode.react'
 import classNames from 'classnames'
 import { hasCompatibleKeychain } from 'services/helper'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
@@ -19,6 +19,10 @@ import { isMobile } from 'react-device-detect'
 import { Link } from 'react-router-dom'
 import { signOnHiveonboard } from 'services/helper'
 import { SuccessConfirmation } from 'components/elements'
+import { Checkbox } from '@material-ui/core'
+import { ProgressBar } from 'react-bootstrap'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
@@ -29,6 +33,14 @@ const useStyles = createUseStyles(theme => ({
   },
   checkBox: {
     cursor: 'pointer',
+
+    '& hover': {
+      cursor: 'pointer',
+    },
+
+    '& .label': {
+      color: theme.font.color,
+    },
   },
   label: {
     fontFamily: 'Segoe-Bold',
@@ -113,23 +125,27 @@ const LoginModal = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState()
   const [useKeychain, setUseKeychain] = useState(false)
+  const [useHAS, setUseHAS] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
+  const [qrCode, setQRCode] = useState(null)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
-
+  /* eslint-disable */
+  let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
+  
   const onChange = (e) => {
     const { target } = e
     const { name, value } = target
 
     if (name === 'username') {
-      setUsername(value.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''))
+      setUsername(value.replace(/[@!#$%^&*()+=/\\~`,;:"'_-\s]/gi, ''))
     } else if (name === 'password') {
       setPassword(value.replace(/[\s]/gi, ''))
     }
     setHasAuthenticationError(false)
   }
 
-  const handleClickCheckbox = (e) => {
+  const handleClickKeychain = (e) => {
     const { target } = e
     const { name, checked } = target
 
@@ -143,30 +159,71 @@ const LoginModal = (props) => {
     }
   }
 
+  const handleClickHAS = (e) => {
+    const { target } = e
+    const { name, checked } = target
+    
+    if (name === 'HAS') {
+      if (checked) {
+        setPassword('')
+      }
+      setUseHAS(checked)
+    }
+  }
+
+  const handleClickBack = () => {
+    setQRCode(null)
+    localStorage.removeItem('hasQRcode')
+  }
+
+
   const handleClickLogin = () => {
     setLoading(true)
-    authenticateUserRequest(username, password, useKeychain)
+    authenticateUserRequest(username, password, useKeychain, useHAS)
       .then(({ is_authenticated }) => {
-        if (!is_authenticated) {
-          setHasAuthenticationError(true)
-          setLoading(false)
-        } else {
-          if (fromIntentBuzz && buzzIntentCallback) {
-            buzzIntentCallback()
+        if (useHAS) {
+          
+          const hasExpiredDelayInterval = setInterval(() => {
+            // console.log('this', hasExpiredDelay)
+            hasExpiredDelay -= 1
+            setHasExpiredDelay(hasExpiredDelay)
+
             setLoading(false)
+            const rawQR = localStorage.getItem('hasQRcode')
+            setQRCode(rawQR)
+
+            if (hasExpiredDelay === 0) {
+              console.log('sample hit')
+              clearInterval(hasExpiredDelayInterval)
+              setHasExpiredDelay(100)
+              localStorage.removeItem('hasQRcode')
+              handleClickBack()
+            }
+          }, 1000)  
+
+        } else if (!useHAS) {
+          if (!is_authenticated) {
+            setHasAuthenticationError(true)
+            setLoading(false)
+          } else {
+            if (fromIntentBuzz && buzzIntentCallback) {
+              buzzIntentCallback()
+              setLoading(false)
+            }
+            onHide()
           }
-          onHide()
         }
       })
-    setTimeout(() => {
-      setHasAuthenticationError(true)
-      setLoading(false)
-    }, 10000)
+      
+    // setTimeout(() => {
+    //   setHasAuthenticationError(true)
+    //   setLoading(false)
+    // }, 10000)
   }
 
   const isDisabled = () => {
-    return ((!useKeychain && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined))
-      || (useKeychain && (`${username}`.trim() === '' || username === undefined))
+    return ((!useKeychain && !useHAS && (`${username}`.trim() === "" || `${password}`.trim() === "" || username === undefined || password === undefined))
+      || (useKeychain && (`${username}`.trim() === '' || username === undefined)) || (useHAS && (`${username}`.trim() === '' || username === undefined))
     )
   }
 
@@ -199,131 +256,212 @@ const LoginModal = (props) => {
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
-          <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
-            <center>
-              <h6 className={classes.label}>Hi there, welcome back!</h6>
-              {signUpConfirmation && (
+          {(qrCode === null) && (
+            <React.Fragment>
+              <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
+                <center>
+                  <h6 className={classes.label}>Hi there, welcome back!</h6>
+                  {signUpConfirmation && (
+                    <React.Fragment>
+                      <div style={{ height: 100, width: 100 }} >
+                        <SuccessConfirmation />
+                      </div>
+                      <span style={{ color: 'green '}}> You successfully created a HIVE account, and can now login to D.Buzz </span>
+                    </React.Fragment>
+                  )}
+                  {hasAuthenticationError && (
+                    <span style={{ color: 'red' }}>Authentication failed, please check credentials and retry again.</span>
+                  )}
+                  {hasSwitcherMatch() && (<span style={{ color: 'red' }}>You are trying to login a username that is already added in the account switcher</span>)}
+                </center>
+              </div>
+              <FormLabel className={classes.label}>Username</FormLabel>
+              <div className={classes.username}>
+                <b className={classes.usernameHint}>@</b>
+                <FormControl
+                  disabled={loading}
+                  name="username"
+                  type="text"
+                  value={username}
+                  onChange={onChange}
+                  onKeyDown={onKeyDown}
+                />
+              </div>
+              <FormSpacer />
+              {!useKeychain && !useHAS && (
                 <React.Fragment>
-                  <div style={{ height: 100, width: 100 }} >
-                    <SuccessConfirmation />
-                  </div>
-                  <span style={{ color: 'green '}}> You successfully created a HIVE account, and can now login to D.Buzz </span>
+                  <FormLabel className={classes.label}>Posting key</FormLabel>
+                  <FormControl
+                    disabled={loading}
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={onChange}
+                    onKeyDown={onKeyDown}
+                  />
+                  <FormSpacer />
                 </React.Fragment>
               )}
-              {hasAuthenticationError && (
-                <span style={{ color: 'red' }}>Authentication failed, please check credentials and retry again.</span>
+              {hasInstalledKeychain && (
+                <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="HAS"
+                        checked={useHAS}
+                        disabled={useKeychain}
+                        onChange={handleClickHAS}
+                        icon={<HiveAuthenticationServiceIcon/>} 
+                      />
+                    }
+                    label="Login With Hive Authentication Service"
+                  />
+                  <br />
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="keychain"
+                        checked={useKeychain}
+                        disabled={useHAS}
+                        onChange={handleClickKeychain}
+                        icon={<HiveKeyChainIcon/>} 
+                      />
+                    }
+                    label=" Login With Hive Keychain"
+                  />
+                </div>
               )}
-              {hasSwitcherMatch() && (<span style={{ color: 'red' }}>You are trying to login a username that is already added in the account switcher</span>)}
-            </center>
-          </div>
-          <FormLabel className={classes.label}>Username</FormLabel>
-          <div className={classes.username}>
-            <b className={classes.usernameHint}>@</b>
-            <FormControl
-              disabled={loading}
-              name="username"
-              type="text"
-              value={username}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-            />
-          </div>
-          <FormSpacer />
-          {!useKeychain && (
-            <React.Fragment>
-              <FormLabel className={classes.label}>Posting key</FormLabel>
-              <FormControl
-                disabled={loading}
-                name="password"
-                type="password"
-                value={password}
-                onChange={onChange}
-                onKeyDown={onKeyDown}
-              />
-              <FormSpacer />
-            </React.Fragment>
-          )}
-          {hasInstalledKeychain && (
-            <React.Fragment>
-              <span >
-                <FormCheck
-                  id="default-checkbox"
-                  type="checkbox"
-                  name="keychain"
-                  checked={useKeychain}
-                  label="Login with Hive Keychain"
-                  className={classNames(classes.checkBox, classes.label)}
-                  onChange={handleClickCheckbox}
-                />
-              </span>
-            </React.Fragment>
-          )}
-          {!hasInstalledKeychain && !isMobile && (
-            <React.Fragment>
-              <span >
-                <FormCheck
-                  id="checkbox"
-                  type="checkbox"
-                  name="keychain"
-                  checked={useKeychain}
-                  label="Login with Hive Keychain"
-                  className={classNames(classes.checkBox, classes.label)}
-                  onChange={handleClickCheckbox}
-                />
-              </span>
-              <FormSpacer />
-              {useKeychain && (
+              {!hasInstalledKeychain && !isMobile && (
                 <React.Fragment>
-                  <center><h6 className={classes.label}>Install Hive Keychain</h6>
-                    <Button
-                      classes={{ root: classes.browserExtension }}
-                      style={{ borderRadius: 50 }}
-                      variant="outlined"
-                      startIcon={<FaChrome />}
-                      href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      Chrome
-                    </Button>
-                    <Button
-                      classes={{ root: classes.browserExtension }}
-                      variant="outlined"
-                      style={{ borderRadius: 50, marginLeft: 15 }}
-                      startIcon={<FaFirefoxBrowser />}
-                      href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      Firefox
-                    </Button>
-                  </center>
+                 <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="HAS"
+                        checked={useHAS}
+                        disabled={useKeychain}
+                        onChange={handleClickHAS}
+                        icon={<HiveAuthenticationServiceIcon/>} 
+                      />
+                    }
+                    label="Login With Hive Authentication Service"
+                  />
+                  <br />
+                  <FormControlLabel
+                    className='checkBox'
+                    control={
+                      <Checkbox 
+                        id="checkbox"
+                        type="checkbox"
+                        name="keychain"
+                        checked={useKeychain}
+                        disabled={useHAS}
+                        onChange={handleClickKeychain}
+                        icon={<HiveKeyChainIcon/>} 
+                      />
+                    }
+                    label=" Login With Hive Keychain"
+                  />
+                 </div>
+                  
+                  <FormSpacer />
+                  {useKeychain && (
+                    <React.Fragment>
+                      <center><h6 className={classes.label}>Install Hive Keychain</h6>
+                        <Button
+                          classes={{ root: classes.browserExtension }}
+                          style={{ borderRadius: 50 }}
+                          variant="outlined"
+                          startIcon={<FaChrome />}
+                          href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Chrome
+                        </Button>
+                        <Button
+                          classes={{ root: classes.browserExtension }}
+                          variant="outlined"
+                          style={{ borderRadius: 50, marginLeft: 15 }}
+                          startIcon={<FaFirefoxBrowser />}
+                          href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Firefox
+                        </Button>
+                      </center>
+                    </React.Fragment>
+                  )}
                 </React.Fragment>
               )}
+              <center>
+                {!loading && (
+                  <ContainedButton
+                    onClick={handleClickLogin}
+                    transparent={true}
+                    className={classes.loginButton}
+                    fontSize={15}
+                    disabled={isDisabled() || hasSwitcherMatch()}
+                    label="Submit"
+                  />
+                )}
+                {loading && (
+                  <Spinner size={40} loading={true} />
+                )}
+              </center>
+              <FormSpacer />
+              <center>
+                <span className={classNames(classes.noAccount,classes.label)}>Don't have an account?</span>
+                <Link to={"#"} onClick={handleClickSignup} className={classNames(classes.label, classes.signup)}>
+                  &nbsp;<span>Sign up</span>
+                </Link>
+              </center>
             </React.Fragment>
           )}
-          <center>
-            {!loading && (
-              <ContainedButton
-                onClick={handleClickLogin}
-                transparent={true}
-                className={classes.loginButton}
-                fontSize={15}
-                disabled={isDisabled() || hasSwitcherMatch()}
-                label="Submit"
-              />
-            )}
-            {loading && (
-              <Spinner size={40} loading={true} />
-            )}
-          </center>
-          <FormSpacer />
-          <center>
-            <span className={classNames(classes.noAccount,classes.label)}>Don't have an account?</span>
-            <Link to={"#"} onClick={handleClickSignup} className={classNames(classes.label, classes.signup)}>
-              &nbsp;<span>Sign up</span>
-            </Link>
-          </center>
+          {(qrCode !== null) && (
+            <React.Fragment>
+              <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
+                <center>
+                  <h3 className={classes.label}>Login to D.Buzz!</h3>
+                  <h6> Open your Hive Keychain Mobile to scan the QRcode and approve the request</h6>
+                  <br />
+                  <QRCode 
+                    value={qrCode}
+                    size="150"
+                  />
+                
+                  <br />
+                  <br />
+                  <h1>{hasExpiredDelay}</h1>
+                  <ProgressBar animated now={hasExpiredDelay} />
+
+                  {!loading && (
+                    <ContainedButton
+                      onClick={handleClickBack}
+                      transparent={true}
+                      className={classes.loginButton}
+                      fontSize={15}
+                      label="Go Back"
+                    />
+                  )}
+
+                  {loading && (
+                    <Spinner size={40} loading={true} />
+                  )}
+                </center>
+              </div>
+            </React.Fragment>
+          )}
         </ModalBody>
       </Modal>
     </React.Fragment>
