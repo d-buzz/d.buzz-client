@@ -46,7 +46,7 @@ import SaveDraftModal from 'components/modals/SaveDraftModal'
 import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
 import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
-import { publishPostWithHAS } from 'services/api'
+import { createPermlink, publishPostWithHAS } from 'services/api'
 import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const useStyles = createUseStyles(theme => ({
