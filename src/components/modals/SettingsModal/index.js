@@ -30,6 +30,13 @@ const useStyles = createUseStyles(theme => ({
     '& label': {
       fontSize: 14,
     },
+    '@media (max-width: 900px)': {
+      width: '97% !important',
+      '& div.modal-content': {
+        margin: '0 auto',
+        width: '97% !important',
+      },
+    },
   },
   button: {
     width: '100%',
@@ -302,56 +309,61 @@ const SettingsModal = (props) => {
 
   return (
     <React.Fragment>
-      <Modal className={classes.modal} show={show} onHide={onHide}>
+      <Modal
+        backdrop='static'
+        keyboard={false}
+        show={show}
+        onHide={onHide}
+        dialogClassName={classes.modal}
+        animation={true}
+      >
         <ModalBody>
-          <div style={{ width: '98%', margin: '0 auto', height: 'max-content' }}>
-            <center>
-              <h6>Settings</h6>
-            </center>
-            <div className={classes.settings}>
-              <div className='items'>
-                <div className='item'>
-                  <div className="toggle_container">
-                    <span className='title'>Show Video Embeds</span>
-                    <span className='toggle' onClick={handleVideoEmbedsToggle}>{!(loading && selectedItem === 'videoEmbedsToggle') ? videoEmbedsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
-                  </div>
-                  <div className="description">All the video embeds are <b>{videoEmbedsStatus}</b></div>
+          <center>
+            <h6>Settings</h6>
+          </center>
+          <div className={classes.settings}>
+            <div className='items'>
+              <div className='item'>
+                <div className="toggle_container">
+                  <span className='title'>Show Video Embeds</span>
+                  <span className='toggle' onClick={handleVideoEmbedsToggle}>{!(loading && selectedItem === 'videoEmbedsToggle') ? videoEmbedsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
-                <div className='item'>
-                  <div className="toggle_container">
-                    <span className='title'>Show Link Previews</span>
-                    <span className='toggle' onClick={handleLinkPreviewToggle}>{!(loading && selectedItem === 'linkPreviewToggle') ? linkPreviewsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
-                  </div>
-                  <div className="description">All the link previews are <b>{linkPreviewsStatus}</b></div>
+                <div className="description">All the video embeds are <b>{videoEmbedsStatus}</b></div>
+              </div>
+              <div className='item'>
+                <div className="toggle_container">
+                  <span className='title'>Show Link Previews</span>
+                  <span className='toggle' onClick={handleLinkPreviewToggle}>{!(loading && selectedItem === 'linkPreviewToggle') ? linkPreviewsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
-                <div className='item'>
-                  <div className="toggle_container">
-                    <span className='title'>Show Images</span>
-                    <span className='toggle' onClick={handleShowImagesToggle}>{!(loading && selectedItem === 'showImagesToggle') ? showImagesStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
-                  </div>
-                  <div className="description">All the images are <b>{showImagesStatus}</b></div>
+                <div className="description">All the link previews are <b>{linkPreviewsStatus}</b></div>
+              </div>
+              <div className='item'>
+                <div className="toggle_container">
+                  <span className='title'>Show Images</span>
+                  <span className='toggle' onClick={handleShowImagesToggle}>{!(loading && selectedItem === 'showImagesToggle') ? showImagesStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
+                <div className="description">All the images are <b>{showImagesStatus}</b></div>
               </div>
             </div>
-            <center>
-              <div className={classes.versionContainer}>
-                <span className='current_version'>You're on v{VERSION}</span>
-                <span className='check_updates_button' onClick={checkForUpdates} hidden={isLatest || updatesAvailable}>CHECK FOR UPDATES</span>
-                <span className='up_to_date_button' hidden={!isLatest}>AlREADY UPDATE TO DATE</span>
-                {/* eslint-disable-next-line */}
-                <span className='check_again_text' hidden={!isLatest}>No updates avaialable. Check again later <span role="img">👋</span></span>
-                <span className='updates_avaialble' onClick={reload} hidden={isLatest || !updatesAvailable}>UPDATES AVAILABLE</span>
-              </div>
-            </center>
-            <center>
-              <ContainedButton
-                onClick={onHide}
-                className={classes.closeButton}
-                fontSize={14}
-                label='Done'
-              />
-            </center>
           </div>
+          <center>
+            <div className={classes.versionContainer}>
+              <span className='current_version'>You're on v{VERSION}</span>
+              <span className='check_updates_button' onClick={checkForUpdates} hidden={isLatest || updatesAvailable}>CHECK FOR UPDATES</span>
+              <span className='up_to_date_button' hidden={!isLatest}>AlREADY UPDATE TO DATE</span>
+              {/* eslint-disable-next-line */}
+              <span className='check_again_text' hidden={!isLatest}>No updates avaialable. Check again later <span role="img">👋</span></span>
+              <span className='updates_avaialble' onClick={reload} hidden={isLatest || !updatesAvailable}>UPDATES AVAILABLE</span>
+            </div>
+          </center>
+          <center>
+            <ContainedButton
+              onClick={onHide}
+              className={classes.closeButton}
+              fontSize={14}
+              label='Done'
+            />
+          </center>
         </ModalBody>
       </Modal>
     </React.Fragment>

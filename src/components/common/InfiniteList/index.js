@@ -12,7 +12,6 @@ import { clearScrollIndex } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ResizeObserver from 'rc-resize-observer'
-
 class InfiniteList extends PureComponent {
   constructor() {
     super()
@@ -32,6 +31,7 @@ class InfiniteList extends PureComponent {
       scrollToIndex,
       title = false,
       disableOpacity = true,
+      loadPockets,
     } = this.props
 
     const clearOutlineStyle = { outline: 'none' }
@@ -90,6 +90,8 @@ class InfiniteList extends PureComponent {
                   scrollIndex={index}
                   recomputeRowIndex={recomputeRowIndex}
                   muteTrigger={muteTrigger}
+                  item={items[index]}
+                  loadPockets={loadPockets}
                 />
               </div>
             </ResizeObserver>

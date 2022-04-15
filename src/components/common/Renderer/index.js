@@ -711,7 +711,8 @@ const prepareDTubeEmbeds = (content) => {
 }
 
 const prepareDBuzzVideos = (content) => {
-  const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/(.*\?dbuzz_video)/i
+  const oldDbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/(.*\?dbuzz_video)/i
+  const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/.*\?dbuzz_video=https:\/\/ipfs\.io\/ipfs\/([a-zA-Z0-9]+)/i
   let body = content
 
   const links = textParser.getUrls(content)
@@ -719,10 +720,16 @@ const prepareDBuzzVideos = (content) => {
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
 
-    const match = link.match(dbuzzVideos)
+    let match
+
+    if(link.match(oldDbuzzVideos) && link.match(dbuzzVideos)) {
+      match = link.match(dbuzzVideos)[1]
+    } else if(link.match(oldDbuzzVideos) && !link.match(dbuzzVideos)) {
+      match = link.match(oldDbuzzVideos)[1].replace('?dbuzz_video', '')
+    }
 
     if (match) {
-      const id = match[1]
+      const id = match
       body = body.replace(link, `~~~~~~.^.~~~:dbuzz-video:${id}:~~~~~~.^.~~~`)
     }
   })
@@ -792,7 +799,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <ReactSoundCloud url={url} />
   } else if(content.includes(':dbuzz-video:')) {
     const url = content.split(':')[2]
-    return <VideoPreview key={`${url}${scrollIndex}dbuzz-video`} url={`https://ipfs.io/ipfs/${url}`}/>
+    return <a href={`https://ipfs.io/ipfs/${url}`}><VideoPreview key={`${url}${scrollIndex}dbuzz-video`} url={`https://ipfs.io/ipfs/${url}`}/></a>
   } else if (content.includes(':facebook:')) {
     try {
       const splitFacebook = content.split(':')
@@ -909,7 +916,9 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // render web images links
       .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
     // render IPFS images
-      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
+      // hide watch video on dbuzz
+      .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}

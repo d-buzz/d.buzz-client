@@ -109,11 +109,14 @@ import {
   invokeMuteFilter,
   getMutePattern,
   uploadVideo,
+  hasFollowService,
+  hasUnFollowService,
 } from 'services/api'
 import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
 import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
+import { hacMsg } from "@mintrawa/hive-auth-client"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -331,16 +334,14 @@ function* getLatestPostsRequest(payload, meta) {
 }
 
 function* upvoteRequest(payload, meta) {
-
+  const { author, permlink, percentage } = payload
+  const user = yield select(state => state.auth.get('user'))
+  const { username, is_authenticated, useKeychain } = user
+  let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
+  const weight = percentage * 100
+  let success = false
+  
   try {
-    const { author, permlink, percentage } = payload
-    const user = yield select(state => state.auth.get('user'))
-    const { username, is_authenticated, useKeychain } = user
-    let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
-
-    const weight = percentage * 100
-
-    let success = false
     if(is_authenticated) {
       if(useKeychain) {
         const result = yield call(keychainUpvote, username, permlink, author, weight)
@@ -421,30 +422,31 @@ function* videoUploadRequest(payload, meta) {
 }
 
 function* publishPostRequest(payload, meta) {
+  const { tags, payout, perm } = payload
+  let { body } = payload
+  let success = false
+
+  const user = yield select(state => state.auth.get('user'))
+  const { username, useKeychain, is_authenticated } = user
+
+  let title = stripHtml(body)
+  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+  title = `${title}`.trim()
+
+  if(title.length > 70) {
+    title = `${title.substr(0, 70)} ...`
+  }
+
+  body = footnote(body)
+
   try {
-    const { tags, payout } = payload
-    let { body } = payload
-
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
-
-    let title = stripHtml(body)
-    title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-    title = `${title}`.trim()
-
-    if(title.length > 70) {
-      title = `${title.substr(0, 70)} ...`
-    }
-
-    body = footnote(body)
 
     const operations = yield call(generatePostOperations, username, title, body, tags, payout)
 
-    let success = false
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
 
-    if(useKeychain) {
+    if(useKeychain && is_authenticated) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
 
@@ -473,7 +475,6 @@ function* publishPostRequest(payload, meta) {
 
       let body = comment[1].body
       body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-
 
       const content = {
         author: username,
@@ -515,21 +516,21 @@ function* publishPostRequest(payload, meta) {
 }
 
 function* publishReplyRequest(payload, meta) {
+  const { parent_author, parent_permlink, ref, treeHistory } = payload
+  const user = yield select(state => state.auth.get('user'))
+  const { username, useKeychain, is_authenticated } = user
+  let { body } = payload
+  body = footnote(body)
+
+  let replyData = {}
+
+  let success = false
+  
   try {
-    const { parent_author, parent_permlink, ref, treeHistory } = payload
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
-
-    let { body } = payload
-
-    body = footnote(body)
-
-    let replyData = {}
-
-    let success = false
+    
     const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
 
-    if(useKeychain) {
+    if(useKeychain && is_authenticated) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
     } else {
@@ -587,6 +588,7 @@ function* publishReplyRequest(payload, meta) {
     const errorMessage = errorMessageComposer('reply', error)
     yield put(publishReplyFailure({ errorMessage }, meta))
   }
+
 }
 
 function* getSearchTags(payload, meta) {
@@ -601,101 +603,204 @@ function* getSearchTags(payload, meta) {
 }
 
 function* followRequest(payload, meta) {
-  try {
-    const { following } = payload
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
+  const { following } = payload
+  const user = yield select(state => state.auth.get('user'))
+  const { username, useKeychain, is_authenticated, useHAS } = user
 
-    const operation = yield call(generateFollowOperation, username, following)
-    let success = false
+  const operation = yield call(generateFollowOperation, username, following)
+  let success = false
+  
 
+  if (useHAS && is_authenticated) {
+    let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+    let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
 
-    if(useKeychain) {
-      const result = yield call(broadcastKeychainOperation, username, operation)
-      success = result.success
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
+    yield call(hasFollowService, username, following)
+    
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+      }
 
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operation, [wif])
-      success = result.success
-    }
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+          if(!Array.isArray(recentUnfollows)) {
+            recentUnfollows = []
+          } else {
+            const index = recentUnfollows.findIndex((item) => item === following)
+            if(index) {
+              recentUnfollows.splice(index, 1)
+            }
+          }
+        
+          if(!Array.isArray(recentFollows)) {
+            recentFollows = []
+          }
+          recentFollows.push(following)
+          setHasBeenFollowedRecently(recentFollows)
+          setHasBeenUnfollowedRecently(recentUnfollows)
+        
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-    if(success) {
-      let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
-      let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
-
-      if(!Array.isArray(recentUnfollows)) {
-        recentUnfollows = []
-      } else {
-        const index = recentUnfollows.findIndex((item) => item === following)
-        if(index) {
-          recentUnfollows.splice(index, 1)
+          followFailure(error, meta)
         }
+        
       }
-
-      if(!Array.isArray(recentFollows)) {
-        recentFollows = []
-      }
-      recentFollows.push(following)
-      yield put(setHasBeenFollowedRecently(recentFollows))
-      yield put(setHasBeenUnfollowedRecently(recentUnfollows))
+      
+    })
+    
+    if (success) {
+      console.log('succe', success)
+      yield put(followSuccess(success, meta))
+    } else {
+      const error = 'transaction error'
+      yield put(followFailure(error, meta))
     }
 
-    yield put(followSuccess(success, meta))
-  } catch (error) {
-    yield put(followFailure(error, meta))
+  } 
+  else {
+    try {
+
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operation)
+        success = result.success
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+  
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operation, [wif])
+        success = result.success
+      }
+  
+      if(success) {
+        let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+        let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+  
+        if(!Array.isArray(recentUnfollows)) {
+          recentUnfollows = []
+        } else {
+          const index = recentUnfollows.findIndex((item) => item === following)
+          if(index) {
+            recentUnfollows.splice(index, 1)
+          }
+        }
+  
+        if(!Array.isArray(recentFollows)) {
+          recentFollows = []
+        }
+        recentFollows.push(following)
+        yield put(setHasBeenFollowedRecently(recentFollows))
+        yield put(setHasBeenUnfollowedRecently(recentUnfollows))
+      }
+  
+      yield put(followSuccess(success, meta))
+    } catch (error) {
+      yield put(followFailure(error, meta))
+    }
   }
 }
 
 function* unfollowRequest(payload, meta) {
-  try {
-    const { following } = payload
-    const user = yield select(state => state.auth.get('user'))
-    const { username, useKeychain } = user
+  const { following } = payload
+  const user = yield select(state => state.auth.get('user'))
+  const { username, useKeychain, useHAS, is_authenticated } = user
 
-    const operation = yield call(generateUnfollowOperation, username, following)
-    let success = false
+  const operation = yield call(generateUnfollowOperation, username, following)
+  let success = false
 
+  if (useHAS && is_authenticated) {
+    let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+    let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+    yield call(hasUnFollowService, username, following)
 
-    if(useKeychain) {
-      const result = yield call(broadcastKeychainOperation, username, operation)
-      success = result.success
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
+    hacMsg.subscribe(m => {
+     
+      if (m.type === 'sign_wait') {
+        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+      }
 
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operation, [wif])
-      success = result.success
-    }
+      if (m.type === 'tx_result') {
+        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+        if (m.msg?.status === 'accepted') {
+          if(!Array.isArray(recentFollows)) {
+            recentFollows = []
+          } else {
+            const index = recentFollows.findIndex((item) => item === following)
+            if(index) {
+              recentFollows.splice(index, 1)
+            }
+          }
+  
+          if(!Array.isArray(recentUnfollows)) {
+            recentUnfollows = []
+          }
+          recentUnfollows.push(following)
+  
+          setHasBeenFollowedRecently(recentFollows)
+          setHasBeenUnfollowedRecently(recentUnfollows)
+        
+        } else if (m.msg?.status === 'error') { 
+          const error = m.msg?.status.error
 
-    if(success) {
-      let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
-      let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
-
-      if(!Array.isArray(recentFollows)) {
-        recentFollows = []
-      } else {
-        const index = recentFollows.findIndex((item) => item === following)
-        if(index) {
-          recentFollows.splice(index, 1)
+          followFailure(error, meta)
         }
+        
       }
-
-      if(!Array.isArray(recentUnfollows)) {
-        recentUnfollows = []
-      }
-      recentUnfollows.push(following)
-
-      yield put(setHasBeenFollowedRecently(recentFollows))
-      yield put(setHasBeenUnfollowedRecently(recentUnfollows))
+      
+    })
+    
+    if (success) {
+      console.log('succe', success)
+      yield put(unfollowSuccess(success, meta))
+    } else {
+      const error = 'transaction error'
+      yield put(unfollowFailure(error, meta))
     }
+    
+  } else {
+    try {
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operation)
+        success = result.success
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
 
-    yield put(unfollowSuccess(success, meta))
-  } catch(error) {
-    yield put(unfollowFailure(error, meta))
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operation, [wif])
+        success = result.success
+      }
+
+      if(success) {
+        let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+        let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+
+        if(!Array.isArray(recentFollows)) {
+          recentFollows = []
+        } else {
+          const index = recentFollows.findIndex((item) => item === following)
+          if(index) {
+            recentFollows.splice(index, 1)
+          }
+        }
+
+        if(!Array.isArray(recentUnfollows)) {
+          recentUnfollows = []
+        }
+        recentUnfollows.push(following)
+
+        yield put(setHasBeenFollowedRecently(recentFollows))
+        yield put(setHasBeenUnfollowedRecently(recentUnfollows))
+      }
+
+      yield put(unfollowSuccess(success, meta))
+    } catch(error) {
+      yield put(unfollowFailure(error, meta))
+    }
   }
 }
 
