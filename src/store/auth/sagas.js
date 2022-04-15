@@ -319,6 +319,8 @@ function* getSavedUserRequest(meta) {
 }
 
 function* initWSHASConnectionRequest(meta) {
+  const active = localStorage.getItem('active')
+
   try {
     const fingerPrintRequest = FingerprintJS.load({ monitoring: false })
 
@@ -343,13 +345,17 @@ function* initWSHASConnectionRequest(meta) {
           } else {
             hacGetConnectionStatus()
             /** clear hac value and localstorage */
-            localStorage.clear()
+            if(active === 'null') {
+              localStorage.clear()
+            }
             const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
             initWSHASConnectionSuccess(result, meta)
           }
         } else {
           hacGetConnectionStatus()
-          localStorage.clear()
+          if(active === 'null') {
+            localStorage.clear()
+          }
           const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
           initWSHASConnectionSuccess(result, meta)
         }
