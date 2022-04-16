@@ -1095,7 +1095,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handlePublishThread = () => {
-    const buzzContent = buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz].content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ')+`\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : buzzThreads[nextBuzz].content
+    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : '')
 
     if(isThread) {
       setBuzzing(true)
@@ -1143,9 +1143,9 @@ const CreateBuzzForm = (props) => {
     }
 
     // eslint-disable-next-line
-    const buzzContentWithTitle = buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ')+'\n'+`[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content
-    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ')+`\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : buzzThreads[1].content
-    const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
+    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
+    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
+    const buzzContent = (buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : '')
 
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
