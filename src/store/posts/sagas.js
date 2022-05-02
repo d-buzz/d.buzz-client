@@ -441,7 +441,7 @@ function* publishPostRequest(payload, meta) {
 
   try {
 
-    const operations = yield call(generatePostOperations, username, title, body, tags, payout)
+    const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
 
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink

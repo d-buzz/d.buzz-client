@@ -177,9 +177,11 @@ function CreatePocketModal(props) {
           setUserData(res)
           setFetching(false)
 
-          res[0].pockets.forEach((pocket) => {
-            setPocketNames(pocketNames => [...pocketNames, pocket.pocketName])
-          })
+          if(res[0]?.pockets) {
+            res[0].pockets.forEach((pocket) => {
+              setPocketNames(pocketNames => [...pocketNames, pocket.pocketName])
+            })
+          }
         })
     }
     // eslint-disable-next-line
