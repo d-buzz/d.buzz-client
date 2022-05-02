@@ -22,7 +22,8 @@ import { pending } from 'redux-saga-thunk'
 import { SideBarLeft, SideBarRight, SearchField, NotificationFilter } from 'components'
 import BuzzFormModal from 'components/modals/BuzzFormModal'
 import { Fab } from '@material-ui/core'
-import BuzzIcon from 'components/elements/Icons/BuzzIcon'
+// import BuzzIcon from 'components/elements/Icons/BuzzIcon'
+import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -243,6 +244,7 @@ const GuardedAppFrame = (props) => {
   }
 
   const floatingButtonStyle = {
+    padding: 10,
     marginLeft: width > 1026 && 530, right: width < 1026 && 30,
   }
 
@@ -311,7 +313,7 @@ const GuardedAppFrame = (props) => {
                 {renderRoutes(route.routes)}
                 {minify && (
                   <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={{...floatStyle, ...floatingButtonStyle}}>
-                    <BuzzIcon />
+                    <CreateBuzzIcon />
                   </Fab>
                 )}
                 <BuzzFormModal show={open} onHide={onHide} />

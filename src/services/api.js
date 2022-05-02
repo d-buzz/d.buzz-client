@@ -786,7 +786,7 @@ const footnote = (body) => {
   return body
 }
 
-export const publishPostWithHAS = async(user, body, tags, payout) => {
+export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
 
   let title = stripHtml(body)
   title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
@@ -798,7 +798,7 @@ export const publishPostWithHAS = async(user, body, tags, payout) => {
 
   body = footnote(body)
 
-  const permlink = createPermlink(title)
+  const permlink = perm ? perm : createPermlink(title)
 
   const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
   console.log(operations)
@@ -1278,11 +1278,11 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
   })
 }
 
-export const generatePostOperations = (account, title, body, tags, payout) => {
+export const generatePostOperations = (account, title, body, tags, payout, perm) => {
 
   const json_metadata = createMeta(tags)
-
-  const permlink = createPermlink(title)
+  
+  const permlink = perm === null ? createPermlink(title) : perm
 
   const operations = []
 

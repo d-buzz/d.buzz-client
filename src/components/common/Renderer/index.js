@@ -10,6 +10,9 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import VideoPreview from '../VideoPreview'
+import { bindActionCreators } from 'redux'
+import { setViewImageModal } from 'store/interface/actions'
+import { connect } from 'react-redux'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -939,6 +942,7 @@ const Renderer = React.memo((props) => {
     scrollIndex = -1,
     recomputeRowIndex = () => {},
     loader = true,
+    setViewImageModal,
   } = props
   let { content = '' } = props
   const original = content
@@ -966,6 +970,11 @@ const Renderer = React.memo((props) => {
             imageEl.style.animation = 'none'
             imageEl.style.opacity = '1'
             imageEl.style.height = 'inherit'
+            imageEl.style.cursor = 'pointer'
+
+            imageEl.onclick = () => {
+              setViewImageModal(imageEl.src)
+            }
           }
           imageEl.onerror = () => {
             imageEl.src = `${window.location.origin}/noimage.jpg`
@@ -1058,4 +1067,11 @@ const Renderer = React.memo((props) => {
   )
 })
 
-export default Renderer
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
+    {
+      setViewImageModal,
+    },dispatch),
+})
+
+export default connect(null, mapDispatchToProps)(Renderer)

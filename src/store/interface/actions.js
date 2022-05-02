@@ -199,3 +199,10 @@ export const setSaveDraftsModalStatus = (status) => ({
   type: SAVE_DRAFTS_MODAL,
   payload: status,
 })
+
+export const SET_VIEW_IMAGE_MODAL = 'SET_VIEW_IMAGE_MODAL'
+
+export const setViewImageModal = (status) => ({
+  type: SET_VIEW_IMAGE_MODAL,
+  payload: status,
+})
