@@ -344,6 +344,7 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
     errorMessage = prefixes.find( item => item.type === type).prefix
   }
 
+
   if(errorCode === -32000) {
     errorMessage += ', you have insufficient resource credit to make this transaction, please consider retrying after recharge or after powering up hive'
   }

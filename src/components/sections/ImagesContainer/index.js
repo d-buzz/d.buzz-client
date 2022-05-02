@@ -42,16 +42,16 @@ const useStyles = createUseStyles(theme => ({
       position: 'relative',
       transition: 'all 250ms',
       cursor: 'pointer',
-
+      
       '&:hover': {
         transform: 'scale(0.95)',
         opacity: '0.8 !important',
-
+        
         '& .deleteImageIcon': {
           display: 'block',
         },
       },
-
+      
       '& .deleteImageIcon': {
         display: 'none',
         position: 'absolute',
@@ -63,19 +63,21 @@ const useStyles = createUseStyles(theme => ({
         fontSize: '2em',
         color: '#E61C34',
         opacity: '1 !important',
-
+        
         '&:hover': {
           background: '#E61C34',
           color: '#ffffff',  
         },
       },
-
+      
       '& img': {
         height: '150px !important',
         width: '150px !important',
         objectFit: 'cover',
+        // background: theme.background.primary,
         borderRadius: '8px',
         opacity: '1 !important',
+        animation: 'skeleton-loading 1s linear infinite alternate !important',
       },
       '& video': {
         height: '150px !important',
@@ -130,7 +132,7 @@ const ImagesContainer = (props) => {
         {buzzImages.map(image => ( 
           !image.includes('?dbuzz_video=') ?
             <div className="media">
-              <img key={image} src={image} alt={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <img key={image} src={image} alt={'broken link!'} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div> :
             <div className="media">

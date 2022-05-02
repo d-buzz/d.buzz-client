@@ -19,7 +19,7 @@ import {
   ProfileIcon,
   ContainedButton,
   Avatar,
-  BuzzIcon,
+  // BuzzIcon,
   SearchIcon,
   WalletIcon,
 } from 'components/elements'
@@ -36,7 +36,6 @@ import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { clearNotificationsRequest } from 'store/profile/actions'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -47,6 +46,8 @@ import { pending } from 'redux-saga-thunk'
 import queryString from 'query-string'
 import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
+import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
+import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -176,6 +177,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   moreButton: {
+    display: 'flex',
     color: theme.left.sidebar.items.color,
 
     '&:hover': {
@@ -223,6 +225,8 @@ const MobileAppFrame = (props) => {
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
   const moreMenuRef = useRef()
   const classes = useStyles()
+
+  const [activeView, setActiveView] = useState('home')
 
   let title = 'Home'
 
@@ -300,6 +304,7 @@ const MobileAppFrame = (props) => {
   }
 
   const floatStyle = {
+    padding: 8,
     margin: 0,
     top: 'auto',
     right: 20,
@@ -312,51 +317,101 @@ const MobileAppFrame = (props) => {
 
   // const avatarStyle = { float: 'right' }
 
+  const handelClickItem = (name) => {
+    setActiveView(name)
+    switch(name) {
+    case 'Home':
+      refreshHomeRouteData()
+      break
+    case 'Trending':
+      refreshTrendingRouteData()
+      break
+    case 'Latest':
+      refreshLatestRouteData()
+      break
+    case 'More':
+      handleClickOpenMoreMenu()
+      break
+    default:
+      return
+    }
+  }
+
+  useEffect(() => {   
+    switch(location.pathname) {
+    case '/':
+      setActiveView('home')
+      break
+    case '/trending':
+      setActiveView('trending')
+      break
+    case '/latest':
+      setActiveView('latest')
+      break
+    case '/notifications':
+      setActiveView('notifications')
+      break
+    case '/profile':
+      setActiveView('profile')
+      break
+    case `/@${username}/wallet`:
+      setActiveView(`/@${username}/wallet`)
+      break
+    default:
+      return
+    }
+    // eslint-disable-next-line
+  }, [])
+
   const NavLinks = [
     {
       name: 'Home',
       path: "/",
-      icon: <HomeIcon />,
+      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
-      onClick: refreshHomeRouteData,
+      onClick: () => handelClickItem('home'),
     },
     {
       name: 'Trending',
       path: '/trending',
-      icon: <TrendingIcon />,
+      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
-      onClick: refreshTrendingRouteData,
+      onClick: () => handelClickItem('trending'),
     },
     {
       name: 'Latest',
       path: "/latest",
-      icon: <LatestIcon />,
+      icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
       preventDefault: false,
-      onClick: refreshLatestRouteData,
+      onClick: () => handelClickItem('latest'),
     },
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
+      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='outline'/></Badge>,
+      onClick: () => handelClickItem('notifications'),
     },
     {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
-      icon: <ProfileIcon />,
+      icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
+      onClick: () => handelClickItem('profile'),
     },
     {
       name: 'Wallet',
-      icon: <WalletIcon />,
+      icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
       path: `/@${username}/wallet`,
+      onClick: () => handelClickItem('wallet'),
     },
     {
       name: 'More'  ,
-      icon: <MoreHorizIcon className={classes.moreButton} ref={moreMenuRef} />,
+      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
       path: '#',
       preventDefault: true,
       onClick: handleClickOpenMoreMenu,
     },
   ]
+
   const isActivePath = (path, current) => {
     const _path = (path && path.split("?").length > 0) ? path.split("?")[0] : path
     return _path === current
@@ -444,6 +499,7 @@ const MobileAppFrame = (props) => {
         <Link to={item.path || '#'}>
           <IconButton
             size="medium"
+            style={{width: 55, height: 55}}
           >
             {item.icon}
           </IconButton>
@@ -583,7 +639,7 @@ const MobileAppFrame = (props) => {
           <React.Fragment>
             {is_authenticated && (
               <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
-                <BuzzIcon />
+                <CreateBuzzIcon />
               </Fab>
             )}
             <AvatarMenu />
