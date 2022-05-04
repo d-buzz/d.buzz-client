@@ -400,3 +400,5 @@ export const getTheme =() => {
 
   return mode
 }
+
+export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
