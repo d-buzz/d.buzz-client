@@ -30,11 +30,11 @@ const ListGroup = (props) => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.wrapper}>
+      {label && <div className={classes.wrapper}>
         <div className={classes.labelWrapper}>
           <label className={classes.label}>{label}</label>
         </div>
-      </div>
+      </div>}
       {children}
       <br />
     </div>
