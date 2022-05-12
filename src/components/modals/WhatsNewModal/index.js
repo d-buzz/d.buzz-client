@@ -225,7 +225,7 @@ function WhatsNewModal(props) {
                 </ThemeProvider>
               </span>}
             {/* eslint-disable-next-line */}
-            {VERSION.includes('dev') ? <span className={classes.betaTesterCredit}>Thanks for being beta a tester of this update 🧪</span> : ''}
+            {VERSION.includes('dev') ? <span className={classes.betaTesterCredit}>Thanks for being a beta tester of this update 🧪</span> : ''}
             <div className='updatesInfo'>you're on <b>v{VERSION}</b></div>
           </div>
         </ModalBody>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { connect } from 'react-redux'
@@ -11,8 +11,12 @@ import {
 } from 'components/elements'
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
+import { getPrice } from 'services/api'
+import { convertCurrency } from 'services/helper'
+import ThemeProvider from 'components/wrappers/ThemeProvider'
+import Skeleton from 'react-loading-skeleton'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   search: {
     marginBottom: 10,
     marginTop: 10,
@@ -44,7 +48,58 @@ const useStyles = createUseStyles({
       fontWeight: 400,
     },
   },
-})
+
+  coinPriceChart: {
+    marginTop: 5,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: theme.right.list.background,
+    borderRadius: 10,
+    padding: 15,
+  },
+  
+  priceItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: 'fit-content',
+    margin: '5px 0',
+
+    
+    '& .price_container': {
+      display: 'flex',
+      alignItems: 'flex-start',
+      
+      '& .market': {
+        display: 'flex',
+        alignItems: 'center',
+        flex: 0.2,
+        color: theme.font.color,
+        fontSize: 18,
+        fontWeight: 800,
+        margin: 0,
+        marginRight: 15,
+      },
+      '& .price': {
+        flex: 0.8,
+        color: theme.font.color,
+        fontSize: 18,
+        fontWeight: 800,
+        margin: 0,
+      },
+    },
+    
+    '& .price_description': {
+      margin: 0,
+      fontSize: 13,
+      color: '#657786',
+      '& a': {
+        color: '#657786',
+      },
+    },
+  },
+}))
 
 const SideBarRight = (props) => {
   const { user, items, loading, hideSearchBar = false } = props
@@ -53,7 +108,9 @@ const SideBarRight = (props) => {
   const { pathname } = location
   let isInSearchRoute = false
   const { is_authenticated } = user
-
+  const [hivePrice, setHivePrice] = useState(0)
+  const [hbdPrice, setHbdPrice] = useState(0)
+  
   if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
   }
@@ -97,6 +154,16 @@ const SideBarRight = (props) => {
     // },
   ]
 
+  useEffect(() => {
+    (async function resources() {
+      const hive = await getPrice('hive')
+      const hbd = await getPrice('hbd')
+
+      setHivePrice(convertCurrency(hive.data[0].quote.USD.price))
+      setHbdPrice(convertCurrency(hbd.data[0].quote.USD.price))
+    })()
+  }, [])
+
   return (
     <React.Fragment>
       {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
@@ -107,8 +174,32 @@ const SideBarRight = (props) => {
           ))}
           <Spinner size={50} loading={loading} />
         </ListGroup>
+      </div>  
+      <div className={classes.coinPriceChart}>
+        <span className={classes.priceItem}>
+          <span className='price_container'>
+            <label className='market'>HIVE</label>
+            {hivePrice ?
+              <label className='price'>{hivePrice}</label> :
+              <ThemeProvider>
+                <Skeleton height={20} width={50} count={1}/>
+              </ThemeProvider>}
+          </span>
+          <label className='price_description'> HIVE Market Value by <a href='https://coinmarketcap.com/currencies/hive-dollar/'>@CoinMarketCap</a></label>
+        </span>
+        <span className={classes.priceItem}>
+          <span className='price_container'>
+            <label className='market'>HBD</label>
+            {hbdPrice ?
+              <label className='price'>{hbdPrice}</label> :
+              <ThemeProvider>
+                <Skeleton height={20} width={50} count={1}/>
+              </ThemeProvider>}
+          </span>
+          <label className='price_description'> HBD Market Value by <a href='https://coinmarketcap.com/currencies/hive-dollar/'>@CoinMarketCap</a></label>
+        </span>
       </div>
-      <div style={{ paddingTop: 15 }}>
+      <div style={{ paddingTop: 5 }}>
         <ListGroup label="Catch us on">
           {SocialMediaLinks.map((item) => (
             <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath} href={item.url} />

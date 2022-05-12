@@ -131,7 +131,7 @@ const LoginModal = (props) => {
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
   /* eslint-disable */
-  let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
+  let [hasExpiredDelay, setHasExpiredDelay] = useState(60)
   
   const onChange = (e) => {
     const { target } = e
@@ -195,7 +195,7 @@ const LoginModal = (props) => {
             if (hasExpiredDelay === 0) {
               console.log('sample hit')
               clearInterval(hasExpiredDelayInterval)
-              setHasExpiredDelay(100)
+              setHasExpiredDelay(60)
               localStorage.removeItem('hasQRcode')
               handleClickBack()
             }
@@ -443,7 +443,7 @@ const LoginModal = (props) => {
                   <br />
                   <br />
                   <h1>{hasExpiredDelay}</h1>
-                  <ProgressBar animated now={hasExpiredDelay} />
+                  <ProgressBar animated now={hasExpiredDelay} max={60} />
 
                   {!loading && (
                     <ContainedButton
