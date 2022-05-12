@@ -23,6 +23,7 @@ const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
+const priceChartURL = `${appConfig.PRICE_API}`
 
 const APP_META = {
   name: config.APP_NAME,
@@ -786,7 +787,7 @@ const footnote = (body) => {
   return body
 }
 
-export const publishPostWithHAS = async(user, body, tags, payout) => {
+export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
 
   let title = stripHtml(body)
   title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
@@ -798,7 +799,7 @@ export const publishPostWithHAS = async(user, body, tags, payout) => {
 
   body = footnote(body)
 
-  const permlink = createPermlink(title)
+  const permlink = perm ? perm : createPermlink(title)
 
   const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
   console.log(operations)
@@ -1278,11 +1279,11 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
   })
 }
 
-export const generatePostOperations = (account, title, body, tags, payout) => {
+export const generatePostOperations = (account, title, body, tags, payout, perm) => {
 
   const json_metadata = createMeta(tags)
-
-  const permlink = createPermlink(title)
+  
+  const permlink = perm === null ? createPermlink(title) : perm
 
   const operations = []
 
@@ -1674,5 +1675,12 @@ export const getEstimateAccountValue = (account) => {
     formatter.estimateAccountValue(account).then(function (result) {
       resolve(result)
     })
+  })
+}
+
+export const getPrice = async (symbol) => {
+  return new Promise(async (resolve, reject) => {
+    const response = await axios.get(`${priceChartURL}/${symbol}`)
+    resolve(response.data)
   })
 }

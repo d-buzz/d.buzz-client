@@ -10,6 +10,10 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import VideoPreview from '../VideoPreview'
+import { bindActionCreators } from 'redux'
+import { setViewImageModal } from 'store/interface/actions'
+import { connect } from 'react-redux'
+import { proxyImage } from 'services/helper'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -914,9 +918,9 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // render web images links
-      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
     // render IPFS images
-      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
       // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 
@@ -939,6 +943,7 @@ const Renderer = React.memo((props) => {
     scrollIndex = -1,
     recomputeRowIndex = () => {},
     loader = true,
+    setViewImageModal,
   } = props
   let { content = '' } = props
   const original = content
@@ -966,6 +971,11 @@ const Renderer = React.memo((props) => {
             imageEl.style.animation = 'none'
             imageEl.style.opacity = '1'
             imageEl.style.height = 'inherit'
+            imageEl.style.cursor = 'pointer'
+
+            imageEl.onclick = () => {
+              setViewImageModal(imageEl.src)
+            }
           }
           imageEl.onerror = () => {
             imageEl.src = `${window.location.origin}/noimage.jpg`
@@ -1058,4 +1068,11 @@ const Renderer = React.memo((props) => {
   )
 })
 
-export default Renderer
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
+    {
+      setViewImageModal,
+    },dispatch),
+})
+
+export default connect(null, mapDispatchToProps)(Renderer)

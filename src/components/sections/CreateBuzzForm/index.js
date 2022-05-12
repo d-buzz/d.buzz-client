@@ -669,7 +669,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 5,
     marginRight: 15,
   },
-  preparingVideo: {
+  preparingMedia: {
     margin: '25px auto',
     width: 'fit-content',
     color: theme.font.color,
@@ -1145,7 +1145,7 @@ const CreateBuzzForm = (props) => {
     // eslint-disable-next-line
     const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
     const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
-    const buzzContent = (buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : '')
+    const buzzContent = (buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](https://d.buzz/#/@${user.username}/c/${buzzPermlink})` : '')
 
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
@@ -1154,7 +1154,7 @@ const CreateBuzzForm = (props) => {
       setBuzzing(true)
       
       if(user.useHAS) {
-        publishPostWithHAS(user, buzzContent, tags, payout)
+        publishPostWithHAS(user, buzzContent, tags, payout, buzzPermlink)
           .then((data) => {
             console.log(data)
             setContentRedirect(data.content)
@@ -1193,7 +1193,7 @@ const CreateBuzzForm = (props) => {
             })
           })
       } else {
-        publishPostRequest(buzzContent, tags, payout)
+        publishPostRequest(buzzContent, tags, payout, buzzPermlink)
           .then((data) => {
             if (data.success) {
               setPageFrom(null)
@@ -1560,12 +1560,13 @@ const CreateBuzzForm = (props) => {
               </span>)}
             {imageUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
-                <div className={classes.uploadProgressBar}>
-                  <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={imageUploadProgress} />
-                  <span className='progressPercent'>{imageUploadProgress}%</span>
-                </div>
-              </div>
-            )}
+                {imageUploadProgress !== 100 ?       
+                  <div className={classes.uploadProgressBar}>
+                    <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={imageUploadProgress} />
+                    <span className='progressPercent'>{imageUploadProgress}%</span>
+                  </div> :
+                  <div className={classes.preparingMedia}>Preparing Image</div>}
+              </div>)}
             {videoUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
                 {videoUploadProgress !== 100 ?
@@ -1573,7 +1574,7 @@ const CreateBuzzForm = (props) => {
                     <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={videoUploadProgress} />
                     <span className='progressPercent'>{videoUploadProgress}%</span>
                   </div> :
-                  <div className={classes.preparingVideo}>Preparing Video</div>}
+                  <div className={classes.preparingMedia}>Preparing Video</div>}
               </div>
             )}
 
@@ -1618,7 +1619,7 @@ const CreateBuzzForm = (props) => {
                     onChange={handleVideoUpload}
                     hidden
                   />
-                  <Tooltip title="Video" placement='top-start'>
+                  <Tooltip title="Short Video" placement='top-start'>
                     <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached || videoUploading || imageUploading || videoLimit} classes={{ disabled: classes.disabled }}>
                       <VideoUploadIcon />
                     </IconButton>
@@ -1689,7 +1690,7 @@ const CreateBuzzForm = (props) => {
                   {content && 
                     <div style={{display: 'inline-flex'}}>
                       <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
-                      <div className={classes.colDivider}> </div>
+                      <div className={classes.colDivider} />
                     </div>}
                   <ContainedButton
                     // eslint-disable-next-line
