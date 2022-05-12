@@ -4,6 +4,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { bindActionCreators } from 'redux'
 import { updateBuzzThreads } from 'store/posts/actions'
 import { connect } from 'react-redux'
+import { proxyImage } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   // images container styles
@@ -74,7 +75,6 @@ const useStyles = createUseStyles(theme => ({
         height: '150px !important',
         width: '150px !important',
         objectFit: 'cover',
-        // background: theme.background.primary,
         borderRadius: '8px',
         opacity: '1 !important',
         animation: 'skeleton-loading 1s linear infinite alternate !important',
@@ -132,7 +132,7 @@ const ImagesContainer = (props) => {
         {buzzImages.map(image => ( 
           !image.includes('?dbuzz_video=') ?
             <div className="media">
-              <img key={image} src={image} alt={'broken link!'} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <img key={image} src={proxyImage(image)} alt={'broken link!'} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div> :
             <div className="media">
