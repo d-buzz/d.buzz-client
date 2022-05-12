@@ -4,6 +4,7 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import { proxyImage } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -64,7 +65,7 @@ const ViewImageModal = (props) => {
       >
         <ModalBody>
           <div className={classes.imageModal}>
-            {imageUrl ? !imageUrl.includes('?dbuzz_video=') ? <img src={imageUrl} alt='modal_image' /> : <video src={imageUrl.split('?dbuzz_video=')[1]} controls/> : null}
+            {imageUrl ? !imageUrl.includes('?dbuzz_video=') ? <img src={proxyImage(imageUrl)} alt='modal_image' /> : <video src={imageUrl.split('?dbuzz_video=')[1]} controls/> : null}
             <IconButton className={classes.closeImageButton} onClick={() => onHide('')}>
               <CloseIcon />
             </IconButton>
