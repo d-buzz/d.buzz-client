@@ -23,6 +23,7 @@ const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}/image`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
+const priceChartURL = `${appConfig.PRICE_API}`
 
 const APP_META = {
   name: config.APP_NAME,
@@ -1674,5 +1675,12 @@ export const getEstimateAccountValue = (account) => {
     formatter.estimateAccountValue(account).then(function (result) {
       resolve(result)
     })
+  })
+}
+
+export const getPrice = async (symbol) => {
+  return new Promise(async (resolve, reject) => {
+    const response = await axios.get(`${priceChartURL}/${symbol}`)
+    resolve(response.data)
   })
 }
