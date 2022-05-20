@@ -387,9 +387,10 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      const ipfsHash = result.hashV0
-      const postUrl = `https://ipfs.io/ipfs/${ipfsHash}`
-      images.push(postUrl)
+      // const ipfsHash = result.hashV0
+      // const postUrl = `https://ipfs.io/ipfs/${ipfsHash}`
+      const publicUrl = `https://storageapi.fleek.co/${result.bucket}/${result.key}`
+      images.push(publicUrl)
 
       yield put(uploadFileSuccess(images, meta))
     } else {

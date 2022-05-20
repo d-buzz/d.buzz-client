@@ -23,8 +23,8 @@ jobs:
         - common-steps
         - run: npm run build:prod
         - discord/status:
-            success_message: test build success on master branch
-            failure_message: test build failed on master branch
+            success_message: test build success on mainnet branch
+            failure_message: test build failed on mainnet branch
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
 
   dev_build_test:
@@ -33,20 +33,8 @@ jobs:
         - common-steps
         - run: npm run build:dev
         - discord/status:
-            success_message: test build success on non master branch
-            failure_message: test build failed on non master branch
-            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
-
-  dev_build_deploy:
-      machine:
-        enabled: true
-      steps:
-        - run:
-            name: Deploy over SSH
-            command: ssh ubuntu@51.75.93.8 'sudo docker container stop $(sudo docker container ls -aq) || true && sudo docker container rm $(sudo docker container ls -aq) || true && sudo docker image prune -f -a || true && sudo rm -R dbuzz-dev-build/ && git clone -b dev git@github.com:d-buzz/d.buzz-client.git dbuzz-dev-build && cd dbuzz-dev-build/  && sudo docker-compose -f docker-compose.dev.yml up -d --build'
-        - discord/status:
-            success_message: development build successfully deployed on https://next.d.buzz
-            failure_message: development build was not deployed on https://next.d.buzz
+            success_message: test build success on non mainnet branch
+            failure_message: test build failed on non mainnet branch
             webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
 
 workflows:
@@ -55,14 +43,8 @@ workflows:
       - dev_build_test:
           filters:
             branches:
-              ignore: master
+              ignore: mainnet
       - prod_build_test:
           filters:
             branches:
-              only: master
-      - dev_build_deploy:
-          requires:
-            - dev_build_test
-          filters:
-            branches:
-              only: dev
+              only: mainnet
