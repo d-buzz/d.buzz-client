@@ -73,7 +73,8 @@ const LinkPreview = (props) => {
   if(links.length !== 0) {
     for(let index = links.length; index > 0 ; index--) {
       const link = links[index-1]
-      if(!link.includes('images.hive.blog')
+      if(!link.includes('d.buzz') 
+          && !link.includes('images.hive.blog')
           && !link.includes('youtu.be')
           && !link.includes('files.peakd')
           && !link.includes('youtube.com/watch?v=')
