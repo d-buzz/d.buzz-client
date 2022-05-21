@@ -904,24 +904,26 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     }
 
     const checkForValidImage = (n) => {
-      return checkForMarkdownDefaults(n) && !n.includes('?dbuzz_video')
+      return checkForMarkdownDefaults(n) && !n.includes('?dbuzz_video') && !n.includes('storageapi.fleek.co')
     }
 
-    // render content (supported for all browsers)
+    // // render content (supported for all browsers)
     content = content
-    // render all urls
+    // // render all urls
       .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a href='${n.startsWith('http') ? n : `https://${n}`}'>${n}</a>` : n)
-    // render usernames
+    // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
-      // render hashtags 
+    //   // render hashtags 
       .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
-    // render crypto tickers
+    // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
-    // render web images links
+    // // render web images links
       .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
-    // render IPFS images
+    // // render IPFS images
       .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
-      // hide watch video on dbuzz
+    // render dbuzz images
+      .replace(/(https:\/\/(storageapi\.fleek\.co\/nathansenn-team-bucket\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+    //   // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 
     return <ReactMarkdown
