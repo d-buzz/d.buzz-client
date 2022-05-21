@@ -87,6 +87,8 @@ const useStyles = createUseStyles(theme => ({
     marginRight: 15,
   },
   fullName: {
+    display: 'flex',
+    alignItems: 'center',
     fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
@@ -224,6 +226,13 @@ const useStyles = createUseStyles(theme => ({
       fontSize: '8em !important',
     },
   },
+  followYouText: {
+    marginLeft: 5,
+    fontSize: 12,
+    padding: '5px 15px',
+    borderRadius: 35,
+    background: theme.context.view.backgroundColor ,
+  },
 }))
 
 const Profile = (props) => {
@@ -259,6 +268,7 @@ const Profile = (props) => {
     mutelist,
     getAccountCommentsRequest,
     clearAccountComments,
+    follows,
   } = props
 
   const history = useHistory()
@@ -278,6 +288,8 @@ const Profile = (props) => {
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [copied, setCopied] = useState(false)
   const [invalidUser, setInvalidUser] = useState(false)
+
+  const [followsYou, setFollowsYou] = useState(false)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -301,11 +313,24 @@ const Profile = (props) => {
     }
   }
 
+  const checkIfFollowsYou = () => {
+    if(follows.find(u => u.following === user.username)) {
+      setFollowsYou(true)
+    } else {
+      setFollowsYou(false)
+    }
+  }
+  
   useEffect(() => {
     checkIfRecentlyFollowed()
     checkIfRecentlyUnfollowed()
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [recentFollows, recentUnfollows, loading])
+
+  useEffect(() => {
+    checkIfFollowsYou()
+    // eslint-disable-next-line
+  }, [follows, user, loading])
 
   const onChange = (e, index) => {
     setIndex(index)
@@ -313,7 +338,7 @@ const Profile = (props) => {
 
   const handleTabs = (index) => () => {
     let tab = 'buzz'
-
+    
     if(index === 1) {
       tab = 'comments'
     } else if (index === 2) {
@@ -321,14 +346,14 @@ const Profile = (props) => {
     } else if (index === 3) {
       tab = 'pockets'
     }
-
+    
     history.push(`/@${username}/t/${tab}/`)
   }
-
+  
   const openMuteModal = () => {
     openMuteDialog(username)
   }
-
+  
 
   const { params } = match
   const { username } = params
@@ -607,6 +632,7 @@ const Profile = (props) => {
                       <p className={classNames(classes.paragraph, classes.fullName)}>
                         {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;
                         <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />
+                        {followsYou && <div className={classes.followYouText}><span>Follows you</span></div>}
                       </p>
                     </Col>
                   </Row>
@@ -746,6 +772,7 @@ const mapStateToProps = (state) => ({
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
   recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
   mutelist: state.auth.get('mutelist'),
+  follows: state.profile.get('following'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
