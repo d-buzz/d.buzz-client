@@ -67,6 +67,7 @@ class InfiniteList extends PureComponent {
             <ResizeObserver onResize={measure}>
               <div style={style}>
                 <PostList
+                  type='HIVE'
                   disableOpacity={disableOpacity}
                   displayTitle={title}
                   title={items[index].title}
@@ -99,50 +100,130 @@ class InfiniteList extends PureComponent {
         </CellMeasurer>
       )
     }
+    const ceramicRowRenderer = ({ index, parent, key, style }) => {
+      return (
+        <CellMeasurer
+          key={key}
+          cache={this.cellMeasurerCache}
+          parent={parent}
+          columnIndex={0}
+          rowIndex={index}
+        >
+          {({measure}) => (
+            <ResizeObserver onResize={measure}>
+              <PostList
+                app={items[index].app}
+                type='CERAMIC'
+                disableOpacity={disableOpacity}
+                displayTitle={title}
+                title={items[index].title}
+                unguardedLinks={unguardedLinks}
+                profileRef="home"
+                author={items[index].author}
+                permlink={items[index].stream_id}
+                created={items[index].created_at}
+                body={items[index].body}
+                replyCount={items[index].children.length}
+                meta={items[index].json_metadata}
+                pending_payout_value={items[index].pending_payout_value}
+                scrollIndex={index}
+                recomputeRowIndex={recomputeRowIndex}
+                muteTrigger={muteTrigger}
+                item={items[index]}
+                loadPockets={loadPockets}
+              />
+            </ResizeObserver>
+          )}
+        </CellMeasurer>
+      )
+    }
 
     return (
       <React.Fragment>
-        <InfiniteLoader
-          isRowLoaded={isRowLoaded}
-          loadMoreRows={onScroll}
-          rowCount={10000000}
-          ref={ref => (this.infiniteLoaderRef = ref)}
-          threshold={2}
-        >
-          {({ onRowsRendered }) => (
-            <WindowScroller onScroll={clearScrollPosition}>
-              {({ height, isScrolling, registerChild, onChildScroll, scrollTop }) => (
-                <AutoSizer disableHeight>
-                  {({ width }) => {
-                    return (
-                      <List
-                        rowCount={items.length || 0}
-                        autoHeight
-                        width={width}
-                        height={height}
-                        rowHeight={this.cellMeasurerCache.rowHeight}
-                        rowRenderer={rowRenderer}
-                        deferredMeasurementCache={this.cellMeasurerCache}
-                        overscanRowCount={2}
-                        onRowsRendered={onRowsRendered}
-                        ref={el => {
-                          this.listRef = el
-                          if (el instanceof Element) { registerChild(el) }
-                        }}
-                        isScrolling={isScrolling}
-                        scrollToAlignment="center"
-                        scrollToIndex={scrollToIndex}
-                        onScroll={onChildScroll}
-                        scrollTop={scrollTop}
-                        style={clearOutlineStyle}
-                      />
-                    )
-                  }}
-                </AutoSizer>
+        {!loading && !items[0]?.stream_id ?
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={onScroll}
+            rowCount={10000000}
+            ref={ref => (this.infiniteLoaderRef = ref)}
+            threshold={2}
+          >
+            {({ onRowsRendered }) => (
+              <WindowScroller onScroll={clearScrollPosition}>
+                {({ height, isScrolling, registerChild, onChildScroll, scrollTop }) => (
+                  <AutoSizer disableHeight>
+                    {({ width }) => {
+                      return (
+                        <List
+                          rowCount={items.length || 0}
+                          autoHeight
+                          width={width}
+                          height={height}
+                          rowHeight={this.cellMeasurerCache.rowHeight}
+                          rowRenderer={rowRenderer}
+                          deferredMeasurementCache={this.cellMeasurerCache}
+                          overscanRowCount={2}
+                          onRowsRendered={onRowsRendered}
+                          ref={el => {
+                            this.listRef = el
+                            if (el instanceof Element) { registerChild(el) }
+                          }}
+                          isScrolling={isScrolling}
+                          scrollToAlignment="center"
+                          scrollToIndex={scrollToIndex}
+                          onScroll={onChildScroll}
+                          scrollTop={scrollTop}
+                          style={clearOutlineStyle}
+                        />
+                      )
+                    }}
+                  </AutoSizer>
+                )}
+              </WindowScroller>
+            )}
+          </InfiniteLoader> :
+          !loading &&
+            <InfiniteLoader
+              isRowLoaded={isRowLoaded}
+              loadMoreRows={onScroll}
+              rowCount={10000000}
+              ref={ref => (this.infiniteLoaderRef = ref)}
+              threshold={2}
+            >
+              {({ onRowsRendered }) => (
+                <WindowScroller onScroll={clearScrollPosition}>
+                  {({ height, isScrolling, registerChild, onChildScroll, scrollTop }) => (
+                    <AutoSizer disableHeight>
+                      {({ width }) => {
+                        return (
+                          <List
+                            rowCount={items.length || 0}
+                            autoHeight
+                            width={width}
+                            height={height}
+                            rowHeight={this.cellMeasurerCache.rowHeight}
+                            rowRenderer={ceramicRowRenderer}
+                            deferredMeasurementCache={this.cellMeasurerCache}
+                            overscanRowCount={2}
+                            // onRowsRendered={onRowsRendered}
+                            ref={el => {
+                              this.listRef = el
+                              if (el instanceof Element) { registerChild(el) }
+                            }}
+                            isScrolling={isScrolling}
+                            scrollToAlignment="center"
+                            scrollToIndex={scrollToIndex}
+                            onScroll={onChildScroll}
+                            scrollTop={scrollTop}
+                            style={clearOutlineStyle}
+                          />
+                        )
+                      }}
+                    </AutoSizer>
+                  )}
+                </WindowScroller>
               )}
-            </WindowScroller>
-          )}
-        </InfiniteLoader>
+            </InfiniteLoader>}
         <PostlistSkeleton loading={loading} />
       </React.Fragment>
     )

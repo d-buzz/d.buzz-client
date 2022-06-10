@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
-import { getSavedUserRequest, initWSHASConnectionRequest } from 'store/auth/actions'
+import { getSavedUserRequest, initWSHASConnectionRequest, initCeremicLoginRequest } from 'store/auth/actions'
 import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest, getWSNodeHAS } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -18,6 +18,7 @@ import ReplayIcon from '@material-ui/icons/Replay'
 import CloseIcon from '@material-ui/icons/Close'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
+import { getBestCeramicHost } from 'services/ceramic'
 
 const { VERSION } = config
 
@@ -120,6 +121,7 @@ const Init = (props) => {
     getBestRpcNode,
     getWSNodeHAS,
     initWSHASConnectionRequest,
+    initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -154,7 +156,11 @@ const Init = (props) => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
       setIsLatest(true)
+      initCeremicLoginRequest()
       getCensorTypesRequest().then(() => {
+        getBestCeramicHost().then((host) => {
+          localStorage.setItem('ceramic', host)
+        })
         getBestRpcNode().then(() => {
           getWSNodeHAS()
           initWSHASConnectionRequest()
@@ -202,6 +208,7 @@ const mapDispatchToProps = (dispatch) => ({
     getBestRpcNode,
     getWSNodeHAS,
     initWSHASConnectionRequest,
+    initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     setDefaultVotingWeightRequest,

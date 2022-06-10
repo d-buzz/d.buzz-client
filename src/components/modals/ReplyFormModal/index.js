@@ -20,6 +20,7 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
+import { checkForCeramicAccount, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -219,6 +220,13 @@ const ReplyFormModal = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [ceramicAuthor, setCeramicAuthor] = useState(false)
+  const [ceramicUser, setCeramicUser] = useState(false)
+  const [fetchingProfile, setFetchingProfile] = useState(false)
+  const [replying, setReplying] = useState(false)
+  const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.png`
+  const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
+  const [userAvatarUrl, setUserAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
 
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
@@ -257,7 +265,13 @@ const ReplyFormModal = (props) => {
           treeHistory,
         } = modalData
         setReplyRef(replyRef)
-        setAuthor(author)
+        if(author.did) {
+          setCeramicAuthor(author)
+          if(author.images) {
+            setAuthorAvatarUrl(getIpfsLink(author.images.avatar))
+          }
+        }
+        setAuthor(author.did ? author.did : author)
         setPermlink(permlink)
         setBody(content)
         setTreeHistory(treeHistory)
@@ -271,6 +285,34 @@ const ReplyFormModal = (props) => {
       setOpen(modalOpen)
     }
   }, [modalData])
+
+  useEffect(() => {
+    setFetchingProfile(true)
+    if(checkForCeramicAccount(username)) {
+      getBasicProfile(username)
+        .then((res) => {
+          setCeramicUser(res)
+          setFetchingProfile(false)
+          if(res.images) {
+            setUserAvatarUrl(getIpfsLink(res.images.avatar))
+          }
+        })
+    }
+  }, [username])
+  
+  useEffect(() => {
+    setFetchingProfile(true)
+    if(checkForCeramicAccount(author)) {
+      getBasicProfile(author)
+        .then((res) => {
+          setCeramicAuthor(res)
+          setFetchingProfile(false)
+          if(res.images) {
+            setAuthorAvatarUrl(getIpfsLink(res.images.avatar))
+          }
+        })
+    }
+  }, [author])
 
   const onHide = () => {
     setOpen(false)
@@ -333,16 +375,32 @@ const ReplyFormModal = (props) => {
       invokeTwitterIntent(content)
     }
 
-    publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-      .then(({ success, errorMessage }) => {
-        if(success) {
-          broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-          setReplyDone(true)
-          closeReplyModal()
-        } else {
-          broadcastNotification('error', errorMessage)
-        }
-      })
+    setReplying(true)
+
+    if(!ceramicUser) {
+      publishReplyRequest(author, permlink, content, replyRef, treeHistory)
+        .then(({ success, errorMessage }) => {
+          if(success) {
+            broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+            setReplyDone(true)
+            closeReplyModal()
+          } else {
+            broadcastNotification('error', errorMessage)
+          }
+        })
+    } else {
+      replyRequest(permlink, author, content)
+        .then((data) => {
+          if(data) {
+            broadcastNotification('success', `Succesfully replied to @${author}/${permlink} on CeramicxDBuzz`)
+            setReplyDone(true)
+            closeReplyModal()
+            setReplying(false)
+          } else {
+            broadcastNotification('error', 'There was an error while replying to this buzz.')
+          }
+        })
+    }
   }
 
   const handleClickContent = (e) => {
@@ -426,13 +484,13 @@ const ReplyFormModal = (props) => {
             <Row>
               <Col xs="auto">
                 <div className={classes.left}>
-                  <Avatar author={author} className={classes.avatar}/>
+                  {<Avatar author={author} avatarUrl={authorAvatarUrl} className={classes.avatar}/>}
                   <div className={classes.thread} />
                 </div>
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to <b className={classes.usernameStyle}><a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></b></p>
+                  <p>Replying to {!fetchingProfile && <b className={classes.usernameStyle}><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
                   <div className={classes.previewContainer}>
                     <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>
@@ -442,12 +500,12 @@ const ReplyFormModal = (props) => {
             <Row>
               <Col xs="auto">
                 <div className={classes.left}>
-                  <Avatar author={username} className={classes.avatar} />
+                  <Avatar author={username} avatarUrl={userAvatarUrl} className={classes.avatar} />
                 </div>
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  {loading && (
+                  {loading && replying && (
                     <div className={classes.loadState}>
                       <Box  position="relative" display="inline-flex">
                         <Spinner top={0} size={20} loading={true} />&nbsp;
@@ -455,7 +513,7 @@ const ReplyFormModal = (props) => {
                       </Box>
                     </div>
                   )}
-                  {!loading && (
+                  {!loading && !replying && (
                     <TextArea
                       style={textAreaStyle}
                       minRows={3}
@@ -526,11 +584,12 @@ const ReplyFormModal = (props) => {
                       <EmojiIcon />
                     </IconButton>
                     <ContainedButton
+                      loading={loading || replying}
                       label="Reply"
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleSubmitReply}
-                      disabled={loading || `${content}`.trim() === ''}
+                      disabled={loading || `${content}`.trim() === '' || replying}
                     />
                     <Box
                       style={{ float: 'right', marginRight: 15, paddingTop: 10}}

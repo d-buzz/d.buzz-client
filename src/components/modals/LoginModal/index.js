@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
@@ -9,7 +9,7 @@ import { authenticateUserRequest } from 'store/auth/actions'
 import { Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import { pending } from 'redux-saga-thunk'
+// import { pending } from 'redux-saga-thunk' not in use
 import QRCode from 'qrcode.react'
 import classNames from 'classnames'
 import { hasCompatibleKeychain } from 'services/helper'
@@ -23,6 +23,7 @@ import { Checkbox } from '@material-ui/core'
 import { ProgressBar } from 'react-bootstrap'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
+import LoginWithMetaMaskButton from 'components/common/LoginWithMetaMask'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
@@ -126,10 +127,12 @@ const LoginModal = (props) => {
   const [password, setPassword] = useState()
   const [useKeychain, setUseKeychain] = useState(false)
   const [useHAS, setUseHAS] = useState(false)
+  const [useCeramic, setUseCeramic] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
   const [qrCode, setQRCode] = useState(null)
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(false)
   /* eslint-disable */
   let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
   
@@ -179,10 +182,10 @@ const LoginModal = (props) => {
 
   const handleClickLogin = () => {
     setLoading(true)
-    authenticateUserRequest(username, password, useKeychain, useHAS)
+    setHasAuthenticationError(false)
+    authenticateUserRequest(username, password, useKeychain, useHAS, useCeramic)
       .then(({ is_authenticated }) => {
         if (useHAS) {
-          
           const hasExpiredDelayInterval = setInterval(() => {
             // console.log('this', hasExpiredDelay)
             hasExpiredDelay -= 1
@@ -212,6 +215,11 @@ const LoginModal = (props) => {
             }
             onHide()
           }
+        }
+
+        if(useCeramic) {
+          setUseCeramic(false)
+          setHasAuthenticationError(false)
         }
       })
       
@@ -252,6 +260,22 @@ const LoginModal = (props) => {
     return hasMatch
   }
 
+  const handleCeramicLogin = () => {
+    setUseCeramic(true)
+  }
+
+  useEffect(() => {
+    if(useCeramic) {
+      handleClickLogin()
+    }
+  }, [useCeramic])
+
+  useEffect(() => {
+    if (typeof window.ethereum !== 'undefined') {
+      setHasMetaMaskIntalled(true)
+    }
+  }, [])
+
   return (
     <React.Fragment>
       <Modal className={classes.modal} show={show} onHide={onHide}>
@@ -275,20 +299,24 @@ const LoginModal = (props) => {
                   {hasSwitcherMatch() && (<span style={{ color: 'red' }}>You are trying to login a username that is already added in the account switcher</span>)}
                 </center>
               </div>
-              <FormLabel className={classes.label}>Username</FormLabel>
-              <div className={classes.username}>
-                <b className={classes.usernameHint}>@</b>
-                <FormControl
-                  disabled={loading}
-                  name="username"
-                  type="text"
-                  value={username}
-                  onChange={onChange}
-                  onKeyDown={onKeyDown}
-                />
-              </div>
+              {!useCeramic && ( 
+                <React.Fragment>
+                  <FormLabel className={classes.label}>Username</FormLabel>
+                  <div className={classes.username}>
+                    <b className={classes.usernameHint}>@</b>
+                    <FormControl
+                      disabled={loading}
+                      name="username"
+                      type="text"
+                      value={username}
+                      onChange={onChange}
+                      onKeyDown={onKeyDown}
+                    />
+                  </div>
+                </React.Fragment>
+               )}
               <FormSpacer />
-              {!useKeychain && !useHAS && (
+              {!useKeychain && !useHAS && !useCeramic && (
                 <React.Fragment>
                   <FormLabel className={classes.label}>Posting key</FormLabel>
                   <FormControl
@@ -302,7 +330,7 @@ const LoginModal = (props) => {
                   <FormSpacer />
                 </React.Fragment>
               )}
-              {hasInstalledKeychain && (
+              {hasInstalledKeychain && !useCeramic && (
                 <div style={{ marginLeft: 10, textAlign: 'left'}}>
                   <FormControlLabel
                     className='checkBox'
@@ -337,7 +365,7 @@ const LoginModal = (props) => {
                   />
                 </div>
               )}
-              {!hasInstalledKeychain && !isMobile && (
+              {!hasInstalledKeychain && !isMobile &&!useCeramic && (
                 <React.Fragment>
                  <div style={{ marginLeft: 10, textAlign: 'left'}}>
                   <FormControlLabel
@@ -372,10 +400,9 @@ const LoginModal = (props) => {
                     label=" Login With Hive Keychain"
                   />
                  </div>
-                  
-                  <FormSpacer />
-                  {useKeychain && (
+                  {useKeychain && !useCeramic && (
                     <React.Fragment>
+                      <FormSpacer />
                       <center><h6 className={classes.label}>Install Hive Keychain</h6>
                         <Button
                           classes={{ root: classes.browserExtension }}
@@ -404,8 +431,40 @@ const LoginModal = (props) => {
                   )}
                 </React.Fragment>
               )}
+              {hasMetaMaskInstalled && (
+                <LoginWithMetaMaskButton onClick={handleCeramicLogin} />
+              )}
+              {!hasMetaMaskInstalled && (
+                <React.Fragment>
+                  <FormSpacer />
+                  <center><h6 className={classes.label}>Install Metamask</h6>
+                    <Button
+                      classes={{ root: classes.browserExtension }}
+                      style={{ borderRadius: 50 }}
+                      variant="outlined"
+                      startIcon={<FaChrome />}
+                      href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Chrome
+                    </Button>
+                    <Button
+                      classes={{ root: classes.browserExtension }}
+                      variant="outlined"
+                      style={{ borderRadius: 50, marginLeft: 15 }}
+                      startIcon={<FaFirefoxBrowser />}
+                      href="https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Firefox
+                    </Button>
+                  </center>
+                </React.Fragment>
+              )}
               <center>
-                {!loading && (
+                {!loading &&!useCeramic && (
                   <ContainedButton
                     onClick={handleClickLogin}
                     transparent={true}

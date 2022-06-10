@@ -19,6 +19,7 @@ import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { calculateOverhead } from 'services/helper'
 import Renderer from 'components/common/Renderer'
+import { checkForCeramicAccount, updatePostRequest } from 'services/ceramic'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -219,6 +220,8 @@ const UpdateFormModal = (props) => {
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
 
+  const [updating, setUpdating] = useState(false)
+
   useEffect(() => {
     if(content.length - overhead === 280) {
       setCounterColor('#E0245E')
@@ -285,16 +288,30 @@ const UpdateFormModal = (props) => {
 
 
   const handleClickSubmitUpdate = () => {
-    publishUpdateRequest(permlink, content)
-      .then((success) => {
-        if(success) {
+    setUpdating(true)
+    if(!checkForCeramicAccount(username)) {
+      publishUpdateRequest(permlink, content)
+        .then((success) => {
+          if(success) {
+            broadcastNotification('success', `Buzz successfully edited`)
+            setUpdating(false)
+            onSuccess(content)
+            onClose()
+          } else {
+            broadcastNotification('error', `Buzz failed to edited`)
+          }
+        })
+    } else {
+      updatePostRequest(permlink, content)
+        .then((data) => {
           broadcastNotification('success', `Buzz successfully edited`)
+          setUpdating(false)
           onSuccess(content)
           onClose()
-        } else {
+        }).catch((e) => {
           broadcastNotification('error', `Buzz failed to edited`)
-        }
-      })
+        })
+    }
   }
 
   const closeGiphy = () => {
@@ -417,11 +434,12 @@ const UpdateFormModal = (props) => {
                       <EmojiIcon />
                     </IconButton>
                     <ContainedButton
+                      loading={loading || updating}
                       label="Update"
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleClickSubmitUpdate}
-                      disabled={loading || `${content}`.trim() === ''}
+                      disabled={loading || `${content}`.trim() === '' || updating}
                     />
                     <Box
                       style={{ float: 'right', marginRight: 15, paddingTop: 10}}

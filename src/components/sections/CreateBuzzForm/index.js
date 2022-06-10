@@ -46,6 +46,7 @@ import SaveDraftModal from 'components/modals/SaveDraftModal'
 import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
 import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
+import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -294,6 +295,7 @@ const useStyles = createUseStyles(theme => ({
     animation: 'buzzLoadingContainer 450ms',
 
     '& .title': {
+      textAlign: 'center',
       fontSize: '1.2em',
       fontWeight: 600,
       marginTop: '10px',
@@ -733,6 +735,8 @@ const CreateBuzzForm = (props) => {
     publishReplyRequest,
   } = props
 
+  const [ceramicUser, setCeramicUser] = useState(false)
+
   // states & refs
   const inputRef = useRef(null)
   const videoInputRef = useRef(null)
@@ -769,6 +773,7 @@ const CreateBuzzForm = (props) => {
   const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
   const [draftData, setDraftData] = useState(null)
   const [selectedDraft, setSelectedDraft] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState(null)
   
   const {
     text = '',
@@ -1142,36 +1147,58 @@ const CreateBuzzForm = (props) => {
     const buzzContentWithTitle = buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content
     const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
     const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
-
+    
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
-      setBuzzLoading(true)
-      setBuzzing(true)
-      publishPostRequest(buzzContent, tags, payout)
-        .then((data) => {
-          if (data.success) {
-            setPageFrom(null)
-            const { author, permlink } = data
-            // hideModalCallback()
-            clearIntentBuzz()
-            broadcastNotification('success', 'You successfully published a post')
-            setPublishedBuzzes(1)
-            setNextBuzz(2)
-            setBuzzData({author: author, permlink: permlink})
-            setBuzzing(false)
-            updateBuzzTitle('')
-
-            if(!isThread) {
-              hideModalCallback()
-              resetBuzzForm()
-              history.push(`/@${author}/c/${permlink}`)
+      if(!ceramicUser) {
+        setBuzzLoading(true)
+        setBuzzing(true)
+        publishPostRequest(buzzContent, tags, payout)
+          .then((data) => {
+            if (data.success) {
+              setPageFrom(null)
+              const { author, permlink } = data
+              // hideModalCallback()
+              clearIntentBuzz()
+              broadcastNotification('success', 'You successfully published a post')
+              setPublishedBuzzes(1)
+              setNextBuzz(2)
+              setBuzzData({author: author, permlink: permlink})
+              setBuzzing(false)
+              updateBuzzTitle('')
+              
+              if(!isThread) {
+                hideModalCallback()
+                resetBuzzForm()
+                history.push(`/@${author}/c/${permlink}`)
+              }
+            } else {
+              broadcastNotification('error', data.errorMessage)
+              setBuzzLoading(false)
             }
-          } else {
-            broadcastNotification('error', data.errorMessage)
-            setBuzzLoading(false)
-          }
-        })
+          })
+      } else {
+        // alert('ceramic!!!')
+        setBuzzLoading(true)
+        setBuzzing(true)
+        createPostRequest(user.username, '', buzzContent)
+          .then((data) => {
+            console.log(data)
+            if(data) {
+              setPageFrom(null)
+              const { creatorId, streamId } = data
+              broadcastNotification('success', 'You successfully published a post')
+              setBuzzLoading(false)
+              setBuzzing(false)
+              updateBuzzTitle('')
+              clearIntentBuzz()
+              resetBuzzForm()
+              hideModalCallback()
+              history.push(`/@${creatorId}/c/${streamId}`)
+            }
+          })
+      }
     }
   }
 
@@ -1385,6 +1412,19 @@ const CreateBuzzForm = (props) => {
     }
   }
 
+  useEffect(() => {
+    if(checkForCeramicAccount(user.username)) {
+      setCeramicUser(true)
+
+      getBasicProfile(user.username)
+        .then((res) => {
+          if(res.images) {
+            setAvatarUrl(getIpfsLink(res.images.avatar))
+          }
+        })
+    }
+  }, [user])
+
   return (
     <div className={containerClass}>
       {!buzzModalStatus && buzzThreads && buzzThreads[1].content && !isMobile &&
@@ -1410,7 +1450,7 @@ const CreateBuzzForm = (props) => {
               <span className={classes.buzzBox}>
                 {showBuzzTitle &&
                   <div className={classes.titleBox} tabindex={0}>
-                    <Avatar author={user.username} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
+                    <Avatar author={user.username} avatarUrl={avatarUrl} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
                     <span className="titleContainer">
                       <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
                       {buzzTitle && <span className='counter'>{buzzTitle.length}/60</span>}
@@ -1438,8 +1478,8 @@ const CreateBuzzForm = (props) => {
                               <CloseIcon />
                             </IconButton>}
                           <span className={`buzzArea buzzArea${item.id} ${showBuzzTitle === false ? 'noMargin' : ''}`}>
-                            {item.id === 1 && showBuzzTitle === false && <Avatar className='userAvatar' author={user.username} style={{width: showBuzzTitle === false ? 'fit-content' : 'inherit'}} onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>}
-                            {item.id !== 1 && <Avatar className='userAvatar' author={user.username} onClick={() => window.location = `${window.location.origin}/@${user.username}`} />}
+                            {item.id === 1 && showBuzzTitle === false && <Avatar className='userAvatar' avatarUrl={avatarUrl} author={user.username} style={{width: showBuzzTitle === false ? 'fit-content' : 'inherit'}} onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>}
+                            {item.id !== 1 && <Avatar className='userAvatar' avatarUrl={avatarUrl} author={user.username} onClick={() => window.location = `${window.location.origin}/@${user.username}`} />}
                             <TextArea
                               ref={buzzTextBoxRef}
                               buzzId={item.id}
@@ -1631,7 +1671,7 @@ const CreateBuzzForm = (props) => {
                   )}
                 </div>
                 <div className={classes.publishBuzzOption}>
-                  {content && 
+                  {content && !ceramicUser && 
                     <div style={{display: 'inline-flex'}}>
                       <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
                       <div className={classes.colDivider}> </div>
@@ -1677,11 +1717,11 @@ const CreateBuzzForm = (props) => {
               onClick={handleClickPublishPost}
             />
           </div>
-        </div>}
+        </div>}        
       {buzzLoading &&
         <div className={classes.loadingContainer}>
           <img src={`${window.location.origin}/images/d.buzz-icon-512.png`} alt='buzzLoading'/>
-          <span className='title'>Broadcasting your {isThread ? 'thread' : 'buzz'}...</span>
+          <span className='title'>Broadcasting your {isThread ? 'thread' : 'buzz'} to the decentralized web...</span>
           {/* {isThread && <span>This can take upto 5-10 secs</span>} */}
           {isThread && <button className={classes.publishThreadButton} onClick={handlePublishThread} disabled={buzzing}>Buzz {publishedBuzzes} of {threadCount} <ArrowForwardRoundedIcon style={{marginLeft: 8}}/></button>}
         </div>}

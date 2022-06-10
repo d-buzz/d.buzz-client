@@ -123,6 +123,7 @@ import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
 import { hacMsg } from "@mintrawa/hive-auth-client"
+import { checkCeramicLogin, checkForCeramicAccount, getChildPostsRequest, getFollowingFeed, getSinglePost } from "services/ceramic"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -161,11 +162,16 @@ const censorCheck = (content, censoredList) => {
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
-    const mutelist = yield select(state => state.auth.get('mutelist'))
-    let replies = yield call(fetchDiscussions, author, permlink)
-    replies = invokeMuteFilter(replies, mutelist)
-
-    yield put(getRepliesSuccess(replies, meta))
+    if(!checkForCeramicAccount(author)) {
+      const mutelist = yield select(state => state.auth.get('mutelist'))
+      let replies = yield call(fetchDiscussions, author, permlink)
+      replies = invokeMuteFilter(replies, mutelist)
+      console.log(replies)
+      yield put(getRepliesSuccess(replies, meta))
+    } else {
+      const replies = yield call(getChildPostsRequest, permlink)
+      yield put(getRepliesSuccess(replies, meta))
+    }
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
   }
@@ -179,40 +185,61 @@ function* getContentRequest(payload, meta) {
   try {
     let data = {}
 
-    if(!contentRedirect) {
-      const fromPage = yield select(state => state.posts.get('pageFrom'))
-      if(!fromPage) {
-        data = yield call(fetchContent, author, permlink)
-      } else {
-
-        if(fromPage === 'home') {
-          const home = yield select(state => state.posts.get('home'))
-          const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
-          data = filtered[0]
-        } else if(fromPage === 'trending') {
-          const trending = yield select(state => state.posts.get('trending'))
-          const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
-          data = filtered[0]
-        } else if(fromPage === 'latest') {
-          const latest = yield select(state => state.posts.get('latest'))
-          const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
-          data = filtered[0]
-        } else if(fromPage === 'profile') {
-          const profilePosts = yield select(state => state.profile.get('posts'))
-          let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
-
-          if(filtered.length === 0) {
-            const profileReplies = yield select(state => state.profile.get('replies'))
-            filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+    if(!checkForCeramicAccount(author)) {
+      if(!contentRedirect) {
+        const fromPage = yield select(state => state.posts.get('pageFrom'))
+        if(!fromPage) {
+          data = yield call(fetchContent, author, permlink)
+        } else {
+          
+          if(fromPage === 'home') {
+            const home = yield select(state => state.posts.get('home'))
+            const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
+            data = filtered[0]
+          } else if(fromPage === 'trending') {
+            const trending = yield select(state => state.posts.get('trending'))
+            const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
+            data = filtered[0]
+          } else if(fromPage === 'latest') {
+            const latest = yield select(state => state.posts.get('latest'))
+            const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
+            data = filtered[0]
+          } else if(fromPage === 'profile') {
+            const profilePosts = yield select(state => state.profile.get('posts'))
+            let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+            
+            if(filtered.length === 0) {
+              const profileReplies = yield select(state => state.profile.get('replies'))
+              filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+            }
+  
+            data = filtered[0]
           }
-
-          data = filtered[0]
         }
+      } else {
+        data = contentRedirect
       }
     } else {
-      data = contentRedirect
-    }
+      // GET CERAMIC POST REQUEST
+      const { streamId, parentId, creatorId, createdAt, updatedAt, content, debug_metadata, replies, profile } = yield call(getSinglePost, permlink)
+      const { title, body } = content
 
+      data = {
+        ceramicProfile: profile,
+        parent_author: parentId ? author : null,
+        author: creatorId,
+        json_metadata: debug_metadata,
+        created: createdAt,
+        updated_at: updatedAt,
+        root_author: creatorId,
+        root_title: title,
+        root_permlink: streamId,
+        parent_permlink: parentId,
+        body: body,
+        children: replies.length,
+      }
+    }
+    
     data = censorCheck(data, censoredList)
 
     yield put(setContentRedirect(null))
@@ -240,7 +267,7 @@ function* getTrendingPostsRequest(payload, meta) {
 
   const params = { sort: 'trending', start_permlink, start_author }
   const method = 'get_ranked_posts'
-
+  
   try {
     const old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
@@ -276,24 +303,34 @@ function* getHomePostsRequest(payload, meta) {
   const method = 'get_account_posts'
 
   try {
-    const old = yield select(state => state.posts.get('home'))
-    let data = yield call(callBridge, method, params, false)
+    if(!checkCeramicLogin(account)) {
+      const old = yield select(state => state.posts.get('home'))
+      let data = yield call(callBridge, method, params, false)
 
-    data = [...old, ...data]
-    data = data.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
-    })
+      data = [...old, ...data]
+      data = data.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+      })
 
-    yield put(setHomeLastPost(data[data.length-1]))
-    const mutelist = yield select(state => state.auth.get('mutelist'))
+      yield put(setHomeLastPost(data[data.length-1]))
+      const mutelist = yield select(state => state.auth.get('mutelist'))
 
-    data = data.filter(item => invokeFilter(item))
-    const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
-    data = invokeMuteFilter(data, mutelist, opacityUsers)
-    data = invokeHideBuzzFilter(data)
-    data.map((item) => censorCheck(item, censoredList))
+      data = data.filter(item => invokeFilter(item))
+      const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+      data = invokeMuteFilter(data, mutelist, opacityUsers)
+      data = invokeHideBuzzFilter(data)
+      data.map((item) => censorCheck(item, censoredList))
 
-    yield put(getHomePostsSuccess(data, meta))
+      yield put(getHomePostsSuccess(data, meta))
+    } else {
+      let data = yield call(getFollowingFeed, account)
+
+      if(data === null) {
+        data = []
+      }
+      
+      yield put(getHomePostsSuccess(data, meta))
+    }
   } catch(error) {
     yield put(getHomePostsFailure(error, meta))
   }

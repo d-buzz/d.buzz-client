@@ -2,9 +2,9 @@ export const AUTHENTICATE_USER_REQUEST = 'AUTHENTICATE_USER_REQUEST'
 export const AUTHENTICATE_USER_SUCCESS = 'AUTHENTICATE_USER_SUCCESS'
 export const AUTHENTICATE_USER_FAILURE = 'AUTHENTICATE_USER_FAILURE'
 
-export const authenticateUserRequest = (username, password, useKeychain, useHAS) => ({
+export const authenticateUserRequest = (username, password, useKeychain, useHAS, useCeramic) => ({
   type: AUTHENTICATE_USER_REQUEST,
-  payload: { username, password, useKeychain, useHAS },
+  payload: { username, password, useKeychain, useHAS, useCeramic },
   meta: {
     thunk: true,
   },
@@ -66,6 +66,27 @@ export const initWSHASConnectionFailure = (error, meta) => ({
   type: INIT_WS_HAS_CONNECTION_FAILURE,
   payload: error,
   meta,
+})
+
+export const INIT_CERAMIC_LOGIN_REQUEST = 'INIT_CERAMIC_LOGIN_REQUEST'
+export const INIT_CERAMIC_LOGIN_SUCCESS = 'INIT_CERAMIC_LOGIN_SUCCESS'
+export const INIT_CERAMIC_LOGIN_FAILURE = 'INIT_CERAMIC_LOGIN_FAILURE'
+
+export const initCeremicLoginRequest = () => ({
+  type: INIT_CERAMIC_LOGIN_REQUEST,
+  meta: {
+    thunk: true,
+  },
+})
+
+export const initCeremicLoginSuccess = (response) => ({
+  type: INIT_CERAMIC_LOGIN_SUCCESS,
+  payload: response,
+})
+
+export const initCeremicLoginFailure = (error) => ({
+  type: INIT_CERAMIC_LOGIN_FAILURE,
+  payload: error,
 })
 
 export const SET_HAS_QR_CODE = 'SET_HAS_QR_CODE'
@@ -434,4 +455,18 @@ export const unfollowBlacklistsFailure = (response,meta) => ({
   type: UNFOLLOW_BLACKLISTS_FAILURE, 
   payload: response,
   meta,
+})
+
+export const CERAMIC_USER_NAME_MODAL = 'CERAMIC_USER_NAME_MODAL'
+
+export const setCeramicUserNameModal = (name) => ({
+  type: CERAMIC_USER_NAME_MODAL,
+  payload: name,
+})
+
+export const NEW_CERAMIC_USER_NAME = 'NEW_CERAMIC_USER_NAME'
+
+export const setNewCeramicUserName = (name) => ({
+  type: NEW_CERAMIC_USER_NAME,
+  payload: name,
 })
