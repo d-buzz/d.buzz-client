@@ -15,14 +15,13 @@ commands:
       - checkout
       - run: npm install
       - run: npm run lint
-      - run: export NODE_OPTIONS=--max-old-space-size=8192
+      - run: export TOOL_NODE_FLAGS="--max_old_space_size=4096"
 
 jobs:
   prod_build_test:
       executor: docker-executor
       steps:
         - common-steps
-        - run: export NODE_OPTIONS=--max-old-space-size=8192
         - run: npm run build:prod
         - discord/status:
             success_message: test build success on master branch
@@ -33,7 +32,6 @@ jobs:
       executor: docker-executor
       steps:
         - common-steps
-        - run: export NODE_OPTIONS=--max-old-space-size=8192
         - run: npm run build:dev
         - discord/status:
             success_message: test build success on non master branch
