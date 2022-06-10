@@ -15,7 +15,6 @@ commands:
       - checkout
       - run: npm install
       - run: npm run lint
-      - run: NODE_OPTIONS=--max-old-space-size=4096
 
 jobs:
   prod_build_test:
