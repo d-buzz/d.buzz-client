@@ -378,33 +378,33 @@ function* upvoteRequest(payload, meta) {
   const weight = percentage * 100
   let success = false
 
-    try {
-      if(is_authenticated) {
-        if(useKeychain) {
-          const result = yield call(keychainUpvote, username, permlink, author, weight)
-          success = result.success
-        } else {
-          let { login_data } = user
-          login_data = extractLoginData(login_data)
-          const wif = login_data[1]
-
-          const result = yield call(broadcastVote, wif, username, author, permlink, weight)
-          success = result.id ? true : false
-        }
-
-        if(success){
-          recentUpvotes = [...recentUpvotes, permlink]
-          yield put(saveReceptUpvotes(recentUpvotes))
-          yield put(upvoteSuccess({ success: true }, meta))
-        }
+  try {
+    if(is_authenticated) {
+      if(useKeychain) {
+        const result = yield call(keychainUpvote, username, permlink, author, weight)
+        success = result.success
       } else {
-        yield put(upvoteFailure({ success: false, errorMessage: 'No authentication' }, meta))
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+        const wif = login_data[1]
+
+        const result = yield call(broadcastVote, wif, username, author, permlink, weight)
+        success = result.id ? true : false
       }
 
-    } catch(error) {
-      const errorMessage = errorMessageComposer('upvote', error)
-      yield put(upvoteFailure({ success: false, errorMessage }, meta))
+      if(success){
+        recentUpvotes = [...recentUpvotes, permlink]
+        yield put(saveReceptUpvotes(recentUpvotes))
+        yield put(upvoteSuccess({ success: true }, meta))
+      }
+    } else {
+      yield put(upvoteFailure({ success: false, errorMessage: 'No authentication' }, meta))
     }
+
+  } catch(error) {
+    const errorMessage = errorMessageComposer('upvote', error)
+    yield put(upvoteFailure({ success: false, errorMessage }, meta))
+  }
 }
 
 function* fileUploadRequest(payload, meta) {
