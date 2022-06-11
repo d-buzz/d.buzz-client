@@ -117,7 +117,8 @@ const night = {
           '& svg': {
             paddingTop: -10,
             '& path': {
-              stroke: 'white',
+              stroke: 'white !important',
+              fill: 'white !important',
             },
           },
         },
@@ -285,7 +286,8 @@ const light = {
         icons: {
           '& svg': {
             '& path': {
-              stroke: 'black',
+              stroke: 'black !important',
+              fill: 'black !important',
             },
           },
         },
@@ -457,7 +459,8 @@ const gray = {
         icons: {
           '& svg': {
             '& path': {
-              stroke: 'white',
+              stroke: 'white !important',
+              fill: 'white !important',
             },
           },
         },

@@ -502,7 +502,7 @@ const LoginModal = (props) => {
                   <br />
                   <br />
                   <h1>{hasExpiredDelay}</h1>
-                  <ProgressBar animated now={hasExpiredDelay} />
+                  <ProgressBar animated now={hasExpiredDelay} max={60} />
 
                   {!loading && (
                     <ContainedButton

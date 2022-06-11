@@ -118,6 +118,16 @@ button:focus {
   border-radius: 10px;
 }
 
+.MuiAlert-root {
+  border-radius: 15px !important;
+}
+
+.MuiAlert-icon {
+  align-items: center;
+  color: #ffffff !important;
+  font-size: 30px !important;
+}
+
 @font-face {
   font-family: "Segoe-Bold";
   src: url("fonts/Segoe-Bold.woff");

@@ -10,6 +10,10 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import VideoPreview from '../VideoPreview'
+import { bindActionCreators } from 'redux'
+import { setViewImageModal } from 'store/interface/actions'
+import { connect } from 'react-redux'
+import { proxyImage } from 'services/helper'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -711,7 +715,8 @@ const prepareDTubeEmbeds = (content) => {
 }
 
 const prepareDBuzzVideos = (content) => {
-  const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/(.*\?dbuzz_video)/i
+  const oldDbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/(.*\?dbuzz_video)/i
+  const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/.*\?dbuzz_video=https:\/\/ipfs\.io\/ipfs\/([a-zA-Z0-9]+)/i
   let body = content
 
   const links = textParser.getUrls(content)
@@ -719,10 +724,16 @@ const prepareDBuzzVideos = (content) => {
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
 
-    const match = link.match(dbuzzVideos)
+    let match
+
+    if(link.match(oldDbuzzVideos) && link.match(dbuzzVideos)) {
+      match = link.match(dbuzzVideos)[1]
+    } else if(link.match(oldDbuzzVideos) && !link.match(dbuzzVideos)) {
+      match = link.match(oldDbuzzVideos)[1].replace('?dbuzz_video', '')
+    }
 
     if (match) {
-      const id = match[1]
+      const id = match
       body = body.replace(link, `~~~~~~.^.~~~:dbuzz-video:${id}:~~~~~~.^.~~~`)
     }
   })
@@ -792,7 +803,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <ReactSoundCloud url={url} />
   } else if(content.includes(':dbuzz-video:')) {
     const url = content.split(':')[2]
-    return <VideoPreview key={`${url}${scrollIndex}dbuzz-video`} url={`https://ipfs.io/ipfs/${url}`}/>
+    return <a href={`https://ipfs.io/ipfs/${url}`}><VideoPreview key={`${url}${scrollIndex}dbuzz-video`} url={`https://ipfs.io/ipfs/${url}`}/></a>
   } else if (content.includes(':facebook:')) {
     try {
       const splitFacebook = content.split(':')
@@ -893,23 +904,27 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     }
 
     const checkForValidImage = (n) => {
-      return checkForMarkdownDefaults(n) && !n.includes('?dbuzz_video')
+      return checkForMarkdownDefaults(n) && !n.includes('?dbuzz_video') && !n.includes('storageapi.fleek.co')
     }
 
-    // render content (supported for all browsers)
+    // // render content (supported for all browsers)
     content = content
-    // render all urls
+    // // render all urls
       .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a href='${n.startsWith('http') ? n : `https://${n}`}'>${n}</a>` : n)
-    // render usernames
+    // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
-      // render hashtags 
+    //   // render hashtags 
       .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
-    // render crypto tickers
+    // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
-    // render web images links
-      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
-    // render IPFS images
-      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${n})` : n)
+    // // render web images links
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+    // // render IPFS images
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+    // render dbuzz images
+      .replace(/(https:\/\/(storageapi\.fleek\.co\/nathansenn-team-bucket\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+    //   // hide watch video on dbuzz
+      .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
@@ -930,6 +945,7 @@ const Renderer = React.memo((props) => {
     scrollIndex = -1,
     recomputeRowIndex = () => {},
     loader = true,
+    setViewImageModal,
   } = props
   let { content = '' } = props
   const original = content
@@ -957,6 +973,11 @@ const Renderer = React.memo((props) => {
             imageEl.style.animation = 'none'
             imageEl.style.opacity = '1'
             imageEl.style.height = 'inherit'
+            imageEl.style.cursor = 'pointer'
+
+            imageEl.onclick = () => {
+              setViewImageModal(imageEl.src)
+            }
           }
           imageEl.onerror = () => {
             imageEl.src = `${window.location.origin}/noimage.jpg`
@@ -1049,4 +1070,11 @@ const Renderer = React.memo((props) => {
   )
 })
 
-export default Renderer
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
+    {
+      setViewImageModal,
+    },dispatch),
+})
+
+export default connect(null, mapDispatchToProps)(Renderer)

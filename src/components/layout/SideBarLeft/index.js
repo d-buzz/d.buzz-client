@@ -19,11 +19,10 @@ import {
   Avatar,
   PowerIcon,
   CircularBrandIcon,
-  BuzzIcon,
+  // BuzzIcon,
   WalletIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
-import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded'
 import {
   BuzzFormModal,
   ThemeModal,
@@ -43,6 +42,8 @@ import SettingsModal from 'components/modals/SettingsModal'
 import { getTheme } from 'services/helper'
 import config from 'config'
 import { checkCeramicLogin, getBasicProfile, getIpfsLink } from 'services/ceramic'
+import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
+import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
   items: {
@@ -70,7 +71,7 @@ const useStyles = createUseStyles(theme => ({
       '& svg': {
         color: '#e53935',
         '& path': {
-          stroke: '#e53935',
+          // stroke: '#e53935',
         },
       },
     },
@@ -94,7 +95,7 @@ const useStyles = createUseStyles(theme => ({
       '& svg': {
         color: '#e53935',
         '& path': {
-          stroke: '#e53935',
+          // stroke: '#e53935',
         },
       },
     },
@@ -107,7 +108,8 @@ const useStyles = createUseStyles(theme => ({
     },
     '& svg': {
       '& path': {
-        stroke: '#e53935',
+        stroke: '#e61c34 !important',
+        fill: '#e61c34 !important',
       },
     },
   },
@@ -164,6 +166,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.left.sidebar.logout.icon,
   },
   buzzButton: {
+    padding: 8,
     backgroundColor: '#e53935 !important',
     '&:hover': {
       backgroundColor: '#b71c1c !important',
@@ -191,7 +194,8 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   moreButton: {
-    color: theme.left.sidebar.items.color,
+    display: 'flex',
+    color: '#e61c34',
 
     '&:hover': {
       color: '#E53935',
@@ -267,7 +271,7 @@ const NavLinkWrapper = (props) => {
     <React.Fragment>
       {!minify && (
         <div onClick={onClick} className={classNames(textClass, isActivePath(path, active) ? activeClass : '')}>
-          <Link to={path}>
+          <Link to={path} style={{ display: 'flex', alignItems: 'center' }}>
             <IconWrapper style={{ textAlign: 'right' }} className={iconClass}>{icon}</IconWrapper>
             {name}
           </Link>
@@ -335,6 +339,7 @@ const SideBarLeft = (props) => {
     }
     // eslint-disable-next-line
   }, [user])
+  const [activeView, setActiveView] = useState('Home')
 
   const showThemeModal = () => {
     handleClickCloseOpenMoreMenu()
@@ -427,46 +432,96 @@ const SideBarLeft = (props) => {
     setOpenMoreMenu(false)
   }
 
+  const handelClickItem = (name) => {
+    setActiveView(name)
+    switch(name) {
+    case 'home':
+      refreshHomeRouteData()
+      break
+    case 'trending':
+      refreshTrendingRouteData()
+      break
+    case 'latest':
+      refreshLatestRouteData()
+      break
+    case 'more':
+      handleClickOpenMoreMenu()
+      break
+    default:
+      return
+    }
+  }
+
+  useEffect(() => {
+    switch(location.pathname) {
+    case '/':
+      setActiveView('home')
+      break
+    case '/trending':
+      setActiveView('trending')
+      break
+    case '/latest':
+      setActiveView('latest')
+      break
+    case '/notifications':
+      setActiveView('notifications')
+      break
+    case '/profile':
+      setActiveView('profile')
+      break
+    case `/@${username}/wallet`:
+      setActiveView(`/@${username}/wallet`)
+      break
+    default:
+      return
+    }
+
+    // eslint-disable-next-line
+  }, [])
+
   const NavLinks = [
     {
       name: 'Home',
       path: "/",
-      icon: <HomeIcon />,
+      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
-      onClick: refreshHomeRouteData,
+      onClick: () => handelClickItem('home'),
     },
     {
       name: 'Trending',
       path: '/trending',
-      icon: <TrendingIcon />,
+      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
-      onClick: refreshTrendingRouteData,
+      onClick: () => handelClickItem('trending'),
     },
     {
       name: 'Latest',
       path: "/latest",
-      icon: <LatestIcon />,
+      icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
       preventDefault: false,
-      onClick: refreshLatestRouteData,
+      onClick: () => handelClickItem('latest'),
     },
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon /></Badge>,
+      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='outline'/></Badge>,
+      onClick: () => handelClickItem('notifications'),
     },
     {
       name: 'Profile',
       path: `/@${username}/t/buzz?ref=nav`,
-      icon: <ProfileIcon />,
+      icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
+      onClick: () => handelClickItem('profile'),
     },
     {
       name: 'Wallet',
-      icon: <WalletIcon />,
+      icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
       path: `/@${username}/wallet`,
+      onClick: () => handelClickItem('wallet'),
     },
     {
       name: 'More'  ,
-      icon: <MoreHorizRoundedIcon className={classes.moreButton} ref={moreMenuRef} />,
+      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
       path: '#',
       preventDefault: true,
       onClick: handleClickOpenMoreMenu,
@@ -511,7 +566,7 @@ const SideBarLeft = (props) => {
               <div style={{ paddingTop: 20, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
                 {theme === 'light' && !minify && (<BrandIcon />)}
                 {theme === 'dark' && !minify && (<BrandIconDark />)}
-                {minify && (<CircularBrandIcon />)}
+                {minify && config.VERSION.includes('dev') ? (<CircularBrandIcon />) : minify && (<IconButton><CircularBrandIcon /></IconButton>)}
               </div>
             </NavbarBrand>
             {config.VERSION.includes('dev') &&
@@ -573,7 +628,7 @@ const SideBarLeft = (props) => {
                   }}
                   onClick={handleClickBuzz}
                 >
-                  <BuzzIcon />
+                  <CreateBuzzIcon />
                 </IconButton>
               )}
             </div>

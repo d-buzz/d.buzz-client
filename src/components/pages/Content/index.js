@@ -11,7 +11,7 @@ import {
 } from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar } from 'components/elements'
-import { openCensorshipDialog } from 'store/interface/actions'
+import { openCensorshipDialog, setViewImageModal } from 'store/interface/actions'
 import {
   PostTags,
   PostActions,
@@ -45,6 +45,7 @@ import { IconButton } from '@material-ui/core'
 import MoreHoriz from '@material-ui/icons/MoreHoriz'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { checkForCeramicAccount } from 'services/ceramic'
+import ViewImageModal from 'components/modals/ViewImageModal'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -212,6 +213,8 @@ const Content = (props) => {
     openCensorshipDialog,
     censorList = [],
     clearAppendReply,
+    viewImageModal,
+    setViewImageModal,
   } = props
 
   const { username, permlink } = match.params
@@ -689,6 +692,7 @@ const Content = (props) => {
           <span className='errorHint'>Try searching for something else.</span>
         </div>}
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
+      <ViewImageModal show={viewImageModal} imageUrl={viewImageModal} onHide={() => setViewImageModal(null)}/>
     </React.Fragment>
   )
 }
@@ -700,6 +704,7 @@ const mapStateToProps = (state) => ({
   content: state.posts.get('content'),
   user: state.auth.get('user'),
   censorList: state.auth.get('censorList'),
+  viewImageModal: state.interfaces.get('viewImageModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -710,6 +715,7 @@ const mapDispatchToProps = (dispatch) => ({
     checkHasUpdateAuthorityRequest,
     openCensorshipDialog,
     clearAppendReply,
+    setViewImageModal,
   }, dispatch),
 })
 

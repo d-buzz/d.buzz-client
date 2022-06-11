@@ -18,7 +18,7 @@ import { clearIntentBuzz } from 'store/auth/actions'
 import { broadcastNotification } from 'store/interface/actions'
 import { PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest } from 'store/posts/actions'
+import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest, setContentRedirect } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -47,6 +47,8 @@ import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
 import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
 import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
+import { createPermlink, publishPostWithHAS } from 'services/api'
+import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -656,6 +658,7 @@ const useStyles = createUseStyles(theme => ({
     float: 'right',
 
     '& .progressPercent': {
+      color: theme.font.color,
       fontWeight: 600,
       width: '10%',
       textAlign: 'center',
@@ -668,7 +671,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 5,
     marginRight: 15,
   },
-  preparingVideo: {
+  preparingMedia: {
     margin: '25px auto',
     width: 'fit-content',
     color: theme.font.color,
@@ -733,6 +736,7 @@ const CreateBuzzForm = (props) => {
     updateBuzzThreads,
     updateBuzzTitle,
     publishReplyRequest,
+    setContentRedirect,
   } = props
 
   const [ceramicUser, setCeramicUser] = useState(false)
@@ -759,6 +763,8 @@ const CreateBuzzForm = (props) => {
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
   const [videoUploadProgress, setVideoUploadProgress] = useState(0)
   const [videoLimit, setVideoLimit] = useState(false)
+  const [buzzPermlink, setBuzzPermlink] = useState(null)
+  const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
   
   
   // buzz states
@@ -802,7 +808,7 @@ const CreateBuzzForm = (props) => {
   const [buzzLength, setBuzzLength] = useState(content.length + buzzTitle.length - overhead)
   const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length + buzzTitle.length - overhead))
   const [buzzImages, setBuzzImages] = useState(0)
-  const isVideoAttached = content.includes('dbuzz_video')
+  const [isVideoAttached] = useState(content.includes('?dbuzz_video='))
   
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
@@ -1047,6 +1053,7 @@ const CreateBuzzForm = (props) => {
     await handleImageCompression(image).then((uri) => {
       setCompressing(false)
       setImageSize(Number((uri.size / 1e+6).toFixed(2)))
+      console.log(uri)
       uploadFileRequest(uri, setImageUploadProgress).then((image) => {
         setImageUploading(false)
         const lastImage = image[image.length - 1]
@@ -1093,7 +1100,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handlePublishThread = () => {
-    const buzzContent = buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz].content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz].content
+    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : '')
 
     if(isThread) {
       setBuzzing(true)
@@ -1135,16 +1142,13 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleClickPublishPost = () => {
-    // delete post from draft
-    // savePostAsDraft("")
-    // savePostAsDraftToStorage("")
 
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
     }
 
     // eslint-disable-next-line
-    const buzzContentWithTitle = buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content
+    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
     const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
     const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
     
@@ -1154,30 +1158,71 @@ const CreateBuzzForm = (props) => {
       if(!ceramicUser) {
         setBuzzLoading(true)
         setBuzzing(true)
-        publishPostRequest(buzzContent, tags, payout)
-          .then((data) => {
-            if (data.success) {
-              setPageFrom(null)
-              const { author, permlink } = data
-              // hideModalCallback()
-              clearIntentBuzz()
-              broadcastNotification('success', 'You successfully published a post')
-              setPublishedBuzzes(1)
-              setNextBuzz(2)
-              setBuzzData({author: author, permlink: permlink})
-              setBuzzing(false)
-              updateBuzzTitle('')
-              
-              if(!isThread) {
-                hideModalCallback()
-                resetBuzzForm()
-                history.push(`/@${author}/c/${permlink}`)
+        if(user.useHAS) {
+          publishPostWithHAS(user, buzzContent, tags, payout, buzzPermlink)
+            .then((data) => {
+              console.log(data)
+              setContentRedirect(data.content)
+  
+              hacMsg.subscribe(m => {
+                if (m.type === 'sign_wait') {
+                  console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+                }
+                if (m.type === 'tx_result') {
+                  console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+                  if (m.msg?.status === 'accepted') {
+                    const status = m.msg?.status
+                    console.log(status)
+                    // success
+                    const { author, permlink } = data
+                    broadcastNotification('success', 'You successfully published a post')
+                    setBuzzLoading(false)
+                    setBuzzing(false)
+                    updateBuzzTitle('')
+                    clearIntentBuzz()
+                    resetBuzzForm()
+                    hideModalCallback()
+                    history.push(`/@${author}/c/${permlink}`)
+                  } else if (m.msg?.status === 'rejected') {
+                    const status = m.msg?.status
+                    console.log(status)
+                    // error
+                    broadcastNotification('error', 'Your HiveAuth post transaction is rejected.')
+                    setBuzzLoading(false)
+                  } else if (m.msg?.status === 'error') { 
+                    const error = m.msg?.status.error
+                    console.log(error)
+                    broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                  } 
+                }
+              })
+            })
+        } else {      
+          publishPostRequest(buzzContent, tags, payout)
+            .then((data) => {
+              if (data.success) {
+                setPageFrom(null)
+                const { author, permlink } = data
+                // hideModalCallback()
+                clearIntentBuzz()
+                broadcastNotification('success', 'You successfully published a post')
+                setPublishedBuzzes(1)
+                setNextBuzz(2)
+                setBuzzData({author: author, permlink: permlink})
+                setBuzzing(false)
+                updateBuzzTitle('')
+    
+                if(!isThread) {
+                  hideModalCallback()
+                  resetBuzzForm()
+                  history.push(`/@${author}/c/${permlink}`)
+                }
+              } else {
+                broadcastNotification('error', data.errorMessage)
+                setBuzzLoading(false)
               }
-            } else {
-              broadcastNotification('error', data.errorMessage)
-              setBuzzLoading(false)
-            }
-          })
+            })
+        }
       } else {
         // alert('ceramic!!!')
         setBuzzLoading(true)
@@ -1397,7 +1442,7 @@ const CreateBuzzForm = (props) => {
               setVideoUploading(false)
               if(video.toString() !== 'Error: Network Error') {
                 setVideoLimit(true)
-                createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `https://ipfs.io/ipfs/${video}?dbuzz_video`])
+                createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `${dbuzzVideoThumbnail}?dbuzz_video=https://ipfs.io/ipfs/${video}`])
               } else {
                 broadcastNotification('error', 'Video upload failed, please try re-uploading!')
               }
@@ -1424,6 +1469,15 @@ const CreateBuzzForm = (props) => {
         })
     }
   }, [user])
+  
+  // genarate buzz permlink if video is attached  
+  useEffect(() => {
+    if(videoLimit) {
+      setBuzzPermlink(createPermlink())
+    } else {
+      setBuzzPermlink(null)
+    }
+  }, [videoLimit])
 
   return (
     <div className={containerClass}>
@@ -1545,20 +1599,21 @@ const CreateBuzzForm = (props) => {
               </span>)}
             {imageUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
-                <div className={classes.uploadProgressBar}>
-                  <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={imageUploadProgress} />
-                  <span className='progressPercent' style={{color: 'white'}}>{imageUploadProgress}%</span>
-                </div>
-              </div>
-            )}
+                {imageUploadProgress !== 100 ?       
+                  <div className={classes.uploadProgressBar}>
+                    <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={imageUploadProgress} />
+                    <span className='progressPercent'>{imageUploadProgress}%</span>
+                  </div> :
+                  <div className={classes.preparingMedia}>Preparing Image</div>}
+              </div>)}
             {videoUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
                 {videoUploadProgress !== 100 ?
                   <div className={classes.uploadProgressBar}>
                     <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={videoUploadProgress} />
-                    <span className='progressPercent' style={{color: 'white'}}>{videoUploadProgress}%</span>
+                    <span className='progressPercent'>{videoUploadProgress}%</span>
                   </div> :
-                  <div className={classes.preparingVideo}>Preparing Video</div>}
+                  <div className={classes.preparingMedia}>Preparing Video</div>}
               </div>
             )}
 
@@ -1603,7 +1658,7 @@ const CreateBuzzForm = (props) => {
                     onChange={handleVideoUpload}
                     hidden
                   />
-                  <Tooltip title="Video" placement='top-start'>
+                  <Tooltip title="Short Video" placement='top-start'>
                     <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached || videoUploading || imageUploading || videoLimit} classes={{ disabled: classes.disabled }}>
                       <VideoUploadIcon />
                     </IconButton>
@@ -1674,7 +1729,7 @@ const CreateBuzzForm = (props) => {
                   {content && !ceramicUser && 
                     <div style={{display: 'inline-flex'}}>
                       <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
-                      <div className={classes.colDivider}> </div>
+                      <div className={classes.colDivider} />
                     </div>}
                   <ContainedButton
                     // eslint-disable-next-line
@@ -1778,6 +1833,7 @@ const mapDispatchToProps = (dispatch) => ({
       setBuzzTitleModalStatus,
       setDraftsModalStatus,
       setSaveDraftsModalStatus,
+      setContentRedirect,
     },dispatch),
 })
 

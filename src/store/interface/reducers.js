@@ -29,6 +29,7 @@ import {
   BUZZ_TITLE_MODAL,
   DRAFTS_MODAL,
   SAVE_DRAFTS_MODAL,
+  SET_VIEW_IMAGE_MODAL,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -112,6 +113,8 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('draftsModalStatus', payload)
   case SAVE_DRAFTS_MODAL:
     return state.set('saveDraftsModalStatus', payload)
+  case SET_VIEW_IMAGE_MODAL:
+    return state.set('viewImageModal', payload)
   default:
     return state
   }

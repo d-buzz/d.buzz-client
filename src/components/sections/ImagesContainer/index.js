@@ -4,6 +4,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { bindActionCreators } from 'redux'
 import { updateBuzzThreads } from 'store/posts/actions'
 import { connect } from 'react-redux'
+import { proxyImage } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   // images container styles
@@ -42,16 +43,16 @@ const useStyles = createUseStyles(theme => ({
       position: 'relative',
       transition: 'all 250ms',
       cursor: 'pointer',
-
+      
       '&:hover': {
         transform: 'scale(0.95)',
         opacity: '0.8 !important',
-
+        
         '& .deleteImageIcon': {
           display: 'block',
         },
       },
-
+      
       '& .deleteImageIcon': {
         display: 'none',
         position: 'absolute',
@@ -63,19 +64,20 @@ const useStyles = createUseStyles(theme => ({
         fontSize: '2em',
         color: '#E61C34',
         opacity: '1 !important',
-
+        
         '&:hover': {
           background: '#E61C34',
           color: '#ffffff',  
         },
       },
-
+      
       '& img': {
         height: '150px !important',
         width: '150px !important',
         objectFit: 'cover',
         borderRadius: '8px',
         opacity: '1 !important',
+        animation: 'skeleton-loading 1s linear infinite alternate !important',
       },
       '& video': {
         height: '150px !important',
@@ -128,13 +130,13 @@ const ImagesContainer = (props) => {
     <div className={classes.imagesContainer}>
       <span className='images'>
         {buzzImages.map(image => ( 
-          !image.endsWith('?dbuzz_video') ?
+          !image.includes('?dbuzz_video=') ?
             <div className="media">
-              <img key={image} src={image} alt={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <img key={image} src={proxyImage(image)} alt={'broken link!'} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div> :
             <div className="media">
-              <video key={image} src={image} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <video key={image} src={image.split('?dbuzz_video=')[1]} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div>))}
       </span>

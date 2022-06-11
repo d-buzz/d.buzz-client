@@ -33,6 +33,8 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
 import { checkForCeramicAccount } from 'services/ceramic'
+import { hasUpvoteService } from 'services/api'
+import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const PrettoSlider = withStyles({
   root: {
@@ -338,19 +340,61 @@ const PostActions = (props) => {
       }
       setShowSlider(false)
       setLoading(true)
-      upvoteRequest(author, permlink, sliderValue)
-        .then(({ success, errorMessage }) => {
-          if(success) {
-            setVote(vote + 1)
-            setUpvoted(true)
-            setLoading(false)
-            broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
-          } else {
-            setUpvoted(false)
-            broadcastNotification('error', errorMessage)
-            setLoading(false)
+      console.log(user)
+
+      if(user.useHAS) {
+
+        hasUpvoteService(author, permlink, sliderValue)
+
+        hacMsg.subscribe((m) => {
+          if (m.type === 'sign_wait') {
+            console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+          }
+          if (m.type === 'tx_result') {
+            console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+            if (m.msg?.status === 'accepted') {
+              const status = m.msg?.status
+              console.log(status)
+              setVote(vote + 1)
+              setUpvoted(true)
+              setLoading(false)
+              broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+            } else if (m.msg?.status === 'error') {
+              const error = m.msg?.status.error
+              console.log(error)
+              setUpvoted(false)
+              broadcastNotification('error', error)
+              setLoading(false)
+            } else if (m.msg?.status === 'rejected') {
+              const status = m.msg?.status
+              console.log(status)
+              setUpvoted(false)
+              broadcastNotification('error', 'Your HiveAuth upvote transaction is rejected.')
+              setLoading(false)
+            } else {
+              setUpvoted(false)
+              broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+              setLoading(false)
+            }
           }
         })
+
+      } else {
+        upvoteRequest(author, permlink, sliderValue)
+          .then(({ success, errorMessage }) => {
+            if(success) {
+              setVote(vote + 1)
+              setUpvoted(true)
+              setLoading(false)
+              broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+            } else {
+              setUpvoted(false)
+              broadcastNotification('error', errorMessage)
+              setLoading(false)
+            }
+          })
+      }
+
     } else {
       broadcastNotification('error', 'Voting cannot done with 0% Power!')
     }

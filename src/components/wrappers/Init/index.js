@@ -55,6 +55,19 @@ const useStyles = createUseStyles(theme => ({
     height: 130,
     width: 300,
     border: '2px solid #e61c34',
+    borderRadius: '15px !important',
+
+    '& .reload_button': {
+      color: '#ffffff !important',
+      backgroundColor: '#E61C34',
+      borderColor: '#E61C34',
+      
+      '&:hover': {
+        color: '#ffffff !important',
+        backgroundColor: '#E61C34',
+        borderColor: '#E61C34',
+      },
+    },
   },
   dialogInner: {
     width: '95%',
@@ -63,6 +76,7 @@ const useStyles = createUseStyles(theme => ({
   },
   versionButtons: {
     ...theme.font,
+    borderRadius: '10px !important',
   },
   betaTitleContainer: {
     margin: '15px 0',
@@ -185,8 +199,8 @@ const Init = (props) => {
         <Paper elevation={10} className={classes.versionDialog}>
           <div className={classes.dialogInner}>
             <center>
-              <Typography variant="body1"><b>New version available !</b> <br /> Click reload to download the latest version of dbuzz</Typography>
-              <Button onClick={reload} variant="outlined" size="small" startIcon={<ReplayIcon />} className={classes.versionButtons} color="primary">
+              <Typography variant="body1"><b>New version available!</b> <br /> Update to the the latest version of DBUZZ</Typography>
+              <Button onClick={reload} variant="outlined" size="small" startIcon={<ReplayIcon />} className={`${classes.versionButtons} reload_button`} color="primary">
                 reload
               </Button>&nbsp;
               <Button onClick={dismiss} variant="outlined" size="small" startIcon={<CloseIcon />} className={classes.versionButtons} color="secondary">
