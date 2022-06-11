@@ -56,6 +56,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
+import { checkForCeramicAccount, followUserRequest, unFollowUserRequest } from 'services/ceramic'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -288,6 +289,18 @@ const Profile = (props) => {
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [copied, setCopied] = useState(false)
   const [invalidUser, setInvalidUser] = useState(false)
+  const [ceramicProfile, setCeramicProfile] = useState({})
+
+  
+  useEffect(() => {
+    if(profile.ceramic) {
+      setCeramicProfile(profile.basic_profile)
+    }
+  }, [profile])
+
+  const reloadProfile = () => {
+    getProfileRequest(username)
+  }
 
   const [followsYou, setFollowsYou] = useState(false)
 
@@ -362,7 +375,7 @@ const Profile = (props) => {
     setPageFrom(null)
     const params = queryString.parse(location.search)
 
-    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username) {
+    if((!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username)) {
       anchorTop()
       clearScrollIndex()
       clearProfile()
@@ -387,6 +400,7 @@ const Profile = (props) => {
     // eslint-disable-next-line
   }, [username])
 
+  
   const setMoreButtonOptions = () => {
     const moreOptionsList = [
       {
@@ -410,7 +424,7 @@ const Profile = (props) => {
         onClick: navigateToFollowedMuted,
       },
     ]
-
+    
     if(username === loginuser) {
       const options = [
         {
@@ -424,7 +438,7 @@ const Profile = (props) => {
       setMoreOptions(moreOptionsList)
     }
   }
-
+  
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
@@ -438,54 +452,88 @@ const Profile = (props) => {
       setIndex(0)
     }
   }, [pathname])
-
-
-  const { metadata, stats, hivepower, name: profileUsername, created: accountCreated } = profile || ''
+  
+  
+  const { metadata, stats, hivepower, ceramic, created: accountCreated } = profile || ''
   const { profile: profileMeta } = metadata || ''
   const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
-
+  
   const { reputation = 0, isFollowed } = profile
+  
+  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description).replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
 
-  const userAbout = about ? about.replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
-
+  const [loader, setLoader] = useState(false)
+  
   useEffect(() => {
-    if(username === profileUsername){
+    if(!checkForCeramicAccount(username)){
       setAvatarUrl(profile_image)
+    } else if(checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
+      const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
+      setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
+    } else {
+      setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.png`)
     }
   // eslint-disable-next-line
-  },[profile_image, username])
+  },[profile_image, username, ceramicProfile])
 
   // check for invalid user
   useEffect(() => {
-    getProfileRequest(username).then((result) => {
-      result.toString() === ('RPCError: Invalid parameters') && setInvalidUser(true)
-    })
+    if(!ceramic) {
+      getProfileRequest(username).then((result) => {
+        result.toString() === ('RPCError: Invalid parameters') && setInvalidUser(true)
+      })
+    }
     // eslint-disable-next-line
   }, [username])
 
   const followUser = () => {
-    followRequest(username).then((result) => {
-      if(result) {
+    setLoader(true)
+    if(!ceramicProfile) {
+      followRequest(username).then((result) => {
+        if(result) {
+          broadcastNotification('success', `Successfully followed @${username}`)
+          setHasRecentlyFollowed(true)
+          setHasRecentlyUnfollowed(false)
+          setLoader(false)
+        } else {
+          broadcastNotification('error', `Failed following @${username}`)
+        }
+      }).catch((e) => {
+        setLoader(false)
+      })
+    } else {
+      followUserRequest(username).then(res => {
         broadcastNotification('success', `Successfully followed @${username}`)
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
-      } else {
-        broadcastNotification('error', `Failed following @${username}`)
-      }
-    })
+        setLoader(false)
+      }).catch((e) => {
+        if(e.message === 'Already following') {
+          setLoader(false)
+        }
+      })
+    }
   }
-
+  
   const unfollowUser = () => {
-    unfollowRequest(username).then((result) => {
-      if(result) {
+    if(!ceramicProfile) {
+      unfollowRequest(username).then((result) => {
+        if(result) {
+          broadcastNotification('success', `Successfully Unfollowed @${username}`)
+          setHasRecentlyFollowed(false)
+          setHasRecentlyUnfollowed(true)
+        } else {
+          broadcastNotification('error', `Failed Unfollowing @${username}`)
+        }
+      })
+    } else {
+      unFollowUserRequest(username).then(res => {
         broadcastNotification('success', `Successfully Unfollowed @${username}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
-      } else {
-        broadcastNotification('error', `Failed Unfollowing @${username}`)
-      }
-    })
+      })
+    }
   }
 
   const handleClickOpenHiddenBuzzList = () => {
@@ -529,7 +577,6 @@ const Profile = (props) => {
     setCopied(false)
   }
 
-
   return (
     <>
       {!invalidUser ?
@@ -539,7 +586,7 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `${window.location.origin}/dbuzz_full.png`} alt="cover" style={{borderRadius: cover_image ? '0 0 25px 25px' : ''}} onError={(e) => e.target.src = `${window.location.origin}/dbuzz_full.png`} />
+                <img src={(cover_image || ceramicProfile.images?.background) ? cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}` : `${window.location.origin}/dbuzz_full.png`} alt="cover" style={{borderRadius: cover_image ? '0 0 25px 25px' : ''}} onError={(e) => e.target.src = `${window.location.origin}/dbuzz_full.png`} />
               </div>
               <div className={classes.wrapper}>
                 <Row>
@@ -595,7 +642,7 @@ const Profile = (props) => {
                         {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
                           <ContainedButton
                             fontSize={14}
-                            loading={loadingFollow}
+                            loading={loadingFollow || loader}
                             disabled={loading}
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
@@ -607,7 +654,7 @@ const Profile = (props) => {
                         {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
                           <ContainedButton
                             fontSize={14}
-                            loading={loadingFollow}
+                            loading={loadingFollow || loader}
                             disabled={loading}
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
@@ -630,14 +677,14 @@ const Profile = (props) => {
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                     <Col xs="auto">
                       <p className={classNames(classes.paragraph, classes.fullName)}>
-                        {name || username}&nbsp;<Chip component="span"  size="small" label={`${reputation} Rep`} />&nbsp;
-                        <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />
+                        {!ceramic ? name || username : ceramicProfile.name || 'Ceramic User'}&nbsp;{!ceramic && <Chip component="span" style={{marginRight: 5}}  size="small" label={`${reputation} Rep`} />}
+                        {!ceramic && <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />}
                         {followsYou && <div className={classes.followYouText}><span>Follows you</span></div>}
                       </p>
                     </Col>
                   </Row>
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-                    {name &&
+                    {(name || ceramic) &&
                       <Col xs="auto">
                         <p className={classes.userName}>
                           @{username}
@@ -647,7 +694,7 @@ const Profile = (props) => {
                   <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                        <div dangerouslySetInnerHTML={{ __html: userAbout }} />
+                        <div dangerouslySetInnerHTML={{ __html: userAbout || ceramicProfile.bio }} />
                       </p>
                     </Col>
                   </Row>
@@ -662,7 +709,7 @@ const Profile = (props) => {
                       )}
                     </p>
                   </Row>
-                  <Row>
+                  {!ceramic && <Row>
                     <Col xs="auto" style={{ marginLeft: -5 }}>
                       <p className={classes.paragraph}>
                         <span>
@@ -673,8 +720,8 @@ const Profile = (props) => {
                         </span>
                       </p>
                     </Col>
-                  </Row>
-                  <Row>
+                  </Row>}
+                  {!ceramic && <Row>
                     <Col xs="auto" style={{ marginLeft: -5 }}>
                       <Tooltip title="Click to copy referal link">
                         <CopyToClipboard className={classes.clipboard} text={`https://${window.location.hostname}/#/?ref=${username}`} onCopy={copyReferalLink}>
@@ -691,21 +738,21 @@ const Profile = (props) => {
                         </CopyToClipboard>
                       </Tooltip>
                     </Col>
-                  </Row>
+                  </Row>}
                   <Row>
                     <Col xs="auto" style={{ marginLeft: -5 }}>
                       <p className={classes.paragraph}>
-                        {profile_location && (
+                        {(profile_location || ceramicProfile.location) && (
                           <span className={classes.textIcon} style={{ marginRight: 10 }}>
                             <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                            {profile_location}
+                            {profile_location || ceramicProfile.location}
                           </span>
                         )}
-                        {website && (
+                        {(website || ceramicProfile.url) && (
                           <span>
                             <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                            <a href={website} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                              {website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                            <a href={website || ceramicProfile.url} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                              {(website || ceramicProfile.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                             </a>
                           </span>
                         )}
@@ -736,17 +783,17 @@ const Profile = (props) => {
               onChange={onChange}
               className={classes.tabContainer}
             >
-              <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />
-              <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />
-              <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />
-              <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets" />
+              {!loading && <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />}
+              {!loading && !ceramic && <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />}
+              {!loading && !ceramic &&  <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />}
+              {!loading && !ceramic && <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets" />}
             </Tabs>
           </div>
           <React.Fragment>
             {renderRoutes(route.routes, { author: username })}
           </React.Fragment>
           <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
-          <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal}/>
+          <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal} reloadProfile={reloadProfile}/>
           <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
             <Alert onClose={handleCloseReferalCopy} severity="success">
               Referal link Successfully copied

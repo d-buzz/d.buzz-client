@@ -41,6 +41,7 @@ import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
 import { getTheme } from 'services/helper'
 import config from 'config'
+import { checkCeramicLogin, getBasicProfile, getIpfsLink } from 'services/ceramic'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import MoreIcon from 'components/elements/Icons/MoreIcon'
 
@@ -118,7 +119,7 @@ const useStyles = createUseStyles(theme => ({
   },
   bottom: {
     position: 'absolute',
-    bottom: 15,
+    bottom: 150,
     height: 'max-content',
     width: '90%',
     borderRadius: '50px 50px',
@@ -129,7 +130,7 @@ const useStyles = createUseStyles(theme => ({
   },
   bottomMinify: {
     position: 'absolute',
-    bottom: 15,
+    bottom: 150,
     ...theme.left.sidebar.bottom.wrapperMinify,
   },
   inline: {
@@ -322,6 +323,22 @@ const SideBarLeft = (props) => {
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
   const moreMenuRef = useRef()
   const theme = getTheme()
+  const [ceramicUser, setCeramicUser] = useState(null)
+  const [userAvatarUrl, setUserAvatarUrl] = useState('')
+  const [fetchingUser, setFetchingUser] = useState(false)
+
+  useEffect(() => {
+    if(checkCeramicLogin(username)) {
+      setFetchingUser(true)
+      getBasicProfile(username)
+        .then((res) => {
+          setCeramicUser(res)
+          setUserAvatarUrl(getIpfsLink(res.images.avatar))
+          setFetchingUser(false)
+        })
+    }
+    // eslint-disable-next-line
+  }, [user])
   const [activeView, setActiveView] = useState('Home')
 
   const showThemeModal = () => {
@@ -511,6 +528,35 @@ const SideBarLeft = (props) => {
     },
   ]
 
+  const CeramicAccountNavLinks = [
+    {
+      name: 'Home',
+      path: "/",
+      icon: <HomeIcon />,
+      preventDefault: false,
+      onClick: refreshHomeRouteData,
+    },
+    {
+      name: 'Trending',
+      path: '/trending',
+      icon: <TrendingIcon />,
+      preventDefault: false,
+      onClick: refreshTrendingRouteData,
+    },
+    {
+      name: 'Latest',
+      path: "/latest",
+      icon: <LatestIcon />,
+      preventDefault: false,
+      onClick: refreshLatestRouteData,
+    },
+    {
+      name: 'Profile',
+      path: `/@${username}/t/buzz?ref=nav`,
+      icon: <ProfileIcon />,
+    },
+  ]
+
   return (
     <React.Fragment>
       <div style={{ height: '100vh', width: '50px' }}>
@@ -528,19 +574,32 @@ const SideBarLeft = (props) => {
                 {<span className={classes.betaTitle}>BETA</span>}
               </div>}
             <div className={classes.navLinkContainer}>
-              {NavLinks.map((item) => (
-                <NavLinkWrapper
-                  minify={minify}
-                  minifyItemsClass={classes.minifyItems}
-                  key={`${item.path}-side-${Math.random(0, 100)}`}
-                  {...item}
-                  textClass={classes.items}
-                  iconClass={classes.inline}
-                  activeClass={classes.activeItem}
-                  active={location.pathname}
-                />
-              ))}
-              {!is_subscribe && !minify && (
+              {!checkCeramicLogin() ?
+                NavLinks.map((item) => (
+                  <NavLinkWrapper
+                    minify={minify}
+                    minifyItemsClass={classes.minifyItems}
+                    key={`${item.path}-side-${Math.random(0, 100)}`}
+                    {...item}
+                    textClass={classes.items}
+                    iconClass={classes.inline}
+                    activeClass={classes.activeItem}
+                    active={location.pathname}
+                  />
+                )) :
+                CeramicAccountNavLinks.map((item) => (
+                  <NavLinkWrapper
+                    minify={minify}
+                    minifyItemsClass={classes.minifyItems}
+                    key={`${item.path}-side-${Math.random(0, 100)}`}
+                    {...item}
+                    textClass={classes.items}
+                    iconClass={classes.inline}
+                    activeClass={classes.activeItem}
+                    active={location.pathname}
+                  />
+                ))}
+              {!is_subscribe && !minify && !ceramicUser && !fetchingUser && (
                 <ContainedButton
                   transparent={true}
                   fontSize={14}
@@ -573,7 +632,7 @@ const SideBarLeft = (props) => {
                 </IconButton>
               )}
             </div>
-            {!minify && (
+            {!fetchingUser && !minify && (
               <div className={classes.bottom}>
                 <div className={classes.avatarWrapper} onClick={handleClickLogout}>
                   <Row>
@@ -581,7 +640,7 @@ const SideBarLeft = (props) => {
                       <Col xs="auto">
                         <div style={{ display: 'table-cell', width: '100%', height: '100%' }}>
                           <div style={{ display: 'inline-flex', top: '50%', bottom: '50%' }}>
-                            <Avatar author={username} />
+                            <Avatar author={username} avatarUrl={userAvatarUrl} />
                           </div>
                         </div>
                       </Col>
@@ -589,7 +648,7 @@ const SideBarLeft = (props) => {
                         <Row style={{ padding: 0 }}>
                           <Col xs={8} style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
                             <p className={classes.logoutLabel}>Logout</p>
-                            <p className={classes.logoutUsername}>@{username}</p>
+                            <p className={classes.logoutUsername}>{!ceramicUser ? `@${username}` : ceramicUser.name || 'Ceramic User'}</p>
                           </Col>
                           <Col style={{ padding: 0 }} className={classes.logoutIcon}>
                             <PowerIcon top={12} />

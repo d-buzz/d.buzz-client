@@ -117,6 +117,7 @@ import stripHtml from 'string-strip-html'
 
 import moment from 'moment'
 import { hacMsg } from "@mintrawa/hive-auth-client"
+import { checkCeramicLogin, checkForCeramicAccount, getChildPostsRequest, getFollowingFeed, getSinglePost } from "services/ceramic"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -155,11 +156,16 @@ const censorCheck = (content, censoredList) => {
 function* getRepliesRequest(payload, meta) {
   const { author, permlink } = payload
   try {
-    const mutelist = yield select(state => state.auth.get('mutelist'))
-    let replies = yield call(fetchDiscussions, author, permlink)
-    replies = invokeMuteFilter(replies, mutelist)
-
-    yield put(getRepliesSuccess(replies, meta))
+    if(!checkForCeramicAccount(author)) {
+      const mutelist = yield select(state => state.auth.get('mutelist'))
+      let replies = yield call(fetchDiscussions, author, permlink)
+      replies = invokeMuteFilter(replies, mutelist)
+      console.log(replies)
+      yield put(getRepliesSuccess(replies, meta))
+    } else {
+      const replies = yield call(getChildPostsRequest, permlink)
+      yield put(getRepliesSuccess(replies, meta))
+    }
   } catch(error) {
     yield put(getRepliesFailure(error, meta))
   }
@@ -173,40 +179,61 @@ function* getContentRequest(payload, meta) {
   try {
     let data = {}
 
-    if(!contentRedirect) {
-      const fromPage = yield select(state => state.posts.get('pageFrom'))
-      if(!fromPage) {
-        data = yield call(fetchContent, author, permlink)
-      } else {
-
-        if(fromPage === 'home') {
-          const home = yield select(state => state.posts.get('home'))
-          const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
-          data = filtered[0]
-        } else if(fromPage === 'trending') {
-          const trending = yield select(state => state.posts.get('trending'))
-          const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
-          data = filtered[0]
-        } else if(fromPage === 'latest') {
-          const latest = yield select(state => state.posts.get('latest'))
-          const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
-          data = filtered[0]
-        } else if(fromPage === 'profile') {
-          const profilePosts = yield select(state => state.profile.get('posts'))
-          let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
-
-          if(filtered.length === 0) {
-            const profileReplies = yield select(state => state.profile.get('replies'))
-            filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+    if(!checkForCeramicAccount(author)) {
+      if(!contentRedirect) {
+        const fromPage = yield select(state => state.posts.get('pageFrom'))
+        if(!fromPage) {
+          data = yield call(fetchContent, author, permlink)
+        } else {
+          
+          if(fromPage === 'home') {
+            const home = yield select(state => state.posts.get('home'))
+            const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
+            data = filtered[0]
+          } else if(fromPage === 'trending') {
+            const trending = yield select(state => state.posts.get('trending'))
+            const filtered = trending.filter((item) => item.author === author && item.permlink === permlink)
+            data = filtered[0]
+          } else if(fromPage === 'latest') {
+            const latest = yield select(state => state.posts.get('latest'))
+            const filtered = latest.filter((item) => item.author === author && item.permlink === permlink)
+            data = filtered[0]
+          } else if(fromPage === 'profile') {
+            const profilePosts = yield select(state => state.profile.get('posts'))
+            let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
+            
+            if(filtered.length === 0) {
+              const profileReplies = yield select(state => state.profile.get('replies'))
+              filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
+            }
+  
+            data = filtered[0]
           }
-
-          data = filtered[0]
         }
+      } else {
+        data = contentRedirect
       }
     } else {
-      data = contentRedirect
-    }
+      // GET CERAMIC POST REQUEST
+      const { streamId, parentId, creatorId, createdAt, updatedAt, content, debug_metadata, replies, profile } = yield call(getSinglePost, permlink)
+      const { title, body } = content
 
+      data = {
+        ceramicProfile: profile,
+        parent_author: parentId ? author : null,
+        author: creatorId,
+        json_metadata: debug_metadata,
+        created: createdAt,
+        updated_at: updatedAt,
+        root_author: creatorId,
+        root_title: title,
+        root_permlink: streamId,
+        parent_permlink: parentId,
+        body: body,
+        children: replies.length,
+      }
+    }
+    
     data = censorCheck(data, censoredList)
 
     yield put(setContentRedirect(null))
@@ -234,7 +261,7 @@ function* getTrendingPostsRequest(payload, meta) {
 
   const params = { sort: 'trending', start_permlink, start_author }
   const method = 'get_ranked_posts'
-
+  
   try {
     const old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
@@ -270,24 +297,34 @@ function* getHomePostsRequest(payload, meta) {
   const method = 'get_account_posts'
 
   try {
-    const old = yield select(state => state.posts.get('home'))
-    let data = yield call(callBridge, method, params, false)
+    if(!checkCeramicLogin(account)) {
+      const old = yield select(state => state.posts.get('home'))
+      let data = yield call(callBridge, method, params, false)
 
-    data = [...old, ...data]
-    data = data.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
-    })
+      data = [...old, ...data]
+      data = data.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+      })
 
-    yield put(setHomeLastPost(data[data.length-1]))
-    const mutelist = yield select(state => state.auth.get('mutelist'))
+      yield put(setHomeLastPost(data[data.length-1]))
+      const mutelist = yield select(state => state.auth.get('mutelist'))
 
-    data = data.filter(item => invokeFilter(item))
-    const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
-    data = invokeMuteFilter(data, mutelist, opacityUsers)
-    data = invokeHideBuzzFilter(data)
-    data.map((item) => censorCheck(item, censoredList))
+      data = data.filter(item => invokeFilter(item))
+      const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+      data = invokeMuteFilter(data, mutelist, opacityUsers)
+      data = invokeHideBuzzFilter(data)
+      data.map((item) => censorCheck(item, censoredList))
 
-    yield put(getHomePostsSuccess(data, meta))
+      yield put(getHomePostsSuccess(data, meta))
+    } else {
+      let data = yield call(getFollowingFeed, account)
+
+      if(data === null) {
+        data = []
+      }
+      
+      yield put(getHomePostsSuccess(data, meta))
+    }
   } catch(error) {
     yield put(getHomePostsFailure(error, meta))
   }
@@ -340,7 +377,7 @@ function* upvoteRequest(payload, meta) {
   let recentUpvotes = yield select(state => state.posts.get('recentUpvotes'))
   const weight = percentage * 100
   let success = false
-  
+
   try {
     if(is_authenticated) {
       if(useKeychain) {
@@ -423,7 +460,7 @@ function* videoUploadRequest(payload, meta) {
 }
 
 function* publishPostRequest(payload, meta) {
-  const { tags, payout, perm } = payload
+  const { tags, payout } = payload
   let { body } = payload
   let success = false
 
@@ -439,77 +476,78 @@ function* publishPostRequest(payload, meta) {
   }
 
   body = footnote(body)
-
   try {
+    if(is_authenticated) {
+      const operations = yield call(generatePostOperations, username, title, body, tags, payout)
 
-    const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
+      const comment_options = operations[1]
+      const permlink = comment_options[1].permlink
 
-    const comment_options = operations[1]
-    const permlink = comment_options[1].permlink
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operations)
+        success = result.success
 
-    if(useKeychain && is_authenticated) {
-      const result = yield call(broadcastKeychainOperation, username, operations)
-      success = result.success
+        if(!success) {
+          yield put(publishPostFailure('Unable to publish post', meta))
+        }
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
 
-      if(!success) {
-        yield put(publishPostFailure('Unable to publish post', meta))
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operations, [wif])
+
+        success = result.success
       }
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
 
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operations, [wif])
+      if(success) {
+        const comment = operations[0]
+        const json_metadata = comment[1].json_metadata
 
-      success = result.success
-    }
+        let currentDatetime = moment().toISOString()
+        currentDatetime = currentDatetime.replace('Z', '')
 
-    if(success) {
-      const comment = operations[0]
-      const json_metadata = comment[1].json_metadata
+        let cashout_time = moment().add(7, 'days').toISOString()
+        cashout_time = cashout_time.replace('Z', '')
 
-      let currentDatetime = moment().toISOString()
-      currentDatetime = currentDatetime.replace('Z', '')
+        let body = comment[1].body
+        body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
 
-      let cashout_time = moment().add(7, 'days').toISOString()
-      cashout_time = cashout_time.replace('Z', '')
 
-      let body = comment[1].body
-      body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+        const content = {
+          author: username,
+          category: 'hive-193084',
+          permlink,
+          title: comment[1].title,
+          body: body,
+          replies: [],
+          total_payout_value: '0.000 HBD',
+          curator_payout_value: '0.000 HBD',
+          pending_payout_value: '0.000 HBD',
+          active_votes: [],
+          root_author: "",
+          parent_author: null,
+          parent_permlink: "hive-190384",
+          root_permlink: permlink,
+          root_title: title,
+          json_metadata,
+          children: 0,
+          created: currentDatetime,
+          cashout_time,
+          max_accepted_payout: `${payout.toFixed(3)} HBD`,
+        }
 
-      const content = {
+        yield put(setContentRedirect(content))
+      }
+
+      const data = {
+        success,
         author: username,
-        category: 'hive-193084',
         permlink,
-        title: comment[1].title,
-        body: body,
-        replies: [],
-        total_payout_value: '0.000 HBD',
-        curator_payout_value: '0.000 HBD',
-        pending_payout_value: '0.000 HBD',
-        active_votes: [],
-        root_author: "",
-        parent_author: null,
-        parent_permlink: "hive-190384",
-        root_permlink: permlink,
-        root_title: title,
-        json_metadata,
-        children: 0,
-        created: currentDatetime,
-        cashout_time,
-        max_accepted_payout: `${payout.toFixed(3)} HBD`,
       }
 
-      yield put(setContentRedirect(content))
+      yield put(publishPostSuccess(data, meta))
     }
-
-    const data = {
-      success,
-      author: username,
-      permlink,
-    }
-
-    yield put(publishPostSuccess(data, meta))
   } catch (error) {
     const errorMessage = errorMessageComposer('post', error)
     yield put(publishPostFailure({ errorMessage }, meta))
@@ -528,68 +566,68 @@ function* publishReplyRequest(payload, meta) {
   let success = false
   
   try {
-    
-    const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
+    if(is_authenticated) {
+      const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
 
-    if(useKeychain && is_authenticated) {
-      const result = yield call(broadcastKeychainOperation, username, operation)
-      success = result.success
-    } else {
-      let { login_data } = user
-      login_data = extractLoginData(login_data)
-
-      const wif = login_data[1]
-      const result = yield call(broadcastOperation, operation, [wif])
-      success = result.success
-    }
-
-    if(success) {
-      const meta = operation[0]
-
-      let currentDatetime = moment().toISOString()
-      currentDatetime = currentDatetime.replace('Z', '')
-
-      const reply = {
-        author: username,
-        category: 'hive-193084',
-        permlink: meta[1].permlink,
-        title: meta[1].title,
-        body: meta[1].body,
-        replies: [],
-        total_payout_value: '0.000 HBD',
-        curator_payout_value: '0.000 HBD',
-        pending_payout_value: '0.000 HBD',
-        active_votes: [],
-        parent_author,
-        parent_permlink,
-        root_author: parent_author,
-        root_permlink: parent_permlink,
-        children: 0,
-        created: currentDatetime,
+      if(useKeychain) {
+        const result = yield call(broadcastKeychainOperation, username, operation)
+        success = result.success
+      } else {
+        let { login_data } = user
+        login_data = extractLoginData(login_data)
+  
+        const wif = login_data[1]
+        const result = yield call(broadcastOperation, operation, [wif])
+        success = result.success
       }
-
-      reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-
-      reply.refMeta = {
-        ref,
-        author: parent_author,
-        permlink: parent_permlink,
-        treeHistory,
+  
+      if(success) {
+        const meta = operation[0]
+  
+        let currentDatetime = moment().toISOString()
+        currentDatetime = currentDatetime.replace('Z', '')
+  
+        const reply = {
+          author: username,
+          category: 'hive-193084',
+          permlink: meta[1].permlink,
+          title: meta[1].title,
+          body: meta[1].body,
+          replies: [],
+          total_payout_value: '0.000 HBD',
+          curator_payout_value: '0.000 HBD',
+          pending_payout_value: '0.000 HBD',
+          active_votes: [],
+          parent_author,
+          parent_permlink,
+          root_author: parent_author,
+          root_permlink: parent_permlink,
+          children: 0,
+          created: currentDatetime,
+        }
+  
+        reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+  
+        reply.refMeta = {
+          ref,
+          author: parent_author,
+          permlink: parent_permlink,
+          treeHistory,
+        }
+        replyData = reply
       }
-      replyData = reply
+  
+      const data = {
+        success,
+        reply: replyData,
+      }
+  
+      yield put(publishReplySuccess(data, meta))
     }
-
-    const data = {
-      success,
-      reply: replyData,
-    }
-
-    yield put(publishReplySuccess(data, meta))
   } catch(error) {
     const errorMessage = errorMessageComposer('reply', error)
     yield put(publishReplyFailure({ errorMessage }, meta))
   }
-
 }
 
 function* getSearchTags(payload, meta) {
