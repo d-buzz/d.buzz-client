@@ -105,7 +105,7 @@ const ContainedButton = (props) => {
       <center>
         <label style={{ fontSize: fontSize, ...labelStyle }}>
           {!loading && label}
-          {loading && (<Spinner size={20} top={4} loading={true} />)}
+          {loading && (<Spinner size={15} top={4} loading={true} />)}
         </label>
       </center>
     </div>

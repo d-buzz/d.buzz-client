@@ -17,6 +17,7 @@ import 'react-app-polyfill/stable'
 import { calculateOverhead } from 'services/helper'
 import { hacUserAuth, hacVote, hacManualTransaction } from "@mintrawa/hive-auth-client"
 import config from 'config'
+import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -24,6 +25,7 @@ const imageUrl = `${appConfig.IMAGE_API}/image`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
+
 
 const APP_META = {
   name: config.APP_NAME,
@@ -70,25 +72,30 @@ export const callBridge = async(method, params, appendParams = true) => {
       params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
     }
 
-    api.call('bridge.' + method, params, async(err, data) => {
-      if (err) {
-        reject(err)
-      }else {
-        let lastResult = []
-
-        if(data.length !== 0) {
-          lastResult = [data[data.length-1]]
+    // Check for Ceramic account
+    if(!params.account || !params.account.includes('did')) {
+      api.call('bridge.' + method, params, async(err, data) => {
+        if (err) {
+          reject(err)
+        }else {
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          removeFootNote(data)
+  
+          let result = data.filter((item) => invokeFilter(item))
+  
+          result = [...result, ...lastResult]
+  
+          resolve(result)
         }
-
-        removeFootNote(data)
-
-        let result = data.filter((item) => invokeFilter(item))
-
-        result = [...result, ...lastResult]
-
-        resolve(result)
-      }
-    })
+      })
+    } else {
+      return []
+    }
   })
 }
 
@@ -248,22 +255,29 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       if(err) {
         reject(err)
       }else {
-        removeFootNote(data)
+        if(!checkForCeramicAccount(account)) {
+          removeFootNote(data)
 
-        let lastResult = []
+          let lastResult = []
 
-        if(data.length !== 0) {
-          lastResult = [data[data.length-1]]
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+
+          let posts = data.filter((item) => invokeFilter(item))
+
+          posts = [...posts, ...lastResult]
+
+          if(posts.length === 0) {
+            posts = []
+          }
+          resolve(posts)
+        } else {
+          getUserPostRequest(account)
+            .then(res => {
+              resolve(res.posts)
+            })
         }
-
-        let posts = data.filter((item) => invokeFilter(item))
-
-        posts = [...posts, ...lastResult]
-
-        if(posts.length === 0) {
-          posts = []
-        }
-        resolve(posts)
       }
     })
   })
@@ -363,6 +377,7 @@ export const fetchGlobalProperties = () => {
 export const fetchSingleProfile = (account) => {
   const user = localStorage.getItem('active')
 
+  
   return new Promise((resolve, reject) => {
     const params = {account}
     api.call('bridge.get_profile', params, async(err, data) => {

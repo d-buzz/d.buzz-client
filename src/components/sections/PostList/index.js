@@ -215,6 +215,7 @@ const useStyle = createUseStyles(theme => ({
 const PostList = React.memo((props) => {
   const classes = useStyle()
   const {
+    type,
     searchListMode = false,
     author,
     permlink,
@@ -345,7 +346,7 @@ const PostList = React.memo((props) => {
 
   let hasUpvoted = false
   const history = useHistory()
-  const authorLink = `/@${author}${'?ref='+profileRef}`
+  const authorLink = !author.did ? `/@${author}${'?ref='+profileRef}` : `/@${author.did}${'?ref='+profileRef}`
 
   if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
@@ -356,7 +357,9 @@ const PostList = React.memo((props) => {
   const generateLink = (author, permlink) =>  {
     let link = ''
 
-    link += `/@${author}/c/${permlink}`
+    const username = author.did ? author.did : author
+
+    link += `/@${username}/c/${permlink}`
 
     return link
   }
@@ -384,7 +387,7 @@ const PostList = React.memo((props) => {
 
   const openPopOver = (e) => {
     setDelayHandler(setTimeout(() => {
-      openUserDialog(popoverAnchor.current, author)
+      openUserDialog(popoverAnchor.current, (author))
     }, 500))
   }
 
@@ -411,8 +414,10 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickMuteDialog = () => {
-    openMuteDialog(author, muteSuccessCallback)
-    setAnchorEl(null)
+    if(type === 'HIVE') {
+      openMuteDialog(author, muteSuccessCallback)
+      setAnchorEl(null)
+    }
   }
 
   const opacityActivated = opacityUsers.includes(author)
@@ -426,8 +431,10 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickHideBuzzDialog = () => {
-    openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
-    setAnchorEl(null)
+    if(type === 'HIVE') {
+      openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
+      setAnchorEl(null)
+    }
   }
 
   const censorCallBack = () => () => {
@@ -493,7 +500,7 @@ const PostList = React.memo((props) => {
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
-                <Avatar height={avatarSize} author={author} />
+                <Avatar height={avatarSize} author={type === 'HIVE' ? author : author.did} avatarUrl={type === 'CERAMIC' && author.images ? `https://ipfs.io/ipfs/${author.images?.avatar.replace('ipfs://', '')}` : ''}/>
               </div>
             </Col>
             <Col xs="auto" className={classes.colRight}>
@@ -508,13 +515,14 @@ const PostList = React.memo((props) => {
                         onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
-                        {author}
+                        {type === 'HIVE' && author}
+                        {type === 'CERAMIC' && (author.name || 'Ceramic User')}
                       </Link>
                     )}
                     {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
-                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
+                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? !created.endsWith('Z') ? `${created}Z` : created : created }`).local().fromNow()}
                   </label>
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} className={classes.iconButton} style={{ float: 'right' }} size='small'>
@@ -535,6 +543,7 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
+                      type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
                       body={body}

@@ -17,6 +17,8 @@ import { connect } from 'react-redux'
 import { isMobile } from 'react-device-detect'
 import { CircularProgress } from '@material-ui/core'
 import { pending } from 'redux-saga-thunk'
+import { setBasicProfile } from 'services/ceramic'
+import Spinner from 'components/elements/progress/Spinner'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -108,6 +110,16 @@ const useStyles = createUseStyles(theme => ({
     marginTop: -80,
     marginLeft: -15,
   },
+  loadingLabel: {
+    width: '100%',
+    color: theme.font.color,
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  uploadButton: {
+    backgroundColor: '#e53935 !important',
+  },
 }))
 
 const EditProfileModal = (props) => {
@@ -121,6 +133,7 @@ const EditProfileModal = (props) => {
     uploadFileRequest,
     updateProfileRequest,
     broadcastNotification,
+    reloadProfile,
   } = props
   const { username } = user
   const { metadata, posting_json_metadata } = profile || ''
@@ -137,7 +150,23 @@ const EditProfileModal = (props) => {
 
   const [uploadAvatarLoading, setUploadAvatarLoading] = useState(false)
   const [uploadCoverLoading, setUploadCoverLoading] = useState(false)
-  
+  const [ceramicUser, setCeramicUser] = useState(null)
+  const [ceramicProfile, setCeramicProfile] = useState({})
+
+  const [imageUploadProgress, setImageUploadProgress] = useState(0)
+  const [ceramicProfileUpdateLoading, setCeramicProfileUpdateLoading] = useState(false)
+
+  const [updatingProfile, setUpdatingProfile] = useState(false)
+
+
+  useEffect(() => {
+    if(profile.ceramic) {
+      setCeramicUser(true)
+      setCeramicProfile(profile.basic_profile)
+    } else {
+      setCeramicUser(false)
+    }
+  }, [profile])  
 
   useEffect(() => {
     const { 
@@ -149,14 +178,14 @@ const EditProfileModal = (props) => {
     } = profileMeta || ''
 
     const { name } = postingProfileMeta || '' // get fullname from get_accounts api
-    setProfileName(name)
-    setProfileAbout(about)
-    setProfileWebsite(website)
-    setProfileLocation(location)
-    if (cover_image) setProfileCoverImage(`https://images.hive.blog/0x0/${cover_image}`)
-    if (profile_image) setProfileAvatar(profile_image)
+    setProfileName(name || ceramicProfile.name)
+    setProfileAbout(about|| ceramicProfile.description)
+    setProfileWebsite(website|| ceramicProfile.url)
+    setProfileLocation(location|| ceramicProfile.location)
+    if (cover_image || ceramicProfile.images?.background) setProfileCoverImage(cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}`)
+    if (profile_image || ceramicProfile.images?.avatar) setProfileAvatar(profile_image || `https://ipfs.io/ipfs/${ceramicProfile.images.avatar.replace('ipfs://', '')}`)
   // eslint-disable-next-line
-  }, [profileMeta, postingProfileMeta, show, username])
+  }, [profileMeta, postingProfileMeta, show, username, ceramicProfile])
 
   const onChange = (e) => {
     const { target } = e
@@ -176,13 +205,15 @@ const EditProfileModal = (props) => {
     const files = e.target.files[0]
     if(files){
       setUploadAvatarLoading(true)
-      uploadFileRequest(files).then((image) => {
+      uploadFileRequest(files, setImageUploadProgress).then((image) => {
         setUploadAvatarLoading(false)
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
           setProfileAvatar(lastImage)
+          setImageUploadProgress(0)
         }else{
           broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+          setImageUploadProgress(0)
         }
       })
     }
@@ -192,13 +223,15 @@ const EditProfileModal = (props) => {
     const files = e.target.files[0]
     if(files){
       setUploadCoverLoading(true)
-      uploadFileRequest(files).then((image) => {
+      uploadFileRequest(files, setImageUploadProgress).then((image) => {
         setUploadCoverLoading(false)
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
           setProfileCoverImage(lastImage)
+          setImageUploadProgress(0)
         }else{
           broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+          setImageUploadProgress(0)
         }
       })
     }
@@ -251,9 +284,10 @@ const EditProfileModal = (props) => {
   }
 
   const handleSubmitForm = () => {
-    const metadata = {
+    setUpdatingProfile(true)
+    const hiveMetaData = {
       profile : {
-        profile_image : profileAvatar ? profileAvatar : profileMeta.profile_image,
+        profile_image : profileAvatar ? profileAvatar : profileMeta?.profile_image,
         cover_image : profileCoverImage,
         name : profileName,
         about : profileAbout,
@@ -262,15 +296,42 @@ const EditProfileModal = (props) => {
         version : 2,  // signal upgrade to posting_json_metadata
       },
     }
+    const ceramicMetaData = {
+      profile_image : profileAvatar ? profileAvatar : '',
+      cover_image : profileCoverImage ? profileCoverImage : '',
+      name : profileName,
+      about : profileAbout,
+      location : profileLocation,
+      website : profileWebsite,
+      url : profileWebsite,
+    }
 
-    updateProfileRequest(username,metadata).then(({success, errorMessage}) => {
-      if(success) {
-        broadcastNotification('success','Profile updated successfully')
-        onHide()
-      }else{
-        broadcastNotification('error',errorMessage)
-      }
-    })
+    if(!ceramicUser) {
+      updateProfileRequest(username,hiveMetaData).then(({success, errorMessage}) => {
+        if(success) {
+          broadcastNotification('success','Profile updated successfully')
+          setUpdatingProfile(false)
+          reloadProfile()
+          onHide()
+        }else{
+          broadcastNotification('error',errorMessage)
+        }
+      })
+    } else {
+      setCeramicProfileUpdateLoading(true)
+      setBasicProfile(ceramicMetaData)
+        .then((res) => {
+          setCeramicProfileUpdateLoading(false)
+          broadcastNotification('success','Profile updated successfully')
+          reloadProfile()
+          setUpdatingProfile(false)
+          onHide()
+        })
+        .catch((err) => {
+          setCeramicProfileUpdateLoading(false)
+          broadcastNotification('error', err.message)
+        })
+    }
   }
 
   return (
@@ -308,8 +369,8 @@ const EditProfileModal = (props) => {
                     />
                     <label htmlFor="cover-upload">
                       {!uploadCoverLoading &&
-                      (<IconButton onClick={handleSelectCoverImage}>
-                        <AddImageIcon size="20"/>
+                      (<IconButton className={classes.uploadButton} onClick={handleSelectCoverImage}>
+                        <AddImageIcon size="20" />
                       </IconButton>)}
                     </label>
                     {profileCoverImage && !uploadCoverLoading &&
@@ -317,7 +378,7 @@ const EditProfileModal = (props) => {
                           <CloseIcon />
                         </IconButton>)}
                     {uploadCoverLoading && 
-                      (<CircularProgress size={25} color="secondary"/>)}
+                      (<CircularProgress variant='static' value={imageUploadProgress} size={25} color="secondary"/>)}
                   </div>
                 </React.Fragment>
               </div>
@@ -327,7 +388,7 @@ const EditProfileModal = (props) => {
               <Row>
                 <Col xs="auto">
                   <div className={classes.avatar}>
-                    <Avatar border={true} height="120" author={username} size="medium" avatarUrl={profileAvatar}/>
+                    <Avatar style={{ opacity: 0.5 }} border={true} height="120" author={username} size="medium" avatarUrl={profileAvatar}/>
                     <div className={classes.addProfileImageButton}>
                       <input
                         id="avatar-upload"
@@ -341,12 +402,12 @@ const EditProfileModal = (props) => {
                       />
                       <label htmlFor="avatar-upload">
                         {!uploadAvatarLoading &&
-                        (<IconButton onClick={handleSelectProfileImage}>
+                        (<IconButton className={classes.uploadButton} onClick={handleSelectProfileImage}>
                           <AddImageIcon size="20"/>
                         </IconButton>)}
                       </label>
                       {uploadAvatarLoading && 
-                        (<CircularProgress size={25} color="secondary"/>)}
+                        (<CircularProgress variant='static' value={imageUploadProgress} size={25} color="secondary"/>)}
                     </div>
                   </div>
                 </Col>
@@ -398,7 +459,7 @@ const EditProfileModal = (props) => {
                     <TextField 
                       id="website"
                       label="Website" 
-                      value={profileWebsite}
+                      value={profileWebsite || ceramicProfile.website}
                       rowsMax={4}
                       onChange={onChange}
                       multiline 
@@ -408,18 +469,23 @@ const EditProfileModal = (props) => {
                 <div className={classes.spacer} />
                 <Row>
                   <Col>
-                    <div style={{ width: '100%'}}>
-                      <ContainedButton
-                        fontSize={14}
-                        style={{ float: 'right' }}
-                        transparent={false}
-                        onClick={handleSubmitForm}
-                        label="Save"
-                        loading={loading}
-                        disabled={loading || uploadCoverLoading || uploadAvatarLoading}
-                        className={classes.saveButton}
-                      />
-                    </div>
+                    {!updatingProfile &&
+                      <div style={{ width: '100%'}}>
+                        <ContainedButton
+                          fontSize={14}
+                          style={{ float: 'right' }}
+                          transparent={false}
+                          onClick={handleSubmitForm}
+                          label="Save"
+                          disabled={loading || ceramicProfileUpdateLoading || uploadCoverLoading || uploadAvatarLoading}
+                          className={classes.saveButton}
+                        />
+                      </div>}
+                    {updatingProfile &&
+                      <div style={{ width: '100%', display: 'grid', placeItems: 'center' }}>
+                        <span className={classes.loadingLabel}>UPDATING PROFILE</span>
+                        <Spinner loading={updatingProfile} size={30} top={15} style={{ padding: 15}} />
+                      </div>}
                   </Col>
                 </Row>
               </div>
