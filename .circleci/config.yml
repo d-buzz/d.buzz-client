@@ -4,8 +4,6 @@ executors:
   docker-executor:
     docker:
       - image: node:14.18.1
-    environment:
-      NODE_OPTIONS=--max-old-space-size=4096
     working_directory: /tmp/dbuzz-client
 
 orbs:
@@ -17,6 +15,7 @@ commands:
       - checkout
       - run: npm install
       - run: npm run lint
+      - run: NODE_OPTIONS=--max-old-space-size=4096
 
 jobs:
   prod_build_test:
