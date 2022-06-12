@@ -14,7 +14,7 @@ import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { isMobile } from 'react-device-detect'
-import { signOnHiveonboard } from 'services/helper'
+import { getTheme, signOnHiveonboard } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   nav: {
@@ -53,13 +53,12 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const AppBar = (props) => {
-  const { theme } = props
-  const { mode } = theme
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const history = useHistory()
   const { pathname } = location
+  const mode = getTheme() || 'light'
 
   const handleClickBackButton = () => {
     history.goBack()

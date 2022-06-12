@@ -251,12 +251,12 @@ input[type=number] {
 
 *::-webkit-scrollbar {
   background: transparent;
-  width: 15px;
+  width: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
   background: gray;
-  width: 15px;
+  width: 10px;
   border-radius: 30px;
 }
 

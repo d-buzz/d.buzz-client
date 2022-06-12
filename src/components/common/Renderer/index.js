@@ -150,13 +150,12 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   usernameStyle: {
-    border: '1px solid rgba(230, 28, 52, 0.2)',
     margin: '5px 2px',
-    padding: '1px 5px',
-    paddingBottom: 2,
+    padding: '0 5px',
     background: 'rgba(255, 235, 238, 0.8)',
-    borderRadius: 5,
+    borderRadius: 25,
     transition: 'opacity 250ms',
+    cursor: 'pointer',
     
     '& a': {
       textDecoration: 'none',
