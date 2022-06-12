@@ -10,8 +10,11 @@ import { connect } from 'react-redux'
 
 const useStyles = createUseStyles(theme => ({
   search: {
+    display: 'flex',
+    alignItems: 'center',
     marginBottom: 10,
     marginTop: 10,
+    paddingBottom: 2,
     ...theme.search.background,
   },
   searchTips: {

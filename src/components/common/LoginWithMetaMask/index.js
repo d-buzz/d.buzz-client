@@ -14,14 +14,16 @@ const useStyles = createUseStyles(theme => ({
     border: 'none',
     padding: '5px 15px',
     borderRadius: 10,
-    color: theme.font.color,
+    color: '#000000',
     transition: 'all 250ms',
     background: '#f7e2cd',
+    cursor: 'pointer',
+    userSelect: 'none',
     
     '&:hover': {
       background: '#f7dbbd',
     },
-
+    
     '& .label': {
       display: 'grid',
       placeItems: 'center',
@@ -29,8 +31,14 @@ const useStyles = createUseStyles(theme => ({
       fontSize: '1.2em',
       fontWeight: 600,
     },
+    
+    '&:disabled': {
+      opacity: 0.5,
+      background: '#f7e2cd',
+      cursor: 'not-allowed',
+    },
   },
-
+  
   newLabel: {
     width: 40,
     height: 'fit-cntent',
@@ -42,6 +50,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 50,
     fontSize: 14,
   },
+  
 
 }))
 
