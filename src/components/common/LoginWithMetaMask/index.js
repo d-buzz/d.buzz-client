@@ -38,7 +38,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'not-allowed',
     },
   },
-  
+                                            
   newLabel: {
     width: 40,
     height: 'fit-cntent',
@@ -51,7 +51,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 14,
   },
   
-
 }))
 
 const LoginWithMetaMaskButton = (props) => {
