@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import FormLabel from 'react-bootstrap/FormLabel'
-import FormControl from 'react-bootstrap/FormControl'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
@@ -24,11 +23,13 @@ import { ProgressBar } from 'react-bootstrap'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
 import LoginWithMetaMaskButton from 'components/common/LoginWithMetaMask'
+import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
-    marginTop: 15,
-    width: 100,
+    marginTop: 5,
+    marginBottom: 15,
+    width: '100%',
     height: 35,
     cursor: 'pointer',
   },
@@ -45,6 +46,13 @@ const useStyles = createUseStyles(theme => ({
   },
   label: {
     fontFamily: 'Segoe-Bold',
+    ...theme.font,
+  },
+  loginLabel: {
+    display: 'flex',
+    fontSize: '1.8em',
+    fontWeight: 800,
+    margin: '15px 0',
     ...theme.font,
   },
   modal: {
@@ -90,15 +98,35 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
   },
   usernameHint: {
-    margin: 0,
-    marginRight: 5,
-    padding: '3px 15px',
-    paddingBottom: 6,
+    fontFamily: 600,
+  },
+  inputField: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    border: '1px solid #e61c34',
+    borderRadius: 50,
+    overflow: 'hidden',
+    padding: '5px 10px',
+    outlineWidth: 'none',
+    transition: 'all 250ms',
+    '&:focus': {
+      outlineWidth: 0,
+      boxShadow: '0 0 0 2px #e65768',
+    },
+    '&:focus-within': {
+      boxShadow: '0 0 0 2px #e65768',
+    },
+  },
+  textField: {
+    border: 'none',
+    outlineWidth: 'none',
     color: theme.font.color,
-    background: theme.context.view.backgroundColor,
-    border: '1px solid #CED4DA',
-    borderRadius: 25,
-    userSelect: 'none',
+    width: '100%',
+    padding: '0 10px',
+    fontWeight: 600,
+    backgroundColor: 'transparent !important',
   },
 }))
 
@@ -121,6 +149,9 @@ const LoginModal = (props) => {
     user,
     signUpConfirmation,
   } = props
+
+  const usernameRef = useRef()
+  const postingRef = useRef()
 
   const classes = useStyles()
   const [username, setUsername] = useState('')
@@ -284,7 +315,8 @@ const LoginModal = (props) => {
             <React.Fragment>
               <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
                 <center>
-                  <h6 className={classes.label}>Hi there, welcome back!</h6>
+                  <CircularBrandIcon />
+                  <span className={classes.loginLabel}>Log in to DBUZZ</span>
                   {signUpConfirmation && (
                     <React.Fragment>
                       <div style={{ height: 100, width: 100 }} >
@@ -302,16 +334,18 @@ const LoginModal = (props) => {
               {!useCeramic && ( 
                 <React.Fragment>
                   <FormLabel className={classes.label}>Username</FormLabel>
-                  <div className={classes.username}>
+                  <div className={classes.inputField} tabIndex={0} onFocus={() => usernameRef.current.focus()}>
                     <b className={classes.usernameHint}>@</b>
-                    <FormControl
+                    <input
+                      ref={usernameRef}
+                      className={classes.textField}
                       disabled={loading}
                       name="username"
                       type="text"
                       value={username}
                       onChange={onChange}
                       onKeyDown={onKeyDown}
-                    />
+                      />
                   </div>
                 </React.Fragment>
                )}
@@ -319,17 +353,33 @@ const LoginModal = (props) => {
               {!useKeychain && !useHAS && !useCeramic && (
                 <React.Fragment>
                   <FormLabel className={classes.label}>Posting key</FormLabel>
-                  <FormControl
-                    disabled={loading}
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={onChange}
-                    onKeyDown={onKeyDown}
-                  />
+                  <div className={classes.inputField} tabIndex={0} onFocus={() => postingRef.current.focus()}>
+                    <input
+                      ref={postingRef}
+                      className={classes.textField}
+                      disabled={loading}
+                      name="password"
+                      type="password"
+                      value={password}
+                      onChange={onChange}
+                      onKeyDown={onKeyDown}
+                    />
+                  </div>
                   <FormSpacer />
                 </React.Fragment>
               )}
+              <center>
+                {!loading &&!useCeramic && (
+                  <ContainedButton
+                    onClick={handleClickLogin}
+                    transparent={true}
+                    className={classes.loginButton}
+                    fontSize={15}
+                    disabled={isDisabled() || hasSwitcherMatch()}
+                    label="Submit"
+                  />
+                )}
+              </center>
               {hasInstalledKeychain && !useCeramic && (
                 <div style={{ marginLeft: 10, textAlign: 'left'}}>
                   <FormControlLabel
@@ -375,7 +425,7 @@ const LoginModal = (props) => {
                         id="checkbox"
                         type="checkbox"
                         name="HAS"
-                        checked={useHAS}
+                        checked={useKeychain || useHAS || useCeramic}
                         disabled={useKeychain}
                         onChange={handleClickHAS}
                         icon={<HiveAuthenticationServiceIcon/>} 
@@ -392,7 +442,7 @@ const LoginModal = (props) => {
                         type="checkbox"
                         name="keychain"
                         checked={useKeychain}
-                        disabled={useHAS}
+                        disabled={useKeychain || useHAS || useCeramic}
                         onChange={handleClickKeychain}
                         icon={<HiveKeyChainIcon/>} 
                       />
@@ -432,7 +482,7 @@ const LoginModal = (props) => {
                 </React.Fragment>
               )}
               {hasMetaMaskInstalled && (
-                <LoginWithMetaMaskButton onClick={handleCeramicLogin} />
+                <LoginWithMetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic}/>
               )}
               {!hasMetaMaskInstalled && (
                 <React.Fragment>
@@ -464,16 +514,6 @@ const LoginModal = (props) => {
                 </React.Fragment>
               )}
               <center>
-                {!loading &&!useCeramic && (
-                  <ContainedButton
-                    onClick={handleClickLogin}
-                    transparent={true}
-                    className={classes.loginButton}
-                    fontSize={15}
-                    disabled={isDisabled() || hasSwitcherMatch()}
-                    label="Submit"
-                  />
-                )}
                 {loading && (
                   <Spinner size={40} loading={true} />
                 )}
