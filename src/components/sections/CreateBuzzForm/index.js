@@ -1158,6 +1158,7 @@ const CreateBuzzForm = (props) => {
       if(!ceramicUser) {
         setBuzzLoading(true)
         setBuzzing(true)
+        
         if(user.useHAS) {
           publishPostWithHAS(user, buzzContent, tags, payout, buzzPermlink)
             .then((data) => {
@@ -1197,8 +1198,8 @@ const CreateBuzzForm = (props) => {
                 }
               })
             })
-        } else {      
-          publishPostRequest(buzzContent, tags, payout)
+        } else {
+          publishPostRequest(buzzContent, tags, payout, buzzPermlink)
             .then((data) => {
               if (data.success) {
                 setPageFrom(null)

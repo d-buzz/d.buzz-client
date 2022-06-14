@@ -412,7 +412,7 @@ function* fileUploadRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
     const { is_authenticated } = user
-    const { file, progress } = payload
+    const { file, progress, ipfs } = payload
 
     if(is_authenticated) {
 
@@ -424,10 +424,14 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      // const ipfsHash = result.hashV0
-      // const postUrl = `https://ipfs.io/ipfs/${ipfsHash}`
+      const ipfsHash = result.hashV0
+      const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`
       const publicUrl = `https://storageapi.fleek.co/${result.bucket}/${result.key}`
-      images.push(publicUrl)
+      if(!ipfs) {
+        images.push(publicUrl)
+      } else {
+        images.push(ipfsUrl)
+      }
 
       yield put(uploadFileSuccess(images, meta))
     } else {
@@ -460,7 +464,7 @@ function* videoUploadRequest(payload, meta) {
 }
 
 function* publishPostRequest(payload, meta) {
-  const { tags, payout } = payload
+  const { tags, payout, perm } = payload
   let { body } = payload
   let success = false
 
@@ -476,78 +480,77 @@ function* publishPostRequest(payload, meta) {
   }
 
   body = footnote(body)
+
   try {
-    if(is_authenticated) {
-      const operations = yield call(generatePostOperations, username, title, body, tags, payout)
 
-      const comment_options = operations[1]
-      const permlink = comment_options[1].permlink
+    const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
 
-      if(useKeychain) {
-        const result = yield call(broadcastKeychainOperation, username, operations)
-        success = result.success
+    const comment_options = operations[1]
+    const permlink = comment_options[1].permlink
 
-        if(!success) {
-          yield put(publishPostFailure('Unable to publish post', meta))
-        }
-      } else {
-        let { login_data } = user
-        login_data = extractLoginData(login_data)
+    if(useKeychain && is_authenticated) {
+      const result = yield call(broadcastKeychainOperation, username, operations)
+      success = result.success
 
-        const wif = login_data[1]
-        const result = yield call(broadcastOperation, operations, [wif])
-
-        success = result.success
+      if(!success) {
+        yield put(publishPostFailure('Unable to publish post', meta))
       }
+    } else {
+      let { login_data } = user
+      login_data = extractLoginData(login_data)
 
-      if(success) {
-        const comment = operations[0]
-        const json_metadata = comment[1].json_metadata
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operations, [wif])
 
-        let currentDatetime = moment().toISOString()
-        currentDatetime = currentDatetime.replace('Z', '')
-
-        let cashout_time = moment().add(7, 'days').toISOString()
-        cashout_time = cashout_time.replace('Z', '')
-
-        let body = comment[1].body
-        body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-
-
-        const content = {
-          author: username,
-          category: 'hive-193084',
-          permlink,
-          title: comment[1].title,
-          body: body,
-          replies: [],
-          total_payout_value: '0.000 HBD',
-          curator_payout_value: '0.000 HBD',
-          pending_payout_value: '0.000 HBD',
-          active_votes: [],
-          root_author: "",
-          parent_author: null,
-          parent_permlink: "hive-190384",
-          root_permlink: permlink,
-          root_title: title,
-          json_metadata,
-          children: 0,
-          created: currentDatetime,
-          cashout_time,
-          max_accepted_payout: `${payout.toFixed(3)} HBD`,
-        }
-
-        yield put(setContentRedirect(content))
-      }
-
-      const data = {
-        success,
-        author: username,
-        permlink,
-      }
-
-      yield put(publishPostSuccess(data, meta))
+      success = result.success
     }
+
+    if(success) {
+      const comment = operations[0]
+      const json_metadata = comment[1].json_metadata
+
+      let currentDatetime = moment().toISOString()
+      currentDatetime = currentDatetime.replace('Z', '')
+
+      let cashout_time = moment().add(7, 'days').toISOString()
+      cashout_time = cashout_time.replace('Z', '')
+
+      let body = comment[1].body
+      body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+
+      const content = {
+        author: username,
+        category: 'hive-193084',
+        permlink,
+        title: comment[1].title,
+        body: body,
+        replies: [],
+        total_payout_value: '0.000 HBD',
+        curator_payout_value: '0.000 HBD',
+        pending_payout_value: '0.000 HBD',
+        active_votes: [],
+        root_author: "",
+        parent_author: null,
+        parent_permlink: "hive-190384",
+        root_permlink: permlink,
+        root_title: title,
+        json_metadata,
+        children: 0,
+        created: currentDatetime,
+        cashout_time,
+        max_accepted_payout: `${payout.toFixed(3)} HBD`,
+      }
+
+      yield put(setContentRedirect(content))
+    }
+
+    const data = {
+      success,
+      author: username,
+      permlink,
+    }
+
+    yield put(publishPostSuccess(data, meta))
   } catch (error) {
     const errorMessage = errorMessageComposer('post', error)
     yield put(publishPostFailure({ errorMessage }, meta))

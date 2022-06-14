@@ -169,7 +169,6 @@ const Init = (props) => {
   useEffect(() => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
-      setIsLatest(true)
       initCeremicLoginRequest()
       getCensorTypesRequest().then(() => {
         getBestCeramicHost().then((host) => {

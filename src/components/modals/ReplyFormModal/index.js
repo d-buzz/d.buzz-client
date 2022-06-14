@@ -379,15 +379,6 @@ const ReplyFormModal = (props) => {
 
     setReplying(true)
 
-    if(!ceramicUser) {
-      publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-        .then(({ success, errorMessage }) => {
-          if(success) {
-            setLoading(true)
-          }
-        })
-    }
-
     if(user.useHAS) {
       publishReplyWithHAS(user.username, content, author, permlink, replyRef, treeHistory)
         .then((data) => {
@@ -421,21 +412,34 @@ const ReplyFormModal = (props) => {
           })
         })
     } else {
-      replyRequest(permlink, author, content)
-        .then((data) => {
-          if(data) {
-            broadcastNotification('success', `Succesfully replied to @${author}/${permlink} on CeramicxDBuzz`)
-            setReplyDone(true)
-            closeReplyModal()
-            setReplying(false)
-          } else {
-            broadcastNotification('error', 'There was an error while replying to this buzz.')
-          }
-        })
-        .catch((errorMessage) => {
-          setLoading(false)
-          broadcastNotification('error', errorMessage)
-        })
+      if(!ceramicUser) {
+        publishReplyRequest(author, permlink, content, replyRef, treeHistory)
+          .then(({ success, errorMessage }) => {
+            if(success) {
+              setLoading(true)
+              broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+              setReplyDone(true)
+              closeReplyModal()
+              setReplying(false)
+            }
+          })
+      } else {
+        replyRequest(permlink, author, content)
+          .then((data) => {
+            if(data) {
+              broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+              setReplyDone(true)
+              closeReplyModal()
+              setReplying(false)
+            } else {
+              broadcastNotification('error', 'There was an error while replying to this buzz.')
+            }
+          })
+          .catch((errorMessage) => {
+            setLoading(false)
+            broadcastNotification('error', errorMessage)
+          })
+      }
     }
   }
 
