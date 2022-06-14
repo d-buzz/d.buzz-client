@@ -205,7 +205,7 @@ const EditProfileModal = (props) => {
     const files = e.target.files[0]
     if(files){
       setUploadAvatarLoading(true)
-      uploadFileRequest(files, setImageUploadProgress).then((image) => {
+      uploadFileRequest(files, setImageUploadProgress, true).then((image) => {
         setUploadAvatarLoading(false)
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
@@ -223,7 +223,7 @@ const EditProfileModal = (props) => {
     const files = e.target.files[0]
     if(files){
       setUploadCoverLoading(true)
-      uploadFileRequest(files, setImageUploadProgress).then((image) => {
+      uploadFileRequest(files, setImageUploadProgress, true).then((image) => {
         setUploadCoverLoading(false)
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
@@ -302,7 +302,6 @@ const EditProfileModal = (props) => {
       name : profileName,
       about : profileAbout,
       location : profileLocation,
-      website : profileWebsite,
       url : profileWebsite,
     }
 
@@ -325,11 +324,13 @@ const EditProfileModal = (props) => {
           broadcastNotification('success','Profile updated successfully')
           reloadProfile()
           setUpdatingProfile(false)
+          setUpdatingProfile(false)
           onHide()
         })
         .catch((err) => {
           setCeramicProfileUpdateLoading(false)
           broadcastNotification('error', err.message)
+          onHide()
         })
     }
   }
