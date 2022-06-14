@@ -244,9 +244,9 @@ export const UPLOAD_FILE_REQUEST = 'UPLOAD_FILE_REQUEST'
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS'
 export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE'
 
-export const uploadFileRequest = (file, progress) => ({
+export const uploadFileRequest = (file, progress, ipfs) => ({
   type: UPLOAD_FILE_REQUEST,
-  payload: { file, progress },
+  payload: { file, progress, ipfs },
   meta: {
     thunk: true,
   },
