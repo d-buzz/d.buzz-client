@@ -301,7 +301,7 @@ const PostList = React.memo((props) => {
   const [pockets, setPockets] = useState([])
 
   useEffect(() => {
-    if(!removeFromPocketConfirmModal || !addToPocketModal) {
+    if(anchorEl !== null) {
       getUserCustomData(user.username)
         .then(res => {
           if(res[0].pockets) {
@@ -312,7 +312,7 @@ const PostList = React.memo((props) => {
         })
     }
     // eslint-disable-next-line
-  }, [removeFromPocketConfirmModal, addToPocketModal])
+  }, [anchorEl])
 
   useEffect(() => {
     if(censorList.length !== 0 && author && permlink) {

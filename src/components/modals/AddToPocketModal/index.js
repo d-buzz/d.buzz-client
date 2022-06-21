@@ -193,14 +193,16 @@ function AddToPocketModal(props) {
   const classes = useStyles()
 
   useEffect(() => {
-    getUserCustomData(user.username)
-      .then(res => {
-        if(res[0].pockets) {
-          setPockets([...res[0].pockets])
-        } else {
-          setPockets([])
-        }
-      })
+    if(show) {
+      getUserCustomData(user.username)
+        .then(res => {
+          if(res[0].pockets) {
+            setPockets([...res[0].pockets])
+          } else {
+            setPockets([])
+          }
+        })
+    }
     // eslint-disable-next-line
   }, [show])
 

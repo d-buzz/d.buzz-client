@@ -254,16 +254,16 @@ export const sendToBerries = (author, theme) => {
   window.open(`https://buymeberri.es/!dbuzz${color}/@${author}`, '_blank')
 }
 
-export const calculateOverhead = (content) => {
-  let urls = getUrls(content)
+export const calculateOverhead = (content, imagesSize = 0) => {
+  let urls = getUrls(content) || []
 
   let overhead = 0
 
-  if(urls?.length > 3) {
-    urls = urls?.slice(0, 2)
+  if((urls.length+imagesSize) > 3) {
+    urls = urls.slice(0, 2)
   }
 
-  if(urls){
+  if(urls && urls.length+imagesSize <= 3){
     urls.forEach((item) => {
       overhead += item.length
     })

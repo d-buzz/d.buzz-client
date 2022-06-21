@@ -731,7 +731,7 @@ const CreateBuzzForm = (props) => {
     savePostAsDraft,
     buzzModalStatus,
     setBuzzModalStatus,
-    buzzThreads,
+    buzzThreads={1: {id: 1, content: '', images:[]}},
     buzzTitle,
     updateBuzzThreads,
     updateBuzzTitle,
@@ -763,6 +763,7 @@ const CreateBuzzForm = (props) => {
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
   const [videoUploadProgress, setVideoUploadProgress] = useState(0)
   const [videoLimit, setVideoLimit] = useState(false)
+  const [imageLimit, setImageLimit] = useState(false)
   const [buzzPermlink, setBuzzPermlink] = useState(null)
   const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
   
@@ -840,7 +841,7 @@ const CreateBuzzForm = (props) => {
   const handleClickBuzz = () => {
     setContent('')
     const buzzId = buzzThreads ? Object.keys(buzzThreads).length + 1 : 1
-    if(buzzThreads[buzzId-1].content !== '' && buzzThreads[1].content !== ''){
+    if(buzzThreads[buzzId-1].content !== '' && buzzThreads[1]?.content !== ''){
       createThread(buzzId, '', [])
       setThreadCount(buzzId)
     }
@@ -889,19 +890,54 @@ const CreateBuzzForm = (props) => {
     setOpenSaveDraftsModal(false)
   }
 
+  // useEffect(() => {
+  //   if(buzzThreads[1].images.length === 0) {
+  //     createThread(currentBuzz, 'image', ['https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1653158519663.jpeg', 'https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1653158519663.jpeg'])
+  //   }
+  // }, [buzzThreads])
+
+  // setup buzz intent
   useEffect(() => {
-    const overhead = calculateOverhead(content)
+    if(wholeIntent) {
+      handleUpdateBuzz(currentBuzz, wholeIntent)
+    }
+    // eslint-disable-next-line
+  }, [wholeIntent])
 
-    setOverhead(overhead)
+  useEffect(() => {
+    const images = []
+    
+    buzzThreads[1].images.forEach(image => images.push(image))
+    
+    images.splice(0, 3)
+    const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp; ').length
+    const contentOverhead = calculateOverhead(content, buzzThreads[1].images.length)
+    
+    // allow only three images at on a single buzz
+    if(buzzThreads[1].images.length >= 3) {
+      setImageLimit(true)
+    } else {
+      setImageLimit(false)
+    }
+    
+    setOverhead(contentOverhead-imagesOverhead)
+  }, [content, buzzThreads, buzzTitle])
+  
+  useEffect(() => {    
+    // update characters length and add images overhead
+    const length = (content.length + buzzTitle.length) - (overhead)
 
-    const length = (content.length + buzzTitle.length) - overhead
     setWordCount(Math.floor((length / 280) * 100))
 
     // getting the draft post value from browser storage
     savePostAsDraft(localStorage.getItem('draft_post'))
-    buzzThreads && setTags(extractAllHashtags(buzzThreads[1].content))
+    buzzThreads && setTags(extractAllHashtags(buzzThreads[1]?.content))
+
+    // update buzz characters length and remaining characters
+    setBuzzLength((content.length + buzzTitle.length - (overhead)))
+    setBuzzRemaingChars(280 - (content.length + buzzTitle.length - (overhead)))
     // eslint-disable-next-line
-  }, [content, buzzTitle, draftPost, images, savePostAsDraft])
+  }, [content, overhead, buzzTitle, draftPost, images, savePostAsDraft])
 
   useEffect(() => {
     const length = (content.length + buzzTitle.length) - overhead
@@ -921,12 +957,6 @@ const CreateBuzzForm = (props) => {
   const closePayoutDisclaimer = () => {
     setOpenPayoutDisclaimer(false)
   }
-
-  useEffect(() => {
-    setBuzzLength(content.length + buzzTitle.length - overhead)
-    setBuzzRemaingChars(280 - (content.length + buzzTitle.length - overhead))
-    // eslint-disable-next-line
-  }, [content, buzzTitle])
 
   useEffect(() => {
     if(buzzThreads) {
@@ -996,6 +1026,7 @@ const CreateBuzzForm = (props) => {
     if (name === 'content-area') {
       setContent(value)
     }
+
     setCurrentBuzz(buzzId)
     handleUpdateBuzz(buzzId, value)
   }
@@ -1075,7 +1106,6 @@ const CreateBuzzForm = (props) => {
       }) 
     })
 
-
     // if(fileSize < 1){
     // }
     // else {
@@ -1148,8 +1178,8 @@ const CreateBuzzForm = (props) => {
     }
 
     // eslint-disable-next-line
-    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
-    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1].content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1].content
+    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
+    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1]?.content
     const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
     
     if (!checkBuzzWidgetMinCharacters()) {
@@ -1482,7 +1512,7 @@ const CreateBuzzForm = (props) => {
 
   return (
     <div className={containerClass}>
-      {!buzzModalStatus && buzzThreads && buzzThreads[1].content && !isMobile &&
+      {!buzzModalStatus && buzzThreads && buzzThreads[1]?.content && !isMobile && !wholeIntent &&
       <div className={classes.draftsContainer}>
         <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
       </div>}
@@ -1640,7 +1670,7 @@ const CreateBuzzForm = (props) => {
                     <IconButton
                       size='medium'
                       onClick={handleFileSelect}
-                      disabled={isVideoAttached || imageUploading || videoUploading}
+                      disabled={isVideoAttached || imageUploading || videoUploading || imageLimit}
                       classes={{
                         root: classes.root,
                         disabled: classes.disabled,
