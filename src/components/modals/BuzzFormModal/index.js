@@ -78,7 +78,7 @@ const BuzzFormModal = (props) => {
     setSaveDraftsModalStatus(true)
     setOpenSaveDraftsModal(true)
     setDraftData({
-      content: buzzThreads[1].content,
+      content: buzzThreads[1]?.content,
     })
   }
   const OnSaveDraftsModalHide = () => {
@@ -123,7 +123,7 @@ const BuzzFormModal = (props) => {
           <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={handleBuzzModal}>
             <CloseIcon />
           </IconButton>
-          {buzzThreads && buzzThreads[1].content &&
+          {buzzThreads && buzzThreads[1]?.content &&
           <div className={classes.draftsContainer}>
             <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
           </div>}
