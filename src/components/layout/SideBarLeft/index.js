@@ -155,7 +155,6 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     padding: 0,
     paddingLeft: 5,
-    fontSize: 13,
     color: theme.left.sidebar.logout.label.color,
   },
   logoutUsername: {
@@ -586,12 +585,14 @@ const SideBarLeft = (props) => {
     },
   ]
 
+  const ceramicStyles = ceramicUser ? { alignItems: 'center', justifyContent: 'center', marginLeft: 25 } : {}
+
   return (
     <React.Fragment>
       <div style={{ height: '100vh', width: '100%' }}>
         <Nav className='flex-row' style={{ width: '100%' }}>
           <LinkContainer className={classes.navBar} style={{ padding: !minify ? '0 12px' : 0 }}>
-            <NavbarBrand href="/" style={{ display: 'grid', gridAutoFlow: minify ? 'row' : 'column', placeItems: 'center', marginRight: 0, alignSelf: minify ? 'center' : 'flex-start', paddingLeft: !minify ? 30 : 0, transform: minify ? 'translateY(-5px)' : 0 }}>
+            <NavbarBrand href="/" style={{ display: 'grid', gridAutoFlow: minify ? 'row' : 'column', placeItems: 'center', marginRight: 0, alignSelf: minify ? 'center' : 'flex-start', paddingLeft: !minify ? 0 : 0, transform: minify ? 'translateY(-5px)' : 0 }}>
               <div style={{ paddingTop: !minify ? 5 : 0, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
                 {theme === 'light' && !minify && (<BrandIcon />)}
                 {theme === 'dark' && !minify && (<BrandIconDark />)}
@@ -605,7 +606,7 @@ const SideBarLeft = (props) => {
                   {<span className={classes.betaTitle}>BETA</span>}
                 </div>}
             </NavbarBrand>
-            <div className={classes.navLinkContainer} style={{ paddingLeft: !minify ? '30px' : '0', paddingRight: 0, marginTop: !minify ? 12 : 0 }}>
+            <div className={classes.navLinkContainer} style={{ paddingLeft: !minify ? 0 : 0, paddingRight: !minify ? 45 : 0, marginTop: !minify ? 12 : 0 }}>
               {!checkCeramicLogin() ?
                 NavLinks.map((item) => (
                   <NavLinkWrapper
@@ -646,7 +647,6 @@ const SideBarLeft = (props) => {
                   style={{ height: 45, marginTop: 10 }}
                   fontSize={14}
                   label="Buzz"
-                  labelStyle={{ paddingTop: 10 }}
                   className={classes.sideBarButton}
                   onClick={handleClickBuzz}
                 />
@@ -669,13 +669,13 @@ const SideBarLeft = (props) => {
                     <div style={{ display: 'flex' }}>
                       <React.Fragment>
                         <Avatar author={username} avatarUrl={userAvatarUrl} />
-                        <div style={{ display: 'flex', paddingTop: 5 }}>
-                          <div style={{ display: 'flex' }}>
+                        <div style={{ display: 'flex', paddingTop: !ceramicUser ? 5 : 0 }}>
+                          <div style={{ display: 'flex', ...ceramicStyles }}>
                             <div style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                              <p className={classes.logoutLabel}>Logout</p>
-                              <p className={classes.logoutUsername}>{!ceramicUser ? `@${username}` : ceramicUser.name || 'Ceramic User'}</p>
+                              <p className={classes.logoutLabel} styles={{ fontSize: ceramicUser ? 24 : 14 }}>Logout</p>
+                              {!ceramicUser && <p className={classes.logoutUsername}>{username}</p>}
                             </div>
-                            <div style={{ display: 'flex', paddingTop: 6, marginLeft: 8 }} className={classes.logoutIcon}>
+                            <div style={{ display: 'flex', paddingTop: !ceramicUser ? 6 : 0, marginLeft: 15 }} className={classes.logoutIcon}>
                               <PowerIcon />
                             </div>
                           </div>

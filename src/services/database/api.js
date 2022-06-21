@@ -19,6 +19,8 @@ const headers = {'Content-Type': 'application/json','Cache-Control' : 'no-cache'
 export const getUserCustomData = async(username) => {
   const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get`, { params: { username: username }, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY, ...headers } })
 
+  // console.log('just ran the user request');
+
   return res.data
 }
 

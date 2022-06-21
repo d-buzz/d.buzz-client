@@ -130,6 +130,7 @@ button:focus {
 
 .MuiBadge-colorSecondary {
   background-color: #e65768 !important;
+  line-height: 2 !important;
 }
 
 @font-face {
