@@ -56,7 +56,6 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     backgroundColor: theme.right.list.background,
     borderRadius: 10,
-    padding: 15,
   },
   
   priceItem: {
@@ -99,6 +98,44 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  innerCatchOn: {
+    cursor: 'pointer',
+    margin: '0 auto',
+    '& img': {
+      marginLeft: 0,
+      height: 30,
+      width: 45,
+      objectFit: 'contain',
+      border: 'none !important',
+    },
+  }, 
+  linkWrapperCatchOn: {
+    textDecoration: 'none',
+    color: '#14171a',
+    cursor: 'pointer',
+    '&:hover': {
+      color: '#14171a',
+    },
+    '& label': {
+      cursor: 'pointer',
+    },
+    paddingLeft:15,
+  },
+  titleCatchOn: {
+    color: theme.font.color,
+    marginTop: 15,
+    marginLeft: 20,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  labelCatchOn: {
+    fontSize: 13,
+    marginTop: 15,
+    marginLeft: 5,
+    paddingBottom: 20,
+    color: '#657786',
+  },
+  
 }))
 
 const SideBarRight = (props) => {
@@ -199,12 +236,25 @@ const SideBarRight = (props) => {
           <label className='price_description'> HBD Market Value by <a href='https://coinmarketcap.com/currencies/hive-dollar/'>@CoinMarketCap</a></label>
         </span>
       </div>
-      <div style={{ paddingTop: 5 }}>
-        <ListGroup label="Catch us on">
+      <div style={{ paddingTop: 6 ,marginTop: 10, display: "flex", borderRadius:'10px 10px 10px 10px', flexDirection: "row",backgroundColor:"#F5F8FA"}}>
+        <label style={{fontFamily:'Segoe-Bold',marginLeft:5}}>Catch us on : </label>
+        {SocialMediaLinks.map((item) => (
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={classes.linkWrapperCatchOn}
+          >
+            <div className={classes.innerCatchOn}>
+              <img alt="preview-img" src={item.imagePath} />
+            </div>
+          </a>
+        ))}
+        {/* <ListGroup label="Catch us on">
           {SocialMediaLinks.map((item) => (
             <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath} href={item.url} />
           ))}
-        </ListGroup>
+        </ListGroup> */}
       </div>
       <div className={classes.footer}>
         <div className={classes.inner}>

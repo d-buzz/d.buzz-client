@@ -290,7 +290,7 @@ const NavLinkWrapper = (props) => {
             <IconWrapper onClick={onClick} style={{ textAlign: 'right', width: 50, display: 'flex', justifyContent: 'center', marginRight: 5 }} className={iconClass}>
               {icon}
             </IconWrapper>
-            <span style={{ paddingRight: 15 }} onClick={onClick}>{name}</span>
+            <span style={{ paddingRight: 15,fontFamily:'sans-serif' }} onClick={onClick}>{name}</span>
           </Link>
         </div>
       )}
