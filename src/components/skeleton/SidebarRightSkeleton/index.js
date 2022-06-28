@@ -1,9 +1,10 @@
 import React from 'react'
-import Skeleton from 'react-loading-skeleton'
 
 import {
   ListGroup,
 } from 'components/elements'
+
+const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const SidebarRightSkeleton = ({ loading }) => {
   return (

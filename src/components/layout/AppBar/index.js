@@ -8,13 +8,15 @@ import {
   ContainedButton,
   BackArrowIcon,
 } from 'components/elements'
-import IconButton from '@material-ui/core/IconButton'
 import { LoginModal, SearchField } from 'components'
 import { createUseStyles } from 'react-jss'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { isMobile } from 'react-device-detect'
-import { getTheme, signOnHiveonboard } from 'services/helper'
+import { getTheme } from 'services/helper'
+import SignupModal from 'components/modals/SignupModal'
+
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const useStyles = createUseStyles(theme => ({
   nav: {
@@ -54,7 +56,8 @@ const useStyles = createUseStyles(theme => ({
 
 const AppBar = (props) => {
   const classes = useStyles()
-  const [open, setOpen] = useState(false)
+  const [openLoginModal, setOpenLoginModal] = useState(false)
+  const [openSignupModal, setOpenSignupModal] = useState(false)
   const location = useLocation()
   const history = useHistory()
   const { pathname } = location
@@ -65,15 +68,19 @@ const AppBar = (props) => {
   }
 
   const handleClickOpenLoginModal = () => {
-    setOpen(true)
+    setOpenLoginModal(true)
   }
 
   const handleClickCloseLoginModal = () => {
-    setOpen(false)
+    setOpenLoginModal(false)
   }
 
-  const handleClickSignup = () => {
-    signOnHiveonboard()
+  const handleClickOpenSignupModal = () => {
+    setOpenSignupModal(true)
+  }
+  
+  const handleClickCloseSignupModal = () => {
+    setOpenSignupModal(false)
   }
 
   return (
@@ -98,10 +105,13 @@ const AppBar = (props) => {
             <SearchField disableTips={true} />
           </Nav>
         )}
-        <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
-        <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickSignup} fontSize={15} label="Sign up" className={classes.button} />
+        <div style={{ display: 'flex' }}>
+          <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in" className={classes.button} />
+          <ContainedButton style={{ marginLeft: 5 }} onClick={handleClickOpenSignupModal} fontSize={15} label="Sign up" className={classes.button} />
+        </div>
       </Container>
-      <LoginModal show={open} onHide={handleClickCloseLoginModal} />
+      <LoginModal show={openLoginModal} onHide={handleClickCloseLoginModal} />
+      <SignupModal show={openSignupModal} onHide={handleClickCloseSignupModal} />
     </Navbar>
   )
 }

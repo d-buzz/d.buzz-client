@@ -161,7 +161,9 @@ const Developers = () => {
                         scrolling="no"
                         frameBorder="0"
                         style={{ position: "static", visibility: "visible", width: '76px', height: '28px' }}
-                        src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=l&text=Hello world&url=" + hostUrl + "&tags=dbuzz,hive&origin_app_name=D.buzz&min_chars=50"}></iframe>
+                        src={hostUrl + "/widgets/buzz_button.html#id=dbuzz-widget-1&size=l&text=Hello world&url=" + hostUrl + "&tags=dbuzz,hive&origin_app_name=D.buzz&min_chars=50"}
+                        loading='lazy'
+                      />
                     </div>
                   </div>
                 </div>

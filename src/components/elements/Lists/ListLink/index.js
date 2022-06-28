@@ -66,7 +66,7 @@ const ListLink = (props) => {
       <div className={classes.wrapper}>
         <a href={href} target="_blank" rel="noopener noreferrer" className={classes.linkWrapper}>
           <div className={classes.inner}>
-            <img alt="preview-img" src={imagePath} />
+            <img alt="preview-img" src={imagePath} loading='lazy'/>
             <label className={classes.title}>{title}</label>
             <label className={classes.label}>{label}</label>
           </div>

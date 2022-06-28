@@ -15,15 +15,15 @@ import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import IconButton from '@material-ui/core/IconButton'
-import MuteIcon from '@material-ui/icons/VolumeOff'
-import Chip from '@material-ui/core/Chip'
 import { Link, useHistory } from 'react-router-dom'
-import { calculateOverhead, truncateBody } from 'services/helper'
-import stripHtml from 'string-strip-html'
+import { calculateOverhead, stripHtml, truncateBody } from 'services/helper'
 import { censorLinks } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, getIpfsLink } from 'services/ceramic'
+
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
+const MuteIcon = React.lazy(() => import('@material-ui/icons/VolumeOff'))
+const Chip = React.lazy(() => import('@material-ui/core/Chip'))
 
 
 const useStyles = createUseStyles(theme => ({

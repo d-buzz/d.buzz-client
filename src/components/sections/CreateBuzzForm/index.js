@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
 import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import { createUseStyles } from 'react-jss'
 import {
   TextArea,
@@ -36,7 +34,6 @@ import CloseIcon from 'components/elements/Icons/CloseIcon'
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded'
 import Renderer from 'components/common/Renderer'
 import Switch from 'components/elements/Switch'
-import imageCompression from 'browser-image-compression'
 import ImagesContainer from '../ImagesContainer'
 import ViewImageModal from 'components/modals/ViewImageModal'
 // import BuzzTitleModal from 'components/modals/BuzzTitleModal'
@@ -48,7 +45,8 @@ import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
 import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
 import { createPermlink, publishPostWithHAS } from 'services/api'
-import { hacMsg } from '@mintrawa/hive-auth-client'
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
+const CircularProgress = React.lazy(() => import('@material-ui/core/CircularProgress'))
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -1064,7 +1062,9 @@ const CreateBuzzForm = (props) => {
       useWebWorker: true,
     }
     try {
-      compressedFile = await imageCompression(image, options)
+      await import('browser-image-compression').then(async({ default: imageCompression }) => {
+        compressedFile = await imageCompression(image, options)
+      })
     } catch (error) {
       console.log(error)
     }
@@ -1195,37 +1195,39 @@ const CreateBuzzForm = (props) => {
               console.log(data)
               setContentRedirect(data.content)
   
-              hacMsg.subscribe(m => {
-                if (m.type === 'sign_wait') {
-                  console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-                }
-                if (m.type === 'tx_result') {
-                  console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-                  if (m.msg?.status === 'accepted') {
-                    const status = m.msg?.status
-                    console.log(status)
-                    // success
-                    const { author, permlink } = data
-                    broadcastNotification('success', 'You successfully published a post')
-                    setBuzzLoading(false)
-                    setBuzzing(false)
-                    updateBuzzTitle('')
-                    clearIntentBuzz()
-                    resetBuzzForm()
-                    hideModalCallback()
-                    history.push(`/@${author}/c/${permlink}`)
-                  } else if (m.msg?.status === 'rejected') {
-                    const status = m.msg?.status
-                    console.log(status)
-                    // error
-                    broadcastNotification('error', 'Your HiveAuth post transaction is rejected.')
-                    setBuzzLoading(false)
-                  } else if (m.msg?.status === 'error') { 
-                    const error = m.msg?.status.error
-                    console.log(error)
-                    broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-                  } 
-                }
+              import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+                HiveAuth.hacMsg.subscribe(m => {
+                  if (m.type === 'sign_wait') {
+                    console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+                  }
+                  if (m.type === 'tx_result') {
+                    console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+                    if (m.msg?.status === 'accepted') {
+                      const status = m.msg?.status
+                      console.log(status)
+                      // success
+                      const { author, permlink } = data
+                      broadcastNotification('success', 'You successfully published a post')
+                      setBuzzLoading(false)
+                      setBuzzing(false)
+                      updateBuzzTitle('')
+                      clearIntentBuzz()
+                      resetBuzzForm()
+                      hideModalCallback()
+                      history.push(`/@${author}/c/${permlink}`)
+                    } else if (m.msg?.status === 'rejected') {
+                      const status = m.msg?.status
+                      console.log(status)
+                      // error
+                      broadcastNotification('error', 'Your HiveAuth post transaction is rejected.')
+                      setBuzzLoading(false)
+                    } else if (m.msg?.status === 'error') { 
+                      const error = m.msg?.status.error
+                      console.log(error)
+                      broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                    } 
+                  }
+                })
               })
             })
         } else {
@@ -1733,7 +1735,7 @@ const CreateBuzzForm = (props) => {
                       style={{...BuzzToTwitterToggleStyle}}
                       onClick={() => setBuzzToTwitter(!buzzToTwitter)}
                     >
-                      <img className='icon' src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon" />
+                      <img className='icon' src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon" loading='lazy'/>
                       {/* <div className='title'>Buzz to Twitter</div> */}
                     </div>
                   </span>
@@ -1806,7 +1808,7 @@ const CreateBuzzForm = (props) => {
         </div>}        
       {buzzLoading &&
         <div className={classes.loadingContainer}>
-          <img src={`${window.location.origin}/images/d.buzz-icon-512.png`} alt='buzzLoading'/>
+          <img src={`${window.location.origin}/images/d.buzz-icon-512.svg`} alt='buzzLoading' loading='lazy'/>
           <span className='title'>Broadcasting your {isThread ? 'thread' : 'buzz'} to the decentralized web...</span>
           {/* {isThread && <span>This can take upto 5-10 secs</span>} */}
           {isThread && <button className={classes.publishThreadButton} onClick={handlePublishThread} disabled={buzzing}>Buzz {publishedBuzzes} of {threadCount} <ArrowForwardRoundedIcon style={{marginLeft: 8}}/></button>}

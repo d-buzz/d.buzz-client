@@ -16,10 +16,12 @@ const Avatar = React.memo((props) => {
 
   let avatar_src = ''
 
-  if(checkForCeramicAccount(author)) {
-    avatar_src = `${window.location.origin}/ceramic_user_avatar.png`
-  } else {
-    avatar_src = `https://images.hive.blog/u/${author}/avatar/${size}`
+  if(author) {
+    if(checkForCeramicAccount(author)) {
+      avatar_src = `${window.location.origin}/ceramic_user_avatar.svg`
+    } else {
+      avatar_src = `https://images.hive.blog/u/${author}/avatar/${size}`
+    }
   }
 
   if(avatarUrl){
@@ -28,7 +30,7 @@ const Avatar = React.memo((props) => {
 
   const handleImageOnError = () => {
     const avatarImage = document.querySelector('.user-avatar-image')
-    avatarImage.src = `${window.location.origin}/ceramic_user_avatar.png`
+    avatarImage.src = `${window.location.origin}/ceramic_user_avatar.svg`
     avatarImage.style.animation = 'none'
     avatarImage.style.opacity = '1'
   }

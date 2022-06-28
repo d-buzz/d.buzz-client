@@ -8,17 +8,16 @@ import { BrandIcon, Spinner } from 'components/elements'
 import { getCensorTypesRequest } from 'store/settings/actions'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
-
-
-import Typography from '@material-ui/core/Typography'
-import Snackbar from '@material-ui/core/Snackbar'
-import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
-import ReplayIcon from '@material-ui/icons/Replay'
-import CloseIcon from '@material-ui/icons/Close'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
 import { getBestCeramicHost } from 'services/ceramic'
+
+const Typography = React.lazy(() => import('@material-ui/core/Typography'))
+const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
+const Paper = React.lazy(() => import('@material-ui/core/Paper'))
+const Button = React.lazy(() => import('@material-ui/core/Button'))
+const ReplayIcon = React.lazy(() => import('@material-ui/icons/Replay'))
+const CloseIcon = React.lazy(() => import('@material-ui/icons/Close'))
 
 const { VERSION } = config
 
@@ -169,9 +168,9 @@ const Init = (props) => {
   useEffect(() => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
-      initCeremicLoginRequest()
       getCensorTypesRequest().then(() => {
         getBestCeramicHost().then((host) => {
+          initCeremicLoginRequest()
           localStorage.setItem('ceramic', host)
         })
         getBestRpcNode().then(() => {

@@ -1,37 +1,36 @@
-import {
-  AppFrame,
-  TermsConditions,
-  GetStarted,
-  Home,
-  Trending,
-  Profile,
-  Content,
-  Latest,
-  AccountPosts,
-  AccountReplies,
-  AccountFollowers,
-  AccountFollowing,
-  AccountComments,
-  AccountPockets,
-  AccountFollow,
-  AccountMuted,
-  AccountMutedUsers,
-  AccountMutedFollowed,
-  AccountBlacklisted,
-  AccountBlacklistedUsers,
-  AccountBlacklistedFollowed,
-  Notification,
-  Tags,
-  Search,
-  SearchPosts,
-  SearchPeople,
-  PrivacyPolicy,
-  Disclaimer,
-  Developers,
-  Wallet,
-  WalletBalances,
-  WalletHistory,
-} from 'components'
+import React from 'react'
+const AppFrame = React.lazy(() => import('./components/layout/AppFrame'))
+const TermsConditions = React.lazy(() => import('./components/pages/TermsConditions'))
+const GetStarted = React.lazy(() => import('./components/pages/GetStarted'))
+const Home = React.lazy(() => import('./components/pages/Home'))
+const Trending = React.lazy(() => import('./components/pages/Trending'))
+const Profile = React.lazy(() => import('./components/pages/Profile'))
+const Content = React.lazy(() => import('./components/pages/Content'))
+const Latest = React.lazy(() => import('./components/pages/Latest'))
+const AccountPosts = React.lazy(() => import('./components/sections/AccountPosts'))
+const AccountReplies = React.lazy(() => import('./components/sections/AccountReplies'))
+const AccountFollowers = React.lazy(() => import('./components/sections/AccountFollowers'))
+const AccountFollowing = React.lazy(() => import('./components/sections/AccountFollowing'))
+const AccountComments = React.lazy(() => import('./components/sections/AccountComments'))
+const AccountPockets = React.lazy(() => import('./components/sections/AccountPockets'))
+const AccountFollow = React.lazy(() => import('./components/sections/AccountFollow'))
+const AccountMuted = React.lazy(() => import('./components/sections/AccountMuted'))
+const AccountMutedUsers = React.lazy(() => import('./components/sections/AccountMutedFollowed'))
+const AccountMutedFollowed = React.lazy(() => import('./components/sections/AccountMutedFollowed'))
+const AccountBlacklisted = React.lazy(() => import('./components/sections/AccountBlacklisted'))
+const AccountBlacklistedUsers = React.lazy(() => import('./components/sections/AccountBlacklistedUsers'))
+const AccountBlacklistedFollowed = React.lazy(() => import('./components/sections/AccountBlacklistedFollowed'))
+const Notification = React.lazy(() => import('./components/pages/Notification'))
+const Tags = React.lazy(() => import('./components/pages/Tags'))
+const Search = React.lazy(() => import('./components/pages/Search'))
+const SearchPosts = React.lazy(() => import('./components/sections/SearchPosts'))
+const SearchPeople = React.lazy(() => import('./components/sections/SearchPeople'))
+const PrivacyPolicy = React.lazy(() => import('./components/pages/PrivacyPolicy'))
+const Disclaimer = React.lazy(() => import('./components/pages/Disclaimer'))
+const Developers = React.lazy(() => import('./components/pages/Developers'))
+const Wallet = React.lazy(() => import('./components/pages/Wallet'))
+const WalletBalances = React.lazy(() => import('./components/sections/WalletBalances'))
+const WalletHistory = React.lazy(() => import('./components/sections/WalletHistory'))
 
 const routes =  [
   {

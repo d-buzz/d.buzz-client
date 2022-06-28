@@ -195,7 +195,7 @@ const LinkPreview = (props) => {
     let image = meta.image
 
     if(!`${image}`.includes('https') || !`${image}`.includes('http') || image === '') {
-      image = `${window.location.origin}/no-img.png`
+      image = `${window.location.origin}/noimage.svg`
     }
 
     if(image.match(/^\//g)) {
@@ -211,7 +211,7 @@ const LinkPreview = (props) => {
       {isValidUrl && !loading && !noShow ? (
         <div className={classes.wrapper} onClick={onClick}>
           <div className={classes.left}>
-            <img alt="preview-img" src={getImage()} />
+            <img alt="preview-img" src={getImage()} loading='lazy'/>
           </div>
           <div className={classes.right}>
             <div>

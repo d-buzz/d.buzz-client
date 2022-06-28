@@ -2,9 +2,9 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
-import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import { proxyImage } from 'services/helper'
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -58,14 +58,14 @@ const ViewImageModal = (props) => {
       <Modal
         backdrop="static"
         keyboard={false}
-        show={show}
+        show={show ? true : false}
         onHide={onHide}
         dialogClassName={classes.modal}
         animation={true}
       >
         <ModalBody>
           <div className={classes.imageModal}>
-            {imageUrl ? !imageUrl.includes('?dbuzz_video=') ? <img src={proxyImage(imageUrl)} alt='modal_image' /> : <video src={imageUrl.split('?dbuzz_video=')[1]} controls/> : null}
+            {imageUrl ? !imageUrl.includes('?dbuzz_video=') ? <img src={proxyImage(imageUrl)} alt='modal_image' loading='lazy'/> : <video src={imageUrl.split('?dbuzz_video=')[1]} controls/> : null}
             <IconButton className={classes.closeImageButton} onClick={() => onHide('')}>
               <CloseIcon />
             </IconButton>

@@ -100,7 +100,6 @@ import {
 
 import { generateSession, readSession, errorMessageComposer} from 'services/helper'
 import { checkCeramicLogin, getBasicProfile, loginWithMetaMask, reauthenticateWithCeramic, setBasicProfile } from 'services/ceramic'
-import { HiveAuthClient, hacMsg, hacGetAccounts, hacGetConnectionStatus } from "@mintrawa/hive-auth-client"
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 
@@ -138,65 +137,66 @@ function* authenticateUserRequest(payload, meta) {
       }
     } else if(useHAS) {
       yield call(hiveAuthenticationService, username)
-      
-      hacMsg.subscribe((m) => {
-        /** generate QR Code */
-        if (m.type === 'qr_code') {
-          const hasQRCode = "has://auth_req/" + (m).msg
-          localStorage.setItem('hasQRcode', hasQRCode)
-        }
-
-        /** recieved authentication msg */
-        if (m.type === 'authentication')  {
-          
-          console.log('%c[HAC authentication msg]', 'color: goldenrod', m)
-          
-          /** Authentication approved */
-          if (m.msg?.status === "authentified") {
-            user.is_authenticated = true
-
-            const is_subscribe = getCommunityRole(username)
-            user.is_subscribe = is_subscribe
-            user.active = true
-
-            // let mutelist = fetchMuteList(username)
-
-            // mutelist = [...new Set(mutelist.map(item => item.following))]
-
-            // setMuteList(mutelist)
-
-            const session = generateSession(user)
-
-            const accountIndex = accounts.findIndex(item => item.username === username)
-
-            if(accountIndex === -1) {
-              accounts.push({ username, keychain: useKeychain, has: useHAS, cermic: useCeramic })
-            } else {
-              accounts[accountIndex].keychain = useKeychain
-            }
-
-            users.push(session)
-            localStorage.removeItem('hasQRcode')
-            localStorage.setItem('current', username)
-            localStorage.setItem('user', JSON.stringify(users))
-            localStorage.setItem('active', username)
-            localStorage.setItem('accounts', JSON.stringify(accounts))
-            setAccountList(accounts)
-     
-            authenticateUserSuccess(user, meta)
-            const origin = window.location.origin
-
-            window.location.href = origin + '#/latest' 
-    
-          /** Authentication rejected */
-          } else if (m.msg?.status === "rejected") {
-            window.location.reload()
-    
-          /** Authentication error */
-          } else {
-            window.location.reload()
+      import('@mintrawa/hive-auth-client').then(({hacMsg}) => {
+        hacMsg.subscribe((m) => {
+          /** generate QR Code */
+          if (m.type === 'qr_code') {
+            const hasQRCode = "has://auth_req/" + (m).msg
+            localStorage.setItem('hasQRcode', hasQRCode)
           }
-        }
+  
+          /** recieved authentication msg */
+          if (m.type === 'authentication')  {
+            
+            console.log('%c[HAC authentication msg]', 'color: goldenrod', m)
+            
+            /** Authentication approved */
+            if (m.msg?.status === "authentified") {
+              user.is_authenticated = true
+  
+              const is_subscribe = getCommunityRole(username)
+              user.is_subscribe = is_subscribe
+              user.active = true
+  
+              // let mutelist = fetchMuteList(username)
+  
+              // mutelist = [...new Set(mutelist.map(item => item.following))]
+  
+              // setMuteList(mutelist)
+  
+              const session = generateSession(user)
+  
+              const accountIndex = accounts.findIndex(item => item.username === username)
+  
+              if(accountIndex === -1) {
+                accounts.push({ username, keychain: useKeychain, has: useHAS, cermic: useCeramic })
+              } else {
+                accounts[accountIndex].keychain = useKeychain
+              }
+  
+              users.push(session)
+              localStorage.removeItem('hasQRcode')
+              localStorage.setItem('current', username)
+              localStorage.setItem('user', JSON.stringify(users))
+              localStorage.setItem('active', username)
+              localStorage.setItem('accounts', JSON.stringify(accounts))
+              setAccountList(accounts)
+       
+              authenticateUserSuccess(user, meta)
+              const origin = window.location.origin
+  
+              window.location.href = origin + '#/latest' 
+      
+            /** Authentication rejected */
+            } else if (m.msg?.status === "rejected") {
+              window.location.reload()
+      
+            /** Authentication error */
+            } else {
+              window.location.reload()
+            }
+          }
+        })
       })
     } else if(useCeramic) {
       // sign in with meta mask
@@ -247,9 +247,7 @@ function* authenticateUserRequest(payload, meta) {
         window.location.href = origin + '#/latest' 
       }
     } else {
-
-      yield put(authenticateUserFailure('error', meta))
-
+      
       let profile = yield call(fetchProfile, [username])
 
       if(profile) {
@@ -424,9 +422,17 @@ function* initWSHASConnectionRequest(meta) {
       const fingerPrintRequest = FingerprintJS.load({ monitoring: false })
   
       fingerPrintRequest.then(fingerPrint => fingerPrint.get())
-        .then(result => {
+        .then(async(result) => {
           sessionStorage.setItem('hacPwd', result.visitorId)
           const current = localStorage.getItem('active')
+          let HiveAuthClient
+          let hacGetAccounts
+          let hacGetConnectionStatus
+          await import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+            HiveAuthClient = HiveAuth.HiveAuthClient
+            hacGetAccounts = HiveAuth.hacGetAccounts
+            hacGetConnectionStatus = HiveAuth.hacGetConnectionStatus
+          })
   
           if (current) {
             const hacAccount = hacGetAccounts(current, result.visitorId)
