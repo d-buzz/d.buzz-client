@@ -14,14 +14,13 @@ commands:
     steps:
       - checkout
       - run: yarn install
-      - run: yarn run lint
 
 jobs:
   prod_build_test:
       executor: docker-executor
       steps:
         - common-steps
-        - run: yarn run build:prod
+        - run: yarn run lint
         - discord/status:
             success_message: test build success on mainnet branch
             failure_message: test build failed on mainnet branch
@@ -31,7 +30,7 @@ jobs:
       executor: docker-executor
       steps:
         - common-steps
-        - run: yarn run build:dev
+        - run: yarn run lint
         - discord/status:
             success_message: test build success on non mainnet branch
             failure_message: test build failed on non mainnet branch
