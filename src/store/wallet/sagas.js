@@ -27,7 +27,6 @@ import {
 } from 'services/api'
 
 import { errorMessageComposer } from "services/helper"
-import hive from '@hiveio/hive-js'
 
 function* getWalletBalanceRequest(payload, meta) {
   try {
@@ -125,7 +124,9 @@ function* getWalletHistoryRequest(payload, meta) {
           description = trx[1].op.from === loginUser ? 'Transferred to ' : 'Received from '
         }else if(trx[1].operation === 'claim_reward_balance') {
           main_user = trx[1].op.account
-          amount = `${parseFloat(hive.formatter.vestToHive(trx[1].op.reward_vests, total_vesting_shares, total_vesting_fund_hive)).toFixed(3)} HIVE`
+          import('@hiveio/hive-js').then((hive) => {
+            amount = `${parseFloat(hive.formatter.vestToHive(trx[1].op.reward_vests, total_vesting_shares, total_vesting_fund_hive)).toFixed(3)} HIVE`
+          })
           description = 'Claimed rewards'
         }else if(trx[1].operation === 'interest') {
           main_user = trx[1].op.owner

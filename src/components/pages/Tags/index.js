@@ -92,6 +92,7 @@ const Tags = (props) => {
             payoutAt={item.payout_at}
             highlightTag={tag}
             disableOpacity={true}
+            type='HIVE'
           />
         </React.Fragment>),
       )}

@@ -4,10 +4,13 @@ import { encrypt, decrypt } from 'caesar-shift'
 import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
-import stripHtml from 'string-strip-html'
 import textParser from 'npm-text-parser'
 
 const dmp = new diff_match_patch()
+
+export const stripHtml = (content) => {
+  return content.replace(/(<([^>]+)>)/gi, '')
+}
 
 export const getUrls = (text) => {
   const regexUrls = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[/w@?^=%&/~+#-(a-z)(A-Z)(0-9)])?/gm

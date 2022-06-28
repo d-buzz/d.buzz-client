@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { CloseIcon, ContainedButton } from 'components/elements'
-import IconButton from '@material-ui/core/IconButton'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { Container } from 'react-bootstrap'
@@ -22,6 +21,8 @@ const useStyles = createUseStyles(theme => ({
     },
   },
 }))
+
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const InstallAppBanner = () => {
   const classes = useStyles()

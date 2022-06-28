@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { CircularProgress } from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = createUseStyles({
   loader: {

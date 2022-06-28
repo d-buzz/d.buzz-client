@@ -22,7 +22,6 @@ import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
 import { publishReplyWithHAS } from 'services/api'
-import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -225,7 +224,7 @@ const ReplyFormModal = (props) => {
   const [ceramicUser, setCeramicUser] = useState(false)
   const [fetchingProfile, setFetchingProfile] = useState(false)
   const [replying, setReplying] = useState(false)
-  const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.png`
+  const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.svg`
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
   const [userAvatarUrl, setUserAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
   const [loading, setLoading] = useState(false)
@@ -383,32 +382,34 @@ const ReplyFormModal = (props) => {
       publishReplyWithHAS(user.username, content, author, permlink, replyRef, treeHistory)
         .then((data) => {
           console.log(data)
-          hacMsg.subscribe(m => {
-   
-            if (m.type === 'sign_wait') {
-              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-            }
-        
-            if (m.type === 'tx_result') {
-              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-              if (m.msg?.status === 'accepted') {                  
-                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-                setReplyDone(true)
-                setLoading(false)
-                closeReplyModal()
-              } else if (m.msg?.status === 'rejected') {
-                const status = m.msg?.status
-                console.log(status)
-                setLoading(false)
-                // error
-                broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
-              } else if (m.msg?.status === 'error') { 
-                const error = m.msg?.status.error
-                console.log(error)
-                setLoading(false)
-                broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-              } 
-            }
+          import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+            HiveAuth.hacMsg.subscribe(m => {
+     
+              if (m.type === 'sign_wait') {
+                console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+              }
+          
+              if (m.type === 'tx_result') {
+                console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+                if (m.msg?.status === 'accepted') {                  
+                  broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                  setReplyDone(true)
+                  setLoading(false)
+                  closeReplyModal()
+                } else if (m.msg?.status === 'rejected') {
+                  const status = m.msg?.status
+                  console.log(status)
+                  setLoading(false)
+                  // error
+                  broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
+                } else if (m.msg?.status === 'error') { 
+                  const error = m.msg?.status.error
+                  console.log(error)
+                  setLoading(false)
+                  broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                } 
+              }
+            })
           })
         })
     } else {

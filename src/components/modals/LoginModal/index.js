@@ -8,22 +8,19 @@ import { authenticateUserRequest } from 'store/auth/actions'
 import { Spinner } from 'components/elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import { pending } from 'redux-saga-thunk' not in use
 import QRCode from 'qrcode.react'
-import classNames from 'classnames'
 import { hasCompatibleKeychain } from 'services/helper'
-import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import Button from '@material-ui/core/Button'
 import { isMobile } from 'react-device-detect'
-import { Link } from 'react-router-dom'
-import { signOnHiveonboard } from 'services/helper'
 import { SuccessConfirmation } from 'components/elements'
 import { Checkbox } from '@material-ui/core'
 import { ProgressBar } from 'react-bootstrap'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
-import LoginWithMetaMaskButton from 'components/common/LoginWithMetaMask'
+import MetaMaskButton from 'components/common/MetaMaskButton'
 import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
+import HiveButton from 'components/common/HiveButton'
+import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
+const FormControlLabel = React.lazy((() => import('@material-ui/core/FormControlLabel')))
 
 const useStyles = createUseStyles(theme => ({
   loginButton: {
@@ -52,6 +49,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     fontSize: '1.8em',
     fontWeight: 800,
+    justifyContent: 'center',
     margin: '15px 0',
     ...theme.font,
   },
@@ -164,6 +162,7 @@ const LoginModal = (props) => {
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(false)
+  const [loginMethod, setLoginMethod] = useState(null)
   /* eslint-disable */
   let [hasExpiredDelay, setHasExpiredDelay] = useState(100)
   
@@ -208,6 +207,13 @@ const LoginModal = (props) => {
   const handleClickBack = () => {
     setQRCode(null)
     localStorage.removeItem('hasQRcode')
+  }
+
+  const handleGoBack = () => {
+    setLoginMethod(null)
+    setUseKeychain(false)
+    setUseHAS(false)
+    setUseCeramic(false)
   }
 
 
@@ -274,10 +280,6 @@ const LoginModal = (props) => {
     }
   }
 
-  const handleClickSignup = () => {
-    signOnHiveonboard()
-  }
-
   const hasSwitcherMatch = () => {
     let hasMatch = false
     const { is_authenticated } = user
@@ -331,200 +333,186 @@ const LoginModal = (props) => {
                   {hasSwitcherMatch() && (<span style={{ color: 'red' }}>You are trying to login a username that is already added in the account switcher</span>)}
                 </center>
               </div>
-              {!useCeramic && ( 
+              {loginMethod === 'HIVE' ?
                 <React.Fragment>
-                  <FormLabel className={classes.label}>Username</FormLabel>
-                  <div className={classes.inputField} tabIndex={0} onFocus={() => usernameRef.current.focus()}>
-                    <b className={classes.usernameHint}>@</b>
-                    <input
-                      ref={usernameRef}
-                      className={classes.textField}
-                      disabled={loading}
-                      name="username"
-                      type="text"
-                      value={username}
-                      onChange={onChange}
-                      onKeyDown={onKeyDown}
+                  {!useCeramic && (
+                  <React.Fragment>
+                    <FormLabel className={classes.label}>Username</FormLabel>
+                    <div className={classes.inputField} tabIndex={0} onFocus={() => usernameRef.current.focus()}>
+                      <b className={classes.usernameHint}>@</b>
+                      <input
+                        ref={usernameRef}
+                        className={classes.textField}
+                        disabled={loading}
+                        name="username"
+                        type="text"
+                        value={username}
+                        onChange={onChange}
+                        onKeyDown={onKeyDown}
+                        />
+                    </div>
+                  </React.Fragment>
+                )}
+                <FormSpacer />
+                {!useKeychain && !useHAS && !useCeramic && (
+                  <React.Fragment>
+                    <FormLabel className={classes.label}>Posting key</FormLabel>
+                    <div className={classes.inputField} tabIndex={0} onFocus={() => postingRef.current.focus()}>
+                      <input
+                        ref={postingRef}
+                        className={classes.textField}
+                        disabled={loading}
+                        name="password"
+                        type="password"
+                        value={password}
+                        onChange={onChange}
+                        onKeyDown={onKeyDown}
                       />
-                  </div>
-                </React.Fragment>
-               )}
-              <FormSpacer />
-              {!useKeychain && !useHAS && !useCeramic && (
-                <React.Fragment>
-                  <FormLabel className={classes.label}>Posting key</FormLabel>
-                  <div className={classes.inputField} tabIndex={0} onFocus={() => postingRef.current.focus()}>
-                    <input
-                      ref={postingRef}
-                      className={classes.textField}
-                      disabled={loading}
-                      name="password"
-                      type="password"
-                      value={password}
-                      onChange={onChange}
-                      onKeyDown={onKeyDown}
+                    </div>
+                    <FormSpacer />
+                  </React.Fragment>
+                )}
+                <center>
+                  {!loading &&!useCeramic && (
+                    <ContainedButton
+                      onClick={handleClickLogin}
+                      transparent={true}
+                      className={classes.loginButton}
+                      fontSize={15}
+                      disabled={isDisabled() || hasSwitcherMatch()}
+                      label="Submit"
+                    />
+                  )}
+                </center>
+                {hasInstalledKeychain && !useCeramic && (
+                  <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                    <FormControlLabel
+                      className='checkBox'
+                      control={
+                        <Checkbox 
+                          id="checkbox"
+                          type="checkbox"
+                          name="HAS"
+                          checked={useHAS}
+                          disabled={useKeychain}
+                          onChange={handleClickHAS}
+                          icon={<HiveAuthenticationServiceIcon/>} 
+                        />
+                      }
+                      label="Login With Hive Authentication Service"
+                    />
+                    <br />
+                    <FormControlLabel
+                      className='checkBox'
+                      control={
+                        <Checkbox 
+                          id="checkbox"
+                          type="checkbox"
+                          name="keychain"
+                          checked={useKeychain}
+                          disabled={useHAS}
+                          onChange={handleClickKeychain}
+                          icon={<HiveKeyChainIcon/>} 
+                        />
+                      }
+                      label=" Login With Hive Keychain"
                     />
                   </div>
-                  <FormSpacer />
-                </React.Fragment>
-              )}
-              <center>
-                {!loading &&!useCeramic && (
-                  <ContainedButton
-                    onClick={handleClickLogin}
-                    transparent={true}
-                    className={classes.loginButton}
-                    fontSize={15}
-                    disabled={isDisabled() || hasSwitcherMatch()}
-                    label="Submit"
-                  />
                 )}
-              </center>
-              {hasInstalledKeychain && !useCeramic && (
-                <div style={{ marginLeft: 10, textAlign: 'left'}}>
-                  <FormControlLabel
-                    className='checkBox'
-                    control={
-                      <Checkbox 
-                        id="checkbox"
-                        type="checkbox"
-                        name="HAS"
-                        checked={useHAS}
-                        disabled={useKeychain}
-                        onChange={handleClickHAS}
-                        icon={<HiveAuthenticationServiceIcon/>} 
+                {!hasInstalledKeychain && !isMobile &&!useCeramic && (
+                  <React.Fragment>
+                    <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                      <FormControlLabel
+                        className='checkBox'
+                        control={
+                          <Checkbox 
+                            id="checkbox"
+                            type="checkbox"
+                            name="HAS"
+                            checked={useKeychain || useHAS || useCeramic}
+                            disabled={useKeychain}
+                            onChange={handleClickHAS}
+                            icon={<HiveAuthenticationServiceIcon/>} 
+                          />
+                        }
+                        label="Login With Hive Authentication Service"
                       />
-                    }
-                    label="Login With Hive Authentication Service"
-                  />
-                  <br />
-                  <FormControlLabel
-                    className='checkBox'
-                    control={
-                      <Checkbox 
-                        id="checkbox"
-                        type="checkbox"
-                        name="keychain"
-                        checked={useKeychain}
-                        disabled={useHAS}
-                        onChange={handleClickKeychain}
-                        icon={<HiveKeyChainIcon/>} 
+                      <br />
+                      <FormControlLabel
+                        className='checkBox'
+                        control={
+                          <Checkbox 
+                            id="checkbox"
+                            type="checkbox"
+                            name="keychain"
+                            checked={useKeychain}
+                            disabled={useKeychain || useHAS || useCeramic}
+                            onChange={handleClickKeychain}
+                            icon={<HiveKeyChainIcon/>} 
+                          />
+                        }
+                        label=" Login With Hive Keychain"
                       />
-                    }
-                    label=" Login With Hive Keychain"
-                  />
-                </div>
-              )}
-              {!hasInstalledKeychain && !isMobile &&!useCeramic && (
+                    </div>
+                  </React.Fragment>)}
+                </React.Fragment> :
                 <React.Fragment>
-                 <div style={{ marginLeft: 10, textAlign: 'left'}}>
-                  <FormControlLabel
-                    className='checkBox'
-                    control={
-                      <Checkbox 
-                        id="checkbox"
-                        type="checkbox"
-                        name="HAS"
-                        checked={useKeychain || useHAS || useCeramic}
-                        disabled={useKeychain}
-                        onChange={handleClickHAS}
-                        icon={<HiveAuthenticationServiceIcon/>} 
-                      />
-                    }
-                    label="Login With Hive Authentication Service"
-                  />
-                  <br />
-                  <FormControlLabel
-                    className='checkBox'
-                    control={
-                      <Checkbox 
-                        id="checkbox"
-                        type="checkbox"
-                        name="keychain"
-                        checked={useKeychain}
-                        disabled={useKeychain || useHAS || useCeramic}
-                        onChange={handleClickKeychain}
-                        icon={<HiveKeyChainIcon/>} 
-                      />
-                    }
-                    label=" Login With Hive Keychain"
-                  />
-                 </div>
-                  {useKeychain && !useCeramic && (
-                    <React.Fragment>
-                      <FormSpacer />
-                      <center><h6 className={classes.label}>Install Hive Keychain</h6>
-                        <Button
-                          classes={{ root: classes.browserExtension }}
-                          style={{ borderRadius: 50 }}
-                          variant="outlined"
-                          startIcon={<FaChrome />}
-                          href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          Chrome
-                        </Button>
-                        <Button
-                          classes={{ root: classes.browserExtension }}
-                          variant="outlined"
-                          style={{ borderRadius: 50, marginLeft: 15 }}
-                          startIcon={<FaFirefoxBrowser />}
-                          href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          Firefox
-                        </Button>
-                      </center>
-                    </React.Fragment>
-                  )}
-                </React.Fragment>
-              )}
-              {hasMetaMaskInstalled && (
-                <LoginWithMetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic}/>
-              )}
-              {!hasMetaMaskInstalled && (
-                <React.Fragment>
+                  <React.Fragment>
+                    <HiveButton onClick={() => setLoginMethod('HIVE')} disabled={useKeychain || useHAS || useCeramic} title='Login with Hive'/>
+                  </React.Fragment>
                   <FormSpacer />
-                  <center><h6 className={classes.label}>Install Metamask</h6>
-                    <Button
-                      classes={{ root: classes.browserExtension }}
-                      style={{ borderRadius: 50 }}
-                      variant="outlined"
-                      startIcon={<FaChrome />}
-                      href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      Chrome
-                    </Button>
-                    <Button
-                      classes={{ root: classes.browserExtension }}
-                      variant="outlined"
-                      style={{ borderRadius: 50, marginLeft: 15 }}
-                      startIcon={<FaFirefoxBrowser />}
-                      href="https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      Firefox
-                    </Button>
-                  </center>
+                  <React.Fragment>
+                    {(hasMetaMaskInstalled) && (
+                      <MetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
+                      )}
+                    {!hasMetaMaskInstalled && (
+                      <React.Fragment>
+                        <FormSpacer />
+                        <center><h6 className={classes.label}>Install Metamask</h6>
+                          <Button
+                            classes={{ root: classes.browserExtension }}
+                            style={{ borderRadius: 50 }}
+                            variant="outlined"
+                            startIcon={<FaChrome />}
+                            href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            Chrome
+                          </Button>
+                          <Button
+                            classes={{ root: classes.browserExtension }}
+                            variant="outlined"
+                            style={{ borderRadius: 50, marginLeft: 15 }}
+                            startIcon={<FaFirefoxBrowser />}
+                            href="https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            Firefox
+                          </Button>
+                        </center>
+                      </React.Fragment>
+                    )}
+                    
+                  </React.Fragment>
                 </React.Fragment>
-              )}
+              }
               <center>
+              {loginMethod !== null && !loading &&
+                    <ContainedButton
+                      onClick={handleGoBack}
+                      transparent={true}
+                      className={classes.loginButton}
+                      fontSize={15}
+                      label="Go Back"
+                    />
+                  }
                 {loading && (
                   <Spinner size={40} loading={true} />
                 )}
               </center>
               <FormSpacer />
-              <center>
-                <span className={classNames(classes.noAccount,classes.label)}>Don't have an account?</span>
-                <Link to={"#"} onClick={handleClickSignup} className={classNames(classes.label, classes.signup)}>
-                  &nbsp;<span>Sign up</span>
-                </Link>
-              </center>
             </React.Fragment>
           )}
           {(qrCode !== null) && (
@@ -553,7 +541,6 @@ const LoginModal = (props) => {
                       label="Go Back"
                     />
                   )}
-
                   {loading && (
                     <Spinner size={40} loading={true} />
                   )}

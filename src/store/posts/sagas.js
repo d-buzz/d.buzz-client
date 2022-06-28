@@ -112,11 +112,9 @@ import {
   hasFollowService,
   hasUnFollowService,
 } from 'services/api'
-import { createPatch, errorMessageComposer, censorLinks } from 'services/helper'
-import stripHtml from 'string-strip-html'
+import { createPatch, errorMessageComposer, censorLinks, stripHtml } from 'services/helper'
 
 import moment from 'moment'
-import { hacMsg } from "@mintrawa/hive-auth-client"
 import { checkCeramicLogin, checkForCeramicAccount, getChildPostsRequest, getFollowingFeed, getSinglePost } from "services/ceramic"
 
 const footnote = (body) => {
@@ -658,41 +656,44 @@ function* followRequest(payload, meta) {
     let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
 
     yield call(hasFollowService, username, following)
-    
-    hacMsg.subscribe(m => {
-     
-      if (m.type === 'sign_wait') {
-        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-      }
 
-      if (m.type === 'tx_result') {
-        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-        if (m.msg?.status === 'accepted') {
-          if(!Array.isArray(recentUnfollows)) {
-            recentUnfollows = []
-          } else {
-            const index = recentUnfollows.findIndex((item) => item === following)
-            if(index) {
-              recentUnfollows.splice(index, 1)
+    import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+      HiveAuth.hacMsg.subscribe(m => {
+       
+        if (m.type === 'sign_wait') {
+          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+        }
+  
+        if (m.type === 'tx_result') {
+          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+          if (m.msg?.status === 'accepted') {
+            if(!Array.isArray(recentUnfollows)) {
+              recentUnfollows = []
+            } else {
+              const index = recentUnfollows.findIndex((item) => item === following)
+              if(index) {
+                recentUnfollows.splice(index, 1)
+              }
             }
+          
+            if(!Array.isArray(recentFollows)) {
+              recentFollows = []
+            }
+            recentFollows.push(following)
+            setHasBeenFollowedRecently(recentFollows)
+            setHasBeenUnfollowedRecently(recentUnfollows)
+          
+          } else if (m.msg?.status === 'error') { 
+            const error = m.msg?.status.error
+  
+            followFailure(error, meta)
           }
-        
-          if(!Array.isArray(recentFollows)) {
-            recentFollows = []
-          }
-          recentFollows.push(following)
-          setHasBeenFollowedRecently(recentFollows)
-          setHasBeenUnfollowedRecently(recentUnfollows)
-        
-        } else if (m.msg?.status === 'error') { 
-          const error = m.msg?.status.error
-
-          followFailure(error, meta)
+          
         }
         
-      }
-      
+      })
     })
+    
     
     if (success) {
       console.log('succe', success)
@@ -759,41 +760,44 @@ function* unfollowRequest(payload, meta) {
     let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
     yield call(hasUnFollowService, username, following)
 
-    hacMsg.subscribe(m => {
-     
-      if (m.type === 'sign_wait') {
-        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-      }
-
-      if (m.type === 'tx_result') {
-        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-        if (m.msg?.status === 'accepted') {
-          if(!Array.isArray(recentFollows)) {
-            recentFollows = []
-          } else {
-            const index = recentFollows.findIndex((item) => item === following)
-            if(index) {
-              recentFollows.splice(index, 1)
+    import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+      HiveAuth.hacMsg.subscribe(m => {
+       
+        if (m.type === 'sign_wait') {
+          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+        }
+  
+        if (m.type === 'tx_result') {
+          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+          if (m.msg?.status === 'accepted') {
+            if(!Array.isArray(recentFollows)) {
+              recentFollows = []
+            } else {
+              const index = recentFollows.findIndex((item) => item === following)
+              if(index) {
+                recentFollows.splice(index, 1)
+              }
             }
-          }
+    
+            if(!Array.isArray(recentUnfollows)) {
+              recentUnfollows = []
+            }
+            recentUnfollows.push(following)
+    
+            setHasBeenFollowedRecently(recentFollows)
+            setHasBeenUnfollowedRecently(recentUnfollows)
+          
+          } else if (m.msg?.status === 'error') { 
+            const error = m.msg?.status.error
   
-          if(!Array.isArray(recentUnfollows)) {
-            recentUnfollows = []
+            followFailure(error, meta)
           }
-          recentUnfollows.push(following)
-  
-          setHasBeenFollowedRecently(recentFollows)
-          setHasBeenUnfollowedRecently(recentUnfollows)
-        
-        } else if (m.msg?.status === 'error') { 
-          const error = m.msg?.status.error
-
-          followFailure(error, meta)
+          
         }
         
-      }
-      
+      })
     })
+
     
     if (success) {
       console.log('succe', success)
