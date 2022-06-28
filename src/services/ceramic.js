@@ -1,28 +1,19 @@
-import Web3Modal from 'web3modal'
-import { createLink, validateLink } from '3id-blockchain-utils'
-import { CeramicClient } from '@ceramicnetwork/http-client'
-import { SpkClient } from '@spknetwork/graph-client'
+let axios
 
-import Web3 from 'web3'
-import { Ed25519Provider } from 'key-did-provider-ed25519'
-import KeyResolver from 'key-did-resolver'
-import { DID } from 'dids'
-import { hash } from '@stablelib/sha256'
-import { fromString } from 'uint8arrays'
-import { IDX } from '@ceramicstudio/idx'
-import axios from 'axios'
+import('axios').then((Axios) => {
+  axios = Axios
+})
 
 const hosts = [
   'https://ceramic.3speak.tv',
   'https://ceramic.web3telekom.xyz',
-  'https://d12-b-ceramic.3boxlabs.com',
   'https://ceramic-node.vitalpointai.com',
 ]
 
 export const getBestCeramicHost = async() => {
   const hostsWithTimes = []
   const times = []
-  let fastestHost
+  let fastestHost = 'https://ceramic.3speak.tv'
   await Promise.all(
     hosts.map(async (host) => {
       try {
@@ -53,13 +44,22 @@ const providerOptions = {
   /* See Provider Options Section */
 }
 
-const web3Modal = new Web3Modal({
-  network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions, // required
+let web3Modal
+let web3
+
+// dynamic imports
+
+import('web3modal').then((Web3Modal) => {
+  web3Modal = new Web3Modal.default({
+    network: "mainnet", // optional
+    cacheProvider: true, // optional
+    providerOptions, // required
+  })
 })
 
-const web3 = new Web3()
+import('web3').then((Web3) => {
+  web3 = new Web3.default()
+})
 
 const idxAliases = {
   rootPosts: 'ceramic://kjzl6cwe1jw149xy2w2qycwts4xjpvyzrkptdw20iui7r486bd6sasqb9tgglzp',
@@ -68,9 +68,20 @@ const idxAliases = {
 
 export const API_NODE = 'https://us-01.infra.3speak.tv'
 
-const Ceramic = new CeramicClient(localStorage.getItem('ceramic') || hosts[0])
-const idx = new IDX({ceramic: Ceramic, aliases: idxAliases})
-const spk = new SpkClient(API_NODE, Ceramic)
+let Ceramic
+let idx
+let spk
+// dynamic imports
+import('@ceramicnetwork/http-client').then((CeramicNetwork) => {
+  Ceramic = new CeramicNetwork.CeramicClient(localStorage.getItem('ceramic') || hosts[0])
+})
+import('@ceramicstudio/idx').then((CeramicStudio) => {
+  idx = new CeramicStudio.IDX({ceramic: Ceramic, aliases: idxAliases})
+})
+import('@spknetwork/graph-client').then((SpkNetwork) => {
+  spk = new SpkNetwork.SpkClient(API_NODE, Ceramic)
+})
+
 window.ceramicclient = Ceramic
 window.idxclient = idx
 window.spkclient = spk
@@ -90,10 +101,14 @@ const connectPrompt = async() => {
 }
 
 const resloveEthDid = async(did) => {
+  let proof
+  let verified
   const account = await web3.eth.getAccounts().then(data=>data[0])
-  const proof = await createLink(did, `${account}@eip155:1`, web3.eth.currentProvider)
 
-  const verified = await validateLink(proof)
+  await import('3id-blockchain-utils').then(async(utils) => {
+    proof = await utils.createLink(did, `${account}@eip155:1`, web3.eth.currentProvider)
+    verified = await utils.validateLink(proof)
+  })
 
   // await authenticate(proof.message, `${account}@eip155:1`, web3.eth.currentProvider)
 
@@ -125,18 +140,38 @@ export const checkCeramicLogin = () => {
 }
 
 const createIdentity = async(authSecret) => {
-  const provider = new Ed25519Provider(authSecret)
-  const resolver = KeyResolver.getResolver()
-  const did = new DID({ provider, resolver })
+  let provider
+  let resolver
+  import('key-did-provider-ed25519').then((keyDidProvider) => {
+    provider = new keyDidProvider.Ed25519Provider(authSecret)
+  })
+  import('key-did-resolver').then((keyDidResolver) => {
+    resolver = keyDidResolver.getResolver()
+  })
+  let did
+  await import('dids').then((dids) => {
+    did = new dids.DID({ provider, resolver })
+  })
+
   await did.authenticate()
 
   return did
 }
 
+let hash
+let fromString
+import('@stablelib/sha256').then((SHA) => {
+  hash = SHA.hash
+})
+import('uint8arrays').then((Unit8Arrays) => {
+  fromString = Unit8Arrays.fromString
+})
+
 export const loginWithMetaMask = async() => {
   const account = await connectPrompt()
   const info = await web3.eth.personal.sign('Allow this account to control your identity', account)
   const authSecret = normalizeAuthSecret(hash(fromString(info.slice(2))))
+
   const did  = await createIdentity(authSecret)
   const proof = await resloveEthDid(did.id)
 

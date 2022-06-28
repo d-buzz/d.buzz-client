@@ -5,9 +5,7 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import IconButton from '@material-ui/core/IconButton'
 import classNames from 'classnames'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import { uploadFileRequest } from 'store/posts/actions'
 import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
 import { publishUpdateRequest } from 'store/posts/actions'
@@ -20,6 +18,9 @@ import { pending } from 'redux-saga-thunk'
 import { calculateOverhead } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, updatePostRequest } from 'services/ceramic'
+
+const CircularProgress = React.lazy(() => import('@material-ui/core/CircularProgress'))
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {

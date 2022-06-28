@@ -259,7 +259,7 @@ const prepareTwitterEmbeds = (content) => {
 }
 
 const prepareVimmEmbeds = (content) => {
-  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i
+  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/c\/(.*?))))/i
   const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
   let body = content
 
@@ -270,15 +270,16 @@ const prepareVimmEmbeds = (content) => {
     let match = ''
     let id = ''
 
+    const data = link.split('/')
+
     try {
       if(link.match(vimmRegex) && !link.includes('/view')){
-        const data = link.split('/')
         match = link.match(vimmRegex)
-        id = data[3]
-        if(link.match(vimmRegexEmbed)){
-          match = link.match(vimmRegexEmbed)
-          id = match[1]
-        }
+        id = data[4]
+      }
+      else if(link.match(vimmRegexEmbed)){
+        match = link.match(vimmRegexEmbed)
+        id = match[1]
       }
 
       if(match){
@@ -488,7 +489,7 @@ const prepareBannedEmbeds = (content) => {
 }
 
 const prepareDollarVigilanteEmbeds = (content) => {
-  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/videos\/watch\/(.*))))/i
+  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/w\/(.*))))/i
   
   let body = content
   
@@ -503,8 +504,8 @@ const prepareDollarVigilanteEmbeds = (content) => {
 		  if(link.match(dollarVigilanteRegex)){
 		    const data = link.split('/')
         match = link.match(dollarVigilanteRegex)
-        if (data[5]) {
-          id = data[5]
+        if (data[4]) {
+          id = data[4]
         }
       }
   
@@ -818,7 +819,8 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
               scrolling="no" 
               frameborder="0" 
               allowfullscreen="true" 
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              loading='lazy'
             >
             </iframe>
           </div>
@@ -842,6 +844,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
               frameBorder='0'
               height='250'
               width='100%'
+              loading='lazy'
             ></iframe>
           </div>
         </React.Fragment>
@@ -865,6 +868,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
             frameBorder='0'
             height='300'
             width='100%'
+            loading='lazy'
           ></iframe>
         </div>
       </React.Fragment>
@@ -917,11 +921,11 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // // render web images links
-      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)} loading='lazy'>` : n)
     // // render IPFS images
-      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)} loading='lazy'>` : n)
     // render dbuzz images
-      .replace(/(https:\/\/(storageapi\.fleek\.co\/nathansenn-team-bucket\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(https:\/\/(storageapi\.fleek\.co\/nathansenn-team-bucket\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)} loading='lazy'>` : n)
     //   // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 
@@ -979,7 +983,7 @@ const Renderer = React.memo((props) => {
             }
           }
           imageEl.onerror = () => {
-            imageEl.src = `${window.location.origin}/noimage.jpg`
+            imageEl.src = `${window.location.origin}/noimage.svg`
             imageEl.style.animation = 'none'
             imageEl.style.opacity = '1'
           }

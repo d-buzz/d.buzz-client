@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-import IconButton from '@material-ui/core/IconButton'
 import { CloseIcon, ContainedButton, Avatar, TextField, AddImageIcon } from 'components/elements'
 import { uploadFileRequest } from 'store/posts/actions'
 import { updateProfileRequest } from "store/profile/actions"
@@ -15,10 +14,12 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { isMobile } from 'react-device-detect'
-import { CircularProgress } from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { pending } from 'redux-saga-thunk'
 import { setBasicProfile } from 'services/ceramic'
 import Spinner from 'components/elements/progress/Spinner'
+
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -356,7 +357,7 @@ const EditProfileModal = (props) => {
             <div style={{ padding: 5}}>
               <div className={classes.cover}>
                 <React.Fragment>
-                  <img src={profileCoverImage} alt=""/>
+                  <img src={profileCoverImage} alt="" loading='lazy'/>
                   <div className={classes.addCoverImageButton}>
                     <input
                       id="cover-upload"

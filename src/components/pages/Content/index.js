@@ -28,7 +28,7 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import stripHtml from 'string-strip-html'
+import { stripHtml } from 'services/helper'
 import {
   ContentSkeleton,
   ReplylistSkeleton,

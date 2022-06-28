@@ -84,7 +84,6 @@ import {
 } from 'services/api'
 
 import { errorMessageComposer } from "services/helper"
-import { hacMsg } from "@mintrawa/hive-auth-client"
 import { checkForCeramicAccount, getBasicProfile, getFollowersList, getFollowingList, getUserPostRequest } from 'services/ceramic'
 
 function* getProfileRequest(payload, meta) {
@@ -266,26 +265,29 @@ function* clearNotificationRequest(meta) {
     yield call(hasClearNotificationService, username, lastNotification)
     success = true
 
-    hacMsg.subscribe(m => {
-     
-      if (m.type === 'sign_wait') {
-        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-      }
-
-      if (m.type === 'tx_result') {
-        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-        if (m.msg?.status === 'accepted') {
-          success = true
-        
-        } else if (m.msg?.status === 'error') { 
-          const error = m.msg?.status.error
-
-          clearNotificationsFailure(error, meta)
+    import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+      HiveAuth.hacMsg.subscribe(m => {
+       
+        if (m.type === 'sign_wait') {
+          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+        }
+  
+        if (m.type === 'tx_result') {
+          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+          if (m.msg?.status === 'accepted') {
+            success = true
+          
+          } else if (m.msg?.status === 'error') { 
+            const error = m.msg?.status.error
+  
+            clearNotificationsFailure(error, meta)
+          }
+          
         }
         
-      }
-      
+      })
     })
+
     let old = yield select(state => state.polling.get('count'))
 
     if(success) {

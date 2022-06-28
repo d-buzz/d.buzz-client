@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import Spinner from 'components/elements/progress/Spinner'
-import { CircularProgress } from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import moment from 'moment'
 
 const useStyles = createUseStyles(theme => ({

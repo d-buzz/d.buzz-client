@@ -15,7 +15,6 @@ import { VoteListDialog } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
-import moment from 'moment'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -34,7 +33,6 @@ import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
 import { checkForCeramicAccount } from 'services/ceramic'
 import { hasUpvoteService } from 'services/api'
-import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const PrettoSlider = withStyles({
   root: {
@@ -283,6 +281,7 @@ const PostActions = (props) => {
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [openCaret, setOpenCaret] = useState(false)
   const [openVoteList, setOpenVoteList] = useState(false)
+  const [whenPayout, setWhenPayout] = useState(null)
   
   const [sliderValue, setSliderValue] = useState(defaultUpvoteStrength)
 
@@ -346,38 +345,41 @@ const PostActions = (props) => {
 
         hasUpvoteService(author, permlink, sliderValue)
 
-        hacMsg.subscribe((m) => {
-          if (m.type === 'sign_wait') {
-            console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-          }
-          if (m.type === 'tx_result') {
-            console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-            if (m.msg?.status === 'accepted') {
-              const status = m.msg?.status
-              console.log(status)
-              setVote(vote + 1)
-              setUpvoted(true)
-              setLoading(false)
-              broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
-            } else if (m.msg?.status === 'error') {
-              const error = m.msg?.status.error
-              console.log(error)
-              setUpvoted(false)
-              broadcastNotification('error', error)
-              setLoading(false)
-            } else if (m.msg?.status === 'rejected') {
-              const status = m.msg?.status
-              console.log(status)
-              setUpvoted(false)
-              broadcastNotification('error', 'Your HiveAuth upvote transaction is rejected.')
-              setLoading(false)
-            } else {
-              setUpvoted(false)
-              broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-              setLoading(false)
+        import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+          HiveAuth.hacMsg.subscribe((m) => {
+            if (m.type === 'sign_wait') {
+              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
             }
-          }
+            if (m.type === 'tx_result') {
+              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+              if (m.msg?.status === 'accepted') {
+                const status = m.msg?.status
+                console.log(status)
+                setVote(vote + 1)
+                setUpvoted(true)
+                setLoading(false)
+                broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+              } else if (m.msg?.status === 'error') {
+                const error = m.msg?.status.error
+                console.log(error)
+                setUpvoted(false)
+                broadcastNotification('error', error)
+                setLoading(false)
+              } else if (m.msg?.status === 'rejected') {
+                const status = m.msg?.status
+                console.log(status)
+                setUpvoted(false)
+                broadcastNotification('error', 'Your HiveAuth upvote transaction is rejected.')
+                setLoading(false)
+              } else {
+                setUpvoted(false)
+                broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                setLoading(false)
+              }
+            }
+          })
         })
+
 
       } else {
         upvoteRequest(author, permlink, sliderValue)
@@ -404,8 +406,11 @@ const PostActions = (props) => {
     openReplyModal(author, permlink, body, treeHistory, replyRef)
   }
 
-  const getPayoutDate = (date) => {
-    const semantic =  moment(`${date}Z`).local().fromNow()
+  const getPayoutDate = async (date) => {
+    let semantic
+    await import('moment').then((moment) => {
+      semantic = moment.default(`${date}Z`).local().fromNow()
+    })
     return semantic !== '52 years ago' ? semantic : ''
   }
 
@@ -435,6 +440,14 @@ const PostActions = (props) => {
       </React.Fragment>
     )
   }
+
+  useEffect(() => {
+    if(payoutAt !== null) {
+      getPayoutDate(payoutAt).then((payoutDate) => {
+        setWhenPayout(payoutDate)
+      })
+    }
+  }, [payoutAt])
   
   return (
     <React.Fragment>
@@ -521,7 +534,7 @@ const PostActions = (props) => {
                           ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
                           {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
                           {!payout && isMobile ? '0.00' : ''}&nbsp;
-                          {!isMobile && payoutAt && payout ? getPayoutDate(payoutAt) : ''}
+                          {!isMobile && whenPayout && payout ? whenPayout : ''}
                         </span>
                       )}
                       color="secondary"

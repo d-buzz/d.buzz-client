@@ -472,7 +472,7 @@ const Profile = (props) => {
       const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
       setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
     } else {
-      setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.png`)
+      setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
     }
   // eslint-disable-next-line
   },[profile_image, username, ceramicProfile])
@@ -586,7 +586,7 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={(cover_image || ceramicProfile.images?.background) ? cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}` : `${window.location.origin}/dbuzz_full.png`} alt="cover" style={{borderRadius: cover_image ? '0 0 25px 25px' : ''}} onError={(e) => e.target.src = `${window.location.origin}/dbuzz_full.png`} />
+                <img src={(cover_image || ceramicProfile.images?.background) ? cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}` : `${window.location.origin}/dbuzz_full.svg`} alt="cover" style={{borderRadius: cover_image ? '0 0 25px 25px' : ''}} onError={(e) => e.target.src = `${window.location.origin}/dbuzz_full.svg`} loading='lazy'/>
               </div>
               <div className={classes.wrapper}>
                 <Row>
