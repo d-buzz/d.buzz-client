@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
@@ -477,15 +477,24 @@ const Profile = (props) => {
   // eslint-disable-next-line
   },[profile_image, username, ceramicProfile])
 
-  // check for invalid user
   useEffect(() => {
-    if(!ceramic) {
-      getProfileRequest(username).then((result) => {
-        result.toString() === ('RPCError: Invalid parameters') && setInvalidUser(true)
-      })
+    async function resources() {
+      try {
+        const res =  await getProfileRequest(history.location.pathname.replace('/@', ''))
+        if (res.name) {
+          setInvalidUser(true)
+        } else {
+          setInvalidUser(false)
+        }
+      } catch (e) {
+        console.log("Error", e)
+      }
     }
+    resources()
     // eslint-disable-next-line
-  }, [username])
+  }, [history.location])
+  // check for invalid user
+  //  console.log("VALID", checkIsValid)
 
   const followUser = () => {
     setLoader(true)
@@ -576,10 +585,10 @@ const Profile = (props) => {
   const handleCloseReferalCopy = () => {
     setCopied(false)
   }
-
+  console.log("INVALID USER", invalidUser)  
   return (
     <>
-      {!invalidUser ?
+      {invalidUser ?
         <React.Fragment>
           <HelmetGenerator page='Profile' />
           <ProfileSkeleton loading={loading} />

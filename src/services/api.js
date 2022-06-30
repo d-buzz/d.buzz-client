@@ -401,30 +401,35 @@ export const fetchGlobalProperties = () => {
 }
 
 export const fetchSingleProfile = (account) => {
-  const user = localStorage.getItem('active')
+  const user = localStorage.getItem('active') 
 
-  
   return new Promise((resolve, reject) => {
     const params = {account}
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_profile', params, async(err, data) => {
-        if (err) {
+      import('@hiveio/hive-js').then((HiveJS) => {
+        HiveJS.api.call('bridge.get_profile', params, async(err, data) => {
+          
+        if (err) { 
           reject(err)
-        }else {
+        }else { 
           let isFollowed = false
   
-          if(user && `${user}`.trim() !== '') {
-            if(user !== data.name) {
-              isFollowed = await isFollowing(user, data.name)
-            }
-          }
-  
-          data.isFollowed = isFollowed
-  
-          resolve(data)
+          if(user && `${user}`.trim() !== '') { 
+            if(user !== data?.name) {
+              isFollowed = await isFollowing(user, data.name) || false
+            } 
+          } 
+ 
+           
+          resolve({
+            ...data,
+            isFollowed: isFollowed,
+          })
         }
       })
+ 
+      
     })
+    
   })
 }
 
