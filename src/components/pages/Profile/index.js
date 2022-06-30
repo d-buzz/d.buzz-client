@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
@@ -477,25 +477,6 @@ const Profile = (props) => {
   // eslint-disable-next-line
   },[profile_image, username, ceramicProfile])
 
-  useEffect(() => {
-    async function resources() {
-      try {
-        const res =  await getProfileRequest(history.location.pathname.replace('/@', ''))
-        if (res.name) {
-          setInvalidUser(true)
-        } else {
-          setInvalidUser(false)
-        }
-      } catch (e) {
-        console.log("Error", e)
-      }
-    }
-    resources()
-    // eslint-disable-next-line
-  }, [history.location])
-  // check for invalid user
-  //  console.log("VALID", checkIsValid)
-
   const followUser = () => {
     setLoader(true)
     if(!ceramicProfile) {
@@ -585,10 +566,23 @@ const Profile = (props) => {
   const handleCloseReferalCopy = () => {
     setCopied(false)
   }
-  console.log("INVALID USER", invalidUser)  
+
+  useEffect(() => {
+    if(!loading) {
+      if(profile.name) {
+        setInvalidUser(false)
+      } else {
+        setInvalidUser(true)
+      }
+    } else {
+      setInvalidUser(false)
+    }
+    // eslint-disable-next-line
+  }, [loading])
+
   return (
     <>
-      {invalidUser ?
+      {!invalidUser ?
         <React.Fragment>
           <HelmetGenerator page='Profile' />
           <ProfileSkeleton loading={loading} />
@@ -813,7 +807,7 @@ const Profile = (props) => {
         <div className={classes.invalidUser}>
           <PersonIcon className='userIcon' />
           <span className='errorTitle'>This account doesn’t exist.</span>
-          <span className='errorHint'>Try searching for another.</span>
+          <span className='errorHint'>Try searching for another one.</span>
         </div>}
     </>
   )
