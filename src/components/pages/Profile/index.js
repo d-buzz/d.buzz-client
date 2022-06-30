@@ -477,16 +477,6 @@ const Profile = (props) => {
   // eslint-disable-next-line
   },[profile_image, username, ceramicProfile])
 
-  // check for invalid user
-  useEffect(() => {
-    if(!ceramic) {
-      getProfileRequest(username).then((result) => {
-        result.toString() === ('RPCError: Invalid parameters') && setInvalidUser(true)
-      })
-    }
-    // eslint-disable-next-line
-  }, [username])
-
   const followUser = () => {
     setLoader(true)
     if(!ceramicProfile) {
@@ -576,6 +566,19 @@ const Profile = (props) => {
   const handleCloseReferalCopy = () => {
     setCopied(false)
   }
+
+  useEffect(() => {
+    if(!loading) {
+      if(profile.name) {
+        setInvalidUser(false)
+      } else {
+        setInvalidUser(true)
+      }
+    } else {
+      setInvalidUser(false)
+    }
+    // eslint-disable-next-line
+  }, [loading])
 
   return (
     <>
@@ -804,7 +807,7 @@ const Profile = (props) => {
         <div className={classes.invalidUser}>
           <PersonIcon className='userIcon' />
           <span className='errorTitle'>This account doesn’t exist.</span>
-          <span className='errorHint'>Try searching for another.</span>
+          <span className='errorHint'>Try searching for another one.</span>
         </div>}
     </>
   )
