@@ -300,7 +300,7 @@ const Content = (props) => {
         setHasUpdateAuthority(result)
       })
     // eslint-disable-next-line
-  }, [])
+  }, [author])
 
   useEffect(() => {
     if(censorList.length !== 0 && username && permlink) {

@@ -122,10 +122,8 @@ function* getProfileRequest(payload, meta) {
     
     const profile = {}
     try {
-
-
       // get following data
-      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.target === username) ? true : false
+      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.did === username) ? true : false
       profile.isFollowed = isFollowed
 
       profile.ceramic = true
@@ -240,7 +238,6 @@ function* getFollowingRequest(payload, meta) {
       
       yield put(setLastFollowing(data[data.length-1]))
       yield put(getFollowingSuccess(data, meta))
-      console.log(data)
     } else {
       const data = []
       const followingList = yield call(getFollowingList, username)
