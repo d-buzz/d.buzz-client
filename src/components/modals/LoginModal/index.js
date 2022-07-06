@@ -183,12 +183,10 @@ const LoginModal = (props) => {
     const { name, checked } = target
 
     if (name === 'keychain') {
-      if (checked) {
-        const isCompatible = hasCompatibleKeychain() ? true : false
-        setHasInstalledKeychain(isCompatible)
+      setUseKeychain(checked)
+      if(checked) {
         setPassword('')
       }
-      setUseKeychain(checked)
     }
   }
 
@@ -302,8 +300,12 @@ const LoginModal = (props) => {
       handleClickLogin()
     }
   }, [useCeramic])
+  
 
   useEffect(() => {
+    const isCompatible = hasCompatibleKeychain() ? true : false
+    setHasInstalledKeychain(isCompatible)
+
     if (typeof window.ethereum !== 'undefined') {
       setHasMetaMaskIntalled(true)
     }
@@ -418,7 +420,7 @@ const LoginModal = (props) => {
                         }
                         label=" Login With Hive Keychain"
                       /> :
-                      !isMobile &&
+                      !isMobile && !hasInstalledKeychain &&
                         <React.Fragment>
                           <FormSpacer />
                           <center><h6 className={classes.label}>Install Hive Keychain</h6>
