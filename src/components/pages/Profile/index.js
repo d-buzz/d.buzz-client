@@ -289,12 +289,14 @@ const Profile = (props) => {
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [copied, setCopied] = useState(false)
   const [invalidUser, setInvalidUser] = useState(false)
+  const [ceramicUser, setCeramicUser] = useState(false)
   const [ceramicProfile, setCeramicProfile] = useState({})
-
+  const [followsYou, setFollowsYou] = useState(false)
   
   useEffect(() => {
     if(profile.ceramic) {
       setCeramicProfile(profile.basic_profile)
+      setCeramicUser(true)
     }
   }, [profile])
 
@@ -302,7 +304,6 @@ const Profile = (props) => {
     getProfileRequest(username)
   }
 
-  const [followsYou, setFollowsYou] = useState(false)
 
   const checkIfRecentlyFollowed = () => {
     if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
@@ -477,19 +478,9 @@ const Profile = (props) => {
   // eslint-disable-next-line
   },[profile_image, username, ceramicProfile])
 
-  // check for invalid user
-  useEffect(() => {
-    if(!ceramic) {
-      getProfileRequest(username).then((result) => {
-        result.toString() === ('RPCError: Invalid parameters') && setInvalidUser(true)
-      })
-    }
-    // eslint-disable-next-line
-  }, [username])
-
   const followUser = () => {
     setLoader(true)
-    if(!ceramicProfile) {
+    if(!ceramicUser) {
       followRequest(username).then((result) => {
         if(result) {
           broadcastNotification('success', `Successfully followed @${username}`)
@@ -500,6 +491,7 @@ const Profile = (props) => {
           broadcastNotification('error', `Failed following @${username}`)
         }
       }).catch((e) => {
+        console.log(e)
         setLoader(false)
       })
     } else {
@@ -509,29 +501,38 @@ const Profile = (props) => {
         setHasRecentlyUnfollowed(false)
         setLoader(false)
       }).catch((e) => {
-        if(e.message === 'Already following') {
-          setLoader(false)
-        }
+        console.log(e.message)
+        setLoader(false)
       })
     }
   }
   
   const unfollowUser = () => {
-    if(!ceramicProfile) {
+    setLoader(true)
+    if(!ceramicUser) {
       unfollowRequest(username).then((result) => {
         if(result) {
           broadcastNotification('success', `Successfully Unfollowed @${username}`)
           setHasRecentlyFollowed(false)
           setHasRecentlyUnfollowed(true)
+          setLoader(false)
         } else {
           broadcastNotification('error', `Failed Unfollowing @${username}`)
+          setLoader(false)
         }
+      }).catch((e) => {
+        console.log(e)
+        setLoader(false)
       })
     } else {
       unFollowUserRequest(username).then(res => {
         broadcastNotification('success', `Successfully Unfollowed @${username}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
+        setLoader(false)
+      }).catch((e) => {
+        console.log(e.message)
+        setLoader(false)
       })
     }
   }
@@ -577,6 +578,21 @@ const Profile = (props) => {
     setCopied(false)
   }
 
+  useEffect(() => {
+    if(!loading) {
+      if(!ceramicProfile) {
+        if(profile.name) {
+          setInvalidUser(false)
+        } else {
+          setInvalidUser(true)
+        }
+      }
+    } else {
+      setInvalidUser(false)
+    }
+    // eslint-disable-next-line
+  }, [loading])
+
   return (
     <>
       {!invalidUser ?
@@ -617,7 +633,7 @@ const Profile = (props) => {
                             onClick={handleOpenEditProfileModal}
                           />
                         )}
-                        {loginuser !== username && !mutelist.includes(username) && (
+                        {!ceramicUser && loginuser !== username && !mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -628,7 +644,7 @@ const Profile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {loginuser !== username && mutelist.includes(username) && (
+                        {!ceramicUser && loginuser !== username && mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -804,7 +820,7 @@ const Profile = (props) => {
         <div className={classes.invalidUser}>
           <PersonIcon className='userIcon' />
           <span className='errorTitle'>This account doesn’t exist.</span>
-          <span className='errorHint'>Try searching for another.</span>
+          <span className='errorHint'>Try searching for another one.</span>
         </div>}
     </>
   )

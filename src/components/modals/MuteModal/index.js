@@ -249,7 +249,7 @@ const MuteModal = (props) => {
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   muteModal: state.interfaces.get('muteDialogUser'),
-  loading: pending(state, 'MUTE_USER_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
+  loading: pending(state, 'MUTE_USER_REQUEST'),
   mutelist: state.auth.get('mutelist'),
 })
 

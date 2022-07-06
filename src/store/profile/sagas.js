@@ -89,36 +89,41 @@ import { checkForCeramicAccount, getBasicProfile, getFollowersList, getFollowing
 function* getProfileRequest(payload, meta) {
   const { username } = payload
   const loginuser = localStorage.getItem('active')
+  
   if(!checkForCeramicAccount(username)) {
-    try {
-      const props = yield call(fetchGlobalProperties)
-      const profile = yield call(fetchSingleProfile, username)
+    
+    try { 
+      const props = yield call(fetchGlobalProperties) 
+      const profile = yield call(fetchSingleProfile, username) 
       const account = yield call(fetchAccounts, username)
-      
-      const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
-      const { total_vesting_fund_hive, total_vesting_shares } = props
-      
-      const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
-      const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)),6)
-      const avail = parseFloat(vesting_shares) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
-      const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)),6)
-      
-      profile.receiveVesting = receiveVesting.toFixed(2)
-      profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
-      profile.delegated = delegated.toFixed(2)
-      profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
-      
-      yield put(getProfileSuccess(profile, meta))
+     
+      if (account.length > 0) {
+        const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
+        const { total_vesting_fund_hive, total_vesting_shares } = props
+        
+        const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
+        const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)),6)
+        const avail = parseFloat(vesting_shares || 0) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
+        const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)),6)
+        
+        profile.receiveVesting = receiveVesting.toFixed(2)
+        profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
+        profile.delegated = delegated.toFixed(2)
+        profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
+        
+        yield put(getProfileSuccess(profile, meta))
+      } else {
+        yield put(getProfileSuccess({}, meta))
+      }
     } catch(error) {
       yield put(getProfileFailure(error, meta))
     }
   } else {
+    
     const profile = {}
     try {
-
-
       // get following data
-      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.target === username) ? true : false
+      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.did === username) ? true : false
       profile.isFollowed = isFollowed
 
       profile.ceramic = true
@@ -233,7 +238,6 @@ function* getFollowingRequest(payload, meta) {
       
       yield put(setLastFollowing(data[data.length-1]))
       yield put(getFollowingSuccess(data, meta))
-      console.log(data)
     } else {
       const data = []
       const followingList = yield call(getFollowingList, username)

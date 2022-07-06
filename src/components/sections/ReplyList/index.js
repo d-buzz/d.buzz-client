@@ -479,7 +479,8 @@ const ReplyList = (props) => {
                       <PostTags meta={meta} />
                     </div>
                   </div>
-                  {ceramicUser && <div className={classes.actionWrapper}>
+                  {!ceramicUser &&
+                  <div className={classes.actionWrapper}>
                     <PostActions
                       treeHistory={treeHistory}
                       body={content}
