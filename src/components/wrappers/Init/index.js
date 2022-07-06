@@ -11,10 +11,10 @@ import config from 'config'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
 import { getBestCeramicHost } from 'services/ceramic'
+import Paper from '@material-ui/core/Paper'
 
-const Typography = React.lazy(() => import('@material-ui/core/Typography'))
 const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
-const Paper = React.lazy(() => import('@material-ui/core/Paper'))
+const Typography = React.lazy(() => import('@material-ui/core/Typography'))
 const Button = React.lazy(() => import('@material-ui/core/Button'))
 const ReplayIcon = React.lazy(() => import('@material-ui/icons/Replay'))
 const CloseIcon = React.lazy(() => import('@material-ui/icons/Close'))
