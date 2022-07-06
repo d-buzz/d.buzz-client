@@ -120,6 +120,24 @@ button:focus {
 
 .MuiAlert-root {
   border-radius: 15px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.MuiAlert-standardSuccess {
+  background: #28a745 !important;
+}
+
+.MuiAlert-standardError {
+  background: #dc3545 !important;
+}
+
+.MuiAlert-outlinedSuccess {
+  background: #28a745 !important;
+}
+
+.MuiAlert-outlinedError {
+  background: #dc3545 !important;
 }
 
 .MuiAlert-icon {

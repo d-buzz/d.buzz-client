@@ -797,10 +797,9 @@ function* unfollowRequest(payload, meta) {
         
       })
     })
-
     
     if (success) {
-      console.log('succe', success)
+      console.log('success', success)
       yield put(unfollowSuccess(success, meta))
     } else {
       const error = 'transaction error'

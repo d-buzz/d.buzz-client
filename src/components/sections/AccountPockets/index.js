@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { InfiniteList } from 'components'
 import { createUseStyles } from 'react-jss'
 import Add from '@material-ui/icons/Add'
-import { IconButton, Menu, MenuItem, Tab, Tabs } from '@material-ui/core'
+import { IconButton, Menu, MenuItem, Snackbar, Tab, Tabs } from '@material-ui/core'
 import CreatePocketModal from 'components/modals/CreatePocketModal'
 import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -11,6 +11,8 @@ import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded'
 import KeyboardArrowUpRoundedIcon from '@material-ui/icons/KeyboardArrowUpRounded'
 import DeletePocketConfirmModal from 'components/modals/DeletePocketConfirmModal'
 import { useHistory } from 'react-router'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { Alert } from '@material-ui/lab'
 
 const useStyle = createUseStyles(theme => ({
   wrapper: {
@@ -225,6 +227,7 @@ const AccountsPockets = (props) => {
   const [pocketBuzzes, setPocketBuzzes] = useState([])
   const [openMoreOptions, setOpenMoreOptions] = useState(false)
   const [openDeletePocketModal, setOpenDeletePocketModal] = useState(false)
+  const [copyPocketLink, setCopyPocketLink] = useState(false)
   const moreOptionsRef = useRef()
   
   const classes = useStyle()
@@ -307,6 +310,14 @@ const AccountsPockets = (props) => {
     setOpenDeletePocketModal(true)
   }
 
+  const handleOnCopyPocketLink = () => {
+    setOpenMoreOptions(false)
+    setCopyPocketLink(true)
+  }
+  const handleClosePocketLinkCopy = () => {
+    setCopyPocketLink(false)
+  }
+
   const PocketIcon = () => (
     <span className={classes.pocketIcon}><ExpandMoreRoundedIcon className='icon' /></span>
   )
@@ -358,6 +369,9 @@ const AccountsPockets = (props) => {
                   }}
                 >
                   {pockets.length < 5 && <MenuItem onClick={handleAddPocket}>Create pocket</MenuItem>}
+                  <CopyToClipboard className={classes.clipboard} text={`https://d.buzz/${window.location.hash}`} onCopy={handleOnCopyPocketLink}>
+                    <MenuItem>Share pocket</MenuItem>
+                  </CopyToClipboard>
                   <MenuItem onClick={handleOnClickDeletePocket}>Delete pocket</MenuItem>
                 </Menu>
               </div>}
@@ -391,6 +405,11 @@ const AccountsPockets = (props) => {
       </div>
       <CreatePocketModal show={openCreatePocketModal} onHide={setOpenCreatePocketModal} user={user} pockets={pockets} loadPockets={loadPockets}/>
       <DeletePocketConfirmModal show={openDeletePocketModal} onHide={setOpenDeletePocketModal} pocket={selectedPocket.name} handleDeletePocket={handleDeletePocket} />
+      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copyPocketLink} autoHideDuration={6000} onClose={handleClosePocketLinkCopy}>
+        <Alert onClose={handleClosePocketLinkCopy} severity="success">
+          Sharable Pocket link is copied to clipboard
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   )
 }
