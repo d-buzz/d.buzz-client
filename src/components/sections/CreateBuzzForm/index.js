@@ -1197,6 +1197,7 @@ const CreateBuzzForm = (props) => {
   
               import('@mintrawa/hive-auth-client').then((HiveAuth) => {
                 HiveAuth.hacMsg.subscribe(m => {
+                  broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
                   if (m.type === 'sign_wait') {
                     console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
                   }
@@ -1434,25 +1435,26 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleVideoSelect = () => {
-    const target = document.getElementById('video-upload')
-    if (isMobile) {
-      target.addEventListener('click', function () {
-        const touch = new Touch({
-          identifier: 'video-upload',
-          target: target,
-        })
+    // const target = document.getElementById('video-upload')
+    // if (isMobile) {
+    //   target.addEventListener('click', function () {
+    //     const touch = new Touch({
+    //       identifier: 'video-upload',
+    //       target: target,
+    //     })
 
-        const touchEvent = new TouchEvent('touchstart', {
-          touches: [touch],
-          view: window,
-          cancelable: true,
-          bubbles: true,
-        })
+    //     const touchEvent = new TouchEvent('touchstart', {
+    //       touches: [touch],
+    //       view: window,
+    //       cancelable: true,
+    //       bubbles: true,
+    //     })
 
-        target.dispatchEvent(touchEvent)
-      })
-    }
-    videoInputRef.current.click()
+    //     target.dispatchEvent(touchEvent)
+    //   })
+    // }
+    // videoInputRef.current.click()
+    broadcastNotification('warning', 'Video uploads are temporarily disabled')
   }
 
   const handleVideoUpload = (e) => {
@@ -1549,7 +1551,6 @@ const CreateBuzzForm = (props) => {
                       <TextArea
                         buzzId={1}
                         name='content-area'
-                        maxLength={220 + (60 - buzzTitle.length) + overhead}
                         minRows={minRows}
                         value={content}
                         onKeyDown={e => onChange(e, "draftPost", 1)}
@@ -1571,7 +1572,6 @@ const CreateBuzzForm = (props) => {
                               ref={buzzTextBoxRef}
                               buzzId={item.id}
                               name='content-area'
-                              maxLength={220 + (60 - buzzTitle.length) + overhead}
                               minRows={minRows}
                               value={item.content}
                               onKeyUp={e => {

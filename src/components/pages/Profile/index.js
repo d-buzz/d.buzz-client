@@ -290,6 +290,7 @@ const Profile = (props) => {
   const [copied, setCopied] = useState(false)
   const [invalidUser, setInvalidUser] = useState(false)
   const [ceramicUser, setCeramicUser] = useState(false)
+  const [activeCeramicUser, setActiveCeramicUser] = useState(false)
   const [ceramicProfile, setCeramicProfile] = useState({})
   const [followsYou, setFollowsYou] = useState(false)
   
@@ -299,6 +300,12 @@ const Profile = (props) => {
       setCeramicUser(true)
     }
   }, [profile])
+
+  useEffect(() => {
+    if(checkForCeramicAccount(user.username)) {
+      setActiveCeramicUser(true)
+    }
+  }, [user])
 
   const reloadProfile = () => {
     getProfileRequest(username)
@@ -487,6 +494,7 @@ const Profile = (props) => {
           setHasRecentlyFollowed(true)
           setHasRecentlyUnfollowed(false)
           setLoader(false)
+          reloadProfile()
         } else {
           broadcastNotification('error', `Failed following @${username}`)
         }
@@ -500,6 +508,7 @@ const Profile = (props) => {
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
         setLoader(false)
+        reloadProfile()
       }).catch((e) => {
         console.log(e.message)
         setLoader(false)
@@ -516,6 +525,7 @@ const Profile = (props) => {
           setHasRecentlyFollowed(false)
           setHasRecentlyUnfollowed(true)
           setLoader(false)
+          reloadProfile()
         } else {
           broadcastNotification('error', `Failed Unfollowing @${username}`)
           setLoader(false)
@@ -530,6 +540,7 @@ const Profile = (props) => {
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
         setLoader(false)
+        reloadProfile()
       }).catch((e) => {
         console.log(e.message)
         setLoader(false)
@@ -633,7 +644,7 @@ const Profile = (props) => {
                             onClick={handleOpenEditProfileModal}
                           />
                         )}
-                        {!ceramicUser && loginuser !== username && !mutelist.includes(username) && (
+                        {!ceramicUser && !activeCeramicUser && loginuser !== username && !mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -644,7 +655,7 @@ const Profile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {!ceramicUser && loginuser !== username && mutelist.includes(username) && (
+                        {!ceramicUser && !activeCeramicUser && loginuser !== username && mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -655,11 +666,23 @@ const Profile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && (
+                        {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && !ceramicUser && !activeCeramicUser && (
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
-                            disabled={loading}
+                            disabled={loading} 
+                            style={{ float: 'right', marginTop: 5 }}
+                            transparent={true}
+                            label="Follow"
+                            className={classes.button}
+                            onClick={followUser}
+                          />
+                        )}
+                        {!isFollowed && ceramicUser && activeCeramicUser && (loginuser !== username) && (
+                          <ContainedButton
+                            fontSize={14}
+                            loading={loadingFollow || loader}
+                            disabled={loading} 
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Follow"

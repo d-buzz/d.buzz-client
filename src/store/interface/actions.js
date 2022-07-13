@@ -13,9 +13,9 @@ export const closeReplyModal = () => ({
 
 export const BROADCAST_NOTIFICATION = 'BROADCAST_NOTIFICATION'
 
-export const broadcastNotification = (severity, message) => ({
+export const broadcastNotification = (severity, message, timeout) => ({
   type: BROADCAST_NOTIFICATION,
-  payload: { open: true, severity, message },
+  payload: { open: true, severity, message, timeout: timeout },
 })
 
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG'
