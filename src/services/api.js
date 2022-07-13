@@ -407,23 +407,29 @@ export const fetchSingleProfile = (account) => {
     const params = {account}
     import('@hiveio/hive-js').then((HiveJS) => {
       HiveJS.api.call('bridge.get_profile', params, async(err, data) => {
+          
         if (err) { 
           reject(err)
-        } else {
+        }else { 
           let isFollowed = false
-
-          if(user && `${user}`.trim() !== '') {
+  
+          if(user && `${user}`.trim() !== '') { 
             if(user !== data?.name) {
               isFollowed = await isFollowing(user, data.name) || false
             } 
-          }
+          } 
+ 
+           
           resolve({
             ...data,
             isFollowed: isFollowed,
           })
         }
       })
+ 
+      
     })
+    
   })
 }
 

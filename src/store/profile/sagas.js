@@ -122,8 +122,10 @@ function* getProfileRequest(payload, meta) {
     
     const profile = {}
     try {
+
+
       // get following data
-      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.did === username) ? true : false
+      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.target === username) ? true : false
       profile.isFollowed = isFollowed
 
       profile.ceramic = true

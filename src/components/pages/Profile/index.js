@@ -580,7 +580,7 @@ const Profile = (props) => {
 
   useEffect(() => {
     if(!loading) {
-      if(!ceramicProfile) {
+      if(!ceramicProfile || !ceramicUser) {
         if(profile.name) {
           setInvalidUser(false)
         } else {
