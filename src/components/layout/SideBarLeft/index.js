@@ -385,6 +385,7 @@ const SideBarLeft = (props) => {
   const handleClickLogout = () => {
     signoutUserRequest()
     generateStyles(getTheme('light'))
+    history.push('/')
   }
 
   const handleClickSubscribe = () => {

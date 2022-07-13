@@ -347,6 +347,7 @@ const PostActions = (props) => {
 
         import('@mintrawa/hive-auth-client').then((HiveAuth) => {
           HiveAuth.hacMsg.subscribe((m) => {
+            broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
             if (m.type === 'sign_wait') {
               console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
             }

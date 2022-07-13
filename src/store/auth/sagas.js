@@ -184,8 +184,7 @@ function* authenticateUserRequest(payload, meta) {
        
               authenticateUserSuccess(user, meta)
               const origin = window.location.origin
-  
-              window.location.href = origin + '#/latest' 
+              window.location.href = origin
       
             /** Authentication rejected */
             } else if (m.msg?.status === "rejected") {
@@ -243,8 +242,7 @@ function* authenticateUserRequest(payload, meta) {
 
         authenticateUserSuccess(user, meta)
         const origin = window.location.origin
-
-        window.location.href = origin + '#/latest' 
+        window.location.href = origin + '#/latest'
       }
     } else {
       
@@ -260,6 +258,20 @@ function* authenticateUserRequest(payload, meta) {
           const isValid = isWifValid(password, pubWif)
           user.is_authenticated = isValid
           user.login_data = packLoginData(username, password)
+
+          const session = generateSession(user)
+
+          users.push(session)
+          localStorage.removeItem('hasQRcode')
+          localStorage.setItem('current', username)
+          localStorage.setItem('user', JSON.stringify(users))
+          localStorage.setItem('active', username)
+          localStorage.setItem('accounts', JSON.stringify(accounts))
+          setAccountList(accounts)
+   
+          authenticateUserSuccess(user, meta)
+          const origin = window.location.origin
+          window.location.href = origin + '#/latest' 
         } catch(e) {
           user.is_authenticated = false
         }

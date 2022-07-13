@@ -384,7 +384,7 @@ const ReplyFormModal = (props) => {
           console.log(data)
           import('@mintrawa/hive-auth-client').then((HiveAuth) => {
             HiveAuth.hacMsg.subscribe(m => {
-     
+              broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
               if (m.type === 'sign_wait') {
                 console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
               }
@@ -395,16 +395,19 @@ const ReplyFormModal = (props) => {
                   broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
                   setReplyDone(true)
                   setLoading(false)
+                  setReplying(false)
                   closeReplyModal()
                 } else if (m.msg?.status === 'rejected') {
                   const status = m.msg?.status
                   console.log(status)
                   setLoading(false)
+                  setReplying(false)
                   // error
                   broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
                 } else if (m.msg?.status === 'error') { 
                   const error = m.msg?.status.error
                   console.log(error)
+                  setReplying(false)
                   setLoading(false)
                   broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
                 } 
@@ -417,7 +420,7 @@ const ReplyFormModal = (props) => {
         publishReplyRequest(author, permlink, content, replyRef, treeHistory)
           .then(({ success, errorMessage }) => {
             if(success) {
-              setLoading(true)
+              setLoading(false)
               broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
               setReplyDone(true)
               closeReplyModal()
@@ -432,6 +435,7 @@ const ReplyFormModal = (props) => {
               setReplyDone(true)
               closeReplyModal()
               setReplying(false)
+              setLoading(false)
             } else {
               broadcastNotification('error', 'There was an error while replying to this buzz.')
             }

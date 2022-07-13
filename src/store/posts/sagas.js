@@ -116,6 +116,7 @@ import { createPatch, errorMessageComposer, censorLinks, stripHtml } from 'servi
 
 import moment from 'moment'
 import { checkCeramicLogin, checkForCeramicAccount, getChildPostsRequest, getFollowingFeed, getSinglePost } from "services/ceramic"
+import { broadcastNotification } from "store/interface/actions"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -659,7 +660,7 @@ function* followRequest(payload, meta) {
 
     import('@mintrawa/hive-auth-client').then((HiveAuth) => {
       HiveAuth.hacMsg.subscribe(m => {
-       
+        broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
         if (m.type === 'sign_wait') {
           console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
         }
@@ -762,7 +763,7 @@ function* unfollowRequest(payload, meta) {
 
     import('@mintrawa/hive-auth-client').then((HiveAuth) => {
       HiveAuth.hacMsg.subscribe(m => {
-       
+        broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
         if (m.type === 'sign_wait') {
           console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
         }
