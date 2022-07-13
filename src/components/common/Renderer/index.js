@@ -489,7 +489,7 @@ const prepareBannedEmbeds = (content) => {
 }
 
 const prepareDollarVigilanteEmbeds = (content) => {
-  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/w\/(.*))))/i
+  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?vigilante\.tv\/w\/(.*))))/i
   
   let body = content
   
@@ -787,7 +787,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
   } else if(content.includes(':dollarvigilante:')) {
     const splitDollarvigilante = content.split(':')
-    const url = `https://dollarvigilante.tv/videos/embed/${splitDollarvigilante[2]}`
+    const url = `https://vigilante.tv/videos/embed/${splitDollarvigilante[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}dollarvigilante`} url={url} />  
   } else if(content.includes(':dapplr:')) {
     const splitDapplr = content.split(':')
@@ -1027,7 +1027,7 @@ const Renderer = React.memo((props) => {
           content = prepareBitchuteEmbeds(content)
         } else if(link.includes('banned.video')) {
           content = prepareBannedEmbeds(content)
-        } else if(link.includes('dollarvigilante.tv')) {
+        } else if(link.includes('vigilante.tv')) {
           content = prepareDollarVigilanteEmbeds(content)
         } else if(link.includes('dapplr.in')) {
           content = prepareDapplrEmbeds(content)

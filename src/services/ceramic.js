@@ -183,7 +183,7 @@ export const loginWithMetaMask = async() => {
 }
 
 export const checkForCeramicAccount = (account) => {
-  return account.startsWith('did:key:')
+  return (account).startsWith('did:key:')
 }
 
 export const createPostRequest = async(did, title, body) => {

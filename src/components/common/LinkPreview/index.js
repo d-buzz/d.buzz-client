@@ -92,7 +92,7 @@ const LinkPreview = (props) => {
           && !link.includes('www.bitchute.com')
           && !link.includes('www.facebook.com')
           && !link.includes('banned.video')
-          && !link.includes('dollarvigilante.tv')
+          && !link.includes('vigilante.tv')
           && !link.includes('dapplr.in')
           && !link.includes('freeworldnews.tv')
           && link.match( /^[https][http]/)
