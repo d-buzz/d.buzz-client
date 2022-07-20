@@ -145,12 +145,12 @@ const SideBarRight = (props) => {
     //   imagePath: `${window.location.origin}/facebook.png`,
     //   url: 'https://www.facebook.com/dbuzzapp/',
     // },
-    // {
-    //   name: 'Twitter',
-    //   label: 'dbuzzAPP',
-    //   imagePath: `${window.location.origin}/twitter.png`,
-    //   url: 'https://twitter.com/dbuzzAPP',
-    // },
+    {
+      name: 'Twitter',
+      label: '@dbuzzAPP',
+      imagePath: `${window.location.origin}/twitter.svg`,
+      url: 'https://twitter.com/dbuzzAPP',
+    },
   ]
 
   useEffect(() => {

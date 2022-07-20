@@ -46,8 +46,8 @@ const MoreMenu = (props) => {
       className={className}
       transformOrigin={{vertical: 'bottom', horizontal: 'top'}}
     >
-      {items.map(({onClick, text}) => (
-        <MenuItem onClick={handleMenuClosing(onClick)}>{text}</MenuItem>
+      {items.map(({onClick, text, visible}) => (
+        visible && <MenuItem onClick={handleMenuClosing(onClick)} key={text} style={{ minWidth: 150 }}>{text}</MenuItem>
       ))}
     </Menu>
   )

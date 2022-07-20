@@ -9,7 +9,7 @@
     "@ceramicstudio/idx": "^0.12.2",
     "@fingerprintjs/fingerprintjs": "^3.3.2",
     "@hiveio/hive-js": "^2.0.4",
-    "@material-ui/core": "^4.11.0",
+    "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@mintrawa/hive-auth-client": "^0.0.8",
@@ -86,8 +86,8 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "env-cmd -f .env.development react-scripts start",
-    "build:dev": "env-cmd -f .env.development react-scripts build && compress-cra",
-    "build:prod": "env-cmd -f .env.production react-scripts build && compress-cra",
+    "build:dev": "env-cmd -f .env.development react-scripts build && chmod +X ./change-version.sh",
+    "build:prod": "env-cmd -f .env.production react-scripts build && chmod +X ./change-version.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src",
@@ -112,7 +112,6 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
-    "compress-create-react-app": "^1.2.1",
     "enzyme": "^3.11.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",

@@ -140,7 +140,7 @@ class InfiniteList extends PureComponent {
 
     return (
       <React.Fragment>
-        {!loading && !items[0]?.stream_id ?
+        {!items[0]?.stream_id ?
           <InfiniteLoader
             isRowLoaded={isRowLoaded}
             loadMoreRows={onScroll}
@@ -182,48 +182,47 @@ class InfiniteList extends PureComponent {
               </WindowScroller>
             )}
           </InfiniteLoader> :
-          !loading &&
-            <InfiniteLoader
-              isRowLoaded={isRowLoaded}
-              loadMoreRows={onScroll}
-              rowCount={10000000}
-              ref={ref => (this.infiniteLoaderRef = ref)}
-              threshold={2}
-            >
-              {({ onRowsRendered }) => (
-                <WindowScroller onScroll={clearScrollPosition}>
-                  {({ height, isScrolling, registerChild, onChildScroll, scrollTop }) => (
-                    <AutoSizer disableHeight>
-                      {({ width }) => {
-                        return (
-                          <List
-                            rowCount={items.length || 0}
-                            autoHeight
-                            width={width}
-                            height={height}
-                            rowHeight={this.cellMeasurerCache.rowHeight}
-                            rowRenderer={ceramicRowRenderer}
-                            deferredMeasurementCache={this.cellMeasurerCache}
-                            overscanRowCount={2}
-                            // onRowsRendered={onRowsRendered}
-                            ref={el => {
-                              this.listRef = el
-                              if (el instanceof Element) { registerChild(el) }
-                            }}
-                            isScrolling={isScrolling}
-                            scrollToAlignment="center"
-                            scrollToIndex={scrollToIndex}
-                            onScroll={onChildScroll}
-                            scrollTop={scrollTop}
-                            style={clearOutlineStyle}
-                          />
-                        )
-                      }}
-                    </AutoSizer>
-                  )}
-                </WindowScroller>
-              )}
-            </InfiniteLoader>}
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={onScroll}
+            rowCount={10000000}
+            ref={ref => (this.infiniteLoaderRef = ref)}
+            threshold={2}
+          >
+            {({ onRowsRendered }) => (
+              <WindowScroller onScroll={clearScrollPosition}>
+                {({ height, isScrolling, registerChild, onChildScroll, scrollTop }) => (
+                  <AutoSizer disableHeight>
+                    {({ width }) => {
+                      return (
+                        <List
+                          rowCount={items.length || 0}
+                          autoHeight
+                          width={width}
+                          height={height}
+                          rowHeight={this.cellMeasurerCache.rowHeight}
+                          rowRenderer={ceramicRowRenderer}
+                          deferredMeasurementCache={this.cellMeasurerCache}
+                          overscanRowCount={2}
+                          // onRowsRendered={onRowsRendered}
+                          ref={el => {
+                            this.listRef = el
+                            if (el instanceof Element) { registerChild(el) }
+                          }}
+                          isScrolling={isScrolling}
+                          scrollToAlignment="center"
+                          scrollToIndex={scrollToIndex}
+                          onScroll={onChildScroll}
+                          scrollTop={scrollTop}
+                          style={clearOutlineStyle}
+                        />
+                      )
+                    }}
+                  </AutoSizer>
+                )}
+              </WindowScroller>
+            )}
+          </InfiniteLoader>}
         <PostlistSkeleton loading={loading} />
       </React.Fragment>
     )

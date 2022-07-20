@@ -396,7 +396,7 @@ export const getTheme =() => {
   let mode = ''
 
   if(theme && (theme === 'gray' || theme === 'night') ) {
-    mode = 'dark'
+    mode = theme
   } else {
     mode = 'light'
   }

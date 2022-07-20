@@ -888,12 +888,6 @@ const CreateBuzzForm = (props) => {
     setOpenSaveDraftsModal(false)
   }
 
-  // useEffect(() => {
-  //   if(buzzThreads[1].images.length === 0) {
-  //     createThread(currentBuzz, 'image', ['https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1653158519663.jpeg', 'https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1653158519663.jpeg'])
-  //   }
-  // }, [buzzThreads])
-
   // setup buzz intent
   useEffect(() => {
     if(wholeIntent) {
@@ -904,15 +898,16 @@ const CreateBuzzForm = (props) => {
 
   useEffect(() => {
     const images = []
-    
-    buzzThreads[1].images.forEach(image => images.push(image))
+    const buzzThreadImages = buzzThreads[1]?.images || []
+
+    buzzThreadImages.forEach((image) => images.push(image))
     
     images.splice(0, 3)
     const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp; ').length
-    const contentOverhead = calculateOverhead(content, buzzThreads[1].images.length)
+    const contentOverhead = calculateOverhead(content, buzzThreads[1]?.images?.length)
     
     // allow only three images at on a single buzz
-    if(buzzThreads[1].images.length >= 3) {
+    if(buzzThreads[1]?.images?.length >= 3) {
       setImageLimit(true)
     } else {
       setImageLimit(false)
@@ -1538,7 +1533,7 @@ const CreateBuzzForm = (props) => {
             {!publishing && (
               <span className={classes.buzzBox}>
                 {showBuzzTitle &&
-                  <div className={classes.titleBox} tabindex={0}>
+                  <div className={classes.titleBox} tabIndex={0}>
                     <Avatar author={user.username} avatarUrl={avatarUrl} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
                     <span className="titleContainer">
                       <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
@@ -1740,24 +1735,25 @@ const CreateBuzzForm = (props) => {
                     </div>
                   </span>
                 </div>
-                <div className={classes.maxPayoutOption}>
-                  <span className={classes.payoutLabel}>Max Payout: </span>
-                  <input
-                    name='max-payout'
-                    className={classes.tinyInput}
-                    type='number'
-                    onChange={handleMaxPayout}
-                    value={payout}
-                    required
-                    min='0'
-                    step='any'
-                  />
-                  {!isMobile && (
-                    <Tooltip title={tooltips.payout} placement='top'>
-                      <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
-                    </Tooltip>
-                  )}
-                </div>
+                {!ceramicUser &&
+                  <div className={classes.maxPayoutOption}>
+                    <span className={classes.payoutLabel}>Max Payout: </span>
+                    <input
+                      name='max-payout'
+                      className={classes.tinyInput}
+                      type='number'
+                      onChange={handleMaxPayout}
+                      value={payout}
+                      required
+                      min='0'
+                      step='any'
+                    />
+                    {!isMobile && (
+                      <Tooltip title={tooltips.payout} placement='top'>
+                        <HelpIcon classes={{ root: classes.icon }} fontSize='small' />
+                      </Tooltip>
+                    )}
+                  </div>}
                 <div className={classes.publishBuzzOption}>
                   {content && !ceramicUser && 
                     <div style={{display: 'inline-flex'}}>

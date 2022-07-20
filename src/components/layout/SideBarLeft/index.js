@@ -140,6 +140,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'inline-block',
   },
   avatarWrapper: {
+    width: '100%',
     minHeight: 55,
     display: 'flex',
     justifyContent: 'center',
@@ -504,8 +505,9 @@ const SideBarLeft = (props) => {
   }, [activeView])
 
   useEffect(() => {
-    // alert(activeView);
-  }, [activeView])
+    generateStyles(getTheme(theme))
+    // eslint-disable-next-line
+  }, [theme])
 
   const NavLinks = [
     {
@@ -532,7 +534,7 @@ const SideBarLeft = (props) => {
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='outline'/></Badge>,
+      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='outline'/></Badge>,
       onClick: () => handelClickItem('notifications'),
     },
     {
@@ -584,6 +586,13 @@ const SideBarLeft = (props) => {
       icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
       onClick: () => handelClickItem('profile'),
     },
+    {
+      name: 'More'  ,
+      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
+      path: '#',
+      preventDefault: true,
+      onClick: handleClickOpenMoreMenu,
+    },
   ]
 
   const ceramicStyles = ceramicUser ? { alignItems: 'center', justifyContent: 'center', marginLeft: 25 } : {}
@@ -596,7 +605,7 @@ const SideBarLeft = (props) => {
             <NavbarBrand href="/" style={{ display: 'grid', gridAutoFlow: minify ? 'row' : 'column', placeItems: 'center', marginRight: 0, alignSelf: minify ? 'center' : 'flex-start', paddingLeft: !minify ? 0 : 0, transform: minify ? 'translateY(-5px)' : 0 }}>
               <div style={{ paddingTop: !minify ? 5 : 0, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
                 {theme === 'light' && !minify && (<BrandIcon />)}
-                {theme === 'dark' && !minify && (<BrandIconDark />)}
+                {(theme === 'night' || theme === 'gray') && !minify && (<BrandIconDark />)}
                 {minify &&
                   <IconButton>
                     <CircularBrandIcon />
@@ -667,11 +676,11 @@ const SideBarLeft = (props) => {
               {!fetchingUser && !minify && (
                 <div className={classes.logoutButton}>
                   <div className={classes.avatarWrapper} onClick={handleClickLogout}>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', width: '100%' }}>
                       <React.Fragment>
                         <Avatar author={username} avatarUrl={userAvatarUrl} />
-                        <div style={{ display: 'flex', paddingTop: !ceramicUser ? 5 : 0 }}>
-                          <div style={{ display: 'flex', ...ceramicStyles }}>
+                        <div style={{ display: 'flex', width: '100%', paddingTop: !ceramicUser ? 5 : 0 }}>
+                          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', ...ceramicStyles }}>
                             <div style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
                               <p className={classes.logoutLabel} styles={{ fontSize: ceramicUser ? 24 : 14 }}>Logout</p>
                               {!ceramicUser && <p className={classes.logoutUsername}>{username}</p>}
@@ -719,14 +728,17 @@ const SideBarLeft = (props) => {
           {
             onClick: showThemeModal,
             text: 'Theme',
+            visible: true,
           },
           {
             onClick: showSwitchModal,
             text: 'Switch Account',
+            visible: !ceramicUser ? true : false,
           },
           {
             onClick: showSettingsModal,
             text: 'Settings',
+            visible: true,
           },
         ]}
       />
