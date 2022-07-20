@@ -86,8 +86,8 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "env-cmd -f .env.development react-scripts start",
-    "build:dev": "env-cmd -f .env.development react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build",
+    "build:dev": "env-cmd -f .env.development react-scripts build && chmod +X ./change-version.sh",
+    "build:prod": "env-cmd -f .env.production react-scripts build && chmod +X ./change-version.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src",
