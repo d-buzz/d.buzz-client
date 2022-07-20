@@ -104,7 +104,7 @@ const SplashScreen = () => {
       <div className={classes.brandWrapper}>
         <center>
           {theme === 'light' && (<BrandIcon height={60}/>)}
-          {theme === 'dark' && (<BrandIconDark height={60}/>)}
+          {(theme === 'gray' || theme === 'night') && (<BrandIconDark height={60}/>)}
           {config.VERSION.includes('dev') &&
               <div className={classes.betaTitleContainer}>
                 {<span className={classes.betaTitle}>BETA</span>}
@@ -168,20 +168,19 @@ const Init = (props) => {
   useEffect(() => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
-      getCensorTypesRequest().then(() => {
+      getBestRpcNode().then(() => {
+        getWSNodeHAS()
+        initWSHASConnectionRequest()
         getBestCeramicHost().then((host) => {
           initCeremicLoginRequest()
           localStorage.setItem('ceramic', host)
         })
-        getBestRpcNode().then(() => {
-          getWSNodeHAS()
-          initWSHASConnectionRequest()
-          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 0
-          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+        const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 0
+        setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+          getSavedUserRequest().then(() => {
+            setInit(true)
+            getCensorTypesRequest()
             getTrendingTagsRequest()
-            getSavedUserRequest().then(() => {
-              setInit(true)
-            })
           })
         })
       })
