@@ -159,7 +159,7 @@ function* getRepliesRequest(payload, meta) {
       const mutelist = yield select(state => state.auth.get('mutelist'))
       let replies = yield call(fetchDiscussions, author, permlink)
       replies = invokeMuteFilter(replies, mutelist)
-      console.log(replies)
+      // console.log(replies)
       yield put(getRepliesSuccess(replies, meta))
     } else {
       const replies = yield call(getChildPostsRequest, permlink)

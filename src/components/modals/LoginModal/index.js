@@ -465,7 +465,7 @@ const LoginModal = (props) => {
                     {(hasMetaMaskInstalled) && (
                       <MetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
                     )}
-                    {(isMobile) && (
+                    {(isMobile && !hasMetaMaskInstalled) && (
                       <MetaMaskButton onClick={handleOpenMetaMask} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
                     )}
                     {!hasMetaMaskInstalled && !isMobile && (

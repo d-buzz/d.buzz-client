@@ -428,6 +428,7 @@ function* getSavedUserRequest (meta) {
 function* initWSHASConnectionRequest(meta) {
   const ceramicAuth = checkCeramicLogin()
   const active = localStorage.getItem('active')
+  const accounts = JSON.parse(localStorage.getItem('accounts'))
 
   if(!ceramicAuth) {
     try {
@@ -446,7 +447,7 @@ function* initWSHASConnectionRequest(meta) {
             hacGetConnectionStatus = HiveAuth.hacGetConnectionStatus
           })
   
-          if (current) {
+          if (current && accounts[0].has) {
             const hacAccount = hacGetAccounts(current, result.visitorId)
   
             if (hacAccount[0]) {
