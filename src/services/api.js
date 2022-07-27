@@ -1488,8 +1488,8 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 
 export const broadcastOperation = (operations, keys) => {
 
-  return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveAuth) => {
+  return new Promise(async(resolve, reject) => {
+    await import('@hiveio/hive-js').then((HiveAuth) => {
       HiveAuth.broadcast.send(
         {
           extensions: [],

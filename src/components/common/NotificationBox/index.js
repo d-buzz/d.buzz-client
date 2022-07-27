@@ -29,6 +29,7 @@ const NotificationBox = (props) => {
   const [message, setMessage] = useState('')
   const [severity, setSeverity] = useState('success')
   const [messageTimeout, setMessageTimeout] = useState(6000)
+  const [commandLink, setCommandLink] = useState(6000)
   const { notificationBoxData } = props
   const alertStyles = { background: severity === 'success' ? '#28a745' : severity === 'error' ? '#dc3545' : '#ffc107'}
 
@@ -44,10 +45,11 @@ const NotificationBox = (props) => {
     if(notificationBoxData.hasOwnProperty('open') && typeof notificationBoxData === 'object') {
       const { open } = notificationBoxData
       if(open) {
-        const { message, severity, timeout } = notificationBoxData
+        const { message, severity, timeout, link } = notificationBoxData
         setMessage(message)
         setSeverity(severity)
         setMessageTimeout(timeout || 6000)
+        setCommandLink(link)
       } else {
         setMessage('')
         setSeverity('')
@@ -60,6 +62,12 @@ const NotificationBox = (props) => {
     setOpen(false)
   }
 
+  const handleOpenHiveKeychain = () => {
+    if(isMobile) {
+      window.location.href = (commandLink)
+    }
+  }
+
   return (
     <Snackbar
       anchorOrigin={anchorOrigin}
@@ -68,6 +76,7 @@ const NotificationBox = (props) => {
       autoHideDuration={messageTimeout}
       onClose={onClose}
       className={classes.wrapper}
+      onClick={handleOpenHiveKeychain}
     >
       <Alert
         variant="outlined"

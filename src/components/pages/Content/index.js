@@ -11,7 +11,7 @@ import {
 } from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar } from 'components/elements'
-import { openCensorshipDialog, setViewImageModal } from 'store/interface/actions'
+import { openCensorshipDialog, setLinkConfirmationModal, setViewImageModal } from 'store/interface/actions'
 import {
   PostTags,
   PostActions,
@@ -46,6 +46,7 @@ import MoreHoriz from '@material-ui/icons/MoreHoriz'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { checkForCeramicAccount } from 'services/ceramic'
 import ViewImageModal from 'components/modals/ViewImageModal'
+import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -215,6 +216,8 @@ const Content = (props) => {
     clearAppendReply,
     viewImageModal,
     setViewImageModal,
+    linkConfirmationModal,
+    setLinkConfirmationModal,
   } = props
 
   const { username, permlink } = match.params
@@ -693,6 +696,7 @@ const Content = (props) => {
         </div>}
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <ViewImageModal show={viewImageModal} imageUrl={viewImageModal} onHide={() => setViewImageModal(null)}/>
+      <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
     </React.Fragment>
   )
 }
@@ -705,6 +709,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   censorList: state.auth.get('censorList'),
   viewImageModal: state.interfaces.get('viewImageModal'),
+  linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -716,6 +721,7 @@ const mapDispatchToProps = (dispatch) => ({
     openCensorshipDialog,
     clearAppendReply,
     setViewImageModal,
+    setLinkConfirmationModal,
   }, dispatch),
 })
 

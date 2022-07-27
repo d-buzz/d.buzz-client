@@ -316,3 +316,12 @@ input[type=number] {
     box-shadow: 0 0 0 3px #FF625E,
   }
 }
+
+.hyperlink {
+  background-color: rgba(255, 149, 149, 0.085) !important;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 55px;
+}

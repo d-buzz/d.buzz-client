@@ -13,9 +13,9 @@ export const closeReplyModal = () => ({
 
 export const BROADCAST_NOTIFICATION = 'BROADCAST_NOTIFICATION'
 
-export const broadcastNotification = (severity, message, timeout) => ({
+export const broadcastNotification = (severity, message, timeout, link) => ({
   type: BROADCAST_NOTIFICATION,
-  payload: { open: true, severity, message, timeout: timeout },
+  payload: { open: true, severity, message, timeout: timeout, link: link },
 })
 
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG'
@@ -205,4 +205,11 @@ export const SET_VIEW_IMAGE_MODAL = 'SET_VIEW_IMAGE_MODAL'
 export const setViewImageModal = (status) => ({
   type: SET_VIEW_IMAGE_MODAL,
   payload: status,
+})
+
+export const SET_LINK_CONFIRMATION_MODAL = 'SET_LINK_CONFIRMATION_MODAL'
+
+export const setLinkConfirmationModal = (link) => ({
+  type: SET_LINK_CONFIRMATION_MODAL,
+  payload: link,
 })

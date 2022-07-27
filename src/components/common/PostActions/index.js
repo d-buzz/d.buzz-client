@@ -70,8 +70,8 @@ const PrettoSlider = withStyles({
 
 const marks = [
   {
-    value: 0,
-    label: '0',
+    value: 1,
+    label: '1',
   },
   {
     value: 10,
@@ -339,7 +339,6 @@ const PostActions = (props) => {
       }
       setShowSlider(false)
       setLoading(true)
-      console.log(user)
 
       if(user.useHAS) {
 
@@ -347,7 +346,11 @@ const PostActions = (props) => {
 
         import('@mintrawa/hive-auth-client').then((HiveAuth) => {
           HiveAuth.hacMsg.subscribe((m) => {
-            broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
+            if(isMobile) {
+              broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
+            } else {
+              broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
+            }
             if (m.type === 'sign_wait') {
               console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
             }
@@ -650,6 +653,7 @@ const PostActions = (props) => {
           </Row>
           <div style={{ paddingLeft: 10 }}>
             <PrettoSlider
+              min={1}
               marks={marks}
               value={sliderValue}
               onChange={handleChange}
