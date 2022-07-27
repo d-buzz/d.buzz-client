@@ -13,7 +13,7 @@ import {
   TitleIcon,
 } from 'components/elements'
 import { clearIntentBuzz } from 'store/auth/actions'
-import { broadcastNotification } from 'store/interface/actions'
+import { broadcastNotification, setLinkConfirmationModal } from 'store/interface/actions'
 import { PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
 import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest, setContentRedirect } from 'store/posts/actions'
@@ -1192,7 +1192,11 @@ const CreateBuzzForm = (props) => {
   
               import('@mintrawa/hive-auth-client').then((HiveAuth) => {
                 HiveAuth.hacMsg.subscribe(m => {
-                  broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
+                  if(isMobile) {
+                    broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
+                  } else {
+                    broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
+                  }
                   if (m.type === 'sign_wait') {
                     console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
                   }
@@ -1826,6 +1830,7 @@ const CreateBuzzForm = (props) => {
       />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
+      {/* <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} /> */}
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
     </div>
@@ -1843,6 +1848,7 @@ const mapStateToProps = (state) => ({
   buzzModalStatus: state.interfaces.get('buzzModalStatus'),
   buzzThreads: state.posts.get('buzzThreads'),
   buzzTitle: state.posts.get('buzzTitle'),
+  linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1863,6 +1869,7 @@ const mapDispatchToProps = (dispatch) => ({
       setDraftsModalStatus,
       setSaveDraftsModalStatus,
       setContentRedirect,
+      setLinkConfirmationModal,
     },dispatch),
 })
 

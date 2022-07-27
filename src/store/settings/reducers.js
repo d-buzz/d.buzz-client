@@ -13,7 +13,7 @@ const defaultState = fromJS({
   themeStyles: {},
   rpcNode: 'https://api.hive.blog',
   censorTypes: [],
-  defaultVoteWeight: 0,
+  defaultVoteWeight: 1,
 })
 
 export const settings = (state = defaultState, { type, payload }) => {

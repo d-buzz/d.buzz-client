@@ -381,7 +381,7 @@ export const getDefaultVotingWeight = () => {
   if(voteWeight) {
     return voteWeight
   }
-  return 0
+  return 1
 }
 
 export const redirectToUserProfile = () => {
@@ -408,4 +408,12 @@ export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style
 
 export const proxyImage = (url) => {
   return `https://images.hive.blog/0x0/${url}`
+}
+
+export const truncateString = (str, num) => {
+  if (str.length > num) {
+    return str.slice(0, num) + "..."
+  } else {
+    return str
+  }
 }

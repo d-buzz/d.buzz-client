@@ -245,7 +245,7 @@ function* authenticateUserRequest(payload, meta) {
         window.location.href = origin + '#/latest'
       }
     } else {
-      
+
       let profile = yield call(fetchProfile, [username])
 
       if(profile) {
@@ -255,23 +255,9 @@ function* authenticateUserRequest(payload, meta) {
       if(profile) {
         const pubWif =  profile['posting'].key_auths[0][0]
         try {
-          const isValid = isWifValid(password, pubWif)
+          const isValid = yield call(isWifValid, password, pubWif)
           user.is_authenticated = isValid
           user.login_data = packLoginData(username, password)
-
-          const session = generateSession(user)
-
-          users.push(session)
-          localStorage.removeItem('hasQRcode')
-          localStorage.setItem('current', username)
-          localStorage.setItem('user', JSON.stringify(users))
-          localStorage.setItem('active', username)
-          localStorage.setItem('accounts', JSON.stringify(accounts))
-          setAccountList(accounts)
-   
-          authenticateUserSuccess(user, meta)
-          const origin = window.location.origin
-          window.location.href = origin + '#/latest' 
         } catch(e) {
           user.is_authenticated = false
         }
@@ -279,66 +265,61 @@ function* authenticateUserRequest(payload, meta) {
         user.is_authenticated = false
       }
     }
+    if(user.is_authenticated && !useCeramic) {
+      const is_subscribe = yield call(getCommunityRole, username)
+      user.is_subscribe = is_subscribe
+      user.active = true
 
-    if(user.is_authenticated) {
+      let mutelist = yield call(fetchMuteList, username)
 
-      if(useKeychain || useHAS) {
-        const is_subscribe = yield call(getCommunityRole, username)
-        user.is_subscribe = is_subscribe
-        user.active = true
+      mutelist = [...new Set(mutelist.map(item => item.following))]
 
-        let mutelist = yield call(fetchMuteList, username)
+      yield put(setMuteList(mutelist))
 
-        mutelist = [...new Set(mutelist.map(item => item.following))]
+      const session = generateSession(user)
 
-        yield put(setMuteList(mutelist))
+      const accountIndex = accounts.findIndex(item => item.username === username)
 
-        const session = generateSession(user)
-
-        const accountIndex = accounts.findIndex(item => item.username === username)
-
-        if(accountIndex === -1) {
-          accounts.push({ username, keychain: useKeychain, has: useHAS, ceramic: useCeramic })
-        } else {
-          accounts[accountIndex].keychain = useKeychain
-        }
-
-        users.push(session)
-        yield call([localStorage, localStorage.clear])
-        yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
-        yield call([localStorage, localStorage.setItem], 'active', username)
-        yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
-        yield put(setAccountList(accounts))
-      
-      } else if(useCeramic) {
-
-        // checking for Ceramic Login Auth
-
-        user.active = true
-
-        const username = localStorage.getItem('active')
-        const ceramicAuth = localStorage.getItem('ceramic.auth')
-
-        const session = generateSession(user)
-
-        const accountIndex = accounts.findIndex(item => item.username === username)
-
-        if(accountIndex === -1) {
-          accounts.push({ username, keychain: useKeychain, has: useHAS, ceramic: useCeramic })
-        } else {
-          accounts[accountIndex].keychain = useKeychain
-        }
-
-        users.push(session)
-        yield call([localStorage, localStorage.clear])
-        yield call([localStorage, localStorage.setItem], 'current', username)
-        yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
-        yield call([localStorage, localStorage.setItem], 'active', username)
-        yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
-        yield call([localStorage, localStorage.setItem], 'ceramic.auth', JSON.stringify(JSON.parse(ceramicAuth)))
-        yield put(setAccountList(accounts))
-
+      if(accountIndex === -1) {
+        accounts.push({ username, keychain: useKeychain, has: useHAS, ceramic: useCeramic })
+      } else {
+        accounts[accountIndex].keychain = useKeychain
       }
+
+      users.push(session)
+      yield call([localStorage, localStorage.clear])
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
+      yield call([localStorage, localStorage.setItem], 'active', username)
+      yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
+      yield put(setAccountList(accounts))
+    
+    } else if(useCeramic) {
+      // checking for Ceramic Login Auth
+
+      user.active = true
+
+      const username = localStorage.getItem('active')
+      const ceramicAuth = localStorage.getItem('ceramic.auth')
+
+      const session = generateSession(user)
+
+      const accountIndex = accounts.findIndex(item => item.username === username)
+
+      if(accountIndex === -1) {
+        accounts.push({ username, keychain: useKeychain, has: useHAS, ceramic: useCeramic })
+      } else {
+        accounts[accountIndex].keychain = useKeychain
+      }
+
+      users.push(session)
+      yield call([localStorage, localStorage.clear])
+      yield call([localStorage, localStorage.setItem], 'current', username)
+      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
+      yield call([localStorage, localStorage.setItem], 'active', username)
+      yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
+      yield call([localStorage, localStorage.setItem], 'ceramic.auth', JSON.stringify(JSON.parse(ceramicAuth)))
+      yield put(setAccountList(accounts))
+
     }
 
     if(initialUsersLength > 0 && users.length !== initialUsersLength) {

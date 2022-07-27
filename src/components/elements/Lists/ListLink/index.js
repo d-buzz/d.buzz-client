@@ -3,11 +3,12 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   inner: {
+    display: 'flex',
+    alignItems: 'center',
     cursor: 'pointer',
     margin: '0 auto',
+    padding: 5,
     '& img': {
-      marginTop: 10,
-      marginLeft: 15,
       height: 45,
       width: 45,
       objectFit: 'contain',
@@ -20,26 +21,32 @@ const useStyles = createUseStyles(theme => ({
     borderBottom: theme.border.primary,
     transitionDuration: '0.3s',
     transitionProperty: 'background-color',
+    borderRadius: 15,
+    marginTop: 2.5,
+    marginBottom: 2.5,
     '&:hover': {
       ...theme.right.list.hover,
     },
   },
+  titleLabelContainer: {
+    marginLeft: 15,
+    display: 'flex',
+    flexDirection: 'column',
+  },
   title: {
     color: theme.font.color,
-    marginTop: 15,
-    marginLeft: 20,
     fontWeight: 'bold',
     fontSize: 14,
+    margin: 0,
   },
   label: {
     fontSize: 13,
-    marginTop: 15,
-    marginLeft: 5,
-    paddingBottom: 20,
     color: '#657786',
+    margin: 0,
+    marginTop: 5,
   },
   linkWrapper: {
-    textDecoration: 'none',
+    textDecoration: 'none !important',
     color: '#14171a',
     cursor: 'pointer',
     '&:hover': {
@@ -67,8 +74,10 @@ const ListLink = (props) => {
         <a href={href} target="_blank" rel="noopener noreferrer" className={classes.linkWrapper}>
           <div className={classes.inner}>
             <img alt="preview-img" src={imagePath} loading='lazy'/>
-            <label className={classes.title}>{title}</label>
-            <label className={classes.label}>{label}</label>
+            <span className={classes.titleLabelContainer}>
+              <label className={classes.title}>{title}</label>
+              <label className={classes.label}>{label}</label>
+            </span>
           </div>
         </a>
       </div>

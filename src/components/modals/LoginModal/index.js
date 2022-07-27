@@ -231,7 +231,7 @@ const LoginModal = (props) => {
             setQRCode(rawQR)
 
             if (hasExpiredDelay === 0) {
-              console.log('sample hit')
+              // console.log('sample hit')
               clearInterval(hasExpiredDelayInterval)
               setHasExpiredDelay(60)
               localStorage.removeItem('hasQRcode')
