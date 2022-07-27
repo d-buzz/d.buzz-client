@@ -314,6 +314,7 @@ const EditProfileModal = (props) => {
           reloadProfile()
           onHide()
         }else{
+          setUpdatingProfile(false)
           broadcastNotification('error',errorMessage)
         }
       })
@@ -329,8 +330,10 @@ const EditProfileModal = (props) => {
           onHide()
         })
         .catch((err) => {
+          setUpdatingProfile(false)
           setCeramicProfileUpdateLoading(false)
           broadcastNotification('error', err.message)
+          console.log(err)
           onHide()
         })
     }

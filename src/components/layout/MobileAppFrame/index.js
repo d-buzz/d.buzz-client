@@ -48,6 +48,7 @@ import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import MoreIcon from 'components/elements/Icons/MoreIcon'
+import { checkForCeramicAccount } from 'services/ceramic'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -665,14 +666,17 @@ const MobileAppFrame = (props) => {
           {
             onClick: showThemeModal,
             text: 'Theme',
+            visible: true,
           },
           {
             onClick: showSwitchModal,
             text: 'Switch Account',
+            visible: !checkForCeramicAccount(user.username) ? true : false,
           },
           {
             onClick: showSettingsModal,
             text: 'Settings',
+            visible: true,
           },
         ]}
       />

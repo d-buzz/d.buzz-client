@@ -350,9 +350,9 @@ const SettingsModal = (props) => {
             <div className={classes.versionContainer}>
               <span className='current_version'>You're on v{VERSION}</span>
               <span className='check_updates_button' onClick={checkForUpdates} hidden={isLatest || updatesAvailable}>CHECK FOR UPDATES</span>
-              <span className='up_to_date_button' hidden={!isLatest}>AlREADY UPDATE TO DATE</span>
+              <span className='up_to_date_button' hidden={!isLatest}>ALREADY UPDATE-TO DATE</span>
               {/* eslint-disable-next-line */}
-              <span className='check_again_text' hidden={!isLatest}>No updates avaialable. Check again later <span role="img">👋</span></span>
+              <span className='check_again_text' hidden={!isLatest}>No updates available. Check again later <span role="img">👋</span></span>
               <span className='updates_avaialble' onClick={reload} hidden={isLatest || !updatesAvailable}>UPDATES AVAILABLE</span>
             </div>
           </center>

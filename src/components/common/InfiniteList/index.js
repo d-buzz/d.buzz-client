@@ -231,6 +231,7 @@ class InfiniteList extends PureComponent {
 
 const mapStateToProps = (state) => ({
   scrollToIndex: state.interfaces.get('scrollIndex'),
+  
 })
 
 const mapDispatchToProps = (dispatch) => ({

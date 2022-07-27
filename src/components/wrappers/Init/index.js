@@ -175,7 +175,7 @@ const Init = (props) => {
           initCeremicLoginRequest()
           localStorage.setItem('ceramic', host)
         })
-        const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 0
+        const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
         setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
           getSavedUserRequest().then(() => {
             setInit(true)

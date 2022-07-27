@@ -30,6 +30,7 @@ import {
   DRAFTS_MODAL,
   SAVE_DRAFTS_MODAL,
   SET_VIEW_IMAGE_MODAL,
+  SET_LINK_CONFIRMATION_MODAL,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -115,6 +116,8 @@ export const interfaces = (state = defaultState, { type, payload }) => {
     return state.set('saveDraftsModalStatus', payload)
   case SET_VIEW_IMAGE_MODAL:
     return state.set('viewImageModal', payload)
+  case SET_LINK_CONFIRMATION_MODAL:
+    return state.set('linkConfirmationModal', payload)
   default:
     return state
   }
