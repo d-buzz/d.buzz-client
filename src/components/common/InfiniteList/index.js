@@ -204,7 +204,7 @@ class InfiniteList extends PureComponent {
                           rowRenderer={ceramicRowRenderer}
                           deferredMeasurementCache={this.cellMeasurerCache}
                           overscanRowCount={2}
-                          // onRowsRendered={onRowsRendered}
+                          onRowsRendered={onRowsRendered}
                           ref={el => {
                             this.listRef = el
                             if (el instanceof Element) { registerChild(el) }
