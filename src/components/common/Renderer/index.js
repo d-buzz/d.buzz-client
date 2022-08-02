@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux'
 import { setViewImageModal, setLinkConfirmationModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { proxyImage, truncateString } from 'services/helper'
-import { isMobile } from 'web3modal'
+import { isMobile, isMobileOnly } from 'react-device-detect'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -914,7 +914,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a class="hyperlink" id="${n}" href="${isMobile ? n : '#'}">${truncateString(n, 25)}</a>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a class="hyperlink" id="${n}" href="${!isMobileOnly ? '#' : `#`}">${truncateString(n, 25)}</a>` : n)
     // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
     //   // render hashtags 
@@ -967,10 +967,20 @@ const Renderer = React.memo((props) => {
   const prepareHyperlinks = () => {
     const hyperlinks = document.querySelectorAll(`.hyperlink`)
     hyperlinks.forEach((hyperlink) => {
-      hyperlink.onclick = () => {
+      hyperlink.addEventListener('click', function () {
         const url = hyperlink.id
         setLinkConfirmationModal(url)
+      })
+      if(isMobile) {
+        hyperlink.addEventListener('touchstart', function () {
+          const url = hyperlink.id
+          setLinkConfirmationModal(url)
+        })
       }
+      // hyperlink.onclick = () => {
+      //   const url = hyperlink.id
+      //   setLinkConfirmationModal(url)
+      // }
     })
   }
 
@@ -1019,6 +1029,7 @@ const Renderer = React.memo((props) => {
     // eslint-disable-next-line
   }, [content])
 
+  
   if(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus !== 'disabled') {
     links.forEach((link) => {
       try {
