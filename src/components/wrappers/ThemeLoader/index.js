@@ -4,6 +4,7 @@ import { getTheme } from 'services/theme'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { ThemeProvider } from 'components'
+import { getTheme as getUserTheme } from 'services/helper'
 
 const ThemeLoader = (props) => {
   const {
@@ -13,23 +14,18 @@ const ThemeLoader = (props) => {
   } = props
 
   const [loaded, setLoaded] = useState(false)
+  const theme = getUserTheme()
 
   useEffect(() => {
-    // getSavedThemeRequest()
-    //   .then(({ mode }) => {
-    //     const theme = getTheme(mode)
-    //     document.body.style.backgroundColor = theme.background.primary
-    //     generateStyles(theme)
-    //     setLoaded(true)
-    //   })
     const mode = JSON.parse(localStorage.getItem('customUserData'))?.settings?.theme
-    const theme = getTheme(mode)
-    document.body.style.backgroundColor = theme.background.primary
-    generateStyles(theme)
+    const userTheme = getTheme(mode)
+    document.body.style.backgroundColor = userTheme.background.primary
+    
+    generateStyles(getTheme(theme))
     setLoaded(true)
     
     // eslint-disable-next-line
-  }, [])
+  }, [theme])
 
   return (
     <React.Fragment>

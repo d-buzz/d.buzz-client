@@ -63,7 +63,7 @@ const NotificationBox = (props) => {
   }
 
   const handleOpenHiveKeychain = () => {
-    if(isMobile) {
+    if(isMobile && commandLink) {
       window.location.href = (commandLink)
     }
   }

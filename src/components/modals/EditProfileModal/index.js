@@ -204,6 +204,7 @@ const EditProfileModal = (props) => {
 
   const handleChangeProfileImage = (e) => {
     const files = e.target.files[0]
+    setProfileAvatar(URL.createObjectURL(e.target.files[0]))
     if(files){
       setUploadAvatarLoading(true)
       uploadFileRequest(files, setImageUploadProgress, true).then((image) => {
@@ -222,6 +223,7 @@ const EditProfileModal = (props) => {
 
   const handleChangeCoverImage = (e) => {
     const files = e.target.files[0]
+    setProfileCoverImage(URL.createObjectURL(e.target.files[0]))
     if(files){
       setUploadCoverLoading(true)
       uploadFileRequest(files, setImageUploadProgress, true).then((image) => {

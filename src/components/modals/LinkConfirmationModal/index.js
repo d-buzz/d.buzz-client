@@ -69,6 +69,7 @@ const LinkConfirmationModal = (props) => {
 
   const handleRedirectLink = () => {
     window.open((link.startsWith('https') ? link : `https://${link.replace('http://', '')}`), '_blank')
+    onHide(false)
   }
 
   return (
