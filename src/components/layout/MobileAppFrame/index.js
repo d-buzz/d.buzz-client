@@ -388,7 +388,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='outline'/></Badge>,
+      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='outline'/></Badge>,
       onClick: () => handelClickItem('notifications'),
     },
     {
