@@ -37,7 +37,7 @@ const App = () => {
 
   return (
     <React.Fragment>
-      <React.Suspense fallback={<span>l</span>}>
+      <React.Suspense fallback={<span> </span>}>
         <Helmet>
           <meta property="og:title" content="D.Buzz" />
           <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
