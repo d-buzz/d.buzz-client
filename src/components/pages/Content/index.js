@@ -47,6 +47,7 @@ import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { checkForCeramicAccount } from 'services/ceramic'
 import ViewImageModal from 'components/modals/ViewImageModal'
 import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
+import { Helmet } from 'react-helmet'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -517,6 +518,11 @@ const Content = (props) => {
 
   return (
     <React.Fragment>
+      <Helmet>
+        <meta property="og:title" content={body.split('\n')[0]} />
+        <meta property="og:description" content={body} />
+        <meta property="og:image" content={body?.match(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|webp|bmp))/gi)?.[0]} />
+      </Helmet>
       {!loadingContent && author && (
         <React.Fragment>
           <HelmetGenerator content={body.split('\n')[0]} user={author} />

@@ -507,21 +507,22 @@ const PostActions = (props) => {
                   />
                 )}
               </Col>}
-            <Col xs={!isMobile ? 'auto' : 3}>
-              <ActionWrapper
-                className={classes.actionWrapperSpace}
-                inlineClass={classNames(classes.inline, classes.icon)}
-                icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
-                hideStats={hideStats}
-                disabled={!is_authenticated}
-                onClick={handleClickReply}
-                stat={(
-                  <label style={{ marginLeft: 5 }}>
-                    {replyCount}
-                  </label>
-                )}
-              />
-            </Col>
+            {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&  
+              <Col xs={!isMobile ? 'auto' : 3}>
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classNames(classes.inline, classes.icon)}
+                  icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
+                  hideStats={hideStats}
+                  disabled={!is_authenticated}
+                  onClick={handleClickReply}
+                  stat={(
+                    <label style={{ marginLeft: 5 }}>
+                      {replyCount}
+                    </label>
+                  )}
+                />
+              </Col>}
             {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&
               <Col xs={!isMobile ? 4 : 4}>
                 <ActionWrapper

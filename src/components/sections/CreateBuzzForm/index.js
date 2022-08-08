@@ -600,8 +600,6 @@ const useStyles = createUseStyles(theme => ({
         position: 'relative',
         display: 'flex',
         width: '100%',
-        // border: props => props.buzzThreads ? props.buzzThreads[2] ? '2px solid white' : 'none' : 'none',
-        // margin: props => props.buzzThreads ? props.buzzThreads[2] ? 15 : 'none' : 'none',
         
         '&:after': {
           position: 'absolute',
@@ -1373,8 +1371,6 @@ const CreateBuzzForm = (props) => {
 
       emoticon.length === 2 && setCursorPosition(cursorPosition+2)
       emoticon.length === 4 && setCursorPosition(cursorPosition+4)
-      // savePostAsDraft(contentAppend)
-      // savePostAsDraftToStorage(contentAppend)
     }
   }
 
@@ -1830,7 +1826,6 @@ const CreateBuzzForm = (props) => {
       />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads} />
       <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
-      {/* <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} /> */}
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
     </div>
