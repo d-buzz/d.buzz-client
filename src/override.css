@@ -324,4 +324,6 @@ input[type=number] {
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 55px;
+  pointer-events: all;
+  cursor: pointer;
 }

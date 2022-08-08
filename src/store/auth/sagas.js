@@ -99,7 +99,7 @@ import {
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer} from 'services/helper'
-import { checkCeramicLogin, getBasicProfile, loginWithMetaMask, reauthenticateWithCeramic, setBasicProfile } from 'services/ceramic'
+import { checkCeramicLogin, getBasicProfile, loginWithMetaMask, reauthenticateWithCeramic } from 'services/ceramic'
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 
@@ -201,19 +201,19 @@ function* authenticateUserRequest(payload, meta) {
       // sign in with meta mask
       console.log('logging in with ceramic + meta mask!')
       const did = yield call(loginWithMetaMask)
-      const profile = yield call(getBasicProfile, did.id)
+      // const profile = yield call(getBasicProfile, did.id)
 
-      if(did) {
-        // alert(`initiating ceramic login: ${did.id}`)
+      // if(did) {
+      //   // alert(`initiating ceramic login: ${did.id}`)
 
-        // if profile.name not exists then ask for a name
-        if(!profile.name) {
-          const name = prompt('Enter a name for your new account \n(click on Cancel if you want default)')
-          if(name) {
-            yield call(setBasicProfile, {...profile, name})
-          }
-        }
-      }
+      //   // if profile.name not exists then ask for a name
+      //   // if(!profile.name) {
+      //   //   const name = prompt('Enter a name for your new account \n(click on Cancel if you want default)')
+      //   //   if(name) {
+      //   //     yield call(setBasicProfile, {...profile, name})
+      //   //   }
+      //   // }
+      // }
 
       if(did) {
         user.is_authenticated = true

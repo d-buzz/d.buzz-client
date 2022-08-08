@@ -202,40 +202,63 @@ const EditProfileModal = (props) => {
     }
   }
 
+  const handleImageCompression = async (image) => {
+    let compressedFile = null
+  
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    }
+    try {
+      await import('browser-image-compression').then(async({ default: imageCompression }) => {
+        compressedFile = await imageCompression(image, options)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    
+    return compressedFile !== null && compressedFile
+  }
+
   const handleChangeProfileImage = (e) => {
-    const files = e.target.files[0]
+    const file = e.target.files[0]
     setProfileAvatar(URL.createObjectURL(e.target.files[0]))
-    if(files){
+    if(file){
       setUploadAvatarLoading(true)
-      uploadFileRequest(files, setImageUploadProgress, true).then((image) => {
-        setUploadAvatarLoading(false)
-        const lastImage = image[image.length - 1]
-        if (lastImage !== undefined) {
-          setProfileAvatar(lastImage)
-          setImageUploadProgress(0)
-        }else{
-          broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-          setImageUploadProgress(0)
-        }
+      handleImageCompression(file).then((compressedImage) => {
+        uploadFileRequest(compressedImage, setImageUploadProgress, true).then((image) => {
+          setUploadAvatarLoading(false)
+          const lastImage = image[image.length - 1]
+          if (lastImage !== undefined) {
+            setProfileAvatar(lastImage)
+            setImageUploadProgress(0)
+          }else{
+            broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+            setImageUploadProgress(0)
+          }
+        })
       })
     }
   }
 
   const handleChangeCoverImage = (e) => {
-    const files = e.target.files[0]
+    const file = e.target.files[0]
     setProfileCoverImage(URL.createObjectURL(e.target.files[0]))
-    if(files){
+    if(file){
       setUploadCoverLoading(true)
-      uploadFileRequest(files, setImageUploadProgress, true).then((image) => {
-        setUploadCoverLoading(false)
-        const lastImage = image[image.length - 1]
-        if (lastImage !== undefined) {
-          setProfileCoverImage(lastImage)
-          setImageUploadProgress(0)
-        }else{
-          broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-          setImageUploadProgress(0)
-        }
+      handleImageCompression(file).then((compressedImage) => {
+        uploadFileRequest(compressedImage, setImageUploadProgress, true).then((image) => {
+          setUploadCoverLoading(false)
+          const lastImage = image[image.length - 1]
+          if (lastImage !== undefined) {
+            setProfileCoverImage(lastImage)
+            setImageUploadProgress(0)
+          }else{
+            broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+            setImageUploadProgress(0)
+          }
+        })
       })
     }
   }

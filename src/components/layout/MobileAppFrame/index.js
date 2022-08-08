@@ -229,7 +229,7 @@ const MobileAppFrame = (props) => {
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
   const moreMenuRef = useRef()
   const classes = useStyles()
-  const [avatarUrl, setAvatarUrl] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState(null)
 
   const [activeView, setActiveView] = useState('home')
 

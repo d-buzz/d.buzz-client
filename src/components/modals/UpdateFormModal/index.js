@@ -220,8 +220,11 @@ const UpdateFormModal = (props) => {
   const [counterColor, setCounterColor] = useState('#e53935')
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
-
+  
   const [updating, setUpdating] = useState(false)
+
+  // cursor state
+  const [cursorPosition, setCursorPosition] = useState(null)
 
   useEffect(() => {
     if(content.length - overhead === 280) {
@@ -254,8 +257,10 @@ const UpdateFormModal = (props) => {
   const handleOnChange = (e) => {
     const { target } = e
     const { value } = target
+    setCursorPosition(e.target.selectionStart)
     setContent(value)
   }
+
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload-reply')
@@ -342,9 +347,13 @@ const UpdateFormModal = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const cursor = cursorPosition
+      const contentAppend = content.slice(0, cursor) + emoticon + content.slice(cursor)
       setContent(contentAppend)
-    } 
+
+      emoticon.length === 2 && setCursorPosition(cursorPosition+2)
+      emoticon.length === 4 && setCursorPosition(cursorPosition+4)
+    }
   }
 
   return (
@@ -380,6 +389,18 @@ const UpdateFormModal = (props) => {
                         <label className={classes.actionLabels}>broadcasting your update to the network, please wait ...</label>&nbsp;
                       </Box>
                     </div>
+                  )}
+                  {!loading && (
+                    <TextArea
+                      style={textAreaStyle}
+                      minRows={3}
+                      maxLength={280 + overhead}
+                      label="Buzz your reply"
+                      value={content}
+                      onKeyUp={handleOnChange}
+                      onKeyDown={handleOnChange}
+                      onChange={handleOnChange}
+                    />
                   )}
                   {!loading && (
                     <TextArea
