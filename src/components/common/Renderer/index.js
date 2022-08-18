@@ -926,7 +926,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render IPFS images
       .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
     // render dbuzz images
-      .replace(/(https:\/\/(storageapi\.fleek\.co\/nathansenn-team-bucket\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(https:\/\/(storageapi\.fleek\.co\/.*\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
     //   // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 

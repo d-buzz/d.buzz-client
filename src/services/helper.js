@@ -201,7 +201,10 @@ export const readSession = (session) => {
   sessionDec = JSON.parse(sessionDec.toString(CryptoJS.enc.Utf8))
 
   const { index, uid, data } = sessionDec
-  const uuid = decrypt(index, uid)
+  let uuid
+  if(index && uid) {
+    uuid = decrypt(index, uid)
+  }
   const hash = sha256(uuid).toString()
 
   let dataDec = CryptoJS.AES.decrypt(data, hash)

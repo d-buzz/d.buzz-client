@@ -462,12 +462,12 @@ const LoginModal = (props) => {
                   </React.Fragment>
                   <FormSpacer />
                   <React.Fragment>
-                    {(hasMetaMaskInstalled) && (
+                    {(hasMetaMaskInstalled) && !isMobile && (
                       <MetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
                     )}
-                    {(isMobile && !hasMetaMaskInstalled) && (
+                    {/* {(isMobile && !hasMetaMaskInstalled) && (
                       <MetaMaskButton onClick={handleOpenMetaMask} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
-                    )}
+                    )} */}
                     {!hasMetaMaskInstalled && !isMobile && (
                       <React.Fragment>
                         <FormSpacer />

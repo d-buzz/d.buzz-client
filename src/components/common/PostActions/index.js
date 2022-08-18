@@ -384,7 +384,6 @@ const PostActions = (props) => {
           })
         })
 
-
       } else {
         upvoteRequest(author, permlink, sliderValue)
           .then(({ success, errorMessage }) => {
@@ -561,7 +560,7 @@ const PostActions = (props) => {
               />
               <Col xs="auto">
                 <div className={classNames('right-content', classes.right)}>
-                  <input className='buzzUrl' type='text' value={`https://d.buzz/#/@${author}/c/${permlink}`} hidden/>
+                  <input className='buzzUrl' type='text' value={`${window.location.origin}/#/@${author}/c/${permlink}`} hidden/>
                   <Menu
                     anchorEl={openCaret}
                     keepMounted

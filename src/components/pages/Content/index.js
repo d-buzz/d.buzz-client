@@ -301,7 +301,7 @@ const Content = (props) => {
   useEffect(() => {
     checkHasUpdateAuthorityRequest(username)
       .then((result) => {
-        setHasUpdateAuthority(result)
+        setHasUpdateAuthority(author === user.username)
       })
     // eslint-disable-next-line
   }, [author])
@@ -569,7 +569,7 @@ const Content = (props) => {
                     </p>
                   </div>
                 </Col>
-                {is_authenticated && (
+                {is_authenticated && !checkForCeramicAccount(user.username) && (
                   <IconButton className={classes.iconButton} style={{float: 'right', width: 'fit-content', height: 'fit-content', marginRight: 25}} onClick={handleClickMore} size='small'>
                     <MoreHoriz className={classes.moreIcon} />
                   </IconButton>
@@ -632,14 +632,14 @@ const Content = (props) => {
             >
               {!hasUpdateAuthority && (
                 <React.Fragment>
-                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
-                  <MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>
+                  {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
+                  {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>}
                 </React.Fragment>
               )}
               {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
-                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
+                  {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
                   <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
                 </React.Fragment>
