@@ -377,6 +377,16 @@ function* getSavedUserRequest (meta) {
       }
     }
 
+    if(user.useHAS) {
+      import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+        if(HiveAuth.hacGetAccounts().length === 0) {
+          alert('Your HiveAuth session has been expired. Please login again.')
+          signoutUserRequest()
+          localStorage.clear()
+        }
+      })
+    }
+    
     if(user.useCeramic) {
       const auth = JSON.parse(localStorage.getItem('ceramic.auth'))
       const did = auth.authDID
@@ -385,23 +395,24 @@ function* getSavedUserRequest (meta) {
           localStorage.setItem('ceramic.user', JSON.stringify(res))
         })
     }
-
+    
     const censorList = yield call(getCensoredList)
     yield put(setCensorList(censorList))
-
+    
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
-
+    
     if(payoutAgreed === null) {
       payoutAgreed = false
     }
-
+    
     yield put(setAccountList(accounts))
     yield put(setHasAgreedPayout(payoutAgreed))
     yield put(setHiddenBuzzes(hiddenBuzzes))
-
+    
     yield put(getSavedUserSuccess(user, meta))
   } catch(error) {
     yield put(getSavedUserFailure(user, meta))
+    signoutUserRequest()
     console.log('not saved', error)
   }
 }
@@ -499,7 +510,8 @@ function* signoutUserRequest(meta) {
     yield call([localStorage, localStorage.setItem], 'active', null)
     yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify([]))
     yield put(setAccountList([]))
-    localStorage.clear()
+    yield call([localStorage, localStorage.clear])
+
     yield call([localStorage, localStorage.setItem], 'lastUser', lastUser)
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
