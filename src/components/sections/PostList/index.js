@@ -38,6 +38,7 @@ import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { getUserCustomData } from 'services/database/api'
 import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
 import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
+import { checkForCeramicAccount } from 'services/ceramic'
 
 const addHover = (theme) => {
   let style = {
@@ -572,10 +573,10 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
-                    <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>
+                    {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>}
                     {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {getPocket().pocketName}</MenuItem>)}
-                    {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
-                    {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                    {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
+                    {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
                     {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
                   </Menu>}

@@ -1069,7 +1069,6 @@ const CreateBuzzForm = (props) => {
     const image = event.target.files[0]
 
     const fileSize = image.size / 1e+6
-
     setImageSize(Number(fileSize.toFixed(2)))
 
     setCompressing(true)
@@ -1536,7 +1535,7 @@ const CreateBuzzForm = (props) => {
                   <div className={classes.titleBox} tabIndex={0}>
                     <Avatar author={user.username} avatarUrl={avatarUrl} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
                     <span className="titleContainer">
-                      <input type='text' maxLength={60} placeholder='Buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
+                      <input type='text' maxLength={60} placeholder='Add a buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
                       {buzzTitle && <span className='counter'>{buzzTitle.length}/60</span>}
                     </span>
                   </div>}
