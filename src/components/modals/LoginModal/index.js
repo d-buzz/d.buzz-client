@@ -311,9 +311,9 @@ const LoginModal = (props) => {
     }
   }, [])
 
-  const handleOpenMetaMask = () => {
-    window.location.href = 'https://metamask.app.link/dapp/next.d.buzz'
-  }
+  // const handleOpenMetaMask = () => {
+  //   window.location.href = 'https://metamask.app.link/dapp/next.d.buzz'
+  // }
 
   return (
     <React.Fragment>
@@ -462,7 +462,7 @@ const LoginModal = (props) => {
                   </React.Fragment>
                   <FormSpacer />
                   <React.Fragment>
-                    {(hasMetaMaskInstalled) && !isMobile && (
+                    {(hasMetaMaskInstalled) && !isMobile && accounts.length === 0 && (
                       <MetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
                     )}
                     {/* {(isMobile && !hasMetaMaskInstalled) && (

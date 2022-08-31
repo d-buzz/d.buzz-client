@@ -48,7 +48,7 @@ import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import MoreIcon from 'components/elements/Icons/MoreIcon'
-import { checkCeramicLogin, checkForCeramicAccount, getBasicProfile } from 'services/ceramic'
+import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
 
@@ -229,7 +229,6 @@ const MobileAppFrame = (props) => {
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
   const moreMenuRef = useRef()
   const classes = useStyles()
-  const [avatarUrl, setAvatarUrl] = useState(null)
 
   const [activeView, setActiveView] = useState('home')
 
@@ -367,16 +366,6 @@ const MobileAppFrame = (props) => {
     }
     // eslint-disable-next-line
   }, [])
-
-  useEffect(() => {
-    if(checkForCeramicAccount(username)) {
-      getBasicProfile(username).then((ceramicProfile) => {
-        const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
-        setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
-      })
-    }
-    // eslint-disable-next-line
-  }, [username])
 
   const NavLinks = [
     {
@@ -690,7 +679,7 @@ const MobileAppFrame = (props) => {
               <SearchIcon/>
             </IconButton>
             <div className={classes.avatarWrapper}>
-              <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} avatarUrl={avatarUrl} /></span>
+              <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
             </div>
           </React.Fragment>)}
           </Navbar>
