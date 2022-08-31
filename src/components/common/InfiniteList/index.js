@@ -32,6 +32,7 @@ class InfiniteList extends PureComponent {
       title = false,
       disableOpacity = true,
       loadPockets,
+      selectedPocket,
     } = this.props
 
     const clearOutlineStyle = { outline: 'none' }
@@ -92,6 +93,7 @@ class InfiniteList extends PureComponent {
                   recomputeRowIndex={recomputeRowIndex}
                   muteTrigger={muteTrigger}
                   item={items[index]}
+                  selectedPocket={selectedPocket}
                   loadPockets={loadPockets}
                 />
               </div>
@@ -130,6 +132,7 @@ class InfiniteList extends PureComponent {
                 recomputeRowIndex={recomputeRowIndex}
                 muteTrigger={muteTrigger}
                 item={items[index]}
+                selectedPocket={selectedPocket}
                 loadPockets={loadPockets}
               />
             </ResizeObserver>

@@ -30,6 +30,7 @@ const useStyles = createUseStyles(theme => ({
       width: '100%',
       fontSize: '1.2em',
       fontWeight: 600,
+      color: theme.font.color,
     },
     
     '&:disabled': {

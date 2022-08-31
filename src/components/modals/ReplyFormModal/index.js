@@ -223,7 +223,7 @@ const ReplyFormModal = (props) => {
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [ceramicAuthor, setCeramicAuthor] = useState(false)
   const [ceramicUser, setCeramicUser] = useState(false)
-  const [fetchingProfile, setFetchingProfile] = useState(false)
+  const [fetchingProfile, setFetchingProfile] = useState(true)
   const [replying, setReplying] = useState(false)
   const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.svg`
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
@@ -289,8 +289,8 @@ const ReplyFormModal = (props) => {
   }, [modalData])
 
   useEffect(() => {
-    setFetchingProfile(true)
     if(checkForCeramicAccount(username)) {
+      setFetchingProfile(true)
       getBasicProfile(username)
         .then((res) => {
           setCeramicUser(res)
@@ -299,12 +299,14 @@ const ReplyFormModal = (props) => {
             setUserAvatarUrl(getIpfsLink(res.images.avatar))
           }
         })
+    } else {
+      setFetchingProfile(false)
     }
   }, [username])
   
   useEffect(() => {
-    setFetchingProfile(true)
     if(checkForCeramicAccount(author)) {
+      setFetchingProfile(true)
       getBasicProfile(author)
         .then((res) => {
           setCeramicAuthor(res)
@@ -313,6 +315,8 @@ const ReplyFormModal = (props) => {
             setAuthorAvatarUrl(getIpfsLink(res.images.avatar))
           }
         })
+    } else {
+      setFetchingProfile(false)
     }
   }, [author])
 
