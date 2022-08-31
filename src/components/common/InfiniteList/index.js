@@ -32,7 +32,7 @@ class InfiniteList extends PureComponent {
       title = false,
       disableOpacity = true,
       loadPockets,
-      selectedPocket
+      selectedPocket,
     } = this.props
 
     const clearOutlineStyle = { outline: 'none' }
