@@ -377,7 +377,7 @@ const AccountsPockets = (props) => {
               </div>}
             </div>
             {pocketBuzzes.length > 0 ?
-              <InfiniteList loading={loading} items={pocketBuzzes} onScroll={() => {}} loadPockets={loadPockets}/> :
+              <InfiniteList loading={loading} items={pocketBuzzes} selectedPocket={selectedPocket} onScroll={() => {}} loadPockets={loadPockets}/> :
               <div className={classes.notFound}>
                 <span className="noBuzzesFoundText">There are no buzzes in this pocket!</span>
               </div>}
