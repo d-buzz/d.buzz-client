@@ -5,9 +5,7 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
-import IconButton from '@material-ui/core/IconButton'
 import classNames from 'classnames'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import { uploadFileRequest } from 'store/posts/actions'
 import { broadcastNotification, closeReplyModal } from 'store/interface/actions'
 import { publishUpdateRequest } from 'store/posts/actions'
@@ -19,6 +17,10 @@ import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import { calculateOverhead } from 'services/helper'
 import Renderer from 'components/common/Renderer'
+import { checkForCeramicAccount, updatePostRequest } from 'services/ceramic'
+
+const CircularProgress = React.lazy(() => import('@material-ui/core/CircularProgress'))
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -218,6 +220,11 @@ const UpdateFormModal = (props) => {
   const [counterColor, setCounterColor] = useState('#e53935')
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
+  
+  const [updating, setUpdating] = useState(false)
+
+  // cursor state
+  const [cursorPosition, setCursorPosition] = useState(null)
 
   useEffect(() => {
     if(content.length - overhead === 280) {
@@ -250,8 +257,10 @@ const UpdateFormModal = (props) => {
   const handleOnChange = (e) => {
     const { target } = e
     const { value } = target
+    setCursorPosition(e.target.selectionStart)
     setContent(value)
   }
+
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload-reply')
@@ -285,16 +294,30 @@ const UpdateFormModal = (props) => {
 
 
   const handleClickSubmitUpdate = () => {
-    publishUpdateRequest(permlink, content)
-      .then((success) => {
-        if(success) {
+    setUpdating(true)
+    if(!checkForCeramicAccount(username)) {
+      publishUpdateRequest(permlink, content)
+        .then((success) => {
+          if(success) {
+            broadcastNotification('success', `Buzz successfully edited`)
+            setUpdating(false)
+            onSuccess(content)
+            onClose()
+          } else {
+            broadcastNotification('error', `Buzz failed to edited`)
+          }
+        })
+    } else {
+      updatePostRequest(permlink, content)
+        .then((data) => {
           broadcastNotification('success', `Buzz successfully edited`)
+          setUpdating(false)
           onSuccess(content)
           onClose()
-        } else {
+        }).catch((e) => {
           broadcastNotification('error', `Buzz failed to edited`)
-        }
-      })
+        })
+    }
   }
 
   const closeGiphy = () => {
@@ -324,9 +347,13 @@ const UpdateFormModal = (props) => {
 
   const handleSelectEmoticon = (emoticon) => {
     if (emoticon) {
-      const contentAppend = `${content}${emoticon}`
+      const cursor = cursorPosition
+      const contentAppend = content.slice(0, cursor) + emoticon + content.slice(cursor)
       setContent(contentAppend)
-    } 
+
+      emoticon.length === 2 && setCursorPosition(cursorPosition+2)
+      emoticon.length === 4 && setCursorPosition(cursorPosition+4)
+    }
   }
 
   return (
@@ -362,6 +389,18 @@ const UpdateFormModal = (props) => {
                         <label className={classes.actionLabels}>broadcasting your update to the network, please wait ...</label>&nbsp;
                       </Box>
                     </div>
+                  )}
+                  {!loading && (
+                    <TextArea
+                      style={textAreaStyle}
+                      minRows={3}
+                      maxLength={280 + overhead}
+                      label="Buzz your reply"
+                      value={content}
+                      onKeyUp={handleOnChange}
+                      onKeyDown={handleOnChange}
+                      onChange={handleOnChange}
+                    />
                   )}
                   {!loading && (
                     <TextArea
@@ -417,11 +456,12 @@ const UpdateFormModal = (props) => {
                       <EmojiIcon />
                     </IconButton>
                     <ContainedButton
+                      loading={loading || updating}
                       label="Update"
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleClickSubmitUpdate}
-                      disabled={loading || `${content}`.trim() === ''}
+                      disabled={loading || `${content}`.trim() === '' || updating}
                     />
                     <Box
                       style={{ float: 'right', marginRight: 15, paddingTop: 10}}

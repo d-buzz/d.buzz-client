@@ -113,16 +113,21 @@ const UserDialog = React.memo((props) => {
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowed, setIsFollowed] = useState(false)
 
+  const [ceramicUser, setCeramicUser] = useState(false)
+  const [ceramicProfile, setCeramicProfile] = useState({})
+
   const followButtonStyle = { float: 'right', marginTop: 5 }
   const zeroPaddingRight = { paddingRight: 0 }
 
   const fetchFollowInformation = () => {
-    getFollowDetailsRequest(author)
-      .then(({ isFollowed: followed, count }) => {
-        setFollowerCount(count.follower_count)
-        setFollowingCount(count.following_count)
-        setIsFollowed(followed)
-      })
+    if(!author.did) {
+      getFollowDetailsRequest(author)
+        .then(({ isFollowed: followed, count }) => {
+          setFollowerCount(count.follower_count)
+          setFollowingCount(count.following_count)
+          setIsFollowed(followed)
+        })
+    }
   }
 
   useEffect(() => {
@@ -130,8 +135,15 @@ const UserDialog = React.memo((props) => {
       const { open } = userDialogData
       if(open) {
         const { author, anchorEl } = userDialogData
-        setAnchor(anchorEl)
-        setAuthor(author)
+        if(!author.did) {
+          setAnchor(anchorEl)
+          setAuthor(author)
+        } else {
+          setAnchor(anchorEl)
+          setCeramicUser(true)
+          setCeramicProfile(author)
+          setAuthor(author.did)
+        }
       } else {
         setAnchor(null)
         setAbout('')
@@ -256,7 +268,7 @@ const UserDialog = React.memo((props) => {
               <Row>
                 <Col xs="auto" style={zeroPaddingRight}>
                   <div className={classes.left}>
-                    <Avatar author={author} />
+                    <Avatar author={author} avatarUrl={ceramicUser ? `https://ipfs.io/ipfs/${ceramicProfile.images?.avatar.replace('ipfs://', '')}` : ''} />
                   </div>
                 </Col>
                 <Col>
@@ -299,8 +311,8 @@ const UserDialog = React.memo((props) => {
                       <Link
                         to={authorLink}
                       >
-                        {`@${author}`}
-                      </Link>&nbsp;<Chip  size="small" label={reputation} />
+                        {!ceramicUser ? `@${author}` : ceramicProfile.name || ceramicProfile.did}
+                      </Link>&nbsp;{!ceramicUser ? <Chip  size="small" label={reputation} /> : 'LITE'}
                     </label>
                     <p className={classes.paragraph}>
                       {about}

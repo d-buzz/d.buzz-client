@@ -5,7 +5,6 @@ import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 import { setWhatsNewModalStatus } from 'store/interface/actions'
 import WhatsNewModal from 'components/modals/WhatsNewModal'
-import { updates } from 'updates'
 import EventsModal from 'components/modals/EventsModal'
 
 const Home = (props) => {
@@ -15,7 +14,6 @@ const Home = (props) => {
   const params = queryString.parse(search)
   const [open, setOpen] = useState(true)
   const updatesModalStatus = localStorage.getItem('updatesModal')
-  const status = updates.status
   const eventsModalStatus = localStorage.getItem('eventsModal')
   const [eventsModal, setEventsModal] = useState(true)
   const eventsModalActivated = false
@@ -45,7 +43,7 @@ const Home = (props) => {
     <div>
       {is_authenticated && <Feeds />}
       {!is_authenticated && <Landing />}
-      {is_authenticated && status && !updatesModalStatus && <WhatsNewModal show={open} onHide={handleOnWhatsNewModalHide}/>}
+      {is_authenticated && !updatesModalStatus && <WhatsNewModal show={open} onHide={handleOnWhatsNewModalHide}/>}
       {is_authenticated && !open && !eventsModalStatus && eventsModal && eventsModalActivated && <EventsModal show={!eventsModalStatus} onHide={handleOnEventsModalHide}/>}
     </div>
   )

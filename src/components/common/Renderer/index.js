@@ -8,12 +8,13 @@ import { createUseStyles } from 'react-jss'
 import TwitterEmbed from '../TwitterEmbed'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
+// import remarkGfm from 'remark-gfm'
 import VideoPreview from '../VideoPreview'
 import { bindActionCreators } from 'redux'
-import { setViewImageModal } from 'store/interface/actions'
+import { setViewImageModal, setLinkConfirmationModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
-import { proxyImage } from 'services/helper'
+import { proxyImage, truncateString } from 'services/helper'
+import { isMobile } from 'react-device-detect'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -150,13 +151,12 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   usernameStyle: {
-    border: '1px solid rgba(230, 28, 52, 0.2)',
     margin: '5px 2px',
-    padding: '1px 5px',
-    paddingBottom: 2,
+    padding: '0 5px',
     background: 'rgba(255, 235, 238, 0.8)',
-    borderRadius: 5,
+    borderRadius: 25,
     transition: 'opacity 250ms',
+    cursor: 'pointer',
     
     '& a': {
       textDecoration: 'none',
@@ -260,7 +260,7 @@ const prepareTwitterEmbeds = (content) => {
 }
 
 const prepareVimmEmbeds = (content) => {
-  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?))))/i
+  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/c\/(.*?))))/i
   const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
   let body = content
 
@@ -271,15 +271,16 @@ const prepareVimmEmbeds = (content) => {
     let match = ''
     let id = ''
 
+    const data = link.split('/')
+
     try {
       if(link.match(vimmRegex) && !link.includes('/view')){
-        const data = link.split('/')
         match = link.match(vimmRegex)
-        id = data[3]
-        if(link.match(vimmRegexEmbed)){
-          match = link.match(vimmRegexEmbed)
-          id = match[1]
-        }
+        id = data[4]
+      }
+      else if(link.match(vimmRegexEmbed)){
+        match = link.match(vimmRegexEmbed)
+        id = match[1]
       }
 
       if(match){
@@ -489,7 +490,7 @@ const prepareBannedEmbeds = (content) => {
 }
 
 const prepareDollarVigilanteEmbeds = (content) => {
-  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?dollarvigilante\.tv\/videos\/watch\/(.*))))/i
+  const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?vigilante\.tv\/w\/(.*))))/i
   
   let body = content
   
@@ -504,8 +505,8 @@ const prepareDollarVigilanteEmbeds = (content) => {
 		  if(link.match(dollarVigilanteRegex)){
 		    const data = link.split('/')
         match = link.match(dollarVigilanteRegex)
-        if (data[5]) {
-          id = data[5]
+        if (data[4]) {
+          id = data[4]
         }
       }
   
@@ -787,7 +788,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     return <UrlVideoEmbed key={`${url}${scrollIndex}banned`} url={url} />  
   } else if(content.includes(':dollarvigilante:')) {
     const splitDollarvigilante = content.split(':')
-    const url = `https://dollarvigilante.tv/videos/embed/${splitDollarvigilante[2]}`
+    const url = `https://vigilante.tv/videos/embed/${splitDollarvigilante[2]}`
     return <UrlVideoEmbed key={`${url}${scrollIndex}dollarvigilante`} url={url} />  
   } else if(content.includes(':dapplr:')) {
     const splitDapplr = content.split(':')
@@ -819,7 +820,8 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
               scrolling="no" 
               frameborder="0" 
               allowfullscreen="true" 
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              loading='lazy'
             >
             </iframe>
           </div>
@@ -843,6 +845,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
               frameBorder='0'
               height='250'
               width='100%'
+              loading='lazy'
             ></iframe>
           </div>
         </React.Fragment>
@@ -866,6 +869,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
             frameBorder='0'
             height='300'
             width='100%'
+            loading='lazy'
           ></iframe>
         </div>
       </React.Fragment>
@@ -910,7 +914,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a href='${n.startsWith('http') ? n : `https://${n}`}'>${n}</a>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a class="hyperlink" onclick="() => return false;" id="${n}">${truncateString(n, 25)}</a>` : n)
     // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
     //   // render hashtags 
@@ -918,18 +922,18 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // // render web images links
-      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // // render IPFS images
-      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // render dbuzz images
-      .replace(/(https:\/\/(storageapi\.fleek\.co\/nathansenn-team-bucket\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
+      .replace(/(https:\/\/(storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
     //   // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
       skipHtml={true}
-      remarkPlugins={[remarkGfm]}
+      // remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
       children={content}
       className={classNames(markdownClass, assetClass, classes.inputArea)}
@@ -946,6 +950,7 @@ const Renderer = React.memo((props) => {
     recomputeRowIndex = () => {},
     loader = true,
     setViewImageModal,
+    setLinkConfirmationModal,
   } = props
   let { content = '' } = props
   const original = content
@@ -953,14 +958,31 @@ const Renderer = React.memo((props) => {
   const extracted = markdownLinkExtractor(content)
 
   extracted.forEach((item) => {
-    const link = item.replace(/\(/g, '%28').replace(/\)/g, '%29')
-    content = content.replace(item, link)
+    const link = item?.replace(/\(/g, '%28').replace(/\)/g, '%29')
+    content = content?.replace(item, link)
   })
 
   const links = textParser.getUrls(content)
 
+  const prepareHyperlinks = () => {
+    const hyperlinks = document.querySelectorAll(`.hyperlink`)
+    hyperlinks.forEach((hyperlink) => {
+      hyperlink.addEventListener('click', function (e) {
+        e.preventDefault()
+        const url = hyperlink.id
+        setLinkConfirmationModal(url)
+      })
+      if(isMobile) {
+        hyperlink.addEventListener('touchstart', function () {
+          const url = hyperlink.id
+          setLinkConfirmationModal(url)
+        })
+      }
+    })
+  }
+
   const loadImages = () => {
-    const imagesRegex = /(?:(?:https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+)|(?:https?:\/\/([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*\.(?:png|jpg|gif|jpeg|bmp)))/gi
+    const imagesRegex = /(?:(?:https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+)|(?:https?:\/\/([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi
     if(content.match(imagesRegex)){
       content.match(imagesRegex).forEach(image => {
         const imageClass = image
@@ -980,7 +1002,7 @@ const Renderer = React.memo((props) => {
             }
           }
           imageEl.onerror = () => {
-            imageEl.src = `${window.location.origin}/noimage.jpg`
+            imageEl.src = `${window.location.origin}/noimage.svg`
             imageEl.style.animation = 'none'
             imageEl.style.opacity = '1'
           }
@@ -1000,9 +1022,11 @@ const Renderer = React.memo((props) => {
 
   useEffect(() => {
     loadImages()
+    prepareHyperlinks()
     // eslint-disable-next-line
   }, [content])
 
+  
   if(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus !== 'disabled') {
     links.forEach((link) => {
       try {
@@ -1024,7 +1048,7 @@ const Renderer = React.memo((props) => {
           content = prepareBitchuteEmbeds(content)
         } else if(link.includes('banned.video')) {
           content = prepareBannedEmbeds(content)
-        } else if(link.includes('dollarvigilante.tv')) {
+        } else if(link.includes('vigilante.tv')) {
           content = prepareDollarVigilanteEmbeds(content)
         } else if(link.includes('dapplr.in')) {
           content = prepareDapplrEmbeds(content)
@@ -1074,6 +1098,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators(
     {
       setViewImageModal,
+      setLinkConfirmationModal,
     },dispatch),
 })
 

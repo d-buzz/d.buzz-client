@@ -1,9 +1,9 @@
-import { IconButton } from '@material-ui/core'
-import CloseIcon from 'components/elements/Icons/CloseIcon'
 import React from 'react'
+import CloseIcon from 'components/elements/Icons/CloseIcon'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -79,7 +79,7 @@ function EventsModal(props) {
               <CloseIcon />
             </IconButton>
             <span className={classes.eventContainer}>
-              <img src={`${window.location.origin}/happy-new-year-2022.gif`} alt="Happy New Year 2022" />
+              <img src='' alt="Event Header" loading='lazy'/>
             </span>
           </div>
         </ModalBody>

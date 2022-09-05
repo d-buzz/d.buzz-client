@@ -30,6 +30,7 @@ const UrlVideoEmbed = (props) => {
           frameBorder='0'
           height='300'
           width='100%'
+          loading='lazy'
         ></iframe>
       </div>
       <br />

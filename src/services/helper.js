@@ -4,10 +4,13 @@ import { encrypt, decrypt } from 'caesar-shift'
 import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
-import stripHtml from 'string-strip-html'
 import textParser from 'npm-text-parser'
 
 const dmp = new diff_match_patch()
+
+export const stripHtml = (content) => {
+  return content.replace(/(<([^>]+)>)/gi, '')
+}
 
 export const getUrls = (text) => {
   const regexUrls = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[/w@?^=%&/~+#-(a-z)(A-Z)(0-9)])?/gm
@@ -198,7 +201,10 @@ export const readSession = (session) => {
   sessionDec = JSON.parse(sessionDec.toString(CryptoJS.enc.Utf8))
 
   const { index, uid, data } = sessionDec
-  const uuid = decrypt(index, uid)
+  let uuid
+  if(index && uid) {
+    uuid = decrypt(index, uid)
+  }
   const hash = sha256(uuid).toString()
 
   let dataDec = CryptoJS.AES.decrypt(data, hash)
@@ -254,16 +260,16 @@ export const sendToBerries = (author, theme) => {
   window.open(`https://buymeberri.es/!dbuzz${color}/@${author}`, '_blank')
 }
 
-export const calculateOverhead = (content) => {
-  let urls = getUrls(content)
+export const calculateOverhead = (content, imagesSize = 0) => {
+  let urls = getUrls(content) || []
 
   let overhead = 0
 
-  if(urls?.length > 3) {
-    urls = urls?.slice(0, 2)
+  if((urls.length+imagesSize) > 3) {
+    urls = urls.slice(0, 2)
   }
 
-  if(urls){
+  if(urls && urls.length+imagesSize <= 3){
     urls.forEach((item) => {
       overhead += item.length
     })
@@ -378,7 +384,7 @@ export const getDefaultVotingWeight = () => {
   if(voteWeight) {
     return voteWeight
   }
-  return 0
+  return 1
 }
 
 export const redirectToUserProfile = () => {
@@ -393,7 +399,7 @@ export const getTheme =() => {
   let mode = ''
 
   if(theme && (theme === 'gray' || theme === 'night') ) {
-    mode = 'dark'
+    mode = theme
   } else {
     mode = 'light'
   }
@@ -405,4 +411,12 @@ export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style
 
 export const proxyImage = (url) => {
   return `https://images.hive.blog/0x0/${url}`
+}
+
+export const truncateString = (str, num) => {
+  if (str.length > num) {
+    return str.slice(0, num) + "..."
+  } else {
+    return str
+  }
 }

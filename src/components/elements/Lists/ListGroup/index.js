@@ -5,6 +5,7 @@ const useStyles = createUseStyles(theme => ({
   container: {
     backgroundColor: theme.right.list.background,
     borderRadius: '10px 10px',
+    padding: 10,
   },
   wrapper: {
     width: '100%',

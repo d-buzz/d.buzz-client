@@ -19,7 +19,7 @@ const TweetLoader = () => {
   return(
     <React.Fragment>
       <div className={classes.wrapper}>
-        <img src={`${window.location.origin}/twitter-loader.png`} height={30} alt='loading tweet...'/>
+        <img src={`${window.location.origin}/twitter.svg`} height={30} alt='loading tweet...' loading='lazy'/>
       </div>
     </React.Fragment>
   )

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import 'emoji-mart/css/emoji-mart.css'
-import { Picker } from 'emoji-mart'
-import { Popover } from '@material-ui/core'
+import Popover from '@material-ui/core/Popover'
 import { connect } from 'react-redux'
+import Picker from 'emoji-mart/dist-es/components/picker/picker'
 
 const EmojiPicker = (props) => {
   const { 

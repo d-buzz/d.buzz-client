@@ -120,12 +120,35 @@ button:focus {
 
 .MuiAlert-root {
   border-radius: 15px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.MuiAlert-standardSuccess {
+  background: #28a745 !important;
+}
+
+.MuiAlert-standardError {
+  background: #dc3545 !important;
+}
+
+.MuiAlert-outlinedSuccess {
+  background: #28a745 !important;
+}
+
+.MuiAlert-outlinedError {
+  background: #dc3545 !important;
 }
 
 .MuiAlert-icon {
   align-items: center;
   color: #ffffff !important;
   font-size: 30px !important;
+}
+
+.MuiBadge-colorSecondary {
+  background-color: #e65768 !important;
+  line-height: 2 !important;
 }
 
 @font-face {
@@ -233,18 +256,30 @@ input[type=number] {
   }
 }
 
+@keyframes avatar_loading {
+  0% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 * {
   scroll-behavior: smooth;
 }
 
 *::-webkit-scrollbar {
   background: transparent;
-  width: 15px;
+  width: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
   background: gray;
-  width: 15px;
+  width: 10px;
   border-radius: 30px;
 }
 
@@ -280,4 +315,15 @@ input[type=number] {
   100% {
     box-shadow: 0 0 0 3px #FF625E,
   }
+}
+
+.hyperlink {
+  background-color: rgba(255, 149, 149, 0.085) !important;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 55px;
+  pointer-events: all;
+  cursor: pointer;
 }

@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import { Link } from 'react-router-dom'
-import { List, AutoSizer } from 'react-virtualized'
+const { List, AutoSizer } = React.lazy(() => import('react-virtualized'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {

@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: node:14.7.0
+      - image: cimg/node:16.15.1
     working_directory: /tmp/dbuzz-client
 
 orbs:
@@ -13,15 +13,14 @@ commands:
   common-steps:
     steps:
       - checkout
-      - run: npm install
-      - run: npm run lint
+      - run: yarn install
 
 jobs:
   prod_build_test:
       executor: docker-executor
       steps:
         - common-steps
-        - run: npm run build:prod
+        - run: yarn run lint
         - discord/status:
             success_message: test build success on mainnet branch
             failure_message: test build failed on mainnet branch
@@ -31,7 +30,7 @@ jobs:
       executor: docker-executor
       steps:
         - common-steps
-        - run: npm run build:dev
+        - run: yarn run lint
         - discord/status:
             success_message: test build success on non mainnet branch
             failure_message: test build failed on non mainnet branch

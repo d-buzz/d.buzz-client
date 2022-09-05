@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextField as MatTextField } from '@material-ui/core'
+import { default as MatTextField } from '@material-ui/core/TextField'
 import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({

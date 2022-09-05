@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 import { Helmet } from 'react-helmet'
 import { redirectToUserProfile } from 'services/helper'
 import { useLocation } from 'react-router-dom'
-import TwitterEmbedAPI from 'components/pages/TwitterEmbedAPI'
+const TwitterEmbedAPI = React.lazy(() => import('components/pages/TwitterEmbedAPI'))
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -37,27 +37,29 @@ const App = () => {
 
   return (
     <React.Fragment>
-      <Helmet>
-        <meta property="og:title" content="D.Buzz" />
-        <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
-        <meta property="og:image" content="https://d.buzz/dbuzz.png" />
-        <meta property="title" content="D.Buzz" />
-        <meta property="description" content="D.Buzz | Micro-blogging for HIVE" />
-        <meta property="image" content="https://d.buzz/dbuzz.png" />
-      </Helmet>
-      <LastLocationProvider>
-        <ThemeLoader>
-          {!twitterEmbedRoutes ?
-            <Init>
-              <AuthGuard>
-                <AppWrapper>
-                  {renderRoutes(routes)}
-                </AppWrapper>
-              </AuthGuard>
-            </Init> :
-            <TwitterEmbedAPI />}
-        </ThemeLoader>
-      </LastLocationProvider>
+      <React.Suspense fallback={<span> </span>}>
+        <Helmet>
+          <meta property="og:title" content="D.Buzz" />
+          <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
+          <meta property="og:image" content="https://d.buzz/dbuzz-icon.svg" />
+          <meta property="title" content="D.Buzz" />
+          <meta property="description" content="D.Buzz | Micro-blogging for HIVE" />
+          <meta property="image" content="https://d.buzz/dbuzz-icon.svg" />
+        </Helmet>
+        <LastLocationProvider>
+          <ThemeLoader>
+            {!twitterEmbedRoutes ?
+              <Init>
+                <AuthGuard>
+                  <AppWrapper>
+                    {renderRoutes(routes)}
+                  </AppWrapper>
+                </AuthGuard>
+              </Init> :
+              <TwitterEmbedAPI />}
+          </ThemeLoader>
+        </LastLocationProvider>
+      </React.Suspense>
     </React.Fragment>
   )
 }

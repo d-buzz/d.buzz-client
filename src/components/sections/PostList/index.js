@@ -15,6 +15,7 @@ import {
   openMuteDialog,
   openHideBuzzDialog,
   openCensorshipDialog,
+  setLinkConfirmationModal,
 } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -36,6 +37,8 @@ import Renderer from 'components/common/Renderer'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { getUserCustomData } from 'services/database/api'
 import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
+import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
+import { checkForCeramicAccount } from 'services/ceramic'
 
 const addHover = (theme) => {
   let style = {
@@ -215,6 +218,7 @@ const useStyle = createUseStyles(theme => ({
 const PostList = React.memo((props) => {
   const classes = useStyle()
   const {
+    type,
     searchListMode = false,
     author,
     permlink,
@@ -248,6 +252,9 @@ const PostList = React.memo((props) => {
     upvoteList,
     item,
     loadPockets,
+    linkConfirmationModal,
+    setLinkConfirmationModal,
+    selectedPocket,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -300,7 +307,7 @@ const PostList = React.memo((props) => {
   const [pockets, setPockets] = useState([])
 
   useEffect(() => {
-    if(!removeFromPocketConfirmModal || !addToPocketModal) {
+    if(anchorEl !== null) {
       getUserCustomData(user.username)
         .then(res => {
           if(res[0].pockets) {
@@ -311,7 +318,7 @@ const PostList = React.memo((props) => {
         })
     }
     // eslint-disable-next-line
-  }, [removeFromPocketConfirmModal, addToPocketModal])
+  }, [anchorEl])
 
   useEffect(() => {
     if(censorList.length !== 0 && author && permlink) {
@@ -345,7 +352,7 @@ const PostList = React.memo((props) => {
 
   let hasUpvoted = false
   const history = useHistory()
-  const authorLink = `/@${author}${'?ref='+profileRef}`
+  const authorLink = !author.did ? `/@${author}${'?ref='+profileRef}` : `/@${author.did}${'?ref='+profileRef}`
 
   if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
@@ -356,7 +363,9 @@ const PostList = React.memo((props) => {
   const generateLink = (author, permlink) =>  {
     let link = ''
 
-    link += `/@${author}/c/${permlink}`
+    const username = author.did ? author.did : author
+
+    link += `/@${username}/c/${permlink}`
 
     return link
   }
@@ -384,7 +393,7 @@ const PostList = React.memo((props) => {
 
   const openPopOver = (e) => {
     setDelayHandler(setTimeout(() => {
-      openUserDialog(popoverAnchor.current, author)
+      openUserDialog(popoverAnchor.current, (author))
     }, 500))
   }
 
@@ -411,8 +420,10 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickMuteDialog = () => {
-    openMuteDialog(author, muteSuccessCallback)
-    setAnchorEl(null)
+    if(type === 'HIVE') {
+      openMuteDialog(author, muteSuccessCallback)
+      setAnchorEl(null)
+    }
   }
 
   const opacityActivated = opacityUsers.includes(author)
@@ -426,8 +437,10 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickHideBuzzDialog = () => {
-    openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
-    setAnchorEl(null)
+    if(type === 'HIVE') {
+      openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
+      setAnchorEl(null)
+    }
   }
 
   const censorCallBack = () => () => {
@@ -470,13 +483,15 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
     setRemoveFromPocketConfirmModal(true)
     setSeletedRemoveFromPocketBuzz(item)
+    console.log(getPocket())
+    console.log(item)
   }
 
   const getPocket = () => {
     let pocketObject = null
 
     pockets.forEach(pocket => {
-      const hasThisBuzz = pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined
+      const hasThisBuzz = pocket.pocketId === selectedPocket.id
 
       if(hasThisBuzz) {
         pocketObject = pocket
@@ -493,7 +508,7 @@ const PostList = React.memo((props) => {
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
-                <Avatar height={avatarSize} author={author} />
+                <Avatar height={avatarSize} author={type === 'HIVE' ? author : author.did} avatarUrl={type === 'CERAMIC' && author.images ? `https://ipfs.io/ipfs/${author.images?.avatar.replace('ipfs://', '')}` : ''}/>
               </div>
             </Col>
             <Col xs="auto" className={classes.colRight}>
@@ -508,13 +523,14 @@ const PostList = React.memo((props) => {
                         onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
-                        {author}
+                        {type === 'HIVE' && author}
+                        {type === 'CERAMIC' && (author.name || 'Ceramic User')}
                       </Link>
                     )}
                     {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
-                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? `${created}Z` : created }`).local().fromNow()}
+                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? !created.endsWith('Z') ? `${created}Z` : created : created }`).local().fromNow()}
                   </label>
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} className={classes.iconButton} style={{ float: 'right' }} size='small'>
@@ -535,6 +551,7 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
+                      type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
                       body={body}
@@ -559,10 +576,10 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
-                    <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>
-                    {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {getPocket().pocketName}</MenuItem>)}
-                    {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
-                    {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                    {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>}
+                    {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {selectedPocket.name}</MenuItem>)}
+                    {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
+                    {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
                     {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
                   </Menu>}
@@ -573,6 +590,7 @@ const PostList = React.memo((props) => {
       </div>
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <RemoveFromPocketConfirmModal show={removeFromPocketConfirmModal} onHide={onHideRemoveFromPocketConfirmModal} user={user} buzz={seletedRemoveFromPocketBuzz} pocket={getPocket()} loadPockets={loadPockets}/>
+      <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
     </React.Fragment>
   )
 })
@@ -584,6 +602,7 @@ const mapStateToProps = (state) => ({
   hiddenBuzzes: state.auth.get('hiddenBuzzes'),
   censorList: state.auth.get('censorList'),
   theme: state.settings.get('theme'),
+  linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -594,6 +613,7 @@ const mapDispatchToProps = (dispatch) => ({
     openMuteDialog,
     openHideBuzzDialog,
     openCensorshipDialog,
+    setLinkConfirmationModal,
   }, dispatch),
 })
 

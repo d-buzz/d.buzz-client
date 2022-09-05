@@ -48,6 +48,9 @@ import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import MoreIcon from 'components/elements/Icons/MoreIcon'
+import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
+import { generateStyles } from 'store/settings/actions'
+import { getTheme } from 'services/theme'
 
 const useStyles = createUseStyles(theme => ({
   main: {
@@ -202,6 +205,7 @@ const MobileAppFrame = (props) => {
     searchRequest,
     clearSearchPosts,
     setRefreshRouteStatus,
+    generateStyles,
   } = props
 
   const history = useHistory()
@@ -388,7 +392,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Notifications',
       path: `/notifications`,
-      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary"><NotificationsIcon type='outline'/></Badge>,
+      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='outline'/></Badge>,
       onClick: () => handelClickItem('notifications'),
     },
     {
@@ -402,6 +406,44 @@ const MobileAppFrame = (props) => {
       icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
       path: `/@${username}/wallet`,
       onClick: () => handelClickItem('wallet'),
+    },
+    {
+      name: 'More'  ,
+      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
+      path: '#',
+      preventDefault: true,
+      onClick: handleClickOpenMoreMenu,
+    },
+  ]
+
+
+  const CeramicAccountNavLinks = [
+    {
+      name: 'Home',
+      path: "/",
+      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('home'),
+    },
+    {
+      name: 'Trending',
+      path: '/trending',
+      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('trending'),
+    },
+    {
+      name: 'Latest',
+      path: "/latest",
+      icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('latest'),
+    },
+    {
+      name: 'Profile',
+      path: `/@${username}/t/buzz?ref=nav`,
+      icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
+      onClick: () => handelClickItem('profile'),
     },
     {
       name: 'More'  ,
@@ -484,9 +526,13 @@ const MobileAppFrame = (props) => {
       <Navbar className={classes.navBottom} fixed="bottom">
         <div style={{ width: '100%' }}>
           <Nav className="justify-content-center">
-            {NavLinks.map((item, index) => (
-              <NavLinkWrapper key={index} item={item} active={location.pathname} />
-            ))}
+            {!checkCeramicLogin() ?
+              NavLinks.map((item, index) => (
+                <NavLinkWrapper key={index} item={item} active={location.pathname} />
+              )) :
+              CeramicAccountNavLinks.map((item, index) => (
+                <NavLinkWrapper key={index} item={item} active={location.pathname} />
+              ))}
           </Nav>
         </div>
       </Navbar>
@@ -530,6 +576,7 @@ const MobileAppFrame = (props) => {
   const handleClickSignout = () => {
     handleCloseAvatar()
     signoutUserRequest()
+    generateStyles(getTheme('light'))
   }
 
 
@@ -665,14 +712,17 @@ const MobileAppFrame = (props) => {
           {
             onClick: showThemeModal,
             text: 'Theme',
+            visible: true,
           },
           {
             onClick: showSwitchModal,
             text: 'Switch Account',
+            visible: !checkForCeramicAccount(user.username) ? true : false,
           },
           {
             onClick: showSettingsModal,
             text: 'Settings',
+            visible: true,
           },
         ]}
       />
@@ -698,6 +748,7 @@ const mapDispatchToProps = (dispatch) => ({
     searchRequest,
     clearSearchPosts,
     setRefreshRouteStatus,
+    generateStyles,
   }, dispatch),
 })
 

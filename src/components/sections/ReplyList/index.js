@@ -15,14 +15,15 @@ import { clearAppendReply, setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import IconButton from '@material-ui/core/IconButton'
-import MuteIcon from '@material-ui/icons/VolumeOff'
-import Chip from '@material-ui/core/Chip'
 import { Link, useHistory } from 'react-router-dom'
-import { calculateOverhead, truncateBody } from 'services/helper'
-import stripHtml from 'string-strip-html'
+import { calculateOverhead, stripHtml, truncateBody } from 'services/helper'
 import { censorLinks } from 'services/helper'
 import Renderer from 'components/common/Renderer'
+import { checkForCeramicAccount, getIpfsLink } from 'services/ceramic'
+
+const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
+const MuteIcon = React.lazy(() => import('@material-ui/icons/VolumeOff'))
+const Chip = React.lazy(() => import('@material-ui/core/Chip'))
 
 
 const useStyles = createUseStyles(theme => ({
@@ -297,10 +298,13 @@ const ReplyList = (props) => {
   const RenderReplies = ({ reply, treeHistory }) => {
     const {
       author,
-      created,
-      permlink,
       parent_author,
-      active_votes,
+      parent_post,
+      created,
+      created_at,
+      permlink,
+      stream_id,
+      active_votes = [],
       children: replyCount,
       meta,
       payout_at,
@@ -315,6 +319,14 @@ const ReplyList = (props) => {
     const [content, setContent] = useState(body)
     const [isCensored, setIsCensored] = useState(false)
     const [censorType, setCensorType] = useState(null)
+    const [ceramicUser, setCeramicUser] = useState(false)
+
+    useEffect(() => {
+      if(checkForCeramicAccount(user.username)) {
+        setCeramicUser(user)
+      }
+      // eslint-disable-next-line
+    }, [user, author])
 
     if(payout === 0) {
       payout = '0.00'
@@ -322,14 +334,17 @@ const ReplyList = (props) => {
 
     const { username, is_authenticated } = user
 
-    let { replies } = reply
-    replies = replies.filter((reply) => !mutelist.includes(reply.author))
+    let replies = !author.did ? reply.replies : reply.children
+    
+    if(!author.did) {
+      replies = replies.filter((reply) => !mutelist.includes(reply.author))
+    }
 
     let hasUpvoted = false
 
-    let authorLink = `/@${author}`
+    let authorLink = `/@${!author.did ? author : author.did}`
 
-    if(is_authenticated) {
+    if(is_authenticated && !author.did) {
       hasUpvoted = active_votes.filter((vote) => vote.voter === username).length !== 0
     } else {
       authorLink = `/ug${authorLink}`
@@ -360,7 +375,7 @@ const ReplyList = (props) => {
         } else {
           if(!href) {
             setPageFrom(null)
-            history.push(generateLink(author, permlink))
+            history.push(generateLink((!author.did ? author : author.did), permlink ? permlink : stream_id))
           } else {
             const split = `${href}`.split('#')
 
@@ -401,13 +416,15 @@ const ReplyList = (props) => {
     }, [reply.body])
 
     useEffect(() => {
-      if(censorList.length !== 0 && author && permlink) {
-        const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
-
-        if(result.length !== 0) {
-          setIsCensored(true)
-          applyCensor()
-          setCensorType(result[0].type)
+      if(!author.did) {
+        if(censorList.length !== 0 && author && permlink) {
+          const result = censorList.filter((item) => `${item.author}/${item.permlink}` === `${author}/${permlink}`)
+  
+          if(result.length !== 0) {
+            setIsCensored(true)
+            applyCensor()
+            setCensorType(result[0].type)
+          }
         }
       }
       // eslint-disable-next-line
@@ -420,7 +437,7 @@ const ReplyList = (props) => {
             <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
               <Col xs="auto" style={{ paddingRight: 0 }} onClick={handleOpenContent}>
                 <div className={classes.left}>
-                  <Avatar author={author} />
+                  <Avatar author={!author.did ? author : author.did} avatarUrl={author.did ? getIpfsLink(author.images?.avatar) : ''} />
                   {replies.length !== 0 && (
                     <div className={classes.thread} />
                   )}
@@ -434,18 +451,18 @@ const ReplyList = (props) => {
                       to={`${authorLink}?ref=replies`}
                       className={classNames(classes.link, classes.name)}
                     >
-                      {author}
+                      {!author.did ? author : author.name || author.did}
                     </Link>
                     <label className={classes.username}>
                       &nbsp;&bull;&nbsp;
-                      {moment(`${created}Z`).local().fromNow()}
+                      {!author.did ? moment(`${created}Z`).local().fromNow() : moment(`${created_at}`).local().fromNow()}
                     </label>
                     {!isAuthor() && !isCensored && user.username === 'dbuzz' && !user.useKeychain && (
                       <IconButton onClick={handleClickCensorDialog} className={classes.muteButton} size='small'>
                         <MuteIcon  className={classes.muteIcon} />
                       </IconButton>
                     )}
-                    <p className={classes.note}>Replying to  <b className={classes.usernameStyle}><a href={`/@${parent_author}`} className={classes.username}>{`@${parent_author}`}</a></b></p>
+                    <p className={classes.note}>Replying to  <b className={classes.usernameStyle}><a href={`/@${parent_author||parent_post.creator_id}`} className={classes.username}>{`@${parent_author||parent_post.author.name||parent_post.author.did}`}</a></b></p>
                     {isCensored && (
                       <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
                     )}
@@ -462,6 +479,7 @@ const ReplyList = (props) => {
                       <PostTags meta={meta} />
                     </div>
                   </div>
+                  {!ceramicUser &&
                   <div className={classes.actionWrapper}>
                     <PostActions
                       treeHistory={treeHistory}
@@ -475,7 +493,7 @@ const ReplyList = (props) => {
                       payoutAt={payout_at}
                       replyRef="replies"
                     />
-                  </div>
+                  </div>}
                 </div>
               </Col>
             </Row>
@@ -498,7 +516,7 @@ const ReplyList = (props) => {
 
   return (
     <React.Fragment>
-      {(expectedCount !== replyCounter) && (
+      {(expectedCount !== replyCounter && replies.length !== expectedCount) && (
         <center>
           <p className={classes.hideNote}>
             Some replies may not appear because it exceeds 280 characters
