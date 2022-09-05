@@ -11,7 +11,7 @@ import {
 } from 'store/auth/actions'
 import { createUseStyles } from 'react-jss'
 import { Avatar } from 'components/elements'
-import { openCensorshipDialog, setViewImageModal } from 'store/interface/actions'
+import { openCensorshipDialog, setLinkConfirmationModal, setViewImageModal } from 'store/interface/actions'
 import {
   PostTags,
   PostActions,
@@ -28,7 +28,7 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import stripHtml from 'string-strip-html'
+import { stripHtml } from 'services/helper'
 import {
   ContentSkeleton,
   ReplylistSkeleton,
@@ -44,7 +44,10 @@ import Renderer from 'components/common/Renderer'
 import { IconButton } from '@material-ui/core'
 import MoreHoriz from '@material-ui/icons/MoreHoriz'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
+import { checkForCeramicAccount } from 'services/ceramic'
 import ViewImageModal from 'components/modals/ViewImageModal'
+import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
+import { Helmet } from 'react-helmet'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -214,6 +217,8 @@ const Content = (props) => {
     clearAppendReply,
     viewImageModal,
     setViewImageModal,
+    linkConfirmationModal,
+    setLinkConfirmationModal,
   } = props
 
   const { username, permlink } = match.params
@@ -248,6 +253,7 @@ const Content = (props) => {
     root_permlink,
     parent_author = null,
     parent_permlink,
+    ceramicProfile,
   } = content || ''
 
 
@@ -263,6 +269,21 @@ const Content = (props) => {
   let upvotes = 0
   let hasUpvoted = false
   let payout_at = cashout_time
+
+  const [ceramicUser, setCeramicUser] = useState(false)
+  const [ceramicPost, setCeramicPost] = useState(false)
+
+  useEffect(() => {
+    if(checkForCeramicAccount(username)) {
+      setCeramicUser(true)
+    }
+  }, [username])
+
+  useEffect(() => {
+    if(checkForCeramicAccount(author || '')) {
+      setCeramicPost(true)
+    }
+  }, [author])
 
   useEffect(() => {
     const overhead = calculateOverhead(content.body)
@@ -280,10 +301,10 @@ const Content = (props) => {
   useEffect(() => {
     checkHasUpdateAuthorityRequest(username)
       .then((result) => {
-        setHasUpdateAuthority(result)
+        setHasUpdateAuthority(author === user.username)
       })
     // eslint-disable-next-line
-  }, [])
+  }, [author])
 
   useEffect(() => {
     if(censorList.length !== 0 && username && permlink) {
@@ -375,12 +396,14 @@ const Content = (props) => {
     anchorTop()
     clearReplies()
     clearAppendReply()
+
     getContentRequest(username, permlink)
       .then(({ children }) => {
         if(children !== 0) {
           getRepliesRequest(username, permlink)
         }
       })
+      
   // eslint-disable-next-line
   }, [permlink])
 
@@ -495,6 +518,11 @@ const Content = (props) => {
 
   return (
     <React.Fragment>
+      <Helmet>
+        <meta property="og:title" content={body.split('\n')[0]} />
+        <meta property="og:description" content={body} />
+        <meta property="og:image" content={body?.match(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|webp|bmp))/gi)?.[0]} />
+      </Helmet>
       {!loadingContent && author && (
         <React.Fragment>
           <HelmetGenerator content={body.split('\n')[0]} user={author} />
@@ -519,7 +547,7 @@ const Content = (props) => {
               )}
               <Row>
                 <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <Avatar author={author} />
+                  <Avatar author={author} avatarUrl={ceramicPost ? `https://ipfs.io/ipfs/${ceramicProfile.images?.avatar.replace('ipfs://', '')}` : ''} />
                 </Col>
                 <Col style={{ paddingLeft: 10 }}>
                   <div style={{ marginTop: 2 }}>
@@ -531,17 +559,17 @@ const Content = (props) => {
                       onMouseLeave={closePopOver}
                     >
                       <p className={classes.name}>
-                        {author}
+                        {!ceramicPost ? author : (ceramicProfile.name || 'Ceramic User')}
                       </p>
                     </Link>
 
                     <br />
                     <p className={classes.username}>
-                      {moment(`${created}Z`).local().fromNow()}
+                      {!created.endsWith('Z') ? moment(`${created}Z`).local().fromNow() : moment(created).local().fromNow()}
                     </p>
                   </div>
                 </Col>
-                {is_authenticated && (
+                {is_authenticated && !checkForCeramicAccount(user.username) && (
                   <IconButton className={classes.iconButton} style={{float: 'right', width: 'fit-content', height: 'fit-content', marginRight: 25}} onClick={handleClickMore} size='small'>
                     <MoreHoriz className={classes.moreIcon} />
                   </IconButton>
@@ -575,7 +603,7 @@ const Content = (props) => {
               )}
               <div style={{ marginTop: 10 }}>
                 <label className={classes.meta}>
-                  {moment(`${created}Z`).local().format('LTS • \nLL')}
+                  {!created.endsWith('Z') ? moment(`${created}Z`).local().format('LTS • \nLL') : moment(created).local().format('LTS • \nLL')}
                   {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
                 </label>
               </div>
@@ -584,14 +612,14 @@ const Content = (props) => {
           <div className={classes.wrapper}>
             <Row>
               <Col>
-                <Tooltip arrow title={<RenderUpvoteList />} placement='top'>
+                {!ceramicUser && <Tooltip arrow title={<RenderUpvoteList />} placement='top'>
                   <label 
                     className={classes.meta}
                     onClick={handleClickOpenVoteList}
                   >
                     <b className={classes.strong}>{upvotes}</b> Upvotes
                   </label>
-                </Tooltip>
+                </Tooltip>}
                 <label className={classes.meta}><b className={classes.strong}>{replyCount}</b> Replies</label>
               </Col>
             </Row>
@@ -604,14 +632,14 @@ const Content = (props) => {
             >
               {!hasUpdateAuthority && (
                 <React.Fragment>
-                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
-                  <MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>
+                  {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
+                  {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>}
                 </React.Fragment>
               )}
               {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
-                  <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>
+                  {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
                   <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
                 </React.Fragment>
@@ -674,6 +702,7 @@ const Content = (props) => {
         </div>}
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <ViewImageModal show={viewImageModal} imageUrl={viewImageModal} onHide={() => setViewImageModal(null)}/>
+      <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
     </React.Fragment>
   )
 }
@@ -686,6 +715,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   censorList: state.auth.get('censorList'),
   viewImageModal: state.interfaces.get('viewImageModal'),
+  linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -697,6 +727,7 @@ const mapDispatchToProps = (dispatch) => ({
     openCensorshipDialog,
     clearAppendReply,
     setViewImageModal,
+    setLinkConfirmationModal,
   }, dispatch),
 })
 

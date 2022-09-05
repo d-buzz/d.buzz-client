@@ -1,6 +1,6 @@
 import React  from 'react'
 
-const HomeIcon = ({ height = 24, top = 0, type='outline' }) => {
+const HomeIcon = ({ height = 24, top = 0, type }) => {
   return (
     type === 'outline' ?
       <svg height="24.5" viewBox="0 0 84 74" fill="none" xmlns="http://www.w3.org/2000/svg">

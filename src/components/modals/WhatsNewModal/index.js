@@ -8,8 +8,8 @@ import { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
-import Skeleton from 'react-loading-skeleton'
 import { connect } from 'react-redux'
+const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -126,9 +126,6 @@ function WhatsNewModal(props) {
   const fixes = updates?.fixes
   const upcoming = updates?.upcoming
 
-  const alert = new Audio(`${window.location.origin}/alert.wav`)
-  alert.volume = 0.15
-
   const headers = {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}
 
   useEffect(() => {
@@ -138,7 +135,6 @@ function WhatsNewModal(props) {
       })
         .then(response => {
           setUpdates(response.data)
-          alert.play()
         })
         .catch((err) => {
           onHide()
@@ -149,7 +145,6 @@ function WhatsNewModal(props) {
       })
         .then(response => {
           setUpdates(response.data)
-          alert.play()
         })
         .catch((err) => {
           onHide()
@@ -173,7 +168,7 @@ function WhatsNewModal(props) {
             <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5, alignSelf: 'flex-end' }} onClick={onHide}>
               <CloseIcon />
             </IconButton>
-            {header && <img className={classes.headerImage} src={header} alt='headerImage'/>}
+            {header && <img className={classes.headerImage} src={header} alt='headerImage' loading='lazy'/>}
             <span className='title'>What's new in this update? <span role='img' aria-label='celebration icon'>🎉</span></span>
             {updates ? 
               <div className='updates'>

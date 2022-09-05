@@ -84,49 +84,84 @@ import {
 } from 'services/api'
 
 import { errorMessageComposer } from "services/helper"
-import { hacMsg } from "@mintrawa/hive-auth-client"
+import { checkForCeramicAccount, getBasicProfile, getFollowersList, getFollowingList, getUserPostRequest } from 'services/ceramic'
 
 function* getProfileRequest(payload, meta) {
-  try {
-    const { username } = payload
-    const props = yield call(fetchGlobalProperties)
-    const profile = yield call(fetchSingleProfile, username)
-    const account = yield call(fetchAccounts, username)
+  const { username } = payload
+  const loginuser = localStorage.getItem('active')
+  
+  if(!checkForCeramicAccount(username)) {
+    
+    try { 
+      const props = yield call(fetchGlobalProperties) 
+      const profile = yield call(fetchSingleProfile, username) 
+      const account = yield call(fetchAccounts, username)
+     
+      if (account.length > 0) {
+        const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
+        const { total_vesting_fund_hive, total_vesting_shares } = props
+        
+        const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
+        const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)),6)
+        const avail = parseFloat(vesting_shares || 0) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
+        const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)),6)
+        
+        profile.receiveVesting = receiveVesting.toFixed(2)
+        profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
+        profile.delegated = delegated.toFixed(2)
+        profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
+        
+        yield put(getProfileSuccess(profile, meta))
+      } else {
+        yield put(getProfileSuccess({}, meta))
+      }
+    } catch(error) {
+      yield put(getProfileFailure(error, meta))
+    }
+  } else {
+    
+    const profile = {}
+    try {
+      // get following data
+      const isFollowed = (yield call(getFollowingList, loginuser))?.find(user => user.did === username) ? true : false
+      profile.isFollowed = isFollowed
 
-    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
-    const { total_vesting_fund_hive, total_vesting_shares } = props
-
-    const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
-    const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)),6)
-    const avail = parseFloat(vesting_shares) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
-    const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)),6)
-
-    profile.receiveVesting = receiveVesting.toFixed(2)
-    profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
-    profile.delegated = delegated.toFixed(2)
-    profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
-
-    yield put(getProfileSuccess(profile, meta))
-  } catch(error) {
-    yield put(getProfileFailure(error, meta))
+      profile.ceramic = true
+      //get user's basic profile
+      const basicProfile = yield call(getBasicProfile, username)
+      const followingList = yield call(getFollowingList, username)
+      const followersList = (yield call(getFollowersList, username) || [])
+      profile.stats = { following: followingList?.length || 0, followers: followersList?.length || 0, list: followingList }
+      profile.basic_profile = basicProfile
+      yield put(getProfileSuccess(profile, meta))
+    }
+    catch(error) {
+      yield put(getProfileFailure(error, meta))
+    }
   }
 }
 
 function* getAccountPostRequest(payload, meta) {
   try{
     const { username, start_permlink, start_author } = payload
-    const old = yield select(state => state.profile.get('posts'))
-    let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
+    if(!checkForCeramicAccount(username)) {
+      const old = yield select(state => state.profile.get('posts'))
+      let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
 
-    data = [...old, ...data]
-    data = data.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
-    })
+      data = [...old, ...data]
+      data = data.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+      })
 
-    data = data.filter(item => invokeFilter(item))
+      data = data.filter(item => invokeFilter(item))
 
-    yield put(setLastAccountPosts(data[data.length-1]))
-    yield put(getAccountPostsSuccess(data, meta))
+      yield put(setLastAccountPosts(data[data.length-1]))
+      yield put(getAccountPostsSuccess(data, meta))
+    } else {
+      const data = yield call(getUserPostRequest, username)
+      yield put(setLastAccountPosts(data.posts[data.posts.length-1]))
+      yield put(getAccountPostsSuccess(data.posts, meta))
+    }
   } catch(error) {
     yield put(getAccountPostsFailure(error, meta))
   }
@@ -153,38 +188,71 @@ function* getAccountRepliesRequest(payload, meta) {
 }
 
 function* getFollowersRequest(payload, meta) {
+  const { username, start_follower } = payload
   try {
-    const { username, start_follower } = payload
-    const old = yield select(state => state.profile.get('followers'))
-    let data = yield call(fetchFollowers, username, start_follower)
-
-    data = [...old, ...data]
-
-    data = data.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj['follower']).indexOf(obj['follower']) === pos
-    })
-
-    yield put(setLastFollower(data[data.length-1]))
-    yield put(getFollowersSuccess(data, meta))
+    if(!checkForCeramicAccount(username)) {
+      const old = yield select(state => state.profile.get('followers'))
+      let data = yield call(fetchFollowers, username, start_follower)
+  
+      data = [...old, ...data]
+  
+      data = data.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj['follower']).indexOf(obj['follower']) === pos
+      })
+  
+      yield put(setLastFollower(data[data.length-1]))
+      yield put(getFollowersSuccess(data, meta))
+    } else {
+      const data = []
+      const followersList = yield call(getFollowersList, username)
+      followersList.forEach((follower) => {
+        data.push({
+          author: follower.did,
+          name: follower.name,
+          follower: follower.did,
+          following: username,
+          profile: follower.profile,
+        })
+      })
+      
+      yield put(setLastFollower(data[data.length-1]))
+      yield put(getFollowersSuccess(data, meta))
+    }
   } catch(error) {
     yield put(getFollowersFailure(error, meta))
   }
 }
 
 function* getFollowingRequest(payload, meta) {
+  const { username, start_following } = payload
   try {
-    const { username, start_following } = payload
-    const old = yield select(state => state.profile.get('following'))
-    let data = yield call(fetchFollowing, username, start_following)
+    if(!checkForCeramicAccount(username)) {
+      const old = yield select(state => state.profile.get('following'))
+      let data = yield call(fetchFollowing, username, start_following)
+      
+      data = [...old, ...data]
 
-    data = [...old, ...data]
+      data = data.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj['following']).indexOf(obj['following']) === pos
+      })
+      
+      yield put(setLastFollowing(data[data.length-1]))
+      yield put(getFollowingSuccess(data, meta))
+    } else {
+      const data = []
+      const followingList = yield call(getFollowingList, username)
+      followingList.forEach((following) => {
+        data.push({
+          name: following.name,
+          follower: username,
+          following: following.did,
+          profile: following.profile,
+        })
+      })
 
-    data = data.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj['following']).indexOf(obj['following']) === pos
-    })
-
-    yield put(setLastFollowing(data[data.length-1]))
-    yield put(getFollowingSuccess(data, meta))
+      yield put(setLastFollowing(data[data.length-1]))
+      yield put(getFollowingSuccess(data, meta))
+    }
   } catch(error) {
     yield put(getFollowingFailure(error, meta))
   }
@@ -201,26 +269,29 @@ function* clearNotificationRequest(meta) {
     yield call(hasClearNotificationService, username, lastNotification)
     success = true
 
-    hacMsg.subscribe(m => {
-     
-      if (m.type === 'sign_wait') {
-        console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-      }
-
-      if (m.type === 'tx_result') {
-        console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-        if (m.msg?.status === 'accepted') {
-          success = true
-        
-        } else if (m.msg?.status === 'error') { 
-          const error = m.msg?.status.error
-
-          clearNotificationsFailure(error, meta)
+    import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+      HiveAuth.hacMsg.subscribe(m => {
+       
+        if (m.type === 'sign_wait') {
+          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+        }
+  
+        if (m.type === 'tx_result') {
+          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+          if (m.msg?.status === 'accepted') {
+            success = true
+          
+          } else if (m.msg?.status === 'error') { 
+            const error = m.msg?.status.error
+  
+            clearNotificationsFailure(error, meta)
+          }
+          
         }
         
-      }
-      
+      })
     })
+
     let old = yield select(state => state.polling.get('count'))
 
     if(success) {

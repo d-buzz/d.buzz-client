@@ -28,8 +28,10 @@ const NotificationBox = (props) => {
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [severity, setSeverity] = useState('success')
+  const [messageTimeout, setMessageTimeout] = useState(6000)
+  const [commandLink, setCommandLink] = useState(6000)
   const { notificationBoxData } = props
-  const alertStyles = { background: severity === 'success' ? '#28a745' : '#dc3545'}
+  const alertStyles = { background: severity === 'success' ? '#28a745' : severity === 'error' ? '#dc3545' : '#ffc107'}
 
   let snackBarStyle = { maxWidth: 300 }
   let anchorOrigin = { vertical: 'bottom', horizontal: 'right' }
@@ -43,9 +45,11 @@ const NotificationBox = (props) => {
     if(notificationBoxData.hasOwnProperty('open') && typeof notificationBoxData === 'object') {
       const { open } = notificationBoxData
       if(open) {
-        const { message, severity } = notificationBoxData
+        const { message, severity, timeout, link } = notificationBoxData
         setMessage(message)
         setSeverity(severity)
+        setMessageTimeout(timeout || 6000)
+        setCommandLink(link)
       } else {
         setMessage('')
         setSeverity('')
@@ -58,14 +62,21 @@ const NotificationBox = (props) => {
     setOpen(false)
   }
 
+  const handleOpenHiveKeychain = () => {
+    if(isMobile && commandLink) {
+      window.location.href = (commandLink)
+    }
+  }
+
   return (
     <Snackbar
       anchorOrigin={anchorOrigin}
       style={snackBarStyle}
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={messageTimeout}
       onClose={onClose}
       className={classes.wrapper}
+      onClick={handleOpenHiveKeychain}
     >
       <Alert
         variant="outlined"
@@ -74,7 +85,6 @@ const NotificationBox = (props) => {
         classes={{root: classes.alertWrapper}}
         style={alertStyles}
       >
-        {/* <AlertTitle>{`${severity.charAt(0).toUpperCase()}${severity.slice(1)}`}</AlertTitle> */}
         {message}
       </Alert>
     </Snackbar>

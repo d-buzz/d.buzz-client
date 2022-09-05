@@ -5,15 +5,16 @@ import classNames from 'classnames'
 
 const useStyles = createUseStyles({
   button: {
+    padding: '5px 15px',
+    display: 'grid',
+    placeItems: 'center',
     backgroundColor: '#e61c34',
     borderRadius: '50px 50px',
     width: 'max-content',
+    border: 'none',
+    outlineWidth: 'none',
     cursor: 'pointer',
-    '& label': {
-      cursor: 'pointer',
-      paddingTop: 5,
-      paddingLeft: 15,
-      paddingRight: 15,
+    '& span': {
       whiteSpace: 'nowrap',
       color: 'white',
       fontFamily: 'Segoe-Bold',
@@ -21,17 +22,20 @@ const useStyles = createUseStyles({
     '&:hover': {
       backgroundColor: '#b71c1c',
     },
+    '&:disabled': {
+      backgroundColor: '#e61c34',
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
   },
   transparentButton: {
+    padding: '5px 15px',
+    background: 'transparent',
     border: '1px solid #e61c34',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'pointer',
-    '& label': {
-      cursor: 'pointer',
-      paddingTop: 5,
-      paddingLeft: 15,
-      paddingRight: 15,
+    '& span': {
       whiteSpace: 'nowrap',
       color: '#e61c34',
       fontWeight: 'bold',
@@ -40,35 +44,44 @@ const useStyles = createUseStyles({
     '&:hover': {
       backgroundColor: '#b71c1c1c',
     },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+      background: 'transparent',
+    },
   },
   disabledButton: {
+    padding: '5px 15px',
     backgroundColor: '#dad1d14d',
     borderRadius: '50px 50px',
     width: 'max-content',
+    border: 'none',
+    outlineWidth: 'none',
     cursor: 'mouse',
-    '& label': {
-      cursor: 'mouse',
-      paddingTop: 5,
-      paddingLeft: 15,
-      paddingRight: 15,
+    '& span': {
       whiteSpace: 'nowrap',
-      color: 'white',
       fontFamily: 'Segoe-Bold',
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
     },
   },
   disabledButtonTransparent: {
+    padding: '5px 15px',
     border: '1px solid #e61c34',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'mouse',
-    '& label': {
-      cursor: 'mouse',
-      paddingTop: 5,
-      paddingLeft: 15,
-      paddingRight: 15,
+    outlineWidth: 'none',
+    '& span': {
+      color: '#e61c34',
       whiteSpace: 'nowrap',
-      color: 'white',
       fontFamily: 'Segoe-Bold',
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
     },
   },
 })
@@ -101,14 +114,12 @@ const ContainedButton = (props) => {
   }
 
   return (
-    <div onClick={!disabled && !loading ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} >
-      <center>
-        <label style={{ fontSize: fontSize, ...labelStyle }}>
-          {!loading && label}
-          {loading && (<Spinner size={20} top={4} loading={true} />)}
-        </label>
-      </center>
-    </div>
+    <button onClick={!disabled && !loading ? onClick : () => {}} className={classNames(buttonClass, className)} style={style} disabled={disabled} >
+      <span style={{ fontSize: fontSize, ...labelStyle }}>
+        {!loading && label}
+        {loading && (<Spinner size={15} top={4} loading={true} />)}
+      </span>
+    </button>
   )
 }
 

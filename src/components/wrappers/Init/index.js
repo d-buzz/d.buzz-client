@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
-import { getSavedUserRequest, initWSHASConnectionRequest } from 'store/auth/actions'
+import { getSavedUserRequest, initWSHASConnectionRequest, initCeremicLoginRequest } from 'store/auth/actions'
 import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest, getWSNodeHAS } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -8,16 +8,16 @@ import { BrandIcon, Spinner } from 'components/elements'
 import { getCensorTypesRequest } from 'store/settings/actions'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
-
-
-import Typography from '@material-ui/core/Typography'
-import Snackbar from '@material-ui/core/Snackbar'
-import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
-import ReplayIcon from '@material-ui/icons/Replay'
-import CloseIcon from '@material-ui/icons/Close'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
+import { getBestCeramicHost } from 'services/ceramic'
+import Paper from '@material-ui/core/Paper'
+
+const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
+const Typography = React.lazy(() => import('@material-ui/core/Typography'))
+const Button = React.lazy(() => import('@material-ui/core/Button'))
+const ReplayIcon = React.lazy(() => import('@material-ui/icons/Replay'))
+const CloseIcon = React.lazy(() => import('@material-ui/icons/Close'))
 
 const { VERSION } = config
 
@@ -104,7 +104,7 @@ const SplashScreen = () => {
       <div className={classes.brandWrapper}>
         <center>
           {theme === 'light' && (<BrandIcon height={60}/>)}
-          {theme === 'dark' && (<BrandIconDark height={60}/>)}
+          {(theme === 'gray' || theme === 'night') && (<BrandIconDark height={60}/>)}
           {config.VERSION.includes('dev') &&
               <div className={classes.betaTitleContainer}>
                 {<span className={classes.betaTitle}>BETA</span>}
@@ -134,6 +134,7 @@ const Init = (props) => {
     getBestRpcNode,
     getWSNodeHAS,
     initWSHASConnectionRequest,
+    initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -167,16 +168,19 @@ const Init = (props) => {
   useEffect(() => {
     checkVersionRequest().then((isLatest) => {
       setIsLatest(isLatest)
-      getCensorTypesRequest().then(() => {
-        getBestRpcNode().then(() => {
-          getWSNodeHAS()
-          initWSHASConnectionRequest()
-          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 0
-          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+      getBestRpcNode().then(() => {
+        getWSNodeHAS()
+        initWSHASConnectionRequest()
+        getBestCeramicHost().then((host) => {
+          initCeremicLoginRequest()
+          localStorage.setItem('ceramic', host)
+        })
+        const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+        setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+          getSavedUserRequest().then(() => {
+            setInit(true)
+            getCensorTypesRequest()
             getTrendingTagsRequest()
-            getSavedUserRequest().then(() => {
-              setInit(true)
-            })
           })
         })
       })
@@ -215,6 +219,7 @@ const mapDispatchToProps = (dispatch) => ({
     getBestRpcNode,
     getWSNodeHAS,
     initWSHASConnectionRequest,
+    initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     setDefaultVotingWeightRequest,

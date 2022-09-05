@@ -14,6 +14,8 @@ import {
   SET_HIDDEN_BUZZES,
   SET_CENSOR_LIST,
   SET_HAS_QR_CODE,
+  NEW_CERAMIC_USER_NAME,
+  CERAMIC_USER_NAME_MODAL,
 } from './actions'
 import { fromJS } from 'immutable'
 
@@ -29,6 +31,8 @@ const defaultState = fromJS({
   hiddenBuzzes: [],
   censorList: [],
   hasQRCode: {},
+  ceramicUserNameModal: true,
+  newCeramicUserName: null,
 })
 
 export const auth = (state = defaultState, { type, payload }) => {
@@ -63,6 +67,10 @@ export const auth = (state = defaultState, { type, payload }) => {
     return state.set('censorList', payload)
   case SET_HAS_QR_CODE:
     return state.set('hasQRCode', payload)
+  case CERAMIC_USER_NAME_MODAL:
+    return state.set('ceramicUserNameModal', payload)
+  case NEW_CERAMIC_USER_NAME:
+    return state.set('newCeramicUserName', payload)
   default:
     return state
   }

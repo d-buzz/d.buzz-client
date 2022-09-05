@@ -15,7 +15,6 @@ import { VoteListDialog } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
-import moment from 'moment'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -32,8 +31,8 @@ import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, W
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
+import { checkForCeramicAccount } from 'services/ceramic'
 import { hasUpvoteService } from 'services/api'
-import { hacMsg } from '@mintrawa/hive-auth-client'
 
 const PrettoSlider = withStyles({
   root: {
@@ -71,8 +70,8 @@ const PrettoSlider = withStyles({
 
 const marks = [
   {
-    value: 0,
-    label: '0',
+    value: 1,
+    label: '1',
   },
   {
     value: 10,
@@ -236,6 +235,7 @@ const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick,
 const PostActions = (props) => {
   const classes = useStyles()
   const {
+    type,
     author,
     permlink,
     voteCount,
@@ -246,7 +246,7 @@ const PostActions = (props) => {
     hasUpvoted = false,
     user,
     body = null,
-    bodyWithNoLinks = body.replace(/<[^>]*>/gi, '').replace(/!([A-Za-z0-9-[():\]/._?&#@]+)/gi, ''),
+    bodyWithNoLinks = body,
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
@@ -281,6 +281,7 @@ const PostActions = (props) => {
   const [upvoted, setUpvoted] = useState(hasUpvoted)
   const [openCaret, setOpenCaret] = useState(false)
   const [openVoteList, setOpenVoteList] = useState(false)
+  const [whenPayout, setWhenPayout] = useState(null)
   
   const [sliderValue, setSliderValue] = useState(defaultUpvoteStrength)
 
@@ -338,43 +339,49 @@ const PostActions = (props) => {
       }
       setShowSlider(false)
       setLoading(true)
-      console.log(user)
 
       if(user.useHAS) {
 
         hasUpvoteService(author, permlink, sliderValue)
 
-        hacMsg.subscribe((m) => {
-          if (m.type === 'sign_wait') {
-            console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-          }
-          if (m.type === 'tx_result') {
-            console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-            if (m.msg?.status === 'accepted') {
-              const status = m.msg?.status
-              console.log(status)
-              setVote(vote + 1)
-              setUpvoted(true)
-              setLoading(false)
-              broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
-            } else if (m.msg?.status === 'error') {
-              const error = m.msg?.status.error
-              console.log(error)
-              setUpvoted(false)
-              broadcastNotification('error', error)
-              setLoading(false)
-            } else if (m.msg?.status === 'rejected') {
-              const status = m.msg?.status
-              console.log(status)
-              setUpvoted(false)
-              broadcastNotification('error', 'Your HiveAuth upvote transaction is rejected.')
-              setLoading(false)
+        import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+          HiveAuth.hacMsg.subscribe((m) => {
+            if(isMobile) {
+              broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
             } else {
-              setUpvoted(false)
-              broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-              setLoading(false)
+              broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
             }
-          }
+            if (m.type === 'sign_wait') {
+              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+            }
+            if (m.type === 'tx_result') {
+              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+              if (m.msg?.status === 'accepted') {
+                const status = m.msg?.status
+                console.log(status)
+                setVote(vote + 1)
+                setUpvoted(true)
+                setLoading(false)
+                broadcastNotification('success', `Succesfully upvoted @${author}/${permlink} at ${sliderValue}%`)
+              } else if (m.msg?.status === 'error') {
+                const error = m.msg?.status.error
+                console.log(error)
+                setUpvoted(false)
+                broadcastNotification('error', error)
+                setLoading(false)
+              } else if (m.msg?.status === 'rejected') {
+                const status = m.msg?.status
+                console.log(status)
+                setUpvoted(false)
+                broadcastNotification('error', 'Your HiveAuth upvote transaction is rejected.')
+                setLoading(false)
+              } else {
+                setUpvoted(false)
+                broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                setLoading(false)
+              }
+            }
+          })
         })
 
       } else {
@@ -402,8 +409,11 @@ const PostActions = (props) => {
     openReplyModal(author, permlink, body, treeHistory, replyRef)
   }
 
-  const getPayoutDate = (date) => {
-    const semantic =  moment(`${date}Z`).local().fromNow()
+  const getPayoutDate = async (date) => {
+    let semantic
+    await import('moment').then((moment) => {
+      semantic = moment.default(`${date}Z`).local().fromNow()
+    })
     return semantic !== '52 years ago' ? semantic : ''
   }
 
@@ -433,99 +443,110 @@ const PostActions = (props) => {
       </React.Fragment>
     )
   }
+
+  useEffect(() => {
+    if(payoutAt !== null) {
+      getPayoutDate(payoutAt).then((payoutDate) => {
+        setWhenPayout(payoutDate)
+      })
+    }
+  }, [payoutAt])
   
   return (
     <React.Fragment>
       {!showSlider && (
         <div>
           <Row style={{ width: '100%', ...extraPadding }}>
-            <Col xs={!isMobile ? 3 : 3}>
-              {!loading && upvoted && (
-                <ActionWrapper
-                  className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
-                  hideStats={hideStats}
-                  tooltip={vote !== 0? <RenderUpvoteList /> : null}
-                  statOnClick={handleClickOpenVoteList}
-                  stat={(
-                    <label style={{ marginLeft: 5 }}>
-                      {vote}
-                    </label>
-                  )}
-                />
-              )}
-              {!loading && !upvoted && (
+            {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&
+              <Col xs={!isMobile ? 3 : 3}>
+                {!loading && upvoted && (
+                  <ActionWrapper
+                    className={classes.actionWrapperSpace}
+                    inlineClass={classes.inline}
+                    icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
+                    hideStats={hideStats}
+                    tooltip={vote !== 0? <RenderUpvoteList /> : null}
+                    statOnClick={handleClickOpenVoteList}
+                    stat={(
+                      <label style={{ marginLeft: 5 }}>
+                        {vote}
+                      </label>
+                    )}
+                  />
+                )}
+                {!loading && !upvoted && (
+                  <ActionWrapper
+                    className={classes.actionWrapperSpace}
+                    inlineClass={classNames(classes.inline, classes.icon)}
+                    icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
+                    hideStats={hideStats}
+                    disabled={!is_authenticated || disableUpvote}
+                    onClick={handleClickShowSlider}
+                    tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
+                    statOnClick={handleClickOpenVoteList}
+                    stat={(
+                      <label style={{ marginLeft: 5 }}>
+                        {vote}
+                      </label>
+                    )}
+                  />
+                )}
+                {loading && (
+                  <ActionWrapper
+                    className={classes.actionWrapperSpace}
+                    inlineClass={classNames(classes.inline, classes.spinner)}
+                    icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
+                    hideStats={hideStats}
+                    onClick={handleClickShowSlider}
+                    stat={(
+                      <label style={{ marginLeft: 5 }}>
+                        {voteCount}
+                      </label>
+                    )}
+                  />
+                )}
+              </Col>}
+            {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&  
+              <Col xs={!isMobile ? 'auto' : 3}>
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
-                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
+                  icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
                   hideStats={hideStats}
-                  disabled={!is_authenticated || disableUpvote}
-                  onClick={handleClickShowSlider}
-                  tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
-                  statOnClick={handleClickOpenVoteList}
+                  disabled={!is_authenticated}
+                  onClick={handleClickReply}
                   stat={(
                     <label style={{ marginLeft: 5 }}>
-                      {vote}
+                      {replyCount}
                     </label>
                   )}
                 />
-              )}
-              {loading && (
+              </Col>}
+            {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&
+              <Col xs={!isMobile ? 4 : 4}>
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
-                  inlineClass={classNames(classes.inline, classes.spinner)}
-                  icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
-                  hideStats={hideStats}
-                  onClick={handleClickShowSlider}
+                  inlineClass={classes.inline}
+                  hideStats={false}
                   stat={(
-                    <label style={{ marginLeft: 5 }}>
-                      {voteCount}
-                    </label>
+                    <Chip
+                      className={classes.chip}
+                      size='small'
+                      icon={iconDetails}
+                      label={(
+                        <span className={classes.payout} style={payoutAdditionalStyle}>
+                          ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
+                          {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
+                          {!payout && isMobile ? '0.00' : ''}&nbsp;
+                          {!isMobile && whenPayout && payout ? whenPayout : ''}
+                        </span>
+                      )}
+                      color="secondary"
+                      variant="outlined"
+                    />
                   )}
                 />
-              )}
-            </Col>
-            <Col xs={!isMobile ? 'auto' : 3}>
-              <ActionWrapper
-                className={classes.actionWrapperSpace}
-                inlineClass={classNames(classes.inline, classes.icon)}
-                icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
-                hideStats={hideStats}
-                disabled={!is_authenticated}
-                onClick={handleClickReply}
-                stat={(
-                  <label style={{ marginLeft: 5 }}>
-                    {replyCount}
-                  </label>
-                )}
-              />
-            </Col>
-            <Col xs={!isMobile ? 4 : 4}>
-              <ActionWrapper
-                className={classes.actionWrapperSpace}
-                inlineClass={classes.inline}
-                hideStats={false}
-                stat={(
-                  <Chip
-                    className={classes.chip}
-                    size='small'
-                    icon={iconDetails}
-                    label={(
-                      <span className={classes.payout} style={payoutAdditionalStyle}>
-                        ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
-                        {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
-                        {!payout && isMobile ? '0.00' : ''}&nbsp;
-                        {!isMobile && payoutAt && payout ? getPayoutDate(payoutAt) : ''}
-                      </span>
-                    )}
-                    color="secondary"
-                    variant="outlined"
-                  />
-                )}
-              />
-            </Col>
+              </Col>}
             <Col xs={!isMobile ? 2 : 2} className={!isMobile ? 'pl-5' : ''} >
               <ActionWrapper
                 className={classes.actionWrapperSpace}
@@ -539,7 +560,7 @@ const PostActions = (props) => {
               />
               <Col xs="auto">
                 <div className={classNames('right-content', classes.right)}>
-                  <input className='buzzUrl' type='text' value={`https://d.buzz/#/@${author}/c/${permlink}`} hidden/>
+                  <input className='buzzUrl' type='text' value={`${window.location.origin}/#/@${author}/c/${permlink}`} hidden/>
                   <Menu
                     anchorEl={openCaret}
                     keepMounted
@@ -632,6 +653,7 @@ const PostActions = (props) => {
           </Row>
           <div style={{ paddingLeft: 10 }}>
             <PrettoSlider
+              min={1}
               marks={marks}
               value={sliderValue}
               onChange={handleChange}

@@ -20,8 +20,9 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
+import { checkForCeramicAccount, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
 import { publishReplyWithHAS } from 'services/api'
-import { hacMsg } from '@mintrawa/hive-auth-client'
+import { isMobile } from 'web3modal'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -220,6 +221,13 @@ const ReplyFormModal = (props) => {
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
+  const [ceramicAuthor, setCeramicAuthor] = useState(false)
+  const [ceramicUser, setCeramicUser] = useState(false)
+  const [fetchingProfile, setFetchingProfile] = useState(true)
+  const [replying, setReplying] = useState(false)
+  const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.svg`
+  const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
+  const [userAvatarUrl, setUserAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
   const [loading, setLoading] = useState(false)
 
   // cursor state
@@ -259,7 +267,13 @@ const ReplyFormModal = (props) => {
           treeHistory,
         } = modalData
         setReplyRef(replyRef)
-        setAuthor(author)
+        if(author.did) {
+          setCeramicAuthor(author)
+          if(author.images) {
+            setAuthorAvatarUrl(getIpfsLink(author.images.avatar))
+          }
+        }
+        setAuthor(author.did ? author.did : author)
         setPermlink(permlink)
         setBody(content)
         setTreeHistory(treeHistory)
@@ -273,6 +287,38 @@ const ReplyFormModal = (props) => {
       setOpen(modalOpen)
     }
   }, [modalData])
+
+  useEffect(() => {
+    if(checkForCeramicAccount(username)) {
+      setFetchingProfile(true)
+      getBasicProfile(username)
+        .then((res) => {
+          setCeramicUser(res)
+          setFetchingProfile(false)
+          if(res.images) {
+            setUserAvatarUrl(getIpfsLink(res.images.avatar))
+          }
+        })
+    } else {
+      setFetchingProfile(false)
+    }
+  }, [username])
+  
+  useEffect(() => {
+    if(checkForCeramicAccount(author)) {
+      setFetchingProfile(true)
+      getBasicProfile(author)
+        .then((res) => {
+          setCeramicAuthor(res)
+          setFetchingProfile(false)
+          if(res.images) {
+            setAuthorAvatarUrl(getIpfsLink(res.images.avatar))
+          }
+        })
+    } else {
+      setFetchingProfile(false)
+    }
+  }, [author])
 
   const onHide = () => {
     setOpen(false)
@@ -335,53 +381,90 @@ const ReplyFormModal = (props) => {
       invokeTwitterIntent(content)
     }
 
-    setLoading(true)
+    setReplying(true)
 
     if(user.useHAS) {
       publishReplyWithHAS(user.username, content, author, permlink, replyRef, treeHistory)
         .then((data) => {
-          console.log(data)
-          hacMsg.subscribe(m => {
-   
-            if (m.type === 'sign_wait') {
-              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-            }
-        
-            if (m.type === 'tx_result') {
-              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-              if (m.msg?.status === 'accepted') {                  
-                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-                setReplyDone(true)
-                setLoading(false)
-                closeReplyModal()
-              } else if (m.msg?.status === 'rejected') {
-                const status = m.msg?.status
-                console.log(status)
-                setLoading(false)
-                // error
-                broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
-              } else if (m.msg?.status === 'error') { 
-                const error = m.msg?.status.error
-                console.log(error)
-                setLoading(false)
-                broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-              } 
-            }
+          // console.log(data)
+          import('@mintrawa/hive-auth-client').then((HiveAuth) => {
+            HiveAuth.hacMsg.subscribe(m => {
+              if(isMobile) {
+                broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
+              } else {
+                broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
+              }
+              if (m.type === 'sign_wait') {
+                console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+              }
+          
+              if (m.type === 'tx_result') {
+                console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+                if (m.msg?.status === 'accepted') {                  
+                  broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                  setReplyDone(true)
+                  setLoading(false)
+                  setReplying(false)
+                  closeReplyModal()
+                } else if (m.msg?.status === 'rejected') {
+                  // const status = m.msg?.status
+                  // console.log(status)
+                  setLoading(false)
+                  setReplying(false)
+                  // error
+                  broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
+                } else if (m.msg?.status === 'error') { 
+                  // const error = m.msg?.status.error
+                  // console.log(error)
+                  setReplying(false)
+                  setLoading(false)
+                  broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                } else {
+                  setReplying(false)
+                  setLoading(false)
+                  broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
+                }
+              }
+            })
           })
         })
     } else {
-      publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-        .then(({ success, errorMessage }) => {
-          if(success) {
+      if(!ceramicUser) {
+        publishReplyRequest(author, permlink, content, replyRef, treeHistory)
+          .then(({ success, errorMessage }) => {
+            if(success) {
+              setLoading(false)
+              broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+              setReplyDone(true)
+              closeReplyModal()
+              setReplying(false)
+            } else {
+              setReplying(false)
+              setLoading(false)
+              broadcastNotification('error', 'There was an error while replying to this buzz.')
+            }
+          })
+      } else {
+        replyRequest(permlink, author, content)
+          .then((data) => {
+            if(data) {
+              broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+              setReplyDone(true)
+              closeReplyModal()
+              setReplying(false)
+              setLoading(false)
+            } else {
+              setReplying(false)
+              setLoading(false)
+              broadcastNotification('error', 'There was an error while replying to this buzz.')
+            }
+          })
+          .catch((errorMessage) => {
             setLoading(false)
-            broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-            setReplyDone(true)
-            closeReplyModal()
-          } else {
-            setLoading(false)
+            setReplying(false)
             broadcastNotification('error', errorMessage)
-          }
-        })
+          })
+      }
     }
   }
 
@@ -466,13 +549,13 @@ const ReplyFormModal = (props) => {
             <Row>
               <Col xs="auto">
                 <div className={classes.left}>
-                  <Avatar author={author} className={classes.avatar}/>
+                  {<Avatar author={author} avatarUrl={authorAvatarUrl} className={classes.avatar}/>}
                   <div className={classes.thread} />
                 </div>
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to <b className={classes.usernameStyle}><a href={`/@${author}`} className={classes.username}>{`@${author}`}</a></b></p>
+                  <p>Replying to {!fetchingProfile && <b className={classes.usernameStyle}><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
                   <div className={classes.previewContainer}>
                     <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>
@@ -482,12 +565,12 @@ const ReplyFormModal = (props) => {
             <Row>
               <Col xs="auto">
                 <div className={classes.left}>
-                  <Avatar author={username} className={classes.avatar} />
+                  <Avatar author={username} avatarUrl={userAvatarUrl} className={classes.avatar} />
                 </div>
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  {loading && (
+                  {loading && replying && (
                     <div className={classes.loadState}>
                       <Box  position="relative" display="inline-flex">
                         <Spinner top={0} size={20} loading={true} />&nbsp;
@@ -495,7 +578,7 @@ const ReplyFormModal = (props) => {
                       </Box>
                     </div>
                   )}
-                  {!loading && (
+                  {!loading && !replying && (
                     <TextArea
                       style={textAreaStyle}
                       minRows={3}
@@ -566,11 +649,12 @@ const ReplyFormModal = (props) => {
                       <EmojiIcon />
                     </IconButton>
                     <ContainedButton
+                      loading={loading || replying}
                       label="Reply"
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleSubmitReply}
-                      disabled={loading || `${content}`.trim() === ''}
+                      disabled={loading || `${content}`.trim() === '' || replying}
                     />
                     <Box
                       style={{ float: 'right', marginRight: 15, paddingTop: 10}}

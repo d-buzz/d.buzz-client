@@ -12,9 +12,8 @@ import {
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
 import { getPrice } from 'services/api'
-import { convertCurrency } from 'services/helper'
 import ThemeProvider from 'components/wrappers/ThemeProvider'
-import Skeleton from 'react-loading-skeleton'
+const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -131,13 +130,13 @@ const SideBarRight = (props) => {
     {
       name: 'Discord',
       label: '@dbuzzAPP',
-      imagePath: `${window.location.origin}/discord.png`,
+      imagePath: `${window.location.origin}/discord.svg`,
       url: 'https://discord.gg/kCZGPs7',
     },
     {
       name: 'Element',
       label: '#d.buzz:matrix.org',
-      imagePath: `${window.location.origin}/element.png`,
+      imagePath: `${window.location.origin}/element.svg`,
       url: 'https://matrix.to/#/#d.buzz:matrix.org',
     },
     // {
@@ -146,21 +145,22 @@ const SideBarRight = (props) => {
     //   imagePath: `${window.location.origin}/facebook.png`,
     //   url: 'https://www.facebook.com/dbuzzapp/',
     // },
-    // {
-    //   name: 'Twitter',
-    //   label: 'dbuzzAPP',
-    //   imagePath: `${window.location.origin}/twitter.png`,
-    //   url: 'https://twitter.com/dbuzzAPP',
-    // },
+    {
+      name: 'Twitter',
+      label: '@dbuzzAPP',
+      imagePath: `${window.location.origin}/twitter.svg`,
+      url: 'https://twitter.com/dbuzzAPP',
+    },
   ]
 
   useEffect(() => {
     (async function resources() {
-      const hive = await getPrice('hive')
-      const hbd = await getPrice('hbd')
 
-      setHivePrice(convertCurrency(hive.data[0].quote.USD.price))
-      setHbdPrice(convertCurrency(hbd.data[0].quote.USD.price))
+      const hivePrice = await getPrice('hive')
+      const hbdPrice = await getPrice('hbd')
+
+      setHivePrice(`$${hivePrice.hive.usd.toFixed(3)}`)
+      setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3)}`)
     })()
   }, [])
 
@@ -185,7 +185,7 @@ const SideBarRight = (props) => {
                 <Skeleton height={20} width={50} count={1}/>
               </ThemeProvider>}
           </span>
-          <label className='price_description'> HIVE Market Value by <a href='https://coinmarketcap.com/currencies/hive-dollar/'>@CoinMarketCap</a></label>
+          <label className='price_description'> HIVE Market Value by <a href='https://www.coingecko.com/en/coins/hive'>@CoinGecko</a></label>
         </span>
         <span className={classes.priceItem}>
           <span className='price_container'>
@@ -196,7 +196,7 @@ const SideBarRight = (props) => {
                 <Skeleton height={20} width={50} count={1}/>
               </ThemeProvider>}
           </span>
-          <label className='price_description'> HBD Market Value by <a href='https://coinmarketcap.com/currencies/hive-dollar/'>@CoinMarketCap</a></label>
+          <label className='price_description'> HBD Market Value by <a href='https://www.coingecko.com/en/coins/hive_dollar'>@CoinGecko</a></label>
         </span>
       </div>
       <div style={{ paddingTop: 5 }}>

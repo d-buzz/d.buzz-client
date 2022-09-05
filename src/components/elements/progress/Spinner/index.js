@@ -1,6 +1,6 @@
 import React from 'react'
-import Loader from 'react-loader-spinner'
 import { createUseStyles } from 'react-jss'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = createUseStyles({
   loader: {
@@ -9,18 +9,16 @@ const useStyles = createUseStyles({
   },
 })
 
-const Spinner = ({ loading, top = 30, size, style = {} }) => {
+const Spinner = ({ loading, top = 30, size, style = {}, color }) => {
   const classes = useStyles()
 
   return (
     <React.Fragment>
       {loading && (
         <div style={{ paddingTop: top, ...style }} className={classes.loader}>
-          <Loader
-            type="Oval"
-            color="#e61c34"
-            height={size}
-            width={size}
+          <CircularProgress
+            style={{color: !color ? '#e61c34' : color}}
+            size={size}
           />
         </div>
       )}

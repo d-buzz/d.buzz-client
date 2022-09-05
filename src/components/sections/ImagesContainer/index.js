@@ -132,7 +132,7 @@ const ImagesContainer = (props) => {
         {buzzImages.map(image => ( 
           !image.includes('?dbuzz_video=') ?
             <div className="media">
-              <img key={image} src={proxyImage(image)} alt={'broken link!'} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} />
+              <img key={image} src={proxyImage(image)} alt={'broken link!'} style={{animation: 'zoomIn 250ms'}} onClick={() => viewFullImage(image)} loading='lazy'/>
               <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(image)} />
             </div> :
             <div className="media">
