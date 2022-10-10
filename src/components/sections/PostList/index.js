@@ -254,7 +254,7 @@ const PostList = React.memo((props) => {
     loadPockets,
     linkConfirmationModal,
     setLinkConfirmationModal,
-    selectedPocket,
+    selectedPocket = {},
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -490,9 +490,16 @@ const PostList = React.memo((props) => {
   const getPocket = () => {
     let pocketObject = null
 
+    
     pockets.forEach(pocket => {
-      const hasThisBuzz = pocket.pocketId === selectedPocket.id
-
+      let hasThisBuzz
+      
+      if(!selectedPocket.id) {
+        hasThisBuzz = pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined
+      } else {
+        hasThisBuzz = pocket.pocketId === selectedPocket.id
+      }
+      
       if(hasThisBuzz) {
         pocketObject = pocket
       }
@@ -577,7 +584,7 @@ const PostList = React.memo((props) => {
                     className={classes.menu}
                   >
                     {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>}
-                    {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {selectedPocket.name}</MenuItem>)}
+                    {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {selectedPocket.name || getPocket().pocketName}</MenuItem>)}
                     {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
                     {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}

@@ -414,7 +414,7 @@ const PostActions = (props) => {
     await import('moment').then((moment) => {
       semantic = moment.default(`${date}Z`).local().fromNow()
     })
-    return semantic !== '52 years ago' ? semantic : ''
+    return !semantic.includes('years ago') ? semantic : ''
   }
 
   const openMenu = (e) => {
