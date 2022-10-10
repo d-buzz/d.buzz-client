@@ -263,7 +263,7 @@ export const sendToBerries = (author, theme) => {
 export const calculateOverhead = (content, imagesSize = 0) => {
   let urls = getUrls(content) || []
 
-  let markdown = content?.match(/\s+<br\/>|#+\s|[*]/gm) || []
+  const markdown = content?.match(/\s+<br\/>|#+\s|[*]/gm) || []
 
   let overhead = 0
 
