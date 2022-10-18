@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import markdownLinkExtractor from 'markdown-link-extractor'
-import textParser from 'npm-text-parser'
+// import textParser from 'npm-text-parser'
 import classNames from 'classnames'
 import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
@@ -168,12 +168,16 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
+const parseUrls = (c) => {
+  return c.match(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-']*)*/gm) || []
+}
+
 const prepareYoutubeEmbeds = (content) => {
-  const youtubeRegex = /(https?:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+/i
+  const youtubeRegex = /(https?:\/\/)?((www\.)?(m\.)?youtube\.com|youtu\.?be)\/.+/i
 
   let body = content
   
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
   
   links.forEach((link) => {
     try {
@@ -210,7 +214,7 @@ const prepareTwitterEmbeds = (content) => {
   const mobileTwitterRegex = /(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*))))/i
   const htmlReplacement = /<blockquote[^>]*?><p[^>]*?>(.*?)<\/p>.*?mdash; (.*)<a href="(https:\/\/twitter\.com\/.*?(.*?\/status\/(.*?))\?.*?)">(.*?)<\/a><\/blockquote>/i
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   const matchData = content.match(htmlReplacement)
   if(matchData) {
@@ -260,11 +264,11 @@ const prepareTwitterEmbeds = (content) => {
 }
 
 const prepareVimmEmbeds = (content) => {
-  const vimmRegex = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/c\/(.*?))))/i
+  const vimmRegex = /(?:(https?:\/\/)?(?:(?:(www\.)?vimm\.tv\/c\/(.*?))))/i
   const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -322,7 +326,7 @@ const prepareRumbleEmbed = (content) => {
   const rumbleRegexEmbed = /(?:https?:\/\/(?:(?:rumble\.com\/embed\/(.*?))))/i
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -394,7 +398,7 @@ const prepareOdyseeEmbeds = (content) => {
   const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com\/@(.*?)\/(.*))))/i
   let body = content
 
-  const links = markdownLinkExtractor(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     try {
@@ -409,6 +413,13 @@ const prepareOdyseeEmbeds = (content) => {
           const data1 = data[4].split(':')[0]
           if(data[4].includes('?')){
             id = data[4]
+          } else {
+            id = data1
+          }
+        } else if (data[3]) {
+          const data1 = data[3].split(':')[0]
+          if(data[3].includes('?')){
+            id = data[3]
           } else {
             id = data1
           }
@@ -428,7 +439,7 @@ const prepareBitchuteEmbeds = (content) => {
   const bitchuteRegexEmbed = /(?:https?:\/\/(?:(?:www\.bitchute\.com\/embed\/(.*?))))/i
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -465,7 +476,7 @@ const prepareBannedEmbeds = (content) => {
   
   let body = content
   
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
   
   links.forEach((link) => {
     try {
@@ -494,7 +505,7 @@ const prepareDollarVigilanteEmbeds = (content) => {
   
   let body = content
   
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
   
   links.forEach((link) => {
     try {
@@ -523,7 +534,7 @@ const prepareDapplrEmbeds = (content) => {
   
   let body = content
   
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
   
   links.forEach((link) => {
     try {
@@ -554,7 +565,7 @@ const prepareFreeWorldNewsEmbeds = (content) => {
   
   let body = content
   
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
   
   links.forEach((link) => {
     try {
@@ -582,7 +593,7 @@ const prepareSoundCloudEmbeds = (content) => {
   const soundcloudRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/(.*)$/
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -613,7 +624,7 @@ const prepareFacebookEmbeds = (content) => {
 
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -646,7 +657,7 @@ const prepareTiktokEmbeds = (content) => {
   const tiktokIdRegex = /[0-9]+/
 
   let body = content
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -679,7 +690,7 @@ const prepareAppleEmbeds = (content) => {
   const appleRegexEmbed = /(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -699,7 +710,7 @@ const prepareDTubeEmbeds = (content) => {
   const dtubeRegex = /^https:\/\/(emb\.)?d\.tube\/(.*)/
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -720,7 +731,7 @@ const prepareDBuzzVideos = (content) => {
   const dbuzzVideos = /https:\/\/ipfs\.io\/ipfs\/.*\?dbuzz_video=https:\/\/ipfs\.io\/ipfs\/([a-zA-Z0-9]+)/i
   let body = content
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
@@ -962,7 +973,7 @@ const Renderer = React.memo((props) => {
     content = content?.replace(item, link)
   })
 
-  const links = textParser.getUrls(content)
+  const links = parseUrls(content)
 
   const prepareHyperlinks = () => {
     const hyperlinks = document.querySelectorAll(`.hyperlink`)
@@ -1038,13 +1049,13 @@ const Renderer = React.memo((props) => {
           content = prepareTwitterEmbeds(content)
         } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
           content = prepareThreeSpeakEmbeds(content)
-        } else if(link.includes('www.vimm.tv')) {
+        } else if(link.includes('vimm.tv')) {
           content = prepareVimmEmbeds(content)
         } else if(link.includes('rumble.com')) {
           content = prepareRumbleEmbed(content)
         } else if(link.includes('lbry.tv') || link.includes('open.lbry.com')) {
           content = prepareLbryEmbeds(content)
-        } else if(link.includes('www.bitchute.com')) {
+        } else if(link.includes('bitchute.com')) {
           content = prepareBitchuteEmbeds(content)
         } else if(link.includes('banned.video')) {
           content = prepareBannedEmbeds(content)
