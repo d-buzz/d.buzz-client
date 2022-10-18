@@ -992,23 +992,6 @@ const Renderer = React.memo((props) => {
     })
   }
 
-  const prepareHyperlinks = () => {
-    const hyperlinks = document.querySelectorAll(`.hyperlink`)
-    hyperlinks.forEach((hyperlink) => {
-      hyperlink.addEventListener('click', function (e) {
-        e.preventDefault()
-        const url = hyperlink.id
-        setLinkConfirmationModal(url)
-      })
-      if(isMobile) {
-        hyperlink.addEventListener('touchstart', function () {
-          const url = hyperlink.id
-          setLinkConfirmationModal(url)
-        })
-      }
-    })
-  }
-
   const loadImages = () => {
     const imagesRegex = /(?:(?:https:\/\/ipfs\.io\/ipfs\/[a-zA-Z0-9]+)|(?:https?:\/\/([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-]*)*\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi
     if(content.match(imagesRegex)){
