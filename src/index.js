@@ -17,9 +17,9 @@ initReactFastclick()
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      {/* <HttpsRedirect> */}
+      <HttpsRedirect>
         <App />
-      {/* </HttpsRedirect> */}
+      </HttpsRedirect>
     </Router>
   </Provider>,
   document.getElementById('root'),
