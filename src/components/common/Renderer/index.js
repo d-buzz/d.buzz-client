@@ -169,7 +169,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const parseUrls = (c) => {
-  return c.match(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-']*)*/gm) || []
+  return c.match(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
 }
 
 const prepareYoutubeEmbeds = (content) => {
@@ -280,7 +280,7 @@ const prepareVimmEmbeds = (content) => {
     try {
       if(link.match(vimmRegex) && !link.includes('/view')){
         match = link.match(vimmRegex)
-        id = data[4]
+        id = link.includes('http') ? data[4] : data[2]
       }
       else if(link.match(vimmRegexEmbed)){
         match = link.match(vimmRegexEmbed)
@@ -395,7 +395,7 @@ const prepareLbryEmbeds = (content) => {
 }
 
 const prepareOdyseeEmbeds = (content) => {
-  const odyseeRegex = /(?:https?:\/\/(?:(?:odysee\.com\/@(.*?)\/(.*))))/i
+  const odyseeRegex = /(?:(?:https?:\/\/)?(?:www\.)?(?:(?:odysee\.com\/@(.*?)\/(.*))))/i
   let body = content
 
   const links = parseUrls(content)
@@ -420,6 +420,13 @@ const prepareOdyseeEmbeds = (content) => {
           const data1 = data[3].split(':')[0]
           if(data[3].includes('?')){
             id = data[3]
+          } else {
+            id = data1
+          }
+        } else if (data[2]) {
+          const data1 = data[2].split(':')[0]
+          if(data[2].includes('?')){
+            id = data[2]
           } else {
             id = data1
           }
@@ -707,19 +714,24 @@ const prepareAppleEmbeds = (content) => {
 }
 
 const prepareDTubeEmbeds = (content) => {
-  const dtubeRegex = /^https:\/\/(emb\.)?d\.tube\/(.*)/
+  const dtubeEmbedRegex = /^(?:(https?:\/\/)?(?:www\.)?(emb\.)?d\.tube\/v\/.*\/[a-zA-Z0-9-]+)/gi
+  const dtubeVideoRegex = /^(?:(https?:\/\/)?(?:www\.)?(d\.tube)\/#!\/v\/.*\/[a-zA-Z0-9-]+)/gi
   let body = content
 
   const links = parseUrls(content)
 
   links.forEach((link) => {
     link = link.replace(/&amp;/g, '&')
+    const matchEmbed = link.match(dtubeEmbedRegex)
+    const matchVideo = link.match(dtubeVideoRegex)
 
-    const match = link.match(dtubeRegex)
-
-    if (match) {
+    if (matchEmbed) {
       const data = link.split('/')
-      const id = `${data[4]}/${data[5]}`
+      const id = link.includes('http') ? `${data[4]}/${data[5]}` : `${data[2]}/${data[3]}`
+      body = body.replace(link, `~~~~~~.^.~~~:dtube:${id}:~~~~~~.^.~~~`)
+    } else if (matchVideo) {
+      const data = link.split('/')
+      const id = link.includes('http') ? `${data[5]}/${data[6]}` : `${data[3]}/${data[4]}`
       body = body.replace(link, `~~~~~~.^.~~~:dtube:${id}:~~~~~~.^.~~~`)
     }
   })
@@ -925,7 +937,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a class="hyperlink" onclick="() => return false;" id="${n}">${truncateString(n, 25)}</a>` : n)
+      .replace(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<a class="hyperlink" onclick="() => return false;" id="${n}">${truncateString(n, 25)}</a>` : n)
     // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
     //   // render hashtags 
@@ -933,7 +945,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // // render web images links
-      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/.*\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
+      .replace(/(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // // render IPFS images
       .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // render dbuzz images
