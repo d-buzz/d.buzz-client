@@ -21,7 +21,7 @@ import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 // import { WithContext as ReactTags } from 'react-tag-input'
-import { isMobile } from 'react-device-detect'
+import { isAndroid, isIOS, isMobile, isTablet } from 'react-device-detect'
 import { invokeTwitterIntent, calculateOverhead } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -1024,7 +1024,7 @@ const CreateBuzzForm = (props) => {
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload')
-    if (isMobile) {
+    if (isMobile || isTablet || isAndroid || isIOS) {
       target.addEventListener('click', function () {
         const touch = new Touch({
           identifier: 'file-upload',
@@ -1040,6 +1040,7 @@ const CreateBuzzForm = (props) => {
 
         target.dispatchEvent(touchEvent)
       })
+      target.click()
     }
     inputRef.current.click()
   }
@@ -1076,7 +1077,6 @@ const CreateBuzzForm = (props) => {
     await handleImageCompression(image).then((uri) => {
       setCompressing(false)
       setImageSize(Number((uri.size / 1e+6).toFixed(2)))
-      console.log(uri)
       uploadFileRequest(uri, setImageUploadProgress).then((image) => {
         setImageUploading(false)
         const lastImage = image[image.length - 1]
@@ -1184,7 +1184,6 @@ const CreateBuzzForm = (props) => {
         if(user.useHAS) {
           publishPostWithHAS(user, buzzContent, tags, payout, buzzPermlink)
             .then((data) => {
-              console.log(data)
               setContentRedirect(data.content)
   
               import('@mintrawa/hive-auth-client').then((HiveAuth) => {
@@ -1379,8 +1378,10 @@ const CreateBuzzForm = (props) => {
     if(hashtags === null)  {
       hashtags = []
     } else {
-      hashtags = hashtags.map((item) => item.replace("#", ''))
+      hashtags = hashtags.map((item) => item.replace("#", '').toLowerCase())
     }
+
+    console.log(hashtags)
 
     return hashtags
   }
