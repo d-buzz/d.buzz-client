@@ -35,7 +35,7 @@ class InfiniteList extends PureComponent {
       selectedPocket,
     } = this.props
     
-    const posts = items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw') || !item?.json_metadata?.tags?.includes('NSFW')) || []
+    const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' ? items : items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) || []
 
     const clearOutlineStyle = { outline: 'none' }
 

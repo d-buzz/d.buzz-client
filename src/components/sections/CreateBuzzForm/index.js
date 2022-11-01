@@ -1381,8 +1381,6 @@ const CreateBuzzForm = (props) => {
       hashtags = hashtags.map((item) => item.replace("#", '').toLowerCase())
     }
 
-    console.log(hashtags)
-
     return hashtags
   }
 
