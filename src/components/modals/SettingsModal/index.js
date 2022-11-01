@@ -181,9 +181,10 @@ const SettingsModal = (props) => {
 
   const { VERSION } = config
 
-  const [videoEmbedsStatus, setVideoEmbedsStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings.videoEmbedsStatus)
-  const [linkPreviewsStatus, setLinkPreviewsStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings.linkPreviewsStatus)
-  const [showImagesStatus, setShowImagesStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings.showImagesStatus)
+  const [videoEmbedsStatus, setVideoEmbedsStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus)
+  const [linkPreviewsStatus, setLinkPreviewsStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus)
+  const [showImagesStatus, setShowImagesStatus] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus)
+  const [showNSFWPosts, setShowNSFWPosts] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts)
   const [isLatest, setIsLatest] = useState(null)
   const [updatesAvailable, setUpdatesAvailable] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -195,19 +196,20 @@ const SettingsModal = (props) => {
     setVideoEmbedsStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus)
     setLinkPreviewsStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus)
     setShowImagesStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus)  
+    setShowNSFWPosts(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts)  
   }, [show])
 
   useEffect(() => {
     const data = {
       ...customUserData,
-      settings: {...customUserData?.settings, videoEmbedsStatus, linkPreviewsStatus, showImagesStatus},
+      settings: {...customUserData?.settings, videoEmbedsStatus, linkPreviewsStatus, showImagesStatus, showNSFWPosts},
     }
     // set the local storage variables
     if(customUserData?.settings) {
       localStorage.setItem('customUserData', JSON.stringify({...data}))
     }
     // eslint-disable-next-line
-  }, [videoEmbedsStatus,linkPreviewsStatus,showImagesStatus])
+  }, [videoEmbedsStatus,linkPreviewsStatus,showImagesStatus,showNSFWPosts])
 
   const handleDisableEnableToggles = (bool) => {
     if(!bool) {
@@ -230,6 +232,7 @@ const SettingsModal = (props) => {
         videoEmbedsStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus,
         linkPreviewsStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus,
         showImagesStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus,
+        showNSFWPosts: JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts,
       }}
       const responseData = { username: username, userData: [userData] }
       if(res) {
@@ -272,6 +275,17 @@ const SettingsModal = (props) => {
       setShowImagesStatus('disabled')
     } else {
       setShowImagesStatus('enabled')
+    }
+    handleUpdateSettings()
+  }
+
+  const handleShowNSFWPosts = () => {
+    handleDisableEnableToggles(false)
+    setSelectedItem('showNSFWPosts')
+    if(showNSFWPosts === 'enabled'){
+      setShowNSFWPosts('disabled')
+    } else {
+      setShowNSFWPosts('enabled')
     }
     handleUpdateSettings()
   }
@@ -343,6 +357,13 @@ const SettingsModal = (props) => {
                   <span className='toggle' onClick={handleShowImagesToggle}>{!(loading && selectedItem === 'showImagesToggle') ? showImagesStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
                 <div className="description">All the images are <b>{showImagesStatus}</b></div>
+              </div>
+              <div className='item'>
+                <div className="toggle_container">
+                  <span className='title'>Show NSFW Posts</span>
+                  <span className='toggle' onClick={handleShowNSFWPosts}>{!(loading && selectedItem === 'showNSFWPosts') ? showNSFWPosts === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
+                </div>
+                <div className="description">All the NSFW posts are <b>{showNSFWPosts}</b></div>
               </div>
             </div>
           </div>

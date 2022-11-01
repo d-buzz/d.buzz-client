@@ -66,8 +66,8 @@ const Tags = (props) => {
   }, [tag])
 
   useEffect(() => {
-    setResults(items.results || [])
-    console.log(items)
+    const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' ? items.results : items.results?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) || []
+    setResults(posts || [])
   // eslint-disable-next-line
   }, [items])
 

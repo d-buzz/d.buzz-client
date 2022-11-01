@@ -28,18 +28,18 @@ const Avatar = React.memo((props) => {
     avatar_src = avatarUrl
   }
 
-  const handleImageOnError = () => {
-    const avatarImage = document.querySelector('.user-avatar-image')
-    avatarImage.src = `${window.location.origin}/ceramic_user_avatar.svg`
-    avatarImage.style.animation = 'none'
-    avatarImage.style.opacity = '1'
-  }
+  // const handleImageOnError = () => {
+  //   const avatarImage = document.querySelector('.user-avatar-image')
+  //   avatarImage.src = `${window.location.origin}/ceramic_user_avatar.svg`
+  //   avatarImage.style.animation = 'none'
+  //   avatarImage.style.opacity = '1'
+  // }
 
   return (
     <React.Fragment>
       <Image
         onClick={onClick}
-        onError={handleImageOnError}
+        // onError={handleImageOnError}
         src={avatar_src}
         roundedCircle
         height={height}
