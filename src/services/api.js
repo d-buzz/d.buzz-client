@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
 import 'react-app-polyfill/stable'
-import { calculateOverhead } from 'services/helper'
+import { calculateOverhead, calculateRepScore } from 'services/helper'
 import config from 'config'
 import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 import { stripHtml } from 'services/helper'
@@ -104,18 +104,17 @@ export const searchPeople = (username) => {
       HiveJS.api.call('reputation_api.get_account_reputations', params, async(err, data) => {
         if (err) {
           reject(err)
-        }else {
+        } else {
   
           if(data.reputations.length !== 0) {
             data.reputations.forEach((item, index) => {
-              let score
-              import('@hiveio/hive-js').then((HiveAuth) => {
-                score = item.reputation ? HiveAuth.formatter.reputation(item.reputation) : 25
-              })
+              const repscore = item.reputation
+              let score = calculateRepScore(repscore)
 
               if(!score || score < 25) {
                 score = 25
               }
+              
               data.reputations[index].repscore = score
               data.reputations[index].author = item.account
             })

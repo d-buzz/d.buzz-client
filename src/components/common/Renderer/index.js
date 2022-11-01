@@ -322,8 +322,7 @@ const prepareThreeSpeakEmbeds = (content) => {
 }
 
 const prepareRumbleEmbed = (content) => {
-  const rumbleRegex = /(?:https?:\/\/(?:(?:rumble\.com\/(.*?))))/i
-  const rumbleRegexEmbed = /(?:https?:\/\/(?:(?:rumble\.com\/embed\/(.*?))))/i
+  const rumbleRegexEmbed = /(?:(?:https?:\/\/)?(?:www\.)?(?:(?:rumble\.com\/[a-zA-Z1-9-.]+)))/i
   let body = content
 
   const links = parseUrls(content)
@@ -334,17 +333,13 @@ const prepareRumbleEmbed = (content) => {
     let id = ''
 
     try {
-      if(link.match(rumbleRegex)){
-        const data = link.split('/')
-        match = link.match(rumbleRegex)
+      if(link.match(rumbleRegexEmbed)) {
+        match = link.match(rumbleRegexEmbed)
+        const input = match['input']
+        const data = input.split('/')
         id = data[4]
-        if(link.match(rumbleRegexEmbed)){
-          match = link.match(rumbleRegexEmbed)
-          const input = match['input']
-          const data = input.split('/')
-          id = data[4]
-        }
       }
+
       if (!id) {
         id = ''
       }
@@ -950,8 +945,10 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
       .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // render dbuzz images
       .replace(/(https:\/\/(storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi, n => JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `<img src=${proxyImage(n)}>` : n)
-    //   // hide watch video on dbuzz
+    // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
+    // support strikethrough 
+      .replace(/~~[a-zA-Z0-9\s]+~~/gi, n => `<del>${n.replaceAll('~', '')}</del>`)
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
