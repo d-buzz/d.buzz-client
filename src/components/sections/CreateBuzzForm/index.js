@@ -1170,7 +1170,7 @@ const CreateBuzzForm = (props) => {
     }
 
     // eslint-disable-next-line
-    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `## ${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
+    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `${buzzTitle} <br/>`+'\n'+buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
     const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1]?.content
     const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
     
