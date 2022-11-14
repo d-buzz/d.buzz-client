@@ -16,7 +16,7 @@ import { SuccessConfirmation } from 'components/elements'
 import { Checkbox } from '@material-ui/core'
 import { ProgressBar } from 'react-bootstrap'
 import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
-import MetaMaskButton from 'components/common/MetaMaskButton'
+// import MetaMaskButton from 'components/common/MetaMaskButton'
 import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
 import HiveButton from 'components/common/HiveButton'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
@@ -162,7 +162,7 @@ const LoginModal = (props) => {
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(false)
-  const [loginMethod, setLoginMethod] = useState(null)
+  const [loginMethod, setLoginMethod] = useState('HIVE')
   /* eslint-disable */
   let [hasExpiredDelay, setHasExpiredDelay] = useState(60)
   
@@ -462,9 +462,9 @@ const LoginModal = (props) => {
                   </React.Fragment>
                   <FormSpacer />
                   <React.Fragment>
-                    {(hasMetaMaskInstalled) && !isMobile && accounts.length === 0 && (
+                    {/* {(hasMetaMaskInstalled) && !isMobile && accounts.length === 0 && (
                       <MetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
-                    )}
+                    )} */}
                     {/* {(isMobile && !hasMetaMaskInstalled) && (
                       <MetaMaskButton onClick={handleOpenMetaMask} disabled={useKeychain || useHAS || useCeramic} title='Login with MetaMask'/>
                     )} */}
@@ -501,7 +501,7 @@ const LoginModal = (props) => {
                 </React.Fragment>
               }
               <center>
-              {loginMethod !== null && !loading &&
+              {/* {loginMethod !== null && !loading &&
                     <ContainedButton
                       onClick={handleGoBack}
                       transparent={true}
@@ -509,7 +509,7 @@ const LoginModal = (props) => {
                       fontSize={15}
                       label="Go Back"
                     />
-                  }
+                  } */}
                 {loading && (
                   <Spinner size={40} loading={true} />
                 )}

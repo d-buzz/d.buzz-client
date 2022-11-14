@@ -13,7 +13,7 @@ import { createUseStyles } from 'react-jss'
 import { Avatar } from 'components/elements'
 import { openCensorshipDialog, setLinkConfirmationModal, setViewImageModal } from 'store/interface/actions'
 import {
-  PostTags,
+  // PostTags,
   PostActions,
   ReplyList,
   UserDialog,
@@ -581,7 +581,7 @@ const Content = (props) => {
                 )}
                 <Renderer content={originalContent} minifyAssets={false} />
               </div>
-              <PostTags meta={meta} />
+              {/* <PostTags meta={meta} /> */}
               {(`${stripHtml(content.body)}`.length - overhead > 280) && (
                 <Row>
                   <Col>

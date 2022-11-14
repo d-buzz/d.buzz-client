@@ -34,11 +34,13 @@ class InfiniteList extends PureComponent {
       loadPockets,
       selectedPocket,
     } = this.props
+    
+    const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' ? items : items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) || []
 
     const clearOutlineStyle = { outline: 'none' }
 
     const isRowLoaded = ({ index }) => {
-      return !!items[index]
+      return !!posts[index]
     }
 
     const clearScrollPosition = () => {
@@ -71,28 +73,28 @@ class InfiniteList extends PureComponent {
                   type='HIVE'
                   disableOpacity={disableOpacity}
                   displayTitle={title}
-                  title={items[index].title}
+                  title={posts[index].title}
                   unguardedLinks={unguardedLinks}
                   profileRef="home"
-                  active_votes={items[index].active_votes}
-                  author={items[index].author}
-                  permlink={items[index].permlink}
-                  created={items[index].created}
-                  body={items[index].body}
-                  upvotes={items[index].active_votes.length}
-                  upvoteList={items[index].active_votes}
-                  replyCount={items[index].children}
-                  meta={items[index].json_metadata}
-                  payout={items[index].payout}
-                  total_payout_value={items[index].total_payout_value}
-                  pending_payout_value={items[index].pending_payout_value}
-                  max_accepted_payout={items[index].max_accepted_payout}
-                  payoutAt={items[index].payout_at}
-                  cashout_time={items[index].cashout_time}
+                  active_votes={posts[index].active_votes}
+                  author={posts[index].author}
+                  permlink={posts[index].permlink}
+                  created={posts[index].created}
+                  body={posts[index].body}
+                  upvotes={posts[index].active_votes.length}
+                  upvoteList={posts[index].active_votes}
+                  replyCount={posts[index].children}
+                  meta={posts[index].json_metadata}
+                  payout={posts[index].payout}
+                  total_payout_value={posts[index].total_payout_value}
+                  pending_payout_value={posts[index].pending_payout_value}
+                  max_accepted_payout={posts[index].max_accepted_payout}
+                  payoutAt={posts[index].payout_at}
+                  cashout_time={posts[index].cashout_time}
                   scrollIndex={index}
                   recomputeRowIndex={recomputeRowIndex}
                   muteTrigger={muteTrigger}
-                  item={items[index]}
+                  item={posts[index]}
                   selectedPocket={selectedPocket}
                   loadPockets={loadPockets}
                 />
@@ -114,24 +116,24 @@ class InfiniteList extends PureComponent {
           {({measure}) => (
             <ResizeObserver onResize={measure}>
               <PostList
-                app={items[index].app}
+                app={posts[index].app}
                 type='CERAMIC'
                 disableOpacity={disableOpacity}
                 displayTitle={title}
-                title={items[index].title}
+                title={posts[index].title}
                 unguardedLinks={unguardedLinks}
                 profileRef="home"
-                author={items[index].author}
-                permlink={items[index].stream_id}
-                created={items[index].created_at}
-                body={items[index].body}
-                replyCount={items[index].children.length}
-                meta={items[index].json_metadata}
-                pending_payout_value={items[index].pending_payout_value}
+                author={posts[index].author}
+                permlink={posts[index].stream_id}
+                created={posts[index].created_at}
+                body={posts[index].body}
+                replyCount={posts[index].children.length}
+                meta={posts[index].json_metadata}
+                pending_payout_value={posts[index].pending_payout_value}
                 scrollIndex={index}
                 recomputeRowIndex={recomputeRowIndex}
                 muteTrigger={muteTrigger}
-                item={items[index]}
+                item={posts[index]}
                 selectedPocket={selectedPocket}
                 loadPockets={loadPockets}
               />
@@ -143,7 +145,7 @@ class InfiniteList extends PureComponent {
 
     return (
       <React.Fragment>
-        {!items[0]?.stream_id ?
+        {!posts[0]?.stream_id ?
           <InfiniteLoader
             isRowLoaded={isRowLoaded}
             loadMoreRows={onScroll}
@@ -158,7 +160,7 @@ class InfiniteList extends PureComponent {
                     {({ width }) => {
                       return (
                         <List
-                          rowCount={items.length || 0}
+                          rowCount={posts.length || 0}
                           autoHeight
                           width={width}
                           height={height}
@@ -199,7 +201,7 @@ class InfiniteList extends PureComponent {
                     {({ width }) => {
                       return (
                         <List
-                          rowCount={items.length || 0}
+                          rowCount={posts.length || 0}
                           autoHeight
                           width={width}
                           height={height}

@@ -149,6 +149,16 @@ export const calculatePayout = (data) => {
   return payout
 }
 
+export const calculateRepScore = (_reputation) => {
+  if (_reputation == null) return _reputation
+  var neg = _reputation < 0
+  var rep = String(_reputation)
+  rep = neg ? rep.substring(1) : rep
+  var v = Math.log10((rep > 0 ? rep : -rep) - 10) - 9
+  v = neg ? -v : v
+  return parseInt(v * 9 + 25)
+}
+
 const getWindowDimensions = () => {
   const { innerWidth: width, innerHeight: height } = window
   return { width, height }

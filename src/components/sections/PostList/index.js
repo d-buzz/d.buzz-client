@@ -6,7 +6,7 @@ import {
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
-  PostTags,
+  // PostTags,
   PostActions,
 } from 'components'
 import {
@@ -226,12 +226,12 @@ const PostList = React.memo((props) => {
     body,
     upvotes,
     replyCount,
-    meta,
+    // meta,
     active_votes = [],
     unguardedLinks,
     user = {},
     profileRef = null,
-    highlightTag = null,
+    // highlightTag = null,
     title = null,
     disableProfileLink = false,
     disableUserMenu = false,
@@ -551,7 +551,7 @@ const PostList = React.memo((props) => {
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
                       <Renderer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
-                      <PostTags meta={meta} highlightTag={highlightTag} />
+                      {/* <PostTags meta={meta} highlightTag={highlightTag} /> */}
                     </div>
                   )}
                 </div>
