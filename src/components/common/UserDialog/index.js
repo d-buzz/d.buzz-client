@@ -122,10 +122,11 @@ const UserDialog = React.memo((props) => {
   const fetchFollowInformation = () => {
     if(!author.did) {
       getFollowDetailsRequest(author)
-        .then(({ isFollowed: followed, count }) => {
+        .then(({ isFollowed: followed, count, account: { reputation } }) => {
           setFollowerCount(count.follower_count)
           setFollowingCount(count.following_count)
           setIsFollowed(followed)
+          setReputation(parseInt(reputation))
         })
     }
   }
@@ -135,6 +136,7 @@ const UserDialog = React.memo((props) => {
       const { open } = userDialogData
       if(open) {
         const { author, anchorEl } = userDialogData
+        console.log(userDialogData)
         if(!author.did) {
           setAnchor(anchorEl)
           setAuthor(author)

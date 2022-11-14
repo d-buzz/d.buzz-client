@@ -162,7 +162,7 @@ const LoginModal = (props) => {
   const [hasAuthenticationError, setHasAuthenticationError] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(false)
-  const [loginMethod, setLoginMethod] = useState(null)
+  const [loginMethod, setLoginMethod] = useState('HIVE')
   /* eslint-disable */
   let [hasExpiredDelay, setHasExpiredDelay] = useState(60)
   

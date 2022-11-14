@@ -111,6 +111,7 @@ import {
   uploadVideo,
   hasFollowService,
   hasUnFollowService,
+  fetchSingleProfile,
 } from 'services/api'
 import { createPatch, errorMessageComposer, censorLinks, stripHtml } from 'services/helper'
 
@@ -866,6 +867,7 @@ function* searchRequest(payload, meta) {
     }
 
     const profile = yield call(searchPeople, query)
+
     results.people = profile.reputations
 
     yield put(searchSuccess(results, meta))
@@ -886,8 +888,11 @@ function* getFollowDetailsRequest(payload, meta) {
     if(is_authenticated) {
       isFollowed = yield call(isFollowing, username, name)
     }
+    
+    const account = yield call(fetchSingleProfile, name)
+    
 
-    yield put(getFollowDetailsSuccess({ isFollowed, count }, meta))
+    yield put(getFollowDetailsSuccess({ isFollowed, count, account }, meta))
   } catch(error) {
     yield put(getFollowDetailsFailure(error, meta))
   }
