@@ -342,28 +342,28 @@ const SettingsModal = (props) => {
                   <span className='title'>Show Video Embeds</span>
                   <span className='toggle' onClick={handleVideoEmbedsToggle}>{!(loading && selectedItem === 'videoEmbedsToggle') ? videoEmbedsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
-                <div className="description">All the video embeds are <b>{videoEmbedsStatus}</b></div>
+                <div className="description">All the video embeds are <b>{videoEmbedsStatus || 'disabled'}</b></div>
               </div>
               <div className='item'>
                 <div className="toggle_container">
                   <span className='title'>Show Link Previews</span>
                   <span className='toggle' onClick={handleLinkPreviewToggle}>{!(loading && selectedItem === 'linkPreviewToggle') ? linkPreviewsStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
-                <div className="description">All the link previews are <b>{linkPreviewsStatus}</b></div>
+                <div className="description">All the link previews are <b>{linkPreviewsStatus || 'disabled'}</b></div>
               </div>
               <div className='item'>
                 <div className="toggle_container">
                   <span className='title'>Show Images</span>
                   <span className='toggle' onClick={handleShowImagesToggle}>{!(loading && selectedItem === 'showImagesToggle') ? showImagesStatus === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
-                <div className="description">All the images are <b>{showImagesStatus}</b></div>
+                <div className="description">All the images are <b>{showImagesStatus || 'disabled'}</b></div>
               </div>
               <div className='item'>
                 <div className="toggle_container">
                   <span className='title'>Show NSFW Posts</span>
                   <span className='toggle' onClick={handleShowNSFWPosts}>{!(loading && selectedItem === 'showNSFWPosts') ? showNSFWPosts === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
-                <div className="description">All the NSFW posts are <b>{showNSFWPosts}</b></div>
+                <div className="description">All the NSFW posts are <b>{showNSFWPosts || 'disabled'}</b></div>
               </div>
             </div>
           </div>
