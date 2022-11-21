@@ -168,14 +168,14 @@ const WalletBalances = (props) => {
         id: 'hivePower',
         label: 'Hive Power (HP)',
         description: 'Influence tokens which give you more control over post payouts and allow you to earn on curation rewards.'
-                    + ' HIVE POWER increases at an APR of approximately 3.18%, subject to blockchain variance.',
+                    + ' HIVE POWER increases at an APR of approximately 3.024%, subject to blockchain variance.',
         value : `${hive_power} HP`,
       },
       {
         id: 'hbd',
         label: 'Hive Backed Dollars (HBD)',
         description: 'Tradeable tokens that may be transferred anywhere at anytime.'
-                    + ' HBD interest rate: 3.00% APR (as voted by the Witnesses)',
+                    + ' HBD interest rate: 20% APR (as voted by the Witnesses)',
         value : hbd,
       },
       {
