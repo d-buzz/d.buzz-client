@@ -1,12 +1,21 @@
+import {
+  api,
+  auth,
+  broadcast,
+  formatter,
+} from '@hiveio/hive-js'
+import { hash } from '@hiveio/hive-js/lib/auth/ecc'
 import { Promise, reject } from 'bluebird'
 import { v4 as uuidv4 } from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
+import getSlug from 'speakingurl'
+import moment from 'moment'
+import { ChainTypes, makeBitMaskFilter } from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
-import { calculateOverhead, calculateRepScore } from 'services/helper'
+import { calculateOverhead, stripHtml } from 'services/helper'
+import { hacUserAuth, hacVote, hacManualTransaction } from "@mintrawa/hive-auth-client"
 import config from 'config'
-import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
-import { stripHtml } from 'services/helper'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -14,7 +23,6 @@ const imageUrl = `${appConfig.IMAGE_API}/image`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
-
 
 const APP_META = {
   name: config.APP_NAME,
@@ -27,9 +35,7 @@ const visited = []
 
 const setRPCNode = () => {
   const node = localStorage.getItem('rpc')
-  import('@hiveio/hive-js').then((HiveJS) => {
-    HiveJS.api.setOptions({ url: node })
-  })
+  api.setOptions({ url: node })
 }
 
 
@@ -37,11 +43,7 @@ export const invokeMuteFilter = (items, mutelist, opacityUsers = []) => {
   return items.filter((item) => !mutelist.includes(item.author) || opacityUsers.includes(item.author))
 }
 
-export const hashBuffer = async(buffer) => {
-  let hash
-  await import('@hiveio/hive-js/lib/auth/ecc').then((ECC) => {
-    hash = ECC.hash
-  })
+export const hashBuffer = (buffer) => {
   return hash.sha256(buffer)
 }
 
@@ -67,32 +69,25 @@ export const callBridge = async(method, params, appendParams = true) => {
       params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
     }
 
-    // Check for Ceramic account
-    if(!params.account || !params.account.includes('did')) {
-      import('@hiveio/hive-js').then((HiveJS) => {
-        HiveJS.api.call('bridge.' + method, params, async(err, data) => {
-          if (err) {
-            reject(err)
-          }else {
-            let lastResult = []
-    
-            if(data.length !== 0) {
-              lastResult = [data[data.length-1]]
-            }
-    
-            removeFootNote(data)
-    
-            let result = data.filter((item) => invokeFilter(item))
-    
-            result = [...result, ...lastResult]
-    
-            resolve(result)
-          }
-        })
-      })
-    } else {
-      return []
-    }
+    api.call('bridge.' + method, params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        let lastResult = []
+
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
+        }
+
+        removeFootNote(data)
+
+        let result = data.filter((item) => invokeFilter(item))
+
+        result = [...result, ...lastResult]
+
+        resolve(result)
+      }
+    })
   })
 }
 
@@ -100,32 +95,27 @@ export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
     const params = { account_lower_bound: username, limit: 30 }
 
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('reputation_api.get_account_reputations', params, async(err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-  
-          if(data.reputations.length !== 0) {
-            data.reputations.forEach((item, index) => {
-              const repscore = item.reputation
-              let score = calculateRepScore(repscore)
+    api.call('reputation_api.get_account_reputations', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
 
-              if(!score || score < 25) {
-                score = 25
-              }
-              
-              data.reputations[index].repscore = score
-              data.reputations[index].author = item.account
-            })
-  
-            const getProfiledata = mapFetchProfile(data.reputations)
-            await Promise.all([getProfiledata])
-          }
-  
-          resolve(data)
+        if(data.reputations.length !== 0) {
+          data.reputations.forEach((item, index) => {
+            let score = item.reputation ? formatter.reputation(item.reputation) : 25
+            if(!score || score < 25) {
+              score = 25
+            }
+            data.reputations[index].repscore = score
+            data.reputations[index].author = item.account
+          })
+
+          const getProfiledata = mapFetchProfile(data.reputations)
+          await Promise.all([getProfiledata])
         }
-      })
+
+        resolve(data)
+      }
     })
 
   })
@@ -135,71 +125,69 @@ export const searchPeople = (username) => {
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
     const params = {"author":`${author}`, "permlink": `${permlink}`}
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_discussion', params, async(err, data) => {
-        if(err) {
-          reject(err)
-        } else {
-          const authors = []
-          let profile = []
-  
-          const arr = Object.values(data)
-          const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
-  
-          uniqueAuthors.forEach((item) => {
-            if(!authors.includes(item)) {
-              const profileVisited = visited.filter((prof) => prof.name === item)
-              if(!authors.includes(item) && profileVisited.length === 0) {
-                authors.push(item)
-              } else if(profileVisited.length !== 0) {
-                profile.push(profileVisited[0])
-              }
+    api.call('bridge.get_discussion', params, async(err, data) => {
+      if(err) {
+        reject(err)
+      } else {
+        const authors = []
+        let profile = []
+
+        const arr = Object.values(data)
+        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
+
+        uniqueAuthors.forEach((item) => {
+          if(!authors.includes(item)) {
+            const profileVisited = visited.filter((prof) => prof.name === item)
+            if(!authors.includes(item) && profileVisited.length === 0) {
+              authors.push(item)
+            } else if(profileVisited.length !== 0) {
+              profile.push(profileVisited[0])
             }
-          })
-  
-          if(authors.length !== 0 ) {
-            const info = await fetchProfile(authors)
-            profile = [ ...profile, ...info]
           }
-  
-          const parent = data[`${author}/${permlink}`]
-  
-          const getChildren = (reply) => {
-            const { replies } = reply
-            const children = []
-  
-            replies.forEach(async(item) => {
-              let content = data[item]
-  
-              if(!content) {
-                content = item
-              }
-  
-              content.body = content.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-              content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
-  
-              if(content.replies.length !== 0) {
-                const child = getChildren(content)
-                content.replies = child
-              }
-  
-              const info = profile.filter((prof) => prof.name === content.author)
-              visited.push(info[0])
-              content.profile = info[0]
-              children.push(content)
-            })
-  
-            return children
-          }
-  
-          const children = getChildren(parent)
-          parent.replies = children
-  
-          let replies = parent.replies
-          replies = replies.reverse()
-          resolve(replies)
+        })
+
+        if(authors.length !== 0 ) {
+          const info = await fetchProfile(authors)
+          profile = [ ...profile, ...info]
         }
-      })
+
+        const parent = data[`${author}/${permlink}`]
+
+        const getChildren = (reply) => {
+          const { replies } = reply
+          const children = []
+
+          replies.forEach(async(item) => {
+            let content = data[item]
+
+            if(!content) {
+              content = item
+            }
+
+            content.body = content.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+            content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+
+            if(content.replies.length !== 0) {
+              const child = getChildren(content)
+              content.replies = child
+            }
+
+            const info = profile.filter((prof) => prof.name === content.author)
+            visited.push(info[0])
+            content.profile = info[0]
+            children.push(content)
+          })
+
+          return children
+        }
+
+        const children = getChildren(parent)
+        parent.replies = children
+
+        let replies = parent.replies
+        replies = replies.reverse()
+        resolve(replies)
+      }
     })
   })
 }
@@ -207,14 +195,12 @@ export const fetchDiscussions = (author, permlink) => {
 export const getUnreadNotificationsCount = async(account) => {
   return new Promise((resolve, reject) => {
     const params = { account }
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.unread_notifications', params, (err, data) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(data)
-        }
-      })
+    api.call('bridge.unread_notifications', params, (err, data) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
     })
   })
 }
@@ -222,14 +208,12 @@ export const getUnreadNotificationsCount = async(account) => {
 export const getAccountNotifications = async(account) => {
   return new Promise((resolve, reject) => {
     const params = { account, limit:100 }
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.account_notifications', params, (err, data) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(data)
-        }
-      })
+    api.call('bridge.account_notifications', params, (err, data) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
     })
   })
 }
@@ -237,14 +221,12 @@ export const getAccountNotifications = async(account) => {
 export const getCommunityRole = async(observer) => {
   return new Promise((resolve, reject) => {
     const params = { "name": `${appConfig.TAG}`, observer }
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_community', params, async(err, data) => {
-        if (err) {
-          reject(err)
-        }else {
-          resolve(data.context.subscribed)
-        }
-      })
+    api.call('bridge.get_community', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        resolve(data.context.subscribed)
+      }
     })
   })
 }
@@ -261,38 +243,28 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       limit: 100,
     }
 
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_account_posts', params, async(err, data) => {
-        if(err) {
-          reject(err)
-        }else {
-          if(!checkForCeramicAccount(account)) {
-            removeFootNote(data)
-  
-            let lastResult = []
-  
-            if(data.length !== 0) {
-              lastResult = [data[data.length-1]]
-            }
-  
-            let posts = data.filter((item) => invokeFilter(item))
-  
-            posts = [...posts, ...lastResult]
-  
-            if(posts.length === 0) {
-              posts = []
-            }
-            resolve(posts)
-          } else {
-            getUserPostRequest(account)
-              .then(res => {
-                resolve(res.posts)
-              })
-          }
-        }
-      })
-    })
+    api.call('bridge.get_account_posts', params, async(err, data) => {
+      if(err) {
+        reject(err)
+      }else {
+        removeFootNote(data)
 
+        let lastResult = []
+
+        if(data.length !== 0) {
+          lastResult = [data[data.length-1]]
+        }
+
+        let posts = data.filter((item) => invokeFilter(item))
+
+        posts = [...posts, ...lastResult]
+
+        if(posts.length === 0) {
+          posts = []
+        }
+        resolve(posts)
+      }
+    })
   })
 }
 
@@ -301,40 +273,32 @@ export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
     // set RPC node here because this is the first API call to execute
     setRPCNode()
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getTrendingTagsAsync(null, 100)
-        .then((result) => {
-          resolve(result)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
+    api.getTrendingTagsAsync(null, 100)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
   })
 }
 
 export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getContentAsync(author, permlink)
-        .then(async(result) => {
-          result.body = result.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-          const profile = await fetchProfile([result.author])
-          result.profile = profile[0]
-          resolve(result)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
+    api.getContentAsync(author, permlink)
+      .then(async(result) => {
+        result.body = result.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+        const profile = await fetchProfile([result.author])
+        result.profile = profile[0]
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
   })
 }
 
-export const fetchReplies = async(author, permlink) => {
-  let api
-  await import('@hiveio/hive-js').then((HiveJS) => {
-    api = HiveJS.api
-  })
+export const fetchReplies = (author, permlink) => {
   api.setOptions({ url: 'https://api.hive.blog' })
   return api.getContentRepliesAsync(author, permlink)
     .then(async(replies) => {
@@ -372,70 +336,62 @@ export const fetchReplies = async(author, permlink) => {
 export const isFollowing = (follower, following) => {
   return new Promise((resolve, reject) => {
     const params = [follower, following]
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_relationship_between_accounts', params, (err, data) => {
-        if (err) {
-          reject(err)
-        }else {
-          const { follows } = data
-          resolve(follows)
-        }
-      })
+    api.call('bridge.get_relationship_between_accounts', params, (err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        const { follows } = data
+        resolve(follows)
+      }
     })
   })
 }
 
 export const fetchGlobalProperties = () => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getDynamicGlobalProperties((err, result) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(result)
-        }
-      })
+    api.getDynamicGlobalProperties((err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
     })
   })
 }
 
 export const fetchSingleProfile = (account) => {
-  const user = localStorage.getItem('active') 
+  const user = localStorage.getItem('active')
 
   return new Promise((resolve, reject) => {
     const params = {account}
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_profile', params, async(err, data) => {
-        if (err) { 
-          reject(err)
-        } else {
-          let isFollowed = false
+    api.call('bridge.get_profile', params, async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        let isFollowed = false
 
-          if(user && `${user}`.trim() !== '') {
-            if(user !== data?.name) {
-              isFollowed = await isFollowing(user, data.name) || false
-            } 
+        if(user && `${user}`.trim() !== '') {
+          if(user !== data.name) {
+            isFollowed = await isFollowing(user, data.name)
           }
-          resolve({
-            ...data,
-            isFollowed: isFollowed,
-          })
         }
-      })
+
+        data.isFollowed = isFollowed
+
+        resolve(data)
+      }
     })
   })
 }
 
 export const fetchAccounts = (username) => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getAccountsAsync([username])
-        .then(async(result) => {
-          resolve(result)
-        }).catch((error) => {
-          reject(error)
-        })
-    })
+    api.getAccountsAsync([username])
+      .then(async(result) => {
+        resolve(result)
+      }).catch((error) => {
+        reject(error)
+      })
   })
 }
 
@@ -443,47 +399,42 @@ export const fetchProfile = (username, checkFollow = false) => {
   const user = JSON.parse(localStorage.getItem('user'))
 
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getAccountsAsync(username)
-        .then(async(result) => {
-          result.forEach(async(item, index) => {
-            const repscore = item.reputation
-            let score
-            await import('@hiveio/hive-js').then((HiveAuth) => {
-              score = HiveAuth.formatter.reputation(repscore)
-            })
-  
-            if(!score || score < 25) {
-              score = 25
+    api.getAccountsAsync(username)
+      .then(async(result) => {
+        result.forEach(async(item, index) => {
+          const repscore = item.reputation
+          let score = formatter.reputation(repscore)
+
+          if(!score || score < 25) {
+            score = 25
+          }
+
+          result[index].reputation = score
+
+          if(checkFollow) {
+
+            const follow_count = await fetchFollowCount(item.name)
+            result[index].follow_count = follow_count
+
+            let isFollowed = false
+
+            if(user) {
+              isFollowed = await isFollowing(user.username, item.name)
             }
-  
-            result[index].reputation = score
-  
-            if(checkFollow) {
-  
-              const follow_count = await fetchFollowCount(item.name)
-              result[index].follow_count = follow_count
-  
-              let isFollowed = false
-  
-              if(user) {
-                isFollowed = await isFollowing(user.username, item.name)
-              }
-  
-              result[index].isFollowed = isFollowed
-            }
-  
-            visited.push(result[index])
-  
-            if(index === result.length - 1) {
-              resolve(result)
-            }
-          })
-  
-        }).catch((error) => {
-          reject(error)
+
+            result[index].isFollowed = isFollowed
+          }
+
+          visited.push(result[index])
+
+          if(index === result.length - 1) {
+            resolve(result)
+          }
         })
-    })
+
+      }).catch((error) => {
+        reject(error)
+      })
   })
 }
 
@@ -527,27 +478,15 @@ export const mapFetchProfile = (data, checkFollow = false) => {
 }
 
 
-export const isWifValid = async(password, pubWif) => {
-  let auth
-  await import('@hiveio/hive-js').then((HiveAuth) => {
-    auth = HiveAuth.auth
-  })
+export const isWifValid = (password, pubWif) => {
   return auth.wifIsValid(password, pubWif)
 }
 
-export const generateWif = async(username, password, role) => {
-  let auth
-  await import('@hiveio/hive-js').then((HiveAuth) => {
-    auth = HiveAuth.auth
-  })
+export const generateWif = (username, password, role) => {
   return auth.toWif(username, password, role)
 }
 
-export const fetchFeedHistory = async() => {
-  let api
-  await import('@hiveio/hive-js').then((HiveJS) => {
-    api = HiveJS.api
-  })
+export const fetchFeedHistory = () => {
   return api.getFeedHistoryAsync()
     .then((result) => {
       return result
@@ -556,11 +495,7 @@ export const fetchFeedHistory = async() => {
     })
 }
 
-export const fetchRewardFund = async(username) => {
-  let api
-  await import('@hiveio/hive-js').then((HiveJS) => {
-    api = HiveJS.api
-  })
+export const fetchRewardFund = (username) => {
   return api.getRewardFundAsync(username)
     .then((result) => {
       return result
@@ -571,36 +506,26 @@ export const fetchRewardFund = async(username) => {
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveAuth) => {
-      HiveAuth.broadcast.voteAsync(wif, voter, author, permlink, weight)
-        .then((result) => {
-          resolve(result)
-        }).catch((error) => {
-          let code = error.code
-          if(error.code === -32000){
-            if(error.message && error.message.includes('paid out is forbidden')){
-              code = -32001
-            }
+    broadcast.voteAsync(wif, voter, author, permlink, weight)
+      .then((result) => {
+        resolve(result)
+      }).catch((error) => {
+        let code = error.code
+        if(error.code === -32000){
+          if(error.message && error.message.includes('paid out is forbidden')){
+            code = -32001
           }
-          reject(code)
-        })
-    })
+        }
+        reject(code)
+      })
   })
 }
 
-export const wifToPublic = async(privWif) => {
-  let auth
-  await import('@hiveio/hive-js').then((HiveAuth) => {
-    auth = HiveAuth.auth
-  })
+export const wifToPublic = (privWif) => {
   return auth.wifToPublic(privWif)
 }
 
-export const generateKeys = async(username, password, role) => {
-  let auth
-  await import('@hiveio/hive-js').then((HiveAuth) => {
-    auth = HiveAuth.auth
-  })
+export const generateKeys = (username, password, role) => {
   return auth.generateKeys(username, password, role)
 }
 
@@ -614,11 +539,7 @@ export const extractLoginData = (data) => {
   return new Buffer(data, 'hex').toString().split('\t')
 }
 
-export const fetchFollowCount = async(username) => {
-  let api
-  await import('@hiveio/hive-js').then((HiveJS) => {
-    api = HiveJS.api
-  })
+export const fetchFollowCount = (username) => {
   return api.getFollowCountAsync(username)
     .then((result) => {
       return result
@@ -630,45 +551,41 @@ export const fetchFollowCount = async(username) => {
 
 export const fetchMuteList = (user) => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async(err, data) => {
-        if (err) {
-          reject(err)
-        }else {
-          resolve(data)
-        }
-      })
+    api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async(err, data) => {
+      if (err) {
+        reject(err)
+      }else {
+        resolve(data)
+      }
     })
   })
 }
 
 export const fetchFollowers = (following, start_follower = '', limit = 10) => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getFollowersAsync(following, start_follower, 'blog', limit)
-        .then(async(result) => {
-          if(result.length !== 0) {
-  
-            result.forEach((item, index) => {
-              result[index].author = item.follower
-            })
-  
-            if(result.length === 1 && (result[0].follower === start_follower)) {
-              resolve([])
-            }
-  
-            const getProfiledata = mapFetchProfile(result, false)
-            await Promise.all([getProfiledata])
-  
-            resolve(result)
-          } else {
-            resolve(result)
+    api.getFollowersAsync(following, start_follower, 'blog', limit)
+      .then(async(result) => {
+        if(result.length !== 0) {
+
+          result.forEach((item, index) => {
+            result[index].author = item.follower
+          })
+
+          if(result.length === 1 && (result[0].follower === start_follower)) {
+            resolve([])
           }
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
+
+          const getProfiledata = mapFetchProfile(result, false)
+          await Promise.all([getProfiledata])
+
+          resolve(result)
+        } else {
+          resolve(result)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
 
   })
 }
@@ -677,42 +594,40 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
   return new Promise((resolve, reject) => {
     let iterator = 0
 
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getFollowingAsync(follower, start_following, 'blog', limit)
-        .then(async(result) => {
+    api.getFollowingAsync(follower, start_following, 'blog', limit)
+      .then(async(result) => {
 
-          if(result.length === 1 && (result[0].following === start_following)) {
-            resolve([])
-          }
+        if(result.length === 1 && (result[0].following === start_following)) {
+          resolve([])
+        }
 
-          if(result.length !== 0) {
-            result.forEach(async(item, index) => {
-              const profileVisited = visited.filter((profile) => profile.name === item.following)
-              let profile = []
+        if(result.length !== 0) {
+          result.forEach(async(item, index) => {
+            const profileVisited = visited.filter((profile) => profile.name === item.following)
+            let profile = []
 
-              if(profileVisited.length === 0) {
-                profile = await fetchProfile([item.following], false)
-                visited.push(profile[0])
-              } else {
-                profile.push(profileVisited[0])
-              }
+            if(profileVisited.length === 0) {
+              profile = await fetchProfile([item.following], false)
+              visited.push(profile[0])
+            } else {
+              profile.push(profileVisited[0])
+            }
 
-              result[index].profile = profile[0]
+            result[index].profile = profile[0]
 
-              if(iterator === (result.length-1)) {
-                resolve(result)
-              }
+            if(iterator === (result.length-1)) {
+              resolve(result)
+            }
 
-              iterator += 1
-            })
-          } else {
-            resolve(result)
-          }
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
+            iterator += 1
+          })
+        } else {
+          resolve(result)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
 
   })
 }
@@ -720,28 +635,24 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
 export const getAccountLists = (observer, list_type) => {
   return new Promise((resolve, reject) => {
     const params = { observer, follow_type: list_type }
-    import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.call('bridge.get_follow_list', params, async (err, result) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(result)
-        }
-      })
+    api.call('bridge.get_follow_list', params, async (err, result) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
     })
   })
 }
 
 export const checkAccountIsFollowingLists = (observer) => {
   return new Promise((resolve, reject) => {
-    import('@hiveio/hive-js').then((HiveJS) => {   
-      HiveJS.api.call('bridge.get_follow_list', { observer }, async (err, result) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(result)
-        }
-      })
+    api.call('bridge.get_follow_list', { observer }, async (err, result) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
     })
   })
 }
@@ -753,80 +664,62 @@ export const hiveAuthenticationService = (username) => {
   const challenge = JSON.stringify({ token: uuidv4() })
   const hacModule = "has"
   const hacPwd = sessionStorage.getItem('hacPwd')
-
-  import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    HiveAuth.hacUserAuth(username, APP_META, hacPwd, {key_type: 'posting', value: challenge}, hacModule)
-  })  
+  
+  hacUserAuth(username, APP_META, hacPwd, {key_type: 'posting', value: challenge}, hacModule)
+  
 }
 
 export const hasFollowService = (username, following) => {
-  import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    HiveAuth.hacManualTransaction("posting", ["custom_json", {
-      "required_auths": [],
-      "required_posting_auths": [`${username}`],
-      "id": "follow",
-      "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}]),
-    }])
-  })
+  hacManualTransaction("posting", ["custom_json", {
+    "required_auths": [],
+    "required_posting_auths": [`${username}`],
+    "id": "follow",
+    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}]),
+  }])
 }
 
 export const hasUnFollowService = (username, following) => {
-  import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    HiveAuth.hacManualTransaction("posting", ["custom_json", {
-      "required_auths": [],
-      "required_posting_auths": [`${username}`],
-      "id": "follow",
-      "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}]),
-    }])
-  })
+  hacManualTransaction("posting", ["custom_json", {
+    "required_auths": [],
+    "required_posting_auths": [`${username}`],
+    "id": "follow",
+    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}]),
+  }])
 }
 
-export const hasUpvoteService = async(author, permlink, weight) => {
-  let vote
-  await import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    vote = HiveAuth.hacVote(author, permlink, parseInt(weight))
-  })
-  return vote
+export const hasUpvoteService = (author, permlink, weight) => {
+  return hacVote(author, permlink, parseInt(weight))
 }
 
 export const hasReplyService = (username, body, parent_author, parent_permlink, json_metadata, permlink) => {
-  import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    HiveAuth.hacManualTransaction("posting", ["comment", {
-      "author": username,
-      "title": '',
-      "body": `${body.trim()}`,
-      parent_author,
-      parent_permlink,
-      permlink,
-      json_metadata,
-    }])
-  })
+  hacManualTransaction("posting", ["comment", {
+    "author": username,
+    "title": '',
+    "body": `${body.trim()}`,
+    parent_author,
+    parent_permlink,
+    permlink,
+    json_metadata,
+  }])
 }
 
-export const hasClearNotificationService = async(username, lastNotification) => {
-  let date
-  await import('moment').then((moment) => {
-    date = moment.default().utc().format()
-  })
+export const hasClearNotificationService = (username, lastNotification) => {
+  let date = moment().utc().format()
   date = `${date}`.replace('Z', '')
 
   const json = JSON.stringify(["setLastRead",{ date }])
-  await import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    HiveAuth.hacManualTransaction("posting", ["custom_json", {
-      'required_auths': [],
-      'required_posting_auths': [username],
-      'id': 'notify',
-      json,
-    }])
-  })
+  hacManualTransaction("posting", ["custom_json", {
+    'required_auths': [],
+    'required_posting_auths': [username],
+    'id': 'notify',
+    json,
+  }])
 }
 
 
 export const hasPostService = (operations) => {
   console.log('wrdd')
-  import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-    HiveAuth.hacManualTransaction("posting", operations)
-  })
+  hacManualTransaction("posting", operations)
 }
 
 export const hasGeneratePostService = (account, title, tags, body, payout, permlink) => {
@@ -872,7 +765,7 @@ export const hasGeneratePostService = (account, title, tags, body, payout, perml
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_hbd': 10000,
+        'percent_hbd': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         extensions,
@@ -894,6 +787,7 @@ const footnote = (body) => {
 }
 
 export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
+
   let title = stripHtml(body)
   title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
   title = `${title}`.trim()
@@ -912,17 +806,15 @@ export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
   const comment = operations[0]
   const json_metadata = comment[1].json_metadata
   
-  let currentDatetime
-  let cashout_time
-  await import('moment').then((moment) => {
-    currentDatetime = moment.default().toISOString()
-    cashout_time = moment.default().add(7, 'days').toISOString()
-  })
+  let currentDatetime = moment().toISOString()
   currentDatetime = currentDatetime.replace('Z', '')
+
+  let cashout_time = moment().add(7, 'days').toISOString()
   cashout_time = cashout_time.replace('Z', '')
 
   let bodyOperation = comment[1].body
   bodyOperation = bodyOperation.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+
 
   const content = {
     author: user.username,
@@ -963,11 +855,7 @@ export const publishReplyWithHAS = async(username, body, parent_author, parent_p
   let permlink = createPermlink(body.substring(0, 100))
   permlink = `re-${permlink}`
   hasReplyService(username, body, parent_author, parent_permlink, json_metadata, permlink)
-  let currentDatetime
-  await import('moment').then((moment) => {
-    currentDatetime = moment.default().toISOString()
-  })
-  
+  let currentDatetime = moment().toISOString()
   currentDatetime = currentDatetime.replace('Z', '')
 
   const reply = {
@@ -1051,12 +939,9 @@ export const keychainUpvote = (username, permlink, author, weight) => {
 }
 
 export const generateClearNotificationOperation = (username, lastNotification) => {
-  return new Promise(async(resolve) => {
+  return new Promise((resolve) => {
 
-    let date
-    await import('moment').then((moment) => {
-      date = moment.default().utc().format()
-    })
+    let date = moment().utc().format()
     date = `${date}`.replace('Z', '')
 
     const json = JSON.stringify(["setLastRead",{ date }])
@@ -1439,7 +1324,7 @@ export const generatePostOperations = (account, title, body, tags, payout, perm)
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_hbd': 10000,
+        'percent_hbd': 5000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         extensions,
@@ -1487,35 +1372,29 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 
 export const broadcastOperation = (operations, keys) => {
 
-  return new Promise(async(resolve, reject) => {
-    await import('@hiveio/hive-js').then((HiveAuth) => {
-      HiveAuth.broadcast.send(
-        {
-          extensions: [],
-          operations,
-        },
-        keys,
-        (error, result) => {
-          if(error) {
-            console.log(error)
-            reject(error.code)
-          } else {
-            resolve({
-              success: true,
-              result,
-            })
-          }
-        },
-      )
-    })
+  return new Promise((resolve, reject) => {
+    broadcast.send(
+      {
+        extensions: [],
+        operations,
+      },
+      keys,
+      (error, result) => {
+        if(error) {
+          console.log(error)
+          reject(error.code)
+        } else {
+          resolve({
+            success: true,
+            result,
+          })
+        }
+      },
+    )
   })
 }
 
-export const slug = async(text) => {
-  let getSlug
-  await import('speakingurl').then((SpekingUrl) => {
-    getSlug = SpekingUrl.getSlug
-  })
+export const slug = (text) => {
   return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 })
 }
 
@@ -1755,27 +1634,21 @@ export const getCensoredList = () => {
   })
 }
 
-export const fetchAccountTransferHistory = async(account, start=-1, limit=1000) => {
-  let op
-  let filter
-  await import('@hiveio/hive-js/lib/auth/serializer').then((Serializer) => {
-    op = Serializer.ChainTypes.operations
-    filter = Serializer.makeBitMaskFilter(
-      [op.transfer, op.claim_reward_balance,
-        op.transfer_from_savings, op.transfer_to_savings,
-        op.transfer_to_vesting, op.interest, op.withdraw_vesting])
-  })
+export const fetchAccountTransferHistory = (account, start=-1, limit=1000) => {
+  const op = ChainTypes.operations
+  const filter = makeBitMaskFilter(
+    [op.transfer, op.claim_reward_balance,
+      op.transfer_from_savings, op.transfer_to_savings,
+      op.transfer_to_vesting, op.interest, op.withdraw_vesting])
 
-  return new Promise(async(resolve, reject) => {
-    await import('@hiveio/hive-js').then((HiveJS) => {
-      HiveJS.api.getAccountHistoryAsync(account, start, limit, filter[0], filter[1])
-        .then((result) => {
-          resolve(result)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
+  return new Promise((resolve, reject) => {
+    api.getAccountHistoryAsync(account, start, limit, filter[0], filter[1])
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
   })
 }
 
@@ -1797,14 +1670,10 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 }
 
 export const getEstimateAccountValue = (account) => {
-  return new Promise(async(resolve) => {
-    if(account) {
-      await import('@hiveio/hive-js').then((HiveAuth) => {
-        HiveAuth.formatter.estimateAccountValue(account).then(function (result) {
-          resolve(result)
-        })
-      })
-    }
+  return new Promise((resolve) => {
+    formatter.estimateAccountValue(account).then(function (result) {
+      resolve(result)
+    })
   })
 }
 
