@@ -1675,30 +1675,30 @@ const CreateBuzzForm = (props) => {
             {!publishing && (
               <div className={classes.buzzCustomizeOptions}>
                 <span>
-                    <Tooltip title="Image" placement='top-start'>
-                      <IconButton
-                        size='medium'
-                        disabled={isVideoAttached || imageUploading || videoUploading || imageLimit}
-                        classes={{
-                          root: classes.root,
-                          disabled: classes.disabled,
-                        }}
-                      >
-                        <label for="file-upload" className={classes.uploadImageButton}>
-                          <UploadIcon />
-                          <input
-                            id='file-upload'
-                            type='file'
-                            name='image'
-                            accept='image/*'
-                            multiple={false}
-                            ref={inputRef}
-                            className={classes.imageUploadInput}
-                            onChange={handleFileSelectChange}
-                          />
-                        </label>
-                      </IconButton>
-                    </Tooltip>
+                  <Tooltip title="Image" placement='top-start'>
+                    <IconButton
+                      size='medium'
+                      disabled={isVideoAttached || imageUploading || videoUploading || imageLimit}
+                      classes={{
+                        root: classes.root,
+                        disabled: classes.disabled,
+                      }}
+                    >
+                      <label for="file-upload" className={classes.uploadImageButton}>
+                        <UploadIcon />
+                        <input
+                          id='file-upload'
+                          type='file'
+                          name='image'
+                          accept='image/*'
+                          multiple={false}
+                          ref={inputRef}
+                          className={classes.imageUploadInput}
+                          onChange={handleFileSelectChange}
+                        />
+                      </label>
+                    </IconButton>
+                  </Tooltip>
                   <input
                     id='video-upload'
                     type='file'
