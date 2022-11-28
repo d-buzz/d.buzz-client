@@ -372,6 +372,13 @@ const SettingsModal = (props) => {
                 </div>
                 <div className="description">All the NSFW posts are <b>{showNSFWPosts}</b></div>
               </div>
+              <div className='item'>
+                <div className="toggle_container">
+                  <span className='title'>Show NSFW Posts</span>
+                  <span className='toggle' onClick={handleShowNSFWPosts}>{!(loading && selectedItem === 'showNSFWPosts') ? showNSFWPosts === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
+                </div>
+                <div className="description">All the NSFW posts are <b>{showNSFWPosts}</b></div>
+              </div>
             </div>
           </div>
           <center>
