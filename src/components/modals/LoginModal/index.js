@@ -20,6 +20,7 @@ import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elem
 import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
 import HiveButton from 'components/common/HiveButton'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
+import { window } from 'rxjs'
 const FormControlLabel = React.lazy((() => import('@material-ui/core/FormControlLabel')))
 
 const useStyles = createUseStyles(theme => ({
@@ -220,6 +221,11 @@ const LoginModal = (props) => {
     setHasAuthenticationError(false)
     authenticateUserRequest(username, password, useKeychain, useHAS, useCeramic)
       .then(({ is_authenticated }) => {
+        
+        // const origin = window.location.origin
+        // window.location.href = origin + '#/trending'
+        // window.location.reload()
+
         if (useHAS) {
           const hasExpiredDelayInterval = setInterval(() => {
             // console.log('this', hasExpiredDelay)
