@@ -27,7 +27,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
 import { setDefaultVotingWeightRequest } from 'store/settings/actions'
-import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, WhatsappShareButton, WhatsappIcon, LinkedinShareButton, LinkedinIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, TwitterIcon } from 'react-share'
+import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, WhatsappShareButton, WhatsappIcon, LinkedinShareButton, LinkedinIcon, FacebookMessengerIcon, TwitterShareButton, TwitterIcon } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
@@ -263,7 +263,7 @@ const PostActions = (props) => {
     defaultUpvoteStrength,
   } = props
 
-  const FACEBOOK_APP_ID = 236880454857514
+  const FACEBOOK_APP_ID = 45240581373116
 
   let payoutAdditionalStyle = {}
   let iconDetails = {}
@@ -451,7 +451,13 @@ const PostActions = (props) => {
       })
     }
   }, [payoutAt])
+
+  const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/#/@${author}/c/${permlink}`
   
+  const handleShareToMessenger = () => {
+    window.location = messengerShareLink
+  }
+
   return (
     <React.Fragment>
       {!showSlider && (
@@ -588,16 +594,8 @@ const PostActions = (props) => {
                         <FacebookIcon size={32} round={true} />
                       </FacebookShareButton>
                     </MenuItem>
-                    <MenuItem className={classes.menuText}>
-                      <FacebookMessengerShareButton 
-                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        appId={FACEBOOK_APP_ID}
-                        onClick={() => {
-                          setOpenCaret(false)
-                        }}
-                      >
-                        <FacebookMessengerIcon size={32} round={true} />
-                      </FacebookMessengerShareButton>
+                    <MenuItem className={classes.menuText} onClick={handleShareToMessenger}>
+                      <FacebookMessengerIcon size={32} round={true} />
                     </MenuItem>
                     <MenuItem>
                       <TelegramShareButton

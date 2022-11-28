@@ -298,6 +298,16 @@ const Content = (props) => {
     // eslint-disable-next-line
   }, [content.body])
 
+  // useEffect(() => {
+  //   if(overhead && content.body) {
+  //     if(content.body) {
+  //       console.log(content.body);
+  //       console.log(overhead)
+  //       console.log(content.body.length - overhead);
+  //     }
+  //   }
+  // }, [content, overhead])
+
   useEffect(() => {
     checkHasUpdateAuthorityRequest(username)
       .then((result) => {

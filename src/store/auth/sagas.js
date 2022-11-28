@@ -184,7 +184,7 @@ function* authenticateUserRequest(payload, meta) {
        
               authenticateUserSuccess(user, meta)
               const origin = window.location.origin
-              window.location.href = origin
+              window.location.href = origin + '#/trending'
       
             /** Authentication rejected */
             } else if (m.msg?.status === "rejected") {
@@ -241,8 +241,6 @@ function* authenticateUserRequest(payload, meta) {
         setAccountList(accounts)
 
         authenticateUserSuccess(user, meta)
-        const origin = window.location.origin
-        window.location.href = origin + '#/latest'
       }
     } else {
 
@@ -413,6 +411,7 @@ function* getSavedUserRequest (meta) {
   } catch(error) {
     yield put(getSavedUserFailure(user, meta))
     signoutUserRequest()
+    localStorage.clear()
     console.log('not saved', error)
   }
 }
