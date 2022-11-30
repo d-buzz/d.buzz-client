@@ -553,7 +553,8 @@ export const fetchMuteList = (user) => {
   return new Promise((resolve, reject) => {
     api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async(err, data) => {
       if (err) {
-        reject(err)
+        console.log(err)
+        resolve([])
       }else {
         resolve(data)
       }
