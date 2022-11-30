@@ -21,7 +21,7 @@ import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 // import { WithContext as ReactTags } from 'react-tag-input'
-import { isAndroid, isIOS, isMobile, isTablet } from 'react-device-detect'
+import { isDesktop, isMobile } from 'react-device-detect'
 import { invokeTwitterIntent, calculateOverhead } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -679,6 +679,26 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: theme.context.view.backgroundColor,
     animation: 'showFade infinite 1.5s',
   },
+  uploadImageButton: {
+    positions: 'relative',
+    display: 'flex',
+    margin: '0 !important',
+    width: 'fit-content',
+    height: 'fit-content',
+    cursor: 'pointer',
+    overflow: 'hidden',
+  },
+  imageUploadInput: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: '0 auto',
+    cursor: 'pointer',
+    visibility: isDesktop ? 'hidden' : 0,
+    opacity: 0,
+  },
 }))
 
 
@@ -1022,28 +1042,31 @@ const CreateBuzzForm = (props) => {
     handleUpdateBuzz(buzzId, value)
   }
 
-  const handleFileSelect = () => {
-    const target = document.getElementById('file-upload')
-    if (isMobile || isTablet || isAndroid || isIOS) {
-      target.addEventListener('click', function () {
-        const touch = new Touch({
-          identifier: 'file-upload',
-          target: target,
-        })
+  // const handleFileSelect = () => {
+  //   const target = document.getElementById('file-upload')
+  //   if (isMobile || isAndroid || isIOS) {
+  //     target.addEventListener('click', function () {
+  //       const touch = new Touch({
+  //         identifier: 'file-upload',
+  //         target: target,
+  //       })
 
-        const touchEvent = new TouchEvent('touchstart', {
-          touches: [touch],
-          view: window,
-          cancelable: true,
-          bubbles: true,
-        })
+  //       const touchEvent = new TouchEvent('touchstart', {
+  //         touches: [touch],
+  //         view: window,
+  //         cancelable: true,
+  //         bubbles: true,
+  //       })
 
-        target.dispatchEvent(touchEvent)
-      })
-      target.click()
-    }
-    inputRef.current.click()
-  }
+  //       target.dispatchEvent(touchEvent)
+  //     })
+  //     target.click()
+  //   } else {
+  //     alert("It's a tablet.")
+  //   }
+
+  //   inputRef.current.click()
+  // }
 
   const handleImageCompression = async (image) => {
     let compressedFile = null
@@ -1648,30 +1671,32 @@ const CreateBuzzForm = (props) => {
               <ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} showBuzzTitle={showBuzzTitle} setVideoLimit={setVideoLimit}/>
             )}
 
+
             {!publishing && (
               <div className={classes.buzzCustomizeOptions}>
                 <span>
-                  <input
-                    id='file-upload'
-                    type='file'
-                    name='image'
-                    accept='image/*'
-                    multiple={false}
-                    ref={inputRef}
-                    onChange={handleFileSelectChange}
-                    hidden
-                  />
                   <Tooltip title="Image" placement='top-start'>
                     <IconButton
                       size='medium'
-                      onClick={handleFileSelect}
                       disabled={isVideoAttached || imageUploading || videoUploading || imageLimit}
                       classes={{
                         root: classes.root,
                         disabled: classes.disabled,
                       }}
                     >
-                      <UploadIcon />
+                      <label for="file-upload" className={classes.uploadImageButton}>
+                        <UploadIcon />
+                        <input
+                          id='file-upload'
+                          type='file'
+                          name='image'
+                          accept='image/*'
+                          multiple={false}
+                          ref={inputRef}
+                          className={classes.imageUploadInput}
+                          onChange={handleFileSelectChange}
+                        />
+                      </label>
                     </IconButton>
                   </Tooltip>
                   <input
