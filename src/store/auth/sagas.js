@@ -284,8 +284,11 @@ function* authenticateUserRequest(payload, meta) {
         accounts[accountIndex].keychain = useKeychain
       }
 
+      const voteWeight = yield call([localStorage, localStorage.getItem], 'voteWeight')
+      
       users.push(session)
       yield call([localStorage, localStorage.clear])
+      yield call([localStorage, localStorage.setItem], 'voteWeight', voteWeight)
       yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(users))
       yield call([localStorage, localStorage.setItem], 'active', username)
       yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
@@ -503,6 +506,7 @@ function* signoutUserRequest(meta) {
   try {
     const user = { username: '', useKeychain: false, useHAS: false, is_authenticated: false, useCeramic: false }
     const lastUser = yield call([localStorage, localStorage.getItem], 'current')
+    const voteWeight = yield call([localStorage, localStorage.getItem], 'voteWeight')
 
     yield call([localStorage, localStorage.setItem], 'hac', JSON.stringify([]))
     yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([]))
@@ -512,6 +516,7 @@ function* signoutUserRequest(meta) {
     yield call([localStorage, localStorage.clear])
 
     yield call([localStorage, localStorage.setItem], 'lastUser', lastUser)
+    yield call([localStorage, localStorage.setItem], 'voteWeight', voteWeight)
     yield put(signoutUserSuccess(user, meta))
   } catch(error) {
     yield put(signoutUserFailure(error, meta))
