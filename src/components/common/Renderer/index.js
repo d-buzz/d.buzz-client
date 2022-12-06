@@ -288,7 +288,7 @@ const prepareVimmEmbeds = (content) => {
       }
 
       if(match){
-        body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
+        body = body.replace(link, `~~~~~~.^.~~~:vimm:${id.toLowerCase()}:~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
