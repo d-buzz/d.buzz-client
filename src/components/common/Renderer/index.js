@@ -946,7 +946,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // // render web images links
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // // render IPFS images
       .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // render dbuzz images

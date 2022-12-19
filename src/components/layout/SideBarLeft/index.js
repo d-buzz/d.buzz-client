@@ -434,7 +434,7 @@ const SideBarLeft = (props) => {
   }
 
   const refreshTrendingRouteData = () => {
-    if(pathname.match(/^\/trending/)){
+    if(pathname.match(/^\//)){
       setRefreshRouteStatus("trending",timestamp)
     }
   }
@@ -480,9 +480,9 @@ const SideBarLeft = (props) => {
   useEffect(() => {
     switch(location.pathname) {
     case '/':
-      setActiveView('home')
+      setActiveView('trending')
       break
-    case '/trending':
+    case '/home':
       setActiveView('trending')
       break
     case '/latest':
@@ -511,18 +511,18 @@ const SideBarLeft = (props) => {
 
   const NavLinks = [
     {
-      name: 'Home',
-      path: "/",
-      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('home'),
-    },
-    {
       name: 'Trending',
-      path: '/trending',
+      path: '/',
       icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('trending'),
+    },
+    {
+      name: 'Home',
+      path: "/home",
+      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('home'),
     },
     {
       name: 'Latest',
@@ -560,18 +560,18 @@ const SideBarLeft = (props) => {
 
   const CeramicAccountNavLinks = [
     {
-      name: 'Home',
-      path: "/",
-      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('home'),
-    },
-    {
       name: 'Trending',
-      path: '/trending',
+      path: '/',
       icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('trending'),
+    },
+    {
+      name: 'Home',
+      path: "/home",
+      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('home'),
     },
     {
       name: 'Latest',
