@@ -24,15 +24,16 @@ const { VERSION } = config
 const useStyles = createUseStyles(theme => ({
   wrapper: {
     overflow: 'hidden',
-    display: 'grid',
-    placeItems: 'center',
+    height: '100vh',
     width: '100%',
-    height: '80vh',
+    maxHeight: '100vh',
     backgroundColor: theme.background.primary,
   },
   brandWrapper: {
+    display: 'grid',
+    placeItems: 'center',
+    height: '100%',
     margin: '0 auto',
-    paddingTop: 30,
     color: theme.font.color,
   },
   version: {
