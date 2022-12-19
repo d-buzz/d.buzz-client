@@ -594,12 +594,10 @@ const PostActions = (props) => {
                         <FacebookIcon size={32} round={true} />
                       </FacebookShareButton>
                     </MenuItem>
-                    {
-                      (!isMobile && !isTablet) &&
-                        <MenuItem className={classes.menuText} onClick={handleShareToMessenger}>
-                          <FacebookMessengerIcon size={32} round={true} />
-                        </MenuItem>
-                    }
+                    {(!isMobile && !isTablet) &&
+                      <MenuItem className={classes.menuText} onClick={handleShareToMessenger}>
+                        <FacebookMessengerIcon size={32} round={true} />
+                      </MenuItem>}
                     <MenuItem>
                       <TelegramShareButton
                         url={' '}
