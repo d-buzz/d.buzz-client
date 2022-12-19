@@ -344,10 +344,10 @@ const MobileAppFrame = (props) => {
   useEffect(() => {   
     switch(location.pathname) {
     case '/':
-      setActiveView('home')
-      break
-    case '/trending':
       setActiveView('trending')
+      break
+    case '/home':
+      setActiveView('home')
       break
     case '/latest':
       setActiveView('latest')
@@ -369,18 +369,18 @@ const MobileAppFrame = (props) => {
 
   const NavLinks = [
     {
-      name: 'Home',
-      path: "/",
-      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('home'),
-    },
-    {
       name: 'Trending',
-      path: '/trending',
+      path: '/',
       icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('trending'),
+    },
+    {
+      name: 'Home',
+      path: "/home",
+      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('home'),
     },
     {
       name: 'Latest',

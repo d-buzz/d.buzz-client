@@ -25,7 +25,7 @@ import { upvoteRequest } from 'store/posts/actions'
 import { openReplyModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { isMobile } from 'react-device-detect'
+import { isMobile, isTablet } from 'react-device-detect'
 import { setDefaultVotingWeightRequest } from 'store/settings/actions'
 import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, WhatsappShareButton, WhatsappIcon, LinkedinShareButton, LinkedinIcon, FacebookMessengerIcon, TwitterShareButton, TwitterIcon } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -594,9 +594,12 @@ const PostActions = (props) => {
                         <FacebookIcon size={32} round={true} />
                       </FacebookShareButton>
                     </MenuItem>
-                    <MenuItem className={classes.menuText} onClick={handleShareToMessenger}>
-                      <FacebookMessengerIcon size={32} round={true} />
-                    </MenuItem>
+                    {
+                      (!isMobile && !isTablet) &&
+                        <MenuItem className={classes.menuText} onClick={handleShareToMessenger}>
+                          <FacebookMessengerIcon size={32} round={true} />
+                        </MenuItem>
+                    }
                     <MenuItem>
                       <TelegramShareButton
                         url={' '}
