@@ -74,7 +74,8 @@ const useStyles = createUseStyles(theme => ({
     },
     '& svg': {
       '& path': {
-        stroke: '#e53935',
+        stroke: '#e61c34 !important',
+        fill: '#e61c34 !important',
       },
     },
   },
@@ -230,9 +231,9 @@ const MobileAppFrame = (props) => {
   const moreMenuRef = useRef()
   const classes = useStyles()
 
-  const [activeView, setActiveView] = useState('home')
+  const [activeView, setActiveView] = useState('trending')
 
-  let title = 'Home'
+  let title = 'Trending'
 
   const showThemeModal = () => {
     setOpenTheme(true)
@@ -369,18 +370,18 @@ const MobileAppFrame = (props) => {
 
   const NavLinks = [
     {
-      name: 'Trending',
-      path: '/',
-      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('trending'),
-    },
-    {
       name: 'Home',
       path: "/home",
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
+    },
+    {
+      name: 'Trending',
+      path: '/',
+      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('trending'),
     },
     {
       name: 'Latest',
@@ -420,14 +421,14 @@ const MobileAppFrame = (props) => {
   const CeramicAccountNavLinks = [
     {
       name: 'Home',
-      path: "/",
+      path: "/home",
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
     },
     {
       name: 'Trending',
-      path: '/trending',
+      path: '/',
       icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('trending'),
