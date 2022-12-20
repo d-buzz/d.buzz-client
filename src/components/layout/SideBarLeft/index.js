@@ -358,7 +358,7 @@ const SideBarLeft = (props) => {
     }
     // eslint-disable-next-line
   }, [user])
-  const [activeView, setActiveView] = useState('Home')
+  const [activeView, setActiveView] = useState('trending')
 
   const showThemeModal = () => {
     handleClickCloseOpenMoreMenu()
@@ -511,18 +511,18 @@ const SideBarLeft = (props) => {
 
   const NavLinks = [
     {
-      name: 'Trending',
-      path: '/',
-      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('trending'),
-    },
-    {
       name: 'Home',
       path: "/home",
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
+    },
+    {
+      name: 'Trending',
+      path: '/',
+      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('trending'),
     },
     {
       name: 'Latest',
@@ -560,18 +560,18 @@ const SideBarLeft = (props) => {
 
   const CeramicAccountNavLinks = [
     {
-      name: 'Trending',
-      path: '/',
-      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('trending'),
-    },
-    {
       name: 'Home',
       path: "/home",
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
+    },
+    {
+      name: 'Trending',
+      path: '/',
+      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('trending'),
     },
     {
       name: 'Latest',
