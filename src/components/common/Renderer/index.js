@@ -34,7 +34,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.markdown.paragraph,
     '& a': {
       wordWrap: 'break-word',
-      color: '#d32f2f !important',
+      color: '#FF0000 !important',
     },
     '& p': {
       width: '100%',
@@ -174,7 +174,7 @@ const parseUrls = (c) => {
 
 const prepareYoutubeEmbeds = (content) => {
   const youtubeRegex = /(https?:\/\/)?((www\.)?(m\.)?youtube\.com|youtu\.?be)\/.+/i
-
+  
   let body = content
   
   const links = parseUrls(content)
@@ -182,24 +182,24 @@ const prepareYoutubeEmbeds = (content) => {
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
-		  let match = ''
-		  let id = ''
-  
-		  if(link.match(youtubeRegex) && link.includes('.be')){
-		    const data = link.split('.be/')
+      let match = ''
+      let id = ''
+
+      if(link.match(youtubeRegex) && link.includes('.be')){
+        const data = link.split('.be/')
         match = link.match(youtubeRegex)
         if (data[1]) {
           id = data[1]
         }
       }
-		  else if(link.match(youtubeRegex) && link.includes('watch')){
-		    const data = link.split('?v=')
+      else if(link.match(youtubeRegex) && link.includes('watch')){
+        const data = link.split('?v=')
         match = link.match(youtubeRegex)
         if (data[1]) {
           id = data[1]
         }
       }
-  
+      
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
       }
@@ -942,7 +942,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
     //   // render hashtags 
-      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-][\w\d!@%^&*+=_-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
+      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
     // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // // render web images links
@@ -1053,52 +1053,51 @@ const Renderer = React.memo((props) => {
     prepareHyperlinks()
     // eslint-disable-next-line
   }, [content])
-
   
   if(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus !== 'disabled') {
-    links.forEach((link) => {
-      try {
-        link = link.replace(/&amp;/g, '&')
-        link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
-        if(link.includes('youtube.com') ||link.includes('youtu.be')) {
-          content = prepareYoutubeEmbeds(content)
-        } else if(link.includes('twitter.com')) {
-          content = prepareTwitterEmbeds(content)
-        } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
-          content = prepareThreeSpeakEmbeds(content)
-        } else if(link.includes('vimm.tv')) {
-          content = prepareVimmEmbeds(content)
-        } else if(link.includes('rumble.com')) {
-          content = prepareRumbleEmbed(content)
-        } else if(link.includes('lbry.tv') || link.includes('open.lbry.com')) {
-          content = prepareLbryEmbeds(content)
-        } else if(link.includes('bitchute.com')) {
-          content = prepareBitchuteEmbeds(content)
-        } else if(link.includes('banned.video')) {
-          content = prepareBannedEmbeds(content)
-        } else if(link.includes('vigilante.tv')) {
-          content = prepareDollarVigilanteEmbeds(content)
-        } else if(link.includes('dapplr.in')) {
-          content = prepareDapplrEmbeds(content)
-        } else if(link.includes('freeworldnews.tv')) {
-          content = prepareFreeWorldNewsEmbeds(content)
-        } else if(link.includes('soundcloud.com')) {
-          content = prepareSoundCloudEmbeds(content)
-        } else if(link.includes('facebook.com')) {
-          content = prepareFacebookEmbeds(content)
-        } else if(link.includes('tiktok.com')) {
-          content = prepareTiktokEmbeds(content)
-        } else if(link.includes('odysee.com')) {
-          content = prepareOdyseeEmbeds(content)
-        } else if(link.includes('music.apple.com')) {
-          content = prepareAppleEmbeds(content)
-        } else if (link.includes('d.tube')) {
-          content = prepareDTubeEmbeds(content)
-        } else if (link.includes('dbuzz_video')) {
-          content = prepareDBuzzVideos(content)
-        }
-      } catch(error) { }
-    })
+      links.forEach((link) => {
+        try {
+          link = link.replace(/&amp;/g, '&')
+          link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
+          if(link.includes('youtube.com') ||link.includes('youtu.be')) {
+            content = prepareYoutubeEmbeds(content)
+          } else if(link.includes('twitter.com')) {
+            content = prepareTwitterEmbeds(content)
+          } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
+            content = prepareThreeSpeakEmbeds(content)
+          } else if(link.includes('vimm.tv')) {
+            content = prepareVimmEmbeds(content)
+          } else if(link.includes('rumble.com')) {
+            content = prepareRumbleEmbed(content)
+          } else if(link.includes('lbry.tv') || link.includes('open.lbry.com')) {
+            content = prepareLbryEmbeds(content)
+          } else if(link.includes('bitchute.com')) {
+            content = prepareBitchuteEmbeds(content)
+          } else if(link.includes('banned.video')) {
+            content = prepareBannedEmbeds(content)
+          } else if(link.includes('vigilante.tv')) {
+            content = prepareDollarVigilanteEmbeds(content)
+          } else if(link.includes('dapplr.in')) {
+            content = prepareDapplrEmbeds(content)
+          } else if(link.includes('freeworldnews.tv')) {
+            content = prepareFreeWorldNewsEmbeds(content)
+          } else if(link.includes('soundcloud.com')) {
+            content = prepareSoundCloudEmbeds(content)
+          } else if(link.includes('facebook.com')) {
+            content = prepareFacebookEmbeds(content)
+          } else if(link.includes('tiktok.com')) {
+            content = prepareTiktokEmbeds(content)
+          } else if(link.includes('odysee.com')) {
+            content = prepareOdyseeEmbeds(content)
+          } else if(link.includes('music.apple.com')) {
+            content = prepareAppleEmbeds(content)
+          } else if (link.includes('d.tube')) {
+            content = prepareDTubeEmbeds(content)
+          } else if (link.includes('dbuzz_video')) {
+            content = prepareDBuzzVideos(content)
+          }
+        } catch(error) { }
+      })
   }
 
   let assetClass = classes.minified
