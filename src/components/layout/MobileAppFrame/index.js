@@ -74,7 +74,8 @@ const useStyles = createUseStyles(theme => ({
     },
     '& svg': {
       '& path': {
-        stroke: '#e53935',
+        stroke: `${theme.font.color} !important`,
+        fill: `${theme.font.color} !important`,
       },
     },
   },
