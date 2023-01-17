@@ -106,8 +106,8 @@ const useStyles = createUseStyles(theme => ({
     },
     '& svg': {
       '& path': {
-        stroke: '#e61c34 !important',
-        fill: '#e61c34 !important',
+        stroke: `${theme.font.color} !important`,
+        fill: `${theme.font.color} !important`,
       },
     },
   },
@@ -483,7 +483,7 @@ const SideBarLeft = (props) => {
       setActiveView('trending')
       break
     case '/home':
-      setActiveView('trending')
+      setActiveView('home')
       break
     case '/latest':
       setActiveView('latest')

@@ -153,9 +153,9 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   weblink: {
-    color: '#d32f2f',
+    color: '#FF0000',
     '&:hover': {
-      color: '#d32f2f',
+      color: '#FF0000',
     },
   },
   followLinks: {
