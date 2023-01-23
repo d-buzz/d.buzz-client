@@ -34,7 +34,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.markdown.paragraph,
     '& a': {
       wordWrap: 'break-word',
-      color: '#d32f2f !important',
+      color: '#FF0000 !important',
     },
     '& p': {
       width: '100%',
@@ -174,7 +174,7 @@ const parseUrls = (c) => {
 
 const prepareYoutubeEmbeds = (content) => {
   const youtubeRegex = /(https?:\/\/)?((www\.)?(m\.)?youtube\.com|youtu\.?be)\/.+/i
-
+  
   let body = content
   
   const links = parseUrls(content)
@@ -182,24 +182,24 @@ const prepareYoutubeEmbeds = (content) => {
   links.forEach((link) => {
     try {
       link = link.replace(/&amp;/g, '&')
-		  let match = ''
-		  let id = ''
-  
-		  if(link.match(youtubeRegex) && link.includes('.be')){
-		    const data = link.split('.be/')
+      let match = ''
+      let id = ''
+
+      if(link.match(youtubeRegex) && link.includes('.be')){
+        const data = link.split('.be/')
         match = link.match(youtubeRegex)
         if (data[1]) {
           id = data[1]
         }
       }
-		  else if(link.match(youtubeRegex) && link.includes('watch')){
-		    const data = link.split('?v=')
+      else if(link.match(youtubeRegex) && link.includes('watch')){
+        const data = link.split('?v=')
         match = link.match(youtubeRegex)
         if (data[1]) {
           id = data[1]
         }
       }
-  
+      
       if(match){
         body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
       }
@@ -288,7 +288,7 @@ const prepareVimmEmbeds = (content) => {
       }
 
       if(match){
-        body = body.replace(link, `~~~~~~.^.~~~:vimm:${id}:~~~~~~.^.~~~`)
+        body = body.replace(link, `~~~~~~.^.~~~:vimm:${id.toLowerCase()}:~~~~~~.^.~~~`)
       }
     } catch(error) { }
   })
@@ -942,11 +942,11 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
     //   // render hashtags 
-      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-][\w\d!@%^&*+=_-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
+      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
     // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
     // // render web images links
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // // render IPFS images
       .replace(/(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi, n => checkForValidImage(n) && JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled' ? `![](${proxyImage(n)})` : n)
     // render dbuzz images
@@ -1053,7 +1053,6 @@ const Renderer = React.memo((props) => {
     prepareHyperlinks()
     // eslint-disable-next-line
   }, [content])
-
   
   if(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus !== 'disabled') {
     links.forEach((link) => {

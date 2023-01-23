@@ -39,6 +39,11 @@ const routes =  [
       {
         path: '/',
         exact: true,
+        component: Trending,
+      },
+      {
+        path: '/home',
+        exact: true,
         component: Home,
       },
       {
@@ -71,11 +76,11 @@ const routes =  [
         exact: true,
         component: GetStarted,
       },
-      {
-        path: '/trending',
-        exact: true,
-        component: Trending,
-      },
+      // {
+      //   path: '/trending',
+      //   exact: true,
+      //   component: Trending,
+      // },
       {
         path: '/latest',
         exact: true,
