@@ -76,7 +76,8 @@ const AppBar = (props) => {
   }
 
   const handleClickOpenSignupModal = () => {
-    setOpenSignupModal(true)
+    // setOpenSignupModal(true)
+    window.location.href = 'https://join.d.buzz'
   }
   
   const handleClickCloseSignupModal = () => {

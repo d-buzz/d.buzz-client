@@ -106,8 +106,8 @@ const useStyles = createUseStyles(theme => ({
     },
     '& svg': {
       '& path': {
-        stroke: '#e61c34 !important',
-        fill: '#e61c34 !important',
+        stroke: `${theme.font.color} !important`,
+        fill: `${theme.font.color} !important`,
       },
     },
   },
@@ -358,7 +358,7 @@ const SideBarLeft = (props) => {
     }
     // eslint-disable-next-line
   }, [user])
-  const [activeView, setActiveView] = useState('Home')
+  const [activeView, setActiveView] = useState('trending')
 
   const showThemeModal = () => {
     handleClickCloseOpenMoreMenu()
@@ -434,7 +434,7 @@ const SideBarLeft = (props) => {
   }
 
   const refreshTrendingRouteData = () => {
-    if(pathname.match(/^\/trending/)){
+    if(pathname.match(/^\//)){
       setRefreshRouteStatus("trending",timestamp)
     }
   }
@@ -480,10 +480,10 @@ const SideBarLeft = (props) => {
   useEffect(() => {
     switch(location.pathname) {
     case '/':
-      setActiveView('home')
-      break
-    case '/trending':
       setActiveView('trending')
+      break
+    case '/home':
+      setActiveView('home')
       break
     case '/latest':
       setActiveView('latest')
@@ -512,14 +512,14 @@ const SideBarLeft = (props) => {
   const NavLinks = [
     {
       name: 'Home',
-      path: "/",
+      path: "/home",
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
     },
     {
       name: 'Trending',
-      path: '/trending',
+      path: '/',
       icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('trending'),
@@ -561,14 +561,14 @@ const SideBarLeft = (props) => {
   const CeramicAccountNavLinks = [
     {
       name: 'Home',
-      path: "/",
+      path: "/home",
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
     },
     {
       name: 'Trending',
-      path: '/trending',
+      path: '/',
       icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('trending'),

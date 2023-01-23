@@ -159,8 +159,8 @@ const SideBarRight = (props) => {
       const hivePrice = await getPrice('hive')
       const hbdPrice = await getPrice('hbd')
 
-      setHivePrice(`$${hivePrice.hive.usd.toFixed(3)}`)
-      setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3)}`)
+      setHivePrice(`$${hivePrice.hive.usd.toFixed(3) || '-'}`)
+      setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3) || '-'}`)
     })()
   }, [])
 

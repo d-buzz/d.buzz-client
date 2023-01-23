@@ -1671,10 +1671,13 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 }
 
 export const getEstimateAccountValue = (account) => {
-  return new Promise((resolve) => {
-    formatter.estimateAccountValue(account).then(function (result) {
-      resolve(result)
-    })
+  return new Promise(async(resolve) => {
+    console.log(account)
+    await formatter.estimateAccountValue(account)
+      .catch(function (err) { console.log(err) })
+      .then(function (result) {
+        resolve([result])
+      })
   })
 }
 
@@ -1682,5 +1685,15 @@ export const getPrice = async (symbol) => {
   return new Promise(async (resolve, reject) => {
     const response = await axios.get(`${priceChartURL}/${symbol}`)
     resolve(response.data || {})
+  })
+}
+
+export const getHivePrice = async() => {
+  return new Promise(async(resolve) => {
+    const { data } = await axios.get(
+      "https://api.coingecko.com/api/v3/simple/price?ids=hive,hive_dollar&vs_currencies=usd",
+    )
+    const { hive } = data
+    resolve(hive.usd)
   })
 }

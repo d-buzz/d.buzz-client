@@ -50,9 +50,6 @@ import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
 import DateRangeIcon from '@material-ui/icons/DateRange'
-import FileCopyIcon from '@material-ui/icons/FileCopy'
-import Tooltip from '@material-ui/core/Tooltip'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
@@ -156,9 +153,9 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   weblink: {
-    color: '#d32f2f',
+    color: '#FF0000',
     '&:hover': {
-      color: '#d32f2f',
+      color: '#FF0000',
     },
   },
   followLinks: {
@@ -412,6 +409,16 @@ const Profile = (props) => {
   const setMoreButtonOptions = () => {
     const moreOptionsList = [
       {
+        label: "Blog",
+        icon: '',
+        onClick: navigateToBlog,
+      },
+      {
+        label: "Copy Referral",
+        icon: '',
+        onClick: handleCopyReferral,
+      },
+      {
         label: "Blacklisted Users",
         icon: '',
         onClick: navigateToBlackListed,
@@ -565,6 +572,16 @@ const Profile = (props) => {
     setOpenEditProfileModal(!openEditProfileModal)
   }
 
+  const navigateToBlog = () => {
+    window.open(`https://blog.d.buzz/#/@${username}`, '_blank') 
+  }
+
+  const handleCopyReferral = () => {
+    const referralUrl = `https://${window.location.hostname}/#/?ref=${username}`
+    navigator.clipboard.writeText(referralUrl)
+    setCopied(true)
+  }
+
   const navigateToBlackListed = () => {
     history.push(`/@${username}/lists/blacklisted/users`)
   }
@@ -579,10 +596,6 @@ const Profile = (props) => {
 
   const navigateToFollowedMuted = () => {
     history.push(`/@${username}/lists/muted/followed`)
-  }
-
-  const copyReferalLink = () => {
-    setCopied(true)
   }
 
   const handleCloseReferalCopy = () => {
@@ -748,38 +761,8 @@ const Profile = (props) => {
                       )}
                     </p>
                   </Row>
-                  {!ceramic && <Row>
-                    <Col xs="auto" style={{ marginLeft: -5 }}>
-                      <p className={classes.paragraph}>
-                        <span>
-                          <LinkIcon fontSize="small" className={classes.textIcon}/> {" Blogs - "}
-                          <a href={`https://blog.d.buzz/#/@${username}`} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                            https://blog.d.buzz/#/@{username}
-                          </a>
-                        </span>
-                      </p>
-                    </Col>
-                  </Row>}
-                  {!ceramic && <Row>
-                    <Col xs="auto" style={{ marginLeft: -5 }}>
-                      <Tooltip title="Click to copy referal link">
-                        <CopyToClipboard className={classes.clipboard} text={`https://${window.location.hostname}/#/?ref=${username}`} onCopy={copyReferalLink}>
-                          <p className={classes.paragraph}>
-                            <span>
-                              <FileCopyIcon fontSize="small" className={classes.textIcon}/>
-                              <span style={{ fontSize: 14 }}>{" Copy Referal - "}</span>
-                              {/* eslint-disable-next-line */}
-                              <span id="user-referal" className={classes.weblink}>
-                                https://{window.location.hostname}/#/?ref={username}
-                              </span>
-                            </span>
-                          </p>
-                        </CopyToClipboard>
-                      </Tooltip>
-                    </Col>
-                  </Row>}
                   <Row>
-                    <Col xs="auto" style={{ marginLeft: -5 }}>
+                    <Col xs="auto" style={{ marginTop: 10, marginLeft: -5 }}>
                       <p className={classes.paragraph}>
                         {(profile_location || ceramicProfile.location) && (
                           <span className={classes.textIcon} style={{ marginRight: 10 }}>

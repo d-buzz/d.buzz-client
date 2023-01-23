@@ -221,10 +221,6 @@ const LoginModal = (props) => {
     setHasAuthenticationError(false)
     authenticateUserRequest(username, password, useKeychain, useHAS, useCeramic)
       .then(({ is_authenticated }) => {
-        
-        // const origin = window.location.origin
-        // window.location.href = origin + '#/trending'
-        // window.location.reload()
 
         if (useHAS) {
           const hasExpiredDelayInterval = setInterval(() => {
