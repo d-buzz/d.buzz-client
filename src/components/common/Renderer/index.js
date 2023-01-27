@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux'
 import { setViewImageModal, setLinkConfirmationModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { proxyImage, truncateString } from 'services/helper'
-import { isMobile } from 'react-device-detect'
+// import { isMobile } from 'react-device-detect'
 
 
 const FACEBOOK_APP_ID = 236880454857514
@@ -264,8 +264,9 @@ const prepareTwitterEmbeds = (content) => {
 }
 
 const prepareVimmEmbeds = (content) => {
-  const vimmRegex = /(?:(https?:\/\/)?(?:(?:(www\.)?vimm\.tv\/c\/(.*?))))/i
-  const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.vimm\.tv\/(.*?)\/embed)))/i
+  const vimmUserRegex = /(?:(https?:\/\/)?(?:(?:(www\.)?[vV]imm\.tv\/([A-Za-z0-9-]+))))/i
+  const vimmRegex = /(?:(https?:\/\/)?(?:(?:(www\.)?[vV]imm\.tv\/c\/(.*?))))/i
+  const vimmRegexEmbed = /(?:https?:\/\/(?:(?:www\.[vV]imm\.tv\/\/embed)))/i
   let body = content
 
   const links = parseUrls(content)
@@ -285,6 +286,10 @@ const prepareVimmEmbeds = (content) => {
       else if(link.match(vimmRegexEmbed)){
         match = link.match(vimmRegexEmbed)
         id = match[1]
+      }
+      else if(link.match(vimmUserRegex)){
+        match = link.match(vimmUserRegex)
+        id = match[3]
       }
 
       if(match){
@@ -954,14 +959,13 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // hide watch video on dbuzz
       .replace(/\[WATCH THIS VIDEO ON DBUZZ]\(.+\)/gi, '')
     // support strikethrough 
-      .replace(/~~[a-zA-Z0-9\s]+~~/gi, n => `<del>${n.replaceAll('~', '')}</del>`)
+      .replace(/~~.+~~/gi, n => `<del>${n.replaceAll('~', '')}</del>`)
     // render titles
-      .replace(/.*\s<br\s?\/>/gi, n => checkForValidTitle(n) ? `## ${n}` : n)
+      .replace(/[\s\S]*?<br\s*\/?>/s, n => checkForValidTitle(n) ? `## ${n} \n` : n)
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
       skipHtml={true}
-      // remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
       children={content}
       className={classNames(markdownClass, assetClass, classes.inputArea)}
@@ -995,18 +999,26 @@ const Renderer = React.memo((props) => {
   const prepareHyperlinks = () => {
     const hyperlinks = document.querySelectorAll(`.hyperlink`)
     hyperlinks.forEach((hyperlink) => {
-      hyperlink.addEventListener('click', function (e) {
+      hyperlink.onclick = (e) => {
         e.preventDefault()
         const url = hyperlink.id
         setLinkConfirmationModal(url)
-      })
-      if(isMobile) {
-        hyperlink.addEventListener('touchstart', function () {
-          const url = hyperlink.id
-          setLinkConfirmationModal(url)
-        })
       }
     })
+    // hyperlinks.forEach((hyperlink) => {
+    //   hyperlink.addEventListener('click', function (e) {
+    //     e.preventDefault()
+    //     const url = hyperlink.id
+    //     setLinkConfirmationModal(url)
+    //     console.log(hyperlinks.length);
+    //   })
+    //   if(isMobile) {
+    //     hyperlink.addEventListener('touchstart', function () {
+    //       const url = hyperlink.id
+    //       setLinkConfirmationModal(url)
+    //     })
+    //   }
+    // })
   }
 
   const loadImages = () => {
@@ -1050,9 +1062,13 @@ const Renderer = React.memo((props) => {
 
   useEffect(() => {
     loadImages()
-    prepareHyperlinks()
     // eslint-disable-next-line
   }, [content])
+
+  useEffect(() => {
+    prepareHyperlinks()
+    // eslint-disable-next-line
+  }, [links])
   
   if(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus !== 'disabled') {
     links.forEach((link) => {
@@ -1065,7 +1081,7 @@ const Renderer = React.memo((props) => {
           content = prepareTwitterEmbeds(content)
         } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
           content = prepareThreeSpeakEmbeds(content)
-        } else if(link.includes('vimm.tv')) {
+        } else if(link.includes('vimm.tv') || link.includes('Vimm.tv')) {
           content = prepareVimmEmbeds(content)
         } else if(link.includes('rumble.com')) {
           content = prepareRumbleEmbed(content)
