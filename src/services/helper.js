@@ -270,28 +270,34 @@ export const sendToBerries = (author, theme) => {
   window.open(`https://buymeberri.es/!dbuzz${color}/@${author}`, '_blank')
 }
 
-export const calculateOverhead = (content, imagesSize = 0) => {
+export const calculateOverhead = (content) => {
   let urls = getUrls(content) || []
-
-  const markdown = content?.match(/\s+<br\/>|#+\s|[*]|\s+&nbsp;/gm) || []
+  
+  const markdown = content?.match(/#+\s|[*]|\s+&nbsp;+\s|\s+$/gm) || []
 
   let overhead = 0
 
+  // let overheadItems = []
+
   if(markdown.length>0) {
     markdown.forEach((item) => {
+      // overheadItems.push(item)
       overhead += item.length
     })
   }
-
-  if((urls.length+imagesSize) > 3) {
+  
+  if((urls.length) > 3) {
     urls = urls.slice(0, 2)
   }
-
-  if(urls && urls.length+imagesSize <= 3){
+  
+  if(urls && urls.length <= 3){
     urls.forEach((item) => {
+      // overheadItems.push(item)
       overhead += item.length
     })
   }
+
+  // console.log(overheadItems)
 
   return overhead
 }

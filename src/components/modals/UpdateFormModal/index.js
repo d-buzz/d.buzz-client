@@ -15,7 +15,7 @@ import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
-import { calculateOverhead } from 'services/helper'
+import { calculateOverhead, stripHtml } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, updatePostRequest } from 'services/ceramic'
 
@@ -184,6 +184,89 @@ const useStyles = createUseStyles(theme => ({
     transform: 'translate(-52%,-52%)',
     animation: 'counterAnimation 350ms',
   },
+  buzzTextBox: {
+    display: 'flex',
+    position: 'relative',
+    width: '100%',
+    transition: 'all 250ms',
+
+    '&:focus-within': {
+      background: theme.context.view.backgroundColor,
+    },
+
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 8,
+    border: `2px solid ${theme.context.view.backgroundColor}`,
+    
+    '& .buzzBoxes': {
+      width: '100%',
+
+      '& .buzzArea1': {
+        '&:after': {
+          position: 'absolute',
+          content: '""',
+          left: '-15px',
+          top: '-10px',
+          width: '2px',
+          height: '100%',
+          margin: '5px 0',
+          borderRadius: '50%',
+          opacity: 0.5,
+        },
+
+        '& .userAvatar': {
+          transition: 'all 250ms',
+          '&:hover': {
+            opacity: 0.8,
+            cursor: 'pointer',
+          },
+        },
+      },
+            
+      '& .buzzArea': {
+        position: 'relative',
+        display: 'flex',
+        width: '100%',
+        
+        '&:after': {
+          position: 'absolute',
+          content: '""',
+          left: '-15px',
+          top: '-10px',
+          width: '2px',
+          height: '100%',
+          margin: '5px 0',
+          borderRadius: '50%',
+          background: theme.font.color,
+        },
+
+        '& .userAvatar': {
+          marginRight: 15,
+          maxWidth: 'fit-content',
+          transition: 'all 250ms',
+          '&:hover': {
+            opacity: 0.8,
+            cursor: 'pointer',
+          },
+        },
+        
+      },
+
+      '& .noMargin': {
+        width: '100% !important',
+        margin: '0 !important',
+      },
+    },
+
+    '& .buzz_counter': {
+      position: 'absolute',
+      bottom: 15,
+      right: 0,
+      zIndex: 999,
+      width: '2%',
+    },
+  },
 }))
 
 const UpdateFormModal = (props) => {
@@ -210,8 +293,10 @@ const UpdateFormModal = (props) => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [overhead, setOverhead] = useState(0)
+  const [buzzContent, setBuzzContent] = useState('')
+  const [buzzContentStripped, setBuzzContentStripped] = useState('')
 
-  const textAreaStyle = { width: '100%' }
+  const textAreaStyle = { width: '100%', height: 500 }
   const zeroPadding = { padding: 0 }
   const iconButtonStyle = { marginTop: -5 }
   const inputFile = { display: 'none' }
@@ -223,44 +308,61 @@ const UpdateFormModal = (props) => {
   
   const [updating, setUpdating] = useState(false)
 
+  const [buzzLength, setBuzzLength] = useState(0)
+  const [buzzRemainingChars, setBuzzRemaingChars] = useState(0)
+
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
 
   useEffect(() => {
-    if(content.length - overhead === 280) {
+    if(body && body !== '') {
+      setContent(body)
+      setBuzzContent(body)
+      setBuzzContentStripped(stripHtml(body))
+    }
+  }, [body])
+
+  useEffect(() => {
+    const length = (buzzContentStripped.length) - overhead
+
+    if(length === 280) {
       setCounterColor('#E0245E')
-    } else if(content.length - overhead >= 260) {
+    } else if(length > 280) {
+      setCounterColor('transparent')
+    } else if(length >= 260) {
       setCounterColor('#FFAD1F')
     } else {
       setCounterColor('#e53935')
     }
     // eslint-disable-next-line
-  }, [content])
+  }, [buzzContent])
 
   useEffect(() => {
-    if(body && body !== '') {
-      setContent(body)
-    }
-  }, [body])
+    const contentOverhead = calculateOverhead(buzzContentStripped)
+    setOverhead(contentOverhead)
+    // eslint-disable-next-line
+  }, [buzzContent])
 
 
   useEffect(() => {
-    const overhead = calculateOverhead(content)
-
-    setOverhead(overhead)
-
-    const length = content.length - overhead
+    // update characters length and add images overhead
+    const length = (buzzContentStripped.length) - (overhead)
     setWordCount(Math.floor((length / 280) * 100))
-  }, [content])
 
+    setBuzzLength((buzzContentStripped.length - (overhead)))
+    setBuzzRemaingChars(280 - (buzzContentStripped.length - (overhead)))
+  // eslint-disable-next-line
+  }, [buzzContent, overhead])
 
   const handleOnChange = (e) => {
     const { target } = e
     const { value } = target
-    setCursorPosition(e.target.selectionStart)
     setContent(value)
+    setBuzzContent(value)
+    setBuzzContentStripped(stripHtml(value))
+    setCursorPosition(e.target.selectionStart)
+    // eslint-disable-next-line
   }
-
 
   const handleFileSelect = () => {
     const target = document.getElementById('file-upload-reply')
@@ -296,7 +398,7 @@ const UpdateFormModal = (props) => {
   const handleClickSubmitUpdate = () => {
     setUpdating(true)
     if(!checkForCeramicAccount(username)) {
-      publishUpdateRequest(permlink, content)
+      publishUpdateRequest(permlink, buzzContent)
         .then((success) => {
           if(success) {
             broadcastNotification('success', `Buzz successfully edited`)
@@ -390,30 +492,29 @@ const UpdateFormModal = (props) => {
                       </Box>
                     </div>
                   )}
-                  {!loading && (
-                    <TextArea
-                      style={textAreaStyle}
-                      minRows={3}
-                      maxLength={280 + overhead}
-                      label="Buzz your reply"
-                      value={content}
-                      onKeyUp={handleOnChange}
-                      onKeyDown={handleOnChange}
-                      onChange={handleOnChange}
-                    />
-                  )}
-                  {!loading && (
-                    <TextArea
-                      style={textAreaStyle}
-                      minRows={3}
-                      maxLength={280 + overhead}
-                      label="Buzz your reply"
-                      value={content}
-                      onKeyUp={handleOnChange}
-                      onKeyDown={handleOnChange}
-                      onChange={handleOnChange}
-                    />
-                  )}
+                  <div className={classes.buzzTextBox}>
+                    {!loading && (
+                      <TextArea
+                        style={textAreaStyle}
+                        minRows={2}
+                        label="Buzz"
+                        value={content}
+                        onKeyUp={e => {
+                          handleOnChange(e)
+                          setCursorPosition(e.target.selectionStart)
+                        }}
+                        onKeyDown={e => {
+                          handleOnChange(e)
+                          setCursorPosition(e.target.selectionStart)
+                        }}
+                        onChange={e => handleOnChange(e)}
+                        onPaste={e => handleOnChange(e)}
+                        onClick={(e) => {
+                          setCursorPosition(e.target.selectionStart)
+                        }}
+                      />
+                    )}
+                  </div>
                   {uploading && (
                     <div className={classes.actionWrapper}>
                       <Box  position="relative" display="inline-flex">
@@ -425,7 +526,7 @@ const UpdateFormModal = (props) => {
                   <br />
                   {content.length !== 0 && (
                     <div className={classes.previewContainer}>
-                      <h6>Reply preview</h6>
+                      <h6>Buzz preview</h6>
                       <Renderer content={content} minifyAssets={true} onModal={true}/>
                       <hr />
                     </div>
@@ -461,7 +562,7 @@ const UpdateFormModal = (props) => {
                       style={replyButtonStyle}
                       className={classes.float}
                       onClick={handleClickSubmitUpdate}
-                      disabled={loading || `${content}`.trim() === '' || updating}
+                      disabled={loading || `${content}`.trim() === '' || updating || buzzRemainingChars < 0}
                     />
                     <Box
                       style={{ float: 'right', marginRight: 15, paddingTop: 10}}
@@ -488,7 +589,7 @@ const UpdateFormModal = (props) => {
                           value={wordCount}
                           variant="static"
                         />
-                        {content.length - overhead >= 260 && <p className={classes.counter}>{280 - content.length + overhead}</p>}
+                        {buzzLength >= 260 && <p className={classes.counter}>{buzzRemainingChars}</p>}
                       </div>
                     </Box>
                   </div>

@@ -156,8 +156,8 @@ const SideBarRight = (props) => {
   useEffect(() => {
     (async function resources() {
 
-      const hivePrice = await getPrice('hive')
-      const hbdPrice = await getPrice('hbd')
+      const hivePrice = await getPrice('hive') || 'NA'
+      const hbdPrice = await getPrice('hbd') || 'NA'
 
       setHivePrice(`$${hivePrice.hive.usd.toFixed(3) || '-'}`)
       setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3) || '-'}`)
@@ -191,7 +191,7 @@ const SideBarRight = (props) => {
           <span className='price_container'>
             <label className='market'>HBD</label>
             {hbdPrice ?
-              <label className='price'>{hbdPrice}</label> :
+              <label className='price'>{hbdPrice || 'N/A'}</label> :
               <ThemeProvider>
                 <Skeleton height={20} width={50} count={1}/>
               </ThemeProvider>}
