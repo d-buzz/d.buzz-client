@@ -147,7 +147,8 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   chip: {
-    color: '#5c5c5c !important',
+    background: '#515151 !important',
+    color: '#838383 !important',
     marginTop: 5,
     marginBottom: 5,
   },
@@ -230,6 +231,7 @@ const Content = (props) => {
   const [openUpdateForm, setOpenUpdateForm] = useState(false)
   const [hasUpdateAuthority, setHasUpdateAuthority] = useState(false)
   const [isCensored, setIsCensored] = useState(false)
+  // eslint-disable-next-line
   const [censorType, setCensorType] = useState(null)
   const [openVoteList, setOpenVoteList] = useState(false)
   const popoverAnchor = useRef(null)
@@ -605,10 +607,10 @@ const Content = (props) => {
                 )}
               </Row>
               <div onClick={handleClickContent}>
-                {isCensored && (
-                  <Chip label={'NSFW'} color="#2b2b2b" size="small" className={classes.chip} />
-                )}
                 <Renderer content={originalContent} minifyAssets={false} />
+                {isCensored && (
+                  <Chip label={'#NSFW'} color="#2b2b2b" size="small" className={classes.chip} />
+                )}
               </div>
               {/* <PostTags meta={meta} /> */}
               {(contentLength > 280) && (
