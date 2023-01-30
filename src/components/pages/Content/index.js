@@ -147,7 +147,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   chip: {
-    color: '#5c5c5c !important'
+    color: '#5c5c5c !important',
     marginTop: 5,
     marginBottom: 5,
   },
