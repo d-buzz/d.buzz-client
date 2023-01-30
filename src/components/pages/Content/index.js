@@ -147,6 +147,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   chip: {
+    color: '#5c5c5c !important'
     marginTop: 5,
     marginBottom: 5,
   },
@@ -587,7 +588,7 @@ const Content = (props) => {
               </Row>
               <div onClick={handleClickContent}>
                 {isCensored && (
-                  <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
+                  <Chip label={'NSFW'} color="#2b2b2b" size="small" className={classes.chip} />
                 )}
                 <Renderer content={originalContent} minifyAssets={false} />
               </div>
