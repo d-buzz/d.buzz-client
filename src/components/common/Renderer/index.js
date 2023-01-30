@@ -956,7 +956,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // support strikethrough 
       .replace(/~~[a-zA-Z0-9\s]+~~/gi, n => `<del>${n.replaceAll('~', '')}</del>`)
     // render titles
-      .replace(/.*\s<br\s?\/>/gi, n => checkForValidTitle(n) ? `## ${n}` : n)
+      .replace(/[\s\S]*?<br\s*\/?>/s, n => checkForValidTitle(n) ? `## ${n} \n` : n)
 
     return <ReactMarkdown
       key={`${new Date().getTime()}${scrollIndex}${Math.random()}`}
