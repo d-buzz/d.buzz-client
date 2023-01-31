@@ -1684,8 +1684,13 @@ export const getEstimateAccountValue = (account) => {
 
 export const getPrice = async (symbol) => {
   return new Promise(async (resolve, reject) => {
-    const response = await axios.get(`${priceChartURL}/${symbol}`)
-    resolve(response.data || {})
+    const getPriceRequest = {
+      method: 'GET',
+      url: `${priceChartURL}/${symbol}`,
+      validateStatus: () => true,
+    }
+    const response = (await axios(getPriceRequest)).data
+    resolve(response || {})
   })
 }
 
