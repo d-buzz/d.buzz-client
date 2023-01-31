@@ -81,8 +81,8 @@ class InfiniteList extends PureComponent {
                   permlink={posts[index].permlink}
                   created={posts[index].created}
                   body={posts[index].body}
-                  upvotes={posts[index].active_votes.length}
-                  upvoteList={posts[index].active_votes}
+                  upvotes={posts[index].active_votes.filter(v => v.rshares >= 0).length}
+                  upvoteList={posts[index].active_votes.filter(v => v.rshares >= 0)}
                   replyCount={posts[index].children}
                   meta={posts[index].json_metadata}
                   payout={posts[index].payout}

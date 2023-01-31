@@ -190,7 +190,10 @@ const useStyle = createUseStyles(theme => ({
     opacity: 0.2,
   },
   chip: {
-    float: 'right',
+    background: '#515151 !important',
+    color: '#838383 !important',
+    marginTop: 5,
+    marginBottom: 5,
   },
   menu: {
     '& .MuiPaper-root': {
@@ -294,6 +297,7 @@ const PostList = React.memo((props) => {
   const [hidden, setHidden] = useState(false)
   const [content, setContent] = useState(body)
   const [isCensored, setIsCensored] = useState(false)
+  // eslint-disable-next-line
   const [censorType, setCensorType] = useState(null)
   const popoverAnchor = useRef(null)
   const [addToPocketModal, setAddToPocketModal] = useState(false)
@@ -540,13 +544,13 @@ const PostList = React.memo((props) => {
                       <MoreHoriz  className={classes.moreIcon} />
                     </IconButton>
                   )}
-                  {isCensored && (
-                    <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
-                  )}
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
                       <Renderer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      {isCensored && (
+                        <Chip label={'#NSFW'} color="#2b2b2b" size="small" className={classes.chip} />
+                      )}
                       {/* <PostTags meta={meta} highlightTag={highlightTag} /> */}
                     </div>
                   )}
