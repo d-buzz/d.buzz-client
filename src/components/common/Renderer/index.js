@@ -169,7 +169,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const parseUrls = (c) => {
-  return c.match(/(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
+  return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
 }
 
 const prepareYoutubeEmbeds = (content) => {
@@ -764,6 +764,43 @@ const prepareDBuzzVideos = (content) => {
   return body
 }
 
+const prepareHiveTubeVideoEmbeds = (content) => {
+  const hiveTubeEmebedsRegex = /(http|https?:\/\/)?(www\.)?([\w_-]+)(\.)([a-zA-Z]+)(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i
+
+  let body = content
+
+  const links = parseUrls(content)
+
+  links.forEach((link) => {
+    link = link.replace(/&amp;/g, '&')
+
+    const matchedLink = link.match(hiveTubeEmebedsRegex).filter((match) => match !== undefined)
+    let match
+    let domain
+
+    if(link.includes('http') && link.includes('www')) {
+      domain = `${matchedLink[3]}${matchedLink[4]}${matchedLink[5]}`
+    } else if (link.includes('https') && !link.includes('www')) {
+      domain = `${matchedLink[2]}${matchedLink[3]}${matchedLink[4]}`
+    } else if (link.includes('www') && !link.includes('http')) {
+      domain = `${matchedLink[2]}${matchedLink[3]}${matchedLink[4]}`
+    } else {
+      domain = `${matchedLink[1]}${matchedLink[2]}${matchedLink[3]}`
+    }
+ 
+    if(matchedLink) {
+      match = link.match(/(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i)[2]
+      
+    }
+
+    if (match) {
+      const id = match
+      body = body.replace(link, `~~~~~~.^.~~~${domain}:hive-tube-embed:${id}:~~~~~~.^.~~~`)
+    }
+  })
+  return body
+}
+
 const getCoinTicker = (coin) => {
   const data = require('../../../files/coinGeckoData.json')
 
@@ -779,7 +816,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   if(content.includes(':youtube:')) {
     const splitYoutube = content.split(':')
     const url = `https://www.youtube.com/embed/${splitYoutube[2]}`
-    return <UrlVideoEmbed key={`${url}${scrollIndex}3speak`} url={url} />
+    return <UrlVideoEmbed key={`${url}${scrollIndex}youtube`} url={url} />
   } else if(content.includes(':twitter:')) {
     const splitTwitter = content.split(':')
     return <TwitterEmbed key={`${splitTwitter[2]}${scrollIndex}tweet`} tweetId={splitTwitter[2]} />
@@ -828,6 +865,9 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
   } else if(content.includes(':dbuzz-video:')) {
     const url = content.split(':')[2]
     return <a href={`https://ipfs.io/ipfs/${url}`}><VideoPreview key={`${url}${scrollIndex}dbuzz-video`} url={`https://ipfs.io/ipfs/${url}`}/></a>
+  } else if (content.includes(':hive-tube-embed:')) {
+    const url = `https://${content.split(':')[0]}/videos/embed/${content.split(':')[2]}`
+    return <UrlVideoEmbed key={`${url}${scrollIndex}hive-tube-embed`} url={url} />  
   } else if (content.includes(':facebook:')) {
     try {
       const splitFacebook = content.split(':')
@@ -1005,20 +1045,6 @@ const Renderer = React.memo((props) => {
         setLinkConfirmationModal(url)
       }
     })
-    // hyperlinks.forEach((hyperlink) => {
-    //   hyperlink.addEventListener('click', function (e) {
-    //     e.preventDefault()
-    //     const url = hyperlink.id
-    //     setLinkConfirmationModal(url)
-    //     console.log(hyperlinks.length);
-    //   })
-    //   if(isMobile) {
-    //     hyperlink.addEventListener('touchstart', function () {
-    //       const url = hyperlink.id
-    //       setLinkConfirmationModal(url)
-    //     })
-    //   }
-    // })
   }
 
   const loadImages = () => {
@@ -1075,6 +1101,9 @@ const Renderer = React.memo((props) => {
       try {
         link = link.replace(/&amp;/g, '&')
         link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
+        
+        const pattern = /(http|https?:\/\/)?(www\.)?([\w_-]+)(\.)([a-zA-Z]+)(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/
+
         if(link.includes('youtube.com') ||link.includes('youtu.be')) {
           content = prepareYoutubeEmbeds(content)
         } else if(link.includes('twitter.com')) {
@@ -1111,6 +1140,8 @@ const Renderer = React.memo((props) => {
           content = prepareDTubeEmbeds(content)
         } else if (link.includes('dbuzz_video')) {
           content = prepareDBuzzVideos(content)
+        } else if(pattern.test(link)) {
+          content = prepareHiveTubeVideoEmbeds(content)
         }
       } catch(error) { }
     })
