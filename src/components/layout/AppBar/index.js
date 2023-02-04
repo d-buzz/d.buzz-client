@@ -79,9 +79,9 @@ const AppBar = (props) => {
     const referralRegex = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)(\?ref=[a-z]+)?$/
     const referral = window.location.hash.match(referralRegex)?.[1]
     if(referral) {
-      window.location.href = `http://localhost:3000/@${referral}`
+      window.location.href = `https://join.d.buzz/@${referral}`
     } else {
-      window.location.href = `http://localhost:3000`
+      window.location.href = `https://join.d.buzz`
     }
   }
   
