@@ -20,6 +20,9 @@ import {
   BlacklistModal,
   FollowBlacklistsModal,
 } from 'components'
+import {
+  setLinkConfirmationModal,
+} from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { useLocation } from 'react-router-dom'
@@ -27,6 +30,7 @@ import { isMobile } from 'react-device-detect'
 import { bindActionCreators } from 'redux'
 import { setIntentBuzz, setFromIntentBuzz } from 'store/auth/actions'
 import queryString from 'query-string'
+import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
 
 
 const useStyles = createUseStyles({
@@ -77,7 +81,7 @@ const useStyles = createUseStyles({
 
 const AppFrame = (props) => {
   const classes = useStyles()
-  const { route, user, setIntentBuzz, setFromIntentBuzz, fromIntentBuzz } = props
+  const { route, user, setIntentBuzz, setFromIntentBuzz, fromIntentBuzz, linkConfirmationModal, setLinkConfirmationModal } = props
   const { pathname, search } = useLocation()
   const { is_authenticated } = user
   const [showLogin, setShowLogin] = useState(false)
@@ -166,6 +170,8 @@ const AppFrame = (props) => {
         signUpConfirmation={signUpConfirmation}
         fromIntentBuzz={fromIntentBuzz}
         buzzIntentCallback={handleSetBuzzIntent} />
+      <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
+
     </React.Fragment>
   )
 }
@@ -173,12 +179,14 @@ const AppFrame = (props) => {
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
   fromIntentBuzz: state.auth.get('fromIntentBuzz'),
+  linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setIntentBuzz,
     setFromIntentBuzz,
+    setLinkConfirmationModal,
   }, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(AppFrame)

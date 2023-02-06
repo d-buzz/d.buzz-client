@@ -577,7 +577,7 @@ const Profile = (props) => {
   }
 
   const handleCopyReferral = () => {
-    const referralUrl = `https://${window.location.hostname}/#/?ref=${username}`
+    const referralUrl = `https://join.d.buzz/@${username}`
     navigator.clipboard.writeText(referralUrl)
     setCopied(true)
   }

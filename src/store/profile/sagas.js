@@ -83,7 +83,7 @@ import {
   hasClearNotificationService,
 } from 'services/api'
 
-import { errorMessageComposer } from "services/helper"
+import { censorLinks, errorMessageComposer } from "services/helper"
 import { checkForCeramicAccount, getBasicProfile, getFollowersList, getFollowingList, getUserPostRequest } from 'services/ceramic'
 
 function* getProfileRequest(payload, meta) {
@@ -141,6 +141,21 @@ function* getProfileRequest(payload, meta) {
   }
 }
 
+const censorCheck = (content, censoredList) => {
+  const copyContent = content
+
+  const result = censoredList.filter(({ author, permlink }) => `${author}/${permlink}` === `${content.author}/${content.permlink}`)
+
+  copyContent.censored = { status: false, reason: null }
+
+  if(result.length !== 0) {
+    copyContent.body = censorLinks(copyContent.body)
+    copyContent.censored = { status: true, reason: result[0].type }
+  }
+
+  return copyContent
+}
+
 function* getAccountPostRequest(payload, meta) {
   try{
     const { username, start_permlink, start_author } = payload
@@ -154,6 +169,9 @@ function* getAccountPostRequest(payload, meta) {
       })
 
       data = data.filter(item => invokeFilter(item))
+
+      const censoredList = yield select(state => state.auth.get('censorList'))
+      data.map((item) => censorCheck(item, censoredList))
 
       yield put(setLastAccountPosts(data[data.length-1]))
       yield put(getAccountPostsSuccess(data, meta))

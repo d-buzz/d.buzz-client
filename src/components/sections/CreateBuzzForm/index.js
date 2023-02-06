@@ -22,7 +22,7 @@ import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 // import { WithContext as ReactTags } from 'react-tag-input'
 import { isDesktop, isMobile } from 'react-device-detect'
-import { invokeTwitterIntent, calculateOverhead } from 'services/helper'
+import { invokeTwitterIntent, calculateOverhead, stripHtml } from 'services/helper'
 import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
@@ -774,6 +774,7 @@ const CreateBuzzForm = (props) => {
   const [showBuzzTitle, setShowBuzzTitle] = useState(true)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
+  const [imagesLength, setImagesLength] = useState(0)
   const [imageUploading, setImageUploading] = useState(false)
   const [videoUploading, setVideoUploading] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
@@ -815,6 +816,8 @@ const CreateBuzzForm = (props) => {
   // buzz text box states, ref & style
   const buzzTextBoxRef = useRef(null)
   const [content, setContent] = useState(wholeIntent)
+  const [buzzContent, setBuzzContent] = useState(wholeIntent)
+  const [buzzContentStripped, setBuzzContentStripped] = useState(wholeIntent)
   const [tags, setTags] = useState(buzzIntentTags)
   const [buzzPreview, setBuzzPreview] = useState(true)
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
@@ -915,6 +918,14 @@ const CreateBuzzForm = (props) => {
   }, [wholeIntent])
 
   useEffect(() => {
+    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? buzzTitle+' <br />'+buzzThreads[1]?.content+' <br/>'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzTitle+' <br />'+buzzThreads[1].content)
+    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+' <br/>'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1]?.content
+    const rawBuzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
+    setBuzzContent(rawBuzzContent)
+    setBuzzContentStripped(stripHtml(rawBuzzContent))
+  }, [buzzThreads, buzzTitle])
+
+  useEffect(() => {
     const images = []
     const buzzThreadImages = buzzThreads[1]?.images || []
 
@@ -922,7 +933,7 @@ const CreateBuzzForm = (props) => {
     
     images.splice(0, 3)
     const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp; ').length
-    const contentOverhead = calculateOverhead(content, buzzThreads[1]?.images?.length)
+    const contentOverhead = calculateOverhead(buzzContentStripped)
     
     // allow only three images at on a single buzz
     if(buzzThreads[1]?.images?.length >= 3) {
@@ -932,11 +943,12 @@ const CreateBuzzForm = (props) => {
     }
     
     setOverhead(contentOverhead-imagesOverhead)
-  }, [content, buzzThreads, buzzTitle])
+    // eslint-disable-next-line
+  }, [buzzContent])
   
-  useEffect(() => {    
+  useEffect(() => {   
     // update characters length and add images overhead
-    const length = (content.length + buzzTitle.length) - (overhead)
+    const length = (buzzContentStripped.length) - (overhead)
 
     setWordCount(Math.floor((length / 280) * 100))
 
@@ -945,13 +957,13 @@ const CreateBuzzForm = (props) => {
     buzzThreads && setTags(extractAllHashtags(buzzThreads[1]?.content))
 
     // update buzz characters length and remaining characters
-    setBuzzLength((content.length + buzzTitle.length - (overhead)))
-    setBuzzRemaingChars(280 - (content.length + buzzTitle.length - (overhead)))
+    setBuzzLength((buzzContentStripped.length - (overhead)))
+    setBuzzRemaingChars(280 - (buzzContentStripped.length - (overhead)))
     // eslint-disable-next-line
-  }, [content, overhead, buzzTitle, draftPost, images, savePostAsDraft])
+  }, [buzzContent, overhead, draftPost, images, savePostAsDraft])
 
   useEffect(() => {
-    const length = (content.length + buzzTitle.length) - overhead
+    const length = (buzzContentStripped.length) - overhead
 
     if(length === 280) {
       setCounterColor('#E0245E')
@@ -963,7 +975,7 @@ const CreateBuzzForm = (props) => {
       setCounterColor('#e53935')
     }
     // eslint-disable-next-line
-  }, [content, buzzTitle])
+  }, [buzzContent])
 
   const closePayoutDisclaimer = () => {
     setOpenPayoutDisclaimer(false)
@@ -1090,36 +1102,84 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleFileSelectChange = async(event) => {
-    const image = event.target.files[0]
 
-    const fileSize = image.size / 1e+6
-    setImageSize(Number(fileSize.toFixed(2)))
+    // createThread(currentBuzz, 'image', ['https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1674376622091.jpeg', 'https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1674376624067.jpeg'])
 
-    setCompressing(true)
+    const images = Array.from(event.target.files)
+    const uploadedImages = []
 
-    await handleImageCompression(image).then((uri) => {
-      setCompressing(false)
-      setImageSize(Number((uri.size / 1e+6).toFixed(2)))
-      uploadFileRequest(uri, setImageUploadProgress).then((image) => {
-        setImageUploading(false)
-        const lastImage = image[image.length - 1]
-        if (lastImage !== undefined) {
-          // const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
-          createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, lastImage])
-          // setContent(contentAppend)
-          document.getElementById('file-upload').value = ''
+    const remainingImageUploads = (3 - buzzThreads[currentBuzz]?.images?.length) >= 0 ? (3 - buzzThreads[currentBuzz]?.images?.length) : 0
+
+    if((images.length + buzzThreads[currentBuzz]?.images?.length) <= 3) {
+      setImagesLength(images.length)
+
+      await Promise.all(
+        images.map(async(image) => {
+          // calculate image file size
+          const fileSize = image.size / 1e+6
+          setImageSize(Number(fileSize.toFixed(2)))
+
+          // handle image compression and then upload it
+          setCompressing(true)
+          await handleImageCompression(image).then((uri) => {
+            setCompressing(false)
+            setImageSize(Number((uri.size / 1e+6).toFixed(2)))
+            uploadFileRequest(uri, setImageUploadProgress).then((image) => {
+              const lastImage = image[image.length - 1]
+              uploadedImages.push(lastImage)
+              
+              if(uploadedImages.length === images.length) {
+                setImageUploading(false)
+                createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, ...uploadedImages])
+                document.getElementById('file-upload').value = ''
+
+                // set the thread if its the thread
+                if(Object.keys(buzzThreads).length > 1){
+                  setIsThread(true)
+                  setThreadCount(Object.keys(buzzThreads).length)
+                }
+                setImageSize(0)
+                setImagesLength(0)
+              }
+
+            }) 
+          })
+        }),
+      )
+    } else {
+      alert(`You can only upload 3 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
+    }
+
+    // const image = event.target.files[0]
+
+    // const fileSize = image.size / 1e+6
+    // setImageSize(Number(fileSize.toFixed(2)))
+
+    // setCompressing(true)
+
+    // await handleImageCompression(image).then((uri) => {
+    //   setCompressing(false)
+    //   setImageSize(Number((uri.size / 1e+6).toFixed(2)))
+    //   uploadFileRequest(uri, setImageUploadProgress).then((image) => {
+    //     setImageUploading(false)
+    //     const lastImage = image[image.length - 1]
+    //     if (lastImage !== undefined) {
+    //       // const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
+    //       createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, lastImage])
+    //       // setContent(contentAppend)
+    //       document.getElementById('file-upload').value = ''
   
-          // set the thread if its the thread
-          if(Object.keys(buzzThreads).length > 1){
-            setIsThread(true)
-            setThreadCount(Object.keys(buzzThreads).length)
-          }
-          // savePostAsDraft(contentAppend)
-          // savePostAsDraftToStorage(contentAppend)
-          setImageSize(0)
-        }
-      }) 
-    })
+    //       // set the thread if its the thread
+    //       if(Object.keys(buzzThreads).length > 1){
+    //         setIsThread(true)
+    //         setThreadCount(Object.keys(buzzThreads).length)
+    //       }
+    //       // savePostAsDraft(contentAppend)
+    //       // savePostAsDraftToStorage(contentAppend)
+    //       setImageSize(0)
+    //     }
+    //   }) 
+    // })
 
     // if(fileSize < 1){
     // }
@@ -1192,10 +1252,11 @@ const CreateBuzzForm = (props) => {
       invokeTwitterIntent(content)
     }
 
-    // eslint-disable-next-line
-    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? `${buzzTitle} <br/>`+'\n'+buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : `${buzzTitle} <br/>`+'\n'+buzzThreads[1].content)
-    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1]?.content
-    const buzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
+    // console.log(buzzContent)
+    // console.log(buzzContentStripped)
+    // console.log(stripHtml(buzzContent).length)
+    // console.log(calculateOverhead(buzzContent))
+    // console.log((buzzContentStripped).length - calculateOverhead(buzzContentStripped))
     
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
@@ -1281,7 +1342,7 @@ const CreateBuzzForm = (props) => {
         setBuzzing(true)
         createPostRequest(user.username, '', buzzContent)
           .then((data) => {
-            console.log(data)
+            // console.log(data)
             if(data) {
               setPageFrom(null)
               const { creatorId, streamId } = data
@@ -1367,7 +1428,7 @@ const CreateBuzzForm = (props) => {
 
   const handleSelectGif = (gif) => {
     if (gif) {
-      const contentAppend = `${buzzThreads[currentBuzz]?.content} \n <br /> ${gif}`
+      const contentAppend = `${buzzThreads[currentBuzz]?.content}<br /> ${gif}`
       createThread(currentBuzz, contentAppend, buzzThreads[currentBuzz]?.images)
       setContent(contentAppend)
     }
@@ -1557,7 +1618,14 @@ const CreateBuzzForm = (props) => {
                   <div className={classes.titleBox} tabIndex={0}>
                     <Avatar author={user.username} avatarUrl={avatarUrl} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
                     <span className="titleContainer">
-                      <input type='text' maxLength={60} placeholder='Add a buzz title' value={buzzTitle} onChange={e => updateBuzzTitle(e.target.value)} />
+                      <input
+                        type='text'
+                        maxLength={60}
+                        placeholder='Add a buzz title'
+                        value={buzzTitle}
+                        onChange={e => updateBuzzTitle(e.target.value)}
+                        disabled={imageUploading}
+                      />
                       {buzzTitle && <span className='counter'>{buzzTitle.length}/60</span>}
                     </span>
                   </div>}
@@ -1572,6 +1640,7 @@ const CreateBuzzForm = (props) => {
                         onKeyDown={e => onChange(e, "draftPost", 1)}
                         onChange={e => onChange(e, "draftPost", 1)}
                         onPaste={e => onChange(e, "draftPost", 1)}
+                        disabled={imageUploading}
                       />
                     )}
                     {buzzThreads &&
@@ -1608,11 +1677,12 @@ const CreateBuzzForm = (props) => {
                               onClick={(e) => {
                                 setCursorPosition(e.target.selectionStart)
                               }}
+                              disabled={imageUploading}
                             />
                           </span>
                         </span>))}
                   </span>
-                  {content && 
+                  {buzzContent && 
                     <div>
                       <Box
                         className={classes.buzzCharCounter}
@@ -1648,12 +1718,12 @@ const CreateBuzzForm = (props) => {
               </span>)}
             {imageUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
-                {imageUploadProgress !== 100 ?       
+                {imageUploadProgress !== 100 && imagesLength === 0 ?       
                   <div className={classes.uploadProgressBar}>
                     <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={imageUploadProgress} />
                     <span className='progressPercent'>{imageUploadProgress}%</span>
                   </div> :
-                  <div className={classes.preparingMedia}>Preparing Image</div>}
+                  <div className={classes.preparingMedia}>{imagesLength === 1 ? "Preparing Image" : `Preparing ${imagesLength} Images`}</div>}
               </div>)}
             {videoUploading && (
               <div style={{ width: '100%', paddingTop: 5 }}>
@@ -1691,7 +1761,7 @@ const CreateBuzzForm = (props) => {
                           type='file'
                           name='image'
                           accept='image/*'
-                          multiple={false}
+                          multiple={true}
                           ref={inputRef}
                           className={classes.imageUploadInput}
                           onChange={handleFileSelectChange}
@@ -1736,7 +1806,7 @@ const CreateBuzzForm = (props) => {
                     </IconButton>
                   </Tooltip>
                 </span>
-                {content.length !== 0 &&
+                {buzzContent.length !== 0 &&
                   <span className={classes.previewTitle}>
                     Buzz preview
                     <Switch size={25} state={buzzPreview} onChange={setBuzzPreview} />
@@ -1793,7 +1863,7 @@ const CreateBuzzForm = (props) => {
                 </div>
               </span>
               <span className='buzzPublishingOptions__r2'>
-                {content.length !== 0 && isMobile &&
+                {(buzzContent.length !== 0) && isMobile &&
                   <span className={classes.previewTitleMobile}>
                     Buzz preview
                     <Switch size={25} state={buzzPreview} onChange={setBuzzPreview} />
@@ -1802,7 +1872,7 @@ const CreateBuzzForm = (props) => {
             </div>
             <div>
               <React.Fragment>
-                {content.length !== 0 && buzzPreview && (
+                {(buzzContent.length !== 0) && buzzPreview && (
                   <div className={classes.previewContainer} onClick={handleClickContent}>
                     <Renderer content={buzzTitle ? `## ${buzzTitle} <br/>\n` + content : content} minifyAssets={false} />
                   </div>

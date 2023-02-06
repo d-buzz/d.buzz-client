@@ -288,6 +288,7 @@ export const fetchContent = (author, permlink) => {
     api.getContentAsync(author, permlink)
       .then(async(result) => {
         result.body = result.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+        result.active_votes = result.active_votes.filter(v => v.percent > 0)
         const profile = await fetchProfile([result.author])
         result.profile = profile[0]
         resolve(result)
@@ -1683,8 +1684,13 @@ export const getEstimateAccountValue = (account) => {
 
 export const getPrice = async (symbol) => {
   return new Promise(async (resolve, reject) => {
-    const response = await axios.get(`${priceChartURL}/${symbol}`)
-    resolve(response.data || {})
+    const getPriceRequest = {
+      method: 'GET',
+      url: `${priceChartURL}/${symbol}`,
+      validateStatus: () => true,
+    }
+    const response = (await axios(getPriceRequest)).data
+    resolve(response || {})
   })
 }
 

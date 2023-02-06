@@ -76,8 +76,13 @@ const AppBar = (props) => {
   }
 
   const handleClickOpenSignupModal = () => {
-    // setOpenSignupModal(true)
-    window.location.href = 'https://join.d.buzz'
+    const referralRegex = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)(\?ref=[a-z]+)?$/
+    const referral = window.location.hash.match(referralRegex)?.[1]
+    if(referral) {
+      window.location.href = `https://join.d.buzz/@${referral}`
+    } else {
+      window.location.href = `https://join.d.buzz`
+    }
   }
   
   const handleClickCloseSignupModal = () => {
