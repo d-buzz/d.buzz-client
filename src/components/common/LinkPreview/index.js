@@ -69,6 +69,7 @@ const LinkPreview = (props) => {
   const links  = markdownLinkExtractor(content)
   let isValidUrl = false
   let url = ''
+  const hiveTubeEmbedPattern = /(http|https?:\/\/)?(www\.)?([\w_-]+)(\.)([a-zA-Z]+)(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/gi
 
   if(links.length !== 0) {
     for(let index = links.length; index > 0 ; index--) {
@@ -111,6 +112,8 @@ const LinkPreview = (props) => {
           && !link.match(/(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)
+          // hive tube link detect
+          && !hiveTubeEmbedPattern.test(link)
           && JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus !== 'disabled') {
         url = link
         isValidUrl = true

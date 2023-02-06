@@ -318,12 +318,12 @@ input[type=number] {
 }
 
 .hyperlink {
-  background-color: rgba(255, 149, 149, 0.085) !important;
-  padding-left: 10px;
+  /* background-color: rgba(255, 149, 149, 0.085) !important; */
+  /* padding-left: 10px;
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-  border-radius: 55px;
+  border-radius: 55px; */
   pointer-events: all;
   cursor: pointer;
 }

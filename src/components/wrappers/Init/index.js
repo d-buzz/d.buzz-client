@@ -10,7 +10,7 @@ import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
-import { getBestCeramicHost } from 'services/ceramic'
+// import { getBestCeramicHost } from 'services/ceramic'
 import Paper from '@material-ui/core/Paper'
 
 const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
@@ -135,7 +135,7 @@ const Init = (props) => {
     getBestRpcNode,
     getWSNodeHAS,
     initWSHASConnectionRequest,
-    initCeremicLoginRequest,
+    // initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -172,10 +172,10 @@ const Init = (props) => {
       getBestRpcNode().then(() => {
         getWSNodeHAS()
         initWSHASConnectionRequest()
-        getBestCeramicHost().then((host) => {
-          initCeremicLoginRequest()
-          localStorage.setItem('ceramic', host)
-        })
+        // getBestCeramicHost().then((host) => {
+        //   initCeremicLoginRequest()
+        //   localStorage.setItem('ceramic', host)
+        // })
         const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
         setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
           getSavedUserRequest().then(() => {

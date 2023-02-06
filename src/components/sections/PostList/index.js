@@ -15,7 +15,6 @@ import {
   openMuteDialog,
   openHideBuzzDialog,
   openCensorshipDialog,
-  setLinkConfirmationModal,
 } from 'store/interface/actions'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -37,7 +36,6 @@ import Renderer from 'components/common/Renderer'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { getUserCustomData } from 'services/database/api'
 import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
-import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
 import { checkForCeramicAccount } from 'services/ceramic'
 
 const addHover = (theme) => {
@@ -255,8 +253,6 @@ const PostList = React.memo((props) => {
     upvoteList,
     item,
     loadPockets,
-    linkConfirmationModal,
-    setLinkConfirmationModal,
     selectedPocket = {},
   } = props
 
@@ -601,7 +597,6 @@ const PostList = React.memo((props) => {
       </div>
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <RemoveFromPocketConfirmModal show={removeFromPocketConfirmModal} onHide={onHideRemoveFromPocketConfirmModal} user={user} buzz={seletedRemoveFromPocketBuzz} pocket={getPocket()} loadPockets={loadPockets}/>
-      <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
     </React.Fragment>
   )
 })
@@ -613,7 +608,6 @@ const mapStateToProps = (state) => ({
   hiddenBuzzes: state.auth.get('hiddenBuzzes'),
   censorList: state.auth.get('censorList'),
   theme: state.settings.get('theme'),
-  linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -624,7 +618,6 @@ const mapDispatchToProps = (dispatch) => ({
     openMuteDialog,
     openHideBuzzDialog,
     openCensorshipDialog,
-    setLinkConfirmationModal,
   }, dispatch),
 })
 

@@ -128,6 +128,10 @@ const routes =  [
         component: Tags,
       },
       {
+        path: '/ug/tags',
+        component: Tags,
+      },
+      {
         path: '/@:username/c/:permlink',
         exact: true,
         component: Content,
