@@ -302,27 +302,9 @@ const Content = (props) => {
     // eslint-disable-next-line
   }, [content.body])
 
-  // useEffect(() => {
-  //   if(overhead && content.body) {
-  //     if(content.body) {
-  //       console.log(content.body);
-  //       console.log(overhead)
-  //       console.log(content.body.length - overhead);
-  //     }
-  //   }
-  // }, [content, overhead])
-
   useEffect(() => {
     if(overhead && content.body) {
       setContentLength(stripHtml(content.body).length - overhead)
-      // const fullContent = stripHtml(content.body)
-
-      // if(content.body) {
-      //   console.log(content.body);
-      //   console.log(fullContent.length);
-      //   console.log(overhead)
-      //   console.log(fullContent.length - overhead);
-      // }
     }
   }, [content, overhead])
 
@@ -544,9 +526,6 @@ const Content = (props) => {
     setSelectedAddToPocketBuzz(null)
   }
 
-  useEffect(() => {
-  }, [originalContent])
-
   return (
     <React.Fragment>
       <Helmet>
@@ -560,7 +539,7 @@ const Content = (props) => {
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
-              {depth !== 0 && parent_author !== null && (contentLength > 280) && (
+              {depth !== 0 && parent_author !== null && !(contentLength > 280) && (
                 <Row>
                   <Col>
                     <div className={classes.context}>

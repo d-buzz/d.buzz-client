@@ -394,7 +394,7 @@ const LoginModal = (props) => {
                 </center>
                 {!useCeramic && (
                   <div style={{ marginLeft: 10, textAlign: 'left'}}>
-                    <FormControlLabel
+                    {/* <FormControlLabel
                       className='checkBox'
                       control={
                         <Checkbox 
@@ -408,7 +408,7 @@ const LoginModal = (props) => {
                         />
                       }
                       label="Login With Hive Authentication Service"
-                    />
+                    /> */}
                     <br />
                     {hasInstalledKeychain ?
                       <FormControlLabel
