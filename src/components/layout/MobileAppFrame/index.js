@@ -243,6 +243,10 @@ const MobileAppFrame = (props) => {
     title = 'Buzz'
   }
 
+  if (pathname.match(/^\/home/)) {
+    title = 'Home'
+  }
+  
   if (pathname.match(/^\/trending/)) {
     title = 'Trending'
   }
@@ -295,8 +299,8 @@ const MobileAppFrame = (props) => {
   }
 
   const refreshHomeRouteData = () => {
-    if(pathname === "/"){
-      setRefreshRouteStatus("home",timestamp)
+    if(pathname.match(/^\/home/)){
+      setRefreshRouteStatus("home", timestamp)
     }
   }
 

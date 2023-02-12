@@ -305,6 +305,8 @@ const UpdateFormModal = (props) => {
   const [counterColor, setCounterColor] = useState('#e53935')
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
+  // eslint-disable-next-line
+  const [imageUploadProgress, setImageUploadProgress] = useState(0)
   
   const [updating, setUpdating] = useState(false)
 
@@ -385,7 +387,7 @@ const UpdateFormModal = (props) => {
 
   const handleFileSelectChange = (event) => {
     const files = event.target.files[0]
-    uploadFileRequest(files).then((images) => {
+    uploadFileRequest(files, setImageUploadProgress).then((images) => {
       const lastImage = images[images.length-1]
       if(lastImage !== undefined) {
         const contentAppend = `${content} <br /> ${lastImage}`
@@ -396,7 +398,7 @@ const UpdateFormModal = (props) => {
 
 
   const handleClickSubmitUpdate = () => {
-    setUpdating(true)
+    // setUpdating(true)
     if(!checkForCeramicAccount(username)) {
       publishUpdateRequest(permlink, buzzContent)
         .then((success) => {
