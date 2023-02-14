@@ -984,7 +984,7 @@ const render = (content, markdownClass, assetClass, scrollIndex, recomputeRowInd
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<div class="hyperlink" id="${n}">${truncateString(n, 25)}</div>` : n)
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
     // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
     //   // render hashtags 
