@@ -40,7 +40,7 @@ import ViewImageModal from 'components/modals/ViewImageModal'
 import DraftsIcon from 'components/elements/Icons/DraftsIcon'
 import DraftsModal from 'components/modals/DraftsModal'
 import SaveDraftModal from 'components/modals/SaveDraftModal'
-import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
+// import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
 import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
 import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
@@ -731,7 +731,7 @@ const CreateBuzzForm = (props) => {
   const {
     user,
     uploadFileRequest,
-    uploadVideoRequest,
+    // uploadVideoRequest,
     publishPostRequest,
     images,
     loading,
@@ -759,7 +759,7 @@ const CreateBuzzForm = (props) => {
 
   // states & refs
   const inputRef = useRef(null)
-  const videoInputRef = useRef(null)
+  // const videoInputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
   const [payout, setPayout] = useState(1.000)
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
@@ -776,13 +776,15 @@ const CreateBuzzForm = (props) => {
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
   const [imagesLength, setImagesLength] = useState(0)
   const [imageUploading, setImageUploading] = useState(false)
+  // eslint-disable-next-line
   const [videoUploading, setVideoUploading] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
+  // eslint-disable-next-line
   const [videoUploadProgress, setVideoUploadProgress] = useState(0)
   const [videoLimit, setVideoLimit] = useState(false)
   const [imageLimit, setImageLimit] = useState(false)
   const [buzzPermlink, setBuzzPermlink] = useState(null)
-  const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
+  // const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
   
   
   // buzz states
@@ -1511,63 +1513,63 @@ const CreateBuzzForm = (props) => {
     return found
   }
 
-  const handleVideoSelect = () => {
-    // const target = document.getElementById('video-upload')
-    // if (isMobile) {
-    //   target.addEventListener('click', function () {
-    //     const touch = new Touch({
-    //       identifier: 'video-upload',
-    //       target: target,
-    //     })
+  // const handleVideoSelect = () => {
+  //   // const target = document.getElementById('video-upload')
+  //   // if (isMobile) {
+  //   //   target.addEventListener('click', function () {
+  //   //     const touch = new Touch({
+  //   //       identifier: 'video-upload',
+  //   //       target: target,
+  //   //     })
 
-    //     const touchEvent = new TouchEvent('touchstart', {
-    //       touches: [touch],
-    //       view: window,
-    //       cancelable: true,
-    //       bubbles: true,
-    //     })
+  //   //     const touchEvent = new TouchEvent('touchstart', {
+  //   //       touches: [touch],
+  //   //       view: window,
+  //   //       cancelable: true,
+  //   //       bubbles: true,
+  //   //     })
 
-    //     target.dispatchEvent(touchEvent)
-    //   })
-    // }
-    // videoInputRef.current.click()
-    broadcastNotification('warning', 'Video uploads are temporarily disabled')
-  }
+  //   //     target.dispatchEvent(touchEvent)
+  //   //   })
+  //   // }
+  //   // videoInputRef.current.click()
+  //   broadcastNotification('warning', 'Video uploads are temporarily disabled')
+  // }
 
-  const handleVideoUpload = (e) => {
+  // const handleVideoUpload = (e) => {
 
-    const file = e.target.files[0]
-    const video = document.createElement('video')
-    video.preload = 'metadata'
+  //   const file = e.target.files[0]
+  //   const video = document.createElement('video')
+  //   video.preload = 'metadata'
 
-    if(file) {
-      video.onloadedmetadata = () => {
-        window.URL.revokeObjectURL(video.src)
-        var duration = video.duration
-        setVideoUploading(true)
+  //   if(file) {
+  //     video.onloadedmetadata = () => {
+  //       window.URL.revokeObjectURL(video.src)
+  //       var duration = video.duration
+  //       setVideoUploading(true)
   
-        // console.log(file);
+  //       // console.log(file);
         
-        if(duration <= 60 && file.size <= 150000000) {
-          uploadVideoRequest(file, setVideoUploadProgress)
-            .then(video => {
-              setVideoUploading(false)
-              if(video.toString() !== 'Error: Network Error') {
-                setVideoLimit(true)
-                createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `${dbuzzVideoThumbnail}?dbuzz_video=https://ipfs.io/ipfs/${video}`])
-              } else {
-                broadcastNotification('error', 'Video upload failed, please try re-uploading!')
-              }
-            })
-        } else {
-          setVideoUploading(false)
-          broadcastNotification('error', 'Video should be 60 seconds or less.')
-        }
-      }
+  //       if(duration <= 60 && file.size <= 150000000) {
+  //         uploadVideoRequest(file, setVideoUploadProgress)
+  //           .then(video => {
+  //             setVideoUploading(false)
+  //             if(video.toString() !== 'Error: Network Error') {
+  //               setVideoLimit(true)
+  //               createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `${dbuzzVideoThumbnail}?dbuzz_video=https://ipfs.io/ipfs/${video}`])
+  //             } else {
+  //               broadcastNotification('error', 'Video upload failed, please try re-uploading!')
+  //             }
+  //           })
+  //       } else {
+  //         setVideoUploading(false)
+  //         broadcastNotification('error', 'Video should be 60 seconds or less.')
+  //       }
+  //     }
     
-      video.src = URL.createObjectURL(file)
-    }
-  }
+  //     video.src = URL.createObjectURL(file)
+  //   }
+  // }
 
   useEffect(() => {
     if(checkForCeramicAccount(user.username)) {
@@ -1769,7 +1771,7 @@ const CreateBuzzForm = (props) => {
                       </label>
                     </IconButton>
                   </Tooltip>
-                  <input
+                  {/* <input
                     id='video-upload'
                     type='file'
                     name='video'
@@ -1783,7 +1785,7 @@ const CreateBuzzForm = (props) => {
                     <IconButton size='medium' onClick={handleVideoSelect} disabled={isVideoAttached || videoUploading || imageUploading || videoLimit} classes={{ disabled: classes.disabled }}>
                       <VideoUploadIcon />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip> */}
                   <Tooltip title="GIF" placement='top-start'>
                     <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached} classes={{ disabled: classes.disabled }}>
                       <GifIcon />
