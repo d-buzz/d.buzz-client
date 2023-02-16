@@ -52,7 +52,10 @@ const useStyles = createUseStyles(theme => ({
     color: theme.font.color,
   },
   link: {
+    width: '80%',
     color: '#E61C34',
+    fontWeight: 800,
+    wordBreak: 'break-word',
   },
 }))
 
@@ -82,7 +85,7 @@ const LinkConfirmationModal = (props) => {
             </center>
             <span className={classes.leaveMessage}>
               <b>This link will bring you to:</b>
-              <b className={classes.link}>{link}</b>
+              <p className={classes.link}>{link}</p>
             </span>
           </div>
           <div className={classes.buttonsContainer}>
