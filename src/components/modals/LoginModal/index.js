@@ -15,7 +15,7 @@ import { isMobile } from 'react-device-detect'
 import { SuccessConfirmation } from 'components/elements'
 import { Checkbox } from '@material-ui/core'
 import { ProgressBar } from 'react-bootstrap'
-import { HiveAuthenticationServiceIcon, HiveKeyChainIcon } from 'components/elements'
+import { HiveKeyChainIcon } from 'components/elements'
 // import MetaMaskButton from 'components/common/MetaMaskButton'
 import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
 import HiveButton from 'components/common/HiveButton'
@@ -394,7 +394,7 @@ const LoginModal = (props) => {
                 </center>
                 {!useCeramic && (
                   <div style={{ marginLeft: 10, textAlign: 'left'}}>
-                    <FormControlLabel
+                    {/* <FormControlLabel
                       className='checkBox'
                       control={
                         <Checkbox 
@@ -408,7 +408,7 @@ const LoginModal = (props) => {
                         />
                       }
                       label="Login With Hive Authentication Service"
-                    />
+                    /> */}
                     <br />
                     {hasInstalledKeychain ?
                       <FormControlLabel
