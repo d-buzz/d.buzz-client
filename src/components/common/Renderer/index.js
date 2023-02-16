@@ -1040,7 +1040,7 @@ const Renderer = React.memo((props) => {
   const prepareHyperlinks = () => {
     const hyperlinks = document.querySelectorAll(`.hyperlink`)
     hyperlinks.forEach((hyperlink) => {
-      hyperlink.onclick = (e) => {
+      hyperlink.addEventListener('click', function (e) {
         e.preventDefault()
         const url = hyperlink.id
         setLinkConfirmationModal(url)
