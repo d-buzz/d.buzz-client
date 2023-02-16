@@ -309,6 +309,20 @@ const Content = (props) => {
   }, [content, overhead])
 
   useEffect(() => {
+    if(overhead && content.body) {
+      setContentLength(stripHtml(content.body).length - overhead)
+      // const fullContent = stripHtml(content.body)
+
+      // if(content.body) {
+      //   console.log(content.body);
+      //   console.log(fullContent.length);
+      //   console.log(overhead)
+      //   console.log(fullContent.length - overhead);
+      // }
+    }
+  }, [content, overhead])
+
+  useEffect(() => {
     checkHasUpdateAuthorityRequest(username)
       .then((result) => {
         setHasUpdateAuthority(author === user.username)
@@ -525,6 +539,9 @@ const Content = (props) => {
     setAddToPocketModal(false)
     setSelectedAddToPocketBuzz(null)
   }
+
+  useEffect(() => {
+  }, [originalContent])
 
   return (
     <React.Fragment>
