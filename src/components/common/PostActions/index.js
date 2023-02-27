@@ -566,7 +566,6 @@ const PostActions = (props) => {
               />
               <Col xs="auto">
                 <div className={classNames('right-content', classes.right)}>
-                  <input className='buzzUrl' type='text' value={`${window.location.origin}/#/@${author}/c/${permlink}`} hidden/>
                   <Menu
                     anchorEl={openCaret}
                     keepMounted
@@ -624,7 +623,7 @@ const PostActions = (props) => {
                         <LinkedinIcon size={32} round={true} />
                       </LinkedinShareButton>
                     </MenuItem>
-                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(document.querySelector('.buzzUrl').value)}>
+                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(`${window.location.origin}/#/@${author}/c/${permlink}`)}>
                       <ClipboardIcon />
                     </MenuItem>
                   </Menu>
