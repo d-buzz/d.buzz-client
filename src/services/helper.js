@@ -431,6 +431,19 @@ export const getTheme =() => {
   return mode
 }
 
+export const getUserTheme =() => {
+  const theme = JSON.parse(localStorage.getItem('customUserData'))?.settings?.theme
+  let mode = ''
+
+  if(theme && (theme === 'gray' || theme === 'night') ) {
+    mode = theme
+  } else {
+    mode = 'light'
+  }
+
+  return mode
+}
+
 export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
 
 export const proxyImage = (url) => {

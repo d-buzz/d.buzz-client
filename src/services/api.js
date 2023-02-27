@@ -368,7 +368,7 @@ export const fetchSingleProfile = (account) => {
     api.call('bridge.get_profile', params, async(err, data) => {
       if (err) {
         reject(err)
-      }else {
+      } else {
         let isFollowed = false
 
         if(user && `${user}`.trim() !== '') {
