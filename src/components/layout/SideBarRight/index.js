@@ -109,6 +109,16 @@ const SideBarRight = (props) => {
   const { is_authenticated } = user
   const [hivePrice, setHivePrice] = useState(0)
   const [hbdPrice, setHbdPrice] = useState(0)
+  const [isStaging, setIsStaging] = useState(null)
+
+  useEffect(() => {
+    if(window.location.host === 'localhost:3000') {
+      setIsStaging(true)
+    } else {
+      setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
   
   if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
@@ -215,7 +225,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - { !isStaging ? <i>v.{config.VERSION}</i> : <i>staging</i> }</label>
         </div>
       </div>
     </React.Fragment>
