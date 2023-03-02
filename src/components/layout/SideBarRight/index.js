@@ -112,7 +112,7 @@ const SideBarRight = (props) => {
   const [isStaging, setIsStaging] = useState(null)
 
   useEffect(() => {
-    if(window.location.host === 'localhost:3000') {
+    if(window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
     } else {
       setIsStaging(false)
@@ -225,7 +225,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - { !isStaging ? <i>v.{config.VERSION}</i> : <i>staging</i> }</label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging</i>}</label>
         </div>
       </div>
     </React.Fragment>

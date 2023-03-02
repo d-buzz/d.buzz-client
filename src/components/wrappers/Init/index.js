@@ -131,7 +131,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            { !isStaging ?  <b>v{VERSION}</b> : <b>STAGING</b>}
+            {!isStaging ?  <b>v{VERSION}</b> : <b>STAGING</b>}
           </Typography>
         </center>
       </div>
@@ -196,37 +196,37 @@ const Init = (props) => {
             getWSNodeHAS()
             initWSHASConnectionRequest()
             // getBestCeramicHost().then((host) => {
-              //   initCeremicLoginRequest()
-              //   localStorage.setItem('ceramic', host)
-              // })
-              const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-              setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-                getSavedUserRequest().then(() => {
-                  setInit(true)
-                  getCensorTypesRequest()
-                  getTrendingTagsRequest()
-                })
+            //   initCeremicLoginRequest()
+            //   localStorage.setItem('ceramic', host)
+            // })
+            const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+            setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+              getSavedUserRequest().then(() => {
+                setInit(true)
+                getCensorTypesRequest()
+                getTrendingTagsRequest()
               })
             })
           })
-        } else {
-          setIsLatest(isLatest)
-          getBestRpcNode().then(() => {
-            getWSNodeHAS()
-            initWSHASConnectionRequest()
-            // getBestCeramicHost().then((host) => {
-              //   initCeremicLoginRequest()
-              //   localStorage.setItem('ceramic', host)
-              // })
-              const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-              setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-                getSavedUserRequest().then(() => {
-                  setInit(true)
-                  getCensorTypesRequest()
-                  getTrendingTagsRequest()
-                })
-              })
+        })
+      } else {
+        setIsLatest(isLatest)
+        getBestRpcNode().then(() => {
+          getWSNodeHAS()
+          initWSHASConnectionRequest()
+          // getBestCeramicHost().then((host) => {
+          //   initCeremicLoginRequest()
+          //   localStorage.setItem('ceramic', host)
+          // })
+          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+            getSavedUserRequest().then(() => {
+              setInit(true)
+              getCensorTypesRequest()
+              getTrendingTagsRequest()
             })
+          })
+        })
       }
     }
     // eslint-disable-next-line
