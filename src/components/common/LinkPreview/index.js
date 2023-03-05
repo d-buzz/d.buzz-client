@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createUseStyles } from 'react-jss'
 import { isMobile } from 'react-device-detect'
+import { setLinkConfirmationModal } from 'store/interface/actions'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -60,7 +61,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const LinkPreview = (props) => {
-  const { getLinkMetaRequest, content, scrollIndex = -1, recomputeRowIndex } = props
+  const { getLinkMetaRequest, content, scrollIndex = -1, recomputeRowIndex, setLinkConfirmationModal } = props
   const [loading, setLoading] = useState(true)
   const [noShow, setNoShow] = useState(false)
   const [meta, setMeta] = useState()
@@ -125,7 +126,7 @@ const LinkPreview = (props) => {
   const onClick = (e) => {
     e.stopPropagation()
     e.preventDefault()
-    window.open(url)
+    setLinkConfirmationModal(url)
   }
 
   useEffect(() => {
@@ -232,9 +233,11 @@ const LinkPreview = (props) => {
   )
 }
 
+
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getLinkMetaRequest,
+    setLinkConfirmationModal,
   }, dispatch),
 })
 

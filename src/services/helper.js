@@ -253,7 +253,7 @@ export const invokeTwitterIntent = (content) => {
   const height = 600
   let body = content
   if(body.length < 274) {
-    body += ' #HIVE'
+    body += ' #HIVE #DBuzz'
   }
   body = encodeURIComponent(stripHtml(body))
   window.open(`https://twitter.com/intent/tweet?text=${body}` , 'newwindow', 'width=' + width + ', height=' + height + ', top=' + ((window.innerHeight - height) / 2) + ', left=' + ((window.innerWidth - width) / 2))
