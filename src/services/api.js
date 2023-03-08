@@ -16,6 +16,7 @@ import 'react-app-polyfill/stable'
 import { calculateOverhead, stripHtml } from 'services/helper'
 import { hacUserAuth, hacVote, hacManualTransaction } from "@mintrawa/hive-auth-client"
 import config from 'config'
+import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -69,25 +70,30 @@ export const callBridge = async(method, params, appendParams = true) => {
       params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
     }
 
-    api.call('bridge.' + method, params, async(err, data) => {
-      if (err) {
-        reject(err)
-      }else {
-        let lastResult = []
-
-        if(data.length !== 0) {
-          lastResult = [data[data.length-1]]
+    if(!params.account || !params.account.includes('did')) {
+      api.call('bridge.' + method, params, async(err, data) => {
+        if (err) {
+          reject(err)
+        }else {
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          removeFootNote(data)
+  
+          let result = data.filter((item) => invokeFilter(item))
+  
+          result = [...result, ...lastResult]
+  
+          resolve(result)
         }
+      })
+    } else {
+      return []
+    }
 
-        removeFootNote(data)
-
-        let result = data.filter((item) => invokeFilter(item))
-
-        result = [...result, ...lastResult]
-
-        resolve(result)
-      }
-    })
   })
 }
 
@@ -243,28 +249,36 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       limit: 100,
     }
 
-    api.call('bridge.get_account_posts', params, async(err, data) => {
-      if(err) {
-        reject(err)
-      }else {
-        removeFootNote(data)
-
-        let lastResult = []
-
-        if(data.length !== 0) {
-          lastResult = [data[data.length-1]]
+    if(!checkForCeramicAccount(account)) {
+      api.call('bridge.get_account_posts', params, async(err, data) => {
+        if(err) {
+          reject(err)
+        }else {
+          removeFootNote(data)
+  
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          let posts = data.filter((item) => invokeFilter(item))
+  
+          posts = [...posts, ...lastResult]
+  
+          if(posts.length === 0) {
+            posts = []
+          }
+          resolve(posts)
         }
+      })
+    } else {
+      getUserPostRequest(account)
+        .then(res => {
+          resolve(res.posts)
+        })
+    }
 
-        let posts = data.filter((item) => invokeFilter(item))
-
-        posts = [...posts, ...lastResult]
-
-        if(posts.length === 0) {
-          posts = []
-        }
-        resolve(posts)
-      }
-    })
   })
 }
 
@@ -366,20 +380,20 @@ export const fetchSingleProfile = (account) => {
   return new Promise((resolve, reject) => {
     const params = {account}
     api.call('bridge.get_profile', params, async(err, data) => {
-      if (err) {
+      if (err) { 
         reject(err)
       } else {
         let isFollowed = false
 
         if(user && `${user}`.trim() !== '') {
-          if(user !== data.name) {
-            isFollowed = await isFollowing(user, data.name)
-          }
+          if(user !== data?.name) {
+            isFollowed = await isFollowing(user, data.name) || false
+          } 
         }
-
-        data.isFollowed = isFollowed
-
-        resolve(data)
+        resolve({
+          ...data,
+          isFollowed: isFollowed,
+        })
       }
     })
   })

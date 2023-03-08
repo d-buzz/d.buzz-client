@@ -478,6 +478,7 @@ const Profile = (props) => {
   const { reputation = 0, isFollowed } = profile
   
   const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description).replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
+  const userUrl = website || ceramicProfile.url ? (website ? website : ceramicProfile.url) : ''
 
   const [loader, setLoader] = useState(false)
 
@@ -486,7 +487,7 @@ const Profile = (props) => {
   const [userName, setUserName] = useState(name)
   const [userBio, setUserBio] = useState(about)
   const [userLocation, setUserLocation] = useState(profile_location)
-  const [userWebsite, setUserWebsite] = useState(website)
+  const [userWebsite, setUserWebsite] = useState(userUrl)
 
   const [updatedCover, setUpdatedCover] = useState(false)
   const [updatedProfile, setUpdatedProfile] = useState(false)
@@ -497,9 +498,9 @@ const Profile = (props) => {
     setUserName(name)
     setUserBio(userAbout)
     setUserLocation(profile_location)
-    setUserWebsite(website)
+    setUserWebsite(userUrl)
     // eslint-disable-next-line
-  }, [profile_image, cover_image, name, about, profile_location, website])
+  }, [profile_image, cover_image, name, about, userAbout, profile_location, website, userUrl])
 
   useEffect(() => {
     if(userCoverImage === '' && !updatedCover) {
@@ -513,8 +514,7 @@ const Profile = (props) => {
       setAvatarUrl(userProfileImage)
     } else if(checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
       const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
-      alert(avatar)
-      // setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
+      setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
     } else {
       setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
     }
@@ -905,6 +905,7 @@ const Profile = (props) => {
             onHide={handleOpenEditProfileModal}
             setUpdatedCover={setUpdatedCover}
             setUpdatedProfile={setUpdatedProfile}
+            reloadProfile={reloadProfile}
           />
           <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
             <Alert onClose={handleCloseReferalCopy} severity="success">

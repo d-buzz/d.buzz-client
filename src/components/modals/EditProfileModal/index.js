@@ -136,6 +136,7 @@ const EditProfileModal = (props) => {
     broadcastNotification,
     setUpdatedCover,
     setUpdatedProfile,
+    reloadProfile,
   } = props
   const { username } = user
   const { metadata, posting_json_metadata } = profile || ''
@@ -335,6 +336,7 @@ const EditProfileModal = (props) => {
       about : profileAbout,
       location : profileLocation,
       url : profileWebsite,
+      website : profileWebsite,
     }
 
     if(!ceramicUser) {
@@ -364,6 +366,7 @@ const EditProfileModal = (props) => {
           broadcastNotification('success','Profile updated successfully')
           setUpdatingProfile(false)
           onHide()
+          reloadProfile()
         })
         .catch((err) => {
           setUpdatingProfile(false)
