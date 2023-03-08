@@ -232,7 +232,7 @@ const EditProfileModal = (props) => {
     if(file){
       setUploadAvatarLoading(true)
       handleImageCompression(file).then((compressedImage) => {
-        uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+        uploadFileRequest(compressedImage, setImageUploadProgress, ceramicUser).then((image) => {
           setIsProfileUpdated(true)
           setUploadAvatarLoading(false)
           const lastImage = image[image.length - 1]
@@ -254,7 +254,7 @@ const EditProfileModal = (props) => {
     if(file){
       setUploadCoverLoading(true)
       handleImageCompression(file).then((compressedImage) => {
-        uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+        uploadFileRequest(compressedImage, setImageUploadProgress, ceramicUser).then((image) => {
           setIsCoverUpdated(true)
           setUploadCoverLoading(false)
           const lastImage = image[image.length - 1]
