@@ -794,7 +794,7 @@ const CreateBuzzForm = (props) => {
   const [nextBuzz, setNextBuzz] = useState(0)
   const [publishedBuzzes, setPublishedBuzzes] = useState(0)
   const [buzzData, setBuzzData] = useState(null)
-  const [buzzLoading, setBuzzLoading] = useState(false)
+  const [buzzLoading, setBuzzLoading] = useState(true)
   const [buzzing, setBuzzing] = useState(false)
   const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
   const [draftData, setDraftData] = useState(null)
@@ -1899,7 +1899,7 @@ const CreateBuzzForm = (props) => {
         </div>}        
       {buzzLoading &&
         <div className={classes.loadingContainer}>
-          <img src={`${window.location.origin}/images/d.buzz-icon-512.svg`} alt='buzzLoading' loading='lazy'/>
+          <img style={{ marginBottom: 15, height: 80, width: 80 }} src={`${window.location.origin}/dbuzz-logo-icon.svg`} alt='buzzLoading'/>
           <span className='title'>Broadcasting your {isThread ? 'thread' : 'buzz'} to the decentralized web...</span>
           {/* {isThread && <span>This can take upto 5-10 secs</span>} */}
           {isThread && <button className={classes.publishThreadButton} onClick={handlePublishThread} disabled={buzzing}>Buzz {publishedBuzzes} of {threadCount} <ArrowForwardRoundedIcon style={{marginLeft: 8}}/></button>}
