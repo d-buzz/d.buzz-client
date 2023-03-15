@@ -92,7 +92,7 @@ function* getProfileRequest(payload, meta) {
   
   if(!checkForCeramicAccount(username)) {
     
-    try { 
+    try {
       const props = yield call(fetchGlobalProperties) 
       const profile = yield call(fetchSingleProfile, username) 
       const account = yield call(fetchAccounts, username)

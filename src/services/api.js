@@ -368,7 +368,7 @@ export const fetchSingleProfile = (account) => {
     api.call('bridge.get_profile', params, async(err, data) => {
       if (err) {
         reject(err)
-      }else {
+      } else {
         let isFollowed = false
 
         if(user && `${user}`.trim() !== '') {
@@ -767,7 +767,7 @@ export const hasGeneratePostService = (account, title, tags, body, payout, perml
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_hbd': 5000,
+        'percent_hbd': 10000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         extensions,
@@ -1326,7 +1326,7 @@ export const generatePostOperations = (account, title, body, tags, payout, perm)
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_hbd': 5000,
+        'percent_hbd': 10000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         extensions,

@@ -100,6 +100,17 @@ const SplashScreen = () => {
   const classes = useStyles()
   const theme = getTheme()
 
+  const [isStaging, setIsStaging] = useState(null)
+
+  useEffect(() => {
+    if(window.location.host === 'staging.d.buzz') {
+      setIsStaging(true)
+    } else {
+      setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.brandWrapper}>
@@ -120,7 +131,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            <b>v{VERSION}</b>
+            {!isStaging ?  <b>v{VERSION}</b> : <b>STAGING</b>}
           </Typography>
         </center>
       </div>
@@ -145,6 +156,16 @@ const Init = (props) => {
   const classes = useStyles()
   const [init, setInit] = useState(false)
   const [isLatest, setIsLatest] = useState(true)
+  const [isStaging, setIsStaging] = useState(null)
+
+  useEffect(() => {
+    if(window.location.host === 'staging.d.buzz') {
+      setIsStaging(true)
+    } else {
+      setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
 
   const reload = () => {
     dismiss()
@@ -167,27 +188,49 @@ const Init = (props) => {
   }
 
   useEffect(() => {
-    checkVersionRequest().then((isLatest) => {
-      setIsLatest(isLatest)
-      getBestRpcNode().then(() => {
-        getWSNodeHAS()
-        initWSHASConnectionRequest()
-        // getBestCeramicHost().then((host) => {
-        //   initCeremicLoginRequest()
-        //   localStorage.setItem('ceramic', host)
-        // })
-        const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-        setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-          getSavedUserRequest().then(() => {
-            setInit(true)
-            getCensorTypesRequest()
-            getTrendingTagsRequest()
+    if(isStaging !== null) {
+      if(!isStaging) {
+        checkVersionRequest().then((isLatest) => {
+          setIsLatest(isLatest)
+          getBestRpcNode().then(() => {
+            getWSNodeHAS()
+            initWSHASConnectionRequest()
+            // getBestCeramicHost().then((host) => {
+            //   initCeremicLoginRequest()
+            //   localStorage.setItem('ceramic', host)
+            // })
+            const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+            setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+              getSavedUserRequest().then(() => {
+                setInit(true)
+                getCensorTypesRequest()
+                getTrendingTagsRequest()
+              })
+            })
           })
         })
-      })
-    })
+      } else {
+        setIsLatest(isLatest)
+        getBestRpcNode().then(() => {
+          getWSNodeHAS()
+          initWSHASConnectionRequest()
+          // getBestCeramicHost().then((host) => {
+          //   initCeremicLoginRequest()
+          //   localStorage.setItem('ceramic', host)
+          // })
+          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+            getSavedUserRequest().then(() => {
+              setInit(true)
+              getCensorTypesRequest()
+              getTrendingTagsRequest()
+            })
+          })
+        })
+      }
+    }
     // eslint-disable-next-line
-  }, [])
+  }, [isStaging])
 
   return (
     <React.Fragment>

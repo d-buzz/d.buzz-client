@@ -234,6 +234,19 @@ const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick,
 
 const PostActions = (props) => {
   const classes = useStyles()
+  const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
+  const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
+  const dbuzzImagesRegex = /(https:\/\/(storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi
+  const markdownRegex = /#+\s|[*]|\s+&nbsp;+\s|\s+$/gm
+  
+  const removeImageLinksFromContent = (content) => {
+    return content
+      .replace(webImagesRegex, '')
+      .replace(ipfsImagesRegex, '')
+      .replace(dbuzzImagesRegex, '')
+      .replace(markdownRegex, '')
+  }
+  
   const {
     type,
     author,
@@ -246,7 +259,7 @@ const PostActions = (props) => {
     hasUpvoted = false,
     user,
     body = null,
-    bodyWithNoLinks = body,
+    bodyWithNoImageLinks = removeImageLinksFromContent(body),
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
@@ -566,7 +579,6 @@ const PostActions = (props) => {
               />
               <Col xs="auto">
                 <div className={classNames('right-content', classes.right)}>
-                  <input className='buzzUrl' type='text' value={`${window.location.origin}/#/@${author}/c/${permlink}`} hidden/>
                   <Menu
                     anchorEl={openCaret}
                     keepMounted
@@ -580,13 +592,13 @@ const PostActions = (props) => {
                           setOpenCaret(false)
                         }}
                       >
-                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(bodyWithNoLinks)} />
+                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(bodyWithNoImageLinks)} />
                       </TwitterShareButton>
                     </MenuItem>
                     <MenuItem className={classes.menuText}>
                       <FacebookShareButton 
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        quote={bodyWithNoLinks}
+                        quote={bodyWithNoImageLinks}
                         onClick={() => {
                           setOpenCaret(false)
                         }}
@@ -601,7 +613,7 @@ const PostActions = (props) => {
                     <MenuItem>
                       <TelegramShareButton
                         url={' '}
-                        title={`${bodyWithNoLinks}\n\nhttps://d.buzz/#/@${author}/c/${permlink}`}
+                        title={`${bodyWithNoImageLinks}\n\nhttps://d.buzz/#/@${author}/c/${permlink}`}
                         onClick={() => {setOpenCaret(false)}}>
                         <TelegramIcon size={32} round={true} />
                       </TelegramShareButton>
@@ -609,7 +621,7 @@ const PostActions = (props) => {
                     <MenuItem>
                       <WhatsappShareButton
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        title={bodyWithNoLinks+'\n\n'}
+                        title={bodyWithNoImageLinks+'\n\n'}
                         onClick={() => {setOpenCaret(false)}}>
                         <WhatsappIcon size={32} round={true} />
                       </WhatsappShareButton>
@@ -617,14 +629,14 @@ const PostActions = (props) => {
                     <MenuItem>
                       <LinkedinShareButton
                         url={`https://d.buzz/#/@${author}/c/${permlink}`}
-                        title={bodyWithNoLinks}
-                        summary={bodyWithNoLinks}
+                        title={bodyWithNoImageLinks}
+                        summary={bodyWithNoImageLinks}
                         source={'DBuzz'}
                         onClick={() => {setOpenCaret(false)}}>
                         <LinkedinIcon size={32} round={true} />
                       </LinkedinShareButton>
                     </MenuItem>
-                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(document.querySelector('.buzzUrl').value)}>
+                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(`${window.location.origin}/#/@${author}/c/${permlink}`)}>
                       <ClipboardIcon />
                     </MenuItem>
                   </Menu>

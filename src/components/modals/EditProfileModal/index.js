@@ -134,7 +134,8 @@ const EditProfileModal = (props) => {
     uploadFileRequest,
     updateProfileRequest,
     broadcastNotification,
-    reloadProfile,
+    setUpdatedCover,
+    setUpdatedProfile,
   } = props
   const { username } = user
   const { metadata, posting_json_metadata } = profile || ''
@@ -158,6 +159,9 @@ const EditProfileModal = (props) => {
   const [ceramicProfileUpdateLoading, setCeramicProfileUpdateLoading] = useState(false)
 
   const [updatingProfile, setUpdatingProfile] = useState(false)
+
+  const [isCoverUpdated, setIsCoverUpdated] = useState(false)
+  const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
 
   useEffect(() => {
@@ -183,7 +187,7 @@ const EditProfileModal = (props) => {
     setProfileAbout(about|| ceramicProfile.description)
     setProfileWebsite(website|| ceramicProfile.url)
     setProfileLocation(location|| ceramicProfile.location)
-    if (cover_image || ceramicProfile.images?.background) setProfileCoverImage(cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}`)
+    if (cover_image || ceramicProfile.images?.background) setProfileCoverImage(cover_image || `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}`)
     if (profile_image || ceramicProfile.images?.avatar) setProfileAvatar(profile_image || `https://ipfs.io/ipfs/${ceramicProfile.images.avatar.replace('ipfs://', '')}`)
   // eslint-disable-next-line
   }, [profileMeta, postingProfileMeta, show, username, ceramicProfile])
@@ -227,7 +231,8 @@ const EditProfileModal = (props) => {
     if(file){
       setUploadAvatarLoading(true)
       handleImageCompression(file).then((compressedImage) => {
-        uploadFileRequest(compressedImage, setImageUploadProgress, true).then((image) => {
+        uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+          setIsProfileUpdated(true)
           setUploadAvatarLoading(false)
           const lastImage = image[image.length - 1]
           if (lastImage !== undefined) {
@@ -241,14 +246,15 @@ const EditProfileModal = (props) => {
       })
     }
   }
-
+  
   const handleChangeCoverImage = (e) => {
     const file = e.target.files[0]
     setProfileCoverImage(URL.createObjectURL(e.target.files[0]))
     if(file){
       setUploadCoverLoading(true)
       handleImageCompression(file).then((compressedImage) => {
-        uploadFileRequest(compressedImage, setImageUploadProgress, true).then((image) => {
+        uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+          setIsCoverUpdated(true)
           setUploadCoverLoading(false)
           const lastImage = image[image.length - 1]
           if (lastImage !== undefined) {
@@ -334,11 +340,18 @@ const EditProfileModal = (props) => {
     if(!ceramicUser) {
       updateProfileRequest(username,hiveMetaData).then(({success, errorMessage}) => {
         if(success) {
+          if(isCoverUpdated || isProfileUpdated) {
+            if(isCoverUpdated) {
+              setUpdatedCover(hiveMetaData.profile.cover_image)
+            } else {
+              setUpdatedProfile(hiveMetaData.profile.profile_image)
+            }
+          }
+
           broadcastNotification('success','Profile updated successfully')
           setUpdatingProfile(false)
-          reloadProfile()
           onHide()
-        }else{
+        } else{
           setUpdatingProfile(false)
           broadcastNotification('error',errorMessage)
         }
@@ -349,8 +362,6 @@ const EditProfileModal = (props) => {
         .then((res) => {
           setCeramicProfileUpdateLoading(false)
           broadcastNotification('success','Profile updated successfully')
-          reloadProfile()
-          setUpdatingProfile(false)
           setUpdatingProfile(false)
           onHide()
         })

@@ -10,7 +10,9 @@ const Avatar = React.memo((props) => {
     border = false, 
     style = {}, 
     className = {}, 
+    id,
     onClick = () => {},
+    onLoad,
     avatarUrl = '',
   } = props
 
@@ -28,18 +30,12 @@ const Avatar = React.memo((props) => {
     avatar_src = avatarUrl
   }
 
-  // const handleImageOnError = () => {
-  //   const avatarImage = document.querySelector('.user-avatar-image')
-  //   avatarImage.src = `${window.location.origin}/ceramic_user_avatar.svg`
-  //   avatarImage.style.animation = 'none'
-  //   avatarImage.style.opacity = '1'
-  // }
-
   return (
     <React.Fragment>
       <Image
+        id={id}
+        onLoad={onLoad}
         onClick={onClick}
-        // onError={handleImageOnError}
         src={avatar_src}
         roundedCircle
         height={height}
@@ -47,7 +43,7 @@ const Avatar = React.memo((props) => {
         className={`${className} user-avatar-image`}
         style={{
           border: border ? '5px solid white' : 'none', 
-          backgroundColor: 'white', 
+          backgroundColor: 'none', 
           objectFit : avatarUrl ? "cover" : "inherit", 
           ...style,
         }}
