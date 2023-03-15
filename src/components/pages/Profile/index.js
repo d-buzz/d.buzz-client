@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop } from 'services/helper'
+import { anchorTop, getUserTheme } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -54,6 +54,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
 import { checkForCeramicAccount, followUserRequest, unFollowUserRequest } from 'services/ceramic'
+import { getTheme } from 'services/theme'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -71,13 +72,10 @@ const useStyles = createUseStyles(theme => ({
   },
   avatar: {
     marginTop: -70,
-
-    '& img': {
-      backgroundColor: `${theme.background.primary} !important`,
-    },
   },
   avatarStyles: {
     borderColor: `${theme.background.primary} !important`,
+    animation: 'skeleton-loading 1s linear infinite alternate',
   },
   walletButton: {
     marginTop: 5,
@@ -230,6 +228,9 @@ const useStyles = createUseStyles(theme => ({
     padding: '5px 15px',
     borderRadius: 35,
     background: theme.context.view.backgroundColor ,
+  },
+  profileImage: {
+    animation: 'skeleton-loading 1s linear infinite alternate',
   },
 }))
 
@@ -479,18 +480,46 @@ const Profile = (props) => {
   const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description).replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
 
   const [loader, setLoader] = useState(false)
+
+  const [userProfileImage, setUserProfileImage] = useState(profile_image)
+  const [userCoverImage, setUserCoverImage] = useState(cover_image)
+  const [userName, setUserName] = useState(name)
+  const [userBio, setUserBio] = useState(about)
+  const [userLocation, setUserLocation] = useState(profile_location)
+  const [userWebsite, setUserWebsite] = useState(website)
+
+  const [updatedCover, setUpdatedCover] = useState(false)
+  const [updatedProfile, setUpdatedProfile] = useState(false)
+
+  useEffect(() => {
+    setUserProfileImage(profile_image)
+    setUserCoverImage(cover_image)
+    setUserName(name)
+    setUserBio(userAbout)
+    setUserLocation(profile_location)
+    setUserWebsite(website)
+    // eslint-disable-next-line
+  }, [profile_image, cover_image, name, about, profile_location, website])
+
+  useEffect(() => {
+    if(userCoverImage === '' && !updatedCover) {
+      setUserCoverImage(`${window.location.origin}/dbuzz_full.svg`)
+    }
+    // eslint-disable-next-line
+  }, [userCoverImage])
   
   useEffect(() => {
     if(!checkForCeramicAccount(username)){
-      setAvatarUrl(profile_image)
+      setAvatarUrl(userProfileImage)
     } else if(checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
       const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
-      setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
+      alert(avatar)
+      // setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
     } else {
       setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
     }
   // eslint-disable-next-line
-  },[profile_image, username, ceramicProfile])
+  },[userProfileImage, username, ceramicProfile])
 
   const followUser = () => {
     setLoader(true)
@@ -617,6 +646,62 @@ const Profile = (props) => {
     // eslint-disable-next-line
   }, [loading])
 
+  useEffect(() => {
+    const coverImage = document.getElementById('coverImage')
+    const profileImage = document.getElementById('profileImage')
+    
+    if(coverImage && profileImage) {
+      
+      if(updatedCover) {
+        setUserCoverImage('')
+        coverImage.src = ''
+        coverImage.alt = ''
+        coverImage.style.animation = 'skeleton-loading 1s linear infinite alternate'
+        setUserCoverImage(`${updatedCover}?${new Date().getTime()}`)
+        coverImage.src = `${updatedCover}?${new Date().getTime()}`
+        
+        setTimeout(() => {
+          setUpdatedCover(false)
+        }, 1000)
+      }
+      
+      if(updatedProfile) {
+        setUserProfileImage('')
+        profileImage.src = ''
+        profileImage.alt = ''
+        profileImage.style.animation = 'skeleton-loading 1s linear infinite alternate'
+        setUserProfileImage(`${updatedProfile}?${new Date().getTime()}`)
+        profileImage.src = `${updatedProfile}?${new Date().getTime()}`
+        
+        setTimeout(() => {
+          setUpdatedProfile(false)
+        }, 1000)
+      }
+    }
+  }, [updatedCover, updatedProfile])
+  
+  const loadCoverImage = () => {
+    const coverImage = document.getElementById('coverImage')
+    coverImage.style.background = 'none'
+    coverImage.style.animation = 'none'
+    coverImage.style.opacity = '1'
+
+    if(coverImage.src === '' && !updatedCover) {
+      coverImage.src = `${window.location.origin}/dbuzz_full.svg`
+    } else {
+      if(updatedCover === '') {
+        coverImage.src = `${window.location.origin}/dbuzz_full.svg`
+      }
+    }
+  }
+
+  const loadProfileImage = () => {
+    const profileImage = document.getElementById('profileImage')
+    profileImage.style.animation = 'none'
+    profileImage.style.opacity = '1'
+    profileImage.style.background = `${getTheme(getUserTheme()).background.primary}`
+  }
+
   return (
     <>
       {!invalidUser ?
@@ -626,13 +711,13 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={(cover_image || ceramicProfile.images?.background) ? cover_image ? `https://images.hive.blog/0x0/${cover_image}` : `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}` : `${window.location.origin}/dbuzz_full.svg`} alt="cover" style={{borderRadius: cover_image ? '0 0 25px 25px' : ''}} onError={(e) => e.target.src = `${window.location.origin}/dbuzz_full.svg`} loading='lazy'/>
+                <img src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
               </div>
               <div className={classes.wrapper}>
                 <Row>
                   <Col xs="auto">
-                    <div className={classes.avatar}>
-                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl}/>
+                    <div className={classes.avatar} id='avatarContainer'>
+                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id='profileImage'/>
                     </div>
                   </Col>
                   <Col>
@@ -729,7 +814,7 @@ const Profile = (props) => {
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                     <Col xs="auto">
                       <p className={classNames(classes.paragraph, classes.fullName)}>
-                        {!ceramic ? name || username : ceramicProfile.name || 'Ceramic User'}&nbsp;{!ceramic && <Chip component="span" style={{marginRight: 5}}  size="small" label={`${reputation} Rep`} />}
+                        {!ceramic ? userName || username : ceramicProfile.name || 'Ceramic User'}&nbsp;{!ceramic && <Chip component="span" style={{marginRight: 5}}  size="small" label={`${reputation} Rep`} />}
                         {!ceramic && <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />}
                         {followsYou && <div className={classes.followYouText}><span>Follows you</span></div>}
                       </p>
@@ -746,7 +831,7 @@ const Profile = (props) => {
                   <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                        <div dangerouslySetInnerHTML={{ __html: userAbout || ceramicProfile.bio }} />
+                        <div dangerouslySetInnerHTML={{ __html: userBio || ceramicProfile.bio }} />
                       </p>
                     </Col>
                   </Row>
@@ -764,17 +849,17 @@ const Profile = (props) => {
                   <Row>
                     <Col xs="auto" style={{ marginTop: 10, marginLeft: -5 }}>
                       <p className={classes.paragraph}>
-                        {(profile_location || ceramicProfile.location) && (
+                        {(userLocation || ceramicProfile.location) && (
                           <span className={classes.textIcon} style={{ marginRight: 10 }}>
                             <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                            {profile_location || ceramicProfile.location}
+                            {userLocation || ceramicProfile.location}
                           </span>
                         )}
-                        {(website || ceramicProfile.url) && (
+                        {(userWebsite || ceramicProfile.url) && (
                           <span>
                             <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
                             <a href={website || ceramicProfile.url} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                              {(website || ceramicProfile.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                              {(userWebsite || ceramicProfile.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                             </a>
                           </span>
                         )}
@@ -815,7 +900,12 @@ const Profile = (props) => {
             {renderRoutes(route.routes, { author: username })}
           </React.Fragment>
           <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
-          <EditProfileModal show={openEditProfileModal} onHide={handleOpenEditProfileModal} reloadProfile={reloadProfile}/>
+          <EditProfileModal
+            show={openEditProfileModal}
+            onHide={handleOpenEditProfileModal}
+            setUpdatedCover={setUpdatedCover}
+            setUpdatedProfile={setUpdatedProfile}
+          />
           <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
             <Alert onClose={handleCloseReferalCopy} severity="success">
               Referal link Successfully copied
