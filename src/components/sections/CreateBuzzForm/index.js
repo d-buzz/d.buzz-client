@@ -794,7 +794,7 @@ const CreateBuzzForm = (props) => {
   const [nextBuzz, setNextBuzz] = useState(0)
   const [publishedBuzzes, setPublishedBuzzes] = useState(0)
   const [buzzData, setBuzzData] = useState(null)
-  const [buzzLoading, setBuzzLoading] = useState(true)
+  const [buzzLoading, setBuzzLoading] = useState(false)
   const [buzzing, setBuzzing] = useState(false)
   const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
   const [draftData, setDraftData] = useState(null)
