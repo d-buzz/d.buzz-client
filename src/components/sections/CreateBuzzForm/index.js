@@ -1185,7 +1185,7 @@ const CreateBuzzForm = (props) => {
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
     }
-    
+
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
