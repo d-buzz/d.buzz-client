@@ -483,12 +483,12 @@ function* publishPostRequest(payload, meta) {
   if(title.length > 82) {
     title = `${title.substr(0, 82)} ...`
     body = `... ${body.substring(82)}`
-
-    if(images) {
-      body += `\n${images.toString().replace(/,/gi, ' ')}`
-    }
   } else {
     title = ''
+  }
+
+  if(images) {
+    body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
 
   body = footnote(body)
