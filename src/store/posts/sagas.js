@@ -493,9 +493,6 @@ function* publishPostRequest(payload, meta) {
 
   body = footnote(body)
 
-  console.log(title)
-  console.log(body)
-
   try {
 
     const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
