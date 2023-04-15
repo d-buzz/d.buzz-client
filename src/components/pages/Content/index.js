@@ -277,7 +277,7 @@ const Content = (props) => {
   const [ceramicUser, setCeramicUser] = useState(false)
   const [ceramicPost, setCeramicPost] = useState(false)
 
-  if(root_title?.endsWith('...') && content && body) {
+  if(root_title?.endsWith('...') && root_title?.length===86 && content && body) {
     // replace ... from title and body and merge them
     body = root_title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
   }
