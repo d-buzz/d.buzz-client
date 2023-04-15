@@ -165,7 +165,6 @@ const SideBarRight = (props) => {
 
   useEffect(() => {
     (async function resources() {
-
       const hivePrice = await getPrice('hive') || 'NA'
       const hbdPrice = await getPrice('hbd') || 'NA'
 

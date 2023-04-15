@@ -1,6 +1,15 @@
-import React from 'react'
+import classNames from 'classnames'
+import React, { useRef } from 'react'
 import Image from 'react-bootstrap/Image'
+import { createUseStyles } from 'react-jss'
 import { checkForCeramicAccount } from 'services/ceramic'
+import { getTheme, getUserTheme, proxyImage } from 'services/helper'
+
+const useStyles = createUseStyles(theme => ({
+  avatarStyles: {
+    animation: 'skeleton-loading 1s linear infinite alternate',
+  },
+}))
 
 const Avatar = React.memo((props) => {
   const { 
@@ -16,6 +25,10 @@ const Avatar = React.memo((props) => {
     avatarUrl = '',
   } = props
 
+  const classes = useStyles()
+
+  const avatarImageRef = useRef(null)
+
   let avatar_src = ''
 
   if(author) {
@@ -30,17 +43,31 @@ const Avatar = React.memo((props) => {
     avatar_src = avatarUrl
   }
 
+  const loadProfileImage = () => {
+    if(avatarImageRef) {
+
+      avatarImageRef.current.style.animation = 'none'
+      avatarImageRef.current.style.opacity = '1'
+      avatarImageRef.current.style.background = `${getTheme(getUserTheme())?.background?.primary}`
+      
+      if(onLoad) {
+        onLoad()
+      }
+    }
+  }
+
   return (
     <React.Fragment>
       <Image
-        id={id}
-        onLoad={onLoad}
+        ref={avatarImageRef}
+        id={`${id}`}
+        onLoad={loadProfileImage}
         onClick={onClick}
-        src={avatar_src}
+        src={proxyImage(avatar_src)}
         roundedCircle
         height={height}
         width={height}
-        className={`${className} user-avatar-image`}
+        className={classNames(className, 'user-avatar-image', classes.avatarStyles)}
         style={{
           border: border ? '5px solid white' : 'none', 
           backgroundColor: 'none', 

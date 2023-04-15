@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux'
 import { createUseStyles } from 'react-jss'
 import { isMobile } from 'react-device-detect'
 import { setLinkConfirmationModal } from 'store/interface/actions'
+import { truncateString } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -16,7 +17,7 @@ const useStyles = createUseStyles(theme => ({
     border: theme.border.primary,
     borderRadius: '15px 15px',
     display: 'flex',
-    marginBottom: 10,
+    marginTop: 12,
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.preview.hover.color,
@@ -25,7 +26,7 @@ const useStyles = createUseStyles(theme => ({
   left: {
     overflow: 'hidden',
     height: '100%',
-    width: 130,
+    width: '26%',
     borderRadius: '15px 0px 0px 15px',
     borderRight: theme.border.primary,
     '& img': {
@@ -37,8 +38,12 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   right: {
+    paddingLeft: 5,
+    paddingRight: 5,
     height: '100%',
-    flex: 1,
+    width: '70%',
+    wordWrap: 'break-word',
+    overflow: 'hidden',
     borderRadius: '0px 15px 15px 0px',
     ...theme.font,
     '& div': {
@@ -46,7 +51,8 @@ const useStyles = createUseStyles(theme => ({
       margin: '0 auto',
     },
     '& h6': {
-      paddingTop: 5,
+      margin: 0,
+      padding: 0,
     },
     '& p': {
       fontSize: 13,
@@ -54,6 +60,7 @@ const useStyles = createUseStyles(theme => ({
       marginBottom: 0,
     },
     '& label': {
+      margin: 0,
       fontSize: 12,
       color: '#d32f2f !important',
     },
@@ -70,7 +77,6 @@ const LinkPreview = (props) => {
   const links  = markdownLinkExtractor(content)
   let isValidUrl = false
   let url = ''
-  const hiveTubeEmbedPattern = /(http|https?:\/\/)?(www\.)?([\w_-]+)(\.)([a-zA-Z]+)(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/gi
 
   if(links.length !== 0) {
     for(let index = links.length; index > 0 ; index--) {
@@ -93,7 +99,9 @@ const LinkPreview = (props) => {
           && !link.includes('lbry.tv')
           && !link.includes('open.lbry.com')
           && !link.includes('www.bitchute.com')
+          && !link.includes('https://facebook.com')
           && !link.includes('www.facebook.com')
+          && !link.includes('facebook.com')
           && !link.includes('banned.video')
           && !link.includes('vigilante.tv')
           && !link.includes('dapplr.in')
@@ -113,8 +121,7 @@ const LinkPreview = (props) => {
           && !link.match(/(?:https?:\/\/(?:(?:music\.apple\.com\/(.*?))))/i)
           && !link.match(/(?:https?:\/\/(?:(?:embed\.music\.apple\.com\/(.*?))))/i)
           && !link.match(/\.(jpeg|jpg|gif|png|pdf|JPG)$/)
-          // hive tube link detect
-          && !hiveTubeEmbedPattern.test(link)
+          && !link.match(/(http|https?:\/\/)?(www\.)?([\w_-]+)(\.)([a-zA-Z]+)(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i)
           && JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus !== 'disabled') {
         url = link
         isValidUrl = true
@@ -221,9 +228,9 @@ const LinkPreview = (props) => {
           </div>
           <div className={classes.right}>
             <div>
+              <label>{truncateString(getSource(), 20)}</label>
               <h6>{getTitle()}</h6>
               <p>{getDescription()}</p>
-              <label>{getSource()}</label>
             </div>
           </div>
         </div>

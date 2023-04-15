@@ -471,15 +471,30 @@ function* publishPostRequest(payload, meta) {
   const user = yield select(state => state.auth.get('user'))
   const { username, useKeychain, is_authenticated } = user
 
+  const dbuzzImageRegex = /!\[(?:[^\]]*?)\]\((.+?)\)|(https:\/\/storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/(dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp|HEIC))|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
+  const images = body.match(dbuzzImageRegex)
+  body = `${body}`.replace(dbuzzImageRegex, '').trimStart()
+
   let title = stripHtml(body)
+  
   title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
   title = `${title}`.trim()
 
-  if(title.length > 70) {
-    title = `${title.substr(0, 70)} ...`
+  if(title.length > 82) {
+    title = `${title.substr(0, 82)} ...`
+    body = `... ${body.substring(82)}`
+
+    if(images) {
+      body += `\n${images.toString().replace(/,/gi, ' ')}`
+    }
+  } else {
+    title = ''
   }
 
   body = footnote(body)
+
+  console.log(title)
+  console.log(body)
 
   try {
 
@@ -494,7 +509,7 @@ function* publishPostRequest(payload, meta) {
 
       if(!success) {
         yield put(publishPostFailure('Unable to publish post', meta))
-      }
+      } 
     } else {
       let { login_data } = user
       login_data = extractLoginData(login_data)
