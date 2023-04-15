@@ -202,9 +202,9 @@ export const setSaveDraftsModalStatus = (status) => ({
 
 export const SET_VIEW_IMAGE_MODAL = 'SET_VIEW_IMAGE_MODAL'
 
-export const setViewImageModal = (status) => ({
+export const setViewImageModal = (value) => ({
   type: SET_VIEW_IMAGE_MODAL,
-  payload: status,
+  payload: value,
 })
 
 export const SET_LINK_CONFIRMATION_MODAL = 'SET_LINK_CONFIRMATION_MODAL'

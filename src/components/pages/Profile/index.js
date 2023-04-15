@@ -174,22 +174,9 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     marginBottom: 5,
   },
-  usernameStyle: {
-    border: '1px solid rgba(230, 28, 52, 0.2)',
-    margin: '5px 2px',
-    padding: '1px 5px',
-    paddingBottom: 2,
-    background: 'rgba(255, 235, 238, 0.8)',
-    borderRadius: 5,
-    transition: 'opacity 250ms',
-
+  linkStyle: {
     '& a': {
-      textDecoration: 'none',
-      color: '#E61C34 !important',
-    },
-
-    '&:hover': {
-      opacity: 0.8,
+      color: 'rgb(255, 0, 0) !important',
     },
   },
   invalidUser: {
@@ -477,7 +464,9 @@ const Profile = (props) => {
   
   const { reputation = 0, isFollowed } = profile
   
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description).replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
+  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
+    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
+    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
 
   const [loader, setLoader] = useState(false)
 

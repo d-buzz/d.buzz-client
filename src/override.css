@@ -249,7 +249,7 @@ input[type=number] {
 
 @keyframes skeleton-loading {
   0% {
-    background: hsl(200, 20%, 70%); 
+    background: hsl(200, 20%, 85%); 
   }
   100% {
     background: hsl(200, 20%, 95%); 
@@ -272,7 +272,7 @@ input[type=number] {
   scroll-behavior: smooth;
 }
 
-*::-webkit-scrollbar {
+/* *::-webkit-scrollbar {
   background: transparent;
   width: 10px;
 }
@@ -281,7 +281,7 @@ input[type=number] {
   background: gray;
   width: 10px;
   border-radius: 30px;
-}
+} */
 
 @keyframes eventContainerAnimation {
   0% {
@@ -317,6 +317,15 @@ input[type=number] {
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .hyperlink {
   color: #FF0000 !important;
   pointer-events: all;
@@ -325,4 +334,13 @@ input[type=number] {
 
 .hyperlink:hover {
   text-decoration: underline;
+}
+
+.twitter-tweet {
+  max-width: 100% !important;
+}
+
+.twitter-tweet > iframe {
+  background-color: rgb(29, 155, 240);
+  border: 1px solid rgb(29, 155, 240) !important;
 }

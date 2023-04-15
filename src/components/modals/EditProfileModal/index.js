@@ -238,7 +238,9 @@ const EditProfileModal = (props) => {
           if (lastImage !== undefined) {
             setProfileAvatar(lastImage)
             setImageUploadProgress(0)
-          }else{
+            setUploadAvatarLoading(false)
+          } else{
+            setUploadAvatarLoading(false)
             broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
             setImageUploadProgress(0)
           }
@@ -260,7 +262,9 @@ const EditProfileModal = (props) => {
           if (lastImage !== undefined) {
             setProfileCoverImage(lastImage)
             setImageUploadProgress(0)
-          }else{
+            setUploadCoverLoading(false)
+          } else{
+            setUploadCoverLoading(false)
             broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
             setImageUploadProgress(0)
           }

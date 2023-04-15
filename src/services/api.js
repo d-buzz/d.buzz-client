@@ -1690,6 +1690,7 @@ export const getPrice = async (symbol) => {
       validateStatus: () => true,
     }
     const response = (await axios(getPriceRequest)).data
+
     resolve(response || {})
   })
 }

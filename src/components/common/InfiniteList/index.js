@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, useEffect, useRef } from 'react'
 import {
   List,
   CellMeasurer,
@@ -12,6 +12,33 @@ import { clearScrollIndex } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ResizeObserver from 'rc-resize-observer'
+
+
+const PostListWrapper = ({ measure, ...postListProps }) => {
+  const mountedRef = useRef(false)
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (mountedRef.current) {
+      measure()
+    }
+  }, [measure])
+
+  const handleImageLoad = () => {
+    if (mountedRef.current) {
+      measure()
+    }
+  }
+
+  return <PostList {...postListProps} onImageLoad={handleImageLoad} />
+}
+
 class InfiniteList extends PureComponent {
   constructor() {
     super()
@@ -19,6 +46,16 @@ class InfiniteList extends PureComponent {
       fixedWidth: true,
       defaultHeight: 100,
     })
+    this.state = {
+      lastMeasuredIndex: -1,
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.lastMeasuredIndex !== this.state.lastMeasuredIndex) {
+      this.cellMeasurerCache.clear(this.state.lastMeasuredIndex, 0)
+      this.listRef.recomputeRowHeights(this.state.lastMeasuredIndex)
+    }
   }
 
   render() {
@@ -45,11 +82,11 @@ class InfiniteList extends PureComponent {
 
     const clearScrollPosition = () => {
       clearScrollIndex()
+      recomputeRowIndex()
     }
 
     const recomputeRowIndex = (index) => {
-      this.cellMeasurerCache.clear(index, 0)
-      this.listRef.recomputeRowHeights(index)
+      this.setState({ lastMeasuredIndex: index })
     }
 
     const muteTrigger = () => {
@@ -69,7 +106,7 @@ class InfiniteList extends PureComponent {
           {({measure}) => (
             <ResizeObserver onResize={measure}>
               <div style={style}>
-                <PostList
+                <PostListWrapper
                   type='HIVE'
                   disableOpacity={disableOpacity}
                   displayTitle={title}
@@ -97,6 +134,7 @@ class InfiniteList extends PureComponent {
                   item={posts[index]}
                   selectedPocket={selectedPocket}
                   loadPockets={loadPockets}
+                  measure={measure}
                 />
               </div>
             </ResizeObserver>
@@ -115,7 +153,7 @@ class InfiniteList extends PureComponent {
         >
           {({measure}) => (
             <ResizeObserver onResize={measure}>
-              <PostList
+              <PostListWrapper
                 app={posts[index].app}
                 type='CERAMIC'
                 disableOpacity={disableOpacity}
@@ -136,6 +174,7 @@ class InfiniteList extends PureComponent {
                 item={posts[index]}
                 selectedPocket={selectedPocket}
                 loadPockets={loadPockets}
+                measure={measure}
               />
             </ResizeObserver>
           )}

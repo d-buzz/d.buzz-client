@@ -56,7 +56,7 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 0,
     borderBottom: theme.border.primary,
     '& img': {
-      borderRadius: '15px 15px',
+      // borderRadius: '15px 15px',
     },
     '& iframe': {
       borderRadius: '15px 15px',
@@ -276,6 +276,11 @@ const Content = (props) => {
 
   const [ceramicUser, setCeramicUser] = useState(false)
   const [ceramicPost, setCeramicPost] = useState(false)
+
+  if(root_title?.endsWith('...') && root_title?.length===86 && content && body) {
+    // replace ... from title and body and merge them
+    body = root_title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
+  }
 
   useEffect(() => {
     if(checkForCeramicAccount(username)) {
@@ -616,7 +621,7 @@ const Content = (props) => {
               )}
               <div style={{ marginTop: 10 }}>
                 <label className={classes.meta}>
-                  {!created.endsWith('Z') ? moment(`${created}Z`).local().format('LTS • \nLL') : moment(created).local().format('LTS • \nLL')}
+                  {!created.endsWith('Z') ? moment(`${created}Z`).local().format('h:mm A • \nLL') : moment(created).local().format('h:mm A • \nLL')}
                   {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
                 </label>
               </div>
@@ -714,7 +719,7 @@ const Content = (props) => {
           <span className='errorHint'>Try searching for something else.</span>
         </div>}
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
-      <ViewImageModal show={viewImageModal} imageUrl={viewImageModal} onHide={() => setViewImageModal(null)}/>
+      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageModal} onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
       <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
     </React.Fragment>
   )

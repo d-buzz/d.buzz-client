@@ -16,7 +16,6 @@ const useStyles = createUseStyles(theme => ({
     color: theme.font.color,
     backgroundColor: 'transparent',
     borderBottom: 'none',
-    transition: 'all 250ms',
   },
 }))
 

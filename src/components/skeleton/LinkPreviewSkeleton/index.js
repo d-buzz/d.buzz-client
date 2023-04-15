@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
+    marginTop: 12,
     backgroundColor: theme.background.primary,
     width: '100%',
     height: 125,
@@ -42,7 +43,9 @@ const useStyles = createUseStyles(theme => ({
       margin: '0 auto',
     },
     '& h6': {
-      paddingTop: 5,
+      margin: 0,
+      padding: 0,
+      // paddingTop: 5,
     },
     '& p': {
       fontSize: 13,
