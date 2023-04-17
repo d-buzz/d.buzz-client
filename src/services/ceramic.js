@@ -1,3 +1,5 @@
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+
 let axios
 
 import('axios').then((Axios) => {
@@ -9,6 +11,11 @@ const hosts = [
   'https://ceramic.web3telekom.xyz',
   'https://ceramic-node.vitalpointai.com',
 ]
+
+export const unionIndexerClient = new ApolloClient({
+  uri: 'https://spk-union.us-west.web3telekom.xyz/api/v1/graphq',
+  cache: new InMemoryCache(),
+});
 
 export const getBestCeramicHost = async() => {
   const hostsWithTimes = []
