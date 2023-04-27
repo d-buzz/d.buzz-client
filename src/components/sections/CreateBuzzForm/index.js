@@ -1097,8 +1097,9 @@ const CreateBuzzForm = (props) => {
               await handleImageCompression(image).then((uri) => {
                 setCompressing(false)
                 setImageSize(Number((uri.size / 1e+6).toFixed(2)))
-                handleUploadImageToFleek(uri, setImageUploadProgress).then((image) => {
-                  uploadedImages.push(image)
+                uploadFileRequest(uri, setImageUploadProgress).then((image) => {
+                  const lastImage = image[image.length - 1]
+                  uploadedImages.push(lastImage)
                   
                   if(uploadedImages.length === allImages.length) {
                     setImageUploading(false)
