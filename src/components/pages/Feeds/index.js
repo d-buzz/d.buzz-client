@@ -114,10 +114,6 @@ const Feeds = React.memo((props) => {
     getHomePostsRequest(permlink, author)
     // eslint-disable-next-line
   }, [last])
-
-  useEffect(() => {
-    console.log(items)
-  }, [items])
   
   return (
     <React.Fragment>

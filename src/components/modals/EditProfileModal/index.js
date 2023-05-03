@@ -18,6 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { pending } from 'redux-saga-thunk'
 import { setBasicProfile } from 'services/ceramic'
 import Spinner from 'components/elements/progress/Spinner'
+import heic2any from 'heic2any'
 
 const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 
@@ -226,51 +227,90 @@ const EditProfileModal = (props) => {
   }
 
   const handleChangeProfileImage = (e) => {
-    const file = e.target.files[0]
-    setProfileAvatar(URL.createObjectURL(e.target.files[0]))
-    if(file){
-      setUploadAvatarLoading(true)
-      handleImageCompression(file).then((compressedImage) => {
-        uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
-          setIsProfileUpdated(true)
-          setUploadAvatarLoading(false)
-          const lastImage = image[image.length - 1]
-          if (lastImage !== undefined) {
-            setProfileAvatar(lastImage)
-            setImageUploadProgress(0)
-            setUploadAvatarLoading(false)
-          } else{
-            setUploadAvatarLoading(false)
-            broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-            setImageUploadProgress(0)
-          }
+
+    const images = Array.from(e.target.files)
+    const allImages = [...images.filter(image => image.type !== 'image/heic')]
+    const heicImages = images.filter(image => image.type === 'image/heic')
+
+    Promise.all(
+      heicImages.map(async (image) => {
+        
+        const pngBlob = await heic2any({
+          blob: image,
+          toType: 'image/png',
+          quality: 1,
         })
+
+        allImages.push(
+          new File([pngBlob], image.name.replace('.heic', ''), { type: 'image/png', size: pngBlob.size }),
+        )
+      }),
+    )
+      .then(() => {
+        setProfileAvatar(URL.createObjectURL(allImages[0]))
+        if(allImages[0]){
+          setUploadAvatarLoading(true)
+          handleImageCompression(allImages[0]).then((compressedImage) => {
+            uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+              setIsProfileUpdated(true)
+              setUploadAvatarLoading(false)
+              const lastImage = image[image.length - 1]
+              if (lastImage !== undefined) {
+                setProfileAvatar(lastImage)
+                setImageUploadProgress(0)
+                setUploadAvatarLoading(false)
+              } else{
+                setUploadAvatarLoading(false)
+                broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+                setImageUploadProgress(0)
+              }
+            })
+          })
+        }
       })
-    }
   }
   
   const handleChangeCoverImage = (e) => {
-    const file = e.target.files[0]
-    setProfileCoverImage(URL.createObjectURL(e.target.files[0]))
-    if(file){
-      setUploadCoverLoading(true)
-      handleImageCompression(file).then((compressedImage) => {
-        uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
-          setIsCoverUpdated(true)
-          setUploadCoverLoading(false)
-          const lastImage = image[image.length - 1]
-          if (lastImage !== undefined) {
-            setProfileCoverImage(lastImage)
-            setImageUploadProgress(0)
-            setUploadCoverLoading(false)
-          } else{
-            setUploadCoverLoading(false)
-            broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-            setImageUploadProgress(0)
-          }
+    const images = Array.from(e.target.files)
+    const allImages = [...images.filter(image => image.type !== 'image/heic')]
+    const heicImages = images.filter(image => image.type === 'image/heic')
+
+    Promise.all(
+      heicImages.map(async (image) => {
+        
+        const pngBlob = await heic2any({
+          blob: image,
+          toType: 'image/png',
+          quality: 1,
         })
+
+        allImages.push(
+          new File([pngBlob], image.name.replace('.heic', ''), { type: 'image/png', size: pngBlob.size }),
+        )
+      }),
+    )
+      .then(() => {
+        setProfileCoverImage(URL.createObjectURL(allImages[0]))
+        if(allImages[0]){
+          setUploadCoverLoading(true)
+          handleImageCompression(allImages[0]).then((compressedImage) => {
+            uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+              setIsCoverUpdated(true)
+              setUploadCoverLoading(false)
+              const lastImage = image[image.length - 1]
+              if (lastImage !== undefined) {
+                setProfileCoverImage(lastImage)
+                setImageUploadProgress(0)
+                setUploadCoverLoading(false)
+              } else{
+                setUploadCoverLoading(false)
+                broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+                setImageUploadProgress(0)
+              }
+            })
+          })
+        }
       })
-    }
   }
 
   const handleRemoveCoverImage = () => {
@@ -406,7 +446,7 @@ const EditProfileModal = (props) => {
                       id="cover-upload"
                       type='file'
                       name='image'
-                      accept='image/*'
+                      accept='image/*,image/heic'
                       multiple={false}
                       ref={coverInputRef}
                       onChange={handleChangeCoverImage}
@@ -439,7 +479,7 @@ const EditProfileModal = (props) => {
                         id="avatar-upload"
                         type='file'
                         name='image'
-                        accept='image/*'
+                        accept='image/*,image/heic'
                         multiple={false}
                         ref={profilePicInputRef}
                         onChange={handleChangeProfileImage}
