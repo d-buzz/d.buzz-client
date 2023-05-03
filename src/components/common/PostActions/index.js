@@ -260,7 +260,7 @@ const PostActions = (props) => {
     user,
     title,
     body = null,
-    bodyWithNoImageLinks = removeImageLinksFromContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')),
+    bodyWithNoImageLinks = removeImageLinksFromContent((title|| '').replace(/\s\.\.\./, '') + (body || '').replace(/\.\.\.\s/, '')),
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
