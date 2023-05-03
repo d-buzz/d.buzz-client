@@ -262,6 +262,7 @@ const Content = (props) => {
 
 
   let { body } = content || ''
+  const { title } = content || ''
   body = truncateBody(body || '')
 
   let {  max_accepted_payout } = content || '0.00'
@@ -277,10 +278,13 @@ const Content = (props) => {
   const [ceramicUser, setCeramicUser] = useState(false)
   const [ceramicPost, setCeramicPost] = useState(false)
 
-  if(root_title?.endsWith('...') && root_title?.length===86 && content && body) {
-    // replace ... from title and body and merge them
-    body = root_title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
-  }
+  useEffect(() => {
+    if(title?.endsWith('...') && title?.length===86 && content && body) {
+      // replace ... from title and body and merge them
+      // eslint-disable-next-line
+      body = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
+    }
+  }, [content, title, body])
 
   useEffect(() => {
     if(checkForCeramicAccount(username)) {
@@ -673,6 +677,7 @@ const Content = (props) => {
                 <Col>
                   <PostActions
                     disableExtraPadding={true}
+                    title={title}
                     body={body}
                     author={username}
                     permlink={permlink}

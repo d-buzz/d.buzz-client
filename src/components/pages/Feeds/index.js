@@ -115,9 +115,9 @@ const Feeds = React.memo((props) => {
     // eslint-disable-next-line
   }, [last])
 
-  // useEffect(() => {
-  //   console.log(items)
-  // }, [items])
+  useEffect(() => {
+    console.log(items)
+  }, [items])
   
   return (
     <React.Fragment>

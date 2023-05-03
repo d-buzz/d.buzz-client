@@ -81,7 +81,14 @@ const BuzzPhotoGrid = ({
   const calculateHeightWithMaxWidth = (image, maxWidth) => {
     const originalWidth = image.naturalWidth
     const originalHeight = image.naturalHeight
-    const newHeight = (originalHeight / originalWidth) * maxWidth
+    let newHeight
+
+    if(originalWidth === originalHeight) {
+      newHeight = 510
+    } else {
+      newHeight = (originalHeight / originalWidth) * maxWidth
+    }
+    
     return newHeight
   }
 
@@ -107,7 +114,7 @@ const BuzzPhotoGrid = ({
           if(renderedHeight !== 0) {
             if(renderedHeight > 510 && !(renderedHeight === image.width) && minifyAssets) {
               image.style.height = '510px'
-              image.style.width = '383px'
+              image.style.width = !isMobile ? '383px' : '293px'
               image.style.animation = 'none'
               image.style.animation = 'fadeIn 250ms ease-out forwards'
               image.style.visibility = 'visible'

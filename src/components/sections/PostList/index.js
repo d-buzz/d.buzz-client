@@ -569,6 +569,7 @@ const PostList = React.memo((props) => {
                       type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
+                      title={title}
                       body={body}
                       hasUpvoted={hasUpvoted}
                       author={author}

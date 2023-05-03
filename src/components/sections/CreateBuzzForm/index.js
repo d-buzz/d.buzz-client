@@ -43,7 +43,6 @@ import { styled } from '@material-ui/styles'
 import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
 import { createPermlink, publishPostWithHAS } from 'services/api'
 import heic2any from 'heic2any'
-import { handleUploadImageToFleek } from 'services/media'
 const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 const CircularProgress = React.lazy(() => import('@material-ui/core/CircularProgress'))
 
@@ -720,6 +719,7 @@ const CreateBuzzForm = (props) => {
 
   const {
     user,
+    uploadFileRequest,
     publishPostRequest,
     images,
     loading,
@@ -1091,7 +1091,7 @@ const CreateBuzzForm = (props) => {
               // calculate image file size
               const fileSize = image.size / 1e+6
               setImageSize(Number(fileSize.toFixed(2)))
-
+    
               // handle image compression and then upload it
               setCompressing(true)
               await handleImageCompression(image).then((uri) => {
@@ -1105,7 +1105,7 @@ const CreateBuzzForm = (props) => {
                     setImageUploading(false)
                     createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, ...uploadedImages])
                     document.getElementById('file-upload').value = ''
-
+    
                     // set the thread if its the thread
                     if(Object.keys(buzzThreads).length > 1){
                       setIsThread(true)
@@ -1114,13 +1114,12 @@ const CreateBuzzForm = (props) => {
                     setImageSize(0)
                     setImagesLength(0)
                   }
-
                 }) 
               })
             }),
           )
         } else {
-          alert(`You can only upload 4 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
+          alert(`You can only upload 3 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
         }
       })
 
