@@ -48,6 +48,7 @@ import { checkForCeramicAccount } from 'services/ceramic'
 import ViewImageModal from 'components/modals/ViewImageModal'
 import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
 import { Helmet } from 'react-helmet'
+import DeleteBuzzModal from 'components/modals/DeleteBuzzModal'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -241,6 +242,7 @@ const Content = (props) => {
   const [invalidBuzz, setInvalidBuzz] = useState(false)
   const [addToPocketModal, setAddToPocketModal] = useState(false)
   const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
+  const [deleteBuzzModal, setDeleteBuzzModal] = useState(false)
 
 
   const {
@@ -535,8 +537,10 @@ const Content = (props) => {
     setSelectedAddToPocketBuzz(null)
   }
 
-  useEffect(() => {
-  }, [originalContent])
+  const handleClickDeleteBuzz = () => {
+    setAnchorEl(null)
+    setDeleteBuzzModal(true)
+  }
 
   return (
     <React.Fragment>
@@ -663,6 +667,15 @@ const Content = (props) => {
                 <React.Fragment>
                   {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
+                  {active_votes.length===0 && replyCount===0 &&
+                    <MenuItem
+                      style={{ backgroundColor: '#E61C34' }}
+                      onClick={handleClickDeleteBuzz}
+                    >
+                      <span className='delete-buzz-button'>
+                        Delete
+                      </span>
+                    </MenuItem>}
                   <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
                 </React.Fragment>
               )}
@@ -726,6 +739,7 @@ const Content = (props) => {
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageModal} onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
       <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
+      <DeleteBuzzModal show={deleteBuzzModal} onHide={setDeleteBuzzModal} buzzId={`@${username}/${permlink}`} />
     </React.Fragment>
   )
 }

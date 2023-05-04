@@ -344,3 +344,7 @@ input[type=number] {
   background-color: rgb(29, 155, 240);
   border: 1px solid rgb(29, 155, 240) !important;
 }
+
+.delete-buzz-button {
+  color: #ffffff !important;
+}

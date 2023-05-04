@@ -48,12 +48,14 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   buzzImage: {
+    maxHeight: ({ minifyAssets }) => minifyAssets ? '510px !important' : 'auto',
+    maxWidth: ({ minifyAssets }) => minifyAssets ? '480px !important' : 'auto',
     transformOrigin: 'top',
-    height: 0,
+    height: 'auto',
     objectPosition: 'center',
     objectFit: 'cover',
     width: '100%',
-    // visibility: 'hidden',
+    visibility: 'hidden',
     animation: 'skeleton-loading 1s linear infinite alternate',
   },
   moreImages: {
@@ -74,7 +76,7 @@ const BuzzPhotoGrid = ({
   onImageLoad = () => {},
   setViewImageModal = () => {},
 }) => {
-  const classes = useStyles({ images })
+  const classes = useStyles({ images, minifyAssets })
   const buzzPhotoGridRef = useRef(null)
   const imageLoadTime = 2
 
@@ -96,10 +98,11 @@ const BuzzPhotoGrid = ({
     const image = document.querySelector(`img[src$="${url}"]`)
     
     if(buzzPhotoGridRef && image) {
-      image.style.height = '0px'
+      image.style.height = 'auto'
       image.style.background = 'none'
       image.style.animation = 'none'
       image.style.cursor = 'pointer'
+      image.style.visibility = 'hidden'
 
       // re-render postList
       if(onImageLoad) {

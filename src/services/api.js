@@ -1704,3 +1704,32 @@ export const getHivePrice = async() => {
     resolve(hive.usd)
   })
 }
+
+export const deleteBuzzWithPostingKey = async (user, author, permalink) => {
+  let { login_data } = user
+  login_data = extractLoginData(login_data)
+  const wif = login_data[1]
+  const deleteOperation = [
+    [
+      "delete_comment",
+      {
+        "author": author,
+        "permlink": permalink,
+      },
+    ],
+  ]
+  return await broadcastOperation(deleteOperation, [wif])
+}
+
+export const deleteBuzzWitKeychain = async (author, permalink) => {
+  const deleteOperation = [
+    [
+      "delete_comment",
+      {
+        "author": author,
+        "permlink": permalink,
+      },
+    ],
+  ]
+  return await broadcastKeychainOperation(author, deleteOperation)
+}

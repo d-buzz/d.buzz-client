@@ -209,9 +209,11 @@ const EditProfileModal = (props) => {
 
   const handleImageCompression = async (image) => {
     let compressedFile = null
+
+    const MAX_SIZE = 500 * 1024
   
     const options = {
-      maxSizeMB: 1,
+      maxSizeMB: MAX_SIZE / (1024 * 1024),
       maxWidthOrHeight: 1024,
       useWebWorker: true,
     }
