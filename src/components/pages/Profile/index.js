@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getUserTheme } from 'services/helper'
+import { anchorTop, getUserTheme, proxyImage } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -700,7 +700,7 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
+                <img src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
               </div>
               <div className={classes.wrapper}>
                 <Row>

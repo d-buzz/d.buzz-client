@@ -426,7 +426,7 @@ function* fileUploadRequest(payload, meta) {
 
       const ipfsHash = result.hashV0
       const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`
-      const publicUrl = `https://storageapi.fleek.co/${result.bucket}/${result.key}`
+      const publicUrl = `https://media.d.buzz/${result.bucket}/${result.key}`
       if(!ipfs) {
         images.push(publicUrl)
       } else {
