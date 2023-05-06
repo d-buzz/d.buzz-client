@@ -111,6 +111,8 @@ const SideBarRight = (props) => {
   const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
 
+  const stagingVersion = process.env.REACT_APP_STAGING_VERSION
+
   useEffect(() => {
     if(window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
@@ -165,7 +167,6 @@ const SideBarRight = (props) => {
 
   useEffect(() => {
     (async function resources() {
-
       const hivePrice = await getPrice('hive') || 'NA'
       const hbdPrice = await getPrice('hbd') || 'NA'
 
@@ -225,7 +226,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging</i>}</label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</label>
         </div>
       </div>
     </React.Fragment>

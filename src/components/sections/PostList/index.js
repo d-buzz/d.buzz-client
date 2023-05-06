@@ -110,7 +110,7 @@ const useStyle = createUseStyles(theme => ({
   content: {
     width: '100%',
     '& img': {
-      borderRadius: '15px 15px',
+      // borderRadius: '15px 15px',
     },
     '& iframe': {
       borderRadius: '15px 15px',
@@ -254,6 +254,7 @@ const PostList = React.memo((props) => {
     item,
     loadPockets,
     selectedPocket = {},
+    onImageLoad,
   } = props
 
   let { payout = null, payoutAt = null } = props
@@ -305,6 +306,13 @@ const PostList = React.memo((props) => {
   const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
   const [seletedRemoveFromPocketBuzz, setSeletedRemoveFromPocketBuzz] = useState(null)
   const [pockets, setPockets] = useState([])
+
+  useEffect(() => {
+    if(title.endsWith('...') && title.length===86 && content && body) {
+      // replace ... from title and body and merge them
+      setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
+    }
+  }, [title, content, body])
 
   useEffect(() => {
     if(anchorEl !== null) {
@@ -547,7 +555,7 @@ const PostList = React.memo((props) => {
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <div onClick={handleOpenContent}>
                       {displayTitle && title && (<h6 className={classes.title}>{title}</h6>)}
-                      <Renderer content={content} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex}/>
+                      <Renderer content={content} minifyAssets={true} scrollIndex={scrollIndex} recomputeRowIndex={recomputeRowIndex} onImageLoad={onImageLoad}/>
                       {isCensored && (
                         <Chip label={'#NSFW'} color="#2b2b2b" size="small" className={classes.chip} />
                       )}
@@ -561,6 +569,7 @@ const PostList = React.memo((props) => {
                       type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
+                      title={title}
                       body={body}
                       hasUpvoted={hasUpvoted}
                       author={author}
