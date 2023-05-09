@@ -102,6 +102,8 @@ const SplashScreen = () => {
 
   const [isStaging, setIsStaging] = useState(null)
 
+  const stagingVersion = process.env.REACT_APP_STAGING_VERSION
+
   useEffect(() => {
     if(window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
@@ -131,7 +133,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            {!isStaging ?  <b>v{VERSION}</b> : <b>STAGING</b>}
+            {!isStaging ?  <b>v{VERSION}</b> : <b>STAGING v{stagingVersion}</b>}
           </Typography>
         </center>
       </div>

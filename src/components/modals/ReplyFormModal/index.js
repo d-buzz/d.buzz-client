@@ -555,7 +555,7 @@ const ReplyFormModal = (props) => {
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to {!fetchingProfile && <b className={classes.usernameStyle}><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
+                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
                   <div className={classes.previewContainer}>
                     <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>
