@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getUserTheme } from 'services/helper'
+import { anchorTop, getUserTheme, proxyImage } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -174,22 +174,9 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     marginBottom: 5,
   },
-  usernameStyle: {
-    border: '1px solid rgba(230, 28, 52, 0.2)',
-    margin: '5px 2px',
-    padding: '1px 5px',
-    paddingBottom: 2,
-    background: 'rgba(255, 235, 238, 0.8)',
-    borderRadius: 5,
-    transition: 'opacity 250ms',
-
+  linkStyle: {
     '& a': {
-      textDecoration: 'none',
-      color: '#E61C34 !important',
-    },
-
-    '&:hover': {
-      opacity: 0.8,
+      color: 'rgb(255, 0, 0) !important',
     },
   },
   invalidUser: {
@@ -477,7 +464,9 @@ const Profile = (props) => {
   
   const { reputation = 0, isFollowed } = profile
   
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description).replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.usernameStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`) : ''
+  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
+    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
+    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
 
   const [loader, setLoader] = useState(false)
 
@@ -711,7 +700,7 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
+                <img src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
               </div>
               <div className={classes.wrapper}>
                 <Row>

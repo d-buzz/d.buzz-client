@@ -7,16 +7,14 @@ import {
   ContainedButton,
   Avatar,
   UploadIcon,
-  Spinner,
   GifIcon,
   EmojiIcon,
-  TitleIcon,
 } from 'components/elements'
 import { clearIntentBuzz } from 'store/auth/actions'
-import { broadcastNotification, setLinkConfirmationModal } from 'store/interface/actions'
+import { broadcastNotification, setLinkConfirmationModal, setViewImageModal } from 'store/interface/actions'
 import { PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import { bindActionCreators } from 'redux'
-import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, updateBuzzTitle, publishReplyRequest, setContentRedirect } from 'store/posts/actions'
+import { uploadFileRequest, uploadVideoRequest, publishPostRequest,  setPageFrom, savePostAsDraft, updateBuzzThreads, publishReplyRequest, setContentRedirect } from 'store/posts/actions'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -27,7 +25,7 @@ import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import { setBuzzModalStatus, setBuzzTitleModalStatus, setDraftsModalStatus, setSaveDraftsModalStatus } from 'store/interface/actions'
+import { setBuzzModalStatus, setDraftsModalStatus, setSaveDraftsModalStatus } from 'store/interface/actions'
 import { BuzzFormModal } from 'components'
 import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
@@ -36,7 +34,6 @@ import Renderer from 'components/common/Renderer'
 import Switch from 'components/elements/Switch'
 import ImagesContainer from '../ImagesContainer'
 import ViewImageModal from 'components/modals/ViewImageModal'
-// import BuzzTitleModal from 'components/modals/BuzzTitleModal'
 import DraftsIcon from 'components/elements/Icons/DraftsIcon'
 import DraftsModal from 'components/modals/DraftsModal'
 import SaveDraftModal from 'components/modals/SaveDraftModal'
@@ -45,6 +42,7 @@ import { LinearProgress } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
 import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
 import { createPermlink, publishPostWithHAS } from 'services/api'
+import heic2any from 'heic2any'
 const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
 const CircularProgress = React.lazy(() => import('@material-ui/core/CircularProgress'))
 
@@ -104,16 +102,12 @@ const useStyles = createUseStyles(theme => ({
   },
   previewContainer: {
     marginTop: 10,
+    paddingTop: 25,
     width: 'calc(100% - 65px)',
     float: 'right',
     height: 'max-content',
     paddingBottom: 10,
     borderTop: `0.5px solid ${theme.font.color}`,
-    // borderBottom: `0.5px solid ${theme.font.color}`,
-    '& img': {
-      border: '1px solid #ccd6dd',
-      borderRadius: '16px 16px',
-    },
     '& iframe': {
       borderRadius: '16px 16px',
     },
@@ -197,7 +191,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '18px !important',
     cursor: 'pointer',
     marginLeft: 2,
-    // marginBottom: 5,
   },
   draftPostContainer: {
     display: 'flex',
@@ -414,7 +407,6 @@ const useStyles = createUseStyles(theme => ({
   buzzToTwitterToggle: {
     display: 'grid',
     placeItems: 'center',
-    // width: 165,
     height: 28,
     width: 28,
     background: '#E65768',
@@ -556,9 +548,6 @@ const useStyles = createUseStyles(theme => ({
   buzzTextBox: {
     display: 'flex',
     position: 'relative',
-    // width: '100%',
-    width: props => props.showBuzzTitle ? 'calc(100% - 58px)' : '',
-    marginLeft: props => props.showBuzzTitle ? 58 : '',
     transition: 'all 250ms',
 
     '&:focus-within': {
@@ -649,7 +638,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: props => props.showBuzzTitle ? 'calc(100% - 58px)' : '100%',
+    width: '100%',
     margin: '10px 0',
     float: 'right',
 
@@ -731,7 +720,6 @@ const CreateBuzzForm = (props) => {
   const {
     user,
     uploadFileRequest,
-    // uploadVideoRequest,
     publishPostRequest,
     images,
     loading,
@@ -748,11 +736,11 @@ const CreateBuzzForm = (props) => {
     buzzModalStatus,
     setBuzzModalStatus,
     buzzThreads={1: {id: 1, content: '', images:[]}},
-    buzzTitle,
     updateBuzzThreads,
-    updateBuzzTitle,
     publishReplyRequest,
     setContentRedirect,
+    viewImageModal,
+    setViewImageModal,
   } = props
 
   const [ceramicUser, setCeramicUser] = useState(false)
@@ -771,7 +759,6 @@ const CreateBuzzForm = (props) => {
   const [open, setOpen] = useState(false)
   // eslint-disable-next-line
   const [compressing, setCompressing] = useState(false) 
-  const [showBuzzTitle, setShowBuzzTitle] = useState(true)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
   const [imagesLength, setImagesLength] = useState(0)
@@ -826,9 +813,8 @@ const CreateBuzzForm = (props) => {
   const [counterColor, setCounterColor] = useState('#e53935')
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
   const BuzzToTwitterToggleStyle = { opacity: !buzzToTwitter ? 0.5 : 1 }
-  // const [buzzTitle, setBuzzTitle] = useState('')
-  const [buzzLength, setBuzzLength] = useState(content.length + buzzTitle.length - overhead)
-  const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length + buzzTitle.length - overhead))
+  const [buzzLength, setBuzzLength] = useState(content.length - overhead)
+  const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length - overhead))
   const [buzzImages, setBuzzImages] = useState(0)
   const [isVideoAttached] = useState(content.includes('?dbuzz_video='))
   
@@ -849,7 +835,7 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const classes = useStyles({showBuzzTitle, buzzThreads})
+  const classes = useStyles({buzzThreads})
   
   let containerClass = classes.container
   let minRows = 2
@@ -869,14 +855,6 @@ const CreateBuzzForm = (props) => {
     if(!buzzModalStatus && !isMobile) {
       setBuzzModalStatus(true)
       setOpen(true)
-    }
-  }
-
-  const handleBuzzTitleToggle = () => {
-    if(showBuzzTitle === false) {
-      setShowBuzzTitle(true)
-    } else {
-      setShowBuzzTitle(false)
     }
   }
 
@@ -920,12 +898,11 @@ const CreateBuzzForm = (props) => {
   }, [wholeIntent])
 
   useEffect(() => {
-    const buzzContentWithTitle = (buzzThreads[1]?.images?.length >= 1 ? buzzTitle+' <br />'+buzzThreads[1]?.content+' <br/>'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzTitle+' <br />'+buzzThreads[1].content)
-    const buzzContentWithoutTitle = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+' <br/>'+buzzThreads[1]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[1]?.content
-    const rawBuzzContent = buzzTitle ? buzzContentWithTitle : buzzContentWithoutTitle
+    const buzzContent = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' ') : buzzThreads[1]?.content
+    const rawBuzzContent = buzzContent
     setBuzzContent(rawBuzzContent)
     setBuzzContentStripped(stripHtml(rawBuzzContent))
-  }, [buzzThreads, buzzTitle])
+  }, [buzzThreads])
 
   useEffect(() => {
     const images = []
@@ -938,7 +915,7 @@ const CreateBuzzForm = (props) => {
     const contentOverhead = calculateOverhead(buzzContentStripped)
     
     // allow only three images at on a single buzz
-    if(buzzThreads[1]?.images?.length >= 3) {
+    if(buzzThreads[1]?.images?.length >= 4) {
       setImageLimit(true)
     } else {
       setImageLimit(false)
@@ -1056,39 +1033,15 @@ const CreateBuzzForm = (props) => {
     handleUpdateBuzz(buzzId, value)
   }
 
-  // const handleFileSelect = () => {
-  //   const target = document.getElementById('file-upload')
-  //   if (isMobile || isAndroid || isIOS) {
-  //     target.addEventListener('click', function () {
-  //       const touch = new Touch({
-  //         identifier: 'file-upload',
-  //         target: target,
-  //       })
-
-  //       const touchEvent = new TouchEvent('touchstart', {
-  //         touches: [touch],
-  //         view: window,
-  //         cancelable: true,
-  //         bubbles: true,
-  //       })
-
-  //       target.dispatchEvent(touchEvent)
-  //     })
-  //     target.click()
-  //   } else {
-  //     alert("It's a tablet.")
-  //   }
-
-  //   inputRef.current.click()
-  // }
-
   const handleImageCompression = async (image) => {
     let compressedFile = null
 
     setImageUploading(true)
   
+    const MAX_SIZE = 500 * 1024
+
     const options = {
-      maxSizeMB: 1,
+      maxSizeMB: MAX_SIZE / (1024 * 1024),
       maxWidthOrHeight: 1024,
       useWebWorker: true,
     }
@@ -1105,92 +1058,71 @@ const CreateBuzzForm = (props) => {
 
   const handleFileSelectChange = async(event) => {
 
-    // createThread(currentBuzz, 'image', ['https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1674376622091.jpeg', 'https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-images/dbuzz-image-1674376624067.jpeg'])
-
     const images = Array.from(event.target.files)
+    const allImages = [...images.filter(image => image.type !== 'image/heic')]
+    const heicImages = images.filter(image => image.type === 'image/heic')
     const uploadedImages = []
 
-    const remainingImageUploads = (3 - buzzThreads[currentBuzz]?.images?.length) >= 0 ? (3 - buzzThreads[currentBuzz]?.images?.length) : 0
+    const remainingImageUploads = (4 - buzzThreads[currentBuzz]?.images?.length) >= 0 ? (4 - buzzThreads[currentBuzz]?.images?.length) : 0
 
-    if((images.length + buzzThreads[currentBuzz]?.images?.length) <= 3) {
-      setImagesLength(images.length)
+    Promise.all(
+      heicImages.map(async (image) => {
+        setCompressing(true)
+        
+        const pngBlob = await heic2any({
+          blob: image,
+          toType: 'image/png',
+          quality: 1,
+        })
 
-      await Promise.all(
-        images.map(async(image) => {
-          // calculate image file size
-          const fileSize = image.size / 1e+6
-          setImageSize(Number(fileSize.toFixed(2)))
+        allImages.push(
+          new File([pngBlob], image.name.replace('.heic', ''), { type: 'image/png', size: pngBlob.size }),
+        )
+      }),
+    )
+      .then(async () => {
+        setCompressing(false)
 
-          // handle image compression and then upload it
-          setCompressing(true)
-          await handleImageCompression(image).then((uri) => {
-            setCompressing(false)
-            setImageSize(Number((uri.size / 1e+6).toFixed(2)))
-            uploadFileRequest(uri, setImageUploadProgress).then((image) => {
-              const lastImage = image[image.length - 1]
-              uploadedImages.push(lastImage)
-              
-              if(uploadedImages.length === images.length) {
-                setImageUploading(false)
-                createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, ...uploadedImages])
-                document.getElementById('file-upload').value = ''
+        if((allImages.length + buzzThreads[currentBuzz]?.images?.length) <= 4) {
+          setImagesLength(images.length)
 
-                // set the thread if its the thread
-                if(Object.keys(buzzThreads).length > 1){
-                  setIsThread(true)
-                  setThreadCount(Object.keys(buzzThreads).length)
-                }
-                setImageSize(0)
-                setImagesLength(0)
-              }
+          await Promise.all(
+            allImages.map(async(image) => {
+              // calculate image file size
+              const fileSize = image.size / 1e+6
+              setImageSize(Number(fileSize.toFixed(2)))
+    
+              // handle image compression and then upload it
+              setCompressing(true)
+              await handleImageCompression(image).then((uri) => {
+                setCompressing(false)
+                setImageSize(Number((uri.size / 1e+6).toFixed(2)))
+                uploadFileRequest(uri, setImageUploadProgress).then((image) => {
+                  const lastImage = image[image.length - 1]
+                  uploadedImages.push(lastImage)
+                  
+                  if(uploadedImages.length === allImages.length) {
+                    setImageUploading(false)
+                    createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, ...uploadedImages])
+                    document.getElementById('file-upload').value = ''
+    
+                    // set the thread if its the thread
+                    if(Object.keys(buzzThreads).length > 1){
+                      setIsThread(true)
+                      setThreadCount(Object.keys(buzzThreads).length)
+                    }
+                    setImageSize(0)
+                    setImagesLength(0)
+                  }
+                }) 
+              })
+            }),
+          )
+        } else {
+          alert(`You can only upload 3 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
+        }
+      })
 
-            }) 
-          })
-        }),
-      )
-    } else {
-      alert(`You can only upload 3 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
-    }
-
-    // const image = event.target.files[0]
-
-    // const fileSize = image.size / 1e+6
-    // setImageSize(Number(fileSize.toFixed(2)))
-
-    // setCompressing(true)
-
-    // await handleImageCompression(image).then((uri) => {
-    //   setCompressing(false)
-    //   setImageSize(Number((uri.size / 1e+6).toFixed(2)))
-    //   uploadFileRequest(uri, setImageUploadProgress).then((image) => {
-    //     setImageUploading(false)
-    //     const lastImage = image[image.length - 1]
-    //     if (lastImage !== undefined) {
-    //       // const contentAppend = `${buzzThreads[currentBuzz]?.content} <br /> ${lastImage}`
-    //       createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, lastImage])
-    //       // setContent(contentAppend)
-    //       document.getElementById('file-upload').value = ''
-  
-    //       // set the thread if its the thread
-    //       if(Object.keys(buzzThreads).length > 1){
-    //         setIsThread(true)
-    //         setThreadCount(Object.keys(buzzThreads).length)
-    //       }
-    //       // savePostAsDraft(contentAppend)
-    //       // savePostAsDraftToStorage(contentAppend)
-    //       setImageSize(0)
-    //     }
-    //   }) 
-    // })
-
-    // if(fileSize < 1){
-    // }
-    // else {
-    //   setImageAlert(true)
-    //   setTimeout(() => {
-    //     setImageAlert(false)
-    //   }, 5000)
-    // }
   }
 
   const resetBuzzForm = () => {
@@ -1254,12 +1186,6 @@ const CreateBuzzForm = (props) => {
       invokeTwitterIntent(content)
     }
 
-    // console.log(buzzContent)
-    // console.log(buzzContentStripped)
-    // console.log(stripHtml(buzzContent).length)
-    // console.log(calculateOverhead(buzzContent))
-    // console.log((buzzContentStripped).length - calculateOverhead(buzzContentStripped))
-    
     if (!checkBuzzWidgetMinCharacters()) {
       broadcastNotification('error',`${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
@@ -1292,7 +1218,6 @@ const CreateBuzzForm = (props) => {
                       broadcastNotification('success', 'You successfully published a post')
                       setBuzzLoading(false)
                       setBuzzing(false)
-                      updateBuzzTitle('')
                       clearIntentBuzz()
                       resetBuzzForm()
                       hideModalCallback()
@@ -1325,7 +1250,6 @@ const CreateBuzzForm = (props) => {
                 setNextBuzz(2)
                 setBuzzData({author: author, permlink: permlink})
                 setBuzzing(false)
-                updateBuzzTitle('')
     
                 if(!isThread) {
                   hideModalCallback()
@@ -1351,7 +1275,6 @@ const CreateBuzzForm = (props) => {
               broadcastNotification('success', 'You successfully published a post')
               setBuzzLoading(false)
               setBuzzing(false)
-              updateBuzzTitle('')
               clearIntentBuzz()
               resetBuzzForm()
               hideModalCallback()
@@ -1374,27 +1297,6 @@ const CreateBuzzForm = (props) => {
     }
     return passed
   }
-
-  // const handleDelete = (i) => {
-  //   setTags(tags.filter((tag, index) => index !== i))
-  // }
-
-  // const handleAddition = (tag) => {
-  //   tag.id = tag.id.split(' ').join('')
-  //   tag.text = tag.text.split(' ').join('')
-  //   tag.text = tag.text.replace('#', '')
-  //   setTags([...tags, tag])
-  // }
-
-  // const handleDrag = (tag, currPos, newPos) => {
-  //   const tagsArray = [...tags]
-  //   const newTags = tagsArray.slice()
-
-  //   newTags.splice(currPos, 1)
-  //   newTags.splice(newPos, 0, tag)
-
-  //   setTags(newTags)
-  // }
 
   const handleClickContent = (e) => {
     try {
@@ -1602,35 +1504,8 @@ const CreateBuzzForm = (props) => {
       {!buzzLoading &&
         <div className={classes.row}>
           <div className={classNames(classes.inline, classes.right)}>
-            {publishing && (
-              <div style={{ width: '100%', paddingTop: 10 }}>
-                <Box position='relative' display='inline-flex'>
-                  <Spinner top={0} size={20} loading={publishing} />
-                  &nbsp;
-                  <label className={classes.actionLabels}>
-                    broadcasting your buzz to the network, please wait ...
-                  </label>
-                  &nbsp;
-                </Box>
-              </div>
-            )}
             {!publishing && (
               <span className={classes.buzzBox}>
-                {showBuzzTitle &&
-                  <div className={classes.titleBox} tabIndex={0}>
-                    <Avatar author={user.username} avatarUrl={avatarUrl} className='userAvatar' onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>
-                    <span className="titleContainer">
-                      <input
-                        type='text'
-                        maxLength={60}
-                        placeholder='Add a buzz title'
-                        value={buzzTitle}
-                        onChange={e => updateBuzzTitle(e.target.value)}
-                        disabled={imageUploading}
-                      />
-                      {buzzTitle && <span className='counter'>{buzzTitle.length}/60</span>}
-                    </span>
-                  </div>}
                 <div className={classes.buzzTextBox}>
                   <span className='buzzBoxes'>
                     {!buzzThreads && (
@@ -1652,9 +1527,9 @@ const CreateBuzzForm = (props) => {
                             <IconButton className={classes.closeBuzzButton} onClick={() => handleDeleteBuzz(item.id)}>
                               <CloseIcon />
                             </IconButton>}
-                          <span className={`buzzArea buzzArea${item.id} ${showBuzzTitle === false ? 'noMargin' : ''}`}>
-                            {item.id === 1 && showBuzzTitle === false && <Avatar className='userAvatar' avatarUrl={avatarUrl} author={user.username} style={{width: showBuzzTitle === false ? 'fit-content' : 'inherit'}} onClick={() => window.location = `${window.location.origin}/@${user.username}`}/>}
-                            {item.id !== 1 && <Avatar className='userAvatar' avatarUrl={avatarUrl} author={user.username} onClick={() => window.location = `${window.location.origin}/@${user.username}`} />}
+                          <span className={`buzzArea buzzArea${item.id} noMargin`}>
+                            {item.id === 1 && <Avatar className='userAvatar' avatarUrl={avatarUrl} author={user.username} style={{width: 'fit-content'}} onClick={() => history.push(`/@${user.username}`)}/>}
+                            {item.id !== 1 && <Avatar className='userAvatar' avatarUrl={avatarUrl} author={user.username} onClick={() => history.push(`/@${user.username}`)} />}
                             <TextArea
                               ref={buzzTextBoxRef}
                               buzzId={item.id}
@@ -1718,7 +1593,11 @@ const CreateBuzzForm = (props) => {
                     </div>}
                 </div>
               </span>)}
-            {imageUploading && (
+            {compressing && (
+              <div style={{ width: '100%', paddingTop: 5 }}>
+                <div className={classes.preparingMedia}>Compressing Image</div>
+              </div>)}
+            {imageUploading && !compressing && (
               <div style={{ width: '100%', paddingTop: 5 }}>
                 {imageUploadProgress !== 100 && imagesLength === 0 ?       
                   <div className={classes.uploadProgressBar}>
@@ -1727,7 +1606,7 @@ const CreateBuzzForm = (props) => {
                   </div> :
                   <div className={classes.preparingMedia}>{imagesLength === 1 ? "Preparing Image" : `Preparing ${imagesLength} Images`}</div>}
               </div>)}
-            {videoUploading && (
+            {videoUploading && !compressing && (
               <div style={{ width: '100%', paddingTop: 5 }}>
                 {videoUploadProgress !== 100 ?
                   <div className={classes.uploadProgressBar}>
@@ -1739,18 +1618,14 @@ const CreateBuzzForm = (props) => {
             )}
 
             {/* IMAGES ROW */}
-            {buzzThreads && buzzThreads[currentBuzz]?.images?.length >= 1 && (
-              <ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} showBuzzTitle={showBuzzTitle} setVideoLimit={setVideoLimit}/>
-            )}
-
-
+            {buzzThreads && buzzThreads[currentBuzz]?.images?.length >= 1 && (<ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} setVideoLimit={setVideoLimit} loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
             {!publishing && (
               <div className={classes.buzzCustomizeOptions}>
                 <span>
                   <Tooltip title="Image" placement='top-start'>
                     <IconButton
                       size='medium'
-                      disabled={isVideoAttached || imageUploading || videoUploading || imageLimit}
+                      disabled={isVideoAttached || compressing || imageUploading || videoUploading || imageLimit}
                       classes={{
                         root: classes.root,
                         disabled: classes.disabled,
@@ -1762,7 +1637,7 @@ const CreateBuzzForm = (props) => {
                           id='file-upload'
                           type='file'
                           name='image'
-                          accept='image/*'
+                          accept='image/*,image/heic'
                           multiple={true}
                           ref={inputRef}
                           className={classes.imageUploadInput}
@@ -1787,7 +1662,7 @@ const CreateBuzzForm = (props) => {
                     </IconButton>
                   </Tooltip> */}
                   <Tooltip title="GIF" placement='top-start'>
-                    <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached} classes={{ disabled: classes.disabled }}>
+                    <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached || compressing || imageUploading || videoUploading || buzzThreads[1]?.images?.length > 0} classes={{ disabled: classes.disabled }}>
                       <GifIcon />
                     </IconButton>
                   </Tooltip>
@@ -1797,11 +1672,6 @@ const CreateBuzzForm = (props) => {
                       <EmojiIcon />
                     </IconButton>
                   </Tooltip>}
-                  <Tooltip title="Buzz Title" placement='top-start'>
-                    <IconButton style={{ backgroundColor: showBuzzTitle ? '#D3D3D3' : ''}} size='medium' onClick={handleBuzzTitleToggle}>
-                      <TitleIcon />
-                    </IconButton>
-                  </Tooltip>
                   <Tooltip title="Drafts" placement='top-start'>
                     <IconButton size='medium' onClick={handleDraftsModalOpen}>
                       <DraftsIcon />
@@ -1876,7 +1746,7 @@ const CreateBuzzForm = (props) => {
               <React.Fragment>
                 {(buzzContent.length !== 0) && buzzPreview && (
                   <div className={classes.previewContainer} onClick={handleClickContent}>
-                    <Renderer content={buzzTitle ? `## ${buzzTitle} <br/>\n` + content : content} minifyAssets={false} />
+                    <Renderer content={content} minifyAssets={true} contentImages={buzzThreads[currentBuzz]?.images?.length} />
                   </div>
                 )}
               </React.Fragment>
@@ -1920,7 +1790,7 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads} />
-      <ViewImageModal imageUrl={viewImageUrl} show={viewImageUrl} onHide={setViewImageUrl} />
+      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl} onHide={() => setViewImageModal({selectedImage: '', images: []})} />
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} />
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
     </div>
@@ -1937,8 +1807,8 @@ const mapStateToProps = (state) => ({
   draftPost: state.posts.get('draftPost'),
   buzzModalStatus: state.interfaces.get('buzzModalStatus'),
   buzzThreads: state.posts.get('buzzThreads'),
-  buzzTitle: state.posts.get('buzzTitle'),
   linkConfirmationModal: state.interfaces.get('linkConfirmationModal'),
+  viewImageModal: state.interfaces.get('viewImageModal'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1953,13 +1823,12 @@ const mapDispatchToProps = (dispatch) => ({
       savePostAsDraft,
       setBuzzModalStatus,
       updateBuzzThreads,
-      updateBuzzTitle,
       publishReplyRequest,
-      setBuzzTitleModalStatus,
       setDraftsModalStatus,
       setSaveDraftsModalStatus,
       setContentRedirect,
       setLinkConfirmationModal,
+      setViewImageModal,
     },dispatch),
 })
 

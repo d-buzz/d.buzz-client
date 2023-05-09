@@ -646,7 +646,7 @@ const SideBarLeft = (props) => {
                 <ContainedButton
                   transparent={true}
                   fontSize={14}
-                  label="Subscribe"
+                  label="Subscribe to DBuzz"
                   loading={loading}
                   className={classes.sideBarButton}
                   onClick={handleClickSubscribe}

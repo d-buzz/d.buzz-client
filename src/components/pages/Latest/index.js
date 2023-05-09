@@ -91,7 +91,6 @@ const Latest = (props) => {
     // eslint-disable-next-line
   }, [refreshRouteStatus])
 
-
   const loadMorePosts = useCallback(() => {
     const { permlink, author } = last
     getLatestPostsRequest(permlink, author)

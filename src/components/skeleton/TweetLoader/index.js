@@ -3,9 +3,9 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
   wrapper: {
+    position: 'absolute',
     display: 'flex',
     margin: '0 auto',
-    height: 150,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

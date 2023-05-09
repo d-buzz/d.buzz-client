@@ -462,7 +462,7 @@ const ReplyList = (props) => {
                         <MuteIcon  className={classes.muteIcon} />
                       </IconButton>
                     )}
-                    <p className={classes.note}>Replying to  <b className={classes.usernameStyle}><a href={`/@${parent_author||parent_post.creator_id}`} className={classes.username}>{`@${parent_author||parent_post.author.name||parent_post.author.did}`}</a></b></p>
+                    <p className={classes.note}>Replying to  <b><a href={`/@${parent_author||parent_post.creator_id}`} className={classes.username}>{`@${parent_author||parent_post.author.name||parent_post.author.did}`}</a></b></p>
                     {isCensored && (
                       <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
                     )}
