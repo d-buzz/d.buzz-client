@@ -56,7 +56,7 @@ const useStyles = createUseStyles(theme => ({
 
       '&:hover': {
         opacity: 0.85,
-      }
+      },
     },
   },
 }))
