@@ -63,6 +63,7 @@ const useStyles = createUseStyles(theme => ({
 
 const Trending = (props) => {
   const {
+    user,
     isVisited,
     loading,
     items,
@@ -136,17 +137,18 @@ const Trending = (props) => {
   return (
     <React.Fragment>
       <HelmetGenerator page='Trending' />
-      <div className={classes.opensourceWrapper}>
-        
-        {isMobile ? <span className='title'>Support & Open Source : D.Buzz</span> : <span className='title'>Help us OPEN SOURCE & continue : DBUZZ</span>}
-        <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>
-      </div>
+      {!user?.username &&
+        <div className={classes.opensourceWrapper}>
+          {isMobile ? <span className='title'>Support & Open Source : D.Buzz</span> : <span className='title'>Help us OPEN SOURCE & continue : DBUZZ</span>}
+          <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>
+        </div>}
       <InfiniteList unguardedLinks={unguardedLinks} loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
+  user: state.auth.get('user'),
   loading: pending(state, 'GET_TRENDING_POSTS_REQUEST'),
   isVisited: state.posts.get('isTrendingVisited'),
   items: state.posts.get('trending'),
