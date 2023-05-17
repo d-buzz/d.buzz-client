@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -26,6 +26,7 @@ import { InfiniteList, HelmetGenerator } from 'components'
 import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { isMobile } from 'react-device-detect'
+import { isUserAlreadyVotedForProposal } from 'services/api'
 
 const useStyles = createUseStyles(theme => ({
   opensourceWrapper: {
@@ -91,6 +92,8 @@ const Trending = (props) => {
 
   const classes = useStyles()
 
+  const [isUserVotedForProposal, setIsUserVotedForProposal] = useState(true)
+
   useEffect(() => {
     setPageFrom('trending')
     if (!isVisited) {
@@ -134,10 +137,21 @@ const Trending = (props) => {
     return window.location = 'https://vote.d.buzz'
   }
 
+  useEffect(() =>{
+    if(user.username) {
+      isUserAlreadyVotedForProposal(user.username)
+        .then((response) => {
+          setIsUserVotedForProposal(response)
+        })
+    } else {
+      setIsUserVotedForProposal(false)
+    }
+  }, [user])
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Trending' />
-      {!user?.username &&
+      {!isUserVotedForProposal &&
         <div className={classes.opensourceWrapper}>
           {isMobile ? <span className='title'>Support & Open Source : D.Buzz</span> : <span className='title'>Help us OPEN SOURCE & continue : DBUZZ</span>}
           <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>

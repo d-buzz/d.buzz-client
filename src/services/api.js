@@ -1733,3 +1733,22 @@ export const deleteBuzzWitKeychain = async (author, permalink) => {
   ]
   return await broadcastKeychainOperation(author, deleteOperation)
 }
+
+export const isUserAlreadyVotedForProposal = (username) => {
+  return new Promise((resolve, reject) => {
+    api.callAsync('condenser_api.list_proposal_votes', [[263], 1000, "by_proposal_voter", "ascending", "votable"])
+      .then((result) => {
+        const vote = result.filter(vote => vote.voter === username)
+
+        if(vote.length===1) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        reject(error)
+      })
+  })
+}
