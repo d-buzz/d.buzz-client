@@ -27,9 +27,13 @@ import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actio
 import { createUseStyles } from 'react-jss'
 import { isMobile } from 'react-device-detect'
 import { isUserAlreadyVotedForProposal } from 'services/api'
+import IconButton from '@material-ui/core/IconButton'
+import { CloseIcon } from 'components/elements'
+import Cookies from 'js-cookie'
 
 const useStyles = createUseStyles(theme => ({
   opensourceWrapper: {
+    position: 'relative',
     padding: '25px 0px 25px 0px',
     width: '100%',
     display: 'flex',
@@ -139,20 +143,50 @@ const Trending = (props) => {
 
   useEffect(() =>{
     if(user.username) {
-      isUserAlreadyVotedForProposal(user.username)
-        .then((response) => {
-          setIsUserVotedForProposal(response)
-        })
+      const showProposalBannerString = Cookies.get('showProposalBanner')
+  
+      if (showProposalBannerString) {
+        const showProposalBanner = JSON.parse(showProposalBannerString)
+
+        if(showProposalBanner.visibility === true) {
+          isUserAlreadyVotedForProposal(user.username)
+            .then((response) => {
+              setIsUserVotedForProposal(response)
+            })
+        } else {
+          setIsUserVotedForProposal(true)
+        }
+      } else {
+        isUserAlreadyVotedForProposal(user.username)
+          .then((response) => {
+            setIsUserVotedForProposal(response)
+          })
+      }
     } else {
       setIsUserVotedForProposal(false)
     }
   }, [user])
+
+  const handleHideProposalBanner = () => {
+    const showProposalBanner = {
+      visibility: false,
+    }
+
+    const showProposalBannerString = JSON.stringify(showProposalBanner)
+
+    Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
+
+    setIsUserVotedForProposal(true)
+  }
 
   return (
     <React.Fragment>
       <HelmetGenerator page='Trending' />
       {!isUserVotedForProposal &&
         <div className={classes.opensourceWrapper}>
+          <IconButton style={{ position: 'absolute', right: 0, top: 15, marginLeft: 'auto', marginRight: 15 }} onClick={handleHideProposalBanner}>
+            <CloseIcon />
+          </IconButton>
           {isMobile ? <span className='title'>Support & Open Source : D.Buzz</span> : <span className='title'>Help us OPEN SOURCE & continue : DBUZZ</span>}
           <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>
         </div>}
