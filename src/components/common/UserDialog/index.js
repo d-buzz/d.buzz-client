@@ -136,7 +136,6 @@ const UserDialog = React.memo((props) => {
       const { open } = userDialogData
       if(open) {
         const { author, anchorEl } = userDialogData
-        console.log(userDialogData)
         if(!author.did) {
           setAnchor(anchorEl)
           setAuthor(author)

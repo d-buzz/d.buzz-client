@@ -48,6 +48,7 @@ import { checkForCeramicAccount } from 'services/ceramic'
 import ViewImageModal from 'components/modals/ViewImageModal'
 import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
 import { Helmet } from 'react-helmet'
+import DeleteBuzzModal from 'components/modals/DeleteBuzzModal'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -56,7 +57,7 @@ const useStyles = createUseStyles(theme => ({
     marginTop: 0,
     borderBottom: theme.border.primary,
     '& img': {
-      borderRadius: '15px 15px',
+      // borderRadius: '15px 15px',
     },
     '& iframe': {
       borderRadius: '15px 15px',
@@ -241,6 +242,7 @@ const Content = (props) => {
   const [invalidBuzz, setInvalidBuzz] = useState(false)
   const [addToPocketModal, setAddToPocketModal] = useState(false)
   const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
+  const [deleteBuzzModal, setDeleteBuzzModal] = useState(false)
 
 
   const {
@@ -262,6 +264,7 @@ const Content = (props) => {
 
 
   let { body } = content || ''
+  const { title } = content || ''
   body = truncateBody(body || '')
 
   let {  max_accepted_payout } = content || '0.00'
@@ -276,6 +279,14 @@ const Content = (props) => {
 
   const [ceramicUser, setCeramicUser] = useState(false)
   const [ceramicPost, setCeramicPost] = useState(false)
+
+  useEffect(() => {
+    if(title?.endsWith('...') && title?.length===86 && content && body) {
+      // replace ... from title and body and merge them
+      // eslint-disable-next-line
+      body = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
+    }
+  }, [content, title, body])
 
   useEffect(() => {
     if(checkForCeramicAccount(username)) {
@@ -526,8 +537,10 @@ const Content = (props) => {
     setSelectedAddToPocketBuzz(null)
   }
 
-  useEffect(() => {
-  }, [originalContent])
+  const handleClickDeleteBuzz = () => {
+    setAnchorEl(null)
+    setDeleteBuzzModal(true)
+  }
 
   return (
     <React.Fragment>
@@ -616,7 +629,7 @@ const Content = (props) => {
               )}
               <div style={{ marginTop: 10 }}>
                 <label className={classes.meta}>
-                  {!created.endsWith('Z') ? moment(`${created}Z`).local().format('LTS • \nLL') : moment(created).local().format('LTS • \nLL')}
+                  {!created.endsWith('Z') ? moment(`${created}Z`).local().format('h:mm A • \nLL') : moment(created).local().format('h:mm A • \nLL')}
                   {app && <React.Fragment> • Posted using <b className={classes.strong}>{app}</b></React.Fragment>}
                 </label>
               </div>
@@ -654,6 +667,15 @@ const Content = (props) => {
                 <React.Fragment>
                   {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
+                  {active_votes.length===0 && replyCount===0 &&
+                    <MenuItem
+                      style={{ backgroundColor: '#E61C34' }}
+                      onClick={handleClickDeleteBuzz}
+                    >
+                      <span className='delete-buzz-button'>
+                        Delete
+                      </span>
+                    </MenuItem>}
                   <MenuItem onClick={openTweetBox}>Buzz to Twitter</MenuItem>
                 </React.Fragment>
               )}
@@ -668,6 +690,7 @@ const Content = (props) => {
                 <Col>
                   <PostActions
                     disableExtraPadding={true}
+                    title={title}
                     body={body}
                     author={username}
                     permlink={permlink}
@@ -714,8 +737,9 @@ const Content = (props) => {
           <span className='errorHint'>Try searching for something else.</span>
         </div>}
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
-      <ViewImageModal show={viewImageModal} imageUrl={viewImageModal} onHide={() => setViewImageModal(null)}/>
+      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageModal} onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
       <LinkConfirmationModal link={linkConfirmationModal} onHide={setLinkConfirmationModal} />
+      <DeleteBuzzModal show={deleteBuzzModal} onHide={setDeleteBuzzModal} buzzId={`@${username}/${permlink}`} />
     </React.Fragment>
   )
 }

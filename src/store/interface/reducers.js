@@ -50,6 +50,10 @@ const defaultState = fromJS({
   accountSearchListButton : { show : false, list_type: null },
   accountSearchListKeyword : '',
   buzzTitleModalStatus: false,
+  viewImageModal: {
+    selectedImage: '',
+    images: [],
+  },
 })
 
 export const interfaces = (state = defaultState, { type, payload }) => {

@@ -110,6 +110,18 @@ const SideBarRight = (props) => {
   const [hivePrice, setHivePrice] = useState(0)
   const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
+
+  const stagingVersion = process.env.REACT_APP_STAGING_VERSION
+
+  useEffect(() => {
+    if(window.location.host === 'staging.d.buzz') {
+      setIsStaging(true)
+    } else {
+      setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
+  const [isStaging, setIsStaging] = useState(null)
   const [isLite, setIsLite] = useState(null)
 
   
@@ -176,7 +188,6 @@ const SideBarRight = (props) => {
 
   useEffect(() => {
     (async function resources() {
-
       const hivePrice = await getPrice('hive') || 'NA'
       const hbdPrice = await getPrice('hbd') || 'NA'
 
@@ -236,7 +247,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging</i> : isLite ? <i>lite</i> : ''}</label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>} : isStaging ? <i>staging</i> : isLite ? <i>lite</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>

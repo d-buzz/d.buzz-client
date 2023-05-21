@@ -781,7 +781,7 @@ export const hasGeneratePostService = (account, title, tags, body, payout, perml
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_hbd': 5000,
+        'percent_hbd': 10000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         extensions,
@@ -1340,7 +1340,7 @@ export const generatePostOperations = (account, title, body, tags, payout, perm)
         'author': account,
         permlink,
         max_accepted_payout,
-        'percent_hbd': 5000,
+        'percent_hbd': 10000,
         'allow_votes': true,
         'allow_curation_rewards': true,
         extensions,
@@ -1704,6 +1704,7 @@ export const getPrice = async (symbol) => {
       validateStatus: () => true,
     }
     const response = (await axios(getPriceRequest)).data
+
     resolve(response || {})
   })
 }
@@ -1715,5 +1716,53 @@ export const getHivePrice = async() => {
     )
     const { hive } = data
     resolve(hive.usd)
+  })
+}
+
+export const deleteBuzzWithPostingKey = async (user, author, permalink) => {
+  let { login_data } = user
+  login_data = extractLoginData(login_data)
+  const wif = login_data[1]
+  const deleteOperation = [
+    [
+      "delete_comment",
+      {
+        "author": author,
+        "permlink": permalink,
+      },
+    ],
+  ]
+  return await broadcastOperation(deleteOperation, [wif])
+}
+
+export const deleteBuzzWitKeychain = async (author, permalink) => {
+  const deleteOperation = [
+    [
+      "delete_comment",
+      {
+        "author": author,
+        "permlink": permalink,
+      },
+    ],
+  ]
+  return await broadcastKeychainOperation(author, deleteOperation)
+}
+
+export const isUserAlreadyVotedForProposal = (username) => {
+  return new Promise((resolve, reject) => {
+    api.callAsync('condenser_api.list_proposal_votes', [[263], 1000, "by_proposal_voter", "ascending", "votable"])
+      .then((result) => {
+        const vote = result.filter(vote => vote.voter === username)
+
+        if(vote.length===1) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        reject(error)
+      })
   })
 }

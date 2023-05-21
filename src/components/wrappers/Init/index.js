@@ -101,6 +101,19 @@ const SplashScreen = () => {
   const theme = getTheme()
 
   const [isStaging, setIsStaging] = useState(null)
+
+  const stagingVersion = process.env.REACT_APP_STAGING_VERSION
+
+  useEffect(() => {
+    if(window.location.host === 'staging.d.buzz') {
+      setIsStaging(true)
+    } else {
+      setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
+
+  const [isStaging, setIsStaging] = useState(null)
   const [isLite, setIsLite] = useState(null)
 
   useEffect(() => {
@@ -141,7 +154,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING</b> : isLite ? <b>LITE</b> : ''}
+            {!isStaging ?  {!isStaging && !isLite ?  <b>v{VERSION}</b> : <b>STAGING v{stagingVersion}</b>} : isStaging ? <b>STAGING</b> : isLite ? <b>LITE</b> : ''}
           </Typography>
         </center>
       </div>
@@ -166,6 +179,16 @@ const Init = (props) => {
   const classes = useStyles()
   const [init, setInit] = useState(false)
   const [isLatest, setIsLatest] = useState(true)
+  const [isStaging, setIsStaging] = useState(null)
+
+  useEffect(() => {
+    if(window.location.host === 'staging.d.buzz') {
+      setIsStaging(true)
+    } else {
+      setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
   const [isStaging, setIsStaging] = useState(null)
   const [isLite, setIsLite] = useState(null)
 
@@ -207,27 +230,49 @@ const Init = (props) => {
   }
 
   useEffect(() => {
-    if(isStaging !== null && !isLite !== null) {
+    if(isStaging !== null) {
+      if(!isStaging) {
+        if(isStaging !== null && !isLite !== null) {
       if(!isStaging && !isLite) {
         checkVersionRequest().then((isLatest) => {
-          setIsLatest(isLatest)
-          getBestRpcNode().then(() => {
-            getWSNodeHAS()
-            initWSHASConnectionRequest()
-            // getBestCeramicHost().then((host) => {
-            //   initCeremicLoginRequest()
-            //   localStorage.setItem('ceramic', host)
-            // })
-            const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-            setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-              getSavedUserRequest().then(() => {
-                setInit(true)
-                getCensorTypesRequest()
-                getTrendingTagsRequest()
+              setIsLatest(isLatest)
+              getBestRpcNode().then(() => {
+                getWSNodeHAS()
+                initWSHASConnectionRequest()
+                // getBestCeramicHost().then((host) => {
+                //   initCeremicLoginRequest()
+                //   localStorage.setItem('ceramic', host)
+                // })
+                const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+                setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+                  getSavedUserRequest().then(() => {
+                    setInit(true)
+                    getCensorTypesRequest()
+                    getTrendingTagsRequest()
+                  })
+                })
               })
+            })
+      } else {
+        setIsLatest(isLatest)
+        getBestRpcNode().then(() => {
+          getWSNodeHAS()
+          initWSHASConnectionRequest()
+          // getBestCeramicHost().then((host) => {
+          //   initCeremicLoginRequest()
+          //   localStorage.setItem('ceramic', host)
+          // })
+          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+            getSavedUserRequest().then(() => {
+              setInit(true)
+              getCensorTypesRequest()
+              getTrendingTagsRequest()
             })
           })
         })
+      }
+    }
       } else {
         setIsLatest(isLatest)
         getBestRpcNode().then(() => {
@@ -249,7 +294,7 @@ const Init = (props) => {
       }
     }
     // eslint-disable-next-line
-  }, [isStaging, isLite])
+  }, [isStagingisStaging, isLite])
 
   return (
     <React.Fragment>
