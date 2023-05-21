@@ -502,8 +502,7 @@ const Profile = (props) => {
       setAvatarUrl(userProfileImage)
     } else if(checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
       const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
-      alert(avatar)
-      // setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
+      setAvatarUrl(proxyImage(`https://ipfs.io/ipfs/${avatar}`))
     } else {
       setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
     }
@@ -700,7 +699,7 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
+                <img src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && proxyImage(`https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`)} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
               </div>
               <div className={classes.wrapper}>
                 <Row>

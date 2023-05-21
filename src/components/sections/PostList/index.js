@@ -308,7 +308,7 @@ const PostList = React.memo((props) => {
   const [pockets, setPockets] = useState([])
 
   useEffect(() => {
-    if(title.endsWith('...') && title.length===86 && content && body) {
+    if(title?.endsWith('...') && title.length===86 && content && body) {
       // replace ... from title and body and merge them
       setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
     }
