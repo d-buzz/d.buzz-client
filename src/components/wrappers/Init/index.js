@@ -101,20 +101,10 @@ const SplashScreen = () => {
   const theme = getTheme()
 
   const [isStaging, setIsStaging] = useState(null)
+  const [isLite, setIsLite] = useState(null)
+
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
-
-  useEffect(() => {
-    if(window.location.host === 'staging.d.buzz') {
-      setIsStaging(true)
-    } else {
-      setIsStaging(false)
-    }
-    // eslint-disable-next-line
-  }, [])
-
-  const [isStaging, setIsStaging] = useState(null)
-  const [isLite, setIsLite] = useState(null)
 
   useEffect(() => {
     if(window.location.host === 'staging.d.buzz') {
@@ -154,7 +144,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            {!isStaging ?  {!isStaging && !isLite ?  <b>v{VERSION}</b> : <b>STAGING v{stagingVersion}</b>} : isStaging ? <b>STAGING</b> : isLite ? <b>LITE</b> : ''}
+            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING v{stagingVersion}</b> : isLite ? <b>LITE</b> : ''}
           </Typography>
         </center>
       </div>
@@ -180,16 +170,6 @@ const Init = (props) => {
   const [init, setInit] = useState(false)
   const [isLatest, setIsLatest] = useState(true)
   const [isStaging, setIsStaging] = useState(null)
-
-  useEffect(() => {
-    if(window.location.host === 'staging.d.buzz') {
-      setIsStaging(true)
-    } else {
-      setIsStaging(false)
-    }
-    // eslint-disable-next-line
-  }, [])
-  const [isStaging, setIsStaging] = useState(null)
   const [isLite, setIsLite] = useState(null)
 
   useEffect(() => {
@@ -200,6 +180,7 @@ const Init = (props) => {
     }
     // eslint-disable-next-line
   }, [])
+
   useEffect(() => {
     if(window.location.host === 'lite.d.buzz') {
       setIsLite(true)
@@ -294,7 +275,7 @@ const Init = (props) => {
       }
     }
     // eslint-disable-next-line
-  }, [isStagingisStaging, isLite])
+  }, [isStaging, isLite])
 
   return (
     <React.Fragment>

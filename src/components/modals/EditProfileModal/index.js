@@ -411,7 +411,6 @@ const EditProfileModal = (props) => {
           broadcastNotification('success','Profile updated successfully')
           setUpdatingProfile(false)
           onHide()
-          reloadProfile()
         })
         .catch((err) => {
           setUpdatingProfile(false)
