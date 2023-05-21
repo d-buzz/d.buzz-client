@@ -220,6 +220,13 @@ export const replyRequest = async(parentId, did, body) => {
   }, parentId)
 }
 
+export const generateHiveCeramicParentId = async (author, permlink) => {
+  return (await axios.post("https://union.us-02.infra.3speak.tv/api/v1/create_stream_id", {
+    author,
+    permlink,
+  })).data?.stream_id
+}
+
 
 export const getUserPostRequest = async(did) => {
   const posts = []

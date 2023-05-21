@@ -20,7 +20,7 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
-import { checkForCeramicAccount, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
+import { checkForCeramicAccount, generateHiveCeramicParentId, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
 import { publishReplyWithHAS } from 'services/api'
 import { isMobile } from 'web3modal'
 
@@ -445,25 +445,28 @@ const ReplyFormModal = (props) => {
             }
           })
       } else {
-        replyRequest(permlink, author, content)
-          .then((data) => {
-            if(data) {
-              broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-              setReplyDone(true)
-              closeReplyModal()
-              setReplying(false)
+        generateHiveCeramicParentId(author, permlink)
+        .then((parent_id) => {
+          replyRequest(parent_id, author, content)
+            .then((data) => {
+              if(data) {
+                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                setReplyDone(true)
+                closeReplyModal()
+                setReplying(false)
+                setLoading(false)
+              } else {
+                setReplying(false)
+                setLoading(false)
+                broadcastNotification('error', 'There was an error while replying to this buzz.')
+              }
+            })
+            .catch((errorMessage) => {
               setLoading(false)
-            } else {
               setReplying(false)
-              setLoading(false)
-              broadcastNotification('error', 'There was an error while replying to this buzz.')
-            }
-          })
-          .catch((errorMessage) => {
-            setLoading(false)
-            setReplying(false)
-            broadcastNotification('error', errorMessage)
-          })
+              broadcastNotification('error', errorMessage)
+            })
+        })
       }
     }
   }
