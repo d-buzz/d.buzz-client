@@ -20,7 +20,7 @@ import { setBasicProfile } from 'services/ceramic'
 import Spinner from 'components/elements/progress/Spinner'
 import heic2any from 'heic2any'
 
-const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
+import IconButton from '@material-ui/core/IconButton'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
