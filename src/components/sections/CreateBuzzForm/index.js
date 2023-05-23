@@ -43,8 +43,8 @@ import { styled } from '@material-ui/styles'
 import { checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink } from 'services/ceramic'
 import { createPermlink, publishPostWithHAS } from 'services/api'
 import heic2any from 'heic2any'
-const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
-const CircularProgress = React.lazy(() => import('@material-ui/core/CircularProgress'))
+import IconButton from '@material-ui/core/IconButton'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = createUseStyles(theme => ({
   container: {

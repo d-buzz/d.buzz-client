@@ -19,7 +19,6 @@ import { pending } from 'redux-saga-thunk'
 import { setBasicProfile } from 'services/ceramic'
 import Spinner from 'components/elements/progress/Spinner'
 import heic2any from 'heic2any'
-
 import IconButton from '@material-ui/core/IconButton'
 
 const useStyles = createUseStyles(theme => ({
