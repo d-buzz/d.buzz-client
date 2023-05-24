@@ -19,12 +19,13 @@ import {
   fetchGlobalProperties,
   fetchAccounts,
   fetchAccountTransferHistory,
-  // getEstimateAccountValue,
   generateClaimRewardOperation,
   broadcastOperation,
   broadcastKeychainOperation,
   extractLoginData,
   getHivePrice,
+  getHivePower,
+  getHbdPrice,
 } from 'services/api'
 
 import { errorMessageComposer } from "services/helper"
@@ -33,35 +34,28 @@ function* getWalletBalanceRequest(payload, meta) {
   try {
     const { username } = payload
 
-    const props = yield call(fetchGlobalProperties)
     const account = yield call(fetchAccounts, username)
-    // TODO: has an error in the formatter
-    // const estAV = yield call(getEstimateAccountValue, account[0])
-    const hivePrice = yield call(getHivePrice)
 
-    const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares } = account[0]
-    const { total_vesting_fund_hive, total_vesting_shares } = props
+    const hivePriceUSD = yield call(getHivePrice)
+    const hbdPriceUSD = yield call(getHbdPrice)
 
-    const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)),6)
-    const avail = parseFloat(vesting_shares) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
-    const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)),6)
-    const balanceHive = parseFloat(account[0].balance.split(" ")[0])
-    const savingBalanceHive = parseFloat(account[0].savings_balance.split(" ")[0])
+    const hiveBalance = parseFloat(account[0].balance.split(" ")[0])
     const hbdBalance = parseFloat(account[0].hbd_balance)
-    const hbdBalanceSavings = parseFloat(account[0].savings_hbd_balance.split(" ")[0])
-    
-    const totalHbd = hbdBalance + hbdBalanceSavings
-    const totalHive = vestHive + balanceHive + savingBalanceHive
 
-    const estimatedAccountValue = (totalHive * hivePrice + totalHbd).toFixed(2)
+    const hivePower = (yield call(getHivePower, username)).toFixed(3)
+    const estimatedAccountValue = ((hiveBalance + hivePower) * hivePriceUSD + hbdBalance * hbdPriceUSD).toFixed(2)
+
+    const hiveTokens = `${parseFloat(account[0].balance) === 0 ? `0` : parseFloat(account[0].balance).toFixed(2)} HIVE`
+    const hiveSavings = `${parseFloat(account[0].savings_balance) === 0 ? `0` : parseFloat(account[0].savings_balance).toFixed(2)} HIVE`
+    const hbdSavings = `${parseFloat(account[0].savings_hbd_balance) === 0 ? `0` : parseFloat(account[0].savings_hbd_balance).toFixed(2)} HBD`
 
     const walletInfo = {
       pending_rewards: account[0].reward_hbd_balance,
-      hive_tokens: account[0].balance,
-      hive_power : parseFloat(parseFloat(vestHive) + parseFloat(receiveVesting)).toFixed(3),
+      hive_tokens: hiveTokens,
+      hive_power : hivePower,
       hbd : account[0].hbd_balance,
-      savings: account[0].savings_balance,
-      savings_hbd : account[0].savings_hbd_balance,
+      savings: hiveSavings,
+      savings_hbd : hbdSavings,
       estimate_account_value: estimatedAccountValue,
     }
     yield put(getWalletBalanceSuccess(walletInfo, meta))
