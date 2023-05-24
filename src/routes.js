@@ -132,7 +132,7 @@ const routes =  [
         component: Tags,
       },
       {
-        path: '/@:username/c/:permlink',
+        path: '/@:username/:permlink',
         exact: true,
         component: Content,
       },

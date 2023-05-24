@@ -1139,7 +1139,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handlePublishThread = () => {
-    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/c/${buzzPermlink})` : '')
+    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/${buzzPermlink})` : '')
 
     if(isThread) {
       setBuzzing(true)
@@ -1153,7 +1153,7 @@ const CreateBuzzForm = (props) => {
               setBuzzing(false)
               if(nextBuzz === threadCount){
                 hideModalCallback()
-                history.push(`/@${buzzData?.author}/c/${buzzData?.permlink}`)
+                history.push(`/@${buzzData?.author}/${buzzData?.permlink}`)
                 resetBuzzForm()
                 setTimeout(() => {
                   window.location.reload(true)
@@ -1170,7 +1170,7 @@ const CreateBuzzForm = (props) => {
         setBuzzing(false)
         if(nextBuzz === threadCount){
           hideModalCallback()
-          history.push(`/@${buzzData?.author}/c/${buzzData?.permlink}`)
+          history.push(`/@${buzzData?.author}/${buzzData?.permlink}`)
           resetBuzzForm()
           setTimeout(() => {
             window.location.reload(true)
@@ -1221,7 +1221,7 @@ const CreateBuzzForm = (props) => {
                       clearIntentBuzz()
                       resetBuzzForm()
                       hideModalCallback()
-                      history.push(`/@${author}/c/${permlink}`)
+                      history.push(`/@${author}/${permlink}`)
                     } else if (m.msg?.status === 'rejected') {
                       const status = m.msg?.status
                       console.log(status)
@@ -1254,7 +1254,7 @@ const CreateBuzzForm = (props) => {
                 if(!isThread) {
                   hideModalCallback()
                   resetBuzzForm()
-                  history.push(`/@${author}/c/${permlink}`)
+                  history.push(`/@${author}/${permlink}`)
                 }
               } else {
                 broadcastNotification('error', data.errorMessage)
@@ -1278,7 +1278,7 @@ const CreateBuzzForm = (props) => {
               clearIntentBuzz()
               resetBuzzForm()
               hideModalCallback()
-              history.push(`/@${creatorId}/c/${streamId}`)
+              history.push(`/@${creatorId}/${streamId}`)
             }
           })
       }

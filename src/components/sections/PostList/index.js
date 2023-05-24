@@ -373,7 +373,7 @@ const PostList = React.memo((props) => {
 
     const username = author.did ? author.did : author
 
-    link += `/@${username}/c/${permlink}`
+    link += `/@${username}/${permlink}`
 
     return link
   }

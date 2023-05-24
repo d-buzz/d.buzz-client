@@ -444,7 +444,7 @@ const Content = (props) => {
 
   const generateParentLinks = (author, permlink) => {
     let link = `/@${author}`
-    link = `${link}/c/${permlink}`
+    link = `${link}/${permlink}`
 
     return link
   }
@@ -617,7 +617,7 @@ const Content = (props) => {
                         <br />
                         <ul>
                           <li>
-                            <a target="_blank" without rel="noopener noreferrer" href={`https://blog.d.buzz/#/@${author}/c/${permlink}`}>
+                            <a target="_blank" without rel="noopener noreferrer" href={`https://blog.d.buzz/#/@${author}/${permlink}`}>
                               <h6>View the full content</h6>
                             </a>
                           </li>
