@@ -1062,13 +1062,15 @@ const prepareHiveTubeVideoEmbeds = (
 
   let body = content
 
-  const links = parseUrls(content)
-
+  const links = parseUrls(content).filter(link => link.match(hiveTubeEmebedsRegex))
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
+
     links.forEach((link) => {
       link = link.replace(/&amp;/g, '&')
   
       const matchedLink = link.match(hiveTubeEmebedsRegex).filter((match) => match !== undefined)
+
       let match
       let domain
   
@@ -1084,7 +1086,6 @@ const prepareHiveTubeVideoEmbeds = (
    
       if(matchedLink) {
         match = link.match(/(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i)[2]
-        
       }
   
       if (match) {
@@ -1093,12 +1094,13 @@ const prepareHiveTubeVideoEmbeds = (
         videoEmbeds.push({ app: 'hive-tube-embed', domain, id })
       }
     })
-
+    
     if(body.match(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi)) {
       body = body.replace(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
     }
   }
+  
   return body
 }
 
