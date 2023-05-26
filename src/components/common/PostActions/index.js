@@ -420,7 +420,16 @@ const PostActions = (props) => {
   }
 
   const handleClickReply = () => {
-    openReplyModal(author, permlink, body, treeHistory, replyRef)
+
+    let bodyContent = body
+
+    if(title?.endsWith('...') && title?.length===86 && body) {
+      // replace ... from title and body and merge them
+      // eslint-disable-next-line
+      bodyContent = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
+    }
+
+    openReplyModal(author, permlink, bodyContent, treeHistory, replyRef)
   }
 
   const getPayoutDate = async (date) => {
