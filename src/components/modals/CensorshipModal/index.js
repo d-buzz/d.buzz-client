@@ -181,7 +181,7 @@ const CensorhipModal = (props) => {
                   <h6>Would you like to censor this buzz?</h6>
                   <p className={classes.text}>
                     Clicking yes will mark this buzz as censored <br />
-                    <Link className={classes.link} to={`/@${author}/c/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/c/${permlink}</Link> <br />
+                    <Link className={classes.link} to={`/@${author}/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/${permlink}</Link> <br />
                   </p>
                   <p className={classes.text}>
                     Pick a reason below why this buzz should be censored
