@@ -551,7 +551,7 @@ const Content = (props) => {
       </Helmet>
       {!loadingContent && author && (
         <React.Fragment>
-          <HelmetGenerator content={body.split('\n')[0]} user={author} />
+          <HelmetGenerator content={title.split('\n')[0]} user={author} />
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>

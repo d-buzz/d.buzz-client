@@ -42,7 +42,7 @@ function* getWalletBalanceRequest(payload, meta) {
     const hiveBalance = parseFloat(account[0].balance.split(" ")[0])
     const hbdBalance = parseFloat(account[0].hbd_balance)
 
-    const hivePower = (yield call(getHivePower, username)).toFixed(3)
+    const hivePower = parseFloat((yield call(getHivePower, username)).toFixed(3))
     const estimatedAccountValue = ((hiveBalance + hivePower) * hivePriceUSD + hbdBalance * hbdPriceUSD).toFixed(2)
 
     const hiveTokens = `${parseFloat(account[0].balance) === 0 ? `0` : parseFloat(account[0].balance).toFixed(2)} HIVE`
