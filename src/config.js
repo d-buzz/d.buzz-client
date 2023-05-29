@@ -7,8 +7,6 @@ const config = {
   VIDEO_API: process.env.REACT_APP_VIDEO_API || 'http://localhost:5454/api/v1',
   CENSOR_API: process.env.REACT_APP_CENSOR_API || 'http://localhost:3001/api/v1/censor',
   PRICE_API: process.env.REACT_APP_PRICE_CHART_API,
-  FLEEK_API_KEY: process.env.REACT_APP_FLEEK_API_KEY,
-  FLEEK_API_SECRET: process.env.REACT_APP_FLEEK_API_SECRET,
   API_KEY: 'ixc0LdVDyuWarUhdt9ix3w==',
   API_SECRET: 'D4e7pwZphykKWsG0ElancXSzDmDEqImeC9yenZMMfVo=',
   BUCKET: 'nathansenn-team-bucket.storage.fleek.co',

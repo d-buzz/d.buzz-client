@@ -348,3 +348,32 @@ input[type=number] {
 .delete-buzz-button {
   color: #ffffff !important;
 }
+
+/* Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Dark mode */
+  ::-webkit-scrollbar-track {
+      background: #333;
+  }
+  ::-webkit-scrollbar-thumb {
+      background-color: #f50057; 
+      border-radius: 20px;
+      border: 3px solid #333;
+  }
+} 
+
+@media (prefers-color-scheme: light) {
+  /* Light mode */
+  ::-webkit-scrollbar-track {
+      background: #f2f2f2;
+  }
+  ::-webkit-scrollbar-thumb {
+      background-color: #f50057; 
+      border-radius: 20px;
+      border: 3px solid #f2f2f2;
+  }
+}

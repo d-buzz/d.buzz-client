@@ -76,11 +76,11 @@ const routes =  [
         exact: true,
         component: GetStarted,
       },
-      // {
-      //   path: '/trending',
-      //   exact: true,
-      //   component: Trending,
-      // },
+      {
+        path: '/trending',
+        exact: true,
+        component: Trending,
+      },
       {
         path: '/latest',
         exact: true,
@@ -120,6 +120,27 @@ const routes =  [
             path: '/search/people',
             exact: true,
             component: SearchPeople,
+          },
+        ],
+      },
+      {
+        path: '/@:username/wallet',
+        component: Wallet,
+        routes: [
+          {
+            path: '/@:username/wallet',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/balances',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/history',
+            exact: true,
+            component: WalletHistory,
           },
         ],
       },
@@ -196,27 +217,6 @@ const routes =  [
             path: '/@:username/lists/blacklisted/followed',
             exact: true,
             component: AccountBlacklistedFollowed,
-          },
-        ],
-      },
-      {
-        path: '/@:username/wallet',
-        component: Wallet,
-        routes: [
-          {
-            path: '/@:username/wallet',
-            exact: true,
-            component: WalletBalances,
-          },
-          {
-            path: '/@:username/wallet/balances',
-            exact: true,
-            component: WalletBalances,
-          },
-          {
-            path: '/@:username/wallet/history',
-            exact: true,
-            component: WalletHistory,
           },
         ],
       },

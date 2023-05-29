@@ -218,7 +218,18 @@ const GuardedAppFrame = (props) => {
     if(e.key === 'Enter') {
       clearSearchPosts()
       searchRequest(search)
-      history.push(`/search/posts?q=${encodeURIComponent(search)}`)
+
+      let link = ''
+
+      if(search.startsWith('#')) {
+        link += `/search/posts?q=${encodeURIComponent(search)}`
+      } else if(search.startsWith('@')) {
+        link += `/search/people?q=${encodeURIComponent(search)}`
+      } else {
+        link += `/search/posts?q=${encodeURIComponent(search)}`
+      }
+
+      history.push(link)
     }
   }
 
