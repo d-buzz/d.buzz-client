@@ -1300,7 +1300,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
       //   // render hashtags 
-      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
+      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
       // // render markdown images

@@ -111,14 +111,22 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  navBar: {
+    display: 'flex !important',
+    flexDirection: 'column !important',
+    alignItems: 'center !important',
+    height: '100vh',
+    width: '100%',
+  },
   navLinkContainer: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'start',
-    height: '90vh',
     fontSize: 14,
     overflow: 'auto',
+    overflowX: 'hidden',
     width: '100%',
+    height: 'fit-content',
   },
   bottom: {
     position: 'absolute',
@@ -132,8 +140,8 @@ const useStyles = createUseStyles(theme => ({
     transitionProperty: 'background-color',
   },
   bottomMinify: {
-    position: 'absolute',
-    bottom: 150,
+    marginBottom: 25,
+    marginTop: 'auto',
     ...theme.left.sidebar.bottom.wrapperMinify,
   },
   inline: {
@@ -177,6 +185,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   logoutButton: {
+    marginBottom: 25,
     marginTop: 'auto',
     display: 'flex',
     height: 'max-content',
@@ -230,12 +239,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '0.60em',
     fontWeight: 600,
     userSelect: 'none',
-  },
-  navBar: {
-    display: 'flex !important',
-    flexDirection: 'column !important',
-    alignItems: 'center !important',
-    width: '100%',
   },
 }))
 
@@ -494,7 +497,7 @@ const SideBarLeft = (props) => {
     case '/profile':
       setActiveView('profile')
       break
-    case `/@${username}/wallet`:
+    case `/@${username}/wallet/balances`:
       setActiveView('wallet')
       break
     default:
@@ -546,7 +549,7 @@ const SideBarLeft = (props) => {
     {
       name: 'Wallet',
       icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-      path: `/@${username}/wallet`,
+      path: `/@${username}/wallet/balances`,
       onClick: () => handelClickItem('wallet'),
     },
     {
@@ -600,7 +603,7 @@ const SideBarLeft = (props) => {
   return (
     <React.Fragment>
       <div style={{ height: '100vh', width: '100%' }}>
-        <Nav className='flex-row' style={{ width: '100%' }}>
+        <Nav className='flex-row' style={{ width: '100%', height: 'fit-content' }}>
           <LinkContainer className={classes.navBar} style={{ padding: !minify ? '0 12px' : 0 }}>
             <NavbarBrand href="/" style={{ display: 'grid', gridAutoFlow: minify ? 'row' : 'column', placeItems: 'center', marginRight: 0, alignSelf: minify ? 'center' : 'flex-start', paddingLeft: !minify ? 0 : 0, transform: minify ? 'translateY(-5px)' : 0 }}>
               <div style={{ paddingTop: !minify ? 5 : 0, ...(!minify ? { marginLeft: 15, marginRight: 15 } : { marginLeft: 0 }) }}>
@@ -673,29 +676,29 @@ const SideBarLeft = (props) => {
                   <CreateBuzzIcon />
                 </IconButton>
               )}
-              {!fetchingUser && !minify && (
-                <div className={classes.logoutButton}>
-                  <div className={classes.avatarWrapper} onClick={handleClickLogout}>
-                    <div style={{ display: 'flex', width: '100%' }}>
-                      <React.Fragment>
-                        <Avatar author={username} avatarUrl={userAvatarUrl} />
-                        <div style={{ display: 'flex', width: '100%', paddingTop: !ceramicUser ? 5 : 0 }}>
-                          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', ...ceramicStyles }}>
-                            <div style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
-                              <p className={classes.logoutLabel} styles={{ fontSize: ceramicUser ? 24 : 14 }}>Logout</p>
-                              {!ceramicUser && <p className={classes.logoutUsername}>{username}</p>}
-                            </div>
-                            <div style={{ display: 'flex', paddingTop: !ceramicUser ? 6 : 0, marginLeft: 15 }} className={classes.logoutIcon}>
-                              <PowerIcon />
-                            </div>
+            </div>
+            {!fetchingUser && !minify && (
+              <div className={classes.logoutButton}>
+                <div className={classes.avatarWrapper} onClick={handleClickLogout}>
+                  <div style={{ display: 'flex', width: '100%' }}>
+                    <React.Fragment>
+                      <Avatar author={username} avatarUrl={userAvatarUrl} />
+                      <div style={{ display: 'flex', width: '100%', paddingTop: !ceramicUser ? 5 : 0 }}>
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', ...ceramicStyles }}>
+                          <div style={{ padding: 0, textAlign: 'center', verticalAlign: 'center' }}>
+                            <p className={classes.logoutLabel} styles={{ fontSize: ceramicUser ? 24 : 14 }}>Logout</p>
+                            {!ceramicUser && <p className={classes.logoutUsername}>{username}</p>}
+                          </div>
+                          <div style={{ display: 'flex', paddingTop: !ceramicUser ? 6 : 0, marginLeft: 15 }} className={classes.logoutIcon}>
+                            <PowerIcon />
                           </div>
                         </div>
-                      </React.Fragment>
-                    </div>
+                      </div>
+                    </React.Fragment>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             {minify && (
               <div className={classes.bottomMinify}>
                 <IconButton
