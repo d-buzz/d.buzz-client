@@ -83,6 +83,7 @@ const Tags = (props) => {
             author={item.author}
             permlink={item.permlink}
             created={item.created_at}
+            title={item.title}
             body={item.body}
             upvotes={item.total_votes}
             replyCount={item.children}

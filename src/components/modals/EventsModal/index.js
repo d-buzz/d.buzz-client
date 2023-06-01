@@ -3,7 +3,7 @@ import CloseIcon from 'components/elements/Icons/CloseIcon'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
-const IconButton = React.lazy(() => import('@material-ui/core/IconButton'))
+import IconButton from '@material-ui/core/IconButton'
 
 const useStyles = createUseStyles(theme => ({
   modal: {

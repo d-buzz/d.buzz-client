@@ -179,7 +179,7 @@ const Notification = (props) => {
     const split = url.split('/')
 
     if(type !== 'follow') {
-      link = `/${split[0]}/c/${split[1]}`
+      link = `/${split[0]}/${split[1]}`
     } else {
       link = `/${split[0]}/t/buzz`
     }

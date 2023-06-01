@@ -123,7 +123,7 @@ const HideBuzzModal = (props) => {
                       <h6>Would you like to hide this buzz?</h6>
                       <p className={classes.text}>
                         Clicking yes will hide the buzz <br />
-                        <Link to={`/@${author}/c/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/c/${permlink}</Link> <br />
+                        <Link to={`/@${author}/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/${permlink}</Link> <br />
                         from your feeds on this browser
                       </p>
                     </React.Fragment>

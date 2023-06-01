@@ -68,8 +68,16 @@ const SearchField = (props) => {
       } else {
         link = '/ug/search'
       }
-      link += `/people?q=${encodeURIComponent(search)}`
-      history.replace(link)
+
+      if(search.startsWith('#')) {
+        link += `/posts?q=${encodeURIComponent(search)}`
+      } else if(search.startsWith('@')) {
+        link += `/people?q=${encodeURIComponent(search)}`
+      } else {
+        link += `/posts?q=${encodeURIComponent(search)}`
+      }
+      
+      history.push(link)
     }
   }
 
