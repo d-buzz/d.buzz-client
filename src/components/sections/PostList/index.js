@@ -307,6 +307,31 @@ const PostList = React.memo((props) => {
   const [seletedRemoveFromPocketBuzz, setSeletedRemoveFromPocketBuzz] = useState(null)
   const [pockets, setPockets] = useState([])
 
+  const buzzRowRef = useRef(null)
+
+  useEffect(() => {
+    if(title) {
+      if(title?.endsWith('...') && title.length===86 && content && body) {
+        // replace ... from title and body and merge them
+        setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
+      }
+    }
+  }, [title, content, body])
+
+  useEffect(() => {
+    if(title.endsWith('...') && title.length===86 && content && body) {
+      // replace ... from title and body and merge them
+      setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
+    }
+  }, [title, content, body])
+
+  useEffect(() => {
+    if(title.endsWith('...') && title.length===86 && content && body) {
+      // replace ... from title and body and merge them
+      setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
+    }
+  }, [title, content, body])
+
   useEffect(() => {
     if(title.endsWith('...') && title.length===86 && content && body) {
       // replace ... from title and body and merge them
@@ -373,7 +398,7 @@ const PostList = React.memo((props) => {
 
     const username = author.did ? author.did : author
 
-    link += `/@${username}/c/${permlink}`
+    link += `/@${username}/${permlink}`
 
     return link
   }
@@ -516,10 +541,28 @@ const PostList = React.memo((props) => {
     return pocketObject
   }
 
+  // handle dynamic image sizes
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => {
+      entries.forEach(() => {
+        if(onImageLoad) {
+          onImageLoad()
+        }
+      })
+    })
+
+    if (buzzRowRef.current) {
+      observer.observe(buzzRowRef.current)
+    }
+
+    return () => observer.disconnect()
+    // eslint-disable-next-line
+  }, [])
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {})}>
+        <div ref={buzzRowRef} className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>

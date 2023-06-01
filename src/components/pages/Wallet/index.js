@@ -102,7 +102,6 @@ const Wallet = (props) => {
       setIndex(1)
     }
   },[pathname])
-  
 
   return (
     <React.Fragment>

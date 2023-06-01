@@ -1682,6 +1682,19 @@ export const getEstimateAccountValue = (account) => {
   })
 }
 
+export const getHivePower = async (username) => {
+  const [account] = await api.getAccountsAsync([username])
+  const props = await api.getDynamicGlobalPropertiesAsync()
+  
+  const totalVests = parseFloat(props.total_vesting_shares)
+  const totalHive = parseFloat(props.total_vesting_fund_hive)
+  const userVests = parseFloat(account.vesting_shares)
+
+  const hivePower = (userVests / totalVests) * totalHive
+  
+  return hivePower
+}
+
 export const getPrice = async (symbol) => {
   return new Promise(async (resolve, reject) => {
     const getPriceRequest = {
@@ -1702,6 +1715,16 @@ export const getHivePrice = async() => {
     )
     const { hive } = data
     resolve(hive.usd)
+  })
+}
+
+export const getHbdPrice = async() => {
+  return new Promise(async(resolve) => {
+    const { data } = await axios.get(
+      "https://api.coingecko.com/api/v3/simple/price?ids=hive,hive_dollar&vs_currencies=usd",
+    )
+    const { hive_dollar } = data
+    resolve(hive_dollar.usd)
   })
 }
 

@@ -939,10 +939,34 @@ function* publishUpdateRequest(payload, meta) {
       json_metadata,
     } = original
 
-    const patch = createPatch(body.trim(), altered.trim())
-    const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, title, patch, json_metadata)
+    let updatedTitle
+    let updatedBody
+
+    const dbuzzImageRegex = /!\[(?:[^\]]*?)\]\((.+?)\)|(https:\/\/storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/(dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp|HEIC))|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
+    const images = altered.match(dbuzzImageRegex)
+    updatedBody = `${altered}`.replace(dbuzzImageRegex, '').trimStart()
+
+    updatedTitle = stripHtml(updatedBody)
+    
+    updatedTitle = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+    updatedTitle = `${updatedTitle}`.trim()
+  
+    if(updatedTitle.length > 82) {
+      updatedTitle = `${updatedTitle.substr(0, 82)} ...`
+      updatedBody = `... ${updatedBody.substring(82)}`
+    } else {
+      updatedTitle = ''
+    }
+  
+    if(images) {
+      updatedBody += `\n${images.toString().replace(/,/gi, ' ')}`
+    }
+
+    const patch = createPatch(body.trim(), updatedBody.trim())
+    const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, updatedTitle, patch, json_metadata)
 
     let success = false
+
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success

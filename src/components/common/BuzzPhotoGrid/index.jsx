@@ -159,10 +159,14 @@ const BuzzPhotoGrid = ({
     const image = document.querySelector(`img[src$="${url}"]`)
     image.src = `${window.location.origin}/noimage.svg`
     image.style.animation = 'none'
+    setTimeout(() => { 
+      image.style.visibility = 'visible'
+      onImageLoad()
+     }, 2000)
+
     if(onImageLoad) {
       onImageLoad()
     }
-    setTimeout(() => { image.style.visibility = 'visible' }, 2000)
   }
 
   return (
