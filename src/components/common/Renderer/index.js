@@ -1062,13 +1062,15 @@ const prepareHiveTubeVideoEmbeds = (
 
   let body = content
 
-  const links = parseUrls(content)
-
+  const links = parseUrls(content).filter(link => link.match(hiveTubeEmebedsRegex))
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
+
     links.forEach((link) => {
       link = link.replace(/&amp;/g, '&')
   
       const matchedLink = link.match(hiveTubeEmebedsRegex).filter((match) => match !== undefined)
+
       let match
       let domain
   
@@ -1084,7 +1086,6 @@ const prepareHiveTubeVideoEmbeds = (
    
       if(matchedLink) {
         match = link.match(/(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i)[2]
-        
       }
   
       if (match) {
@@ -1093,12 +1094,13 @@ const prepareHiveTubeVideoEmbeds = (
         videoEmbeds.push({ app: 'hive-tube-embed', domain, id })
       }
     })
-
+    
     if(body.match(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi)) {
       body = body.replace(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
     }
   }
+  
   return body
 }
 
@@ -1298,7 +1300,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       // // render usernames
       .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
       //   // render hashtags 
-      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
+      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
       .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
       // // render markdown images

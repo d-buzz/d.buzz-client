@@ -57,6 +57,7 @@ const SearchPosts = (props) => {
             author={item.author}
             permlink={item.permlink}
             created={item.created_at}
+            title={item.title}
             body={item.body}
             upvotes={item.total_votes}
             replyCount={item.children}
@@ -67,6 +68,7 @@ const SearchPosts = (props) => {
             highlightTag={`${query}`.replace('#', '')}
             disableUserMenu={true}
             disableOpacity={true}
+            type='HIVE'
           />),
         )}
       </InfiniteScroll>

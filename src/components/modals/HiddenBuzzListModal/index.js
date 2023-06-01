@@ -135,11 +135,11 @@ const HiddenBuzzListModal = (props) => {
         <div className={classes.inline}>
           <Link
             className={classes.buzzLinks}
-            to={`/@${items[index].author}/c/${items[index].permlink}`}
+            to={`/@${items[index].author}/${items[index].permlink}`}
             rel='noopener noreferrer'
             target='_blank'
           >
-            @{truncateLink(`${items[index].author}/c/${items[index].permlink}`)}
+            @{truncateLink(`${items[index].author}/${items[index].permlink}`)}
           </Link>
         </div>
         <div className={classes.inline} style={{ float: 'right', marginRight: 5 }}>
