@@ -75,11 +75,6 @@ function* checkVersionRequest(meta) {
 
   const latest = (VERSION === remote[BRANCH])
 
-  console.log('VERSION', VERSION)
-  console.log('BRANCH', BRANCH)
-  
-  console.log('latest', latest)
-
   if(!latest) {
     yield call([localStorage, localStorage.setItem], 'version', JSON.stringify(remote))
   }
