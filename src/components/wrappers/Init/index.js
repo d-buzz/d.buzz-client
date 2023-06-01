@@ -190,6 +190,11 @@ const Init = (props) => {
   }
 
   useEffect(() => {
+    console.log(isLatest)
+    console.log(isStaging)
+  }, [isLatest, isStaging])
+
+  useEffect(() => {
     if(isStaging !== null) {
       if(!isStaging) {
         checkVersionRequest().then((isLatest) => {
