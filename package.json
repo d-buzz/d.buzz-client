@@ -124,5 +124,5 @@
   "resolutions": {
     "did-jwt": "5.1.0",
     "react-virtualized": "9.18.5"
-  },
+  }
 }
