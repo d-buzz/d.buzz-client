@@ -124,5 +124,8 @@
   "resolutions": {
     "did-jwt": "5.1.0",
     "react-virtualized": "9.18.5"
+  },
+  "engines": {
+    "node": "16.15.1"
   }
 }
