@@ -190,14 +190,14 @@ const Init = (props) => {
   }
 
   useEffect(() => {
-    console.log(isLatest)
-    console.log(isStaging)
+    console.log('isLatest', isLatest)
   }, [isLatest, isStaging])
 
   useEffect(() => {
     if(isStaging !== null) {
       if(!isStaging) {
         checkVersionRequest().then((isLatest) => {
+          console.log('checked is latest', isLatest);
           setIsLatest(isLatest)
           getBestRpcNode().then(() => {
             getWSNodeHAS()
