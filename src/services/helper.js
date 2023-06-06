@@ -368,6 +368,10 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
       type: 'update_profile',
       prefix: 'Update profile transaction failed',
     },
+    {
+      type: "unfollow_user",
+      prefix: 'The transaction to unfollow the user has failed',
+    },
   ]
 
   if(type) {
