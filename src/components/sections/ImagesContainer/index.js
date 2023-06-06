@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { bindActionCreators } from 'redux'
@@ -78,12 +78,12 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzImage: {
     transformOrigin: 'top',
-    height: 0,
     objectPosition: 'center',
     objectFit: 'cover',
     width: '100%',
     animation: 'skeleton-loading 1s linear infinite alternate',
     borderRadius: '16px',
+    maxHeight: 580,
   },
 }))
 
@@ -183,6 +183,11 @@ const ImagesContainer = (props) => {
 
     setTimeout(() => { image.style.visibility = 'visible' }, 2000)
   }
+
+  useEffect(() => {
+    handleImageOnLoad()
+    // eslint-disable-next-line
+  }, [])
 
   
   return (

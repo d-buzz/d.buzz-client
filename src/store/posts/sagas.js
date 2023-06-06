@@ -100,7 +100,7 @@ import {
   searchPostAuthor,
   searchPeople,
   searchPostGeneral,
-  uploadIpfsImage,
+  uploadImage,
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
@@ -412,11 +412,11 @@ function* fileUploadRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
     const { is_authenticated } = user
-    const { file, progress, ipfs } = payload
+    const { file, progress } = payload
 
     if(is_authenticated) {
 
-      const result = yield call(uploadIpfsImage, file, progress)
+      const result = yield call(uploadImage, file, progress)
 
       let images = []
 
@@ -424,14 +424,9 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      const ipfsHash = result.hashV0
-      const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`
-      const publicUrl = `https://media.d.buzz/${result.bucket}/${result.key}`
-      if(!ipfs) {
-        images.push(publicUrl)
-      } else {
-        images.push(ipfsUrl)
-      }
+      const { imageUrl } = result
+
+      images.push(imageUrl)
 
       yield put(uploadFileSuccess(images, meta))
     } else {

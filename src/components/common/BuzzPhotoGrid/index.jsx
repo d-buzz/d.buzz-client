@@ -55,7 +55,7 @@ const useStyles = createUseStyles(theme => ({
     objectPosition: 'center',
     objectFit: 'cover',
     width: '100%',
-    visibility: 'hidden',
+    visibility: 'visible',
     animation: 'skeleton-loading 1s linear infinite alternate',
   },
   moreImages: {
