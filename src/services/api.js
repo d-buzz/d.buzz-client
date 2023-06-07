@@ -1407,6 +1407,7 @@ export const createMeta = (tags = []) => {
   const meta = {
     app: 'dBuzz/v3.0.0',
     tags: uniqueTags,
+    shortForm: true,
   }
 
   return JSON.stringify(meta)
