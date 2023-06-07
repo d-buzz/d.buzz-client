@@ -911,9 +911,9 @@ const CreateBuzzForm = (props) => {
     buzzThreadImages.forEach((image) => images.push(image))
     
     images.splice(0, 3)
-    const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp ').length
+    const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp; ').length
     const contentOverhead = calculateOverhead(buzzContentStripped)
-    
+  
     // allow only three images at on a single buzz
     if(buzzThreads[1]?.images?.length >= 4) {
       setImageLimit(true)
@@ -1056,30 +1056,6 @@ const CreateBuzzForm = (props) => {
     return compressedFile !== null && compressedFile
   }
 
-  // const handleUploadImage = async (file) => {
-  //   const formData = new FormData()
-  //   formData.append('file', file)
-
-  //   try {
-  //     const response = await axios({
-  //       method: 'POST',
-  //       url: 'http://127.0.0.1:5001/dbuzz-3a79e/us-central1/uploadToBackblaze',
-  //       data: formData,
-  //       headers: { 'Content-Type': 'multipart/form-data' },
-  //       validateStatus: () => true,
-  //     })
-
-  //     if (response.status === 200) {
-  //       console.log(res,);
-  //       return { success: true }
-  //     } else {
-  //       return { success: false }
-  //     }
-  //   } catch (error) {
-  //     console.error('An error occurred while uploading the file:', error)
-  //   }
-  // }
-
   const handleFileSelectChange = async(event) => {
 
     const images = Array.from(event.target.files)
@@ -1164,7 +1140,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handlePublishThread = () => {
-    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/${buzzPermlink})` : '')
+    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/${buzzPermlink})` : '')
 
     if(isThread) {
       setBuzzing(true)

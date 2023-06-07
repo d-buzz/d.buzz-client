@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { bindActionCreators } from 'redux'
@@ -183,12 +183,6 @@ const ImagesContainer = (props) => {
 
     setTimeout(() => { image.style.visibility = 'visible' }, 2000)
   }
-
-  useEffect(() => {
-    handleImageOnLoad()
-    // eslint-disable-next-line
-  }, [])
-
   
   return (
     <div ref={buzzPhotoGridRef} style={{ width: '100%' }} className={`${classes.imagesContainer} buzzPhotoGrid`}>
