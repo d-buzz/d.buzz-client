@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getUserTheme, proxyImage } from 'services/helper'
+import { anchorTop, getUserTheme, proxyImage, errorMessageComposer } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -545,15 +545,21 @@ const Profile = (props) => {
     setLoader(true)
     if(!ceramicUser) {
       unfollowRequest(username).then((result) => {
-        if(result) {
-          broadcastNotification('success', `Successfully Unfollowed @${username}`)
-          setHasRecentlyFollowed(false)
-          setHasRecentlyUnfollowed(true)
+        if(result === -32000){
+          const errorMessage = errorMessageComposer('unfollow_user', result)
+          broadcastNotification('error', errorMessage)
           setLoader(false)
-          reloadProfile()
         } else {
-          broadcastNotification('error', `Failed Unfollowing @${username}`)
-          setLoader(false)
+          if(result) {
+            broadcastNotification('success', `Successfully Unfollowed @${username}`)
+            setHasRecentlyFollowed(false)
+            setHasRecentlyUnfollowed(true)
+            setLoader(false)
+            reloadProfile()
+          } else {
+            broadcastNotification('error', `Failed Unfollowing @${username}`)
+            setLoader(false)
+          }
         }
       }).catch((e) => {
         console.log(e)

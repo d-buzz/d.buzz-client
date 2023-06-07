@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -55,7 +55,7 @@ const useStyles = createUseStyles(theme => ({
     objectPosition: 'center',
     objectFit: 'cover',
     width: '100%',
-    visibility: 'hidden',
+    visibility: 'visible',
     animation: 'skeleton-loading 1s linear infinite alternate',
   },
   moreImages: {
@@ -79,6 +79,8 @@ const BuzzPhotoGrid = ({
   const classes = useStyles({ images, minifyAssets })
   const buzzPhotoGridRef = useRef(null)
   const imageLoadTime = 2
+
+  const [imagesEnabled] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled') 
 
   const calculateHeightWithMaxWidth = (image, maxWidth) => {
     const originalWidth = image.naturalWidth
@@ -170,6 +172,7 @@ const BuzzPhotoGrid = ({
   }
 
   return (
+    imagesEnabled &&
     <div ref={buzzPhotoGridRef} style={{ width: '100%' }} className={`${classes.buzzPhotoGridWrapper} buzzPhotoGrid`}>
       {images.length === 1 &&
       // one images
