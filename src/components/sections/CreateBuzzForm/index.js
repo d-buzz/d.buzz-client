@@ -913,7 +913,7 @@ const CreateBuzzForm = (props) => {
     images.splice(0, 3)
     const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp; ').length
     const contentOverhead = calculateOverhead(buzzContentStripped)
-    
+  
     // allow only three images at on a single buzz
     if(buzzThreads[1]?.images?.length >= 4) {
       setImageLimit(true)
@@ -1097,6 +1097,7 @@ const CreateBuzzForm = (props) => {
               await handleImageCompression(image).then((uri) => {
                 setCompressing(false)
                 setImageSize(Number((uri.size / 1e+6).toFixed(2)))
+                
                 uploadFileRequest(uri, setImageUploadProgress).then((image) => {
                   const lastImage = image[image.length - 1]
                   uploadedImages.push(lastImage)
@@ -1450,7 +1451,7 @@ const CreateBuzzForm = (props) => {
   //       var duration = video.duration
   //       setVideoUploading(true)
   
-  //       // console.log(file);
+  //       // console.log(file)
         
   //       if(duration <= 60 && file.size <= 150000000) {
   //         uploadVideoRequest(file, setVideoUploadProgress)

@@ -319,27 +319,6 @@ const PostList = React.memo((props) => {
   }, [title, content, body])
 
   useEffect(() => {
-    if(title.endsWith('...') && title.length===86 && content && body) {
-      // replace ... from title and body and merge them
-      setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
-    }
-  }, [title, content, body])
-
-  useEffect(() => {
-    if(title.endsWith('...') && title.length===86 && content && body) {
-      // replace ... from title and body and merge them
-      setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
-    }
-  }, [title, content, body])
-
-  useEffect(() => {
-    if(title.endsWith('...') && title.length===86 && content && body) {
-      // replace ... from title and body and merge them
-      setContent(title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, ''))
-    }
-  }, [title, content, body])
-
-  useEffect(() => {
     if(anchorEl !== null) {
       getUserCustomData(user.username)
         .then(res => {

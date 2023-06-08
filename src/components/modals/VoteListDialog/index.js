@@ -54,7 +54,7 @@ const VoteListDialog = (props) => {
             <React.Fragment key={voter}>
               <div className={classes.upvoteListWrapper}>
                 <Avatar author={voter} height={40} />&nbsp;&nbsp;
-                <a className={classes.upvoteProfileLinks} href={`https://d.buzz/#/@${voter}`} target="_blank" rel="noopener noreferrer">{voter}</a>
+                <a className={classes.upvoteProfileLinks} href={`${window.location.origin}/@${voter}`} rel="noopener noreferrer">{voter}</a>
               </div>
             </React.Fragment>
           ))}
