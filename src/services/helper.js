@@ -368,6 +368,10 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
       type: 'update_profile',
       prefix: 'Update profile transaction failed',
     },
+    {
+      type: "unfollow_user",
+      prefix: 'The transaction to unfollow the user has failed',
+    },
   ]
 
   if(type) {
@@ -411,10 +415,17 @@ export const getDefaultVotingWeight = () => {
   return 1
 }
 
-export const redirectToUserProfile = () => {
-  if(window.location.href.includes("@") && !window.location.href.includes("/@")){
-    const account = window.location.href.split("@")
-    window.location = (`/@${account[1].replace("#/", "")}`)
+export const redirectOldLinks = () => {
+  if(window.location.hash) {
+    const regexForOldProfileLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi
+    const regexForOldPostLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)\/c\/[a-zA-Z0-9]+/gi
+    if(regexForOldProfileLinks.test(window.location.hash) || regexForOldPostLinks.test(window.location.hash)){
+      const link = window.location.href.replace('/#', '').replace('/c', '')
+      window.location = link
+    } else {
+      const link = window.location.href.replace('/#', '')
+      window.location = link
+    }
   }
 }
 
@@ -447,7 +458,14 @@ export const getUserTheme =() => {
 export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
 
 export const proxyImage = (url) => {
-  return `https://images.hive.blog/0x0/${url}`
+  const enabled = true
+  let imageUrl = url
+
+  if(enabled) {
+    imageUrl = `https://images.hive.blog/0x0/${url}`
+  }
+
+  return imageUrl
 }
 
 export const truncateString = (str, num) => {
