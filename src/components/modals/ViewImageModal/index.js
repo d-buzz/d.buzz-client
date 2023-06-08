@@ -96,7 +96,7 @@ const ViewImageModal = (props) => {
       <Modal
         backdrop="static"
         keyboard={false}
-        show={show ? true : false}
+        show={show && activeImage ? true : false}
         onHide={onHide}
         dialogClassName={classes.modal}
         animation={true}

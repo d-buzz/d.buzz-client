@@ -3,7 +3,7 @@ import getUserAccount from "./getUserAccount"
 
 export const initilizeUserInDatabase = async(username) => {
 
-  const defaultSettings = {theme: 'light', videoEmbedsStatus: 'enabled', linkPreviewsStatus: 'enabled', showImagesStatus: 'enabled' }
+  const defaultSettings = {theme: 'light', videoEmbedsStatus: 'enabled', linkPreviewsStatus: 'enabled', showImagesStatus: 'enabled', showNSFWPosts: 'disabled' }
 
   const user = {username: username, userData: [{username: getUserAccount(), settings: {...defaultSettings}}]}
   const res = await axios.post(`${process.env.REACT_APP_DATABASE_API}/post`, { ...user }, { headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY } })

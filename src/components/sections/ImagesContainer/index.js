@@ -78,12 +78,12 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzImage: {
     transformOrigin: 'top',
-    height: 0,
     objectPosition: 'center',
     objectFit: 'cover',
     width: '100%',
     animation: 'skeleton-loading 1s linear infinite alternate',
     borderRadius: '16px',
+    maxHeight: 580,
   },
 }))
 
@@ -183,7 +183,6 @@ const ImagesContainer = (props) => {
 
     setTimeout(() => { image.style.visibility = 'visible' }, 2000)
   }
-
   
   return (
     <div ref={buzzPhotoGridRef} style={{ width: '100%' }} className={`${classes.imagesContainer} buzzPhotoGrid`}>

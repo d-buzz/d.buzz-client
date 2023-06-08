@@ -472,7 +472,7 @@ const ReplyList = (props) => {
                         <div className={classes.context}>
                           <div className={classes.contextWrapper}>
                             <h6 style={{ paddingTop: 5 }}>Reply is truncated because it is over 280 characters</h6>
-                            <a target="_blank" without="true" rel="noopener noreferrer" href={`https://blog.d.buzz/#/@${author}/${permlink}`}>View the full reply</a>
+                            <a target="_blank" without="true" rel="noopener noreferrer" href={`https://blog.d.buzz/#/@${author}/c/${permlink}`}>View the full reply</a>
                           </div>
                         </div>
                       )}
