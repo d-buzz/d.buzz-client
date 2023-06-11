@@ -1496,6 +1496,14 @@ const CreateBuzzForm = (props) => {
     }
   }, [videoLimit])
 
+  // update content based on the buzz's content
+  useEffect(() => {  
+    if (buzzThreads[currentBuzz]?.content) {
+      setContent(buzzThreads[currentBuzz]?.content)
+    }
+    // eslint-disable-next-line
+  }, [buzzThreads[currentBuzz]?.content])
+
   return (
     <div className={containerClass}>
       {!buzzModalStatus && buzzThreads && buzzThreads[1]?.content && !isMobile && !wholeIntent &&
