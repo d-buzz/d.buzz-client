@@ -549,9 +549,31 @@ function* subscribeRequest(meta) {
 
     if(success) {
       let saved = yield call([localStorage, localStorage.getItem], 'user')
+      let active = yield call([localStorage, localStorage.getItem], 'active')
+
       saved = JSON.parse(saved)
-      saved.is_subscribe = true
-      yield call([localStorage, localStorage.setItem], 'user', JSON.stringify(saved))
+      
+      try {
+        const parseActive = JSON.parse(active)
+        active = parseActive
+      } catch (e) {}
+ 
+      if(active !== null && saved !== null && Array.isArray(saved) && active && saved.length !== 0) {
+        let user = null
+        saved.forEach((item) => {
+          const decrypted = readSession(item)
+          
+          if(decrypted.username === active) {
+            user = decrypted
+          }
+        })
+
+        user.is_subscribe = true
+        
+        const session = generateSession(user)
+
+        yield call([localStorage, localStorage.setItem], 'user', JSON.stringify([session]))
+      } 
     }
 
     yield put(subscribeSuccess(success, meta))
