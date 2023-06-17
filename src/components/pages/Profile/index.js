@@ -580,11 +580,11 @@ const Profile = (props) => {
     window.open(`https://blog.d.buzz/#/@${username}`, '_blank') 
   }
 
-  const handleCopyReferral = () => {
-    const referralUrl = `https://join.d.buzz/@${username}`
-    navigator.clipboard.writeText(referralUrl)
-    setCopied(true)
-  }
+  // const handleCopyReferral = () => {
+  //   const referralUrl = `https://join.d.buzz/@${username}`
+  //   navigator.clipboard.writeText(referralUrl)
+  //   setCopied(true)
+  // }
 
   // const navigateToBlackListed = () => {
   //   history.push(`/@${username}/lists/blacklisted/users`)
