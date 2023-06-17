@@ -402,29 +402,9 @@ const Profile = (props) => {
         onClick: navigateToBlog,
       },
       {
-        label: "Copy Referral",
+        label: "Moderation Tools",
         icon: '',
-        onClick: handleCopyReferral,
-      },
-      {
-        label: "Blacklisted Users",
-        icon: '',
-        onClick: navigateToBlackListed,
-      },
-      {
-        label: "Muted Users",
-        icon: '',
-        onClick: navigateToMutedUsers,
-      },
-      {
-        label: "Followed Blacklists",
-        icon: '',
-        onClick: navigateToFollowedBlacklist,
-      },
-      {
-        label: "Followed Muted Lists",
-        icon: '',
-        onClick: navigateToFollowedMuted,
+        onClick: navigateToModerationTools,
       },
     ]
     
@@ -606,20 +586,24 @@ const Profile = (props) => {
     setCopied(true)
   }
 
-  const navigateToBlackListed = () => {
-    history.push(`/@${username}/lists/blacklisted/users`)
-  }
+  // const navigateToBlackListed = () => {
+  //   history.push(`/@${username}/lists/blacklisted/users`)
+  // }
 
-  const navigateToFollowedBlacklist = () => {
-    history.push(`/@${username}/lists/blacklisted/followed`)
-  }
+  // const navigateToFollowedBlacklist = () => {
+  //   history.push(`/@${username}/lists/blacklisted/followed`)
+  // }
 
-  const navigateToMutedUsers = () => {
-    history.push(`/@${username}/lists/muted/users`)
-  }
+  // const navigateToMutedUsers = () => {
+  //   history.push(`/@${username}/lists/muted/users`)
+  // }
 
-  const navigateToFollowedMuted = () => {
-    history.push(`/@${username}/lists/muted/followed`)
+  // const navigateToFollowedMuted = () => {
+  //   history.push(`/@${username}/lists/muted/followed`)
+  // }
+
+  const navigateToModerationTools = () => {
+    history.push('/coming-soon')
   }
 
   const handleCloseReferalCopy = () => {
