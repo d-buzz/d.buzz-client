@@ -462,7 +462,7 @@ export const proxyImage = (url) => {
   let imageUrl = url
 
   if(enabled) {
-    imageUrl = `https://images.hive.blog/0x0/${url}`
+    imageUrl = `https://proxy.d.buzz/p/${url}`
   }
 
   return imageUrl
