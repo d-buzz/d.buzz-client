@@ -29,7 +29,7 @@ const useStyles = createUseStyles(theme => ({
     '& a': {
       wordWrap: 'break-word',
       color: '#FF0000 !important',
-      fontWeight: '600',
+      fontWeight: 'normal',
     },
     '& p': {
       width: '100%',
