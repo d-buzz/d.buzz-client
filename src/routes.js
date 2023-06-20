@@ -31,7 +31,6 @@ const Developers = React.lazy(() => import('./components/pages/Developers'))
 const Wallet = React.lazy(() => import('./components/pages/Wallet'))
 const WalletBalances = React.lazy(() => import('./components/sections/WalletBalances'))
 const WalletHistory = React.lazy(() => import('./components/sections/WalletHistory'))
-const ComingSoon = React.lazy(() => import('./components/pages/ComingSoon'))
 
 const routes =  [
   {
@@ -256,11 +255,6 @@ const routes =  [
             component: AccountPockets,
           },
         ],
-      },
-      {
-        path: '/coming-soon',
-        exact: true,
-        component: ComingSoon,
       },
     ],
   },

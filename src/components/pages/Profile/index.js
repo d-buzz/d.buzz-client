@@ -603,7 +603,7 @@ const Profile = (props) => {
   // }
 
   const navigateToModerationTools = () => {
-    history.push('/coming-soon')
+    alert('Coming Soon!')
   }
 
   const handleCloseReferalCopy = () => {

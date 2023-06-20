@@ -192,11 +192,6 @@ const GuardedAppFrame = (props) => {
     title = 'Search'
   }
 
-  if(pathname.match(/(\/coming-soon?)/)) {
-    title = 'Coming Soon'
-  }
-
-
   if(pathname.match(/\/follow\/followers/g) || pathname.match(/\/follow\/following/g) ||
     pathname.match(/\/lists\/muted\/users/g) || pathname.match(/\/lists\/muted\/followed/g) ||
     pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
