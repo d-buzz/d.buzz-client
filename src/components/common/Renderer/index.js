@@ -281,8 +281,8 @@ const prepareTwitterEmbeds = (
       })
     }
 
-    if(body.match(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&=_.]+:~~~~~~\.\^\.~~~/gi)) {
-      body = body.replace(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&=_.]+:~~~~~~\.\^\.~~~/gi, '')
+    if(body.match(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&-=_.]+:~~~~~~\.\^\.~~~/gi)) {
+      body = body.replace(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&-=_.]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-twitter-embed-container:~~~~~~.^.~~~`
     }
   }

@@ -1526,7 +1526,6 @@ const CreateBuzzForm = (props) => {
                         onKeyDown={e => onChange(e, "draftPost", 1)}
                         onChange={e => onChange(e, "draftPost", 1)}
                         onPaste={e => onChange(e, "draftPost", 1)}
-                        disabled={imageUploading}
                       />
                     )}
                     {buzzThreads &&
@@ -1563,7 +1562,6 @@ const CreateBuzzForm = (props) => {
                               onClick={(e) => {
                                 setCursorPosition(e.target.selectionStart)
                               }}
-                              disabled={imageUploading}
                             />
                           </span>
                         </span>))}
