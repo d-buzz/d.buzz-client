@@ -90,35 +90,15 @@ const useStyles = createUseStyles(theme => ({
 const ImagesContainer = (props) => {
   const showBuzzTitle = props.showBuzzTitle
   const classes = useStyles({showBuzzTitle})
-
-  const { buzzId, buzzImages=[], updateBuzzThreads, buzzThreads, viewFullImage, setVideoLimit, loading } = props
-
-  const createThread = (count, content, images) => {
-    const buzzData = {}
-
-    if(content === 'image'){
-      buzzData[count] = {id: count, content: buzzThreads[count]?.content, images: images}
-      updateBuzzThreads({...buzzThreads, ...buzzData})
-    } else {
-      buzzData[count] = {id: count, content: content, images: images}
-      updateBuzzThreads({...buzzThreads, ...buzzData})
-    }
-  }
-
-  const handleUpdateBuzz = (buzzId, content) => {
-    if(buzzThreads !== null){
-      createThread(buzzId, content, buzzThreads[buzzId]?.images)
-    }
-  }
+  
+  // eslint-disable-next-line
+  const { buzzId, buzzImages=[], upadateBuzzImages, viewFullImage, setVideoLimit, loading } = props
 
   const handleImageDeletion = (imageUrl) => {
-    if(buzzThreads){
-      for(let i = 0; i < buzzThreads[buzzId]?.images?.length; i++) {
-        if(buzzThreads[buzzId]?.images[i] === imageUrl){
-          handleUpdateBuzz(buzzId, buzzThreads[buzzId]?.content, buzzThreads[buzzId]?.images.splice(i,1))
-          setVideoLimit(false)
-        }
-      }
+    const updatedBuzzImagesArray = buzzImages.filter((image) => image !== imageUrl)
+    if(buzzImages){
+      upadateBuzzImages(updatedBuzzImagesArray)
+      setVideoLimit(false)
     }
   }
 

@@ -816,6 +816,7 @@ const CreateBuzzForm = (props) => {
   const [buzzLength, setBuzzLength] = useState(content.length - overhead)
   const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length - overhead))
   const [buzzImages, setBuzzImages] = useState(0)
+  const [buzzAttachedImages, setBuzzAttchedImages] = useState([])
   const [isVideoAttached] = useState(content.includes('?dbuzz_video='))
   
   // cursor state
@@ -898,15 +899,15 @@ const CreateBuzzForm = (props) => {
   }, [wholeIntent])
 
   useEffect(() => {
-    const buzzContent = buzzThreads[1]?.images?.length >= 1 ? buzzThreads[1]?.content+'\n'+buzzThreads[1]?.images.toString().replace(/,/gi, ' ') : buzzThreads[1]?.content
+    const buzzContent = buzzAttachedImages.length >= 1 ? buzzThreads[1]?.content+'\n'+buzzAttachedImages.toString().replace(/,/gi, ' ') : buzzThreads[1]?.content
     const rawBuzzContent = buzzContent
     setBuzzContent(rawBuzzContent)
     setBuzzContentStripped(stripHtml(rawBuzzContent))
-  }, [buzzThreads])
+  }, [buzzThreads, buzzAttachedImages])
 
   useEffect(() => {
     const images = []
-    const buzzThreadImages = buzzThreads[1]?.images || []
+    const buzzThreadImages = buzzAttachedImages || []
 
     buzzThreadImages.forEach((image) => images.push(image))
     
@@ -915,7 +916,7 @@ const CreateBuzzForm = (props) => {
     const contentOverhead = calculateOverhead(buzzContentStripped)
   
     // allow only three images at on a single buzz
-    if(buzzThreads[1]?.images?.length >= 4) {
+    if(buzzAttachedImages.length >= 4) {
       setImageLimit(true)
     } else {
       setImageLimit(false)
@@ -962,23 +963,17 @@ const CreateBuzzForm = (props) => {
 
   useEffect(() => {
     if(buzzThreads) {
-      setBuzzImages(buzzThreads[currentBuzz]?.images?.length)
+      setBuzzImages(buzzAttachedImages.length)
     }
     // eslint-disable-next-line
-  }, [buzzThreads])
+  }, [buzzThreads, buzzAttachedImages])
 
   // dbuzz threads
 
-  const createThread = (count, content, images) => {
+  const createThread = (count, buzzContent, images) => {
     const buzzData = {}
-
-    if(content === 'image'){
-      buzzData[count] = {id: count, content: buzzThreads[count]?.content, images: images}
-      updateBuzzThreads({...buzzThreads, ...buzzData})
-    } else {
-      buzzData[count] = {id: count, content: content, images: images}
-      updateBuzzThreads({...buzzThreads, ...buzzData})
-    }
+    buzzData[count] = {id: count, content: buzzContent, images: images}
+    updateBuzzThreads({...buzzThreads, ...buzzData})
   }
 
   const handleUpdateBuzz = (buzzId, content) => {
@@ -1063,7 +1058,7 @@ const CreateBuzzForm = (props) => {
     const heicImages = images.filter(image => image.type === 'image/heic')
     const uploadedImages = []
 
-    const remainingImageUploads = (4 - buzzThreads[currentBuzz]?.images?.length) >= 0 ? (4 - buzzThreads[currentBuzz]?.images?.length) : 0
+    const remainingImageUploads = (4 - buzzAttachedImages.length) >= 0 ? (4 - buzzAttachedImages.length) : 0
 
     Promise.all(
       heicImages.map(async (image) => {
@@ -1083,7 +1078,7 @@ const CreateBuzzForm = (props) => {
       .then(async () => {
         setCompressing(false)
 
-        if((allImages.length + buzzThreads[currentBuzz]?.images?.length) <= 4) {
+        if((allImages.length + buzzAttachedImages.length) <= 4) {
           setImagesLength(images.length)
 
           await Promise.all(
@@ -1104,7 +1099,7 @@ const CreateBuzzForm = (props) => {
                   
                   if(uploadedImages.length === allImages.length) {
                     setImageUploading(false)
-                    createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, ...uploadedImages])
+                    setBuzzAttchedImages(uploadedImages)
                     document.getElementById('file-upload').value = ''
     
                     // set the thread if its the thread
@@ -1140,7 +1135,7 @@ const CreateBuzzForm = (props) => {
   }
 
   const handlePublishThread = () => {
-    const buzzContent = (buzzThreads[nextBuzz]?.images?.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzThreads[nextBuzz]?.images.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/${buzzPermlink})` : '')
+    const buzzContent = (buzzAttachedImages.length >= 1 ? buzzThreads[nextBuzz]?.content+'\n'+buzzAttachedImages.toString().replace(/,/gi, ' &nbsp; ') : buzzThreads[nextBuzz]?.content)+(videoLimit ? `\n[WATCH THIS VIDEO ON DBUZZ](${window.location.origin}/#/@${user.username}/${buzzPermlink})` : '')
 
     if(isThread) {
       setBuzzing(true)
@@ -1334,7 +1329,7 @@ const CreateBuzzForm = (props) => {
   const handleSelectGif = (gif) => {
     if (gif) {
       const contentAppend = `${buzzThreads[currentBuzz]?.content}<br /> ${gif}`
-      createThread(currentBuzz, contentAppend, buzzThreads[currentBuzz]?.images)
+      createThread(currentBuzz, contentAppend, buzzAttachedImages)
       setContent(contentAppend)
     }
   }
@@ -1353,7 +1348,7 @@ const CreateBuzzForm = (props) => {
     if (emoticon) {
       const cursor = cursorPosition
       const contentAppend = buzzThreads[currentBuzz].content.slice(0, cursor) + emoticon + buzzThreads[currentBuzz].content.slice(cursor)
-      createThread(currentBuzz, contentAppend, buzzThreads[currentBuzz]?.images)
+      createThread(currentBuzz, contentAppend, buzzAttachedImages)
       setContent(contentAppend)
 
       emoticon.length === 2 && setCursorPosition(cursorPosition+2)
@@ -1459,7 +1454,7 @@ const CreateBuzzForm = (props) => {
   //             setVideoUploading(false)
   //             if(video.toString() !== 'Error: Network Error') {
   //               setVideoLimit(true)
-  //               createThread(currentBuzz, 'image', [...buzzThreads[currentBuzz]?.images, `${dbuzzVideoThumbnail}?dbuzz_video=https://ipfs.io/ipfs/${video}`])
+  //               createThread(currentBuzz, 'image', [...buzzAttachedImages, `${dbuzzVideoThumbnail}?dbuzz_video=https://ipfs.io/ipfs/${video}`])
   //             } else {
   //               broadcastNotification('error', 'Video upload failed, please try re-uploading!')
   //             }
@@ -1625,7 +1620,7 @@ const CreateBuzzForm = (props) => {
             )}
 
             {/* IMAGES ROW */}
-            {buzzThreads && buzzThreads[currentBuzz]?.images?.length >= 1 && (<ImagesContainer buzzId={currentBuzz} buzzImages={buzzThreads[currentBuzz]?.images} viewFullImage={setViewImageUrl} setVideoLimit={setVideoLimit} loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
+            {buzzAttachedImages.length >= 1 && (<ImagesContainer buzzId={currentBuzz} buzzImages={buzzAttachedImages} upadateBuzzImages={setBuzzAttchedImages} viewFullImage={setViewImageUrl} setVideoLimit={setVideoLimit} loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
             {!publishing && (
               <div className={classes.buzzCustomizeOptions}>
                 <span>
@@ -1669,7 +1664,7 @@ const CreateBuzzForm = (props) => {
                     </IconButton>
                   </Tooltip> */}
                   <Tooltip title="GIF" placement='top-start'>
-                    <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached || compressing || imageUploading || videoUploading || buzzThreads[1]?.images?.length > 0} classes={{ disabled: classes.disabled }}>
+                    <IconButton size='medium' onClick={handleOpenGiphy} disabled={isVideoAttached || compressing || imageUploading || videoUploading || buzzAttachedImages.length > 0} classes={{ disabled: classes.disabled }}>
                       <GifIcon />
                     </IconButton>
                   </Tooltip>
@@ -1753,7 +1748,7 @@ const CreateBuzzForm = (props) => {
               <React.Fragment>
                 {(buzzContent.length !== 0) && buzzPreview && (
                   <div className={classes.previewContainer} onClick={handleClickContent}>
-                    <Renderer content={content} minifyAssets={true} contentImages={buzzThreads[currentBuzz]?.images?.length} />
+                    <Renderer content={content} minifyAssets={true} contentImages={buzzAttachedImages.length} />
                   </div>
                 )}
               </React.Fragment>
