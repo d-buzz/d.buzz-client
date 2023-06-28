@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { Feeds, Landing } from 'components'
 import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
-import { setWhatsNewModalStatus } from 'store/interface/actions'
-import WhatsNewModal from 'components/modals/WhatsNewModal'
+// import { setWhatsNewModalStatus } from 'store/interface/actions'
+// import WhatsNewModal from 'components/modals/WhatsNewModal'
 import EventsModal from 'components/modals/EventsModal'
 
 const Home = (props) => {
@@ -12,8 +12,8 @@ const Home = (props) => {
   const { is_authenticated } = user
   const { search } = useLocation()
   const params = queryString.parse(search)
-  const [open, setOpen] = useState(true)
-  const updatesModalStatus = localStorage.getItem('updatesModal')
+  // const [open, setOpen] = useState(true)
+  // const updatesModalStatus = localStorage.getItem('updatesModal')
   const eventsModalStatus = localStorage.getItem('eventsModal')
   const [eventsModal, setEventsModal] = useState(true)
   const eventsModalActivated = false
@@ -24,15 +24,15 @@ const Home = (props) => {
     }
   }, [params])
 
-  const onHide = () => {
-    setWhatsNewModalStatus(false)
-    setOpen(false)
-  }
+  // const onHide = () => {
+  //   setWhatsNewModalStatus(false)
+  //   setOpen(false)
+  // }
   
-  const handleOnWhatsNewModalHide = () => {
-    onHide()
-    localStorage.setItem('updatesModal', 'visited')
-  }
+  // const handleOnWhatsNewModalHide = () => {
+  //   onHide()
+  //   localStorage.setItem('updatesModal', 'visited')
+  // }
   
   const handleOnEventsModalHide = () => {
     localStorage.setItem('eventsModal', 'visited')
@@ -43,8 +43,8 @@ const Home = (props) => {
     <div>
       {is_authenticated && <Feeds />}
       {!is_authenticated && <Landing />}
-      {is_authenticated && !updatesModalStatus && <WhatsNewModal show={open} onHide={handleOnWhatsNewModalHide}/>}
-      {is_authenticated && !open && !eventsModalStatus && eventsModal && eventsModalActivated && <EventsModal show={!eventsModalStatus} onHide={handleOnEventsModalHide}/>}
+      {/* {is_authenticated && !updatesModalStatus && <WhatsNewModal show={open} onHide={handleOnWhatsNewModalHide}/>} */}
+      {is_authenticated && !eventsModalStatus && eventsModal && eventsModalActivated && <EventsModal show={!eventsModalStatus} onHide={handleOnEventsModalHide}/>}
     </div>
   )
 }

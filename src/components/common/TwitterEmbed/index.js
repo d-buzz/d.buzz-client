@@ -27,7 +27,7 @@ function TwitterEmbed(props) {
   const classes = useStyles()
   const { tweet, onIframeLoad } = props
   const username = tweet[0]?.id !== undefined && tweet[0].id.split('&')[0]
-  const id = tweet[0]?.id !== undefined && tweet[0].id.split('&')[1].replace(/\?t=[a-zA-Z0-9_]+/, '')
+  const id = tweet[0]?.id !== undefined && tweet[0].id.split('&')[1].replace(/\?t=[a-zA-Z0-9-=_]+/, '')
   const [loaded, setLoaded] = useState(false)
   const [theme] = useState(getTheme() === 'gray' || getTheme() === 'night' ? 'dark' : 'light')
 

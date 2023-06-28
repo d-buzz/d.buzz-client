@@ -29,6 +29,7 @@ const useStyles = createUseStyles(theme => ({
     '& a': {
       wordWrap: 'break-word',
       color: '#FF0000 !important',
+      fontWeight: 'normal',
     },
     '& p': {
       width: '100%',
@@ -280,8 +281,8 @@ const prepareTwitterEmbeds = (
       })
     }
 
-    if(body.match(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&=_.]+:~~~~~~\.\^\.~~~/gi)) {
-      body = body.replace(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&=_.]+:~~~~~~\.\^\.~~~/gi, '')
+    if(body.match(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&-=_.]+:~~~~~~\.\^\.~~~/gi)) {
+      body = body.replace(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&-=_.]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-twitter-embed-container:~~~~~~.^.~~~`
     }
   }
@@ -1280,15 +1281,15 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
     }
 
     const checkForValidUserName = (n) => {
-      return !n.startsWith('/@')
+      return n.startsWith('@')
     }
 
     const checkForValidHashTag = (n) => {
-      return !n.startsWith('/#')
+      return n.startsWith('#')
     }
 
     const checkForValidCryptoTicker = (n) => {
-      return !n.startsWith('/$')
+      return n.startsWith('$')
     }
 
     // // render content (supported for all browsers)
@@ -1298,11 +1299,11 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
-      .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
       //   // render hashtags 
-      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
-      .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
       // // render markdown images
       .replace(/(!\[[^\]]*?\])\(\)/gi, '')
       // hide watch video on dbuzz
