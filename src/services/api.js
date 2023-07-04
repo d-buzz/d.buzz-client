@@ -1372,7 +1372,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
   })
 }
 
-export const broadcastOperation = (operations, keys) => {
+export const broadcastOperation = (operations, keys, is_buzz_post = false) => {
 
   return new Promise((resolve, reject) => {
     broadcast.send(
@@ -1384,7 +1384,12 @@ export const broadcastOperation = (operations, keys) => {
       (error, result) => {
         if(error) {
           console.log(error)
-          reject(error.code)
+          if (is_buzz_post) {
+            reject(error)
+          }else{
+            reject(error.code)
+          }
+          
         } else {
           resolve({
             success: true,

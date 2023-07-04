@@ -316,7 +316,7 @@ export const truncateBody = (body) => {
 }
 
 
-export const errorMessageComposer = (type = null, errorCode = 0) => {
+export const errorMessageComposer = (type = null, errorCode = 0, timeLeft= 0) => {
   let errorMessage = 'Transaction broadcast failure for unknown reason, please contact the administrator'
 
   const prefixes = [
@@ -374,7 +374,7 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
     },
   ]
 
-  if(type) {
+  if(type && type !== 'post_limit') {
     errorMessage = prefixes.find( item => item.type === type).prefix
   }
 
@@ -385,6 +385,26 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
 
   if(errorCode === -32001) {
     errorMessage += ', votes evaluating for post/comment that is paid out is forbidden.'
+  }
+
+  if (type === 'post_limit') {
+    // get the errorCode
+    if (timeLeft < 1) {
+      // Wait for 5 minutes before posting again.
+      errorMessage = 'Wait for 5 minutes before posting again.'
+    }else if (timeLeft >= 1 && timeLeft < 2) {
+      // Wait for 4 minutes before posting again.
+      errorMessage = 'Wait for 4 minutes before posting again.'
+    }else if (timeLeft >= 2 && timeLeft < 3) {
+      // Wait for 3 minutes before posting again.
+      errorMessage = 'Wait for 3 minutes before posting again.'
+    }else if (timeLeft >= 3 && timeLeft < 4) {
+      // Wait for 2 minutes before posting again.
+      errorMessage = 'Wait for 2 minutes before posting again.'
+    }else if (timeLeft >= 4 && timeLeft < 5) {
+      // Wait for 1 minute before posting again.
+      errorMessage = 'Wait for 1 minute before posting again.'
+    }
   }
 
   return errorMessage
