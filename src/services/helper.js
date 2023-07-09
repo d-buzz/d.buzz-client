@@ -388,26 +388,37 @@ export const errorMessageComposer = (type = null, errorCode = 0, timeLeft= 0) =>
   }
 
   if (type === 'post_limit') {
-    // get the errorCode
-    if (timeLeft < 1) {
-      // Wait for 5 minutes before posting again.
-      errorMessage = 'Wait for 5 minutes before posting again.'
-    }else if (timeLeft >= 1 && timeLeft < 2) {
-      // Wait for 4 minutes before posting again.
-      errorMessage = 'Wait for 4 minutes before posting again.'
-    }else if (timeLeft >= 2 && timeLeft < 3) {
-      // Wait for 3 minutes before posting again.
-      errorMessage = 'Wait for 3 minutes before posting again.'
-    }else if (timeLeft >= 3 && timeLeft < 4) {
-      // Wait for 2 minutes before posting again.
-      errorMessage = 'Wait for 2 minutes before posting again.'
-    }else if (timeLeft >= 4 && timeLeft < 5) {
-      // Wait for 1 minute before posting again.
-      errorMessage = 'Wait for 1 minute before posting again.'
+    // get the time left error message
+    const timeLeftMessage = getTimeLeftErrorMessage(timeLeft)
+    if (timeLeftMessage) {
+      errorMessage = timeLeftMessage
     }
+    
   }
 
   return errorMessage
+}
+
+const getTimeLeftErrorMessage = (timeLeft) => {
+  
+  if (timeLeft < 1) {
+    // Wait for 5 minutes before posting again.
+    return 'Wait for 5 minutes before posting again.'
+  }else if (timeLeft >= 1 && timeLeft < 2) {
+    // Wait for 4 minutes before posting again.
+    return 'Wait for 4 minutes before posting again.'
+  }else if (timeLeft >= 2 && timeLeft < 3) {
+    // Wait for 3 minutes before posting again.
+    return 'Wait for 3 minutes before posting again.'
+  }else if (timeLeft >= 3 && timeLeft < 4) {
+    // Wait for 2 minutes before posting again.
+    return 'Wait for 2 minutes before posting again.'
+  }else if (timeLeft >= 4 && timeLeft < 5) {
+    // Wait for 1 minute before posting again.
+    return 'Wait for 1 minute before posting again.'
+  }else{
+    return null
+  }
 }
 
 export const signOnHiveonboard = () => {

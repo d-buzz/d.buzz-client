@@ -564,9 +564,9 @@ function* publishPostRequest(payload, meta) {
     if (error?.data?.stack?.[0]?.data?.last_root_post !== undefined &&
       error.data.stack[0].data.last_root_post !== null) {
       
-      const date1 = new Date(error.data.stack[0].data.last_root_post)
-      const date2 = new Date(error.data.stack[0].data.now)
-      const differenceInMinutes = getTimeLeftInPostingBuzzAgain(date1, date2)
+      const last_root_post = new Date(error.data.stack[0].data.last_root_post)
+      const now = new Date(error.data.stack[0].data.now)
+      const differenceInMinutes = getTimeLeftInPostingBuzzAgain(last_root_post, now)
 
       const errorMessage = errorMessageComposer('post_limit', null, differenceInMinutes)
 
@@ -580,10 +580,10 @@ function* publishPostRequest(payload, meta) {
   }
 }
 
-function getTimeLeftInPostingBuzzAgain(date1, date2){
+function getTimeLeftInPostingBuzzAgain(last_root_post, now){
   // Convert datetime to timestamps
-  const timestamp1 = date1.getTime()
-  const timestamp2 = date2.getTime()
+  const timestamp1 = last_root_post.getTime()
+  const timestamp2 = now.getTime()
 
   // Calculate the difference in milliseconds
   const differenceInMilliseconds = timestamp2 - timestamp1
