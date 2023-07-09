@@ -457,14 +457,20 @@ export const getUserTheme =() => {
 
 export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
 
+export const isGifImage = (url) => {
+  return url.endsWith('.gif')
+}
+
 export const proxyImage = (url) => {
   const enabled = true
   let imageUrl = url
 
   if(enabled) {
-    imageUrl = `https://wsrv.nl/?url=${url}&q=12`
+    if(!isGifImage(url)) {
+      imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+    }
   }
-
+  
   return imageUrl
 }
 
