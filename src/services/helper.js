@@ -462,7 +462,7 @@ export const proxyImage = (url) => {
   let imageUrl = url
 
   if(enabled) {
-    imageUrl = `https://wsrv.nl/?url=${url}&q=12`
+    imageUrl = `https://wsrv.nl/?url=${url}&q=50`
   }
 
   return imageUrl
