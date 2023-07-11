@@ -316,7 +316,7 @@ export const truncateBody = (body) => {
 }
 
 
-export const errorMessageComposer = (type = null, errorCode = 0) => {
+export const errorMessageComposer = (type = null, errorCode = 0, timeLeft= 0) => {
   let errorMessage = 'Transaction broadcast failure for unknown reason, please contact the administrator'
 
   const prefixes = [
@@ -374,7 +374,7 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
     },
   ]
 
-  if(type) {
+  if(type && type !== 'post_limit') {
     errorMessage = prefixes.find( item => item.type === type).prefix
   }
 
@@ -387,7 +387,38 @@ export const errorMessageComposer = (type = null, errorCode = 0) => {
     errorMessage += ', votes evaluating for post/comment that is paid out is forbidden.'
   }
 
+  if (type === 'post_limit') {
+    // get the time left error message
+    const timeLeftMessage = getTimeLeftErrorMessage(timeLeft)
+    if (timeLeftMessage) {
+      errorMessage = timeLeftMessage
+    }
+    
+  }
+
   return errorMessage
+}
+
+const getTimeLeftErrorMessage = (timeLeft) => {
+  
+  if (timeLeft < 1) {
+    // Wait for 5 minutes before posting again.
+    return 'Wait for 5 minutes before posting again.'
+  }else if (timeLeft >= 1 && timeLeft < 2) {
+    // Wait for 4 minutes before posting again.
+    return 'Wait for 4 minutes before posting again.'
+  }else if (timeLeft >= 2 && timeLeft < 3) {
+    // Wait for 3 minutes before posting again.
+    return 'Wait for 3 minutes before posting again.'
+  }else if (timeLeft >= 3 && timeLeft < 4) {
+    // Wait for 2 minutes before posting again.
+    return 'Wait for 2 minutes before posting again.'
+  }else if (timeLeft >= 4 && timeLeft < 5) {
+    // Wait for 1 minute before posting again.
+    return 'Wait for 1 minute before posting again.'
+  }else{
+    return null
+  }
 }
 
 export const signOnHiveonboard = () => {
@@ -457,12 +488,18 @@ export const getUserTheme =() => {
 
 export const convertCurrency = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
 
+export const isGifImage = (url) => {
+  return url.endsWith('.gif')
+}
+
 export const proxyImage = (url) => {
   const enabled = true
   let imageUrl = url
 
   if(enabled) {
-    imageUrl = `https://proxy.d.buzz/p/${url}`
+    if(!isGifImage(url)) {
+      imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+    }
   }
 
   return imageUrl
