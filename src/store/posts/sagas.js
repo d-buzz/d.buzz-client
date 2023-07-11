@@ -494,7 +494,8 @@ function* publishPostRequest(payload, meta) {
 
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
-
+    const is_buzz_post = true
+    
     if(useKeychain && is_authenticated) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
@@ -507,7 +508,8 @@ function* publishPostRequest(payload, meta) {
       login_data = extractLoginData(login_data)
 
       const wif = login_data[1]
-      const result = yield call(broadcastOperation, operations, [wif])
+     
+      const result = yield call(broadcastOperation, operations, [wif], is_buzz_post)
 
       success = result.success
     }
@@ -559,9 +561,36 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    const errorMessage = errorMessageComposer('post', error)
-    yield put(publishPostFailure({ errorMessage }, meta))
+    if (error?.data?.stack?.[0]?.data?.last_root_post !== undefined &&
+      error.data.stack[0].data.last_root_post !== null) {
+      
+      const last_root_post = new Date(error.data.stack[0].data.last_root_post)
+      const now = new Date(error.data.stack[0].data.now)
+      const differenceInMinutes = getTimeLeftInPostingBuzzAgain(last_root_post, now)
+
+      const errorMessage = errorMessageComposer('post_limit', null, differenceInMinutes)
+
+      yield put(publishPostFailure({ errorMessage }, meta))
+
+    }else{
+      const errorMessage = errorMessageComposer('post', error)
+      yield put(publishPostFailure({ errorMessage }, meta))
+    }
+    
   }
+}
+
+function getTimeLeftInPostingBuzzAgain(last_root_post, now){
+  // Convert datetime to timestamps
+  const timestamp1 = last_root_post.getTime()
+  const timestamp2 = now.getTime()
+
+  // Calculate the difference in milliseconds
+  const differenceInMilliseconds = timestamp2 - timestamp1
+
+  // Convert milliseconds to minutes
+  const differenceInMinutes = differenceInMilliseconds / (1000 * 60)
+  return differenceInMinutes
 }
 
 function* publishReplyRequest(payload, meta) {
