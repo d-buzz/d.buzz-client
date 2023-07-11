@@ -194,6 +194,12 @@ const prepareYoutubeEmbeds = (
           if (data[1]) {
             id = data[1]
           }
+        }else if (link.match(youtubeRegex) && link.includes('live')){
+          const data = link.split('live/')
+          match = link.match(youtubeRegex)
+          if (data[1]) {
+            id = data[1].replace(/\?feature=share/, '')
+          }
         }
         else if(link.match(youtubeRegex) && link.includes('shorts')){
           const data = link.split('shorts/')
@@ -204,6 +210,10 @@ const prepareYoutubeEmbeds = (
         }
         
         if(match){
+          // clean first or remove all first the additional params in the id
+          if (id.match(/&t=.*/)) {
+            id = id.replace(/&t=.*/, "")
+          }
           body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'youtube', id })
         }
