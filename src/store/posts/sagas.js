@@ -471,13 +471,19 @@ function* publishPostRequest(payload, meta) {
   body = `${body}`.replace(dbuzzImageRegex, '').trimStart()
 
   let title = stripHtml(body)
-  
-  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
   title = `${title}`.trim()
 
-  if(title.length > 82) {
-    title = `${title.substr(0, 82)} ...`
-    body = `... ${body.substring(82)}`
+  const titleLimit = 82
+
+  if(title.length > titleLimit){
+    const lastSpace = title.substr(0, titleLimit).lastIndexOf(" ")
+
+    if(lastSpace !== -1) {
+      title = `${title.substring(0, lastSpace)} ...`
+      body = `... ${body.replace(title.substring(0, lastSpace), '')}`
+    } else {
+      title = ''
+    }
   } else {
     title = ''
   }
@@ -485,11 +491,11 @@ function* publishPostRequest(payload, meta) {
   if(images) {
     body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
-
+  
   body = footnote(body)
 
-  try {
 
+  try {
     const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
 
     const comment_options = operations[1]
@@ -929,10 +935,10 @@ function* publishUpdateRequest(payload, meta) {
       parent_author,
       parent_permlink,
       author,
-      title,
       body,
       json_metadata,
     } = original
+    
 
     let updatedTitle
     let updatedBody
@@ -941,14 +947,20 @@ function* publishUpdateRequest(payload, meta) {
     const images = altered.match(dbuzzImageRegex)
     updatedBody = `${altered}`.replace(dbuzzImageRegex, '').trimStart()
 
-    updatedTitle = stripHtml(updatedBody)
-    
-    updatedTitle = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+    updatedTitle = `${stripHtml(updatedBody)}`.trim()
     updatedTitle = `${updatedTitle}`.trim()
+
+    const titleLimit = 82
   
-    if(updatedTitle.length > 82) {
-      updatedTitle = `${updatedTitle.substr(0, 82)} ...`
-      updatedBody = `... ${updatedBody.substring(82)}`
+    if(updatedTitle.length > titleLimit){
+      const lastSpace = updatedTitle.substr(0, titleLimit).lastIndexOf(" ")
+  
+      if(lastSpace !== -1) {
+        updatedBody = `... ${updatedBody.replace(updatedBody.substring(0, lastSpace), '')}`
+        updatedTitle = `${updatedTitle.substring(0, lastSpace)} ...`
+      } else {
+        updatedTitle = ''
+      }
     } else {
       updatedTitle = ''
     }
@@ -956,6 +968,9 @@ function* publishUpdateRequest(payload, meta) {
     if(images) {
       updatedBody += `\n${images.toString().replace(/,/gi, ' ')}`
     }
+
+    console.log(updatedTitle)
+    console.log(updatedBody)
 
     const patch = createPatch(body.trim(), updatedBody.trim())
     const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, updatedTitle, patch, json_metadata)

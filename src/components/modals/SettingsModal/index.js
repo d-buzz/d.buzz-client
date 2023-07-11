@@ -168,6 +168,12 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     padding: '5px 0',
   },
+  note: {
+    marginTop: 15,
+    marginBottom: 15,
+    color: '#FFAD1F',
+    fontWeight: 'bold',
+  },
 }))
 
 const SettingsModal = (props) => {
@@ -237,10 +243,10 @@ const SettingsModal = (props) => {
       const responseData = { username: username, userData: [userData] }
       if(res) {
         updateUserCustomData(responseData).then(() => {
-          // alert('datbase updated')
           setSelectedItem(null)
           setLoading(false)
           handleDisableEnableToggles(true)
+          window.location.reload()
         })
       }
     })
@@ -368,6 +374,7 @@ const SettingsModal = (props) => {
             </div>
           </div>
           <center>
+            <p className={classes.note}>Any changes to the settings will prompt a page refresh.</p>
             <div className={classes.versionContainer}>
               <span className='current_version'>You're on v{VERSION}</span>
               <span className='check_updates_button' onClick={checkForUpdates} hidden={isLatest || updatesAvailable}>CHECK FOR UPDATES</span>

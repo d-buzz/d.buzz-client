@@ -71,7 +71,7 @@ const Tags = (props) => {
     const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' ? items.results : items.results?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) || []
     setResults(posts || [])
 
-    if (posts.length > 0) {
+    if (posts?.length > 0) {
       setIsLoading(false)
     }
     

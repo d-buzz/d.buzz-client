@@ -423,7 +423,7 @@ const PostActions = (props) => {
 
     let bodyContent = body
 
-    if(title?.endsWith('...') && title?.length===86 && body) {
+    if(title?.endsWith('...') && body) {
       // replace ... from title and body and merge them
       // eslint-disable-next-line
       bodyContent = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
