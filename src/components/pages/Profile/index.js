@@ -406,6 +406,11 @@ const Profile = (props) => {
         icon: '',
         onClick: navigateToModerationTools,
       },
+      {
+        label: "Copy Link",
+        icon: '',
+        onClick: copyToClipboard,
+      },
     ]
     
     if(username === loginuser) {
@@ -604,6 +609,18 @@ const Profile = (props) => {
 
   const navigateToModerationTools = () => {
     alert('Coming Soon!')
+  }
+
+  const copyToClipboard = () => {
+    const currentURL = window.location.href
+    navigator.clipboard.writeText(currentURL)
+      .then(() => {
+        broadcastNotification('success', 'Link copied to clipboard!')
+        console.log('Link copied to clipboard!')
+      })
+      .catch((error) => {
+        console.error('Failed to copy link:', error)
+      })
   }
 
   const handleCloseReferalCopy = () => {
