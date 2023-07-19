@@ -73,7 +73,7 @@ const idxAliases = {
   socialConnectionIndex: 'ceramic://kjzl6cwe1jw145f1327br2k7lkd5acrn6d2omh88xjt70ovnju491moahrxddns',
 }
 
-export const API_NODE = 'https://us-01.infra.3speak.tv'
+export const API_NODE = 'https://offchain.us-02.infra.3speak.tv'
 
 let Ceramic
 let idx
