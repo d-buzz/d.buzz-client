@@ -56,7 +56,9 @@ const PostTags = (props) => {
 
   const generateTagsLink = (tag) => {
     let link = ''
-    link += `/tags?q=${tag}`
+    // link += `/tags?q$=${tag}`
+
+    link += `/trending/${tag}`
 
     return link
   }

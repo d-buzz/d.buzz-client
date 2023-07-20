@@ -23,21 +23,21 @@ const createReactElement = (node, skipTags) => {
   }
 
   if (node.nodeType === Node.ELEMENT_NODE) {
-    const tagName = node.tagName.toLowerCase();
+    const tagName = node.tagName.toLowerCase()
     if (skipTags.includes(tagName)) {
       return null
     }
 
-  const isSelfClosing = ['br', 'img', 'input', 'hr', 'meta', 'link'].includes(tagName)
-  const attributes = Array.from(node.attributes).reduce((acc, attr) => {
-    const propName = attr.name === 'class' ? 'className' : attr.name
-    acc[propName] = attr.value
-    return acc
-  }, {})
+    const isSelfClosing = ['br', 'img', 'input', 'hr', 'meta', 'link'].includes(tagName)
+    const attributes = Array.from(node.attributes).reduce((acc, attr) => {
+      const propName = attr.name === 'class' ? 'className' : attr.name
+      acc[propName] = attr.value
+      return acc
+    }, {})
 
-  const children = isSelfClosing
-    ? []
-    : Array.from(node.childNodes).map(childNode => createReactElement(childNode, skipTags))
+    const children = isSelfClosing
+      ? []
+      : Array.from(node.childNodes).map(childNode => createReactElement(childNode, skipTags))
 
     return React.createElement(tagName, attributes, ...children)
   }
@@ -53,7 +53,7 @@ const BuzzRenderer = ({ content, skipTags = [], className }) => {
       ...sanitizeHtml.defaults.allowedAttributes,
       span: ['class', 'id'],
     },
-  });
+  })
   const parser = new DOMParser()
   const document = parser.parseFromString(sanitizedContent.trim(), 'text/html')
   const body = document.body
