@@ -145,11 +145,11 @@ const routes =  [
         ],
       },
       {
-        path: '/tags',
+        path: '/trending/:tag',
         component: Tags,
       },
       {
-        path: '/ug/tags',
+        path: '/ug/trending/:tag',
         component: Tags,
       },
       {

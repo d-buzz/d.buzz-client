@@ -278,7 +278,7 @@ const Profile = (props) => {
   const [activeCeramicUser, setActiveCeramicUser] = useState(false)
   const [ceramicProfile, setCeramicProfile] = useState({})
   const [followsYou, setFollowsYou] = useState(false)
-  
+
   useEffect(() => {
     if(profile.ceramic) {
       setCeramicProfile(profile.basic_profile)
@@ -326,7 +326,7 @@ const Profile = (props) => {
       setFollowsYou(false)
     }
   }
-  
+
   useEffect(() => {
     checkIfRecentlyFollowed()
     checkIfRecentlyUnfollowed()
@@ -344,7 +344,7 @@ const Profile = (props) => {
 
   const handleTabs = (index) => () => {
     let tab = 'buzz'
-    
+
     if(index === 1) {
       tab = 'comments'
     } else if (index === 2) {
@@ -352,14 +352,14 @@ const Profile = (props) => {
     } else if (index === 3) {
       tab = 'pockets'
     }
-    
+
     history.push(`/@${username}/t/${tab}/`)
   }
-  
+
   const openMuteModal = () => {
     openMuteDialog(username)
   }
-  
+
 
   const { params } = match
   const { username } = params
@@ -393,7 +393,7 @@ const Profile = (props) => {
     // eslint-disable-next-line
   }, [username])
 
-  
+
   const setMoreButtonOptions = () => {
     const moreOptionsList = [
       {
@@ -407,7 +407,7 @@ const Profile = (props) => {
         onClick: navigateToModerationTools,
       },
     ]
-    
+
     if(username === loginuser) {
       const options = [
         {
@@ -421,7 +421,7 @@ const Profile = (props) => {
       setMoreOptions(moreOptionsList)
     }
   }
-  
+
   useEffect(() => {
     if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
@@ -435,18 +435,18 @@ const Profile = (props) => {
       setIndex(0)
     }
   }, [pathname])
-  
-  
+
+
   const { metadata, stats, hivepower, ceramic, created: accountCreated } = profile || ''
   const { profile: profileMeta } = metadata || ''
   const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
   const { followers, following } = stats || 0
-  
+
   const { reputation = 0, isFollowed } = profile
-  
+
   const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
     .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
+    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/trending/${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
 
   const [loader, setLoader] = useState(false)
 
@@ -476,7 +476,7 @@ const Profile = (props) => {
     }
     // eslint-disable-next-line
   }, [userCoverImage])
-  
+
   useEffect(() => {
     if(!checkForCeramicAccount(username)){
       setAvatarUrl(userProfileImage)
@@ -520,7 +520,7 @@ const Profile = (props) => {
       })
     }
   }
-  
+
   const unfollowUser = () => {
     setLoader(true)
     if(!ceramicUser) {
@@ -577,7 +577,7 @@ const Profile = (props) => {
   }
 
   const navigateToBlog = () => {
-    window.open(`https://blog.d.buzz/#/@${username}`, '_blank') 
+    window.open(`https://blog.d.buzz/#/@${username}`, '_blank')
   }
 
   // const handleCopyReferral = () => {
@@ -628,9 +628,9 @@ const Profile = (props) => {
   useEffect(() => {
     const coverImage = document.getElementById('coverImage')
     const profileImage = document.getElementById('profileImage')
-    
+
     if(coverImage && profileImage) {
-      
+
       if(updatedCover) {
         setUserCoverImage('')
         coverImage.src = ''
@@ -638,12 +638,12 @@ const Profile = (props) => {
         coverImage.style.animation = 'skeleton-loading 1s linear infinite alternate'
         setUserCoverImage(`${updatedCover}?${new Date().getTime()}`)
         coverImage.src = `${updatedCover}?${new Date().getTime()}`
-        
+
         setTimeout(() => {
           setUpdatedCover(false)
         }, 1000)
       }
-      
+
       if(updatedProfile) {
         setUserProfileImage('')
         profileImage.src = ''
@@ -651,14 +651,14 @@ const Profile = (props) => {
         profileImage.style.animation = 'skeleton-loading 1s linear infinite alternate'
         setUserProfileImage(`${updatedProfile}?${new Date().getTime()}`)
         profileImage.src = `${updatedProfile}?${new Date().getTime()}`
-        
+
         setTimeout(() => {
           setUpdatedProfile(false)
         }, 1000)
       }
     }
   }, [updatedCover, updatedProfile])
-  
+
   const loadCoverImage = () => {
     const coverImage = document.getElementById('coverImage')
     coverImage.style.background = 'none'
@@ -747,7 +747,7 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
-                            disabled={loading} 
+                            disabled={loading}
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Follow"
@@ -759,7 +759,7 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
-                            disabled={loading} 
+                            disabled={loading}
                             style={{ float: 'right', marginTop: 5 }}
                             transparent={true}
                             label="Follow"
