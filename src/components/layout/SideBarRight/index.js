@@ -110,14 +110,24 @@ const SideBarRight = (props) => {
   const [hivePrice, setHivePrice] = useState(0)
   const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
+  const [isLite, setIsLite] = useState(null)
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
-
+  
   useEffect(() => {
     if(window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
     } else {
       setIsStaging(false)
+    }
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if(window.location.host === 'lite.d.buzz') {
+      setIsLite(true)
+    } else {
+      setIsLite(false)
     }
     // eslint-disable-next-line
   }, [])
@@ -226,7 +236,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>

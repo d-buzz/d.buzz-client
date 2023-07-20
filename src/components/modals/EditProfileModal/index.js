@@ -380,6 +380,7 @@ const EditProfileModal = (props) => {
       about : profileAbout,
       location : profileLocation,
       url : profileWebsite,
+      website : profileWebsite,
     }
 
     if(!ceramicUser) {
