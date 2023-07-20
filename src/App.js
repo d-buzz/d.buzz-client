@@ -6,7 +6,7 @@ import { renderRoutes } from 'react-router-config'
 import { LastLocationProvider } from 'react-router-last-location'
 import { createUseStyles } from 'react-jss'
 import { Helmet } from 'react-helmet'
-import { redirectToUserProfile } from 'services/helper'
+import { redirectOldLinks } from 'services/helper'
 import { useLocation } from 'react-router-dom'
 const TwitterEmbedAPI = React.lazy(() => import('components/pages/TwitterEmbedAPI'))
 
@@ -31,8 +31,8 @@ const App = () => {
   const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
 
   useEffect(() => {
-    // redirect to user profile if link only contains @username
-    redirectToUserProfile()
+    // redirect old links to the new ones
+    redirectOldLinks()
   }, [])
 
   return (

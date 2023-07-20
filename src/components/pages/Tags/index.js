@@ -40,7 +40,8 @@ const Tags = (props) => {
   const params = queryString.parse(location.search)
   const tag = params.q
   const [results, setResults] = useState([])
-
+  const [isLoading, setIsLoading] = useState(true)
+  
   useEffect(() => {
     clearSearchPosts()
     // eslint-disable-next-line
@@ -66,8 +67,14 @@ const Tags = (props) => {
   }, [tag])
 
   useEffect(() => {
+    setIsLoading(true)
     const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' ? items.results : items.results?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) || []
     setResults(posts || [])
+
+    if (posts?.length > 0) {
+      setIsLoading(false)
+    }
+    
   // eslint-disable-next-line
   }, [items])
 
@@ -83,6 +90,7 @@ const Tags = (props) => {
             author={item.author}
             permlink={item.permlink}
             created={item.created_at}
+            title={item.title}
             body={item.body}
             upvotes={item.total_votes}
             replyCount={item.children}
@@ -96,8 +104,8 @@ const Tags = (props) => {
           />
         </React.Fragment>),
       )}
-      <PostlistSkeleton loading={loading} />
-      {(!loading && results.length === 0) &&
+      <PostlistSkeleton loading={loading && isLoading} />
+      {(!loading && !isLoading && results.length === 0) &&
         (<center><br/><div className={classes.searchWrapper}><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></div></center>)}
     </React.Fragment>
   )

@@ -20,7 +20,7 @@ import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
-const imageUrl = `${appConfig.IMAGE_API}/image`
+const imageUrl = `${appConfig.IMAGE_API}`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
@@ -1386,7 +1386,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
   })
 }
 
-export const broadcastOperation = (operations, keys) => {
+export const broadcastOperation = (operations, keys, is_buzz_post = false) => {
 
   return new Promise((resolve, reject) => {
     broadcast.send(
@@ -1398,7 +1398,12 @@ export const broadcastOperation = (operations, keys) => {
       (error, result) => {
         if(error) {
           console.log(error)
-          reject(error.code)
+          if (is_buzz_post) {
+            reject(error)
+          }else{
+            reject(error.code)
+          }
+          
         } else {
           resolve({
             success: true,
@@ -1421,6 +1426,7 @@ export const createMeta = (tags = []) => {
   const meta = {
     app: 'dBuzz/v3.0.0',
     tags: uniqueTags,
+    shortForm: true,
   }
 
   return JSON.stringify(meta)
@@ -1516,29 +1522,31 @@ export const checkIfImage = (links) => {
   })
 }
 
-export const uploadIpfsImage = async(data, progress) => {
+export const uploadImage = async(data, progress) => {
   const formData = new FormData()
-  formData.append('image', data)
-  return new Promise(async(resolve, reject) => {
-    axios({
-      method: 'POST',
-      url: `${imageUrl}/upload`,
-      key: 'image',
-      headers: {'Content-Type': 'multipart/form-data' },
-      data: formData,
-      onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent
-        const percent = Math.floor( (loaded * 100) / total )
-        progress(percent)
-      },
-    }).then(async(result) => {
-      const data = result.data
-      resolve(data)
+  formData.append('file', data)
 
-    }).catch((error) => {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const response = await axios({
+        method: 'POST',
+        url: imageUrl,
+        headers: { 'Content-Type': 'multipart/form-data' },
+        data: formData,
+        validateStatus: () => true,
+        onUploadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent
+          const percent = Math.floor( (loaded * 100) / total )
+          progress(percent)
+        },
+      })
+
+      resolve(response.data)
+    } catch (error) {
       reject(error)
-    })
+    }
   })
+
 }
 
 export const uploadVideo = async(data, username, progress) => {
@@ -1696,6 +1704,19 @@ export const getEstimateAccountValue = (account) => {
   })
 }
 
+export const getHivePower = async (username) => {
+  const [account] = await api.getAccountsAsync([username])
+  const props = await api.getDynamicGlobalPropertiesAsync()
+  
+  const totalVests = parseFloat(props.total_vesting_shares)
+  const totalHive = parseFloat(props.total_vesting_fund_hive)
+  const userVests = parseFloat(account.vesting_shares)
+
+  const hivePower = (userVests / totalVests) * totalHive
+  
+  return hivePower
+}
+
 export const getPrice = async (symbol) => {
   return new Promise(async (resolve, reject) => {
     const getPriceRequest = {
@@ -1716,6 +1737,16 @@ export const getHivePrice = async() => {
     )
     const { hive } = data
     resolve(hive.usd)
+  })
+}
+
+export const getHbdPrice = async() => {
+  return new Promise(async(resolve) => {
+    const { data } = await axios.get(
+      "https://api.coingecko.com/api/v3/simple/price?ids=hive,hive_dollar&vs_currencies=usd",
+    )
+    const { hive_dollar } = data
+    resolve(hive_dollar.usd)
   })
 }
 

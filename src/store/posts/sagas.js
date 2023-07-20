@@ -100,7 +100,7 @@ import {
   searchPostAuthor,
   searchPeople,
   searchPostGeneral,
-  uploadIpfsImage,
+  uploadImage,
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
@@ -412,11 +412,11 @@ function* fileUploadRequest(payload, meta) {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
     const { is_authenticated } = user
-    const { file, progress, ipfs } = payload
+    const { file, progress } = payload
 
     if(is_authenticated) {
 
-      const result = yield call(uploadIpfsImage, file, progress)
+      const result = yield call(uploadImage, file, progress)
 
       let images = []
 
@@ -424,14 +424,9 @@ function* fileUploadRequest(payload, meta) {
         images = [ ...old ]
       }
 
-      const ipfsHash = result.hashV0
-      const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`
-      const publicUrl = `https://media.d.buzz/${result.bucket}/${result.key}`
-      if(!ipfs) {
-        images.push(publicUrl)
-      } else {
-        images.push(ipfsUrl)
-      }
+      const { imageUrl } = result
+
+      images.push(imageUrl)
 
       yield put(uploadFileSuccess(images, meta))
     } else {
@@ -476,13 +471,19 @@ function* publishPostRequest(payload, meta) {
   body = `${body}`.replace(dbuzzImageRegex, '').trimStart()
 
   let title = stripHtml(body)
-  
-  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
   title = `${title}`.trim()
 
-  if(title.length > 82) {
-    title = `${title.substr(0, 82)} ...`
-    body = `... ${body.substring(82)}`
+  const titleLimit = 82
+
+  if(title.length > titleLimit){
+    const lastSpace = title.substr(0, titleLimit).lastIndexOf(" ")
+
+    if(lastSpace !== -1) {
+      title = `${title.substring(0, lastSpace)} ...`
+      body = `... ${body.replace(title.substring(0, lastSpace), '')}`
+    } else {
+      title = ''
+    }
   } else {
     title = ''
   }
@@ -490,16 +491,17 @@ function* publishPostRequest(payload, meta) {
   if(images) {
     body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
-
+  
   body = footnote(body)
 
-  try {
 
+  try {
     const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
 
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
-
+    const is_buzz_post = true
+    
     if(useKeychain && is_authenticated) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
@@ -512,7 +514,8 @@ function* publishPostRequest(payload, meta) {
       login_data = extractLoginData(login_data)
 
       const wif = login_data[1]
-      const result = yield call(broadcastOperation, operations, [wif])
+     
+      const result = yield call(broadcastOperation, operations, [wif], is_buzz_post)
 
       success = result.success
     }
@@ -564,9 +567,36 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    const errorMessage = errorMessageComposer('post', error)
-    yield put(publishPostFailure({ errorMessage }, meta))
+    if (error?.data?.stack?.[0]?.data?.last_root_post !== undefined &&
+      error.data.stack[0].data.last_root_post !== null) {
+      
+      const last_root_post = new Date(error.data.stack[0].data.last_root_post)
+      const now = new Date(error.data.stack[0].data.now)
+      const differenceInMinutes = getTimeLeftInPostingBuzzAgain(last_root_post, now)
+
+      const errorMessage = errorMessageComposer('post_limit', null, differenceInMinutes)
+
+      yield put(publishPostFailure({ errorMessage }, meta))
+
+    }else{
+      const errorMessage = errorMessageComposer('post', error)
+      yield put(publishPostFailure({ errorMessage }, meta))
+    }
+    
   }
+}
+
+function getTimeLeftInPostingBuzzAgain(last_root_post, now){
+  // Convert datetime to timestamps
+  const timestamp1 = last_root_post.getTime()
+  const timestamp2 = now.getTime()
+
+  // Calculate the difference in milliseconds
+  const differenceInMilliseconds = timestamp2 - timestamp1
+
+  // Convert milliseconds to minutes
+  const differenceInMinutes = differenceInMilliseconds / (1000 * 60)
+  return differenceInMinutes
 }
 
 function* publishReplyRequest(payload, meta) {
@@ -934,15 +964,48 @@ function* publishUpdateRequest(payload, meta) {
       parent_author,
       parent_permlink,
       author,
-      title,
       body,
       json_metadata,
     } = original
+    
 
-    const patch = createPatch(body.trim(), altered.trim())
-    const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, title, patch, json_metadata)
+    let updatedTitle
+    let updatedBody
+
+    const dbuzzImageRegex = /!\[(?:[^\]]*?)\]\((.+?)\)|(https:\/\/storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/(dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp|HEIC))|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
+    const images = altered.match(dbuzzImageRegex)
+    updatedBody = `${altered}`.replace(dbuzzImageRegex, '').trimStart()
+
+    updatedTitle = `${stripHtml(updatedBody)}`.trim()
+    updatedTitle = `${updatedTitle}`.trim()
+
+    const titleLimit = 82
+  
+    if(updatedTitle.length > titleLimit){
+      const lastSpace = updatedTitle.substr(0, titleLimit).lastIndexOf(" ")
+  
+      if(lastSpace !== -1) {
+        updatedBody = `... ${updatedBody.replace(updatedBody.substring(0, lastSpace), '')}`
+        updatedTitle = `${updatedTitle.substring(0, lastSpace)} ...`
+      } else {
+        updatedTitle = ''
+      }
+    } else {
+      updatedTitle = ''
+    }
+  
+    if(images) {
+      updatedBody += `\n${images.toString().replace(/,/gi, ' ')}`
+    }
+
+    console.log(updatedTitle)
+    console.log(updatedBody)
+
+    const patch = createPatch(body.trim(), updatedBody.trim())
+    const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, updatedTitle, patch, json_metadata)
 
     let success = false
+
     if(useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success

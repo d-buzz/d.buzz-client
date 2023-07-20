@@ -359,7 +359,7 @@ const ReplyList = (props) => {
         link = '/ug'
       }
 
-      link += `/@${author}/c/${permlink}`
+      link += `/@${author}/${permlink}`
 
       return link
     }

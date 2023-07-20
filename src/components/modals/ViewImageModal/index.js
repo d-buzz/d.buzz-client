@@ -21,13 +21,6 @@ const useStyles = createUseStyles(theme => ({
       borderRadius: '20px 20px !important',
       border: 'none',
     },
-    // '@media (max-width: 900px)': {
-    //   width: '97% !important',
-    //   '& div.modal-content': {
-    //     margin: '0 auto',
-    //     width: '97% !important',
-    //   },
-    // },
   },
   imageModal: {
     display: 'flex',
@@ -103,7 +96,7 @@ const ViewImageModal = (props) => {
       <Modal
         backdrop="static"
         keyboard={false}
-        show={show ? true : false}
+        show={show && activeImage ? true : false}
         onHide={onHide}
         dialogClassName={classes.modal}
         animation={true}

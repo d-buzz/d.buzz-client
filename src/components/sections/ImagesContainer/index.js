@@ -78,47 +78,27 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzImage: {
     transformOrigin: 'top',
-    height: 0,
     objectPosition: 'center',
     objectFit: 'cover',
     width: '100%',
     animation: 'skeleton-loading 1s linear infinite alternate',
     borderRadius: '16px',
+    maxHeight: 580,
   },
 }))
 
 const ImagesContainer = (props) => {
   const showBuzzTitle = props.showBuzzTitle
   const classes = useStyles({showBuzzTitle})
-
-  const { buzzId, buzzImages=[], updateBuzzThreads, buzzThreads, viewFullImage, setVideoLimit, loading } = props
-
-  const createThread = (count, content, images) => {
-    const buzzData = {}
-
-    if(content === 'image'){
-      buzzData[count] = {id: count, content: buzzThreads[count]?.content, images: images}
-      updateBuzzThreads({...buzzThreads, ...buzzData})
-    } else {
-      buzzData[count] = {id: count, content: content, images: images}
-      updateBuzzThreads({...buzzThreads, ...buzzData})
-    }
-  }
-
-  const handleUpdateBuzz = (buzzId, content) => {
-    if(buzzThreads !== null){
-      createThread(buzzId, content, buzzThreads[buzzId]?.images)
-    }
-  }
+  
+  // eslint-disable-next-line
+  const { buzzId, buzzImages=[], upadateBuzzImages, viewFullImage, setVideoLimit, loading } = props
 
   const handleImageDeletion = (imageUrl) => {
-    if(buzzThreads){
-      for(let i = 0; i < buzzThreads[buzzId]?.images?.length; i++) {
-        if(buzzThreads[buzzId]?.images[i] === imageUrl){
-          handleUpdateBuzz(buzzId, buzzThreads[buzzId]?.content, buzzThreads[buzzId]?.images.splice(i,1))
-          setVideoLimit(false)
-        }
-      }
+    const updatedBuzzImagesArray = buzzImages.filter((image) => image !== imageUrl)
+    if(buzzImages){
+      upadateBuzzImages(updatedBuzzImagesArray)
+      setVideoLimit(false)
     }
   }
 
@@ -183,7 +163,6 @@ const ImagesContainer = (props) => {
 
     setTimeout(() => { image.style.visibility = 'visible' }, 2000)
   }
-
   
   return (
     <div ref={buzzPhotoGridRef} style={{ width: '100%' }} className={`${classes.imagesContainer} buzzPhotoGrid`}>

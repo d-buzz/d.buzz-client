@@ -29,6 +29,7 @@ const useStyles = createUseStyles(theme => ({
     '& a': {
       wordWrap: 'break-word',
       color: '#FF0000 !important',
+      fontWeight: 'normal',
     },
     '& p': {
       width: '100%',
@@ -193,6 +194,12 @@ const prepareYoutubeEmbeds = (
           if (data[1]) {
             id = data[1]
           }
+        }else if (link.match(youtubeRegex) && link.includes('live')){
+          const data = link.split('live/')
+          match = link.match(youtubeRegex)
+          if (data[1]) {
+            id = data[1].replace(/\?feature=share/, '')
+          }
         }
         else if(link.match(youtubeRegex) && link.includes('shorts')){
           const data = link.split('shorts/')
@@ -203,6 +210,10 @@ const prepareYoutubeEmbeds = (
         }
         
         if(match){
+          // clean first or remove all first the additional params in the id
+          if (id.match(/&t=.*/)) {
+            id = id.replace(/&t=.*/, "")
+          }
           body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'youtube', id })
         }
@@ -280,8 +291,8 @@ const prepareTwitterEmbeds = (
       })
     }
 
-    if(body.match(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&=_.]+:~~~~~~\.\^\.~~~/gi)) {
-      body = body.replace(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&=_.]+:~~~~~~\.\^\.~~~/gi, '')
+    if(body.match(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&-=_.]+:~~~~~~\.\^\.~~~/gi)) {
+      body = body.replace(/~~~~~~\.\^\.~~~:twitter:[a-zA-Z0-9?&-=_.]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-twitter-embed-container:~~~~~~.^.~~~`
     }
   }
@@ -1062,13 +1073,15 @@ const prepareHiveTubeVideoEmbeds = (
 
   let body = content
 
-  const links = parseUrls(content)
-
+  const links = parseUrls(content).filter(link => link.match(hiveTubeEmebedsRegex))
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
+
     links.forEach((link) => {
       link = link.replace(/&amp;/g, '&')
   
       const matchedLink = link.match(hiveTubeEmebedsRegex).filter((match) => match !== undefined)
+
       let match
       let domain
   
@@ -1084,7 +1097,6 @@ const prepareHiveTubeVideoEmbeds = (
    
       if(matchedLink) {
         match = link.match(/(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i)[2]
-        
       }
   
       if (match) {
@@ -1093,12 +1105,13 @@ const prepareHiveTubeVideoEmbeds = (
         videoEmbeds.push({ app: 'hive-tube-embed', domain, id })
       }
     })
-
+    
     if(body.match(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi)) {
       body = body.replace(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
     }
   }
+  
   return body
 }
 
@@ -1278,15 +1291,15 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
     }
 
     const checkForValidUserName = (n) => {
-      return !n.startsWith('/@')
+      return n.startsWith('@')
     }
 
     const checkForValidHashTag = (n) => {
-      return !n.startsWith('/#')
+      return n.startsWith('#')
     }
 
     const checkForValidCryptoTicker = (n) => {
-      return !n.startsWith('/$')
+      return n.startsWith('$')
     }
 
     // // render content (supported for all browsers)
@@ -1296,11 +1309,11 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
-      .replace(/(\/@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
       //   // render hashtags 
-      .replace(/(\/#\S+)|#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '')}'>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
-      .replace(/(\/\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
       // // render markdown images
       .replace(/(!\[[^\]]*?\])\(\)/gi, '')
       // hide watch video on dbuzz

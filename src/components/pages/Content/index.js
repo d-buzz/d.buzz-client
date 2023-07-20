@@ -281,7 +281,7 @@ const Content = (props) => {
   const [ceramicPost, setCeramicPost] = useState(false)
 
   useEffect(() => {
-    if(title?.endsWith('...') && title?.length===86 && content && body) {
+    if(title?.endsWith('...') && content && body) {
       // replace ... from title and body and merge them
       // eslint-disable-next-line
       body = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
@@ -444,7 +444,7 @@ const Content = (props) => {
 
   const generateParentLinks = (author, permlink) => {
     let link = `/@${author}`
-    link = `${link}/c/${permlink}`
+    link = `${link}/${permlink}`
 
     return link
   }
@@ -551,7 +551,7 @@ const Content = (props) => {
       </Helmet>
       {!loadingContent && author && (
         <React.Fragment>
-          <HelmetGenerator content={body.split('\n')[0]} user={author} />
+          <HelmetGenerator content={title.split('\n')[0]} user={author} />
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>

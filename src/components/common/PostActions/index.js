@@ -420,7 +420,16 @@ const PostActions = (props) => {
   }
 
   const handleClickReply = () => {
-    openReplyModal(author, permlink, body, treeHistory, replyRef)
+
+    let bodyContent = body
+
+    if(title?.endsWith('...') && body) {
+      // replace ... from title and body and merge them
+      // eslint-disable-next-line
+      bodyContent = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
+    }
+
+    openReplyModal(author, permlink, bodyContent, treeHistory, replyRef)
   }
 
   const getPayoutDate = async (date) => {
@@ -466,7 +475,7 @@ const PostActions = (props) => {
     }
   }, [payoutAt])
 
-  const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/#/@${author}/c/${permlink}`
+  const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/@${author}/${permlink}`
   
   const handleShareToMessenger = () => {
     window.location = messengerShareLink
@@ -597,7 +606,7 @@ const PostActions = (props) => {
                     </MenuItem>
                     <MenuItem className={classes.menuText}>
                       <FacebookShareButton 
-                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        url={`https://d.buzz/@${author}/${permlink}`}
                         quote={bodyWithNoImageLinks}
                         onClick={() => {
                           setOpenCaret(false)
@@ -613,14 +622,14 @@ const PostActions = (props) => {
                     <MenuItem>
                       <TelegramShareButton
                         url={' '}
-                        title={`${bodyWithNoImageLinks}\n\nhttps://d.buzz/#/@${author}/c/${permlink}`}
+                        title={`${bodyWithNoImageLinks}\n\nhttps://d.buzz/@${author}/${permlink}`}
                         onClick={() => {setOpenCaret(false)}}>
                         <TelegramIcon size={32} round={true} />
                       </TelegramShareButton>
                     </MenuItem>
                     <MenuItem>
                       <WhatsappShareButton
-                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        url={`https://d.buzz/@${author}/${permlink}`}
                         title={bodyWithNoImageLinks+'\n\n'}
                         onClick={() => {setOpenCaret(false)}}>
                         <WhatsappIcon size={32} round={true} />
@@ -628,7 +637,7 @@ const PostActions = (props) => {
                     </MenuItem>
                     <MenuItem>
                       <LinkedinShareButton
-                        url={`https://d.buzz/#/@${author}/c/${permlink}`}
+                        url={`https://d.buzz/@${author}/${permlink}`}
                         title={bodyWithNoImageLinks}
                         summary={bodyWithNoImageLinks}
                         source={'DBuzz'}
@@ -636,7 +645,7 @@ const PostActions = (props) => {
                         <LinkedinIcon size={32} round={true} />
                       </LinkedinShareButton>
                     </MenuItem>
-                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(`${window.location.origin}/#/@${author}/c/${permlink}`)}>
+                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author}/${permlink}`)}>
                       <ClipboardIcon />
                     </MenuItem>
                   </Menu>

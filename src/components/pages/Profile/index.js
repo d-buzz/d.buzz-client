@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getUserTheme, proxyImage } from 'services/helper'
+import { anchorTop, getUserTheme, proxyImage, errorMessageComposer } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -402,29 +402,9 @@ const Profile = (props) => {
         onClick: navigateToBlog,
       },
       {
-        label: "Copy Referral",
+        label: "Moderation Tools",
         icon: '',
-        onClick: handleCopyReferral,
-      },
-      {
-        label: "Blacklisted Users",
-        icon: '',
-        onClick: navigateToBlackListed,
-      },
-      {
-        label: "Muted Users",
-        icon: '',
-        onClick: navigateToMutedUsers,
-      },
-      {
-        label: "Followed Blacklists",
-        icon: '',
-        onClick: navigateToFollowedBlacklist,
-      },
-      {
-        label: "Followed Muted Lists",
-        icon: '',
-        onClick: navigateToFollowedMuted,
+        onClick: navigateToModerationTools,
       },
     ]
     
@@ -544,15 +524,21 @@ const Profile = (props) => {
     setLoader(true)
     if(!ceramicUser) {
       unfollowRequest(username).then((result) => {
-        if(result) {
-          broadcastNotification('success', `Successfully Unfollowed @${username}`)
-          setHasRecentlyFollowed(false)
-          setHasRecentlyUnfollowed(true)
+        if(result === -32000){
+          const errorMessage = errorMessageComposer('unfollow_user', result)
+          broadcastNotification('error', errorMessage)
           setLoader(false)
-          reloadProfile()
         } else {
-          broadcastNotification('error', `Failed Unfollowing @${username}`)
-          setLoader(false)
+          if(result) {
+            broadcastNotification('success', `Successfully Unfollowed @${username}`)
+            setHasRecentlyFollowed(false)
+            setHasRecentlyUnfollowed(true)
+            setLoader(false)
+            reloadProfile()
+          } else {
+            broadcastNotification('error', `Failed Unfollowing @${username}`)
+            setLoader(false)
+          }
         }
       }).catch((e) => {
         console.log(e)
@@ -593,26 +579,30 @@ const Profile = (props) => {
     window.open(`https://blog.d.buzz/#/@${username}`, '_blank') 
   }
 
-  const handleCopyReferral = () => {
-    const referralUrl = `https://join.d.buzz/@${username}`
-    navigator.clipboard.writeText(referralUrl)
-    setCopied(true)
-  }
+  // const handleCopyReferral = () => {
+  //   const referralUrl = `https://join.d.buzz/@${username}`
+  //   navigator.clipboard.writeText(referralUrl)
+  //   setCopied(true)
+  // }
 
-  const navigateToBlackListed = () => {
-    history.push(`/@${username}/lists/blacklisted/users`)
-  }
+  // const navigateToBlackListed = () => {
+  //   history.push(`/@${username}/lists/blacklisted/users`)
+  // }
 
-  const navigateToFollowedBlacklist = () => {
-    history.push(`/@${username}/lists/blacklisted/followed`)
-  }
+  // const navigateToFollowedBlacklist = () => {
+  //   history.push(`/@${username}/lists/blacklisted/followed`)
+  // }
 
-  const navigateToMutedUsers = () => {
-    history.push(`/@${username}/lists/muted/users`)
-  }
+  // const navigateToMutedUsers = () => {
+  //   history.push(`/@${username}/lists/muted/users`)
+  // }
 
-  const navigateToFollowedMuted = () => {
-    history.push(`/@${username}/lists/muted/followed`)
+  // const navigateToFollowedMuted = () => {
+  //   history.push(`/@${username}/lists/muted/followed`)
+  // }
+
+  const navigateToModerationTools = () => {
+    alert('Coming Soon!')
   }
 
   const handleCloseReferalCopy = () => {

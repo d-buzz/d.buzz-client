@@ -76,11 +76,11 @@ const routes =  [
         exact: true,
         component: GetStarted,
       },
-      // {
-      //   path: '/trending',
-      //   exact: true,
-      //   component: Trending,
-      // },
+      {
+        path: '/trending',
+        exact: true,
+        component: Trending,
+      },
       {
         path: '/latest',
         exact: true,
@@ -124,6 +124,27 @@ const routes =  [
         ],
       },
       {
+        path: '/@:username/wallet',
+        component: Wallet,
+        routes: [
+          {
+            path: '/@:username/wallet',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/balances',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/history',
+            exact: true,
+            component: WalletHistory,
+          },
+        ],
+      },
+      {
         path: '/tags',
         component: Tags,
       },
@@ -132,7 +153,7 @@ const routes =  [
         component: Tags,
       },
       {
-        path: '/@:username/c/:permlink',
+        path: '/@:username/:permlink',
         exact: true,
         component: Content,
       },
@@ -196,27 +217,6 @@ const routes =  [
             path: '/@:username/lists/blacklisted/followed',
             exact: true,
             component: AccountBlacklistedFollowed,
-          },
-        ],
-      },
-      {
-        path: '/@:username/wallet',
-        component: Wallet,
-        routes: [
-          {
-            path: '/@:username/wallet',
-            exact: true,
-            component: WalletBalances,
-          },
-          {
-            path: '/@:username/wallet/balances',
-            exact: true,
-            component: WalletBalances,
-          },
-          {
-            path: '/@:username/wallet/history',
-            exact: true,
-            component: WalletHistory,
           },
         ],
       },
