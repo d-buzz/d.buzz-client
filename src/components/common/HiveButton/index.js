@@ -15,7 +15,7 @@ const useStyles = createUseStyles(theme => ({
     padding: '5px 15px',
     borderRadius: 10,
     color: '#000000',
-    transition: 'background 250ms',
+    transition: 'all 250ms',
     background: 'rgba(220, 53, 69, 0.2)',
     cursor: 'pointer',
     userSelect: 'none',

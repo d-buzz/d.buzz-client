@@ -101,8 +101,6 @@ const SplashScreen = () => {
   const theme = getTheme()
 
   const [isStaging, setIsStaging] = useState(null)
-  const [isLite, setIsLite] = useState(null)
-
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
 
@@ -111,15 +109,6 @@ const SplashScreen = () => {
       setIsStaging(true)
     } else {
       setIsStaging(false)
-    }
-    // eslint-disable-next-line
-  }, [])
-
-  useEffect(() => {
-    if(window.location.host === 'lite.d.buzz') {
-      setIsLite(true)
-    } else {
-      setIsLite(false)
     }
     // eslint-disable-next-line
   }, [])
@@ -144,7 +133,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING v{stagingVersion}</b> : isLite ? <b>LITE</b> : ''}
+            {!isStaging ?  <b>v{VERSION}</b> : <b>STAGING v{stagingVersion}</b>}
           </Typography>
         </center>
       </div>
@@ -170,22 +159,12 @@ const Init = (props) => {
   const [init, setInit] = useState(false)
   const [isLatest, setIsLatest] = useState(true)
   const [isStaging, setIsStaging] = useState(null)
-  const [isLite, setIsLite] = useState(null)
 
   useEffect(() => {
     if(window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
     } else {
       setIsStaging(false)
-    }
-    // eslint-disable-next-line
-  }, [])
-
-  useEffect(() => {
-    if(window.location.host === 'lite.d.buzz') {
-      setIsLite(true)
-    } else {
-      setIsLite(false)
     }
     // eslint-disable-next-line
   }, [])
@@ -213,47 +192,25 @@ const Init = (props) => {
   useEffect(() => {
     if(isStaging !== null) {
       if(!isStaging) {
-        if(isStaging !== null && !isLite !== null) {
-      if(!isStaging && !isLite) {
         checkVersionRequest().then((isLatest) => {
-              setIsLatest(isLatest)
-              getBestRpcNode().then(() => {
-                getWSNodeHAS()
-                initWSHASConnectionRequest()
-                // getBestCeramicHost().then((host) => {
-                //   initCeremicLoginRequest()
-                //   localStorage.setItem('ceramic', host)
-                // })
-                const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-                setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-                  getSavedUserRequest().then(() => {
-                    setInit(true)
-                    getCensorTypesRequest()
-                    getTrendingTagsRequest()
-                  })
-                })
+          setIsLatest(isLatest)
+          getBestRpcNode().then(() => {
+            getWSNodeHAS()
+            initWSHASConnectionRequest()
+            // getBestCeramicHost().then((host) => {
+            //   initCeremicLoginRequest()
+            //   localStorage.setItem('ceramic', host)
+            // })
+            const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+            setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+              getSavedUserRequest().then(() => {
+                setInit(true)
+                getCensorTypesRequest()
+                getTrendingTagsRequest()
               })
-            })
-      } else {
-        setIsLatest(isLatest)
-        getBestRpcNode().then(() => {
-          getWSNodeHAS()
-          initWSHASConnectionRequest()
-          // getBestCeramicHost().then((host) => {
-          //   initCeremicLoginRequest()
-          //   localStorage.setItem('ceramic', host)
-          // })
-          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-            getSavedUserRequest().then(() => {
-              setInit(true)
-              getCensorTypesRequest()
-              getTrendingTagsRequest()
             })
           })
         })
-      }
-    }
       } else {
         setIsLatest(isLatest)
         getBestRpcNode().then(() => {
@@ -275,7 +232,7 @@ const Init = (props) => {
       }
     }
     // eslint-disable-next-line
-  }, [isStaging, isLite])
+  }, [isStaging])
 
   return (
     <React.Fragment>

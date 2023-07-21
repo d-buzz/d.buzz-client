@@ -319,7 +319,6 @@ const ReplyList = (props) => {
     const [content, setContent] = useState(body)
     const [isCensored, setIsCensored] = useState(false)
     const [censorType, setCensorType] = useState(null)
-    // eslint-disable-next-line
     const [ceramicUser, setCeramicUser] = useState(false)
 
     useEffect(() => {
@@ -480,6 +479,7 @@ const ReplyList = (props) => {
                       <PostTags meta={meta} />
                     </div>
                   </div>
+                  {!ceramicUser &&
                   <div className={classes.actionWrapper}>
                     <PostActions
                       treeHistory={treeHistory}
@@ -493,7 +493,7 @@ const ReplyList = (props) => {
                       payoutAt={payout_at}
                       replyRef="replies"
                     />
-                  </div>
+                  </div>}
                 </div>
               </Col>
             </Row>

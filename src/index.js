@@ -11,21 +11,17 @@ import initReactFastclick from 'react-fastclick'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './override.css'
 import HttpsRedirect from 'react-https-redirect'
-import { ApolloProvider } from '@apollo/client'
-import { unionIndexerClient } from 'services/ceramic'
 
 initReactFastclick()
 
 ReactDOM.render(
-  <ApolloProvider client={unionIndexerClient}>
-    <Provider store={store}>
-      <Router>
-        <HttpsRedirect>
-          <App />
-        </HttpsRedirect>
-      </Router>
-    </Provider>
-  </ApolloProvider>,
+  <Provider store={store}>
+    <Router>
+      <HttpsRedirect>
+        <App />
+      </HttpsRedirect>
+    </Router>
+  </Provider>,
   document.getElementById('root'),
 )
 
