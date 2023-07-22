@@ -57,7 +57,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
-  
+
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -65,11 +65,11 @@ const useStyles = createUseStyles(theme => ({
     height: 'fit-content',
     margin: '5px 0',
 
-    
+
     '& .price_container': {
       display: 'flex',
       alignItems: 'flex-start',
-      
+
       '& .market': {
         display: 'flex',
         alignItems: 'center',
@@ -88,7 +88,7 @@ const useStyles = createUseStyles(theme => ({
         margin: 0,
       },
     },
-    
+
     '& .price_description': {
       margin: 0,
       fontSize: 13,
@@ -110,6 +110,7 @@ const SideBarRight = (props) => {
   const [hivePrice, setHivePrice] = useState(0)
   const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
+  const [isLite, setIsLite] = useState(null)
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
 
@@ -121,20 +122,27 @@ const SideBarRight = (props) => {
     }
     // eslint-disable-next-line
   }, [])
-  
+
+  useEffect(() => {
+    if(window.location.host === 'lite.d.buzz') {
+      setIsLite(true)
+    } else {
+      setIsLite(false)
+    }
+    // eslint-disable-next-line
+  }, [])
+
   if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
   }
 
   const linkGenerator = (tag) => {
     let link = ''
-
+    // link += `/tags?q$=${tag}`
     if (!is_authenticated) {
       link = '/ug'
     }
-
-    link += `/tags?q=${tag}`
-
+    link += `/trending/${tag}`
     return link
   }
 
@@ -185,7 +193,7 @@ const SideBarRight = (props) => {
           ))}
           <Spinner size={50} loading={loading} />
         </ListGroup>
-      </div>  
+      </div>
       <div className={classes.coinPriceChart}>
         <span className={classes.priceItem}>
           <span className='price_container'>
@@ -226,7 +234,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</label>
+          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>
