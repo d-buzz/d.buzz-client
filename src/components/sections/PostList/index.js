@@ -391,15 +391,31 @@ const PostList = React.memo((props) => {
     if(href && !href.includes(hostname)) {
       window.open(href, '_blank')
     } else {
-      if(!href) {
+
+      if (!href) {
         const link = generateLink(author, permlink)
         saveScrollIndex(scrollIndex)
         history.push(link)
       } else {
         const split = href.split('/')
-        href = `/${split[3]}`
-        history.push(href)
+
+        // Ensure the length of split array is greater than 3
+        if (split.length > 3) {
+          href = `/${split.slice(3).join('/')}`
+          history.push(href)
+        } else {
+          console.log("URL does not contain more than one word after 'trending'")
+        }
       }
+      // if(!href) {
+      //   const link = generateLink(author, permlink)
+      //   saveScrollIndex(scrollIndex)
+      //   history.push(link)
+      // } else {
+      //   const split = href.split('/')
+      //   href = `/${split[3]}`
+      //   history.push(href)
+      // }
     }
   }
 
@@ -480,7 +496,7 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
     setSelectedAddToPocketBuzz(item)
   }
-  
+
   const onHideAddToPocketModal = () => {
     setAddToPocketModal(false)
     setSelectedAddToPocketBuzz(null)
@@ -502,16 +518,16 @@ const PostList = React.memo((props) => {
   const getPocket = () => {
     let pocketObject = null
 
-    
+
     pockets.forEach(pocket => {
       let hasThisBuzz
-      
+
       if(!selectedPocket.id) {
         hasThisBuzz = pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined
       } else {
         hasThisBuzz = pocket.pocketId === selectedPocket.id
       }
-      
+
       if(hasThisBuzz) {
         pocketObject = pocket
       }

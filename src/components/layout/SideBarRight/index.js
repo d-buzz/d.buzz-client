@@ -57,7 +57,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
-  
+
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -65,11 +65,11 @@ const useStyles = createUseStyles(theme => ({
     height: 'fit-content',
     margin: '5px 0',
 
-    
+
     '& .price_container': {
       display: 'flex',
       alignItems: 'flex-start',
-      
+
       '& .market': {
         display: 'flex',
         alignItems: 'center',
@@ -88,7 +88,7 @@ const useStyles = createUseStyles(theme => ({
         margin: 0,
       },
     },
-    
+
     '& .price_description': {
       margin: 0,
       fontSize: 13,
@@ -121,7 +121,7 @@ const SideBarRight = (props) => {
     }
     // eslint-disable-next-line
   }, [])
-  
+
   if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
   }
@@ -133,7 +133,7 @@ const SideBarRight = (props) => {
       link = '/ug'
     }
 
-    link += `/tags?q=${tag}`
+    link += `/trending/${tag}`
 
     return link
   }
@@ -185,7 +185,7 @@ const SideBarRight = (props) => {
           ))}
           <Spinner size={50} loading={loading} />
         </ListGroup>
-      </div>  
+      </div>
       <div className={classes.coinPriceChart}>
         <span className={classes.priceItem}>
           <span className='price_container'>

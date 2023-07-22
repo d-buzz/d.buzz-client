@@ -35,13 +35,14 @@ const Tags = (props) => {
     setPageFrom,
     clearSearchPosts,
     clearReplies,
+    match,
   } = props
   const location = useLocation()
   const params = queryString.parse(location.search)
-  const tag = params.q
+  const { tag } = match.params
   const [results, setResults] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  
+
   useEffect(() => {
     clearSearchPosts()
     // eslint-disable-next-line
@@ -74,7 +75,7 @@ const Tags = (props) => {
     if (posts?.length > 0) {
       setIsLoading(false)
     }
-    
+
   // eslint-disable-next-line
   }, [items])
 
