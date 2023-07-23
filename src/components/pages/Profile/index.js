@@ -88,7 +88,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
-    fontFamily: 'Segoe-Bold !important',
     ...theme.font,
   },
   userName: {
