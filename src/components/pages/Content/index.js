@@ -281,7 +281,7 @@ const Content = (props) => {
   const [ceramicPost, setCeramicPost] = useState(false)
 
   useEffect(() => {
-    if(title?.endsWith('...') && title?.length===86 && content && body) {
+    if(title?.endsWith('...') && content && body) {
       // replace ... from title and body and merge them
       // eslint-disable-next-line
       body = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')

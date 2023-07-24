@@ -1,4 +1,8 @@
 @font-face {
+  font-family: 'Segoe';
+  src: url('./fonts/Segoe.ttf');
+}
+@font-face {
   font-family: 'Segoe-Bold';
-  src: url('./fonts/Segoe-Bold.woff');
+  src: url('./fonts/Segoe-Bold.ttf');
 }

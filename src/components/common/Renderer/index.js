@@ -194,6 +194,12 @@ const prepareYoutubeEmbeds = (
           if (data[1]) {
             id = data[1]
           }
+        }else if (link.match(youtubeRegex) && link.includes('live')){
+          const data = link.split('live/')
+          match = link.match(youtubeRegex)
+          if (data[1]) {
+            id = data[1].replace(/\?feature=share/, '')
+          }
         }
         else if(link.match(youtubeRegex) && link.includes('shorts')){
           const data = link.split('shorts/')
@@ -204,6 +210,10 @@ const prepareYoutubeEmbeds = (
         }
         
         if(match){
+          // clean first or remove all first the additional params in the id
+          if (id.match(/&t=.*/)) {
+            id = id.replace(/&t=.*/, "")
+          }
           body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'youtube', id })
         }
@@ -1292,10 +1302,39 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       return n.startsWith('$')
     }
 
+    const replaceLastCharacterIfCommaOrPeriod = (n) => {
+      // Check if the inputString is not empty and the last character is a comma or period
+      if (n.length > 0 && /[,.]$/.test(n)) {
+        // Replace the last character with an empty string
+        n = n.slice(0, -1)
+      }
+      return n
+    }
+    // to get the last character of a string then append it after creating the link
+    const getLastCharacterToAppend = (n) => {
+      var lastCharacter = ""
+      if (n.length > 0 && /[,]$/.test(n)) {
+        lastCharacter = ","
+      }
+
+      if (n.length > 0 && /[.]$/.test(n)) {
+        lastCharacter = "."
+      }
+      return lastCharacter
+    }
+
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => {
+        // need to get the full url without getting the last character if it is comma or period
+        const cleanUrlName = replaceLastCharacterIfCommaOrPeriod(n)
+
+        // need to get the last character of the full url if it is comma or period in order to re-append it without including it in the link
+        const lastCharacter = getLastCharacterToAppend(n)
+
+        return checkForImage(cleanUrlName) && checkForValidURL(cleanUrlName) ? `<span class="hyperlink" id="${cleanUrlName}">${truncateString(cleanUrlName, 25)}</span>${lastCharacter}` : cleanUrlName
+      })
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames

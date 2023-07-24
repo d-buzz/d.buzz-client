@@ -471,13 +471,19 @@ function* publishPostRequest(payload, meta) {
   body = `${body}`.replace(dbuzzImageRegex, '').trimStart()
 
   let title = stripHtml(body)
-  
-  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
   title = `${title}`.trim()
 
-  if(title.length > 82) {
-    title = `${title.substr(0, 82)} ...`
-    body = `... ${body.substring(82)}`
+  const titleLimit = 82
+
+  if(title.length > titleLimit){
+    const lastSpace = title.substr(0, titleLimit).lastIndexOf(" ")
+
+    if(lastSpace !== -1) {
+      title = `${title.substring(0, lastSpace)} ...`
+      body = `... ${body.replace(title.substring(0, lastSpace), '')}`
+    } else {
+      title = ''
+    }
   } else {
     title = ''
   }
@@ -485,16 +491,17 @@ function* publishPostRequest(payload, meta) {
   if(images) {
     body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
-
+  
   body = footnote(body)
 
-  try {
 
+  try {
     const operations = yield call(generatePostOperations, username, title, body, tags, payout, perm)
 
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
-
+    const is_buzz_post = true
+    
     if(useKeychain && is_authenticated) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
@@ -507,7 +514,8 @@ function* publishPostRequest(payload, meta) {
       login_data = extractLoginData(login_data)
 
       const wif = login_data[1]
-      const result = yield call(broadcastOperation, operations, [wif])
+     
+      const result = yield call(broadcastOperation, operations, [wif], is_buzz_post)
 
       success = result.success
     }
@@ -559,9 +567,36 @@ function* publishPostRequest(payload, meta) {
 
     yield put(publishPostSuccess(data, meta))
   } catch (error) {
-    const errorMessage = errorMessageComposer('post', error)
-    yield put(publishPostFailure({ errorMessage }, meta))
+    if (error?.data?.stack?.[0]?.data?.last_root_post !== undefined &&
+      error.data.stack[0].data.last_root_post !== null) {
+      
+      const last_root_post = new Date(error.data.stack[0].data.last_root_post)
+      const now = new Date(error.data.stack[0].data.now)
+      const differenceInMinutes = getTimeLeftInPostingBuzzAgain(last_root_post, now)
+
+      const errorMessage = errorMessageComposer('post_limit', null, differenceInMinutes)
+
+      yield put(publishPostFailure({ errorMessage }, meta))
+
+    }else{
+      const errorMessage = errorMessageComposer('post', error)
+      yield put(publishPostFailure({ errorMessage }, meta))
+    }
+    
   }
+}
+
+function getTimeLeftInPostingBuzzAgain(last_root_post, now){
+  // Convert datetime to timestamps
+  const timestamp1 = last_root_post.getTime()
+  const timestamp2 = now.getTime()
+
+  // Calculate the difference in milliseconds
+  const differenceInMilliseconds = timestamp2 - timestamp1
+
+  // Convert milliseconds to minutes
+  const differenceInMinutes = differenceInMilliseconds / (1000 * 60)
+  return differenceInMinutes
 }
 
 function* publishReplyRequest(payload, meta) {
@@ -929,10 +964,10 @@ function* publishUpdateRequest(payload, meta) {
       parent_author,
       parent_permlink,
       author,
-      title,
       body,
       json_metadata,
     } = original
+    
 
     let updatedTitle
     let updatedBody
@@ -941,14 +976,20 @@ function* publishUpdateRequest(payload, meta) {
     const images = altered.match(dbuzzImageRegex)
     updatedBody = `${altered}`.replace(dbuzzImageRegex, '').trimStart()
 
-    updatedTitle = stripHtml(updatedBody)
-    
-    updatedTitle = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+    updatedTitle = `${stripHtml(updatedBody)}`.trim()
     updatedTitle = `${updatedTitle}`.trim()
+
+    const titleLimit = 82
   
-    if(updatedTitle.length > 82) {
-      updatedTitle = `${updatedTitle.substr(0, 82)} ...`
-      updatedBody = `... ${updatedBody.substring(82)}`
+    if(updatedTitle.length > titleLimit){
+      const lastSpace = updatedTitle.substr(0, titleLimit).lastIndexOf(" ")
+  
+      if(lastSpace !== -1) {
+        updatedBody = `... ${updatedBody.replace(updatedBody.substring(0, lastSpace), '')}`
+        updatedTitle = `${updatedTitle.substring(0, lastSpace)} ...`
+      } else {
+        updatedTitle = ''
+      }
     } else {
       updatedTitle = ''
     }
@@ -956,6 +997,9 @@ function* publishUpdateRequest(payload, meta) {
     if(images) {
       updatedBody += `\n${images.toString().replace(/,/gi, ' ')}`
     }
+
+    console.log(updatedTitle)
+    console.log(updatedBody)
 
     const patch = createPatch(body.trim(), updatedBody.trim())
     const operation = yield call(generateUpdateOperation, parent_author, parent_permlink, author, permlink, updatedTitle, patch, json_metadata)
