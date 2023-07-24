@@ -56,7 +56,7 @@ const Latest = (props) => {
     match,
   } = props
 
-  const { tag } = match.params
+  const { tag } = match.params;
   useEffect(() => {
     setPageFrom('latest')
     if (!isVisited) {
@@ -65,7 +65,7 @@ const Latest = (props) => {
       clearScrollIndex()
       clearTrendingPosts()
       setLatestIsVisited()
-      getLatestPostsRequest({tag})
+      getLatestPostsRequest('','',tag)
       setHomeIsVisited(false)
       setTrendingIsVisited(false)
     }
@@ -96,7 +96,7 @@ const Latest = (props) => {
   const loadMorePosts = useCallback(() => {
     const { permlink, author , tag } = last
 
-    getLatestPostsRequest({permlink, author, tag})
+    getLatestPostsRequest(permlink, author, tag)
     // eslint-disable-next-line
   }, [last])
 
