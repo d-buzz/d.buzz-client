@@ -87,6 +87,11 @@ const routes =  [
         component: Latest,
       },
       {
+        path: '/latest/:tag',
+        exact: true,
+        component: Latest,
+      },
+      {
         path: '/notifications',
         exact: true,
         component: Notification,

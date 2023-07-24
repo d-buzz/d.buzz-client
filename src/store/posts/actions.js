@@ -88,9 +88,9 @@ export const GET_LATEST_POSTS_REQUEST = 'GET_LATEST_POSTS_REQUEST'
 export const GET_LATEST_POSTS_SUCCESS = 'GET_LATEST_POSTS_SUCCESS'
 export const GET_LATEST_POSTS_FAILURE = 'GET_LATEST_POSTS_FAILURE'
 
-export const getLatestPostsRequest = (start_permlink = '', start_author = '') => ({
+export const getLatestPostsRequest = ({start_permlink = '', start_author = '', tag = ''}) => ({
   type: GET_LATEST_POSTS_REQUEST,
-  payload: { start_permlink, start_author },
+  payload: { start_permlink, start_author , tag },
   meta: {
     thunk: true,
   },

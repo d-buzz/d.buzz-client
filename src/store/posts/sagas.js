@@ -34,7 +34,7 @@ import {
   UPLOAD_FILE_REQUEST,
   uploadFileSuccess,
   uploadFileError,
-  
+
   UPLOAD_VIDEO_REQUEST,
   uploadVideoSuccess,
   uploadVideoError,
@@ -185,7 +185,7 @@ function* getContentRequest(payload, meta) {
         if(!fromPage) {
           data = yield call(fetchContent, author, permlink)
         } else {
-          
+
           if(fromPage === 'home') {
             const home = yield select(state => state.posts.get('home'))
             const filtered = home.filter((item) => item.author === author && item.permlink === permlink)
@@ -201,12 +201,12 @@ function* getContentRequest(payload, meta) {
           } else if(fromPage === 'profile') {
             const profilePosts = yield select(state => state.profile.get('posts'))
             let filtered = profilePosts.filter((item) => item.author === author && item.permlink === permlink)
-            
+
             if(filtered.length === 0) {
               const profileReplies = yield select(state => state.profile.get('replies'))
               filtered = profileReplies.filter((item) => item.author === author && item.permlink === permlink)
             }
-  
+
             data = filtered[0]
           }
         }
@@ -233,7 +233,7 @@ function* getContentRequest(payload, meta) {
         children: replies.length,
       }
     }
-    
+
     data = censorCheck(data, censoredList)
 
     yield put(setContentRedirect(null))
@@ -261,7 +261,7 @@ function* getTrendingPostsRequest(payload, meta) {
 
   const params = { sort: 'trending', start_permlink, start_author }
   const method = 'get_ranked_posts'
-  
+
   try {
     const old = yield select(state => state.posts.get('trending'))
     let data = yield call(callBridge, method, params)
@@ -322,7 +322,7 @@ function* getHomePostsRequest(payload, meta) {
       if(data === null) {
         data = []
       }
-      
+
       yield put(getHomePostsSuccess(data, meta))
     }
   } catch(error) {
@@ -336,9 +336,9 @@ function patternMute(patterns, data) {
 
 function* getLatestPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
-  const { start_permlink, start_author } = payload
+  const { start_permlink, start_author , tag} = payload
 
-  const params = { sort: 'created', start_permlink, start_author, limit: 50 }
+  const params = { sort: 'created', start_permlink, start_author, limit: 50 , tag}
   const method = 'get_ranked_posts'
 
   try {
@@ -446,7 +446,7 @@ function* videoUploadRequest(payload, meta) {
     if(is_authenticated) {
 
       const result = yield call(uploadVideo, video, user.username, progress)
-      
+
       const ipfsHash = result.hashV0
 
       yield put(uploadVideoSuccess(ipfsHash, meta))
@@ -491,7 +491,7 @@ function* publishPostRequest(payload, meta) {
   if(images) {
     body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
-  
+
   body = footnote(body)
 
 
@@ -501,20 +501,20 @@ function* publishPostRequest(payload, meta) {
     const comment_options = operations[1]
     const permlink = comment_options[1].permlink
     const is_buzz_post = true
-    
+
     if(useKeychain && is_authenticated) {
       const result = yield call(broadcastKeychainOperation, username, operations)
       success = result.success
 
       if(!success) {
         yield put(publishPostFailure('Unable to publish post', meta))
-      } 
+      }
     } else {
       let { login_data } = user
       login_data = extractLoginData(login_data)
 
       const wif = login_data[1]
-     
+
       const result = yield call(broadcastOperation, operations, [wif], is_buzz_post)
 
       success = result.success
@@ -569,7 +569,7 @@ function* publishPostRequest(payload, meta) {
   } catch (error) {
     if (error?.data?.stack?.[0]?.data?.last_root_post !== undefined &&
       error.data.stack[0].data.last_root_post !== null) {
-      
+
       const last_root_post = new Date(error.data.stack[0].data.last_root_post)
       const now = new Date(error.data.stack[0].data.now)
       const differenceInMinutes = getTimeLeftInPostingBuzzAgain(last_root_post, now)
@@ -582,7 +582,7 @@ function* publishPostRequest(payload, meta) {
       const errorMessage = errorMessageComposer('post', error)
       yield put(publishPostFailure({ errorMessage }, meta))
     }
-    
+
   }
 }
 
@@ -609,7 +609,7 @@ function* publishReplyRequest(payload, meta) {
   let replyData = {}
 
   let success = false
-  
+
   try {
     if(is_authenticated) {
       const operation = yield call(generateReplyOperation, username, body, parent_author, parent_permlink)
@@ -620,18 +620,18 @@ function* publishReplyRequest(payload, meta) {
       } else {
         let { login_data } = user
         login_data = extractLoginData(login_data)
-  
+
         const wif = login_data[1]
         const result = yield call(broadcastOperation, operation, [wif])
         success = result.success
       }
-  
+
       if(success) {
         const meta = operation[0]
-  
+
         let currentDatetime = moment().toISOString()
         currentDatetime = currentDatetime.replace('Z', '')
-  
+
         const reply = {
           author: username,
           category: 'hive-193084',
@@ -650,9 +650,9 @@ function* publishReplyRequest(payload, meta) {
           children: 0,
           created: currentDatetime,
         }
-  
+
         reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-  
+
         reply.refMeta = {
           ref,
           author: parent_author,
@@ -661,12 +661,12 @@ function* publishReplyRequest(payload, meta) {
         }
         replyData = reply
       }
-  
+
       const data = {
         success,
         reply: replyData,
       }
-  
+
       yield put(publishReplySuccess(data, meta))
     }
   } catch(error) {
@@ -693,7 +693,7 @@ function* followRequest(payload, meta) {
 
   const operation = yield call(generateFollowOperation, username, following)
   let success = false
-  
+
 
   if (useHAS && is_authenticated) {
     let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
@@ -707,7 +707,7 @@ function* followRequest(payload, meta) {
         if (m.type === 'sign_wait') {
           console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
         }
-  
+
         if (m.type === 'tx_result') {
           console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
           if (m.msg?.status === 'accepted') {
@@ -719,26 +719,26 @@ function* followRequest(payload, meta) {
                 recentUnfollows.splice(index, 1)
               }
             }
-          
+
             if(!Array.isArray(recentFollows)) {
               recentFollows = []
             }
             recentFollows.push(following)
             setHasBeenFollowedRecently(recentFollows)
             setHasBeenUnfollowedRecently(recentUnfollows)
-          
-          } else if (m.msg?.status === 'error') { 
+
+          } else if (m.msg?.status === 'error') {
             const error = m.msg?.status.error
-  
+
             followFailure(error, meta)
           }
-          
+
         }
-        
+
       })
     })
-    
-    
+
+
     if (success) {
       console.log('succe', success)
       yield put(followSuccess(success, meta))
@@ -747,7 +747,7 @@ function* followRequest(payload, meta) {
       yield put(followFailure(error, meta))
     }
 
-  } 
+  }
   else {
     try {
 
@@ -757,16 +757,16 @@ function* followRequest(payload, meta) {
       } else {
         let { login_data } = user
         login_data = extractLoginData(login_data)
-  
+
         const wif = login_data[1]
         const result = yield call(broadcastOperation, operation, [wif])
         success = result.success
       }
-  
+
       if(success) {
         let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
         let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
-  
+
         if(!Array.isArray(recentUnfollows)) {
           recentUnfollows = []
         } else {
@@ -775,7 +775,7 @@ function* followRequest(payload, meta) {
             recentUnfollows.splice(index, 1)
           }
         }
-  
+
         if(!Array.isArray(recentFollows)) {
           recentFollows = []
         }
@@ -783,7 +783,7 @@ function* followRequest(payload, meta) {
         yield put(setHasBeenFollowedRecently(recentFollows))
         yield put(setHasBeenUnfollowedRecently(recentUnfollows))
       }
-  
+
       yield put(followSuccess(success, meta))
     } catch (error) {
       yield put(followFailure(error, meta))
@@ -810,7 +810,7 @@ function* unfollowRequest(payload, meta) {
         if (m.type === 'sign_wait') {
           console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
         }
-  
+
         if (m.type === 'tx_result') {
           console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
           if (m.msg?.status === 'accepted') {
@@ -822,26 +822,26 @@ function* unfollowRequest(payload, meta) {
                 recentFollows.splice(index, 1)
               }
             }
-    
+
             if(!Array.isArray(recentUnfollows)) {
               recentUnfollows = []
             }
             recentUnfollows.push(following)
-    
+
             setHasBeenFollowedRecently(recentFollows)
             setHasBeenUnfollowedRecently(recentUnfollows)
-          
-          } else if (m.msg?.status === 'error') { 
+
+          } else if (m.msg?.status === 'error') {
             const error = m.msg?.status.error
-  
+
             followFailure(error, meta)
           }
-          
+
         }
-        
+
       })
     })
-    
+
     if (success) {
       console.log('success', success)
       yield put(unfollowSuccess(success, meta))
@@ -849,7 +849,7 @@ function* unfollowRequest(payload, meta) {
       const error = 'transaction error'
       yield put(unfollowFailure(error, meta))
     }
-    
+
   } else {
     try {
       if(useKeychain) {
@@ -930,9 +930,9 @@ function* getFollowDetailsRequest(payload, meta) {
     if(is_authenticated) {
       isFollowed = yield call(isFollowing, username, name)
     }
-    
+
     const account = yield call(fetchSingleProfile, name)
-    
+
 
     yield put(getFollowDetailsSuccess({ isFollowed, count, account }, meta))
   } catch(error) {
@@ -967,7 +967,7 @@ function* publishUpdateRequest(payload, meta) {
       body,
       json_metadata,
     } = original
-    
+
 
     let updatedTitle
     let updatedBody
@@ -980,10 +980,10 @@ function* publishUpdateRequest(payload, meta) {
     updatedTitle = `${updatedTitle}`.trim()
 
     const titleLimit = 82
-  
+
     if(updatedTitle.length > titleLimit){
       const lastSpace = updatedTitle.substr(0, titleLimit).lastIndexOf(" ")
-  
+
       if(lastSpace !== -1) {
         updatedBody = `... ${updatedBody.replace(updatedBody.substring(0, lastSpace), '')}`
         updatedTitle = `${updatedTitle.substring(0, lastSpace)} ...`
@@ -993,7 +993,7 @@ function* publishUpdateRequest(payload, meta) {
     } else {
       updatedTitle = ''
     }
-  
+
     if(images) {
       updatedBody += `\n${images.toString().replace(/,/gi, ' ')}`
     }
