@@ -88,7 +88,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
-    fontFamily: 'Segoe-Bold !important',
     ...theme.font,
   },
   userName: {
@@ -406,6 +405,11 @@ const Profile = (props) => {
         icon: '',
         onClick: navigateToModerationTools,
       },
+      {
+        label: "Copy Link",
+        icon: '',
+        onClick: copyToClipboard,
+      },
     ]
     
     if(username === loginuser) {
@@ -445,8 +449,8 @@ const Profile = (props) => {
   const { reputation = 0, isFollowed } = profile
   
   const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
-    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
+    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
+    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>` ) : ''
 
   const [loader, setLoader] = useState(false)
 
@@ -604,6 +608,18 @@ const Profile = (props) => {
 
   const navigateToModerationTools = () => {
     alert('Coming Soon!')
+  }
+
+  const copyToClipboard = () => {
+    const currentURL = window.location.href
+    navigator.clipboard.writeText(currentURL)
+      .then(() => {
+        broadcastNotification('success', 'Link copied to clipboard!')
+        console.log('Link copied to clipboard!')
+      })
+      .catch((error) => {
+        console.error('Failed to copy link:', error)
+      })
   }
 
   const handleCloseReferalCopy = () => {

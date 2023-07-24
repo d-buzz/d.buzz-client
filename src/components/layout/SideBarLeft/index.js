@@ -51,7 +51,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'grid',
     placeItems: 'center',
     height: 50,
-    fontFamily: 'Segoe-Bold, sans-serif',
+    fontFamily: 'Segoe, sans-serif',
     width: 'max-content',
     fontSize: 18,
     marginBottom: 8,
@@ -93,7 +93,6 @@ const useStyles = createUseStyles(theme => ({
       '& svg': {
         color: '#e53935',
         '& path': {
-          // stroke: '#e53935',
         },
       },
     },
@@ -101,9 +100,7 @@ const useStyles = createUseStyles(theme => ({
   activeItem: {
     borderRadius: '50px 50px',
     cursor: 'pointer',
-    '& a': {
-      color: '#e53935',
-    },
+    fontFamily: 'Segoe-Bold, sans-serif',
     '& svg': {
       '& path': {
         stroke: `${theme.font.color} !important`,
