@@ -56,8 +56,7 @@ const Latest = (props) => {
     match,
   } = props
 
-  const { tag } = match.params;
-  console.log('tag' , tag);
+  const { tag } = match.params
   useEffect(() => {
     setPageFrom('latest')
     if (!isVisited) {
