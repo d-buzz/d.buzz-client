@@ -14,7 +14,7 @@ const config = {
   BUCKET: 'nathansenn-team-bucket.storage.fleek.co',
   GIPHY_API_KEY: 'ecohRlzr8FrMGrTfX8JJ4uoilgdIiZI5',
   DISABLE_MOBILE: false,
-  BRANCH: process.env.REACT_APP_ENV,
+  BRANCH: process.env.REACT_APP_ENV || 'dev',
   HAS_WS: 'wss://hive-auth.arcange.eu',
   APP_NAME: 'D.Buzz',
   APP_DESCRIPTION: 'Micro-blogging social media Dapp on the HIVE blockchain.',
