@@ -105,7 +105,7 @@ const useStyles = createUseStyles(theme => ({
       height: '100%',
       width: '100%',
       position: 'absolute',
-      border: 'none',
+      border: 'none', 
       overflow: 'hidden',
     },
   },
@@ -144,7 +144,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 25,
     transition: 'opacity 250ms',
     cursor: 'pointer',
-
+    
     '& a': {
       textDecoration: 'none',
     },
@@ -169,9 +169,9 @@ const prepareYoutubeEmbeds = (
   contentImages,
 ) => {
   const youtubeRegex = /(https?:\/\/)?((www\.)?(m\.)?youtube\.com|youtu\.?be)\/.+/i
-
+  
   let body = content
-
+  
   const links = parseUrls(content)
 
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
@@ -180,7 +180,7 @@ const prepareYoutubeEmbeds = (
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-
+  
         if(link.match(youtubeRegex) && link.includes('.be')){
           const data = link.split('.be/')
           match = link.match(youtubeRegex)
@@ -208,7 +208,7 @@ const prepareYoutubeEmbeds = (
             id = data[1].replace(/\?feature=share/, '')
           }
         }
-
+        
         if(match){
           // clean first or remove all first the additional params in the id
           if (id.match(/&t=.*/)) {
@@ -219,7 +219,7 @@ const prepareYoutubeEmbeds = (
         }
       } catch(error) { }
     })
-
+    
     if(body.match(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_]+:~~~~~~\.\^\.~~~/gi)) {
       body = body.replace(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
@@ -260,7 +260,7 @@ const prepareTwitterEmbeds = (
           link = link.replace(/&amp;/g, '&')
           let match = ''
           let id = ''
-
+  
           if(link.match(mainTwitterRegex)) {
             match = link.match(mainTwitterRegex)
             id = `${match[1]}&${match[2]}`
@@ -281,7 +281,7 @@ const prepareTwitterEmbeds = (
             }
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
           }
-
+  
           if(match) {
             const id = `${match[1]}&${match[2]}`
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
@@ -296,7 +296,7 @@ const prepareTwitterEmbeds = (
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-twitter-embed-container:~~~~~~.^.~~~`
     }
   }
-
+  
   return body
 }
 
@@ -321,9 +321,9 @@ const prepareVimmEmbeds = (
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-
+  
       const data = link.split('/')
-
+  
       try {
         if(link.match(vimmRegex) && !link.includes('/view')){
           match = link.match(vimmRegex)
@@ -337,7 +337,7 @@ const prepareVimmEmbeds = (
           match = link.match(vimmUserRegex)
           id = match[3]
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:vimm:${id.toLowerCase()}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'vimm', id })
@@ -379,7 +379,7 @@ const prepareThreeSpeakEmbeds = (
         } else if(link.includes('3speak.tv/watch?v')) {
           match = link.match(/(?:https?:\/\/(?:(?:3speak\.tv\/watch\?v=(.*))))?/i)
         }
-
+  
         if(match) {
           const id = match[1]
           body = body.replace(link, `~~~~~~.^.~~~:threespeak:${id}:~~~~~~.^.~~~`)
@@ -415,7 +415,7 @@ const prepareRumbleEmbed = (
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-
+  
       try {
         if(link.match(rumbleRegexEmbed)) {
           match = link.match(rumbleRegexEmbed)
@@ -423,11 +423,11 @@ const prepareRumbleEmbed = (
           const data = input.split('/')
           id = data[4]
         }
-
+  
         if (!id) {
           id = ''
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:rumble:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'rumble', id })
@@ -466,7 +466,7 @@ const prepareLbryEmbeds = (
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-
+  
         if(link.match(lbryRegex) || link.match(lbry1Regex)){
           const data = link.split('/')
           match = link.match(lbryRegex) ? link.match(lbryRegex) : link.match(lbry1Regex)
@@ -474,13 +474,13 @@ const prepareLbryEmbeds = (
             const data1 = data[4].split(':')
             id = data1[0]
           }
-
+  
           if(link.match(lbryRegexEmbed)){
             match = link.split('/')
             id = match[5]
           }
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:lbry:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'lbry', id })
@@ -516,7 +516,7 @@ const prepareOdyseeEmbeds = (
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-
+  
         if(link.match(odyseeRegex)){
           const data = link.split('/')
           match = link.match(odyseeRegex)
@@ -543,7 +543,7 @@ const prepareOdyseeEmbeds = (
             }
           }
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~^odysy^${id}^~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'odysy', id })
@@ -579,7 +579,7 @@ const prepareBitchuteEmbeds = (
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-
+  
       try {
         if(link.match(bitchuteRegex)){
           const data = link.split('/')
@@ -592,11 +592,11 @@ const prepareBitchuteEmbeds = (
             id = data[4]
           }
         }
-
+  
         if (!id) {
           id = ''
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:bitchute:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'bitchute', id })
@@ -622,18 +622,18 @@ const prepareBannedEmbeds = (
   contentImages,
 ) => {
   const bannedRegex = /(?:https?:\/\/(?:(?:banned\.video\/watch\?id=(.*))))/i
-
+  
   let body = content
-
+  
   const links = parseUrls(content)
-
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
     links.forEach((link) => {
       try {
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-
+    
         if(link.match(bannedRegex)){
           const data = link.split('?id=')
           match = link.match(bannedRegex)
@@ -641,7 +641,7 @@ const prepareBannedEmbeds = (
             id = data[1]
           }
         }
-
+    
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:banned:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'banned', id })
@@ -667,18 +667,18 @@ const prepareDollarVigilanteEmbeds = (
   contentImages,
 ) => {
   const dollarVigilanteRegex = /(?:https?:\/\/(?:(?:(www\.)?vigilante\.tv\/w\/(.*))))/i
-
+  
   let body = content
-
+  
   const links = parseUrls(content)
-
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
     links.forEach((link) => {
       try {
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-
+    
         if(link.match(dollarVigilanteRegex)){
           const data = link.split('/')
           match = link.match(dollarVigilanteRegex)
@@ -686,7 +686,7 @@ const prepareDollarVigilanteEmbeds = (
             id = data[4]
           }
         }
-
+    
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:dollarvigilante:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'dollarvigilante', id })
@@ -712,11 +712,11 @@ const prepareDapplrEmbeds = (
   contentImages,
 ) => {
   const dapplrRegex = /(?:https?:\/\/(?:(?:(www\.)?cdn\.dapplr\.in\/file\/dapplr-videos\/(.*)\/(.*))))/i
-
+  
   let body = content
-
+  
   const links = parseUrls(content)
-
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
     links.forEach((link) => {
       try {
@@ -724,7 +724,7 @@ const prepareDapplrEmbeds = (
         let match = ''
         let username = ''
         let id = ''
-
+    
         if(link.match(dapplrRegex)){
           const data = link.split('/')
           match = link.match(dapplrRegex)
@@ -733,7 +733,7 @@ const prepareDapplrEmbeds = (
             id = data[6]
           }
         }
-
+    
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:dapplr:${username}/${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'dapplr', id: `${username}/${id}` })
@@ -759,18 +759,18 @@ const prepareFreeWorldNewsEmbeds = (
   contentImages,
 ) => {
   const freeWorldNewsRegex = /(?:https?:\/\/(?:(?:freeworldnews\.tv\/watch\?id=(.*))))/i
-
+  
   let body = content
-
+  
   const links = parseUrls(content)
-
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
     links.forEach((link) => {
       try {
         link = link.replace(/&amp;/g, '&')
         let match = ''
         let id = ''
-
+    
         if(link.match(freeWorldNewsRegex)){
           const data = link.split('?id=')
           match = link.match(freeWorldNewsRegex)
@@ -778,7 +778,7 @@ const prepareFreeWorldNewsEmbeds = (
             id = data[1]
           }
         }
-
+    
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:freeworldnews:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'freeworldnews', id })
@@ -813,18 +813,18 @@ const prepareSoundCloudEmbeds = (
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-
+  
       try {
         if(link.match(soundcloudRegex)){
           const data = link.split('/')
           match = link.match(soundcloudRegex)
           id = `${data[3]}/${data[4]}`
         }
-
+  
         if (!id) {
           id = ''
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:soundcloud:${id}:~~~~~~.^.~~~`)
           soundEmbeds.push({ app: 'soundcloud', id })
@@ -860,20 +860,20 @@ const prepareFacebookEmbeds = (
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-
+  
       try {
         if(link.match(facebookRegex)){
           const data = link.split('/')
           match = link.match(facebookRegex)
-
+          
           id = data[data.length-1]
-
+          
         }
-
+  
         if (!id) {
           id = ''
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:facebook:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'facebook', id })
@@ -909,20 +909,20 @@ const prepareTiktokEmbeds = (
       link = link.replace(/&amp;/g, '&')
       let match = ''
       let id = ''
-
+  
       try {
         if(link.match(tiktokRegex)){
           const url = new URL(link)
           const data = url.pathname.split('/')
           match = link.match(tiktokRegex)
-
+          
           id = data.reduce((a, v) => v.match(tiktokIdRegex) ? v : a)
         }
-
+  
         if (!id) {
           id = ''
         }
-
+  
         if(match){
           body = body.replace(link, `~~~~~~.^.~~~:tiktok:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'tiktok', id })
@@ -956,9 +956,9 @@ const prepareAppleEmbeds = (
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
     links.forEach((link) => {
       link = link.replace(/&amp;/g, '&')
-
+  
       const match = link.match(appleRegex) || link.match(appleRegexEmbed)
-
+  
       if(match){
         const data = link.split('/')
         const id = `${data[4]}/${data[5]}/${data[6]}`
@@ -995,7 +995,7 @@ const prepareDTubeEmbeds = (
       link = link.replace(/&amp;/g, '&')
       const matchEmbed = link.match(dtubeEmbedRegex)
       const matchVideo = link.match(dtubeVideoRegex)
-
+  
       if (matchEmbed) {
         const data = link.split('/')
         const id = link.includes('http') ? `${data[4]}/${data[5]}` : `${data[2]}/${data[3]}`
@@ -1074,17 +1074,17 @@ const prepareHiveTubeVideoEmbeds = (
   let body = content
 
   const links = parseUrls(content).filter(link => link.match(hiveTubeEmebedsRegex))
-
+  
   if(!body.includes(':dbuzz-embed-container:') && !body.includes(':dbuzz-tiktok-embed-container:') && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzImages.length===0 && buzzVideos.length===0 && contentImages===0) {
 
     links.forEach((link) => {
       link = link.replace(/&amp;/g, '&')
-
+  
       const matchedLink = link.match(hiveTubeEmebedsRegex).filter((match) => match !== undefined)
 
       let match
       let domain
-
+  
       if(link.includes('http') && link.includes('www')) {
         domain = `${matchedLink[3]}${matchedLink[4]}${matchedLink[5]}`
       } else if (link.includes('https') && !link.includes('www')) {
@@ -1094,24 +1094,24 @@ const prepareHiveTubeVideoEmbeds = (
       } else {
         domain = `${matchedLink[1]}${matchedLink[2]}${matchedLink[3]}`
       }
-
+   
       if(matchedLink) {
         match = link.match(/(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/i)[2]
       }
-
+  
       if (match) {
         const id = match
         body = body.replace(link, `~~~~~~.^.~~~${domain}:hive-tube-embed:${id}:~~~~~~.^.~~~`)
         videoEmbeds.push({ app: 'hive-tube-embed', domain, id })
       }
     })
-
+    
     if(body.match(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi)) {
       body = body.replace(/~~~~~~\.\^\.~~~([\w_-]+)(\.)([a-zA-Z]+):hive-tube-embed:[a-z-A-Z0-9]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
     }
   }
-
+  
   return body
 }
 
@@ -1127,14 +1127,14 @@ const prepareBuzzImages = (
   const dbuzzImageRegex = /!\[(?:[^\]]*?)\]\((.+?)\)|(https:\/\/(storageapi\.fleek\.co)?(media\.d\.buzz)?\/[a-z-]+\/dbuzz-images\/(dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp|HEIC))|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
 
   let body = content
-
+  
   const links = parseUrls(content)
-
+  
   if(!body.includes('~~~~~~.^.~~~:dbuzz-images-container:~~~~~~.^.~~~') && videoEmbeds.length===0 && soundEmbeds.length===0 && twitterEmbeds.length===0 && buzzVideos.length===0 && contentImages===0) {
     links.forEach((link) => {
       link = link.replace(/&amp;/g, '&')
       const matchedLink = link.match(dbuzzImageRegex)
-
+  
       if(matchedLink !== null) {
         if(!buzzImages.includes(matchedLink[0])) {
           body = body.replace(link, `~~~~~~.^.~~~:dbuzz-image-item:~~~~~~.^.~~~`)
@@ -1142,11 +1142,11 @@ const prepareBuzzImages = (
         }
       }
     })
-
+    
     body = body.replace(/~~~~~~\.\^\.~~~:dbuzz-image-item:~~~~~~\.\^\.~~~/g, '')
     body = `${body} \n ~~~~~~.^.~~~:dbuzz-images-container:~~~~~~.^.~~~`
   }
-
+  
   return body
 }
 
@@ -1160,7 +1160,7 @@ const getCoinTicker = (coin) => {
   }
 }
 
-const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, recomputeRowIndex, classes, videoEmbeds, soundEmbeds, twitterEmbeds, buzzImages, buzzVideos, onImageLoad) => {
+const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, recomputeRowIndex, classes, videoEmbeds, soundEmbeds, twitterEmbeds, buzzImages, buzzVideos, onImageLoad) => {  
 
   if (content.includes(':dbuzz-images-container:')) {
     return <BuzzPhotoGrid content={content} images={buzzImages} minifyAssets={minifyAssets} recomputeRowIndex={recomputeRowIndex} onImageLoad={onImageLoad} />
@@ -1224,7 +1224,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
 
     // tiktok
     const tiktokRegex = /((http:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*))|(https:\/\/(.*\.tiktok\.com\/.*|tiktok\.com\/.*)))/gi
-
+    
     // soundcloud
     const soundCloudRegex = /https?:\/\/(soundcloud\.com|snd\.sc)\/([a-zA-Z0-9&?=/_-]+)/gi
 
@@ -1267,7 +1267,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
 
     //tiktok
     content = content.replace(tiktokRegex, '')
-
+    
     // soundcloud
     content = content.replace(soundCloudRegex, '')
 
@@ -1302,16 +1302,45 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       return n.startsWith('$')
     }
 
+    const replaceLastCharacterIfCommaOrPeriod = (n) => {
+      // Check if the inputString is not empty and the last character is a comma or period
+      if (n.length > 0 && /[,.]$/.test(n)) {
+        // Replace the last character with an empty string
+        n = n.slice(0, -1)
+      }
+      return n
+    }
+    // to get the last character of a string then append it after creating the link
+    const getLastCharacterToAppend = (n) => {
+      var lastCharacter = ""
+      if (n.length > 0 && /[,]$/.test(n)) {
+        lastCharacter = ","
+      }
+
+      if (n.length > 0 && /[.]$/.test(n)) {
+        lastCharacter = "."
+      }
+      return lastCharacter
+    }
+
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
-      // // render markdown links
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => {
+        // need to get the full url without getting the last character if it is comma or period
+        const cleanUrlName = replaceLastCharacterIfCommaOrPeriod(n)
+
+        // need to get the last character of the full url if it is comma or period in order to re-append it without including it in the link
+        const lastCharacter = getLastCharacterToAppend(n)
+
+        return checkForImage(cleanUrlName) && checkForValidURL(cleanUrlName) ? `<span class="hyperlink" id="${cleanUrlName}">${truncateString(cleanUrlName, 25)}</span>${lastCharacter}` : cleanUrlName
+      })
+      // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
       .replace(/([a-zA-Z0-9/-]@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
-      //   // render hashtags
-      .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/trending/${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
+      //   // render hashtags 
+      .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
       .replace(/([a-zA-Z0-9/-]\$\S+)|\$([A-Za-z-]+)/gi, n => checkForValidCryptoTicker(n) && getCoinTicker(n.replace('$', '').toLowerCase()) ? `<b title=${getCoinTicker(n.replace('$', '').toLowerCase()).name}><a href=https://www.coingecko.com/en/coins/${getCoinTicker(n.replace('$', '').toLowerCase()).id}/usd#panel>${n}</a></b>` : n)
       // // render markdown images
@@ -1374,19 +1403,19 @@ const Renderer = React.memo((props) => {
     prepareHyperlinks()
     // eslint-disable-next-line
   }, [links])
-
+  
   const buzzImages = []
   const buzzVideos = []
   const videoEmbeds = []
   const soundEmbeds = []
   const twitterEmbeds = []
-
+  
   if(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus !== 'disabled') {
     links.forEach((link) => {
       try {
         link = link.replace(/&amp;/g, '&')
         link = link.replace(/\(/g, '%28').replace(/\)/g, '%29')
-
+        
         const hiveTubePattern = /(http|https?:\/\/)?(www\.)?([\w_-]+)(\.)([a-zA-Z]+)(\/w\/)([0-9A-Za-z]{22})([a-z?=0-9]*)/
         const buzzImagesPattern = /!\[(?:[^\]]*?)\]\((.+?)\)|(https:\/\/(storageapi\.fleek\.co)?(media\.d\.buzz)?\/[a-z-]+\/dbuzz-images\/(dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp|HEIC))|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
 

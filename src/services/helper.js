@@ -501,7 +501,7 @@ export const proxyImage = (url) => {
       imageUrl = `https://wsrv.nl/?url=${url}&q=50`
     }
   }
-
+  
   return imageUrl
 }
 
