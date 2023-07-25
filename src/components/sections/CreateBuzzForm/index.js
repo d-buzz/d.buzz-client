@@ -366,7 +366,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'flex-end',
-    
+
     '& .save_draft_button': {
       float: 'right',
       lineHeight: 1,
@@ -417,7 +417,7 @@ const useStyles = createUseStyles(theme => ({
       height: 33,
       width: 33,
     },
-    
+
     '& .icon': {
       paddingLeft: 2,
       width: 18,
@@ -439,7 +439,7 @@ const useStyles = createUseStyles(theme => ({
     transition: 'border 350ms',
     marginBottom: '15px',
     outlineWidth: 0,
-    
+
     '& .userAvatar': {
       transition: 'all 250ms',
       '&:hover': {
@@ -447,7 +447,7 @@ const useStyles = createUseStyles(theme => ({
         cursor: 'pointer',
       },
     },
-    
+
     '& .titleContainer': {
       display: 'flex',
       width: '100%',
@@ -467,7 +467,7 @@ const useStyles = createUseStyles(theme => ({
         width: '90%',
         paddingRight: 10,
       },
-      
+
       '& span': {
         alignSelf: 'center',
         justifySelf: 'center',
@@ -482,7 +482,7 @@ const useStyles = createUseStyles(theme => ({
         background: theme.context.view.backgroundColor,
       },
     },
-    
+
   },
   buzzCustomizeOptions: {
     display: 'inline-flex',
@@ -503,7 +503,7 @@ const useStyles = createUseStyles(theme => ({
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    
+
     '& .buzzPublishingOptions__r2': {
       marginTop: 15,
       width: '100%',
@@ -525,7 +525,7 @@ const useStyles = createUseStyles(theme => ({
   publishBuzzOption: {
     display: 'inline-flex',
     alignItems: 'center',
-    
+
     '@media (max-width: 480px)': {
       display: 'none',
     },
@@ -558,7 +558,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 8,
     marginBottom: 8,
     border: `2px solid ${theme.context.view.backgroundColor}`,
-    
+
     '& .buzzBoxes': {
       width: '100%',
 
@@ -584,12 +584,12 @@ const useStyles = createUseStyles(theme => ({
           },
         },
       },
-            
+
       '& .buzzArea': {
         position: 'relative',
         display: 'flex',
         width: '100%',
-        
+
         '&:after': {
           position: 'absolute',
           content: '""',
@@ -611,7 +611,7 @@ const useStyles = createUseStyles(theme => ({
             cursor: 'pointer',
           },
         },
-        
+
       },
 
       '& .noMargin': {
@@ -758,7 +758,7 @@ const CreateBuzzForm = (props) => {
   const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
   // eslint-disable-next-line
-  const [compressing, setCompressing] = useState(false) 
+  const [compressing, setCompressing] = useState(false)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
   const [imagesLength, setImagesLength] = useState(0)
@@ -772,8 +772,8 @@ const CreateBuzzForm = (props) => {
   const [imageLimit, setImageLimit] = useState(false)
   const [buzzPermlink, setBuzzPermlink] = useState(null)
   // const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
-  
-  
+
+
   // buzz states
   const [isThread, setIsThread] = useState(false)
   const [currentBuzz, setCurrentBuzz] = useState(1)
@@ -787,7 +787,7 @@ const CreateBuzzForm = (props) => {
   const [draftData, setDraftData] = useState(null)
   const [selectedDraft, setSelectedDraft] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
-  
+
   const {
     text = '',
     url = '',
@@ -795,13 +795,13 @@ const CreateBuzzForm = (props) => {
     origin_app_name = '',
     min_chars = 0,
   } = intentBuzz
-  
+
   const params = queryString.parse(location.search) || ''
   const paramsBuzzText = params.text || ''
   const buzzIntentText = (text || paramsBuzzText)
   const wholeIntent = buzzIntentText ? `${buzzIntentText} ${url}` : ''
   const buzzIntentTags = []
-  
+
   // buzz text box states, ref & style
   const buzzTextBoxRef = useRef(null)
   const [content, setContent] = useState(wholeIntent)
@@ -818,15 +818,15 @@ const CreateBuzzForm = (props) => {
   const [buzzImages, setBuzzImages] = useState(0)
   const [buzzAttachedImages, setBuzzAttchedImages] = useState([])
   const [isVideoAttached] = useState(content.includes('?dbuzz_video='))
-  
+
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
-  
+
   // image states
   // eslint-disable-next-line
   const [imageSize, setImageSize] = useState(0)
   const [viewImageUrl, setViewImageUrl] = useState('')
-  
+
   if (wholeIntent && hashtags) {
     const intentTags = hashtags.split(',')
     if (intentTags) {
@@ -837,10 +837,10 @@ const CreateBuzzForm = (props) => {
   }
 
   const classes = useStyles({buzzThreads})
-  
+
   let containerClass = classes.container
   let minRows = 2
-  
+
   if (modal) {
     containerClass = classes.containerModal
     minRows = 5
@@ -910,23 +910,23 @@ const CreateBuzzForm = (props) => {
     const buzzThreadImages = buzzAttachedImages || []
 
     buzzThreadImages.forEach((image) => images.push(image))
-    
+
     images.splice(0, 3)
     const imagesOverhead = images.toString().replace(/,/gi, ' &nbsp; ').length
     const contentOverhead = calculateOverhead(buzzContentStripped)
-  
+
     // allow only three images at on a single buzz
     if(buzzAttachedImages.length >= 4) {
       setImageLimit(true)
     } else {
       setImageLimit(false)
     }
-    
+
     setOverhead(contentOverhead-imagesOverhead)
     // eslint-disable-next-line
   }, [buzzContent])
-  
-  useEffect(() => {   
+
+  useEffect(() => {
     // update characters length and add images overhead
     const length = (buzzContentStripped.length) - (overhead)
 
@@ -1032,7 +1032,7 @@ const CreateBuzzForm = (props) => {
     let compressedFile = null
 
     setImageUploading(true)
-  
+
     const MAX_SIZE = 500 * 1024
 
     const options = {
@@ -1047,7 +1047,7 @@ const CreateBuzzForm = (props) => {
     } catch (error) {
       console.log(error)
     }
-    
+
     return compressedFile !== null && compressedFile
   }
 
@@ -1063,7 +1063,7 @@ const CreateBuzzForm = (props) => {
     Promise.all(
       heicImages.map(async (image) => {
         setCompressing(true)
-        
+
         const pngBlob = await heic2any({
           blob: image,
           toType: 'image/png',
@@ -1086,22 +1086,22 @@ const CreateBuzzForm = (props) => {
               // calculate image file size
               const fileSize = image.size / 1e+6
               setImageSize(Number(fileSize.toFixed(2)))
-    
+
               // handle image compression and then upload it
               setCompressing(true)
               await handleImageCompression(image).then((uri) => {
                 setCompressing(false)
                 setImageSize(Number((uri.size / 1e+6).toFixed(2)))
-                
+
                 uploadFileRequest(uri, setImageUploadProgress).then((image) => {
                   const lastImage = image[image.length - 1]
                   uploadedImages.push(lastImage)
-                  
+
                   if(uploadedImages.length === allImages.length) {
                     setImageUploading(false)
                     setBuzzAttchedImages(uploadedImages)
                     document.getElementById('file-upload').value = ''
-    
+
                     // set the thread if its the thread
                     if(Object.keys(buzzThreads).length > 1){
                       setIsThread(true)
@@ -1110,7 +1110,7 @@ const CreateBuzzForm = (props) => {
                     setImageSize(0)
                     setImagesLength(0)
                   }
-                }) 
+                })
               })
             }),
           )
@@ -1188,12 +1188,12 @@ const CreateBuzzForm = (props) => {
       if(!ceramicUser) {
         setBuzzLoading(true)
         setBuzzing(true)
-        
+
         if(user.useHAS) {
           publishPostWithHAS(user, buzzContent, tags, payout, buzzPermlink)
             .then((data) => {
               setContentRedirect(data.content)
-  
+
               import('@mintrawa/hive-auth-client').then((HiveAuth) => {
                 HiveAuth.hacMsg.subscribe(m => {
                   if(isMobile) {
@@ -1224,11 +1224,11 @@ const CreateBuzzForm = (props) => {
                       // error
                       broadcastNotification('error', 'Your HiveAuth post transaction is rejected.')
                       setBuzzLoading(false)
-                    } else if (m.msg?.status === 'error') { 
+                    } else if (m.msg?.status === 'error') {
                       const error = m.msg?.status.error
                       console.log(error)
                       broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-                    } 
+                    }
                   }
                 })
               })
@@ -1246,7 +1246,7 @@ const CreateBuzzForm = (props) => {
                 setNextBuzz(2)
                 setBuzzData({author: author, permlink: permlink})
                 setBuzzing(false)
-    
+
                 if(!isThread) {
                   hideModalCallback()
                   resetBuzzForm()
@@ -1445,9 +1445,9 @@ const CreateBuzzForm = (props) => {
   //       window.URL.revokeObjectURL(video.src)
   //       var duration = video.duration
   //       setVideoUploading(true)
-  
+
   //       // console.log(file)
-        
+
   //       if(duration <= 60 && file.size <= 150000000) {
   //         uploadVideoRequest(file, setVideoUploadProgress)
   //           .then(video => {
@@ -1464,7 +1464,7 @@ const CreateBuzzForm = (props) => {
   //         broadcastNotification('error', 'Video should be 60 seconds or less.')
   //       }
   //     }
-    
+
   //     video.src = URL.createObjectURL(file)
   //   }
   // }
@@ -1481,8 +1481,8 @@ const CreateBuzzForm = (props) => {
         })
     }
   }, [user])
-  
-  // genarate buzz permlink if video is attached  
+
+  // genarate buzz permlink if video is attached
   useEffect(() => {
     if(videoLimit) {
       setBuzzPermlink(createPermlink())
@@ -1492,7 +1492,7 @@ const CreateBuzzForm = (props) => {
   }, [videoLimit])
 
   // update content based on the buzz's content
-  useEffect(() => {  
+  useEffect(() => {
     if (buzzThreads[currentBuzz]?.content) {
       setContent(buzzThreads[currentBuzz]?.content)
     }
@@ -1526,7 +1526,7 @@ const CreateBuzzForm = (props) => {
                     {buzzThreads &&
                       Object.values(buzzThreads).map(item => (
                         <span key={item.id} style={{position: 'relative', width: '100%'}}>
-                          {item.content === '' && item.id !== 1 && 
+                          {item.content === '' && item.id !== 1 &&
                             <IconButton className={classes.closeBuzzButton} onClick={() => handleDeleteBuzz(item.id)}>
                               <CloseIcon />
                             </IconButton>}
@@ -1561,7 +1561,7 @@ const CreateBuzzForm = (props) => {
                           </span>
                         </span>))}
                   </span>
-                  {buzzContent && 
+                  {buzzContent &&
                     <div>
                       <Box
                         className={classes.buzzCharCounter}
@@ -1601,7 +1601,7 @@ const CreateBuzzForm = (props) => {
               </div>)}
             {imageUploading && !compressing && (
               <div style={{ width: '100%', paddingTop: 5 }}>
-                {imageUploadProgress !== 100 && imagesLength === 0 ?       
+                {imageUploadProgress !== 100 && imagesLength === 0 ?
                   <div className={classes.uploadProgressBar}>
                     <BorderLinearProgress className={classes.linearProgress} variant='determinate' value={imageUploadProgress} />
                     <span className='progressPercent'>{imageUploadProgress}%</span>
@@ -1722,14 +1722,14 @@ const CreateBuzzForm = (props) => {
                     )}
                   </div>}
                 <div className={classes.publishBuzzOption}>
-                  {content && !ceramicUser && 
+                  {content && !ceramicUser &&
                     <div style={{display: 'inline-flex'}}>
                       <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
                       <div className={classes.colDivider} />
                     </div>}
                   <ContainedButton
                     // eslint-disable-next-line
-                    disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
+                    disabled={loading || publishing || (content.trim().length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
                     label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
                     style={{margin: 0}}
                     onClick={handleClickPublishPost}
@@ -1755,7 +1755,7 @@ const CreateBuzzForm = (props) => {
             </div>
           </div>
           <div className={classes.publishBuzzOptionMobile}>
-            {content && 
+            {content &&
               <div style={{display: 'inline-flex'}}>
                 <div className={classes.addThreadIcon}><AddIcon onClick={handleClickBuzz} /></div>
                 <div className={classes.colDivider}> </div>
@@ -1768,7 +1768,7 @@ const CreateBuzzForm = (props) => {
               onClick={handleClickPublishPost}
             />
           </div>
-        </div>}        
+        </div>}
       {buzzLoading &&
         <div className={classes.loadingContainer}>
           <img style={{ marginBottom: 15, height: 80, width: 80 }} src={`${window.location.origin}/dbuzz-logo-icon.svg`} alt='buzzLoading'/>
