@@ -51,8 +51,19 @@ import MoreIcon from 'components/elements/Icons/MoreIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
+import { Image } from 'react-bootstrap'
 
 const useStyles = createUseStyles(theme => ({
+  headerspacing: {
+    width: '100%', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  titleContainerStyles: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   main: {
     marginTop: 55,
   },
@@ -111,6 +122,7 @@ const useStyles = createUseStyles(theme => ({
     fontFamily: 'Roboto, sans-serif',
     display: 'inline-block',
     verticalAlign: 'top',
+    marginRight: '0rem',
     ...theme.navbar.icon,
     flexGrow: 1,
   },
@@ -647,7 +659,19 @@ const MobileAppFrame = (props) => {
                   <BackArrowIcon />
                 </IconButton>
               )}
-              {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+              {title !== 'Search' && (
+                <div>
+                  <div className={classes.titleContainerStyles}>
+                    <span className={classes.title}>{title}</span>
+                    <div className={classes.headerspacing}>
+                      <Image width={'50px'} src={`${window.location.origin}/dbuzz.svg`}/>
+                    </div>
+                  </div>
+                  
+                </div>
+              
+              )}
+              
               {title === 'Notifications' && <NotificationFilter />}
             </Navbar.Brand>
             {title === 'Search' && (
