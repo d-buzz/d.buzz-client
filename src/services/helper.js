@@ -446,15 +446,33 @@ export const getDefaultVotingWeight = () => {
   return 1
 }
 
+const checkUrlHaveProfileRef = (urlParams) => {
+  const url = urlParams.searchParams.get('ref')
+
+  // need to enumerate the all static ref that is not related to a profile username
+  if (url && url !== 'home' && url !== 'content' && url !== 'tags' && url !== 'replies' && url !== 'SearchPosts' ) {
+    return url
+  }
+  return null
+}
 export const redirectOldLinks = () => {
   if(window.location.hash) {
     const regexForOldProfileLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi
     const regexForOldPostLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)\/c\/[a-zA-Z0-9]+/gi
+
+    let link
     if(regexForOldProfileLinks.test(window.location.hash) || regexForOldPostLinks.test(window.location.hash)){
-      const link = window.location.href.replace('/#', '').replace('/c', '')
-      window.location = link
+      link = window.location.href.replace('/#', '').replace('/c', '')
     } else {
-      const link = window.location.href.replace('/#', '')
+      link = window.location.href.replace('/#', '')
+    }
+    const urlParams = new URL(link)
+    const profileRef =  checkUrlHaveProfileRef(urlParams) 
+
+    if (profileRef) {
+      const redirectToProfile = window.location.origin+'/@'+profileRef
+      window.location = redirectToProfile
+    }else{
       window.location = link
     }
   }
@@ -501,7 +519,7 @@ export const proxyImage = (url) => {
       imageUrl = `https://wsrv.nl/?url=${url}&q=50`
     }
   }
-  
+
   return imageUrl
 }
 
