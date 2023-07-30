@@ -353,7 +353,7 @@ const LoginModal = (props) => {
                         disabled={loading}
                         name="username"
                         type="text"
-                        value={username}
+                        value={ username || '@' }
                         onChange={onChange}
                         onKeyDown={onKeyDown}
                         />
