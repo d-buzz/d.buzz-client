@@ -11,9 +11,6 @@ import {
 } from 'components/elements'
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
-import { getPrice } from 'services/api'
-import ThemeProvider from 'components/wrappers/ThemeProvider'
-const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -107,8 +104,6 @@ const SideBarRight = (props) => {
   const { pathname } = location
   let isInSearchRoute = false
   const { is_authenticated } = user
-  const [hivePrice, setHivePrice] = useState(0)
-  const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
@@ -165,15 +160,6 @@ const SideBarRight = (props) => {
     },
   ]
 
-  useEffect(() => {
-    (async function resources() {
-      const hivePrice = await getPrice('hive') || 'NA'
-      const hbdPrice = await getPrice('hbd') || 'NA'
-
-      setHivePrice(`$${hivePrice.hive.usd.toFixed(3) || '-'}`)
-      setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3) || '-'}`)
-    })()
-  }, [])
 
   return (
     <React.Fragment>
@@ -186,30 +172,6 @@ const SideBarRight = (props) => {
           <Spinner size={50} loading={loading} />
         </ListGroup>
       </div>  
-      <div className={classes.coinPriceChart}>
-        <span className={classes.priceItem}>
-          <span className='price_container'>
-            <label className='market'>HIVE</label>
-            {hivePrice ?
-              <label className='price'>{hivePrice}</label> :
-              <ThemeProvider>
-                <Skeleton height={20} width={50} count={1}/>
-              </ThemeProvider>}
-          </span>
-          <label className='price_description'> HIVE Market Value by <a href='https://www.coingecko.com/en/coins/hive'>@CoinGecko</a></label>
-        </span>
-        <span className={classes.priceItem}>
-          <span className='price_container'>
-            <label className='market'>HBD</label>
-            {hbdPrice ?
-              <label className='price'>{hbdPrice || 'N/A'}</label> :
-              <ThemeProvider>
-                <Skeleton height={20} width={50} count={1}/>
-              </ThemeProvider>}
-          </span>
-          <label className='price_description'> HBD Market Value by <a href='https://www.coingecko.com/en/coins/hive_dollar'>@CoinGecko</a></label>
-        </span>
-      </div>
       <div style={{ paddingTop: 5 }}>
         <ListGroup label="Catch us on">
           {SocialMediaLinks.map((item) => (
