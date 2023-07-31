@@ -456,25 +456,27 @@ const checkUrlHaveProfileRef = (urlParams) => {
   return null
 }
 export const redirectOldLinks = () => {
+  let link
   if(window.location.hash) {
     const regexForOldProfileLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi
     const regexForOldPostLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)\/c\/[a-zA-Z0-9]+/gi
 
-    let link
     if(regexForOldProfileLinks.test(window.location.hash) || regexForOldPostLinks.test(window.location.hash)){
       link = window.location.href.replace('/#', '').replace('/c', '')
     } else {
       link = window.location.href.replace('/#', '')
     }
-    const urlParams = new URL(link)
-    const profileRef =  checkUrlHaveProfileRef(urlParams) 
 
-    if (profileRef) {
-      const redirectToProfile = window.location.origin+'/@'+profileRef
-      window.location = redirectToProfile
-    }else{
-      window.location = link
-    }
+  }else{
+    link = window.location.href
+  }
+
+  const urlParams = new URL(link)
+  const profileRef =  checkUrlHaveProfileRef(urlParams)
+   
+  if (profileRef) {
+    const redirectToProfile = window.location.origin+'/@'+profileRef
+    window.location = redirectToProfile
   }
 }
 
