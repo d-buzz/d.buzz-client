@@ -121,6 +121,17 @@ const useStyles = createUseStyles(theme => ({
   uploadButton: {
     backgroundColor: '#e53935 !important',
   },
+  textarea: {
+    '& #about': {
+      marginTop: "10px",
+    },
+  },
+  aboutTextLimit: {
+    color: theme.font.color,
+    position: 'absolute', 
+    top: 3, 
+    right: 10,
+  },
 }))
 
 const EditProfileModal = (props) => {
@@ -197,7 +208,7 @@ const EditProfileModal = (props) => {
     const { id, value } = target
     if (id === "name") {
       setProfileName(value)
-    }else if (id === "about") {
+    }else if (id === "about" && value.length <= 160) {
       setProfileAbout(value)
     }else if (id === "location") {
       setProfileLocation(value)
@@ -516,14 +527,18 @@ const EditProfileModal = (props) => {
                 <div className={classes.spacer} />
                 <Row>
                   <Col>
-                    <TextField 
-                      id="about"
-                      label="Bio" 
-                      value={profileAbout}
-                      rowsMax={4}
-                      onChange={onChange}
-                      multiline 
-                      fullWidth/>
+                    <div style={{ position: 'relative' }}>
+                      <span className={classes.aboutTextLimit}>{(profileAbout ?? '').length}/160</span>
+                      <TextField 
+                        id="about"
+                        label="Bio" 
+                        value={profileAbout}
+                        className={classes.textarea}
+                        rowsMax={4}
+                        onChange={onChange}
+                        multiline 
+                        fullWidth/>
+                    </div>
                   </Col>
                 </Row>
                 <div className={classes.spacer} />
