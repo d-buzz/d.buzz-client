@@ -179,7 +179,7 @@ const UserDialog = React.memo((props) => {
     }
   }
 
-  let authorLink = `/@${author}?ref=card`
+  let authorLink = `/@${author}?from=card`
 
   if(unguardedLinks) {
     authorLink = `ug${authorLink}`

@@ -539,7 +539,7 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Profile',
-      path: `/@${username}/t/buzz?ref=nav`,
+      path: `/@${username}/t/buzz?from=nav`,
       icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
       onClick: () => handelClickItem('profile'),
     },
@@ -582,7 +582,7 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Profile',
-      path: `/@${username}/t/buzz?ref=nav`,
+      path: `/@${username}/t/buzz?from=nav`,
       icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
       onClick: () => handelClickItem('profile'),
     },

@@ -364,7 +364,7 @@ const PostList = React.memo((props) => {
 
   let hasUpvoted = false
   const history = useHistory()
-  const authorLink = !author.did ? `/@${author}${'?ref='+profileRef}` : `/@${author.did}${'?ref='+profileRef}`
+  const authorLink = !author.did ? `/@${author}${'?from='+profileRef}` : `/@${author.did}${'?from='+profileRef}`
 
   if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0

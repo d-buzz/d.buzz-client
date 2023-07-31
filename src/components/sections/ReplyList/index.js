@@ -448,7 +448,7 @@ const ReplyList = (props) => {
                   <div className={classes.content}>
                     <Link
                       ref={popoverAnchor}
-                      to={`${authorLink}?ref=replies`}
+                      to={`${authorLink}?from=replies`}
                       className={classNames(classes.link, classes.name)}
                     >
                       {!author.did ? author : author.name || author.did}
