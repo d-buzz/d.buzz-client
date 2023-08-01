@@ -450,7 +450,7 @@ const checkUrlHaveProfileRef = (urlParams) => {
   const url = urlParams.searchParams.get('ref')
 
   // need to enumerate the all static ref that is not related to a profile username
-  if (url && url !== 'home' && url !== 'content' && url !== 'tags' && url !== 'replies' && url !== 'SearchPosts' && url !== 'card' ) {
+  if (url && url !== 'home' && url !== 'content' && url !== 'tags' && url !== 'replies' && url !== 'SearchPosts' && url !== 'card' && url !== 'nav' ) {
     return url
   }
   return null
