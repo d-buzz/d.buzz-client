@@ -107,7 +107,7 @@ const useStyles = createUseStyles(theme => ({
 
         '&:disabled': {
           opacity: '0.5',
-          cursor: 'none',
+          cursor: 'not-allowed',
         },
       },
 
