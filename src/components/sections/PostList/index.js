@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
   // PostTags,
+  LoginModal,
   PostActions,
 } from 'components'
 import {
@@ -306,6 +307,7 @@ const PostList = React.memo((props) => {
   const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
   const [seletedRemoveFromPocketBuzz, setSeletedRemoveFromPocketBuzz] = useState(null)
   const [pockets, setPockets] = useState([])
+  const [openLoginModal, setOpenLoginModal] = useState(false)
 
   const buzzRowRef = useRef(null)
 
@@ -414,7 +416,20 @@ const PostList = React.memo((props) => {
   }
 
   const openMenu = (e) => {
-    setAnchorEl(e.currentTarget)
+    // if user is authenticated call open anchor el then return
+    if (user.is_authenticated) {
+      setAnchorEl(e.currentTarget)
+      return
+    }
+
+    // if user is not authenticated call open modal then return
+    setOpenLoginModal(true)
+    return    
+  }
+
+  // hide login modal
+  const hideLoginModal = () => {
+    setOpenLoginModal(false)
   }
 
   const closeMenu = () => {
@@ -626,6 +641,7 @@ const PostList = React.memo((props) => {
           </Row>
         </div>
       </div>
+      <LoginModal show={openLoginModal} onHide={hideLoginModal} />
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <RemoveFromPocketConfirmModal show={removeFromPocketConfirmModal} onHide={onHideRemoveFromPocketConfirmModal} user={user} buzz={seletedRemoveFromPocketBuzz} pocket={getPocket()} loadPockets={loadPockets}/>
     </React.Fragment>
