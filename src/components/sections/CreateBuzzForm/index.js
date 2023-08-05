@@ -773,6 +773,7 @@ const CreateBuzzForm = (props) => {
   const [buzzPermlink, setBuzzPermlink] = useState(null)
   // const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
 
+  const buzzAllowedImages = 4
 
   // buzz states
   const [isThread, setIsThread] = useState(false)
@@ -816,7 +817,7 @@ const CreateBuzzForm = (props) => {
   const [buzzLength, setBuzzLength] = useState(content.length - overhead)
   const [buzzRemainingChars, setBuzzRemaingChars] = useState(280 - (content.length - overhead))
   const [buzzImages, setBuzzImages] = useState(0)
-  const [buzzAttachedImages, setBuzzAttchedImages] = useState([])
+  const [buzzAttachedImages, setBuzzAttachedImages] = useState([])
   const [isVideoAttached] = useState(content.includes('?dbuzz_video='))
 
   // cursor state
@@ -1078,7 +1079,7 @@ const CreateBuzzForm = (props) => {
       .then(async () => {
         setCompressing(false)
 
-        if((allImages.length + buzzAttachedImages.length) <= 4) {
+        if((allImages.length + buzzAttachedImages.length) <= buzzAllowedImages) {
           setImagesLength(images.length)
 
           await Promise.all(
@@ -1099,7 +1100,7 @@ const CreateBuzzForm = (props) => {
 
                   if(uploadedImages.length === allImages.length) {
                     setImageUploading(false)
-                    setBuzzAttchedImages(uploadedImages)
+                    setBuzzAttachedImages(images => [...images, ...uploadedImages])
                     document.getElementById('file-upload').value = ''
 
                     // set the thread if its the thread
@@ -1115,7 +1116,7 @@ const CreateBuzzForm = (props) => {
             }),
           )
         } else {
-          alert(`You can only upload 3 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
+          alert(`You can only upload 4 images per buzz \n\n Please only upload remaining ${remainingImageUploads<=1 ? `${remainingImageUploads} image` : `${remainingImageUploads} images`}`)
         }
       })
 
@@ -1620,7 +1621,7 @@ const CreateBuzzForm = (props) => {
             )}
 
             {/* IMAGES ROW */}
-            {buzzAttachedImages.length >= 1 && (<ImagesContainer buzzId={currentBuzz} buzzImages={buzzAttachedImages} upadateBuzzImages={setBuzzAttchedImages} viewFullImage={setViewImageUrl} setVideoLimit={setVideoLimit} loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
+            {buzzAttachedImages.length >= 1 && (<ImagesContainer buzzId={currentBuzz} buzzImages={buzzAttachedImages} upadateBuzzImages={setBuzzAttachedImages} viewFullImage={setViewImageUrl} setVideoLimit={setVideoLimit} loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
             {!publishing && (
               <div className={classes.buzzCustomizeOptions}>
                 <span>
