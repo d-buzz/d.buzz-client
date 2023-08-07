@@ -626,9 +626,10 @@ const Profile = (props) => {
     setCopied(false)
   }
 
+  // checks if the user is loaded and if it's invalid
   useEffect(() => {
     if (profile.isLoaded && profile.invalidUser) {
-      window.location.href = `https://join.d.buzz?username=${username}`
+      setInvalidUser(true)
     }
   }, [profile, username])
 
