@@ -273,7 +273,7 @@ export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
     // set RPC node here because this is the first API call to execute
     setRPCNode()
-    api.getTrendingTagsAsync(null, 100)
+    api.getTrendingTagsAsync("dbuzz", 100)
       .then((result) => {
         resolve(result)
       })
