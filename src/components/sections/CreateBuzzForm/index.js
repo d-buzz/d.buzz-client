@@ -1570,7 +1570,7 @@ const CreateBuzzForm = (props) => {
       {!buzzModalStatus && buzzThreads && buzzThreads[1]?.content && !isMobile && !wholeIntent &&
         <div className={classes.draftsContainer}>
           <span className="save_draft_button" onClick={handleSaveDraftsModalOpen}
-                hidden={checkInDrafts()}>save draft</span>
+            hidden={checkInDrafts()}>save draft</span>
         </div>}
       {!buzzLoading &&
         <div className={classes.row}>
@@ -1601,11 +1601,11 @@ const CreateBuzzForm = (props) => {
                           <span className={`buzzArea buzzArea${item.id} noMargin`}>
                             {item.id === 1 &&
                               <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username}
-                                      style={{width: 'fit-content'}}
-                                      onClick={() => history.push(`/@${user.username}`)}/>}
+                                style={{width: 'fit-content'}}
+                                onClick={() => history.push(`/@${user.username}`)}/>}
                             {item.id !== 1 &&
                               <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username}
-                                      onClick={() => history.push(`/@${user.username}`)}/>}
+                                onClick={() => history.push(`/@${user.username}`)}/>}
                             <TextArea
                               ref={buzzTextBoxRef}
                               buzzId={item.id}
@@ -1677,7 +1677,7 @@ const CreateBuzzForm = (props) => {
                 {imageUploadProgress !== 100 && imagesLength === 0 ?
                   <div className={classes.uploadProgressBar}>
                     <BorderLinearProgress className={classes.linearProgress} variant="determinate"
-                                          value={imageUploadProgress}/>
+                      value={imageUploadProgress}/>
                     <span className="progressPercent">{imageUploadProgress}%</span>
                   </div> :
                   <div
@@ -1688,7 +1688,7 @@ const CreateBuzzForm = (props) => {
                 {videoUploadProgress !== 100 ?
                   <div className={classes.uploadProgressBar}>
                     <BorderLinearProgress className={classes.linearProgress} variant="determinate"
-                                          value={videoUploadProgress}/>
+                      value={videoUploadProgress}/>
                     <span className="progressPercent">{videoUploadProgress}%</span>
                   </div> :
                   <div className={classes.preparingMedia}>Preparing Video</div>}
@@ -1697,10 +1697,10 @@ const CreateBuzzForm = (props) => {
 
             {/* IMAGES ROW */}
             {buzzAttachedImages.length >= 1 && (<ImagesContainer buzzId={currentBuzz} buzzImages={buzzAttachedImages}
-                                                                 upadateBuzzImages={setBuzzAttachedImages}
-                                                                 viewFullImage={setViewImageUrl}
-                                                                 setVideoLimit={setVideoLimit}
-                                                                 loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
+              upadateBuzzImages={setBuzzAttachedImages}
+              viewFullImage={setViewImageUrl}
+              setVideoLimit={setVideoLimit}
+              loading={compressing || imageUploading || videoUploading || buzzLoading || publishing}/>)}
             {!publishing && (
               <div className={classes.buzzCustomizeOptions}>
                 <span>
@@ -1745,15 +1745,15 @@ const CreateBuzzForm = (props) => {
                   </Tooltip> */}
                   <Tooltip title="GIF" placement="top-start">
                     <IconButton size="medium" onClick={handleOpenGiphy}
-                                disabled={isVideoAttached || compressing || imageUploading || videoUploading || buzzAttachedImages.length > 0}
-                                classes={{disabled: classes.disabled}}>
+                      disabled={isVideoAttached || compressing || imageUploading || videoUploading || buzzAttachedImages.length > 0}
+                      classes={{disabled: classes.disabled}}>
                       <GifIcon/>
                     </IconButton>
                   </Tooltip>
                   {!isMobile &&
                     <Tooltip title="Emoji" placement="top-start">
                       <IconButton style={{backgroundColor: openEmojiPicker ? '#D3D3D3' : ''}} size="medium"
-                                  onClick={handleOpenEmojiPicker}>
+                        onClick={handleOpenEmojiPicker}>
                         <EmojiIcon/>
                       </IconButton>
                     </Tooltip>}
@@ -1781,7 +1781,7 @@ const CreateBuzzForm = (props) => {
                       onClick={() => setBuzzToTwitter(!buzzToTwitter)}
                     >
                       <img className="icon" src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon"
-                           loading="lazy"/>
+                        loading="lazy"/>
                       {/* <div className='title'>Buzz to Twitter</div> */}
                     </div>
                   </span>
@@ -1856,12 +1856,12 @@ const CreateBuzzForm = (props) => {
       {buzzLoading &&
         <div className={classes.loadingContainer}>
           <img style={{marginBottom: 15, height: 80, width: 80}} src={`${window.location.origin}/dbuzz-logo-icon.svg`}
-               alt="buzzLoading"/>
+            alt="buzzLoading"/>
           <span className="title">Broadcasting your {isThread ? 'thread' : 'buzz'} to the decentralized web...</span>
           {/* {isThread && <span>This can take upto 5-10 secs</span>} */}
           {isThread && <button className={classes.publishThreadButton} onClick={handlePublishThread}
-                               disabled={buzzing}>Buzz {publishedBuzzes} of {threadCount} <ArrowForwardRoundedIcon
-            style={{marginLeft: 8}}/></button>}
+            disabled={buzzing}>Buzz {publishedBuzzes} of {threadCount} <ArrowForwardRoundedIcon
+              style={{marginLeft: 8}}/></button>}
         </div>}
       <EmojiPicker
         open={openEmojiPicker}
@@ -1880,11 +1880,11 @@ const CreateBuzzForm = (props) => {
       />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads}/>
       <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl}
-                      onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
+        onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
       <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts}
-                   setSelectedDraft={setSelectedDraft}/>
+        setSelectedDraft={setSelectedDraft}/>
       <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts}
-                      draftData={draftData}/>
+        draftData={draftData}/>
     </div>
   )
 }
