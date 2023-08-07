@@ -140,6 +140,7 @@ const DevelopersFooter = () => {
               <Link to="/org/en/tos">Terms & Conditions</Link>
               <Link to="/org/en/privacy">Privacy Policy</Link>
               <Link to="/org/en/disclaimer">Disclaimer</Link>
+              <Link to="/org/en/FAQs">FAQs</Link>
             </div>
           </center>
         </Container>
