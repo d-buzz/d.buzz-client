@@ -69,7 +69,7 @@ const useStyles = createUseStyles(theme => ({
   },
   minifyItems: {
     textAlign: 'left',
-    width: 60,
+    width: 49,
     marginBottom: 5,
     ...theme.left.sidebar.items.icons,
     '& a': {
@@ -375,6 +375,9 @@ const MobileAppFrame = (props) => {
     case '/profile':
       setActiveView('profile')
       break
+    case '/search/posts':
+      setActiveView('search')
+      break
     case `/@${username}/wallet`:
       setActiveView(`/@${username}/wallet`)
       break
@@ -391,6 +394,13 @@ const MobileAppFrame = (props) => {
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
+    },
+    {
+      name: 'Search',
+      path: "/search/posts?q=",
+      icon: activeView === 'search' ? <SearchIcon type='fill'/> : <SearchIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('search'),
     },
     {
       name: 'Trending',
@@ -441,6 +451,13 @@ const MobileAppFrame = (props) => {
       icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('home'),
+    },
+    {
+      name: 'Search',
+      path: "/search/posts?q=",
+      icon: activeView === 'search' ? <SearchIcon type='fill'/> : <SearchIcon type='outline'/>,
+      preventDefault: false,
+      onClick: () => handelClickItem('search'),
     },
     {
       name: 'Trending',
@@ -604,9 +621,6 @@ const MobileAppFrame = (props) => {
     }
   }
 
-  const handleClickSearchButton = () => {
-    history.push(`/search/posts?q=`)
-  }
 
   const onChangeSearch = (e) => {
     const { target } = e
@@ -659,7 +673,15 @@ const MobileAppFrame = (props) => {
                   <BackArrowIcon />
                 </IconButton>
               )}
-              {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
+              {title !== 'Search' && title !== 'Profile' && (<div>
+                {is_authenticated &&
+                  (<React.Fragment>
+                    <div className={classes.avatarWrapper}>
+                      <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                    </div>
+                  </React.Fragment>)}
+               
+              </div>)}
               {/* {title !== 'Search' && (
                 <div>
                   <div className={classes.titleContainerStyles}>
@@ -702,16 +724,7 @@ const MobileAppFrame = (props) => {
                 onClick={handleClearNotification}
               />
             )}
-            {is_authenticated && title !== 'Search' &&
-          (<React.Fragment>
-            <IconButton onClick={handleClickSearchButton} size="small"
-              className={classes.searchButton}>
-              <SearchIcon/>
-            </IconButton>
-            <div className={classes.avatarWrapper}>
-              <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
-            </div>
-          </React.Fragment>)}
+            
           </Navbar>
           <React.Fragment>
             {is_authenticated && (
