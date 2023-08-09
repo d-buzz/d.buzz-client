@@ -51,7 +51,7 @@ import MoreIcon from 'components/elements/Icons/MoreIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
-// import { Image } from 'react-bootstrap'
+import { Image } from 'react-bootstrap'
 
 const useStyles = createUseStyles(theme => ({
   // headerspacing: {
@@ -174,6 +174,9 @@ const useStyles = createUseStyles(theme => ({
   },
   widthHalfWidth: {
     width: '50%',
+  },
+  width45Percent: {
+    width: '45%',
   },
   menu: {
     '& .MuiPaper-root': {
@@ -681,11 +684,11 @@ const MobileAppFrame = (props) => {
                 {is_authenticated &&
                   (<React.Fragment>
                     <div className={classes.avatarWrapper}>
-                      <div className={classes.widthHalfWidth}>
+                      <div className={classes.width45Percent}>
                         <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                       </div>
                       <div className={classes.widthHalfWidth}>
-                        <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                        <Image width={'60px'} src={`${window.location.origin}/dbuzz-text-logo.svg`}/>
                       </div>
                     </div>
                   </React.Fragment>)}
