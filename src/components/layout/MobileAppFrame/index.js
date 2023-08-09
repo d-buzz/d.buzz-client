@@ -65,7 +65,7 @@ const useStyles = createUseStyles(theme => ({
   //   justifyContent: 'space-between',
   // },
   main: {
-    marginTop: 55,
+    marginTop: 90,
   },
   minifyItems: {
     textAlign: 'left',
@@ -177,6 +177,27 @@ const useStyles = createUseStyles(theme => ({
   },
   width45Percent: {
     width: '45%',
+  },
+  paddingBottomEmpty: {
+    paddingBottom: '0px !important',
+  },
+  paddingTop20: {
+    paddingTop: '20px',
+  },
+  displayFlex: {
+    display: 'flex',
+  },
+  marginEmpty: {
+    margin: '0px',
+  },
+  justifyContentCenter: {
+    justifyContent: 'center',
+  },
+  alignItemsCenter: {
+    alignItems: 'center',
+  },
+  paddingLeft15:{
+    paddingLeft: 15,
   },
   menu: {
     '& .MuiPaper-root': {
@@ -673,7 +694,7 @@ const MobileAppFrame = (props) => {
     <React.Fragment>
       <div className={classes.main}>
         <React.Fragment>
-          <Navbar className={classes.navTop} fixed="top">
+          <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
             <Navbar.Brand className={classes.navTitle}>
               {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                 <IconButton onClick={handleClickBackButton} size="small">
@@ -692,8 +713,17 @@ const MobileAppFrame = (props) => {
                       </div>
                     </div>
                   </React.Fragment>)}
-                    
+                <div className={classes.paddingTop20+' '+classes.displayFlex}>
+                  <div className={classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                    <p className={classes.marginEmpty}>Trending</p>
+                  </div>
+                  <div className={classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                    <p className={classes.marginEmpty}>Following</p>
+                  </div>
+                </div>
               </div>)}
+              
+              
               {/* {title !== 'Search' && (
                 <div>
                   <div className={classes.titleContainerStyles}>
@@ -709,6 +739,7 @@ const MobileAppFrame = (props) => {
                */}
               {title === 'Notifications' && <NotificationFilter />}
             </Navbar.Brand>
+           
             {title === 'Search' && (
               <div className={classes.searchDiv}>
                 <SearchField
@@ -738,6 +769,7 @@ const MobileAppFrame = (props) => {
             )}
             
           </Navbar>
+          
           <React.Fragment>
             {is_authenticated && (
               <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
