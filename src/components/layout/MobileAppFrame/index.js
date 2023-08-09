@@ -170,6 +170,10 @@ const useStyles = createUseStyles(theme => ({
   },
   avatarWrapper: {
     paddingLeft: "0px",
+    display: "flex",
+  },
+  widthHalfWidth: {
+    width: '50%',
   },
   menu: {
     '& .MuiPaper-root': {
@@ -677,7 +681,12 @@ const MobileAppFrame = (props) => {
                 {is_authenticated &&
                   (<React.Fragment>
                     <div className={classes.avatarWrapper}>
-                      <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                      <div className={classes.widthHalfWidth}>
+                        <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                      </div>
+                      <div className={classes.widthHalfWidth}>
+                        <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                      </div>
                     </div>
                   </React.Fragment>)}
                     
