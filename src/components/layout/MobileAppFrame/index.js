@@ -169,7 +169,7 @@ const useStyles = createUseStyles(theme => ({
     paddingRight: "5px",
   },
   avatarWrapper: {
-    paddingLeft: "10px",
+    paddingLeft: "0px",
   },
   menu: {
     '& .MuiPaper-root': {
@@ -680,7 +680,7 @@ const MobileAppFrame = (props) => {
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div>
                   </React.Fragment>)}
-               
+                    
               </div>)}
               {/* {title !== 'Search' && (
                 <div>
