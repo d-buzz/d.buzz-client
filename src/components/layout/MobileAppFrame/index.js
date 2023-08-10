@@ -744,16 +744,16 @@ const MobileAppFrame = (props) => {
                     </div>
                   </React.Fragment>)}
                 <div className={classes.displayFlex}>
-                  <div className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                  <div onClick={() => handelClickItem('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
                     <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Trending</p>
                     <div
-                      className={classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10}
+                      className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
                     ></div>
                   </div>
-                  <div className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                  <div onClick={() => handelClickItem('following')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
                     <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Following</p>
                     <div
-                      className={classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10}
+                      className={activeView === 'following'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
                     ></div>
                   </div>
                 </div>
