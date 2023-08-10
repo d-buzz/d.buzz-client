@@ -13,8 +13,8 @@ import { pollNotifRequest } from 'store/polling/actions'
 import {
   BackArrowIcon,
   HomeIcon,
-  TrendingIcon,
-  LatestIcon,
+  // TrendingIcon,
+  // LatestIcon,
   NotificationsIcon,
   ProfileIcon,
   ContainedButton,
@@ -65,11 +65,11 @@ const useStyles = createUseStyles(theme => ({
   //   justifyContent: 'space-between',
   // },
   main: {
-    marginTop: 110,
+    marginTop: 120,
   },
   minifyItems: {
     textAlign: 'left',
-    width: 49,
+    width: 70,
     marginBottom: 5,
     ...theme.left.sidebar.items.icons,
     '& a': {
@@ -395,19 +395,32 @@ const MobileAppFrame = (props) => {
   }
 
   // const avatarStyle = { float: 'right' }
+  const handelClickItemByTab = (name) => {
+    setActiveView(name)
+    if (name === 'trending') {
+      history.replace('/trending')
+      return
+    }
 
+    if (name === 'home') {
+      history.replace('/home')
+      refreshHomeRouteData()
+      return
+    }
+   
+  }
   const handelClickItem = (name) => {
     setActiveView(name)
     switch(name) {
     case 'Home':
-      refreshHomeRouteData()
+      refreshLatestRouteData()
       break
     case 'Trending':
       refreshTrendingRouteData()
       break
-    case 'Latest':
-      refreshLatestRouteData()
-      break
+    // case 'Latest':
+    //   refreshLatestRouteData()
+    //   break
     case 'More':
       handleClickOpenMoreMenu()
       break
@@ -448,10 +461,10 @@ const MobileAppFrame = (props) => {
   const NavLinks = [
     {
       name: 'Home',
-      path: "/home",
-      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
+      path: "/latest",
+      icon: activeView === 'latest' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
-      onClick: () => handelClickItem('home'),
+      onClick: () => handelClickItem('latest'),
     },
     {
       name: 'Search',
@@ -460,20 +473,20 @@ const MobileAppFrame = (props) => {
       preventDefault: false,
       onClick: () => handelClickItem('search'),
     },
-    {
-      name: 'Trending',
-      path: '/',
-      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('trending'),
-    },
-    {
-      name: 'Latest',
-      path: "/latest",
-      icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('latest'),
-    },
+    // {
+    //   name: 'Trending',
+    //   path: '/',
+    //   icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
+    //   preventDefault: false,
+    //   onClick: () => handelClickItem('trending'),
+    // },
+    // {
+    //   name: 'Latest',
+    //   path: "/latest",
+    //   icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
+    //   preventDefault: false,
+    //   onClick: () => handelClickItem('latest'),
+    // },
     {
       name: 'Notifications',
       path: `/notifications`,
@@ -505,10 +518,10 @@ const MobileAppFrame = (props) => {
   const CeramicAccountNavLinks = [
     {
       name: 'Home',
-      path: "/home",
-      icon: activeView === 'home' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
+      path: "/latest",
+      icon: activeView === 'latest' ? <HomeIcon type='fill'/> : <HomeIcon type='outline'/>,
       preventDefault: false,
-      onClick: () => handelClickItem('home'),
+      onClick: () => handelClickItem('latest'),
     },
     {
       name: 'Search',
@@ -517,20 +530,20 @@ const MobileAppFrame = (props) => {
       preventDefault: false,
       onClick: () => handelClickItem('search'),
     },
-    {
-      name: 'Trending',
-      path: '/',
-      icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('trending'),
-    },
-    {
-      name: 'Latest',
-      path: "/latest",
-      icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
-      preventDefault: false,
-      onClick: () => handelClickItem('latest'),
-    },
+    // {
+    //   name: 'Trending',
+    //   path: '/',
+    //   icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
+    //   preventDefault: false,
+    //   onClick: () => handelClickItem('trending'),
+    // },
+    // {
+    //   name: 'Latest',
+    //   path: "/latest",
+    //   icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
+    //   preventDefault: false,
+    //   onClick: () => handelClickItem('latest'),
+    // },
     {
       name: 'Profile',
       path: `/@${username}/t/buzz?from=nav`,
@@ -744,16 +757,16 @@ const MobileAppFrame = (props) => {
                     </div>
                   </React.Fragment>)}
                 <div className={classes.displayFlex}>
-                  <div onClick={() => handelClickItem('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                  <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
                     <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Trending</p>
                     <div
                       className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
                     ></div>
                   </div>
-                  <div onClick={() => handelClickItem('following')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                  <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
                     <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Following</p>
                     <div
-                      className={activeView === 'following'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
+                      className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
                     ></div>
                   </div>
                 </div>
