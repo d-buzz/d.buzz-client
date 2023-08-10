@@ -206,6 +206,21 @@ const useStyles = createUseStyles(theme => ({
   paddingLeft15:{
     paddingLeft: 15,
   },
+  paddingBottom15:{
+    paddingBottom: 15,
+  },
+  height5:{
+    height:5,
+  },
+  backgroundE61C34:{
+    background: '#e61c34',
+  },
+  borderRadius10:{
+    borderRadius:10,
+  },
+  flexDirectionColumn:{
+    flexDirection: 'column',
+  },
   cursorPointer: {
     cursor: 'pointer',
   },
@@ -729,11 +744,17 @@ const MobileAppFrame = (props) => {
                     </div>
                   </React.Fragment>)}
                 <div className={classes.displayFlex}>
-                  <div className={classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.paddingBottom10+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-                    <p className={classes.marginEmpty+' '+classes.cursorPointer}>Trending</p>
+                  <div className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                    <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Trending</p>
+                    <div
+                      className={classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10}
+                    ></div>
                   </div>
-                  <div className={classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.paddingBottom10+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
-                    <p className={classes.marginEmpty+' '+classes.cursorPointer}>Following</p>
+                  <div className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                    <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Following</p>
+                    <div
+                      className={classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10}
+                    ></div>
                   </div>
                 </div>
               </div>)}
