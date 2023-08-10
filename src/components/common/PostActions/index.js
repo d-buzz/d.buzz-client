@@ -533,7 +533,7 @@ const PostActions = (props) => {
                     className={classes.actionWrapperSpace}
                     inlineClass={classNames(classes.inline, classes.icon)}
                     icon={<IconButton classes={{root: classes.iconButton}} disabled={!is_authenticated || disableUpvote}
-                                      size="small"><HeartIcon/></IconButton>}
+                      size="small"><HeartIcon/></IconButton>}
                     hideStats={hideStats}
                     disabled={!is_authenticated || disableUpvote}
                     onClick={handleClickShowSlider}
@@ -551,7 +551,7 @@ const PostActions = (props) => {
                     className={classes.actionWrapperSpace}
                     inlineClass={classNames(classes.inline, classes.spinner)}
                     icon={<Spinner top={0} loading={true} size={20}
-                                   style={{display: 'inline-block', verticalAlign: 'top'}}/>}
+                      style={{display: 'inline-block', verticalAlign: 'top'}}/>}
                     hideStats={hideStats}
                     onClick={handleClickShowSlider}
                     stat={(
@@ -568,7 +568,7 @@ const PostActions = (props) => {
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
                   icon={<IconButton classes={{root: classes.iconButton}} size="small"
-                                    disabled={!is_authenticated}><CommentIcon/></IconButton>}
+                    disabled={!is_authenticated}><CommentIcon/></IconButton>}
                   hideStats={hideStats}
                   disabled={!is_authenticated}
                   onClick={handleClickReply}
@@ -684,7 +684,7 @@ const PostActions = (props) => {
                       </LinkedinShareButton>
                     </MenuItem>
                     <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}}
-                              onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author}/${permlink}`)}>
+                      onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author}/${permlink}`)}>
                       <ClipboardIcon/>
                     </MenuItem>
                   </Menu>
@@ -699,7 +699,7 @@ const PostActions = (props) => {
           <Row>
             <Col xs="auto">
               <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`}
-                               className={classes.button}/>
+                className={classes.button}/>
             </Col>
             <Col style={{paddingLeft: 0}}>
               <ContainedButton
