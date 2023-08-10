@@ -65,7 +65,7 @@ const useStyles = createUseStyles(theme => ({
   //   justifyContent: 'space-between',
   // },
   main: {
-    marginTop: 90,
+    marginTop: 110,
   },
   minifyItems: {
     textAlign: 'left',
@@ -171,6 +171,7 @@ const useStyles = createUseStyles(theme => ({
   avatarWrapper: {
     paddingLeft: "0px",
     display: "flex",
+    marginBottom: 10,
   },
   widthHalfWidth: {
     width: '50%',
@@ -183,6 +184,12 @@ const useStyles = createUseStyles(theme => ({
   },
   paddingTop20: {
     paddingTop: '20px',
+  },
+  paddingTop13: {
+    paddingTop: 13,
+  },
+  paddingBottom10: {
+    paddingBottom: 10,
   },
   displayFlex: {
     display: 'flex',
@@ -198,6 +205,14 @@ const useStyles = createUseStyles(theme => ({
   },
   paddingLeft15:{
     paddingLeft: 15,
+  },
+  cursorPointer: {
+    cursor: 'pointer',
+  },
+  hoverBackgroundGray:{
+    '&:hover': {
+      backgroundColor: 'rgba(15,20,25,0.1)',
+    },
   },
   menu: {
     '& .MuiPaper-root': {
@@ -713,12 +728,12 @@ const MobileAppFrame = (props) => {
                       </div>
                     </div>
                   </React.Fragment>)}
-                <div className={classes.paddingTop20+' '+classes.displayFlex}>
-                  <div className={classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-                    <p className={classes.marginEmpty}>Trending</p>
+                <div className={classes.displayFlex}>
+                  <div className={classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.paddingBottom10+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                    <p className={classes.marginEmpty+' '+classes.cursorPointer}>Trending</p>
                   </div>
-                  <div className={classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
-                    <p className={classes.marginEmpty}>Following</p>
+                  <div className={classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.paddingBottom10+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                    <p className={classes.marginEmpty+' '+classes.cursorPointer}>Following</p>
                   </div>
                 </div>
               </div>)}
