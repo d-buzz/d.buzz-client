@@ -105,7 +105,7 @@ const SideBarRight = (props) => {
   let isInSearchRoute = false
   const { is_authenticated } = user
   const [isStaging, setIsStaging] = useState(null)
-  const currentSiteUrl = window.location.protocol + '//' + window.location.host;
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
 

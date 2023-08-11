@@ -29,7 +29,7 @@ const AppWrapper = ({ children }) => {
 const App = () => {
   const { pathname } = useLocation()
   const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
-  const currentSiteUrl = window.location.protocol + '//' + window.location.host;
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   useEffect(() => {
     // redirect old links to the new ones

@@ -139,7 +139,7 @@ const OrganizationAppBar = () => {
 
 const OrganizationFooter = () => {
   const classes = useStyles()
-  const currentSiteUrl = window.location.protocol + '//' + window.location.host;
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   return (
     <React.Fragment>
