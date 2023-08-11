@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
@@ -120,12 +120,6 @@ const DraftsModal = (props) => {
     setSelectedDraft,
   } = props
   const classes = useStyles()
-
-  useEffect(() => {
-    
-    localStorage.setItem('drafts', JSON.stringify(drafts))
-
-  }, [drafts])
 
   const handleSelectDraft = (content) => {
     setSelectedDraft(content)

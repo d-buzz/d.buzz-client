@@ -697,6 +697,15 @@ const useStyles = createUseStyles(theme => ({
     visibility: isDesktop ? 'hidden' : 0,
     opacity: 0,
   },
+  autoSavingDraft: {
+    color: theme.font.color,
+    marginLeft: 'auto',
+    width: 'fit-content',
+    display: 'flex',
+    marginRight: '20px',
+    marginTop: '20px',
+    opacity: 0.5,
+  },
 }))
 
 
@@ -784,10 +793,16 @@ const CreateBuzzForm = (props) => {
   // const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
 
   const buzzAllowedImages = 4
-  const getInitialDrafts = () => {
-    const storedDrafts = localStorage.getItem('drafts')
-    const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : []
-    return parsedDrafts.length >= 1 ? parsedDrafts : []
+
+  const getSavedDrafts = () => {
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts'))
+    return storedDrafts
+  }
+
+  const getAutoSavedDraft = () => {
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts'))
+    const parsedDraft = storedDrafts.length>0 ? storedDrafts.find((draft) => draft?.type === 'autosaved') : []
+    return parsedDraft
   }
 
   // buzz states
@@ -799,12 +814,13 @@ const CreateBuzzForm = (props) => {
   const [buzzData, setBuzzData] = useState(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [buzzing, setBuzzing] = useState(false)
-  const [drafts, setDrafts] = useState(getInitialDrafts())
+  const [drafts, setDrafts] = useState(getSavedDrafts())
+  const [autoSavedDraft, setAutoSavedDraft] = useState(getAutoSavedDraft())
   const [draftData, setDraftData] = useState(null)
   const [selectedDraft, setSelectedDraft] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
-  // added timers for event handling on after-type
-  const [timerId, setTimerId] = useState(null)
+
+  const [savingDraft, setSavingDraft] = useState(false)
 
   const {
     text = '',
@@ -889,7 +905,7 @@ const CreateBuzzForm = (props) => {
     setSaveDraftsModalStatus(true)
     setOpenSaveDraftsModal(true)
     setDraftData({
-      content: buzzThreads[1].content,
+      content: buzzContent,
     })
   }
 
@@ -1037,47 +1053,36 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-
-  const onTextChangeDraft = (e, draft, buzzId) => {
-    const value = e.target.value
-
-    if (timerId) clearTimeout(timerId)
-    if (value) {
-      setTimerId(setTimeout(() => autoSaveDraft(value), 3000)) // Save after 3 sec
-      setCurrentBuzz(buzzId)
-      handleUpdateBuzz(buzzId, value)
-    }
-  }
-
-
   // Function that auto-saves draft
   const autoSaveDraft = (content) => {
     // Save your draft here
-    let title = content.slice(0, 40) // Get first 40 characters
+    let title = `Last auto saved: ${content.slice(0, 40)} ...`
     if (content.length > 40) {
-      title += '...' // Add "..." if content is longer than 40 characters
-    }
-
-    const newDraft = {
-      id: drafts.length + 1, // assuming IDs are sequential for simplicity
-      title,
-      content,
+      title = `Last auto saved: ${title} ...`
     }
 
     // Update the drafts state and localStorage
     setDrafts(prevDrafts => {
-      const updatedDrafts = [...prevDrafts, newDraft]
+      const drafts = [...prevDrafts]
+      const savedDraftIndex = drafts.findIndex(draft => draft.title.type === 'autosaved') > 0 ? drafts.findIndex(draft => draft.title.type === 'autosaved') : 0
+      const savedDraftId = drafts[savedDraftIndex]?.id ? drafts[savedDraftIndex]?.id : 0
+
+      const updatedDraft = {
+        id: savedDraftId,
+        title,
+        content,
+        type: 'autosaved',
+      }
+
+      drafts[savedDraftIndex] = updatedDraft
 
       // Update localStorage
-      localStorage.setItem('drafts', JSON.stringify(updatedDrafts))
+      localStorage.setItem('drafts', JSON.stringify(drafts))
 
-      // Log for debugging
-      console.log('Draft saved: ', newDraft)
+      setSavingDraft(false)
 
-      return updatedDrafts
+      return drafts
     })
-    // localStorage.setItem('drafts', JSON.stringify(draft))
-    // console.log('Draft saved: ', draft)
   }
 
   const onChange = (e, draft, buzzId) => {
@@ -1468,7 +1473,7 @@ const CreateBuzzForm = (props) => {
     let found = false
     drafts.forEach(draft => {
       if (buzzThreads) {
-        if (draft.content === buzzThreads[1]?.content) {
+        if (draft.title === buzzThreads[1]?.title) {
           found = true
         }
       }
@@ -1565,13 +1570,43 @@ const CreateBuzzForm = (props) => {
     // eslint-disable-next-line
   }, [buzzThreads[currentBuzz]?.content])
 
+  // auto save draft when user stops typing
+  useEffect(() => {
+    if(buzzContent) {
+      setSavingDraft(true)
+    }
+    
+    const delayDebounce = setTimeout(() => {
+      if(buzzContent) {
+        autoSaveDraft(buzzContent)
+        setAutoSavedDraft(getAutoSavedDraft())
+      }
+    }, 1000)
+
+    if(!buzzContent) {
+      autoSaveDraft('')
+    }
+
+    return () => clearTimeout(delayDebounce)
+  }, [buzzContent])
+
+  // Retrieve saved draft
+  useEffect(() => {
+    if(autoSavedDraft) {
+      const savedDraftContent = autoSavedDraft?.content || ''
+      updateBuzzThreads({1: {id: 1, content: savedDraftContent, images: []}})
+    }
+    // eslint-disable-next-line
+  }, [autoSavedDraft])
+
   return (
     <div className={containerClass}>
       {!buzzModalStatus && buzzThreads && buzzThreads[1]?.content && !isMobile && !wholeIntent &&
         <div className={classes.draftsContainer}>
           <span className="save_draft_button" onClick={handleSaveDraftsModalOpen}
-            hidden={checkInDrafts()}>save draft</span>
+            hidden={checkInDrafts()}>save as a new draft</span>
         </div>}
+      {savingDraft && <p className={classes.autoSavingDraft}>Auto saving draft...</p>}
       {!buzzLoading &&
         <div className={classes.row}>
           <div className={classNames(classes.inline, classes.right)}>
@@ -1586,7 +1621,7 @@ const CreateBuzzForm = (props) => {
                         minRows={minRows}
                         value={content}
                         onKeyDown={e => onChange(e, "draftPost", 1)}
-                        onChange={e => onTextChangeDraft(e, "draftPost", 1)}
+                        onChange={e => onChange(e, "draftPost", 1)}
                         onFocus={e => onChange(e, "draftPost", 1)}
                         onPaste={e => onChange(e, "draftPost", 1)}
                       />
@@ -1620,7 +1655,7 @@ const CreateBuzzForm = (props) => {
                                 onChange(e, "draftPost", item.id)
                                 setCursorPosition(e.target.selectionStart)
                               }}
-                              onChange={e => onTextChangeDraft(e, "draftPost", item.id)}
+                              onChange={e => onChange(e, "draftPost", item.id)}
                               onPaste={e => onChange(e, "draftPost", item.id)}
                               // autoFocus
                               onFocus={(e) => {
