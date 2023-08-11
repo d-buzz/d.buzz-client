@@ -815,7 +815,7 @@ const CreateBuzzForm = (props) => {
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [buzzing, setBuzzing] = useState(false)
   const [drafts, setDrafts] = useState(getSavedDrafts())
-  const [autoSavedDraft, setAutoSavedDraft] = useState(getAutoSavedDraft())
+  const [autoSavedDraft] = useState(getAutoSavedDraft())
   const [draftData, setDraftData] = useState(null)
   const [selectedDraft, setSelectedDraft] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
@@ -1579,7 +1579,6 @@ const CreateBuzzForm = (props) => {
     const delayDebounce = setTimeout(() => {
       if(buzzContent) {
         autoSaveDraft(buzzContent)
-        setAutoSavedDraft(getAutoSavedDraft())
       }
     }, 1000)
 
