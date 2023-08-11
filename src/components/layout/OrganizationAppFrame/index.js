@@ -139,6 +139,7 @@ const OrganizationAppBar = () => {
 
 const OrganizationFooter = () => {
   const classes = useStyles()
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host;
 
   return (
     <React.Fragment>
@@ -146,7 +147,7 @@ const OrganizationFooter = () => {
         <Container fluid>
           <center>
             <div className={classes.inner}>
-              <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+              <label><a href={currentSiteUrl}>&copy; DBuzz&nbsp; - <i>v.{config.VERSION}</i></a></label>
               <Link to="/org/en/tos">Terms & Conditions</Link>
               <Link to="/org/en/privacy">Privacy Policy</Link>
               <Link to="/org/en/disclaimer">Disclaimer</Link>
