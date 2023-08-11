@@ -29,6 +29,7 @@ const AppWrapper = ({ children }) => {
 const App = () => {
   const { pathname } = useLocation()
   const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   useEffect(() => {
     // redirect old links to the new ones
@@ -39,6 +40,7 @@ const App = () => {
     <React.Fragment>
       <React.Suspense fallback={<span> </span>}>
         <Helmet>
+          <link rel="canonical" href={currentSiteUrl} />
           <meta property="og:title" content="D.Buzz" />
           <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
           <meta property="og:image" content="https://d.buzz/dbuzz-icon.svg" />

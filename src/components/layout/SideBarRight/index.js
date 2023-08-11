@@ -105,6 +105,7 @@ const SideBarRight = (props) => {
   let isInSearchRoute = false
   const { is_authenticated } = user
   const [isStaging, setIsStaging] = useState(null)
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
 
@@ -188,7 +189,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</label>
+          <label><a href={currentSiteUrl}>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</a></label>
         </div>
       </div>
     </React.Fragment>
