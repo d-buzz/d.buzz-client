@@ -155,7 +155,6 @@ const useStyles = createUseStyles(theme => ({
     float: 'right !important',
     '& span': {
       fontFamily: 'Segoe-Bold',
-      marginTop: -5,
     },
   },
   sliderWrapper: {
