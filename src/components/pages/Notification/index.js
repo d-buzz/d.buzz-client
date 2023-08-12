@@ -199,7 +199,7 @@ const Notification = (props) => {
 
   const handleClickViewProfile = (username) => (e) => {
     e.preventDefault()
-    window.open(`https://d.buzz/#/@${username}`, '_blank')
+    window.open(`https://d.buzz/@${username}`, '_blank')
   }
 
   return (
@@ -220,7 +220,7 @@ const Notification = (props) => {
                 <Row>
                   <Col xs="auto" style={{ paddingRight: 0 }}>
                     <div className={classes.left}>
-                      <Avatar 
+                      <Avatar
                         author={actionAuthor(item.msg).replace('@', '')}
                         onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))}
                       />
