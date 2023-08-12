@@ -246,9 +246,7 @@ function* getContentRequest(payload, meta) {
 function* getTrendingTagsRequests(meta) {
   try {
     let data = yield call(fetchTrendingTags)
-
-    data = data.filter((tag) => !tag.name.includes('hive') && !tag.name.split('')[1].match(new RegExp('^\\d+$')))
-
+    data = data.filter((tag) => !tag.name.includes('hive'))
     yield put(getTrendingTagsSuccess(data, meta))
   } catch (error) {
     yield put(getTrendingTagsFailure(error, meta))
