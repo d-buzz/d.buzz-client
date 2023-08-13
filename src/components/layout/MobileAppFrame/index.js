@@ -67,6 +67,9 @@ const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 120,
   },
+  marginTop50: {
+    marginTop: 50,
+  },
   minifyItems: {
     textAlign: 'left',
     width: 70,
@@ -741,7 +744,7 @@ const MobileAppFrame = (props) => {
 
   return (
     <React.Fragment>
-      <div className={classes.main}>
+      <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest'? classes.main:classes.marginTop50}>
         <React.Fragment>
           <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
             <Navbar.Brand className={classes.navTitle}>
@@ -832,7 +835,7 @@ const MobileAppFrame = (props) => {
               </Fab>
             )}
             <AvatarMenu />
-            <div className={classes.main}>
+            <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest'? classes.main:classes.marginTop50}>
               {renderRoutes(route.routes)}
             </div>
           </React.Fragment>
