@@ -108,6 +108,7 @@ const SaveDraftModal = (props) => {
     drafts,
     setDrafts,
     draftData,
+    author,
   } = props
   const classes = useStyles()
 
@@ -119,8 +120,21 @@ const SaveDraftModal = (props) => {
   }
 
   const handleSaveDraft = () => {
-    setDrafts([...drafts, {id: drafts.length+1, title: draftName, content:  draftData?.content, type: 'saved_draft'}])
-    localStorage.setItem('drafts', JSON.stringify([...drafts, {id: drafts.length+1, title: draftName, content:  draftData?.content, type: 'saved_draft'}]))
+    const updatedUserDrafts = [
+      ...drafts, {
+        id: drafts.length+1,
+        title: draftName,
+        content:  draftData?.content,
+        type: 'saved_draft',
+        author: author,
+      },
+    ]
+    setDrafts(updatedUserDrafts)
+
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
+    storedDrafts[author] = updatedUserDrafts
+
+    localStorage.setItem('drafts', JSON.stringify(storedDrafts))
     resetSaveDraft()
   }
 

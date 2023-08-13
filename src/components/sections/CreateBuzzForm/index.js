@@ -43,7 +43,6 @@ import Renderer from 'components/common/Renderer'
 import Switch from 'components/elements/Switch'
 import ImagesContainer from '../ImagesContainer'
 import ViewImageModal from 'components/modals/ViewImageModal'
-import DraftsIcon from 'components/elements/Icons/DraftsIcon'
 import DraftsModal from 'components/modals/DraftsModal'
 import SaveDraftModal from 'components/modals/SaveDraftModal'
 // import VideoUploadIcon from 'components/elements/Icons/VideoUploadIcon'
@@ -376,7 +375,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
 
-    '& .save_draft_button': {
+    '& .drafts_container_button': {
       float: 'right',
       lineHeight: 1,
       padding: '10px 13px',
@@ -389,7 +388,7 @@ const useStyles = createUseStyles(theme => ({
       textTransform: 'uppercase',
       cursor: 'pointer',
       transition: 'all 250ms',
-      margin: '0 15px',
+      margin: '0 5px',
       marginTop: 15,
 
       '&:hover': {
@@ -697,15 +696,6 @@ const useStyles = createUseStyles(theme => ({
     visibility: isDesktop ? 'hidden' : 0,
     opacity: 0,
   },
-  autoSavingDraft: {
-    color: theme.font.color,
-    marginLeft: 'auto',
-    width: 'fit-content',
-    display: 'flex',
-    marginRight: '20px',
-    marginTop: '20px',
-    opacity: 0.5,
-  },
 }))
 
 
@@ -776,17 +766,14 @@ const CreateBuzzForm = (props) => {
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [overhead, setOverhead] = useState(0)
   const [open, setOpen] = useState(false)
-  // eslint-disable-next-line
   const [compressing, setCompressing] = useState(false)
   const [openDraftsModal, setOpenDraftsModal] = useState(false)
   const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
   const [imagesLength, setImagesLength] = useState(0)
   const [imageUploading, setImageUploading] = useState(false)
-  // eslint-disable-next-line
-  const [videoUploading, setVideoUploading] = useState(false)
+  const [videoUploading] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
-  // eslint-disable-next-line
-  const [videoUploadProgress, setVideoUploadProgress] = useState(0)
+  const [videoUploadProgress] = useState(0)
   const [videoLimit, setVideoLimit] = useState(false)
   const [imageLimit, setImageLimit] = useState(false)
   const [buzzPermlink, setBuzzPermlink] = useState(null)
@@ -795,14 +782,24 @@ const CreateBuzzForm = (props) => {
   const buzzAllowedImages = 4
 
   const getSavedDrafts = () => {
-    const storedDrafts = JSON.parse(localStorage.getItem('drafts'))
-    return storedDrafts
+    if(Array.isArray(JSON.parse(localStorage.getItem('drafts')))) {
+      localStorage.setItem('drafts', JSON.stringify({}))
+    }
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
+    return storedDrafts[user.username] || []
   }
 
   const getAutoSavedDraft = () => {
-    const storedDrafts = JSON.parse(localStorage.getItem('drafts'))
-    const parsedDraft = storedDrafts.length>0 ? storedDrafts.find((draft) => draft?.type === 'autosaved') : []
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
+    const parsedDraft = storedDrafts[user.username]?.length>0 ? storedDrafts[user.username].filter((draft) => draft?.author === user.username).find((draft) => draft?.type === 'autosaved') : undefined
     return parsedDraft
+  }
+
+  const removeAutoSavedDraft = () => {
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
+    const parsedDrafts = storedDrafts[user.username]?.length>0 ? storedDrafts[user.username].filter((draft) => draft?.type !== 'autosaved') : []
+    storedDrafts[user.username] = parsedDrafts
+    return localStorage.setItem('drafts', JSON.stringify(storedDrafts))
   }
 
   // buzz states
@@ -814,13 +811,11 @@ const CreateBuzzForm = (props) => {
   const [buzzData, setBuzzData] = useState(null)
   const [buzzLoading, setBuzzLoading] = useState(false)
   const [buzzing, setBuzzing] = useState(false)
-  const [drafts, setDrafts] = useState(getSavedDrafts())
+  const [drafts, setDrafts] = useState(getSavedDrafts() || {})
   const [autoSavedDraft] = useState(getAutoSavedDraft())
-  const [draftData, setDraftData] = useState(null)
+  const [draftData] = useState(null)
   const [selectedDraft, setSelectedDraft] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
-
-  const [savingDraft, setSavingDraft] = useState(false)
 
   const {
     text = '',
@@ -894,19 +889,6 @@ const CreateBuzzForm = (props) => {
       setBuzzModalStatus(true)
       setOpen(true)
     }
-  }
-
-  const handleDraftsModalOpen = () => {
-    setDraftsModalStatus(true)
-    setOpenDraftsModal(true)
-  }
-
-  const handleSaveDraftsModalOpen = () => {
-    setSaveDraftsModalStatus(true)
-    setOpenSaveDraftsModal(true)
-    setDraftData({
-      content: buzzContent,
-    })
   }
 
   const onHide = () => {
@@ -1061,28 +1043,29 @@ const CreateBuzzForm = (props) => {
       title = `Last auto saved: ${title} ...`
     }
 
+    const userDrafts = drafts
+
     // Update the drafts state and localStorage
-    setDrafts(prevDrafts => {
-      const drafts = [...prevDrafts]
-      const savedDraftIndex = drafts.findIndex(draft => draft.title.type === 'autosaved') > 0 ? drafts.findIndex(draft => draft.title.type === 'autosaved') : 0
-      const savedDraftId = drafts[savedDraftIndex]?.id ? drafts[savedDraftIndex]?.id : 0
+    const savedDraftIndex = userDrafts.findIndex(draft => draft.title.type === 'autosaved') > 0 ? userDrafts.findIndex(draft => draft.title.type === 'autosaved') : 0
+    const savedDraftId = userDrafts[savedDraftIndex]?.id ? userDrafts[savedDraftIndex]?.id : 0
 
-      const updatedDraft = {
-        id: savedDraftId,
-        title,
-        content,
-        type: 'autosaved',
-      }
+    const updatedDraft = {
+      id: savedDraftId,
+      title,
+      content,
+      author: user.username,
+      type: 'autosaved',
+    }
 
-      drafts[savedDraftIndex] = updatedDraft
+    userDrafts[savedDraftId] = updatedDraft
 
-      // Update localStorage
-      localStorage.setItem('drafts', JSON.stringify(drafts))
+    const updatedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
+    updatedDrafts[user.username] = userDrafts
 
-      setSavingDraft(false)
+    // Update localStorage
+    localStorage.setItem('drafts', JSON.stringify(updatedDrafts))
 
-      return drafts
-    })
+    setDrafts(userDrafts)
   }
 
   const onChange = (e, draft, buzzId) => {
@@ -1218,6 +1201,7 @@ const CreateBuzzForm = (props) => {
               broadcastNotification('success', `Succesfully replied to @${buzzData?.author}/${buzzData?.permlink}`)
               setBuzzing(false)
               if (nextBuzz === threadCount) {
+                removeAutoSavedDraft()
                 hideModalCallback()
                 history.push(`/@${buzzData?.author}/${buzzData?.permlink}`)
                 resetBuzzForm()
@@ -1281,6 +1265,7 @@ const CreateBuzzForm = (props) => {
                       console.log(status)
                       // success
                       const {author, permlink} = data
+                      removeAutoSavedDraft()
                       broadcastNotification('success', 'You successfully published a post')
                       setBuzzLoading(false)
                       setBuzzing(false)
@@ -1311,6 +1296,7 @@ const CreateBuzzForm = (props) => {
                 const {author, permlink} = data
                 // hideModalCallback()
                 clearIntentBuzz()
+                removeAutoSavedDraft()
                 broadcastNotification('success', 'You successfully published a post')
                 setPublishedBuzzes(1)
                 setNextBuzz(2)
@@ -1338,6 +1324,7 @@ const CreateBuzzForm = (props) => {
             if (data) {
               setPageFrom(null)
               const {creatorId, streamId} = data
+              removeAutoSavedDraft()
               broadcastNotification('success', 'You successfully published a post')
               setBuzzLoading(false)
               setBuzzing(false)
@@ -1469,19 +1456,6 @@ const CreateBuzzForm = (props) => {
     // eslint-disable-next-line
   }, [selectedDraft])
 
-  const checkInDrafts = () => {
-    let found = false
-    drafts.forEach(draft => {
-      if (buzzThreads) {
-        if (draft.title === buzzThreads[1]?.title) {
-          found = true
-        }
-      }
-    })
-
-    return found
-  }
-
   // const handleVideoSelect = () => {
   //   // const target = document.getElementById('video-upload')
   //   // if (isMobile) {
@@ -1571,22 +1545,19 @@ const CreateBuzzForm = (props) => {
   }, [buzzThreads[currentBuzz]?.content])
 
   // auto save draft when user stops typing
-  useEffect(() => {
-    if(buzzContent) {
-      setSavingDraft(true)
-    }
-    
+  useEffect(() => {    
     const delayDebounce = setTimeout(() => {
       if(buzzContent) {
         autoSaveDraft(buzzContent)
       }
-    }, 1000)
+    }, 500)
 
     if(!buzzContent) {
       autoSaveDraft('')
     }
 
     return () => clearTimeout(delayDebounce)
+    // eslint-disable-next-line
   }, [buzzContent])
 
   // Retrieve saved draft
@@ -1600,12 +1571,6 @@ const CreateBuzzForm = (props) => {
 
   return (
     <div className={containerClass}>
-      {!buzzModalStatus && buzzThreads && buzzThreads[1]?.content && !isMobile && !wholeIntent &&
-        <div className={classes.draftsContainer}>
-          <span className="save_draft_button" onClick={handleSaveDraftsModalOpen}
-            hidden={checkInDrafts()}>save as a new draft</span>
-        </div>}
-      {savingDraft && <p className={classes.autoSavingDraft}>Auto saving draft...</p>}
       {!buzzLoading &&
         <div className={classes.row}>
           <div className={classNames(classes.inline, classes.right)}>
@@ -1634,12 +1599,9 @@ const CreateBuzzForm = (props) => {
                             </IconButton>}
                           <span className={`buzzArea buzzArea${item.id} noMargin`}>
                             {item.id === 1 &&
-                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username}
-                                style={{width: 'fit-content'}}
-                                onClick={() => history.push(`/@${user.username}`)}/>}
+                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username} onClick={() => history.push(`/@${user.username}`)}/>}
                             {item.id !== 1 &&
-                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username}
-                                onClick={() => history.push(`/@${user.username}`)}/>}
+                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username} onClick={() => history.push(`/@${user.username}`)}/>}
                             <TextArea
                               ref={buzzTextBoxRef}
                               buzzId={item.id}
@@ -1791,11 +1753,6 @@ const CreateBuzzForm = (props) => {
                         <EmojiIcon/>
                       </IconButton>
                     </Tooltip>}
-                  <Tooltip title="Drafts" placement="top-start">
-                    <IconButton size="medium" onClick={handleDraftsModalOpen}>
-                      <DraftsIcon/>
-                    </IconButton>
-                  </Tooltip>
                 </span>
                 {buzzContent.length !== 0 &&
                   <span className={classes.previewTitle}>
@@ -1913,12 +1870,9 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads}/>
-      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl}
-        onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
-      <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts}
-        setSelectedDraft={setSelectedDraft}/>
-      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts}
-        draftData={draftData}/>
+      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl} onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
+      <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} author={user.username} />
+      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} author={user.username}/>
     </div>
   )
 }

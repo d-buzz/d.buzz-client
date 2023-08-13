@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {anchorTop, getUserTheme, proxyImage, errorMessageComposer} from 'services/helper'
+import {anchorTop, getUserTheme, errorMessageComposer} from 'services/helper'
 import {pending} from 'redux-saga-thunk'
 import {renderRoutes} from 'react-router-config'
 import {Link, useHistory, useLocation} from 'react-router-dom'
@@ -367,7 +367,7 @@ const Profile = (props) => {
     setPageFrom(null)
     const params = queryString.parse(location.search)
 
-    if ((!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username)) {
+    if ((!isVisited || (params.from === 'replies' || params.from === 'nav') || username)) {
       anchorTop()
       clearScrollIndex()
       clearProfile()
@@ -629,7 +629,7 @@ const Profile = (props) => {
   // checks if the user is loaded and if it's invalid
   useEffect(() => {
     if (profile.isLoaded && profile.invalidUser) {
-      setInvalidUser(true)
+      // setInvalidUser(true)
     }
   }, [profile, username])
 
@@ -702,7 +702,6 @@ const Profile = (props) => {
     const profileImage = document.getElementById('profileImage')
     profileImage.style.animation = 'none'
     profileImage.style.opacity = '1'
-    // console.log(getTheme(getUserTheme()).background.secondary));
     profileImage.style.background = `${getTheme(getUserTheme()).background.primary}`
   }
   return (
@@ -715,7 +714,7 @@ const Profile = (props) => {
             <React.Fragment>
               <div className={classes.cover} style={!cover_image ? {backgroundColor: "#e65768"} : {}}>
                 {cover_image ? <img
-                  src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`}
+                  src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`}
                   alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}
                   className={classes.profileImage} id="coverImage"/> : ''}
               </div>

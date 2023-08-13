@@ -118,6 +118,7 @@ const DraftsModal = (props) => {
     drafts,
     setDrafts,
     setSelectedDraft,
+    author,
   } = props
   const classes = useStyles()
 
@@ -138,14 +139,13 @@ const DraftsModal = (props) => {
             <center>
               <h6>Drafts</h6>
             </center>
-            {drafts.length < 1 ?
+            {drafts?.length < 1 ?
               <span className={classes.message}>
                 <center>There are no drafts found.</center>
               </span>
-
               :
-
               drafts.map(draft => (
+                draft.author === author &&
                 <div className={classes.draftItem}>
                   <span className='draft_title' onClick={() => handleSelectDraft(draft.content)}>{draft.title}</span>
                   <span className="draft_delete_button">
