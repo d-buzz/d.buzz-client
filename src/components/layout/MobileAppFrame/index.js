@@ -212,6 +212,12 @@ const useStyles = createUseStyles(theme => ({
   height5:{
     height:5,
   },
+  fontSize17: {
+    fontSize: 17,
+  },
+  fontWeightBold: {
+    fontWeight: 'bolder',
+  },
   backgroundE61C34:{
     background: '#e61c34',
   },
@@ -758,13 +764,13 @@ const MobileAppFrame = (props) => {
                   </React.Fragment>)}
                 <div className={classes.displayFlex}>
                   <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-                    <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Trending</p>
+                    <p className={activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Trending</p>
                     <div
                       className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
                     ></div>
                   </div>
                   <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
-                    <p className={classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15}>Following</p>
+                    <p className={activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Following</p>
                     <div
                       className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
                     ></div>
