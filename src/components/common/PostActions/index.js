@@ -142,7 +142,6 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   actionWrapperSpace: {
-    paddingRight: 30,
     fontSize: 14,
     whiteSpace: 'nowrap',
   },
@@ -509,9 +508,9 @@ const PostActions = (props) => {
     <React.Fragment>
       {!showSlider && (
         <div>
-          <Row style={{width: '100%', ...extraPadding}}>
+          <Row style={{width: '100%', ...extraPadding, display: "flex", justifyContent: "space-between"}}>
             {!checkForCeramicAccount(user.username) && type !== 'CERAMIC' &&
-              <Col xs={!isMobile ? 3 : 3}>
+              <div style={{ paddingLeft: 15 }}>
                 {!loading && upvoted && (
                   <ActionWrapper
                     className={classes.actionWrapperSpace}
@@ -560,9 +559,9 @@ const PostActions = (props) => {
                     )}
                   />
                 )}
-              </Col>}
+              </div>}
             {!checkForCeramicAccount(user.username) && type !== 'CERAMIC' &&
-              <Col xs={!isMobile ? 'auto' : 3}>
+              <div>
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
@@ -577,9 +576,9 @@ const PostActions = (props) => {
                     </label>
                   )}
                 />
-              </Col>}
+              </div>}
             {!checkForCeramicAccount(user.username) && type !== 'CERAMIC' &&
-              <Col xs={!isMobile ? 4 : 4}>
+              <div>
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
@@ -605,8 +604,8 @@ const PostActions = (props) => {
                     />
                   )}
                 />
-              </Col>}
-            <Col xs={!isMobile ? 2 : 2} className={!isMobile ? 'pl-5' : ''}>
+              </div>}
+            <div>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
@@ -617,7 +616,7 @@ const PostActions = (props) => {
                   </IconButton>
                 )}
               />
-              <Col xs="auto">
+              <div>
                 <div className={classNames('right-content', classes.right)}>
                   <Menu
                     anchorEl={openCaret}
@@ -688,8 +687,8 @@ const PostActions = (props) => {
                     </MenuItem>
                   </Menu>
                 </div>
-              </Col>
-            </Col>
+              </div>
+            </div>
           </Row>
         </div>
       )}
@@ -697,8 +696,7 @@ const PostActions = (props) => {
         <div className={classes.sliderWrapper}>
           <Row>
             <Col xs="auto">
-              <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`}
-                className={classes.button}/>
+              <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button}/>
             </Col>
             <Col style={{paddingLeft: 0}}>
               <ContainedButton

@@ -63,7 +63,7 @@ const Avatar = React.memo((props) => {
         id={`${id}`}
         onLoad={loadProfileImage}
         onClick={onClick}
-        src={proxyImage(avatar_src)}
+        src={`${proxyImage(`${avatar_src}?timestamp=${new Date().getTime()}`)}`}
         roundedCircle
         height={height}
         width={height}
