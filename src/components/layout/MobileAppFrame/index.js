@@ -502,12 +502,12 @@ const MobileAppFrame = (props) => {
       icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='outline'/></Badge>,
       onClick: () => handelClickItem('notifications'),
     },
-    {
-      name: 'Profile',
-      path: `/@${username}/t/buzz?from=nav`,
-      icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
-      onClick: () => handelClickItem('profile'),
-    },
+    // {
+    //   name: 'Profile',
+    //   path: `/@${username}/t/buzz?from=nav`,
+    //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
+    //   onClick: () => handelClickItem('profile'),
+    // },
     {
       name: 'Wallet',
       icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
@@ -553,12 +553,12 @@ const MobileAppFrame = (props) => {
     //   preventDefault: false,
     //   onClick: () => handelClickItem('latest'),
     // },
-    {
-      name: 'Profile',
-      path: `/@${username}/t/buzz?from=nav`,
-      icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
-      onClick: () => handelClickItem('profile'),
-    },
+    // {
+    //   name: 'Profile',
+    //   path: `/@${username}/t/buzz?from=nav`,
+    //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
+    //   onClick: () => handelClickItem('profile'),
+    // },
     {
       name: 'More'  ,
       icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
