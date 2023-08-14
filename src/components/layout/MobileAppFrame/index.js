@@ -514,13 +514,13 @@ const MobileAppFrame = (props) => {
       path: `/@${username}/wallet`,
       onClick: () => handelClickItem('wallet'),
     },
-    {
-      name: 'More'  ,
-      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-      path: '#',
-      preventDefault: true,
-      onClick: handleClickOpenMoreMenu,
-    },
+    // {
+    //   name: 'More'  ,
+    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
+    //   path: '#',
+    //   preventDefault: true,
+    //   onClick: handleClickOpenMoreMenu,
+    // },
   ]
 
 
@@ -559,13 +559,13 @@ const MobileAppFrame = (props) => {
     //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
     //   onClick: () => handelClickItem('profile'),
     // },
-    {
-      name: 'More'  ,
-      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-      path: '#',
-      preventDefault: true,
-      onClick: handleClickOpenMoreMenu,
-    },
+    // {
+    //   name: 'More'  ,
+    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
+    //   path: '#',
+    //   preventDefault: true,
+    //   onClick: handleClickOpenMoreMenu,
+    // },
   ]
 
   const isActivePath = (path, current) => {
