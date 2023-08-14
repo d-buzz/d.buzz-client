@@ -16,7 +16,7 @@ import {
   // TrendingIcon,
   // LatestIcon,
   NotificationsIcon,
-  ProfileIcon,
+  // ProfileIcon,
   ContainedButton,
   Avatar,
   // BuzzIcon,
@@ -47,7 +47,7 @@ import queryString from 'query-string'
 import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
-import MoreIcon from 'components/elements/Icons/MoreIcon'
+// import MoreIcon from 'components/elements/Icons/MoreIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
@@ -72,7 +72,7 @@ const useStyles = createUseStyles(theme => ({
   },
   minifyItems: {
     textAlign: 'left',
-    width: 70,
+    width: "100%",
     marginBottom: 5,
     ...theme.left.sidebar.items.icons,
     '& a': {
@@ -655,7 +655,7 @@ const MobileAppFrame = (props) => {
 
   const NavLinkWrapper = ({ item, active }) => {
     return (
-      <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '')}>
+      <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '')+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
         <Link to={item.path || '#'}>
           <IconButton
             size="medium"
