@@ -106,6 +106,26 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  navigationContainer: {
+    height:"100vh",
+    position:"fixed",
+    zIndex:100,
+    width: "100vw",
+    backgroundColor:"rgba(0, 0, 0, 0.4)",
+    transitionProperty: "background-color",
+    transitionTimingFunction: "ease",
+    transitionDuration: "250ms",
+  },
+  navigationMainContent: {
+    transform:"translateX(0%)",
+    maxWidth:"70%",
+    transitionTimingFunction:"ease",
+    minWidth:"280px",
+    height:"100vh",
+    transitionDuration:"250ms",
+    boxShadow:"rgba(101, 119, 134, 0.2) 0px 0px 8px, rgba(101, 119, 134, 0.25) 0px 1px 3px 1px",
+    backgroundColor:"rgba(255,255,255,1.00)",
+  },
   navTop: {
     borderBottom: theme.border.primary,
     backgroundColor: theme.background.primary,
@@ -582,7 +602,8 @@ const MobileAppFrame = (props) => {
   }
 
   const handleClickAvatar = () => {
-    setOpenAvatarMenu(true)
+    // setOpenAvatarMenu(true)
+    setShowSideBarNavigation(true)
   }
 
   const handleCloseAvatar = () => {
@@ -741,9 +762,17 @@ const MobileAppFrame = (props) => {
     // eslint-disable-next-line
   }, [title])
 
-
+  const [showSideBarNavigation, setShowSideBarNavigation] = useState(false)
   return (
     <React.Fragment>
+      
+      {showSideBarNavigation && (
+        <div onClick={() => setShowSideBarNavigation(false)} className={classes.navigationContainer}>
+          <div className={classes.navigationMainContent}>
+          main content
+          </div>
+        </div>
+      )}
       <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest'? classes.main:classes.marginTop50}>
         <React.Fragment>
           <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
@@ -835,6 +864,7 @@ const MobileAppFrame = (props) => {
               </Fab>
             )}
             <AvatarMenu />
+            
             <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest'? classes.main:classes.marginTop50}>
               {renderRoutes(route.routes)}
             </div>
