@@ -115,6 +115,9 @@ const useStyles = createUseStyles(theme => ({
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
   },
+  colorGray:{
+    color: "rgb(83, 100, 113)",
+  },
   fontsize17:{
     fontSize: 17,
   },
@@ -127,7 +130,7 @@ const useStyles = createUseStyles(theme => ({
   width100:{
     width: "100%",
     height:50,
-    border:"1px solid",
+    // border:"1px solid",
   },
   marginTop8:{
     marginTop: 8,
@@ -322,6 +325,28 @@ const useStyles = createUseStyles(theme => ({
       color: '#E53935',
     },
   },
+  flexShrink1:{
+    flexShrink:1,
+  },
+  outlineStyleNone:{
+    outlineStyle:'none',
+  },
+  alignItemsStretch:{
+    alignItems:'stretch',
+  },
+  lineHeight20:{
+    lineHeight:20,
+  },
+  wordWrapBreakWord:{
+    wordWrap:'break-word',
+  },
+  marginRight30:{
+    marginRight:30,
+  },
+  justifyContentStart:{
+    justifyContent:'start',
+  },
+
 }))
 
 const MobileAppFrame = (props) => {
@@ -805,8 +830,8 @@ const MobileAppFrame = (props) => {
         <div onClick={() => setShowSideBarNavigation(false)} className={classes.navigationContainer}>
           <div className={classes.navigationMainContent}>
             <div>
-              <div className={classes.padding16}>
-                <div className={classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.positionRelative}>
+              <div className={classes.padding16+' '+classes.displayFlex+' '+classes.flexDirectionColumn}>
+                <div className={classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.positionRelative}>
                   <div className={classes.width45Percent}>
                     <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                   </div> 
@@ -815,67 +840,68 @@ const MobileAppFrame = (props) => {
                   </div> 
                 </div>
                 <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
+                    <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                    </Link>
+                    <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                      <span className={classes.colorGray+' '+ classes.fontsize17+' '+classes.fontWeight700}>@emoonkin</span>
+                    </Link>
                   </div>
                 </div>
                 <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
+                    <div className={classes.displayFlex+' '+classes.justifyContentStart}>
+                      <div className={classes.marginRight30}><span>144</span> Following</div>
+                      <div><span>144</span> Followers</div>
+                    </div>
                   </div>
                 </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
-                  </div>
+              </div>
+              
+              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                    <div>
+                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                    </div>
+                  </Link> */}
                 </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
-                  </div>
+              </div>
+              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                    <div>
+                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                    </div>
+                  </Link> */}
                 </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
-                  </div>
+              </div>
+              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                    <div>
+                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                    </div>
+                  </Link> */}
                 </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
-                  </div>
+              </div>
+              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                    <div>
+                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                    </div>
+                  </Link> */}
                 </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <div>
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                      </div>
-                    </Link> */}
-                  </div>
+              </div>
+              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                    <div>
+                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                    </div>
+                  </Link> */}
                 </div>
               </div>
             </div>
