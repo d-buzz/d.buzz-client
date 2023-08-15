@@ -342,7 +342,7 @@ const useStyles = createUseStyles(theme => ({
     lineHeight:'24px',
   },
   fontsize20:{
-    fontSize:20,
+    fontSize:18,
   },
   
   wordWrapBreakWord:{
@@ -876,7 +876,7 @@ const MobileAppFrame = (props) => {
                   
                 </div>
               </div>
-              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+              <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
                     <div className={classes.width30}>icon</div>
@@ -884,7 +884,7 @@ const MobileAppFrame = (props) => {
                   </div>
                 </div>
               </div>
-              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+              <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
                     <div className={classes.width30}>icon</div>
@@ -892,7 +892,7 @@ const MobileAppFrame = (props) => {
                   </div>
                 </div>
               </div>
-              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+              <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
                     <div className={classes.width30}>icon</div>
@@ -900,7 +900,7 @@ const MobileAppFrame = (props) => {
                   </div>
                 </div>
               </div>
-              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+              <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
                     <div className={classes.width30}>icon</div>
