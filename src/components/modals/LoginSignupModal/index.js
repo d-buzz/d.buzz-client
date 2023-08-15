@@ -5,12 +5,11 @@ import { createUseStyles } from 'react-jss'
 import { authenticateUserRequest } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { hasCompatibleKeychain } from 'services/helper'
-import Button from '@material-ui/core/Button'
 // import MetaMaskButton from 'components/common/MetaMaskButton'
 import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
-import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
-import { window } from 'rxjs'
+import { ContainedButton } from 'components/elements'
+import { LoginModal } from 'components'
+import SignupModal from 'components/modals/SignupModal'
 
 const useStyles = createUseStyles(theme => ({
   loginSignupButton: {
@@ -65,6 +64,7 @@ const useStyles = createUseStyles(theme => ({
   },
   browserExtension: {
     borderColor: 'red !important',
+    width: '100%',
     ...theme.font,
     '&:hover': {
       color: '#e61b33 !important',
@@ -133,7 +133,33 @@ const LoginSignupModal = (props) => {
     // loading,
     fromIntentBuzz,
     buzzIntentCallback = () => { },
+    messageBased,
   } = props
+
+  const [openLoginModal, setOpenLoginModal] = useState(false)
+  const [openSignupModal, setOpenSignupModal] = useState(false)
+
+  const handleClickOpenLoginModal = (state) => {
+    setOpenLoginModal(true)
+  }
+
+  const handleClickCloseLoginModal = (state) => {
+    setOpenLoginModal(false)
+  }
+
+  const handleClickOpenSignupModal = () => {
+    const referralRegex = /@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)(\?ref=[a-z]+)?$/
+    const referral = window.location.pathname.match(referralRegex)?.[1]
+    if(referral) {
+      window.location.href = `https://join.d.buzz/@${referral}`
+    } else {
+      window.location.href = `https://join.d.buzz`
+    }
+  }
+  
+  const handleClickCloseSignupModal = () => {
+    setOpenSignupModal(false)
+  }
 
   const classes = useStyles()
   const [useCeramic, setUseCeramic] = useState(false)
@@ -190,16 +216,6 @@ const LoginSignupModal = (props) => {
       handleClickLoginSignup()
     }
   }, [useCeramic])
-  
-
-  useEffect(() => {
-    const isCompatible = hasCompatibleKeychain() ? true : false
-    setHasInstalledKeychain(isCompatible)
-
-    if (typeof window.ethereum !== 'undefined') {
-      setHasMetaMaskIntalled(true)
-    }
-  }, [])
 
   return (
     <React.Fragment>
@@ -209,47 +225,41 @@ const LoginSignupModal = (props) => {
               <div style={{ width: '98%', margin: '0 auto', top: 10 }}>
                 <center>
                   <CircularBrandIcon />
-                  <span className={classes.loginSignupLabel}>Login or Sign-up to Upvote or Comment</span>
+                  <span className={classes.loginSignupLabel}>Login/Sign up</span>
                 </center>
               </div>
               <React.Fragment>
-                  <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                <div style={{ marginLeft: 10, textAlign: 'left'}}>
+                  <React.Fragment>
+                    <FormSpacer />
+                    <center><h6 className={classes.label}>Login or Sign up to {messageBased}.</h6>
+                      <br />
+                      <ContainedButton 
+                        style={{ width: '100%' }}
+                        onClick={handleClickOpenLoginModal} transparent={true} fontSize={15} label="Log in"
+                      >
+                        Login
+                      </ContainedButton>
+                      <br />
+                      <br />
+                      <ContainedButton
+                        style={{ width: '100%' }}
+                        onClick={handleClickOpenSignupModal} fontSize={15} label="Sign up"
+                      >
+                        Sign up
+                      </ContainedButton>
+                    </center>
                     <br />
-                        <React.Fragment>
-                          <FormSpacer />
-                          <center><h6 className={classes.label}>Login/Sign-up</h6>
-                            <Button
-                              classes={{ root: classes.browserExtension }}
-                              style={{ borderRadius: 50 }}
-                              variant="outlined"
-                              startIcon={<FaChrome />}
-                              href="https://chrome.google.com/webstore/detail/hive-keychain/jcacnejopjdphbnjgfaaobbfafkihpep?hl=en"
-                              rel="noopener noreferrer"
-                              target="_blank"
-                            >
-                              Chrome
-                            </Button>
-                            <br />
-                            <Button
-                              classes={{ root: classes.browserExtension }}
-                              variant="outlined"
-                              style={{ borderRadius: 50, marginLeft: 15 }}
-                              startIcon={<FaFirefoxBrowser />}
-                              href="https://addons.mozilla.org/en-US/firefox/addon/hive-keychain/"
-                              rel="noopener noreferrer"
-                              target="_blank"
-                            >
-                              Firefox
-                            </Button>
-                          </center>
-                          <br />
-                        </React.Fragment>
-                  </div>
-                </React.Fragment>
-              <FormSpacer />
-            </React.Fragment>
+                  </React.Fragment>
+                </div>
+                <br />
+              </React.Fragment>
+            <FormSpacer />
+          </React.Fragment>
         </ModalBody>
       </Modal>
+      <LoginModal show={openLoginModal} onHide={handleClickCloseLoginModal} />
+      <SignupModal show={openSignupModal} onHide={handleClickCloseSignupModal} />
     </React.Fragment>
   )
 }
