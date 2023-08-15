@@ -122,6 +122,9 @@ const useStyles = createUseStyles(theme => ({
   fontsize17:{
     fontSize: 17,
   },
+  fontsize15:{
+    fontSize: 15,
+  },
   fontWeight700:{
     fontWeight:700,
   },
@@ -861,8 +864,8 @@ const MobileAppFrame = (props) => {
                 <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                   <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
                     <div className={classes.displayFlex+' '+classes.justifyContentStart}>
-                      <div className={classes.marginRight30}><span>144</span> Following</div>
-                      <div><span>144</span> Followers</div>
+                      <div className={classes.marginRight30+' '+classes.fontsize15}><span className={classes.fontWeight700}>144</span> Following</div>
+                      <div className={classes.fontsize15}><span className={classes.fontWeight700}>144</span> Followers</div>
                     </div>
                   </div>
                 </div>
@@ -913,7 +916,7 @@ const MobileAppFrame = (props) => {
           </div>
         </div>
       )}
-      <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest'? classes.main:classes.marginTop50}>
+      <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main:classes.marginTop50}>
         <React.Fragment>
           <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
             <Navbar.Brand className={classes.navTitle}>
@@ -1005,7 +1008,7 @@ const MobileAppFrame = (props) => {
             )}
             <AvatarMenu />
             
-            <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest'? classes.main:classes.marginTop50}>
+            <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main:classes.marginTop50}>
               {renderRoutes(route.routes)}
             </div>
           </React.Fragment>
