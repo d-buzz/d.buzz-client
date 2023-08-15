@@ -106,6 +106,12 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  padding16: {
+    padding: "16px 1px 16px 1px",
+  },
+  positionRelative: {
+    position:'relative',
+  },
   navigationContainer: {
     height:"100vh",
     position:"fixed",
@@ -223,6 +229,12 @@ const useStyles = createUseStyles(theme => ({
   justifyContentCenter: {
     justifyContent: 'center',
   },
+  justifyContentBetween: {
+    justifyContent: 'space-between',
+  },
+  justifyContentEnd: {
+    justifyContent: 'end',
+  },
   alignItemsCenter: {
     alignItems: 'center',
   },
@@ -249,6 +261,9 @@ const useStyles = createUseStyles(theme => ({
   },
   flexDirectionColumn:{
     flexDirection: 'column',
+  },
+  flexDirectionRow:{
+    flexDirection: 'row',
   },
   cursorPointer: {
     cursor: 'pointer',
@@ -769,7 +784,20 @@ const MobileAppFrame = (props) => {
       {showSideBarNavigation && (
         <div onClick={() => setShowSideBarNavigation(false)} className={classes.navigationContainer}>
           <div className={classes.navigationMainContent}>
-          main content
+            <div>
+              <div className={classes.padding16}>
+                <div className={classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.positionRelative}>
+                  <div className={classes.width45Percent}>
+                    <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                  </div> 
+                  <div className={classes.width45Percent+' '+classes.displayFlex+' '+classes.justifyContentEnd}>
+                    <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                  </div> 
+                </div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
           </div>
         </div>
       )}
