@@ -584,7 +584,7 @@ const PostActions = (props) => {
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
                   icon={<IconButton classes={{ root: classes.iconButton  }} 
-                  size="small"><CommentIcon /></IconButton>}
+                    size="small"><CommentIcon /></IconButton>}
                   hideStats={hideStats}
                   onClick={() => {
                     if(!is_authenticated){
