@@ -52,6 +52,7 @@ import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
 import { Image } from 'react-bootstrap'
+import ProfileIcon from 'components/elements/Icons/ProfileIcon'
 
 const useStyles = createUseStyles(theme => ({
   // headerspacing: {
@@ -844,7 +845,7 @@ const MobileAppFrame = (props) => {
                     <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                   </div> 
                   <div className={classes.width45Percent+' '+classes.displayFlex+' '+classes.justifyContentEnd}>
-                    <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                    <span ref={avatarRef}>+</span>
                   </div> 
                 </div>
                 <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
@@ -870,7 +871,7 @@ const MobileAppFrame = (props) => {
               <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width30}> <ProfileIcon type='fill'/> </div>
                     <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
                   </div>
                   
@@ -887,7 +888,7 @@ const MobileAppFrame = (props) => {
               <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width30}><WalletIcon type='fill'/></div>
                     <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Wallet</div>
                   </div>
                 </div>
