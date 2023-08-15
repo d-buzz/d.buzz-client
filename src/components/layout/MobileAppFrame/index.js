@@ -129,8 +129,9 @@ const useStyles = createUseStyles(theme => ({
   },
   width100:{
     width: "100%",
-    height:50,
-    // border:"1px solid",
+  },
+  width30:{
+    width: "30%",
   },
   marginTop8:{
     marginTop: 8,
@@ -335,8 +336,15 @@ const useStyles = createUseStyles(theme => ({
     alignItems:'stretch',
   },
   lineHeight20:{
-    lineHeight:20,
+    lineHeight:'20px',
   },
+  lineHeight24:{
+    lineHeight:'24px',
+  },
+  fontsize20:{
+    fontSize:20,
+  },
+  
   wordWrapBreakWord:{
     wordWrap:'break-word',
   },
@@ -858,50 +866,46 @@ const MobileAppFrame = (props) => {
                   </div>
                 </div>
               </div>
-              
+              {/* PROFILE TAB */}
               <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                    <div>
-                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                    </div>
-                  </Link> */}
+                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
+                  </div>
+                  
                 </div>
               </div>
               <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                    <div>
-                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                    </div>
-                  </Link> */}
+                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Pockets</div>
+                  </div>
                 </div>
               </div>
               <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                    <div>
-                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                    </div>
-                  </Link> */}
+                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Wallet</div>
+                  </div>
                 </div>
               </div>
               <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                    <div>
-                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                    </div>
-                  </Link> */}
+                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
+                  </div>
                 </div>
               </div>
               <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  {/* <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                    <div>
-                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                    </div>
-                  </Link> */}
+                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
+                  </div>
                 </div>
               </div>
             </div>
