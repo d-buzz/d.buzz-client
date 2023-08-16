@@ -39,7 +39,7 @@ const AuthGuard = (props) => {
       console.log('%c[CURRENT SESSION]: ', 'color: goldenrod', 'Logged Out')
     }
     // eslint-disable-next-line
-  }, [])
+  }, [user])
 
   return (
     <React.Fragment>
