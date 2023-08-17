@@ -1,15 +1,13 @@
-import React, {useState } from 'react'
+import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import IconButton from '@material-ui/core/IconButton'
 import { CloseIcon } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { CreateBuzzForm } from 'components'
-import { setBuzzConfirmModalStatus, setSaveDraftsModalStatus } from 'store/interface/actions'
+import { setBuzzConfirmModalStatus } from 'store/interface/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import BuzzConfirmModal from '../BuzzConfirmModal'
-import SaveDraftModal from '../SaveDraftModal'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -61,52 +59,11 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const BuzzFormModal = (props) => {
-  const { show, onHide, setContent, buzzThreads } = props
-  const [open, setOpen] = useState(false)
+  const { show, onHide, buzzThreads } = props
   const classes = useStyles()
-  const [openSaveDraftsModal, setOpenSaveDraftsModal] = useState(false)
-  const [draftData, setDraftData] = useState(null)
-  const [drafts, setDrafts] = useState(JSON.parse(localStorage.getItem('drafts'))?.length >= 1 ? JSON.parse(localStorage.getItem('drafts')) : [])
-
-  const onHideConfirmModal = () => {
-    setBuzzConfirmModalStatus(false)
-    setOpen(false)
-    console.log(setContent)
-  }
-
-  const handleSaveDraftsModalOpen = () => {
-    setSaveDraftsModalStatus(true)
-    setOpenSaveDraftsModal(true)
-    setDraftData({
-      content: buzzThreads[1]?.content,
-    })
-  }
-  const OnSaveDraftsModalHide = () => {
-    setSaveDraftsModalStatus(false)
-    setOpenSaveDraftsModal(false)
-  }
 
   const handleBuzzModal = () => {
     onHide()
-
-    if(localStorage.getItem('emptyBuzz') === "false"){
-      // open confrim modal before deleting buzzes
-      setBuzzConfirmModalStatus(true)
-      setOpen(true)
-    }
-  }
-
-  const checkInDrafts = () => {
-    let found = false
-    drafts.forEach(draft => {
-      if(buzzThreads) {
-        if(draft.content === buzzThreads[1]?.content) {
-          found = true
-        }
-      }
-    })
-
-    return found
   }
 
   return (
@@ -123,15 +80,9 @@ const BuzzFormModal = (props) => {
           <IconButton style={{ marginTop: -10, marginLeft: 5, marginBottom: 5 }} onClick={handleBuzzModal}>
             <CloseIcon />
           </IconButton>
-          {buzzThreads && buzzThreads[1]?.content &&
-          <div className={classes.draftsContainer}>
-            <span className='save_draft_button' onClick={handleSaveDraftsModalOpen} hidden={checkInDrafts()}>save draft</span>
-          </div>}
           <CreateBuzzForm modal={true} hideModalCallback={onHide} buzzThreads={buzzThreads}/>
         </ModalBody>
       </Modal>
-      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} />
-      <BuzzConfirmModal show={open} onHide={onHideConfirmModal} setContent={setContent}/>
     </React.Fragment>
   )
 }

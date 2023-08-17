@@ -54,7 +54,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
-  
+
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -62,11 +62,11 @@ const useStyles = createUseStyles(theme => ({
     height: 'fit-content',
     margin: '5px 0',
 
-    
+
     '& .price_container': {
       display: 'flex',
       alignItems: 'flex-start',
-      
+
       '& .market': {
         display: 'flex',
         alignItems: 'center',
@@ -85,7 +85,7 @@ const useStyles = createUseStyles(theme => ({
         margin: 0,
       },
     },
-    
+
     '& .price_description': {
       margin: 0,
       fontSize: 13,
@@ -105,6 +105,7 @@ const SideBarRight = (props) => {
   let isInSearchRoute = false
   const { is_authenticated } = user
   const [isStaging, setIsStaging] = useState(null)
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
 
@@ -116,7 +117,7 @@ const SideBarRight = (props) => {
     }
     // eslint-disable-next-line
   }, [])
-  
+
   if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
   }
@@ -152,12 +153,12 @@ const SideBarRight = (props) => {
     //   imagePath: `${window.location.origin}/facebook.png`,
     //   url: 'https://www.facebook.com/dbuzzapp/',
     // },
-    {
-      name: 'Twitter',
-      label: '@dbuzzAPP',
-      imagePath: `${window.location.origin}/twitter.svg`,
-      url: 'https://twitter.com/dbuzzAPP',
-    },
+    // {
+    //   name: 'Twitter',
+    //   label: '@dbuzzAPP',
+    //   imagePath: `${window.location.origin}/twitter.svg`,
+    //   url: 'https://twitter.com/dbuzzAPP',
+    // },
   ]
 
 
@@ -171,7 +172,7 @@ const SideBarRight = (props) => {
           ))}
           <Spinner size={50} loading={loading} />
         </ListGroup>
-      </div>  
+      </div>
       <div style={{ paddingTop: 5 }}>
         <ListGroup label="Catch us on">
           {SocialMediaLinks.map((item) => (
@@ -184,11 +185,12 @@ const SideBarRight = (props) => {
           <Link to="/org/en/tos">Terms of Service</Link>
           <Link to="/org/en/privacy">Privacy Policy</Link>
           <Link to="/org/en/disclaimer">Disclaimer</Link>
+          <Link to="/org/en/FAQs">FAQs</Link>
           <br />
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</label>
+          <label><a href={currentSiteUrl}>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</a></label>
         </div>
       </div>
     </React.Fragment>

@@ -4,6 +4,7 @@ const TermsConditions = React.lazy(() => import('./components/pages/TermsConditi
 const GetStarted = React.lazy(() => import('./components/pages/GetStarted'))
 const Home = React.lazy(() => import('./components/pages/Home'))
 const Trending = React.lazy(() => import('./components/pages/Trending'))
+const FAQs = React.lazy(() => import('./components/pages/FAQs'))
 const Profile = React.lazy(() => import('./components/pages/Profile'))
 const Content = React.lazy(() => import('./components/pages/Content'))
 const Latest = React.lazy(() => import('./components/pages/Latest'))
@@ -90,6 +91,11 @@ const routes =  [
         path: '/notifications',
         exact: true,
         component: Notification,
+      },
+      {
+        path: '/org/en/faqs',
+        exact: true,
+        component: FAQs,
       },
       {
         path: '/ug/search',
