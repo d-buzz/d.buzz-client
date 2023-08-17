@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
@@ -108,16 +108,11 @@ const SaveDraftModal = (props) => {
     drafts,
     setDrafts,
     draftData,
+    author,
   } = props
   const classes = useStyles()
 
   const [draftName, setDraftName] = useState('')
-
-  useEffect(() => {
-    
-    localStorage.setItem('drafts', JSON.stringify(drafts))
-
-  }, [drafts])
 
   const resetSaveDraft = () => {
     setDraftName('')
@@ -125,7 +120,21 @@ const SaveDraftModal = (props) => {
   }
 
   const handleSaveDraft = () => {
-    setDrafts([...drafts, {id: drafts.length+1, title: draftName, content:  draftData?.content}])
+    const updatedUserDrafts = [
+      ...drafts, {
+        id: drafts.length+1,
+        title: draftName,
+        content:  draftData?.content,
+        type: 'saved_draft',
+        author: author,
+      },
+    ]
+    setDrafts(updatedUserDrafts)
+
+    const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
+    storedDrafts[author] = updatedUserDrafts
+
+    localStorage.setItem('drafts', JSON.stringify(storedDrafts))
     resetSaveDraft()
   }
 

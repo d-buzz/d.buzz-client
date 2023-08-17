@@ -1,4 +1,4 @@
-import { call, put, select, takeEvery } from 'redux-saga/effects'
+import {call, put, select, takeEvery} from 'redux-saga/effects'
 import {
   GET_PROFILE_REQUEST,
   getProfileSuccess,
@@ -83,43 +83,57 @@ import {
   hasClearNotificationService,
 } from 'services/api'
 
-import { censorLinks, errorMessageComposer } from "services/helper"
-import { checkForCeramicAccount, getBasicProfile, getFollowersList, getFollowingList, getUserPostRequest } from 'services/ceramic'
+import {censorLinks, errorMessageComposer} from "services/helper"
+import {
+  checkForCeramicAccount,
+  getBasicProfile,
+  getFollowersList,
+  getFollowingList,
+  getUserPostRequest,
+} from 'services/ceramic'
 
 function* getProfileRequest(payload, meta) {
-  const { username } = payload
+  const {username} = payload
   const loginuser = localStorage.getItem('active')
-  
-  if(!checkForCeramicAccount(username)) {
-    
+
+  if (!checkForCeramicAccount(username)) {
+
     try {
-      const props = yield call(fetchGlobalProperties) 
-      const profile = yield call(fetchSingleProfile, username) 
+      const props = yield call(fetchGlobalProperties)
+      const profile = yield call(fetchSingleProfile, username)
       const account = yield call(fetchAccounts, username)
-     
+
       if (account.length > 0) {
-        const { vesting_shares, to_withdraw, withdrawn, delegated_vesting_shares, received_vesting_shares, posting_json_metadata } = account[0]
-        const { total_vesting_fund_hive, total_vesting_shares } = props
-        
-        const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)),6)
-        const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)),6)
+        const {
+          vesting_shares,
+          to_withdraw,
+          withdrawn,
+          delegated_vesting_shares,
+          received_vesting_shares,
+          posting_json_metadata,
+        } = account[0]
+        const {total_vesting_fund_hive, total_vesting_shares} = props
+
+        const delegated = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(delegated_vesting_shares) / parseFloat(total_vesting_shares)), 6)
+        const receiveVesting = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(received_vesting_shares) / parseFloat(total_vesting_shares)), 6)
         const avail = parseFloat(vesting_shares || 0) - (parseFloat(to_withdraw) - parseFloat(withdrawn)) / 1e6 - parseFloat(delegated_vesting_shares)
-        const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)),6)
-        
+        const vestHive = parseFloat(parseFloat(total_vesting_fund_hive) * (parseFloat(avail) / parseFloat(total_vesting_shares)), 6)
+
         profile.receiveVesting = receiveVesting.toFixed(2)
         profile.hivepower = parseFloat(vestHive.toFixed(2)) + parseFloat(profile.receiveVesting)
         profile.delegated = delegated.toFixed(2)
         profile.posting_json_metadata = posting_json_metadata ? JSON.parse(posting_json_metadata) : ""
-        
+
         yield put(getProfileSuccess(profile, meta))
       } else {
         yield put(getProfileSuccess({}, meta))
       }
-    } catch(error) {
+    } catch (error) {
+      console.log('error', error)
       yield put(getProfileFailure(error, meta))
     }
   } else {
-    
+
     const profile = {}
     try {
       // get following data
@@ -131,11 +145,14 @@ function* getProfileRequest(payload, meta) {
       const basicProfile = yield call(getBasicProfile, username)
       const followingList = yield call(getFollowingList, username)
       const followersList = (yield call(getFollowersList, username) || [])
-      profile.stats = { following: followingList?.length || 0, followers: followersList?.length || 0, list: followingList }
+      profile.stats = {
+        following: followingList?.length || 0,
+        followers: followersList?.length || 0,
+        list: followingList,
+      }
       profile.basic_profile = basicProfile
       yield put(getProfileSuccess(profile, meta))
-    }
-    catch(error) {
+    } catch (error) {
       yield put(getProfileFailure(error, meta))
     }
   }
@@ -144,22 +161,25 @@ function* getProfileRequest(payload, meta) {
 const censorCheck = (content, censoredList) => {
   const copyContent = content
 
-  const result = censoredList.filter(({ author, permlink }) => `${author}/${permlink}` === `${content.author}/${content.permlink}`)
+  const result = censoredList.filter(({
+    author,
+    permlink,
+  }) => `${author}/${permlink}` === `${content.author}/${content.permlink}`)
 
-  copyContent.censored = { status: false, reason: null }
+  copyContent.censored = {status: false, reason: null}
 
-  if(result.length !== 0) {
+  if (result.length !== 0) {
     copyContent.body = censorLinks(copyContent.body)
-    copyContent.censored = { status: true, reason: result[0].type }
+    copyContent.censored = {status: true, reason: result[0].type}
   }
 
   return copyContent
 }
 
 function* getAccountPostRequest(payload, meta) {
-  try{
-    const { username, start_permlink, start_author } = payload
-    if(!checkForCeramicAccount(username)) {
+  try {
+    const {username, start_permlink, start_author} = payload
+    if (!checkForCeramicAccount(username)) {
       const old = yield select(state => state.profile.get('posts'))
       let data = yield call(fetchAccountPosts, username, start_permlink, start_author)
 
@@ -173,21 +193,21 @@ function* getAccountPostRequest(payload, meta) {
       const censoredList = yield select(state => state.auth.get('censorList'))
       data.map((item) => censorCheck(item, censoredList))
 
-      yield put(setLastAccountPosts(data[data.length-1]))
+      yield put(setLastAccountPosts(data[data.length - 1]))
       yield put(getAccountPostsSuccess(data, meta))
     } else {
       const data = yield call(getUserPostRequest, username)
-      yield put(setLastAccountPosts(data.posts[data.posts.length-1]))
+      yield put(setLastAccountPosts(data.posts[data.posts.length - 1]))
       yield put(getAccountPostsSuccess(data.posts, meta))
     }
-  } catch(error) {
+  } catch (error) {
     yield put(getAccountPostsFailure(error, meta))
   }
 }
 
 function* getAccountRepliesRequest(payload, meta) {
   try {
-    const { username, start_permlink, start_author } = payload
+    const {username, start_permlink, start_author} = payload
     const old = yield select(state => state.profile.get('replies'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'replies')
 
@@ -198,27 +218,27 @@ function* getAccountRepliesRequest(payload, meta) {
 
     data = data.filter(item => invokeFilter(item))
 
-    yield put(setLastAccountReply(data[data.length-1]))
+    yield put(setLastAccountReply(data[data.length - 1]))
     yield put(getAccountRepliesSuccess(data, meta))
-  } catch(error) {
+  } catch (error) {
     yield put(getAccountRepliesFailure(error, meta))
   }
 }
 
 function* getFollowersRequest(payload, meta) {
-  const { username, start_follower } = payload
+  const {username, start_follower} = payload
   try {
-    if(!checkForCeramicAccount(username)) {
+    if (!checkForCeramicAccount(username)) {
       const old = yield select(state => state.profile.get('followers'))
       let data = yield call(fetchFollowers, username, start_follower)
-  
+
       data = [...old, ...data]
-  
+
       data = data.filter((obj, pos, arr) => {
         return arr.map(mapObj => mapObj['follower']).indexOf(obj['follower']) === pos
       })
-  
-      yield put(setLastFollower(data[data.length-1]))
+
+      yield put(setLastFollower(data[data.length - 1]))
       yield put(getFollowersSuccess(data, meta))
     } else {
       const data = []
@@ -232,29 +252,29 @@ function* getFollowersRequest(payload, meta) {
           profile: follower.profile,
         })
       })
-      
-      yield put(setLastFollower(data[data.length-1]))
+
+      yield put(setLastFollower(data[data.length - 1]))
       yield put(getFollowersSuccess(data, meta))
     }
-  } catch(error) {
+  } catch (error) {
     yield put(getFollowersFailure(error, meta))
   }
 }
 
 function* getFollowingRequest(payload, meta) {
-  const { username, start_following } = payload
+  const {username, start_following} = payload
   try {
-    if(!checkForCeramicAccount(username)) {
+    if (!checkForCeramicAccount(username)) {
       const old = yield select(state => state.profile.get('following'))
       let data = yield call(fetchFollowing, username, start_following)
-      
+
       data = [...old, ...data]
 
       data = data.filter((obj, pos, arr) => {
         return arr.map(mapObj => mapObj['following']).indexOf(obj['following']) === pos
       })
-      
-      yield put(setLastFollowing(data[data.length-1]))
+
+      yield put(setLastFollowing(data[data.length - 1]))
       yield put(getFollowingSuccess(data, meta))
     } else {
       const data = []
@@ -268,10 +288,10 @@ function* getFollowingRequest(payload, meta) {
         })
       })
 
-      yield put(setLastFollowing(data[data.length-1]))
+      yield put(setLastFollowing(data[data.length - 1]))
       yield put(getFollowingSuccess(data, meta))
     }
-  } catch(error) {
+  } catch (error) {
     yield put(getFollowingFailure(error, meta))
   }
 }
@@ -279,7 +299,7 @@ function* getFollowingRequest(payload, meta) {
 function* clearNotificationRequest(meta) {
   const user = yield select(state => state.auth.get('user'))
   const notifications = yield select(state => state.polling.get('notifications'))
-  const { username, useKeychain, useHAS, is_authenticated } = user
+  const {username, useKeychain, useHAS, is_authenticated} = user
   const lastNotification = notifications[0]
   let success = false
 
@@ -289,30 +309,30 @@ function* clearNotificationRequest(meta) {
 
     import('@mintrawa/hive-auth-client').then((HiveAuth) => {
       HiveAuth.hacMsg.subscribe(m => {
-       
+
         if (m.type === 'sign_wait') {
-          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg ? m.msg.uuid : null)
         }
-  
+
         if (m.type === 'tx_result') {
-          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg ? m.msg : null)
           if (m.msg?.status === 'accepted') {
             success = true
-          
-          } else if (m.msg?.status === 'error') { 
+
+          } else if (m.msg?.status === 'error') {
             const error = m.msg?.status.error
-  
+
             clearNotificationsFailure(error, meta)
           }
-          
+
         }
-        
+
       })
     })
 
     let old = yield select(state => state.polling.get('count'))
 
-    if(success) {
+    if (success) {
       old = {
         success: true,
         lastread: '',
@@ -327,24 +347,24 @@ function* clearNotificationRequest(meta) {
     try {
 
       const operation = yield call(generateClearNotificationOperation, username, lastNotification)
-  
-  
-      if(lastNotification.length !== 0) {
-        if(useKeychain) {
+
+
+      if (lastNotification.length !== 0) {
+        if (useKeychain) {
           const result = yield call(broadcastKeychainOperation, username, operation)
           success = result.success
         } else {
-          let { login_data } = user
+          let {login_data} = user
           login_data = extractLoginData(login_data)
-  
+
           const wif = login_data[1]
           const result = yield call(broadcastOperation, operation, [wif])
           success = result.success
         }
-  
+
         let old = yield select(state => state.polling.get('count'))
-  
-        if(success) {
+
+        if (success) {
           old = {
             success: true,
             lastread: '',
@@ -357,16 +377,16 @@ function* clearNotificationRequest(meta) {
       } else {
         yield put(clearNotificationsFailure('failed to clear notification', meta))
       }
-    } catch(error) {
+    } catch (error) {
       yield put(clearNotificationsFailure(error, meta))
     }
   }
- 
+
 }
 
 function* getCommentsAccountRequest(payload, meta) {
   try {
-    const { username, start_permlink, start_author } = payload
+    const {username, start_permlink, start_author} = payload
     const old = yield select(state => state.profile.get('comments'))
     let data = yield call(fetchAccountPosts, username, start_permlink, start_author, 'comments')
 
@@ -377,7 +397,7 @@ function* getCommentsAccountRequest(payload, meta) {
 
     data = data.filter(item => invokeFilter(item))
 
-    yield put(setLastAccountComment(data[data.length-1]))
+    yield put(setLastAccountComment(data[data.length - 1]))
     yield put(getAccountCommentsSucess(data, meta))
   } catch (error) {
     yield put(getAccountCommentsFailure(error, meta))
@@ -386,37 +406,37 @@ function* getCommentsAccountRequest(payload, meta) {
 
 function* getAccountListRequest(payload, meta) {
   try {
-    const { observer, list_type, lastIndex, filter } = payload
+    const {observer, list_type, lastIndex, filter} = payload
     const data = yield call(getAccountLists, observer, list_type)
     let list = data
     const limit = parseInt(lastIndex) + 15
 
-    if(list_type === 'blacklisted'){
-      if(filter){
+    if (list_type === 'blacklisted') {
+      if (filter) {
         const old = yield select(state => state.profile.get('blacklistedList'))
         list = [...old, ...data.slice(lastIndex, limit)]
       }
       yield put(setBlacklistUnfiltered(data)) // for searching
       yield put(setBlacklistLastIndex(list.length)) // for pagination
       yield put(setAccountBlacklist(list))
-    }else if (list_type === 'follow_blacklist') {
-      if(filter){
+    } else if (list_type === 'follow_blacklist') {
+      if (filter) {
         const old = yield select(state => state.profile.get('followedBlacklist'))
         list = [...old, ...data.slice(lastIndex, limit)]
       }
       yield put(setFollowBlacklistUnfiltered(data)) // for searching
       yield put(setFollowBlacklistLastIndex(list.length))  // for pagination
       yield put(setAccountFollowedBlacklist(list))
-    }else if (list_type === 'muted') {
-      if(filter){
+    } else if (list_type === 'muted') {
+      if (filter) {
         const old = yield select(state => state.profile.get('mutedList'))
         list = [...old, ...data.slice(lastIndex, limit)]
       }
       yield put(setMuteListUnfiltered(data))  // for searching
       yield put(setMuteListLastIndex(list.length)) // for pagination
       yield put(setAccountMutedList(list))
-    }else if (list_type === 'follow_muted') {
-      if(filter){
+    } else if (list_type === 'follow_muted') {
+      if (filter) {
         const old = yield select(state => state.profile.get('followedMuted'))
         list = [...old, ...data.slice(lastIndex, limit)]
       }
@@ -432,7 +452,7 @@ function* getAccountListRequest(payload, meta) {
 
 function* checkAccountFollowsListRequest(payload, meta) {
   try {
-    const { observer } = payload
+    const {observer} = payload
     const data = yield call(checkAccountIsFollowingLists, observer)
     yield put(checkAccountFollowsListSuccess(data, meta))
   } catch (error) {
@@ -442,13 +462,13 @@ function* checkAccountFollowsListRequest(payload, meta) {
 
 function* checkAccountExistRequest(payload, meta) {
   try {
-    const { username } = payload
+    const {username} = payload
     let exists = false
     const account = yield call(fetchAccounts, username)
-    if(account.length > 0){
+    if (account.length > 0) {
       exists = true
     }
-    yield put(checkAccountExistSuccess({ username, exists, profile: account }, meta))
+    yield put(checkAccountExistSuccess({username, exists, profile: account}, meta))
   } catch (error) {
     yield put(checkAccountExistFailure(error, meta))
   }
@@ -456,21 +476,21 @@ function* checkAccountExistRequest(payload, meta) {
 
 function* updateProfileRequest(payload, meta) {
   try {
-    const { account, posting_json_metadata } = payload
+    const {account, posting_json_metadata} = payload
 
     const user = yield select(state => state.auth.get('user'))
     const profile = yield select(state => state.profile.get('profile'))
 
-    const { username, useKeychain } = user
+    const {username, useKeychain} = user
 
     const operation = yield call(generateUpdateAccountOperation, account, JSON.stringify(posting_json_metadata))
     let success = false
 
-    if(useKeychain) {
+    if (useKeychain) {
       const result = yield call(broadcastKeychainOperation, username, operation)
       success = result.success
     } else {
-      let { login_data } = user
+      let {login_data} = user
       login_data = extractLoginData(login_data)
 
       const wif = login_data[1]
@@ -478,60 +498,60 @@ function* updateProfileRequest(payload, meta) {
       success = result.success
     }
 
-    if(success) {
+    if (success) {
       profile.metadata.profile = posting_json_metadata.profile
       yield put(updateProfileMetadata(profile))
       yield put(updateProfileSuccess({success: true}, meta))
-    }else{
+    } else {
       yield put(updateProfileFailure({success: false, errorMessage: 'Failed to update profile'}, meta))
     }
   } catch (error) {
     const errorMessage = errorMessageComposer('update_profile', error)
-    yield put(updateProfileFailure({success: false, errorMessage }, meta))
+    yield put(updateProfileFailure({success: false, errorMessage}, meta))
   }
 }
 
-function* watchGetProfileRequest({ payload, meta }) {
+function* watchGetProfileRequest({payload, meta}) {
   yield call(getProfileRequest, payload, meta)
 }
 
-function* watchGetAccountPostRequest({ payload, meta }) {
+function* watchGetAccountPostRequest({payload, meta}) {
   yield call(getAccountPostRequest, payload, meta)
 }
 
-function* watchGetAccountRepliesRequest({ payload, meta }) {
+function* watchGetAccountRepliesRequest({payload, meta}) {
   yield call(getAccountRepliesRequest, payload, meta)
 }
 
-function* watchGetFollowersRequest({ payload, meta }) {
+function* watchGetFollowersRequest({payload, meta}) {
   yield call(getFollowersRequest, payload, meta)
 }
 
-function* watchGetFollowingRequest({ payload, meta }) {
+function* watchGetFollowingRequest({payload, meta}) {
   yield call(getFollowingRequest, payload, meta)
 }
 
-function* watchClearNotificationRequest({ meta }) {
+function* watchClearNotificationRequest({meta}) {
   yield call(clearNotificationRequest, meta)
 }
 
-function* watchGetAccountCommentsRequest({ payload, meta }) {
+function* watchGetAccountCommentsRequest({payload, meta}) {
   yield call(getCommentsAccountRequest, payload, meta)
 }
 
-function* watchGetAccountListRequest({ payload, meta }) {
+function* watchGetAccountListRequest({payload, meta}) {
   yield call(getAccountListRequest, payload, meta)
 }
 
-function* watchCheckAccountFollowsListRequest({ payload, meta }) {
+function* watchCheckAccountFollowsListRequest({payload, meta}) {
   yield call(checkAccountFollowsListRequest, payload, meta)
 }
 
-function* watchCheckAccountExistRequest({ payload, meta }) {
+function* watchCheckAccountExistRequest({payload, meta}) {
   yield call(checkAccountExistRequest, payload, meta)
 }
 
-function* watchUpdateProfileRequest({ payload, meta }) {
+function* watchUpdateProfileRequest({payload, meta}) {
   yield call(updateProfileRequest, payload, meta)
 }
 

@@ -73,6 +73,7 @@ const OrganizationAppBar = () => {
   const privacyPolicy = (pathname.match(/^\/org\/en\/privacy/))
   const disclaimer = (pathname.match(/^\/org\/en\/disclaimer/))
   const getStarted = (pathname.match(/^\/org\/en\/getstarted/))
+  const faqs = (pathname.match(/^\/org\/en\/FAQs/))
 
   let title = ''
   if (termsOfService) {
@@ -83,6 +84,8 @@ const OrganizationAppBar = () => {
     title = 'Disclaimer'
   } else if (getStarted) {
     title = 'Get Started'
+  } else if (faqs) {
+    title = 'FAQs'
   }
 
 
@@ -139,6 +142,7 @@ const OrganizationAppBar = () => {
 
 const OrganizationFooter = () => {
   const classes = useStyles()
+  const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   return (
     <React.Fragment>
@@ -146,10 +150,11 @@ const OrganizationFooter = () => {
         <Container fluid>
           <center>
             <div className={classes.inner}>
-              <label>&copy; Dataloft, LLC&nbsp; - <i>v.{config.VERSION}</i></label>
+              <label><a href={currentSiteUrl}>&copy; DBuzz&nbsp; - <i>v.{config.VERSION}</i></a></label>
               <Link to="/org/en/tos">Terms & Conditions</Link>
               <Link to="/org/en/privacy">Privacy Policy</Link>
               <Link to="/org/en/disclaimer">Disclaimer</Link>
+              <Link to="/org/en/FAQs">FAQs</Link>
             </div>
           </center>
         </Container>
