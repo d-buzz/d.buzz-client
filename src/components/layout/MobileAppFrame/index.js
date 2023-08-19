@@ -68,6 +68,9 @@ const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 120,
   },
+  maintest: {
+    fontsize15: 15,
+  },
   marginTop50: {
     marginTop: 50,
   },
@@ -149,6 +152,16 @@ const useStyles = createUseStyles(theme => ({
     transitionProperty: "background-color",
     transitionTimingFunction: "ease",
     transitionDuration: "250ms",
+  },
+  navigationMainContentsmallWidth: {
+    transform:"translateX(0%)",
+    maxWidth:"70%",
+    transitionTimingFunction:"ease",
+    width:"1px",
+    height:"100vh",
+    transitionDuration:"250ms",
+    boxShadow:"rgba(101, 119, 134, 0.2) 0px 0px 8px, rgba(101, 119, 134, 0.25) 0px 1px 3px 1px",
+    backgroundColor:"rgba(255,255,255,1.00)",
   },
   navigationMainContent: {
     transform:"translateX(0%)",
@@ -849,186 +862,188 @@ const MobileAppFrame = (props) => {
   const [showSideBarNavigation, setShowSideBarNavigation] = useState(false)
   return (
     <React.Fragment>
-      
-      {showSideBarNavigation && (
-        <div onClick={() => setShowSideBarNavigation(false)} className={classes.navigationContainer}>
-          <div className={classes.navigationMainContent}>
-            <div>
-              <div className={classes.padding16+' '+classes.displayFlex+' '+classes.flexDirectionColumn}>
-                <div className={classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.positionRelative}>
-                  <div className={classes.width45Percent}>
-                    <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
-                  </div> 
-                  <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
-                    <span ref={avatarRef}>+</span>
-                  </div> 
-                </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
-                    <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
-                    </Link>
-                    <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                      <span className={classes.colorGray+' '+ classes.fontsize17+' '+classes.fontWeight700}>@emoonkin</span>
-                    </Link>
+      <React.Fragment>
+        <div className='maincontent'>
+          <div onClick={() => setShowSideBarNavigation(false)} className={showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth'}>
+            <div className={showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth'}>
+              <div>
+                <div className={classes.padding16+' '+classes.displayFlex+' '+classes.flexDirectionColumn}>
+                  <div className={classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.positionRelative}>
+                    <div className={classes.width45Percent}>
+                      <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                    </div> 
+                    <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
+                      <span ref={avatarRef}>+</span>
+                    </div> 
                   </div>
-                </div>
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
-                    <div className={classes.displayFlex+' '+classes.justifyContentStart}>
-                      <div className={classes.marginRight30+' '+classes.fontsize15}><span className={classes.fontWeight700}>144</span> Following</div>
-                      <div className={classes.fontsize15}><span className={classes.fontWeight700}>144</span> Followers</div>
+                  <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                    <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
+                      <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                      </Link>
+                      <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                        <span className={classes.colorGray+' '+ classes.fontsize17+' '+classes.fontWeight700}>@emoonkin</span>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                    <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
+                      <div className={classes.displayFlex+' '+classes.justifyContentStart}>
+                        <div className={classes.marginRight30+' '+classes.fontsize15}><span className={classes.fontWeight700}>144</span> Following</div>
+                        <div className={classes.fontsize15}><span className={classes.fontWeight700}>144</span> Followers</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              {/* PROFILE TAB */}
-              <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}> <ProfileIcon type='fill'/> </div>
-                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
-                  </div>
-                  
-                </div>
-              </div>
-              <div className={classes.displayFlex+' '+classes.positionRelative}>
-                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30+' '+classes.demoContainer}>+</div>
-                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Pockets</div>
+                {/* PROFILE TAB */}
+                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                      <div className={classes.width30}> <ProfileIcon type='fill'/> </div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
+                    </div>
+                    
                   </div>
                 </div>
-              </div>
-              <div className={classes.displayFlex+' '+classes.positionRelative}>
-                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}><WalletIcon type='fill'/></div>
-                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Wallet</div>
+                <div className={classes.displayFlex+' '+classes.positionRelative}>
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                      <div className={classes.width30+' '+classes.demoContainer}>+</div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Pockets</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={classes.displayFlex+' '+classes.positionRelative}>
-                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30+' '+classes.demoContainer}>+</div>
-                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
+                <div className={classes.displayFlex+' '+classes.positionRelative}>
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                      <div className={classes.width30}><WalletIcon type='fill'/></div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Wallet</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={classes.displayFlex+' '+classes.positionRelative}>
-                <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                  <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30+' '+classes.demoContainer}>+</div>
-                    <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
+                <div className={classes.displayFlex+' '+classes.positionRelative}>
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                      <div className={classes.width30+' '+classes.demoContainer}>+</div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
+                    </div>
+                  </div>
+                </div>
+                <div className={classes.displayFlex+' '+classes.positionRelative}>
+                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
+                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                      <div className={classes.width30+' '+classes.demoContainer}>+</div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main:classes.marginTop50}>
-        <React.Fragment>
-          <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
-            <Navbar.Brand className={classes.navTitle}>
-              {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
-                <IconButton onClick={handleClickBackButton} size="small">
-                  <BackArrowIcon />
-                </IconButton>
-              )}
-              {title !== 'Search' && title !== 'Profile' && (<div>
-                {is_authenticated &&
-                  (<React.Fragment>
-                    <div className={classes.avatarWrapper}>
-                      <div className={classes.width45Percent}>
-                        <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main+' '+classes.maintest:classes.marginTop50}>
+            
+            <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
+              <Navbar.Brand className={classes.navTitle}>
+                {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
+                  <IconButton onClick={handleClickBackButton} size="small">
+                    <BackArrowIcon />
+                  </IconButton>
+                )}
+                {title !== 'Search' && title !== 'Profile' && (<div>
+                  {is_authenticated &&
+                    (<React.Fragment>
+                      <div className={classes.avatarWrapper}>
+                        <div className={classes.width45Percent}>
+                          <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                        </div>
+                        <div className={classes.widthHalfWidth}>
+                          <Image width={'60px'} src={`${window.location.origin}/dbuzz-text-logo.svg`}/>
+                        </div>
                       </div>
-                      <div className={classes.widthHalfWidth}>
-                        <Image width={'60px'} src={`${window.location.origin}/dbuzz-text-logo.svg`}/>
-                      </div>
+                    </React.Fragment>)}
+                  <div className={classes.displayFlex}>
+                    <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                      <p className={activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Trending</p>
+                      <div
+                        className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
+                      ></div>
                     </div>
-                  </React.Fragment>)}
-                <div className={classes.displayFlex}>
-                  <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-                    <p className={activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Trending</p>
-                    <div
-                      className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
-                    ></div>
-                  </div>
-                  <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
-                    <p className={activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Following</p>
-                    <div
-                      className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
-                    ></div>
-                  </div>
-                </div>
-              </div>)}
-              
-              
-              {/* {title !== 'Search' && (
-                <div>
-                  <div className={classes.titleContainerStyles}>
-                    <span className={classes.title}>{title}</span>
-                    <div className={classes.headerspacing}>
-                      <Image width={'50px'} src={`${window.location.origin}/dbuzz.svg`}/>
+                    <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                      <p className={activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Following</p>
+                      <div
+                        className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
+                      ></div>
                     </div>
                   </div>
-                  
+                </div>)}
+                
+                
+                {/* {title !== 'Search' && (
+                  <div>
+                    <div className={classes.titleContainerStyles}>
+                      <span className={classes.title}>{title}</span>
+                      <div className={classes.headerspacing}>
+                        <Image width={'50px'} src={`${window.location.origin}/dbuzz.svg`}/>
+                      </div>
+                    </div>
+                    
+                  </div>
+                
+                )}
+                */}
+                {title === 'Notifications' && <NotificationFilter />}
+              </Navbar.Brand>
+            
+              {title === 'Search' && (
+                <div className={classes.searchDiv}>
+                  <SearchField
+                    disableTips={disableSearchTips}
+                    iconTop={-2}
+                    searchWrapperClass={classes.searchWrapper}
+                    style={{ fontSize: 16, height: 35 }}
+                    value={searchkey}
+                    onKeyDown={handleSearchKey}
+                    onChange={onChangeSearch}
+                    placeholder="Search D.Buzz"
+                    autoFocus
+                  />
                 </div>
-              
               )}
-               */}
-              {title === 'Notifications' && <NotificationFilter />}
-            </Navbar.Brand>
-           
-            {title === 'Search' && (
-              <div className={classes.searchDiv}>
-                <SearchField
-                  disableTips={disableSearchTips}
-                  iconTop={-2}
-                  searchWrapperClass={classes.searchWrapper}
-                  style={{ fontSize: 16, height: 35 }}
-                  value={searchkey}
-                  onKeyDown={handleSearchKey}
-                  onChange={onChangeSearch}
-                  placeholder="Search D.Buzz"
-                  autoFocus
+              {title === 'Notifications' && count.unread !== 0 && (
+                <ContainedButton
+                  fontSize={12}
+                  style={{ marginTop: -3 }}
+                  transparent={true}
+                  label="Clear"
+                  loading={loading}
+                  disabled={loading}
+                  className={classes.walletButton}
+                  onClick={handleClearNotification}
                 />
+              )}
+              
+            </Navbar>
+            
+            <React.Fragment>
+              {is_authenticated && (
+                <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
+                  <CreateBuzzIcon />
+                </Fab>
+              )}
+              <AvatarMenu />
+              
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main:classes.marginTop50}>
+                {renderRoutes(route.routes)}
               </div>
-            )}
-            {title === 'Notifications' && count.unread !== 0 && (
-              <ContainedButton
-                fontSize={12}
-                style={{ marginTop: -3 }}
-                transparent={true}
-                label="Clear"
-                loading={loading}
-                disabled={loading}
-                className={classes.walletButton}
-                onClick={handleClearNotification}
-              />
-            )}
-            
-          </Navbar>
-          
-          <React.Fragment>
-            {is_authenticated && (
-              <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
-                <CreateBuzzIcon />
-              </Fab>
-            )}
-            <AvatarMenu />
-            
-            <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main:classes.marginTop50}>
-              {renderRoutes(route.routes)}
-            </div>
-          </React.Fragment>
-          <div className={classes.separator}></div>
-          {is_authenticated && (<NavigationBottom />)}
-          <BuzzFormModal show={open} onHide={handleCloseModal} />
-        </React.Fragment>
-      </div>
+            </React.Fragment>
+            <div className={classes.separator}></div>
+            {is_authenticated && (<NavigationBottom />)}
+            <BuzzFormModal show={open} onHide={handleCloseModal} />
+          </div>
+        </div>
+      </React.Fragment>
+        
+      
       <ThemeModal show={openTheme} onHide={onHideTheme} />
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
