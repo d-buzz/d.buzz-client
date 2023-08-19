@@ -28,7 +28,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.markdown.paragraph,
     '& a': {
       wordWrap: 'break-word',
-      color: '#FF0000 !important',
+      color: '#3ea6ff !important',
       fontWeight: 'normal',
     },
     '& p': {

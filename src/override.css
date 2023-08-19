@@ -374,7 +374,7 @@ input[type=number] {
 }
 
 .hyperlink {
-  color: #FF0000 !important;
+  color: #3ea6ff !important;
   pointer-events: all;
   cursor: pointer;
 }
