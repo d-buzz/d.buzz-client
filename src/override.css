@@ -83,7 +83,7 @@ div.ReactTags__selected a.ReactTags__remove {
 }
 .navigationFullWidth{
   height: 100%;
-  position: absolute;
+  position: fixed;
   background-color:rgba(0, 0, 0, 0.4);
   width: 100%;
   z-index: 501;
@@ -96,7 +96,7 @@ div.ReactTags__selected a.ReactTags__remove {
 }
 .navigationsmallWidth{
   height: 100%;
-  position: absolute;
+  position: fixed;
   background-color:rgba(0, 0, 0, 0.4);
   width: 1px;
   z-index: 501;
