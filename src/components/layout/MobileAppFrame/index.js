@@ -310,6 +310,9 @@ const useStyles = createUseStyles(theme => ({
     width: '32px',
     marginRight:'34px',
   },
+  marginRightNone: {
+    marginRight: '0 !important',
+  },
   menu: {
     '& .MuiPaper-root': {
       background: theme.background.primary,
@@ -856,7 +859,7 @@ const MobileAppFrame = (props) => {
                   <div className={classes.width45Percent}>
                     <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                   </div> 
-                  <div className={classes.width45Percent+' '+classes.displayFlex+' '+classes.justifyContentEnd}>
+                  <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
                     <span ref={avatarRef}>+</span>
                   </div> 
                 </div>
