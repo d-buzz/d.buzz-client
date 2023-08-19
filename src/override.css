@@ -107,7 +107,7 @@ div.ReactTags__selected a.ReactTags__remove {
   max-width: 70%;
   transition-timing-function: ease;
   min-width: 0px;
-  transition-duration: 300ms;
+  transition-duration: 250ms;
   height: 100vh;
   display: block;
   background-color: rgba(255,255,255,1.00);
@@ -116,10 +116,8 @@ div.ReactTags__selected a.ReactTags__remove {
   transform: translateX(0%);
   max-width: 70%;
   transition-timing-function: ease;
-  min-width: 0px;
-  transition-duration: 300ms;
+  transition-duration: 250ms;
   height: 100vh;
-  width: 0px !important;
   display: none;
   background-color: rgba(255,255,255,1.00);
 }
