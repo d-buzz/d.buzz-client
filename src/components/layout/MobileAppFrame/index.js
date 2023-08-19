@@ -301,6 +301,15 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: 'rgba(15,20,25,0.1)',
     },
   },
+  demoContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems:'center',
+    border: "1px solid black",
+    borderRadius: '50%',
+    width: '32px',
+    marginRight:'34px',
+  },
   menu: {
     '& .MuiPaper-root': {
       background: theme.background.primary,
@@ -883,7 +892,7 @@ const MobileAppFrame = (props) => {
               <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width30+' '+classes.demoContainer}>+</div>
                     <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Pockets</div>
                   </div>
                 </div>
@@ -899,7 +908,7 @@ const MobileAppFrame = (props) => {
               <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width30+' '+classes.demoContainer}>+</div>
                     <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
                   </div>
                 </div>
@@ -907,7 +916,7 @@ const MobileAppFrame = (props) => {
               <div className={classes.displayFlex+' '+classes.positionRelative}>
                 <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                   <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                    <div className={classes.width30}>icon</div>
+                    <div className={classes.width30+' '+classes.demoContainer}>+</div>
                     <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
                   </div>
                 </div>
