@@ -294,8 +294,8 @@ const useStyles = createUseStyles(theme => ({
   fontWeightBold: {
     fontWeight: 'bolder',
   },
-  backgroundE61C34:{
-    background: '#e61c34',
+  background606060:{
+    background: '#606060',
   },
   borderRadius10:{
     borderRadius:10,
@@ -965,13 +965,13 @@ const MobileAppFrame = (props) => {
                     <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
                       <p className={activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Trending</p>
                       <div
-                        className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
+                        className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.background606060+' '+classes.borderRadius10:''}
                       ></div>
                     </div>
                     <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
                       <p className={activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Following</p>
                       <div
-                        className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.backgroundE61C34+' '+classes.borderRadius10:''}
+                        className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.background606060+' '+classes.borderRadius10:''}
                       ></div>
                     </div>
                   </div>
