@@ -569,6 +569,9 @@ const MobileAppFrame = (props) => {
     case '/latest':
       setActiveView('latest')
       break
+    case '/message':
+      setActiveView('message')
+      break
     case '/notifications':
       setActiveView('notifications')
       break
@@ -628,11 +631,17 @@ const MobileAppFrame = (props) => {
     //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
     //   onClick: () => handelClickItem('profile'),
     // },
+    // {
+    //   name: 'Wallet',
+    //   icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+    //   path: `/@${username}/wallet`,
+    //   onClick: () => handelClickItem('wallet'),
+    // },
     {
-      name: 'Wallet',
-      icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-      path: `/@${username}/wallet`,
-      onClick: () => handelClickItem('wallet'),
+      name: 'Message',
+      icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
+      path: `/message`,
+      onClick: () => handelClickItem('message'),
     },
     // {
     //   name: 'More'  ,
@@ -658,6 +667,12 @@ const MobileAppFrame = (props) => {
       icon: activeView === 'search' ? <SearchIcon type='fill'/> : <SearchIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('search'),
+    },
+    {
+      name: 'Message',
+      icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
+      path: `/message`,
+      onClick: () => handelClickItem('message'),
     },
     // {
     //   name: 'Trending',
