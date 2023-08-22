@@ -20,7 +20,10 @@ import {
   ContainedButton,
   Avatar,
   // BuzzIcon,
+  SettingsIcon,
   SearchIcon,
+  PocketIcon,
+  MessageIcon,
   WalletIcon,
 } from 'components/elements'
 import {
@@ -917,7 +920,7 @@ const MobileAppFrame = (props) => {
                         <div className={classes.width30}>
                             <div  className={classNames(classes.minifyItems)}>
                                   <Link to={'#'}>
-                                    <WalletIcon type='fill'/>
+                                    <PocketIcon/>
                                   </Link>
                             </div>
                         </div>
@@ -945,7 +948,7 @@ const MobileAppFrame = (props) => {
                         <div className={classes.width30}>
                             <div  className={classNames(classes.minifyItems)}>
                                   <Link to={'#'}>
-                                    <WalletIcon type='fill'/>
+                                    <SettingsIcon type='fill'/>
                                   </Link>
                             </div>
                         </div>
@@ -959,7 +962,7 @@ const MobileAppFrame = (props) => {
                         <div className={classes.width30}>
                             <div  className={classNames(classes.minifyItems)}>
                                   <Link to={'#'}>
-                                    <WalletIcon type='fill'/>
+                                    <MessageIcon type='fill'/>
                                   </Link>
                             </div>
                         </div>
