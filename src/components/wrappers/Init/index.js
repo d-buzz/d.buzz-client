@@ -54,18 +54,18 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     height: 130,
     width: 300,
-    border: '2px solid #e61c34',
+    border: '2px solid #000',
     borderRadius: '15px !important',
 
     '& .reload_button': {
       color: '#ffffff !important',
-      backgroundColor: '#E61C34',
-      borderColor: '#E61C34',
+      backgroundColor: '#000',
+      borderColor: '#000',
       
       '&:hover': {
         color: '#ffffff !important',
-        backgroundColor: '#E61C34',
-        borderColor: '#E61C34',
+        backgroundColor: '#000',
+        borderColor: '#000',
       },
     },
   },
@@ -85,7 +85,7 @@ const useStyles = createUseStyles(theme => ({
   },
   betaTitle: {
     width: 'fit-content',
-    background: '#E61C34',
+    background: '#000',
     borderRadius: 5,
     textAlign: 'center',
     color: '#ffffff',
