@@ -33,6 +33,7 @@ import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
 import { checkForCeramicAccount } from 'services/ceramic'
 import { hasUpvoteService } from 'services/api'
+import { getTheme as currentTheme } from 'services/helper'
 
 const PrettoSlider = withStyles({
   root: {
@@ -157,6 +158,10 @@ const useStyles = createUseStyles(theme => ({
     color: '#000',
     fontSize: 14,
   },
+  payoutWhite: {
+    color: '#fff',
+    fontSize: 14,
+  },
   votelist: {
     fontSize: 12,
   },
@@ -243,6 +248,7 @@ const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick,
 }
 
 const PostActions = (props) => {
+  const mode = currentTheme() 
   const classes = useStyles()
   const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
   const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
@@ -573,7 +579,7 @@ const PostActions = (props) => {
                       size='small'
                       icon={iconDetails}
                       label={(
-                        <span className={classes.payout} style={payoutAdditionalStyle}>
+                        <span className={mode == 'light'?classes.payout:classes.payoutWhite} style={payoutAdditionalStyle}>
                           ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
                           {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
                           {!payout && isMobile ? '0.00' : ''}&nbsp;
