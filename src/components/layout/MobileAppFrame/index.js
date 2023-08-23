@@ -902,7 +902,7 @@ const MobileAppFrame = (props) => {
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div> 
                     <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
-                      <span ref={avatarRef}>+ {mode}</span>
+                      <span ref={avatarRef}>+</span>
                     </div> 
                   </div>
                   <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
