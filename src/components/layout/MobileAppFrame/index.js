@@ -124,7 +124,7 @@ const useStyles = createUseStyles(theme => ({
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
   },
-  colorGray: {
+  colorWhite: {
     color: "#f1f1f1",
   },
   colorGray:{
@@ -1023,13 +1023,13 @@ const MobileAppFrame = (props) => {
                     </React.Fragment>)}
                   <div className={classes.displayFlex}>
                     <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-                      <p className={activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Trending</p>
+                      <p className={classNames(mode === 'light' && activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:mode === 'night' && activeView === 'trending'? classes.colorWhite+' '+classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17)}>Trending</p>
                       <div
                         className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode == 'light' ?classes.background606060:activeView === 'trending' && mode == 'night'?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
                       ></div>
                     </div>
                     <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
-                      <p className={classNames(mode === 'light' && activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:mode === 'night' && activeView === 'home'? classes.colorGray+' '+classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17)}>Following</p>
+                      <p className={classNames(mode === 'light' && activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:mode === 'night' && activeView === 'home'? classes.colorWhite+' '+classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17)}>Following</p>
                       <div
                         className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode == 'light' ?classes.background606060:activeView === 'home' && mode == 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
                       ></div>
