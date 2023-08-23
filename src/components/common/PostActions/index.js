@@ -182,6 +182,16 @@ const useStyles = createUseStyles(theme => ({
       color: '#d32f2f',
     },
   },
+  minifyItems: {
+    textAlign: 'left',
+    width: "100%",
+    marginBottom: 5,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
+    },
+  },
   upvoteDialogTitle: {
     backgroundColor: theme.background.primary,
     ...theme.font,
@@ -559,7 +569,7 @@ const PostActions = (props) => {
                   hideStats={false}
                   stat={(
                     <Chip
-                      className={classes.chip}
+                      className={classNames(classes.chip, classes.minifyItems)}
                       size='small'
                       icon={iconDetails}
                       label={(
