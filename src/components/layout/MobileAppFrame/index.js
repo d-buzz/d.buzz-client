@@ -1028,7 +1028,7 @@ const MobileAppFrame = (props) => {
                     <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
                       <p className={activeView === 'home'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Following</p>
                       <div
-                        className={activeView === 'home'?classes.width45Percent+' '+classes.height5+' '+classes.background606060+' '+classes.borderRadius10:''}
+                        className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode == 'light' ?classes.background606060:activeView === 'home' && mode == 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
                       ></div>
                     </div>
                   </div>
