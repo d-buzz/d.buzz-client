@@ -963,11 +963,11 @@ const MobileAppFrame = (props) => {
                       <div className={classes.width30}>
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
-                            <SettingsIcon type='fill'/>
+                            <MessageIcon type='fill'/>
                           </Link>
                         </div>
                       </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
                     </div>
                   </div>
                 </div>
@@ -977,14 +977,15 @@ const MobileAppFrame = (props) => {
                       <div className={classes.width30}>
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
-                            <MessageIcon type='fill'/>
+                            <SettingsIcon type='fill'/>
                           </Link>
                         </div>
                       </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
+                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
                     </div>
                   </div>
                 </div>
+                
               </div>
             </div>
           </div>
