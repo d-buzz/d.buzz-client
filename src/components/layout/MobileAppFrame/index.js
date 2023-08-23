@@ -919,12 +919,12 @@ const MobileAppFrame = (props) => {
                     <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
                       <div className={classes.width30}> 
                         <div  className={classNames(classes.minifyItems)}>
-                            <Link to={'#'}>
+                            <Link to={`/@${username}`}>
                               <ProfileIcon type='fill'/>
                             </Link>
                           </div>
                        </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
+                      <div onClick={()=>history.push(`/@${username}`)} className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
                     </div>
                     
                   </div>
