@@ -154,7 +154,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.iconButton.hover,
   },
   payout: {
-    color: '#e53935',
+    color: '#000',
     fontSize: 14,
   },
   votelist: {
