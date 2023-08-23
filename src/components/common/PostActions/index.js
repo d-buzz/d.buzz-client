@@ -579,7 +579,7 @@ const PostActions = (props) => {
                       size='small'
                       icon={iconDetails}
                       label={(
-                        <span className={mode == 'light'?classes.payout:classes.payoutWhite} style={payoutAdditionalStyle}>
+                        <span className={mode === 'light'?classes.payout:classes.payoutWhite} style={payoutAdditionalStyle}>
                           ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
                           {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
                           {!payout && isMobile ? '0.00' : ''}&nbsp;
