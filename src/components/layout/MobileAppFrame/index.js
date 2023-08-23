@@ -54,8 +54,10 @@ import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
+import { getTheme as currentTheme } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
+import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
   // headerspacing: {
@@ -300,6 +302,10 @@ const useStyles = createUseStyles(theme => ({
   background606060:{
     background: '#606060',
   },
+  backgroundaaa:{
+    background: '#aaa',
+  },
+  
   borderRadius10:{
     borderRadius:10,
   },
@@ -407,7 +413,7 @@ const MobileAppFrame = (props) => {
     setRefreshRouteStatus,
     generateStyles,
   } = props
-
+  const mode = currentTheme() 
   const history = useHistory()
   const lastLocation = useLastLocation()
   const location = useLocation()
@@ -559,6 +565,8 @@ const MobileAppFrame = (props) => {
   }
 
   useEffect(() => {   
+ 
+    
     switch(location.pathname) {
     case '/':
       setActiveView('trending')
@@ -643,13 +651,13 @@ const MobileAppFrame = (props) => {
       path: `/message`,
       onClick: () => handelClickItem('message'),
     },
-    // {
-    //   name: 'More'  ,
-    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-    //   path: '#',
-    //   preventDefault: true,
-    //   onClick: handleClickOpenMoreMenu,
-    // },
+    {
+      name: 'More'  ,
+      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
+      path: '#',
+      preventDefault: true,
+      onClick: handleClickOpenMoreMenu,
+    },
   ]
 
 
@@ -891,7 +899,7 @@ const MobileAppFrame = (props) => {
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div> 
                     <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
-                      <span ref={avatarRef}>+</span>
+                      <span ref={avatarRef}>+ {mode}</span>
                     </div> 
                   </div>
                   <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
@@ -1014,7 +1022,7 @@ const MobileAppFrame = (props) => {
                     <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
                       <p className={activeView === 'trending'? classes.fontSize17+' '+ classes.fontWeightBold+' '+classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15:classes.marginEmpty+' '+classes.cursorPointer+' '+classes.paddingBottom15+' '+classes.fontSize17}>Trending</p>
                       <div
-                        className={activeView === 'trending'?classes.width45Percent+' '+classes.height5+' '+classes.background606060+' '+classes.borderRadius10:''}
+                        className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode == 'light' ?classes.background606060:activeView === 'trending' && mode == 'night'?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
                       ></div>
                     </div>
                     <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
