@@ -529,7 +529,7 @@ const MobileAppFrame = (props) => {
     left: 'auto',
     position: 'fixed',
     zIndex: 500,
-    backgroundColor: '#000',
+    backgroundColor: '#f1f1f1',
   }
 
   // const avatarStyle = { float: 'right' }
