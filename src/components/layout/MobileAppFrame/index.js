@@ -919,11 +919,11 @@ const MobileAppFrame = (props) => {
                     <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
                       <div className={classes.width30}> 
                         <div  className={classNames(classes.minifyItems)}>
-                            <Link to={`/@${username}`}>
-                              <ProfileIcon type='fill'/>
-                            </Link>
-                          </div>
-                       </div>
+                          <Link to={`/@${username}`}>
+                            <ProfileIcon type='fill'/>
+                          </Link>
+                        </div>
+                      </div>
                       <div onClick={()=>history.push(`/@${username}`)} className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
                     </div>
                     
@@ -932,13 +932,13 @@ const MobileAppFrame = (props) => {
                 <div className={classes.displayFlex+' '+classes.positionRelative}>
                   <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                     <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                        <div className={classes.width30}>
-                            <div  className={classNames(classes.minifyItems)}>
-                                  <Link to={'#'}>
-                                    <PocketIcon/>
-                                  </Link>
-                            </div>
+                      <div className={classes.width30}>
+                        <div  className={classNames(classes.minifyItems)}>
+                          <Link to={'#'}>
+                            <PocketIcon/>
+                          </Link>
                         </div>
+                      </div>
                       <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Pockets</div>
                     </div>
                   </div>
@@ -946,13 +946,13 @@ const MobileAppFrame = (props) => {
                 <div className={classes.displayFlex+' '+classes.positionRelative}>
                   <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                     <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                        <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems)}>
-                                <Link to={'#'}>
-                                  <WalletIcon type='fill'/>
-                                </Link>
-                          </div>
+                      <div className={classes.width30}>
+                        <div  className={classNames(classes.minifyItems)}>
+                          <Link to={'#'}>
+                            <WalletIcon type='fill'/>
+                          </Link>
                         </div>
+                      </div>
                       <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Wallet</div>
                     </div>
                   </div>
@@ -960,13 +960,13 @@ const MobileAppFrame = (props) => {
                 <div className={classes.displayFlex+' '+classes.positionRelative}>
                   <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                     <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                        <div className={classes.width30}>
-                            <div  className={classNames(classes.minifyItems)}>
-                                  <Link to={'#'}>
-                                    <SettingsIcon type='fill'/>
-                                  </Link>
-                            </div>
+                      <div className={classes.width30}>
+                        <div  className={classNames(classes.minifyItems)}>
+                          <Link to={'#'}>
+                            <SettingsIcon type='fill'/>
+                          </Link>
                         </div>
+                      </div>
                       <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
                     </div>
                   </div>
@@ -974,13 +974,13 @@ const MobileAppFrame = (props) => {
                 <div className={classes.displayFlex+' '+classes.positionRelative}>
                   <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
                     <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
-                        <div className={classes.width30}>
-                            <div  className={classNames(classes.minifyItems)}>
-                                  <Link to={'#'}>
-                                    <MessageIcon type='fill'/>
-                                  </Link>
-                            </div>
+                      <div className={classes.width30}>
+                        <div  className={classNames(classes.minifyItems)}>
+                          <Link to={'#'}>
+                            <MessageIcon type='fill'/>
+                          </Link>
                         </div>
+                      </div>
                       <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
                     </div>
                   </div>
