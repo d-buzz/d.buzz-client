@@ -897,10 +897,10 @@ const MobileAppFrame = (props) => {
                   <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                     <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
                       <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>Juneroy</span>
+                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>{username}</span>
                       </Link>
                       <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                        <span className={classes.colorGray+' '+ classes.fontsize17+' '+classes.fontWeight700}>@emoonkin</span>
+                        <span className={classes.colorGray+' '+ classes.fontsize17+' '+classes.fontWeight700}>@{username}</span>
                       </Link>
                     </div>
                   </div>
