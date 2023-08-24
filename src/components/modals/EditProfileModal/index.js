@@ -177,9 +177,7 @@ const EditProfileModal = (props) => {
   const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
 
-  const [isCroppingProfileImage, setIsCroppingProfileImage] = useState(false)
-  const [tempProfileImage, setTempProfileImage] = useState(null)
-  const profileCropperRef = useRef(null)
+  const [isCropperOpen, setIsCropperOpen] = useState(false)
 
 
   useEffect(() => {
@@ -244,45 +242,58 @@ const EditProfileModal = (props) => {
 
     return compressedFile !== null && compressedFile
   }
-  const handleChangeProfileImage = async (input) => {
-    let croppedImageFile = null
-    let originalFiles = []
+  // Utility Functions
 
-    // Convert base64 to Blob
-    const base64ToBlob = (base64Data, contentType = '') => {
-      const byteCharacters = atob(base64Data.split(',')[1])
-      const byteArrays = []
+  const base64ToBlob = (base64Data, contentType = '') => {
+    const byteCharacters = atob(base64Data.split(',')[1])
+    const byteArrays = []
 
-      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-        const slice = byteCharacters.slice(offset, offset + 512)
-        const byteNumbers = new Array(slice.length)
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512)
+      const byteNumbers = new Array(slice.length)
 
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i)
-        }
-
-        const byteArray = new Uint8Array(byteNumbers)
-        byteArrays.push(byteArray)
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i)
       }
 
-      return new Blob(byteArrays, { type: contentType })
+      const byteArray = new Uint8Array(byteNumbers)
+      byteArrays.push(byteArray)
     }
 
-    // Check if the input is a Blob
+    return new Blob(byteArrays, { type: contentType })
+  }
+
+  const handleError = (error) => {
+    console.error("Error uploading the image:", error)
+    broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+    setUploadAvatarLoading(false)
+    setImageUploadProgress(0)
+  }
+
+  const handleInputType = (input) => {
+    let originalFiles = []
+
     if (input instanceof Blob) {
-      croppedImageFile = new File([input], "cropped-image.png", { type: "image/png" })
+      const croppedImageFile = new File([input], "cropped-image.png", { type: "image/png" })
       originalFiles = [croppedImageFile]
-    } else if (typeof input === 'string' && input.startsWith('data:image/')) { // Check if input is base64
+    } else if (typeof input === 'string' && input.startsWith('data:image/')) {
       const blob = base64ToBlob(input, 'image/png')
-      croppedImageFile = new File([blob], "cropped-image.png", { type: "image/png" })
+      const croppedImageFile = new File([blob], "cropped-image.png", { type: "image/png" })
       originalFiles = [croppedImageFile]
     } else if (input instanceof Event && input.target && input.target.files) {
       originalFiles = Array.from(input.target.files)
     } else {
-      console.warn("Invalid input for handleChangeProfileImage")
-      return
+      console.warn("Invalid input")
+      return null
     }
 
+    return originalFiles
+  }
+
+
+  const handleChangeProfileImage = async (input) => {
+    const originalFiles = handleInputType(input)
+    if (!originalFiles) return
 
     const allImages = [...originalFiles.filter(image => image.type !== 'image/heic')]
     const heicImages = originalFiles.filter(image => image.type === 'image/heic')
@@ -295,14 +306,14 @@ const EditProfileModal = (props) => {
           quality: 1,
         })
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', ''), { type: 'image/png', size: pngBlob.size }),
+          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
         )
       }),
     )
 
     setProfileAvatar(URL.createObjectURL(allImages[0]))
 
-    if(allImages[0]){
+    if (allImages[0]) {
       setUploadAvatarLoading(true)
       try {
         const compressedImage = await handleImageCompression(allImages[0])
@@ -315,58 +326,17 @@ const EditProfileModal = (props) => {
           setImageUploadProgress(0)
           setUploadAvatarLoading(false)
         } else {
-          setUploadAvatarLoading(false)
-          broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-          setImageUploadProgress(0)
+          handleError(new Error("Image upload error"))
         }
       } catch (error) {
-        setUploadAvatarLoading(false)
-        broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-        setImageUploadProgress(0)
+        handleError(error)
       }
     }
   }
 
   const handleChangeCoverImage = async (input) => {
-    let croppedImageFile = null
-    let originalFiles = []
-
-    // Convert base64 to blob
-    const base64ToBlob = (base64) => {
-      const byteString = atob(base64.split(',')[1])
-      const mimeString = base64.split(',')[0].split(':')[1].split(';')[0]
-      const ab = new ArrayBuffer(byteString.length)
-      const ia = new Uint8Array(ab)
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i)
-      }
-      return new Blob([ab], {type: mimeString})
-    }
-
-    if (typeof input === 'string' && input.startsWith('data:image/png;base64,')) {
-      const blob = base64ToBlob(input)
-      croppedImageFile = new File([blob], "cropped-image.png", { type: "image/png" })
-      originalFiles = [croppedImageFile]
-    } else if (input instanceof Event && input.target && input.target.files) {
-      originalFiles = Array.from(input.target.files)
-    } else {
-      console.warn("Invalid input for handleChangeCoverImage")
-      return
-    }
-
-    if (input instanceof Blob) {
-      console.log(1)
-      croppedImageFile = new File([input], "cropped-image.png", {type: "image/png"})
-      originalFiles = [croppedImageFile]
-    } else if (input instanceof Event && input.target && input.target.files) {
-      console.log(2)
-      originalFiles = Array.from(input.target.files)
-    } else {
-      console.log(3)
-      // console.warn("Invalid input for handleChangeCoverImage")
-      // return
-    }
-    console.log('input2', originalFiles)
+    const originalFiles = handleInputType(input)
+    if (!originalFiles) return
 
     const allImages = originalFiles.filter(image => image.type !== 'image/heic')
     const heicImages = originalFiles.filter(image => image.type === 'image/heic')
@@ -378,9 +348,8 @@ const EditProfileModal = (props) => {
           toType: 'image/png',
           quality: 1,
         })
-
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', '.png'), {type: 'image/png', size: pngBlob.size}),
+          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
         )
       }),
     )
@@ -389,35 +358,26 @@ const EditProfileModal = (props) => {
 
     if (allImages[0]) {
       setUploadCoverLoading(true)
-
       try {
         const compressedImage = await handleImageCompression(allImages[0])
         const image = await uploadFileRequest(compressedImage, setImageUploadProgress, false)
-
         setIsCoverUpdated(true)
         setUploadCoverLoading(false)
-
         const lastImage = image[image.length - 1]
         if (lastImage !== undefined) {
           setProfileCoverImage(lastImage)
           setImageUploadProgress(0)
           setUploadCoverLoading(false)
         } else {
-          setUploadCoverLoading(false)
-          broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-          setImageUploadProgress(0)
+          handleError(new Error("Image upload error"))
         }
       } catch (error) {
-        console.error("Error uploading the image:", error)
-        broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-        setUploadCoverLoading(false)
-        setImageUploadProgress(0)
+        handleError(error)
       }
     }
   }
 
 
-  const [isCropperOpen, setIsCropperOpen] = useState(false)
   const handleImageChange = (e, imageType) => {
     setCurrentImageType(imageType)
     const file = e.target.files[0]
@@ -430,6 +390,7 @@ const EditProfileModal = (props) => {
       reader.readAsDataURL(file)
     }
   }
+
 
   const handleCropComplete = (croppedImage) => {
     switch (currentImageType) {
@@ -493,7 +454,6 @@ const EditProfileModal = (props) => {
   //       }
   //     })
   // }
-
 
 
   const handleRemoveCoverImage = () => {
