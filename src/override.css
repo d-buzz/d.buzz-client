@@ -81,7 +81,7 @@ div.ReactTags__selected a.ReactTags__remove {
   height: 100%;
   width: 100%;
 }
-.bg-black {
+.bg-black-transparent {
   background-color:rgba(0, 0, 0, 0.4);
 }
 .bg-91-112-131 {
@@ -108,6 +108,15 @@ div.ReactTags__selected a.ReactTags__remove {
   z-index: 501;
   color: black;
 }
+.bg-white{
+  background-color: rgba(255,255,255,1.00);
+}
+.bg-black{
+  background-color: #000;
+}
+.bg-21-32-43{
+  background-color: rgb(21, 32, 43);
+}
 .navigationMainContentFullwidth {
   transform: translateX(0%);
   max-width: 70%;
@@ -116,7 +125,7 @@ div.ReactTags__selected a.ReactTags__remove {
   transition-duration: 250ms;
   height: 100vh;
   display: block;
-  background-color: rgba(255,255,255,1.00);
+ 
 }
 .navigationMainContentNowidth {
   transform: translateX(0%);
