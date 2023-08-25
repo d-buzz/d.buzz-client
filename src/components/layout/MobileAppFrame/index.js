@@ -953,9 +953,9 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className={classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
@@ -967,9 +967,9 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className={classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
@@ -981,9 +981,9 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className={classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
@@ -1001,7 +1001,7 @@ const MobileAppFrame = (props) => {
           </div>
           <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main+' '+classes.maintest:classes.marginTop50}>
             
-            <Navbar className={classes.navTop+' '+ classes.paddingBottomEmpty} fixed="top">
+            <Navbar className={classNames(classes.navTop,classes.paddingBottomEmpty)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && (
                   <IconButton onClick={handleClickBackButton} size="small">
@@ -1021,13 +1021,13 @@ const MobileAppFrame = (props) => {
                       </div>
                     </React.Fragment>)}
                   <div className={classes.displayFlex}>
-                    <div onClick={() => handelClickItemByTab('trending')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
+                    <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.paddingTop13,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
                       <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
                       <div
                         className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && mode === 'night'?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
                       ></div>
                     </div>
-                    <div onClick={() => handelClickItemByTab('home')} className={classes.flexDirectionColumn+' '+classes.hoverBackgroundGray+' '+classes.paddingTop13+' '+classes.widthHalfWidth +' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter +' '+classes.paddingLeft15}>
+                    <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.paddingTop13,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
                     <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                       <div
                         className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && mode === 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
