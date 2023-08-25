@@ -893,7 +893,7 @@ const MobileAppFrame = (props) => {
     <React.Fragment>
       <React.Fragment>
         <div className='maincontent'>
-          <div onClick={() => setShowSideBarNavigation(false)} className={showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth'}>
+          <div onClick={() => setShowSideBarNavigation(false)} className={classNames(showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth',mode == 'night'? 'bg-91-112-131':'bg-black' )}>
             <div className={showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth'}>
               <div>
                 <div className={classes.padding16+' '+classes.displayFlex+' '+classes.flexDirectionColumn}>

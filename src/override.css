@@ -81,10 +81,16 @@ div.ReactTags__selected a.ReactTags__remove {
   height: 100%;
   width: 100%;
 }
+.bg-black {
+  background-color:rgba(0, 0, 0, 0.4);
+}
+.bg-91-112-131 {
+  background-color:rgb(91 112 131 / 40%);
+}
 .navigationFullWidth{
   height: 100%;
   position: fixed;
-  background-color:rgba(0, 0, 0, 0.4);
+
   width: 100%;
   z-index: 501;
   color: black;
