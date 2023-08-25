@@ -895,8 +895,8 @@ const MobileAppFrame = (props) => {
           <div onClick={() => setShowSideBarNavigation(false)} className={classNames(showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
             <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white')}>
               <div>
-                <div className={classes.padding16+' '+classes.displayFlex+' '+classes.flexDirectionColumn}>
-                  <div className={classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.positionRelative}>
+                <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
+                  <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
                     <div className={classNames(classes.width45Percent) }>
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div> 
@@ -904,19 +904,19 @@ const MobileAppFrame = (props) => {
                       <span ref={avatarRef}>+</span>
                     </div> 
                   </div>
-                  <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                    <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
-                      <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                  <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
+                      <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
                         <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{username}</span>
                       </Link>
-                      <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
+                      <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
                         <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
                       </Link>
                     </div>
                   </div>
-                  <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                    <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
-                      <div className={classes.displayFlex+' '+classes.justifyContentStart}>
+                  <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
+                      <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
                         <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>144</span> Following</div>
                         <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>144</span> Followers</div>
                       </div>
@@ -924,9 +924,9 @@ const MobileAppFrame = (props) => {
                   </div>
                 </div>
                 {/* PROFILE TAB */}
-                <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}> 
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={`/@${username}`}>
@@ -939,9 +939,9 @@ const MobileAppFrame = (props) => {
                     
                   </div>
                 </div>
-                <div className={classes.displayFlex+' '+classes.positionRelative}>
-                  <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100}>
-                    <div className={classes.padding16+' '+classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.width100}>
+                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
                         <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
