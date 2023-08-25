@@ -88,6 +88,24 @@ const useStyles = createUseStyles(theme => ({
       color: theme.left.sidebar.items.color,
       textDecoration: 'none',
     },
+   
+  },
+  minifyItemsStrokeWidth15:{
+    textAlign: 'left',
+    width: "100%",
+    marginBottom: 5,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
+    },
+    '& svg': {
+      '& path': {
+        fill: 'white !important',
+        stroke: 'black !important',
+        strokeWidth: 5
+      },
+    },
   },
   activeItem: {
     borderRadius: '50px 50px',
@@ -943,7 +961,7 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems)}>
+                        <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <PocketIcon/>
                           </Link>
@@ -971,7 +989,7 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems)}>
+                        <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <MessageIcon type='fill'/>
                           </Link>
@@ -985,7 +1003,7 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems)}>
+                        <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <SettingsIcon type='fill'/>
                           </Link>
