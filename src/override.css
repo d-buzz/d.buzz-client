@@ -135,6 +135,22 @@ div.ReactTags__selected a.ReactTags__remove {
 .border-black{
   border: 1px solid black
 }
+.margin-top-2{
+  margin-top: 2px;
+}
+.margin-bottom-2{
+  margin-bottom: 2px;
+}
+.bg-475154 {
+  background-color: rgb(47, 51, 54);
+}
+.height1{
+  height: 1px;
+}
+.width89{
+  width: 89%;
+}
+
 .navigationMainContentFullwidth {
   transform: translateX(0%);
   max-width: 70%;

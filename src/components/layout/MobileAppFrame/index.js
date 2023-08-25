@@ -999,6 +999,11 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </div>
+                <div className={classNames(classes.displayFlex,classes.positionRelative,classes.justifyContentCenter)}>
+                  <div className={classNames('margin-top-2','margin-bottom-2','bg-475154', 'height1', 'width89')}>
+                    
+                  </div>
+                </div>
                 <div className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
