@@ -950,7 +950,7 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div>
                       </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Pockets</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Pockets</div>
                     </div>
                   </div>
                 </div>
@@ -964,7 +964,7 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div>
                       </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Wallet</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Wallet</div>
                     </div>
                   </div>
                 </div>
@@ -978,7 +978,7 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div>
                       </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Message</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Message</div>
                     </div>
                   </div>
                 </div>
@@ -992,7 +992,7 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div>
                       </div>
-                      <div className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Settings</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Settings</div>
                     </div>
                   </div>
                 </div>
