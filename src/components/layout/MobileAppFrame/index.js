@@ -898,7 +898,7 @@ const MobileAppFrame = (props) => {
               <div>
                 <div className={classes.padding16+' '+classes.displayFlex+' '+classes.flexDirectionColumn}>
                   <div className={classes.displayFlex+' '+classes.justifyContentBetween+' '+classes.positionRelative}>
-                    <div className={classes.width45Percent}>
+                    <div className={classNames(classes.width45Percent) }>
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div> 
                     <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
@@ -908,18 +908,18 @@ const MobileAppFrame = (props) => {
                   <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                     <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
                       <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                        <span className={classes.colorBlack+' '+ classes.fontsize17+' '+classes.fontWeight700}>{username}</span>
+                        <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{username}</span>
                       </Link>
                       <Link to={'#'} className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100} >
-                        <span className={classes.colorGray+' '+ classes.fontsize17+' '+classes.fontWeight700}>@{username}</span>
+                        <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
                       </Link>
                     </div>
                   </div>
                   <div className={classes.marginTop8+' '+classes.displayFlex+' '+classes.positionRelative}>
                     <div className={classes.displayFlex+' '+classes.positionRelative+' '+classes.maxWidth100+' '+classes.width100+' '+classes.flexDirectionColumn}>
                       <div className={classes.displayFlex+' '+classes.justifyContentStart}>
-                        <div className={classes.marginRight30+' '+classes.fontsize15}><span className={classes.fontWeight700}>144</span> Following</div>
-                        <div className={classes.fontsize15}><span className={classes.fontWeight700}>144</span> Followers</div>
+                        <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>144</span> Following</div>
+                        <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>144</span> Followers</div>
                       </div>
                     </div>
                   </div>
@@ -935,7 +935,7 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div>
                       </div>
-                      <div onClick={()=>history.push(`/@${username}`)} className={classes.width100+' '+classes.lineHeight24+' '+classes.fontsize20+' '+classes.fontWeight700}>Profile</div>
+                      <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Profile</div>
                     </div>
                     
                   </div>
