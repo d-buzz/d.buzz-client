@@ -126,6 +126,15 @@ div.ReactTags__selected a.ReactTags__remove {
 .text-gray{
   color: rgb(113, 118, 123);
 }
+.width35{
+  width: 35px;
+}
+.border-white{
+  border: 1px solid white
+}
+.border-black{
+  border: 1px solid black
+}
 .navigationMainContentFullwidth {
   transform: translateX(0%);
   max-width: 70%;

@@ -330,9 +330,8 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems:'center',
-    border: "1px solid black",
+    
     borderRadius: '50%',
-    width: '32px',
     marginRight:'34px',
   },
   marginRightNone: {
@@ -901,7 +900,7 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.width45Percent) }>
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div> 
-                    <div className={classes.demoContainer+' '+classes.displayFlex+' '+classes.justifyContentEnd+' '+classes.marginRightNone}>
+                    <div className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
                       <span ref={avatarRef}>+</span>
                     </div> 
                   </div>
