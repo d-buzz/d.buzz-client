@@ -103,7 +103,7 @@ const useStyles = createUseStyles(theme => ({
       '& path': {
         fill: 'white !important',
         stroke: 'black !important',
-        strokeWidth: 5
+        strokeWidth: 5,
       },
     },
   },
@@ -915,7 +915,7 @@ const MobileAppFrame = (props) => {
               <div>
                 <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
                   <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
-                    <div className={classNames(classes.width45Percent) }>
+                    <div className={classNames(classes.width45Percent)}>
                       <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                     </div> 
                     <div className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
@@ -1051,7 +1051,7 @@ const MobileAppFrame = (props) => {
                       ></div>
                     </div>
                     <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.paddingTop13,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                    <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
+                      <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                       <div
                         className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && mode === 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
                       ></div>
