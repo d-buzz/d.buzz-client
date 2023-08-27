@@ -1088,7 +1088,7 @@ const MobileAppFrame = (props) => {
               </div>
             </div>
           </div>
-          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main+' '+classes.maintest:classes.marginTop50}>
+          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications'? classes.main+' '+classes.maintest:classes.marginTop50}>
             
             <Navbar className={classNames(classes.navTop,classes.paddingBottomEmpty)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
@@ -1182,7 +1182,7 @@ const MobileAppFrame = (props) => {
               )}
               <AvatarMenu />
               
-              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'? classes.main:classes.marginTop50}>
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'|| location.pathname === '/notifications'? classes.main:classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>
