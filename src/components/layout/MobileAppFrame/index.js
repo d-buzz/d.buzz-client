@@ -414,7 +414,16 @@ const useStyles = createUseStyles(theme => ({
   },
   alignItemsStart:{
     alignItems: 'start'
-  }
+  },
+  padding8Left:{
+    paddingLeft: 8,
+  },
+  padding8Top:{
+    paddingTop: 8,
+  },
+  padding8Bottom:{
+    paddingBottom: 8,
+  },
 
 }))
 
@@ -947,36 +956,56 @@ const MobileAppFrame = (props) => {
                 {/* PROFILE TAB */}
                 <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}> 
-                        <div  className={classNames(classes.minifyItems)}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={`/@${username}`}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <ProfileIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        {/* <div  className={classNames(classes.minifyItems)}>
                           <Link to={`/@${username}`}>
                             <ProfileIcon type='fill'/>
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
-                      <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Profile</div>
+                      <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Profile</div>
                     </div>
                     
                   </div>
                 </div>
                 <div className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <PocketIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <PocketIcon/>
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Pockets</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700, classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Pockets</div>
                     </div>
                   </div>
                 </div>
                 <div className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
                           <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={'#'}>
@@ -1000,9 +1029,9 @@ const MobileAppFrame = (props) => {
                 </div>
                 <div className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={'#'}>
                               <IconButton
                                 size="medium"
@@ -1024,15 +1053,25 @@ const MobileAppFrame = (props) => {
                 </div>
                 <div onClick={() => setOpenTheme(true)} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <SettingsIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <SettingsIcon type='fill'/>
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Settings</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                     </div>
                   </div>
                 </div>
