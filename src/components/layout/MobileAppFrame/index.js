@@ -412,6 +412,9 @@ const useStyles = createUseStyles(theme => ({
   justifyContentStart:{
     justifyContent:'start',
   },
+  alignItemsStart:{
+    alignItems: 'start'
+  }
 
 }))
 
@@ -989,13 +992,18 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
+                      <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                           <Link to={'#'}>
-                            <MessageIcon type='fill'/>
+                            <IconButton
+                              size="medium"
+                              style={{width: 55}}
+                            >
+                               <MessageIcon type='outline'/>
+                            </IconButton>
                           </Link>
                         </div>
                       </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Message</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
                     </div>
                   </div>
                 </div>
@@ -1004,7 +1012,7 @@ const MobileAppFrame = (props) => {
                     
                   </div>
                 </div>
-                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                <div onClick={() => setOpenTheme(true)} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
