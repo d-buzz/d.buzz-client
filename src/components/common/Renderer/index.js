@@ -189,7 +189,7 @@ const prepareYoutubeEmbeds = (
           }
         }
         else if(link.match(youtubeRegex) && link.includes('watch')){
-          const data = link.split('?v=')
+          const data = link.split(/\?v=|&/)
           match = link.match(youtubeRegex)
           if (data[1]) {
             id = data[1]
