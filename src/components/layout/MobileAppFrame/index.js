@@ -1024,12 +1024,12 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </Link>
-                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                <Link to={`/@${username}/wallet`}  className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
                           <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                            <Link to={'#'}>
+                            <Link to={`/@${username}/wallet`}>
                               <IconButton
                                 size="medium"
                                 style={{width: 55}}
@@ -1044,10 +1044,10 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div> */}
                       </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
+                      <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
                     </div>
                   </div>
-                </div>
+                </Link>
                 <div onClick={() => showNotificationForMessage()} className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
