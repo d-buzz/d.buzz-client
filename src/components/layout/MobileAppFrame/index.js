@@ -275,6 +275,9 @@ const useStyles = createUseStyles(theme => ({
   width45Percent: {
     width: '45%',
   },
+  width43Percent: {
+    width: '43%',
+  },
   paddingBottomEmpty: {
     paddingBottom: '0px !important',
   },
@@ -1092,7 +1095,7 @@ const MobileAppFrame = (props) => {
                   {is_authenticated &&
                     (<React.Fragment>
                       <div className={classes.avatarWrapper}>
-                        <div className={classes.width45Percent}>
+                        <div className={classes.width43Percent}>
                           <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                         </div>
                         <div className={classes.widthHalfWidth}>
