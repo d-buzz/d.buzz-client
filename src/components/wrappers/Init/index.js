@@ -97,14 +97,14 @@ const useStyles = createUseStyles(theme => ({
     background: '#0000000d',
   },
   bgBetaDark: {
-    background: "#ffffff1a"
+    background: "#ffffff1a",
   },
   textBetaLight: {
     color: '#000',
   },
   textBetaDark: {
     color: '#fff',
-  }
+  },
 }))
 
 const SplashScreen = () => {

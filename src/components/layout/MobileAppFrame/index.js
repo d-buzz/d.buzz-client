@@ -416,7 +416,7 @@ const useStyles = createUseStyles(theme => ({
     justifyContent:'start',
   },
   alignItemsStart:{
-    alignItems: 'start'
+    alignItems: 'start',
   },
   padding8Left:{
     paddingLeft: 8,
@@ -428,8 +428,8 @@ const useStyles = createUseStyles(theme => ({
     paddingBottom: 8,
   },
   padding15Bottom0: {
-    padding: "15px 15px 0px 15px"
-  }
+    padding: "15px 15px 0px 15px",
+  },
 
 }))
 
@@ -696,7 +696,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Message',
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
-      onClick:() => showNotificationForMessage()
+      onClick:() => showNotificationForMessage(),
     },
     // {
     //   name: 'More'  ,
@@ -979,16 +979,16 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}> 
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                            <Link to={`/@${username}`}>
-                              <IconButton
-                                size="medium"
-                                style={{width: 55}}
-                              >
-                                <ProfileIcon type='outline'/>
-                              </IconButton>
-                            </Link>
-                          </div>
+                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                          <Link to={`/@${username}`}>
+                            <IconButton
+                              size="medium"
+                              style={{width: 55}}
+                            >
+                              <ProfileIcon type='outline'/>
+                            </IconButton>
+                          </Link>
+                        </div>
                         {/* <div  className={classNames(classes.minifyItems)}>
                           <Link to={`/@${username}`}>
                             <ProfileIcon type='fill'/>
@@ -1004,16 +1004,16 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                           <Link to={`/@${username}/t/pockets`}>
-                              <IconButton
-                                size="medium"
-                                style={{width: 55}}
-                              >
-                                <PocketIcon type='outline'/>
-                              </IconButton>
-                            </Link>
-                          </div>
+                            <IconButton
+                              size="medium"
+                              style={{width: 55}}
+                            >
+                              <PocketIcon type='outline'/>
+                            </IconButton>
+                          </Link>
+                        </div>
                         {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <PocketIcon/>
@@ -1028,16 +1028,16 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                            <Link to={`/@${username}/wallet`}>
-                              <IconButton
-                                size="medium"
-                                style={{width: 55}}
-                              >
-                                <WalletIcon type='outline'/>
-                              </IconButton>
-                            </Link>
-                          </div>
+                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                          <Link to={`/@${username}/wallet`}>
+                            <IconButton
+                              size="medium"
+                              style={{width: 55}}
+                            >
+                              <WalletIcon type='outline'/>
+                            </IconButton>
+                          </Link>
+                        </div>
                         {/* <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
                             <WalletIcon type='fill'/>
@@ -1052,16 +1052,16 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                            <Link to={'#'}>
-                              <IconButton
-                                size="medium"
-                                style={{width: 55}}
-                              >
-                                <MessageIcon type='outline'/>
-                              </IconButton>
-                            </Link>
-                          </div>
+                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                          <Link to={'#'}>
+                            <IconButton
+                              size="medium"
+                              style={{width: 55}}
+                            >
+                              <MessageIcon type='outline'/>
+                            </IconButton>
+                          </Link>
+                        </div>
                       </div>
                       <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
                     </div>
@@ -1076,16 +1076,16 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                            <Link to={'#'}>
-                              <IconButton
-                                size="medium"
-                                style={{width: 55}}
-                              >
-                                <SettingsIcon type='outline'/>
-                              </IconButton>
-                            </Link>
-                          </div>
+                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                          <Link to={'#'}>
+                            <IconButton
+                              size="medium"
+                              style={{width: 55}}
+                            >
+                              <SettingsIcon type='outline'/>
+                            </IconButton>
+                          </Link>
+                        </div>
                         {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
                           <Link to={'#'}>
                             <SettingsIcon type='fill'/>
