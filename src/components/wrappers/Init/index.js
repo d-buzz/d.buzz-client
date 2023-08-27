@@ -12,6 +12,7 @@ import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
 // import { getBestCeramicHost } from 'services/ceramic'
 import Paper from '@material-ui/core/Paper'
+import classNames from 'classnames'
 
 const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
 const Typography = React.lazy(() => import('@material-ui/core/Typography'))
@@ -85,15 +86,19 @@ const useStyles = createUseStyles(theme => ({
   },
   betaTitle: {
     width: 'fit-content',
-    background: '#000',
     borderRadius: 5,
     textAlign: 'center',
-    color: '#ffffff',
     padding: '0 3px',
     fontSize: '0.95em',
     fontWeight: 600,
     userSelect: 'none',
   },
+  bgBetaLight:{
+    background: '#0000000d',
+  },
+  textBetaLight: {
+    color: '#000',
+  }
 }))
 
 const SplashScreen = () => {
@@ -121,7 +126,7 @@ const SplashScreen = () => {
           {(theme === 'gray' || theme === 'night') && (<BrandIconDark height={60}/>)}
           {config.VERSION.includes('dev') &&
               <div className={classes.betaTitleContainer}>
-                {<span className={classes.betaTitle}>BETA</span>}
+                {<span className={classNames(classes.betaTitle, theme === 'light'? classes.bgBetaLight:'',theme === 'light'? classes.textBetaLight:'')}>BETA</span>}
               </div>}
           <Spinner
             size={35}
