@@ -150,6 +150,9 @@ div.ReactTags__selected a.ReactTags__remove {
 .width89{
   width: 89%;
 }
+.navbar-brand{
+  margin-right: 0 !important;
+}
 
 .navigationMainContentFullwidth {
   transform: translateX(0%);
