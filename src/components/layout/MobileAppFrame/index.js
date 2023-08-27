@@ -39,7 +39,7 @@ import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { clearNotificationsRequest } from 'store/profile/actions'
+import { clearNotificationsRequest,getFollowersRequest,getFollowingRequest, getProfileRequest } from 'store/profile/actions'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
 import { broadcastNotification, setRefreshRouteStatus } from 'store/interface/actions'
@@ -57,7 +57,7 @@ import { getTheme } from 'services/theme'
 import { getTheme as currentTheme } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
-import MoreIcon from 'components/elements/Icons/MoreIcon'
+// import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
   // headerspacing: {
@@ -444,6 +444,10 @@ const MobileAppFrame = (props) => {
     loading,
     broadcastNotification,
     clearNotificationsRequest,
+    getFollowersRequest,
+    getFollowingRequest,
+    getProfileRequest,
+    profile,
     setIntentBuzz,
     fromIntentBuzz,
     searchRequest,
@@ -601,10 +605,16 @@ const MobileAppFrame = (props) => {
       return
     }
   }
+  useEffect(() => {
+    if(username) {
+      getProfileRequest(username)
+      getFollowersRequest(username)
+      getFollowingRequest(username)
+    }
+  }, [username,getProfileRequest,getFollowersRequest,getFollowingRequest])
 
   useEffect(() => {   
- 
-    
+       
     switch(location.pathname) {
     case '/':
       setActiveView('trending')
@@ -688,13 +698,13 @@ const MobileAppFrame = (props) => {
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
       onClick:() => showNotificationForMessage()
     },
-    {
-      name: 'More'  ,
-      icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-      path: '#',
-      preventDefault: true,
-      onClick: handleClickOpenMoreMenu,
-    },
+    // {
+    //   name: 'More'  ,
+    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
+    //   path: '#',
+    //   preventDefault: true,
+    //   onClick: handleClickOpenMoreMenu,
+    // },
   ]
 
 
@@ -816,6 +826,8 @@ const MobileAppFrame = (props) => {
     window.open('https://discord.gg/kCZGPs7', '_blank')
   }
 
+  const { stats } = profile || ''
+  const { followers, following } = stats || 0
   const NavigationBottom = () => {
     return (
       <Navbar className={classes.navBottom} fixed="bottom">
@@ -956,8 +968,8 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                       <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
-                        <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>144</span> Following</div>
-                        <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>144</span> Followers</div>
+                        <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{following}</span> Following</div>
+                        <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{followers}</span> Followers</div>
                       </div>
                     </div>
                   </div>
@@ -1060,7 +1072,7 @@ const MobileAppFrame = (props) => {
                     
                   </div>
                 </div>
-                <div onClick={() => setOpenTheme(true)} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
+                <div onClick={() => handleClickOpenMoreMenu()} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
@@ -1227,6 +1239,7 @@ const MobileAppFrame = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.get('user'),
+  profile: state.profile.get('profile'),
   theme: state.settings.get('theme'),
   count: state.polling.get('count'),
   loading: pending(state, 'CLEAR_NOTIFICATIONS_REQUEST'),
@@ -1239,6 +1252,9 @@ const mapDispatchToProps = (dispatch) => ({
     signoutUserRequest,
     broadcastNotification,
     clearNotificationsRequest,
+    getFollowersRequest,
+    getFollowingRequest,
+    getProfileRequest,
     setIntentBuzz,
     searchRequest,
     clearSearchPosts,
