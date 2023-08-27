@@ -143,8 +143,8 @@ const useStyles = createUseStyles(theme => ({
     border: 'none !important',
     float: 'right !important',
     '& span': {
-      fontFamily: 'Segoe-Bold',
-      marginTop: -5,
+      // fontFamily: 'Segoe-Bold',
+      // marginTop: 5,
     },
   },
   sliderWrapper: {
@@ -156,7 +156,7 @@ const useStyles = createUseStyles(theme => ({
   },
   payout: {
     color: '#000',
-    fontSize: 14,
+    // fontSize: 14,
   },
   payoutWhite: {
     color: '#fff',
