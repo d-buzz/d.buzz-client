@@ -129,6 +129,7 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     fontSize: 14,
     ...theme.font,
+    color: '#536471 !important',
   },
   actionWrapperSpace: {
     paddingRight: 30,
@@ -575,7 +576,7 @@ const PostActions = (props) => {
                   hideStats={false}
                   stat={(
                     <Chip
-                      className={classNames(classes.chip, classes.minifyItems)}
+                      className={classNames(classes.chip, classes.minifyItemsGray)}
                       size='small'
                       icon={iconDetails}
                       label={(

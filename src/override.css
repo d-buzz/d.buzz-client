@@ -153,6 +153,10 @@ div.ReactTags__selected a.ReactTags__remove {
 .navbar-brand{
   margin-right: 0 !important;
 }
+.icon-0-2-312 svg path{
+  fill: #536471 !important;
+  stroke: #536471 !important;
+}
 
 .navigationMainContentFullwidth {
   transform: translateX(0%);
