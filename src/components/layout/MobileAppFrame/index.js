@@ -686,8 +686,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Message',
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
-      path: `/message`,
-      onClick: () => handelClickItem('message'),
+      onClick:() => showNotificationForMessage()
     },
     {
       name: 'More'  ,
@@ -900,6 +899,10 @@ const MobileAppFrame = (props) => {
     }
   }
 
+  const showNotificationForMessage = () => {
+    broadcastNotification('success', 'Coming soon')
+  }
+
 
   useEffect(() => {
     if (is_authenticated) {
@@ -1033,7 +1036,7 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className={classNames(classes.displayFlex,classes.positionRelative)}>
+                <div onClick={() => showNotificationForMessage()} className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
