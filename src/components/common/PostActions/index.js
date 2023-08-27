@@ -599,7 +599,8 @@ const PostActions = (props) => {
                 inlineClass={classes.inline}
                 hideStats={false}
                 stat={(
-                  <IconButton className={classNames(classes.minifyItems)} onClick={openMenu} size='small'>
+                  // <ShareIcon onClick={openMenu} type='outline'/>
+                  <IconButton  onClick={openMenu} size='small'>
                     <ShareIcon />
                   </IconButton>
                 )}
