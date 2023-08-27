@@ -978,13 +978,23 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems)}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <WalletIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        {/* <div  className={classNames(classes.minifyItems)}>
                           <Link to={'#'}>
                             <WalletIcon type='fill'/>
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700)}>Wallet</div>
+                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
                     </div>
                   </div>
                 </div>
@@ -992,16 +1002,16 @@ const MobileAppFrame = (props) => {
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
-                      <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                          <Link to={'#'}>
-                            <IconButton
-                              size="medium"
-                              style={{width: 55}}
-                            >
-                               <MessageIcon type='outline'/>
-                            </IconButton>
-                          </Link>
-                        </div>
+                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <MessageIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
                       </div>
                       <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
                     </div>
