@@ -96,8 +96,14 @@ const useStyles = createUseStyles(theme => ({
   bgBetaLight:{
     background: '#0000000d',
   },
+  bgBetaDark: {
+    background: "#ffffff1a"
+  },
   textBetaLight: {
     color: '#000',
+  },
+  textBetaDark: {
+    color: '#fff',
   }
 }))
 
@@ -126,7 +132,7 @@ const SplashScreen = () => {
           {(theme === 'gray' || theme === 'night') && (<BrandIconDark height={60}/>)}
           {config.VERSION.includes('dev') &&
               <div className={classes.betaTitleContainer}>
-                {<span className={classNames(classes.betaTitle, theme === 'light'? classes.bgBetaLight:'',theme === 'light'? classes.textBetaLight:'')}>BETA</span>}
+                {<span className={classNames(classes.betaTitle, theme === 'light'? classes.bgBetaLight:classes.bgBetaDark,theme === 'light'? classes.textBetaLight:classes.textBetaDark)}>BETA</span>}
               </div>}
           <Spinner
             size={35}
