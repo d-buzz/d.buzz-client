@@ -1010,7 +1010,7 @@ const MobileAppFrame = (props) => {
                             <Link to={`/@${username}`}>
                               <IconButton
                                 size="medium"
-                                style={{width: 55}}
+                                style={{width: 55, padding:'0px 12px 0px 0px'}}
                               >
                                 <ProfileIcon type='outline'/>
                               </IconButton>
@@ -1035,7 +1035,7 @@ const MobileAppFrame = (props) => {
                             <Link to={`/@${username}/t/pockets`}>
                               <IconButton
                                 size="medium"
-                                style={{width: 55}}
+                                style={{width: 55, padding:'12px 12px 0px 0px'}}
                               >
                                 <PocketIcon type='outline'/>
                               </IconButton>
@@ -1059,7 +1059,7 @@ const MobileAppFrame = (props) => {
                             <Link to={`/@${username}/wallet`}>
                               <IconButton
                                 size="medium"
-                                style={{width: 55}}
+                                style={{width: 55, padding:'12px 12px 0px 0px'}}
                               >
                                 <WalletIcon type='outline'/>
                               </IconButton>
@@ -1083,7 +1083,7 @@ const MobileAppFrame = (props) => {
                             <Link to={'#'}>
                               <IconButton
                                 size="medium"
-                                style={{width: 55}}
+                                style={{width: 55, padding:'12px 12px 0px 0px'}}
                               >
                                 <MessageIcon type='outline'/>
                               </IconButton>
@@ -1103,7 +1103,7 @@ const MobileAppFrame = (props) => {
                   <div  className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                     <div className={classNames(classes.displayFlex, classes.flexDirectionColumn,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div style={{paddingLeft:'18px' }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div style={{marginBottom:10}} onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
+                        <div onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
                           <div className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
                             <div style={{marginRight:'12px' }} className={classes.width30}>
                               {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
