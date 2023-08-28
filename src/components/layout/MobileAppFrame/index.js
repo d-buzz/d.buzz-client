@@ -430,6 +430,9 @@ const useStyles = createUseStyles(theme => ({
   padding15Bottom0: {
     padding: "15px 15px 0px 15px",
   },
+  height100: {
+    height: "100%",
+  }
 
 }))
 
@@ -943,8 +946,8 @@ const MobileAppFrame = (props) => {
     <React.Fragment>
       <React.Fragment>
         <div className='maincontent'>
-          <div onClick={() => setShowSideBarNavigation(false)} className={classNames(showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
-            <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white')}>
+          <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
+            <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white', classes.width100)}>
               <div>
                 <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
                   <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
@@ -1098,6 +1101,9 @@ const MobileAppFrame = (props) => {
                 </div>
                 
               </div>
+            </div>
+            <div onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.width30, classes.height100)}>
+
             </div>
           </div>
           <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications'? classes.main+' '+classes.maintest:classes.marginTop50}>
