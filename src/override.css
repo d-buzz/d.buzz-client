@@ -87,6 +87,22 @@ div.ReactTags__selected a.ReactTags__remove {
 .bg-91-112-131 {
   background-color:rgb(91 112 131 / 40%);
 }
+.navigationFullWidthNoTrans{
+  height: 100%;
+  position: fixed;
+
+  width: 100%;
+  z-index: 501;
+  color: black;
+}
+.navigationsmallWidthNoTrans{
+  height: 100%;
+  position: fixed;
+  /* background-color:rgba(0, 0, 0, 0.4); */
+  width: 0px;
+  z-index: 501;
+  color: black;
+}
 .navigationFullWidth{
   height: 100%;
   position: fixed;
@@ -103,8 +119,8 @@ div.ReactTags__selected a.ReactTags__remove {
 .navigationsmallWidth{
   height: 100%;
   position: fixed;
-  background-color:rgba(0, 0, 0, 0.4);
-  width: 1px;
+  /* background-color:rgba(0, 0, 0, 0.4); */
+  width: 0px;
   z-index: 501;
   color: black;
 }
@@ -163,9 +179,12 @@ div.ReactTags__selected a.ReactTags__remove {
   max-width: 70%;
   transition-timing-function: ease;
   min-width: 0px;
+  transition-timing-function: ease;
   transition-duration: 250ms;
+  transition-property: transform;
   height: 100vh;
   display: block;
+  width: 100%;
  
 }
 .navigationMainContentNowidth {
@@ -173,6 +192,8 @@ div.ReactTags__selected a.ReactTags__remove {
   max-width: 70%;
   transition-timing-function: ease;
   transition-duration: 250ms;
+  transition-property: transform;
+  width: 0px;
   height: 100vh;
   display: none;
   background-color: rgba(255,255,255,1.00);

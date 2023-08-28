@@ -432,7 +432,7 @@ const useStyles = createUseStyles(theme => ({
   },
   height100: {
     height: "100%",
-  }
+  },
 
 }))
 
@@ -946,164 +946,166 @@ const MobileAppFrame = (props) => {
     <React.Fragment>
       <React.Fragment>
         <div className='maincontent'>
-          <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
-            <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white', classes.width100)}>
-              <div>
-                <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
-                  <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
-                    <div className={classNames(classes.width45Percent)}>
-                      <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
-                    </div> 
-                    <div className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
-                      <span ref={avatarRef}>+</span>
-                    </div> 
-                  </div>
-                  <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
-                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
-                      <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                        <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{username}</span>
-                      </Link>
-                      <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                        <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
-                      </Link>
+          <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidthNoTrans':'navigationsmallWidthNoTrans',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
+            <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth' )}>
+              <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white', classes.width100)}>
+                <div>
+                  <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
+                    <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
+                      <div className={classNames(classes.width45Percent)}>
+                        <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
+                      </div> 
+                      <div className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
+                        <span ref={avatarRef}>+</span>
+                      </div> 
                     </div>
-                  </div>
-                  <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
-                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
-                      <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
-                        <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{following}</span> Following</div>
-                        <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{followers}</span> Followers</div>
+                    <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                      <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
+                        <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
+                          <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{username}</span>
+                        </Link>
+                        <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
+                          <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                      <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
+                        <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
+                          <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{following}</span> Following</div>
+                          <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{followers}</span> Followers</div>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  {/* PROFILE TAB */}
+                  <Link to={`/@${username}`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div className={classes.width30}> 
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={`/@${username}`}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <ProfileIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                          {/* <div  className={classNames(classes.minifyItems)}>
+                            <Link to={`/@${username}`}>
+                              <ProfileIcon type='fill'/>
+                            </Link>
+                          </div> */}
+                        </div>
+                        <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Profile</div>
+                      </div>
+                      
+                    </div>
+                  </Link>
+                  <Link to={`/@${username}/t/pockets`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div className={classes.width30}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={`/@${username}/t/pockets`}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <PocketIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                          {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
+                            <Link to={'#'}>
+                              <PocketIcon/>
+                            </Link>
+                          </div> */}
+                        </div>
+                        <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700, classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Pockets</div>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link to={`/@${username}/wallet`}  onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div className={classes.width30}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={`/@${username}/wallet`}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <WalletIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                          {/* <div  className={classNames(classes.minifyItems)}>
+                            <Link to={'#'}>
+                              <WalletIcon type='fill'/>
+                            </Link>
+                          </div> */}
+                        </div>
+                        <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
+                      </div>
+                    </div>
+                  </Link>
+                  <div onClick={() => showNotificationForMessage()} className={classNames(classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div className={classes.width30}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <MessageIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        </div>
+                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.justifyContentCenter)}>
+                    <div className={classNames('margin-top-2','margin-bottom-2','bg-475154', 'height1', 'width89')}>
+                      
+                    </div>
+                  </div>
+                  <div onClick={() => handleClickOpenMoreMenu()} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div className={classes.width30}>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55}}
+                              >
+                                <SettingsIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                          {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
+                            <Link to={'#'}>
+                              <SettingsIcon type='fill'/>
+                            </Link>
+                          </div> */}
+                        </div>
+                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                      </div>
+                    </div>
+                  </div>
+                  
                 </div>
-                {/* PROFILE TAB */}
-                <Link to={`/@${username}`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
-                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                      <div className={classes.width30}> 
-                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                          <Link to={`/@${username}`}>
-                            <IconButton
-                              size="medium"
-                              style={{width: 55}}
-                            >
-                              <ProfileIcon type='outline'/>
-                            </IconButton>
-                          </Link>
-                        </div>
-                        {/* <div  className={classNames(classes.minifyItems)}>
-                          <Link to={`/@${username}`}>
-                            <ProfileIcon type='fill'/>
-                          </Link>
-                        </div> */}
-                      </div>
-                      <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Profile</div>
-                    </div>
-                    
-                  </div>
-                </Link>
-                <Link to={`/@${username}/t/pockets`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
-                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                      <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                          <Link to={`/@${username}/t/pockets`}>
-                            <IconButton
-                              size="medium"
-                              style={{width: 55}}
-                            >
-                              <PocketIcon type='outline'/>
-                            </IconButton>
-                          </Link>
-                        </div>
-                        {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
-                          <Link to={'#'}>
-                            <PocketIcon/>
-                          </Link>
-                        </div> */}
-                      </div>
-                      <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700, classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Pockets</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link to={`/@${username}/wallet`}  onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
-                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                      <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                          <Link to={`/@${username}/wallet`}>
-                            <IconButton
-                              size="medium"
-                              style={{width: 55}}
-                            >
-                              <WalletIcon type='outline'/>
-                            </IconButton>
-                          </Link>
-                        </div>
-                        {/* <div  className={classNames(classes.minifyItems)}>
-                          <Link to={'#'}>
-                            <WalletIcon type='fill'/>
-                          </Link>
-                        </div> */}
-                      </div>
-                      <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
-                    </div>
-                  </div>
-                </Link>
-                <div onClick={() => showNotificationForMessage()} className={classNames(classes.displayFlex,classes.positionRelative)}>
-                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                      <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                          <Link to={'#'}>
-                            <IconButton
-                              size="medium"
-                              style={{width: 55}}
-                            >
-                              <MessageIcon type='outline'/>
-                            </IconButton>
-                          </Link>
-                        </div>
-                      </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
-                    </div>
-                  </div>
-                </div>
-                <div className={classNames(classes.displayFlex,classes.positionRelative,classes.justifyContentCenter)}>
-                  <div className={classNames('margin-top-2','margin-bottom-2','bg-475154', 'height1', 'width89')}>
-                    
-                  </div>
-                </div>
-                <div onClick={() => handleClickOpenMoreMenu()} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
-                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                    <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                      <div className={classes.width30}>
-                        <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                          <Link to={'#'}>
-                            <IconButton
-                              size="medium"
-                              style={{width: 55}}
-                            >
-                              <SettingsIcon type='outline'/>
-                            </IconButton>
-                          </Link>
-                        </div>
-                        {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
-                          <Link to={'#'}>
-                            <SettingsIcon type='fill'/>
-                          </Link>
-                        </div> */}
-                      </div>
-                      <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
-                    </div>
-                  </div>
-                </div>
-                
               </div>
-            </div>
-            <div onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.width30, classes.height100)}>
+              <div onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.width30, classes.height100)}>
 
+              </div>
             </div>
           </div>
           <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications'? classes.main+' '+classes.maintest:classes.marginTop50}>
