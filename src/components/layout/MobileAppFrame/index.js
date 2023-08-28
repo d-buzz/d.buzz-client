@@ -978,7 +978,7 @@ const MobileAppFrame = (props) => {
                   </div>
                 </div>
                 {/* PROFILE TAB */}
-                <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
+                <Link to={`/@${username}`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}> 
@@ -998,12 +998,12 @@ const MobileAppFrame = (props) => {
                           </Link>
                         </div> */}
                       </div>
-                      <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Profile</div>
+                      <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Profile</div>
                     </div>
                     
                   </div>
-                </div>
-                <Link to={`/@${username}/t/pockets`} className={classNames(classes.displayFlex,classes.positionRelative)}>
+                </Link>
+                <Link to={`/@${username}/t/pockets`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
@@ -1027,7 +1027,7 @@ const MobileAppFrame = (props) => {
                     </div>
                   </div>
                 </Link>
-                <Link to={`/@${username}/wallet`}  className={classNames(classes.displayFlex,classes.positionRelative)}>
+                <Link to={`/@${username}/wallet`}  onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
                   <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                     <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                       <div className={classes.width30}>
