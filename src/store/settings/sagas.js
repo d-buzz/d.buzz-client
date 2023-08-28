@@ -33,13 +33,9 @@ import {
   getBestRpcNode,
   checkVersion,
   getCensorTypes,
-  getKeyPair,
-  extractLoginData,
   censorBuzz,
 } from 'services/api'
 import config from 'config'
-
-import crypto from 'crypto'
 
 import { setCensorList } from '../auth/actions'
 
@@ -104,24 +100,11 @@ function* getCensorTypesRequest(meta) {
 function* censorBuzzRequest(payload, meta) {
   try {
     const { author, permlink, type } = payload
-    const user = yield select(state => state.auth.get('user'))
     const censorList = yield select(state => state.auth.get('censorList'))
     const censorTypes = yield select(state => state.settings.get('censorTypes'))
     const typeName = censorTypes.filter((item) => item.id === type)[0]
 
-    let { login_data } = user
-    login_data = extractLoginData(login_data)
-
-    const wif = login_data[1]
-
-    const keypairs = yield call(getKeyPair)
-    const transaction = {author, permlink, type, wif }
-
-    const signerObject = crypto.createSign('RSA-SHA512')
-    signerObject.update(JSON.stringify(transaction))
-    const signature = signerObject.sign(keypairs.pair['private'], 'base64')
-
-    yield call(censorBuzz, author, permlink, type, signature)
+    yield call(censorBuzz, author, permlink, type)
 
     yield put(setCensorList([...censorList, { author, permlink, type: typeName.name, type_id: type }]))
     yield put(censorBuzzSuccess(meta))

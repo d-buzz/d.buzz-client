@@ -1677,9 +1677,9 @@ export const getCensorTypes = () => {
   })
 }
 
-export const censorBuzz = (author, permlink, type, signature) => {
+export const censorBuzz = (author, permlink, type) => {
   return new Promise((resolve) => {
-    const params = {author, permlink, type, signature}
+    const params = {author, permlink, type}
     axios.post(`${censorUrl}/add`, params)
       .then((response) => {
         resolve(response.data)
