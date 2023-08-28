@@ -95,6 +95,9 @@ div.ReactTags__selected a.ReactTags__remove {
   z-index: 501;
   color: black;
 }
+.MuiIconButton-root{
+  padding: 12px 12px 0px 0px !important;
+}
 .navigationsmallWidthNoTrans{
   height: 100%;
   position: fixed;

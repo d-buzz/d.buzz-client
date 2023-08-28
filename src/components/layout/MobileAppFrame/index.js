@@ -1102,8 +1102,8 @@ const MobileAppFrame = (props) => {
                   {/* onClick={() => handleClickOpenMoreMenu()} */}
                   <div  className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                     <div className={classNames(classes.displayFlex, classes.flexDirectionColumn,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div style={{paddingLeft:'23px', }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
+                      <div style={{paddingLeft:'18px', }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div style={{marginBottom:10}} onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
                           <div className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
                             <div style={{marginRight:'12px', }} className={classes.width30}>
                               {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
