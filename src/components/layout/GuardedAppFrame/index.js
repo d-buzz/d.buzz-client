@@ -221,11 +221,11 @@ const GuardedAppFrame = (props) => {
       let link = ''
 
       if(search.startsWith('#')) {
-        link += `/search/posts?q=${encodeURIComponent(search)}`
+        link += `/search/trending?q=${encodeURIComponent(search)}`
       } else if(search.startsWith('@')) {
         link += `/search/people?q=${encodeURIComponent(search)}`
       } else {
-        link += `/search/posts?q=${encodeURIComponent(search)}`
+        link += `/search/trending?q=${encodeURIComponent(search)}`
       }
 
       history.push(link)

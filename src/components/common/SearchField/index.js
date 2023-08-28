@@ -70,13 +70,13 @@ const SearchField = (props) => {
       }
 
       if(search.startsWith('#')) {
-        link += `/posts?q=${encodeURIComponent(search)}`
+        link += `/trending?q=${encodeURIComponent(search)}`
       } else if(search.startsWith('@')) {
         link += `/people?q=${encodeURIComponent(search)}`
       } else {
-        link += `/posts?q=${encodeURIComponent(search)}`
+        link += `/trending?q=${encodeURIComponent(search)}`
       }
-      
+
       history.push(link)
     }
   }

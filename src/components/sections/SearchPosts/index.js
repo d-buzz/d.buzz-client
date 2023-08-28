@@ -23,11 +23,13 @@ const SearchPosts = (props) => {
     items,
     loading,
   } = props
+
   const [full, setFull] = useState([])
   const location = useLocation()
   const params = queryString.parse(location.search)
   const [index, setIndex] = useState(20)
   const query = params.q
+
 
   useEffect(() => {
     if(items.hasOwnProperty('results')) {
@@ -50,13 +52,14 @@ const SearchPosts = (props) => {
       >
         {full.slice(0, index).map((item) => (
           <PostList
+            key={item.permlink}
             disableUpvote={true}
             searchListMode={true}
             profileRef="SearchPosts"
             active_votes={item.total_votes}
             author={item.author}
             permlink={item.permlink}
-            created={item.created_at}
+            created={item.created}
             title={item.title}
             body={item.body}
             upvotes={item.total_votes}
@@ -75,7 +78,7 @@ const SearchPosts = (props) => {
       <PostlistSkeleton loading={loading} />
       {(!loading && full.length === 0) &&
         (<center><br/><div className={classes.searchWrapper}>
-          <h6>No Buzz's found {query!=='' && 
+          <h6>No Buzz's found {query!=='' &&
           (<React.Fragment>
             for <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>{query}</span>
           </React.Fragment>)}</h6></div></center>)}
@@ -87,6 +90,4 @@ const mapStateToProps = (state) => ({
   items: state.posts.get('search'),
   loading: pending(state, 'SEARCH_REQUEST'),
 })
-
-
 export default connect(mapStateToProps)(SearchPosts)

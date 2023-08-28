@@ -55,9 +55,9 @@ import { getTheme } from 'services/theme'
 
 const useStyles = createUseStyles(theme => ({
   // headerspacing: {
-  //   width: '100%', 
-  //   display: 'flex', 
-  //   justifyContent: 'center', 
+  //   width: '100%',
+  //   display: 'flex',
+  //   justifyContent: 'center',
   //   alignItems: 'center',
   // },
   // titleContainerStyles: {
@@ -258,7 +258,7 @@ const MobileAppFrame = (props) => {
   if (pathname.match(/^\/home/)) {
     title = 'Home'
   }
-  
+
   if (pathname.match(/^\/trending/)) {
     title = 'Trending'
   }
@@ -358,7 +358,7 @@ const MobileAppFrame = (props) => {
     }
   }
 
-  useEffect(() => {   
+  useEffect(() => {
     switch(location.pathname) {
     case '/':
       setActiveView('trending')
@@ -620,7 +620,7 @@ const MobileAppFrame = (props) => {
       clearSearchPosts()
       searchRequest(searchkey)
       setDisableSearchTips(true)
-      history.push(`/search/posts?q=${encodeURIComponent(searchkey)}`)
+      history.push(`/search/trending?q=${encodeURIComponent(searchkey)}`)
     }
   }
 
@@ -668,9 +668,9 @@ const MobileAppFrame = (props) => {
                       <Image width={'50px'} src={`${window.location.origin}/dbuzz.svg`}/>
                     </div>
                   </div>
-                  
+
                 </div>
-              
+
               )}
                */}
               {title === 'Notifications' && <NotificationFilter />}
@@ -733,7 +733,7 @@ const MobileAppFrame = (props) => {
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} fromIntentBuzz={fromIntentBuzz} buzzIntentCallback={handleSetBuzzIntent} />
-      <MoreMenu 
+      <MoreMenu
         anchor={moreMenuRef}
         className={classes.menu}
         open={openMoreMenu}
