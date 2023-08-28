@@ -20,6 +20,7 @@ import {
   ContainedButton,
   Avatar,
   // BuzzIcon,
+  AccordionArrowDownIcon,
   SettingsIcon,
   SearchIcon,
   PocketIcon,
@@ -433,6 +434,27 @@ const useStyles = createUseStyles(theme => ({
   height100: {
     height: "100%",
   },
+  accordionTransition:{
+    transition: 'height 0.2s ease',
+  },
+  accordionshow:{
+    height: '140px',
+    width: '97%',
+    // border: '1px solid grey',
+    marginLeft: 'auto',
+  },
+  accordionhide:{
+    height: '0px',
+    width: '97%',
+    // border: '0.2px solid grey',
+    marginLeft: 'auto',
+  },
+  displayhide: {
+    display: 'none',
+  },
+  displayShow: {
+    display: 'block'
+  },
 
 }))
 
@@ -478,6 +500,7 @@ const MobileAppFrame = (props) => {
   const query = params.q === undefined ? '' : params.q
   const [searchkey, setSearchkey] = useState(query)
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const moreMenuRef = useRef()
   const classes = useStyles()
 
@@ -955,7 +978,7 @@ const MobileAppFrame = (props) => {
                       <div className={classNames(classes.width45Percent)}>
                         <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                       </div> 
-                      <div className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
+                      <div onClick={() => setOpenSwitchModal(true)} className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
                         <span ref={avatarRef}>+</span>
                       </div> 
                     </div>
@@ -1076,28 +1099,61 @@ const MobileAppFrame = (props) => {
                       
                     </div>
                   </div>
-                  <div onClick={() => handleClickOpenMoreMenu()} className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
-                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                  {/* onClick={() => handleClickOpenMoreMenu()} */}
+                  <div  className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
+                    <div className={classNames(classes.displayFlex, classes.flexDirectionColumn,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div style={{paddingLeft:'23px', }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
+                        <div onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
+                          <div className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
+                            <div style={{marginRight:'12px', }} className={classes.width30}>
+                              {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                                <Link to={'#'}>
+                                  <IconButton
+                                    size="medium"
+                                    style={{width: 55}}
+                                  > */}
+                                    <SettingsIcon type='outline'/>
+                                  {/* </IconButton>
+                                </Link>
+                              </div> */}
+                              {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
+                                <Link to={'#'}>
+                                  <SettingsIcon type='fill'/>
+                                </Link>
+                              </div> */}
+                            </div>
+                            <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                          </div>
+                          
+                          <div  className={classNames(classes.minifyItems, classes.activeItem, classes.displayFlex, classes.justifyContentEnd )}>
                             <Link to={'#'}>
                               <IconButton
                                 size="medium"
                                 style={{width: 55}}
                               >
-                                <SettingsIcon type='outline'/>
+                                <AccordionArrowDownIcon type='outline'/>
                               </IconButton>
                             </Link>
                           </div>
-                          {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
-                            <Link to={'#'}>
-                              <SettingsIcon type='fill'/>
-                            </Link>
-                          </div> */}
                         </div>
-                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                        <div style={{marginLeft:0}} className={classNames(classes.accordionTransition, showSettings ? classes.accordionshow: classes.accordionhide)}>
+                        <div onClick={() => setShowSettings(!showSettings)} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsStart, classes.flexDirectionColumn)}>
+                          <div style={{marginBottom: 10}} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsCenter, classes.width100)} >
+                            <div style={{width:'25%'}} className={classes.width30}>
+                                <SettingsIcon type='outline'/>
+                            </div>
+                            <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{mode === 'night'? 'Night':'Light'}</div>
+                          </div>
+                          <div onClick={() => setOpenSettingsModal(true)} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsCenter, classes.width100)}>
+                            <div style={{width:'25%'}} className={classes.width30}>
+                                <SettingsIcon type='outline'/>
+                            </div>
+                            <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                          </div>
+                        </div>
+                        </div>
                       </div>
+                     
                     </div>
                   </div>
                   
