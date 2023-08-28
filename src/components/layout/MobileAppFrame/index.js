@@ -1105,7 +1105,7 @@ const MobileAppFrame = (props) => {
                       <div style={{paddingLeft:'18px' }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                         <div onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
                           <div className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
-                            <div style={{marginRight:'12px' }} className={classes.width30}>
+                            <div style={{marginRight:'20px' }} className={classes.width30}>
                               {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                                 <Link to={'#'}>
                                   <IconButton
