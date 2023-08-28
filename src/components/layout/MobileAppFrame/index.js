@@ -1138,7 +1138,7 @@ const MobileAppFrame = (props) => {
                         </div>
                         <div style={{marginLeft:0}} className={classNames(classes.accordionTransition, showSettings ? classes.accordionshow: classes.accordionhide)}>
                         <div onClick={() => setShowSettings(!showSettings)} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsStart, classes.flexDirectionColumn)}>
-                          <div style={{marginBottom: 10}} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsCenter, classes.width100)} >
+                          <div onClick={() => setOpenTheme(true)} style={{marginBottom: 10}} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsCenter, classes.width100)} >
                             <div style={{width:'25%'}} className={classes.width30}>
                                 <SettingsIcon type='outline'/>
                             </div>
