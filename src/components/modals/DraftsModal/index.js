@@ -145,7 +145,7 @@ const DraftsModal = (props) => {
               </span>
               :
               drafts.map(draft => (
-                draft.author === author &&
+                draft?.author === author &&
                 <div className={classes.draftItem}>
                   <span className='draft_title' onClick={() => handleSelectDraft(draft.content)}>{draft.title}</span>
                   <span className="draft_delete_button">

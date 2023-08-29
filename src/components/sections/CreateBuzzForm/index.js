@@ -1046,7 +1046,7 @@ const CreateBuzzForm = (props) => {
     const userDrafts = drafts
 
     // Update the drafts state and localStorage
-    const savedDraftIndex = userDrafts.findIndex(draft => draft.title.type === 'autosaved') > 0 ? userDrafts.findIndex(draft => draft.title.type === 'autosaved') : 0
+    const savedDraftIndex = userDrafts.findIndex(draft => draft?.title?.type === 'autosaved') > 0 ? userDrafts.findIndex(draft => draft?.title?.type === 'autosaved') : 0
     const savedDraftId = userDrafts[savedDraftIndex]?.id ? userDrafts[savedDraftIndex]?.id : 0
 
     const updatedDraft = {

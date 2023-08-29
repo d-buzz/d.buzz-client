@@ -1,7 +1,7 @@
 {
   "name": "d.buzz-client",
   "homepage": ".",
-  "version": "3.40.3",
+  "version": "3.41.1",
   "private": true,
   "dependencies": {
     "3id-blockchain-utils": "^1.3.1",
