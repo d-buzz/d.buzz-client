@@ -285,6 +285,9 @@ const useStyles = createUseStyles(theme => ({
   paddingBottomEmpty: {
     paddingBottom: '0px !important',
   },
+  paddingTop50: {
+    paddingTop: 55,
+  },
   paddingTop20: {
     paddingTop: '20px',
   },
@@ -1169,7 +1172,7 @@ const MobileAppFrame = (props) => {
           </div>
           <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications'? classes.main+' '+classes.maintest:classes.marginTop50}>
             
-            <Navbar className={classNames(classes.navTop,classes.paddingBottomEmpty)} fixed="top">
+            <Navbar className={classNames(classes.navTop,username?classes.paddingBottomEmpty:classes.paddingTop50)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && activeView !== 'notifications' && (
                   <IconButton onClick={handleClickBackButton} size="small">
