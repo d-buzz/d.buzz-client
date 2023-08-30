@@ -1177,10 +1177,11 @@ const MobileAppFrame = (props) => {
                   {is_authenticated &&
                     (<React.Fragment>
                       <div className={classes.avatarWrapper}>
-                        <div className={classes.width43Percent}>
+                        {/* <div className={classes.width43Percent}>
                           <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
-                        </div>
-                        <div className={classes.widthHalfWidth}>
+                        </div> */}
+                        {/* <div className={classes.widthHalfWidth}> */}
+                        <div className={classes.width100}>
                           <Image width={'60px'} src={`${window.location.origin}/${mode === 'night'?'dbuzz-text-logo-white.svg':'dbuzz-text-logo.svg'}`}/>
                         </div>
                       </div>
