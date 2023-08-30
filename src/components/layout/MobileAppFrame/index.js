@@ -1116,22 +1116,8 @@ const MobileAppFrame = (props) => {
                       <div style={{paddingLeft:'18px' }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                         <div onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
                           <div className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
-                            <div style={{marginRight:'20px' }} className={classes.width30}>
-                              {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                                <Link to={'#'}>
-                                  <IconButton
-                                    size="medium"
-                                    style={{width: 55}}
-                                  > */}
+                            <div className={classNames( classes.width30, classes.marginRight20,classes.minifyItems,classes.activeItem)}>
                               <SettingsIcon type='outline'/>
-                              {/* </IconButton>
-                                </Link>
-                              </div> */}
-                              {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
-                                <Link to={'#'}>
-                                  <SettingsIcon type='fill'/>
-                                </Link>
-                              </div> */}
                             </div>
                             <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                           </div>
