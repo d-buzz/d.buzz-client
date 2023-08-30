@@ -140,6 +140,9 @@ const useStyles = createUseStyles(theme => ({
   positionRelative: {
     position:'relative',
   },
+  positionAbsolute: {
+    position:'absolute',
+  },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
   },
@@ -1176,12 +1179,13 @@ const MobileAppFrame = (props) => {
                 {title !== 'Search' && title !== 'Profile' && (<div>
                   {is_authenticated &&
                     (<React.Fragment>
-                      <div className={classes.avatarWrapper}>
-                        {/* <div className={classes.width43Percent}>
+                      <div className={classNames(classes.avatarWrapper, classes.positionRelative)}>
+{/*                         
+                        <div className={classNames(classes.positionAbsolute,classes.width43Percent)}>
                           <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                         </div> */}
                         {/* <div className={classes.widthHalfWidth}> */}
-                        <div className={classes.width100}>
+                        <div className={classNames(classes.width100, classes.displayFlex, classes.justifyContentCenter, classes.alignItemsCenter)}>
                           <Image width={'60px'} src={`${window.location.origin}/${mode === 'night'?'dbuzz-text-logo-white.svg':'dbuzz-text-logo.svg'}`}/>
                         </div>
                       </div>
