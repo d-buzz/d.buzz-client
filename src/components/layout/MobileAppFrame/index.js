@@ -271,7 +271,7 @@ const useStyles = createUseStyles(theme => ({
   avatarWrapper: {
     paddingLeft: "0px",
     display: "flex",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   widthHalfWidth: {
     width: '50%',
