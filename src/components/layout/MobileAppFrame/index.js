@@ -58,6 +58,8 @@ import { getTheme } from 'services/theme'
 import { getTheme as currentTheme } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
+import MoonIcon from 'components/elements/Icons/MoonIcon'
+import SunIcon from 'components/elements/Icons/SunIcon'
 // import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
@@ -1136,8 +1138,13 @@ const MobileAppFrame = (props) => {
                         <div style={{marginLeft:0}} className={classNames(classes.accordionTransition, showSettings ? classes.accordionshow: classes.accordionhide)}>
                           <div onClick={() => setShowSettings(!showSettings)} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsStart, classes.flexDirectionColumn)}>
                             <div onClick={() => setOpenTheme(true)} style={{marginBottom: 10}} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsCenter, classes.width100)} >
-                              <div style={{width:'25%'}} className={classes.width30}>
-                                <SettingsIcon type='outline'/>
+                              <div style={{width:'25%'}} className={classNames(classes.minifyItems, classes.activeItem,classes.width30) }>
+                                {mode === 'light' && (
+                                  <SunIcon />
+                                )}
+                                {mode === 'night' && (
+                                  <MoonIcon />
+                                )}
                               </div>
                               <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{mode === 'night'? 'Night':'Light'}</div>
                             </div>
