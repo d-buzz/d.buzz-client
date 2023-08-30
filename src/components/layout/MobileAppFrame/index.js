@@ -170,6 +170,9 @@ const useStyles = createUseStyles(theme => ({
   width30:{
     width: "30%",
   },
+  widthAuto:{
+    width: "auto",
+  },
   marginTop8:{
     marginTop: 8,
   },
@@ -365,6 +368,9 @@ const useStyles = createUseStyles(theme => ({
   marginRightNone: {
     marginRight: '0 !important',
   },
+  marginRight20: {
+    marginRight:20,
+  },
   menu: {
     '& .MuiPaper-root': {
       background: theme.background.primary,
@@ -427,6 +433,9 @@ const useStyles = createUseStyles(theme => ({
   },
   padding8Left:{
     paddingLeft: 8,
+  },
+  padding16Left:{
+    paddingLeft: 16,
   },
   padding8Top:{
     paddingTop: 8,
@@ -1017,9 +1026,10 @@ const MobileAppFrame = (props) => {
                   {/* PROFILE TAB */}
                   <Link to={`/@${username}`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div className={classes.width30}> 
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentCenter,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto) }> 
+                          <ProfileIcon style={{margin:0}} type='outline'/>
+                          {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}`}>
                               <IconButton
                                 size="medium"
@@ -1028,23 +1038,19 @@ const MobileAppFrame = (props) => {
                                 <ProfileIcon type='outline'/>
                               </IconButton>
                             </Link>
-                          </div>
-                          {/* <div  className={classNames(classes.minifyItems)}>
-                            <Link to={`/@${username}`}>
-                              <ProfileIcon type='fill'/>
-                            </Link>
                           </div> */}
                         </div>
-                        <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Profile</div>
+                        <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
                       </div>
                       
                     </div>
                   </Link>
                   <Link to={`/@${username}/t/pockets`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto) }>
+                            <PocketIcon type='outline'/>
+                          {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}/t/pockets`}>
                               <IconButton
                                 size="medium"
@@ -1052,11 +1058,6 @@ const MobileAppFrame = (props) => {
                               >
                                 <PocketIcon type='outline'/>
                               </IconButton>
-                            </Link>
-                          </div>
-                          {/* <div  className={classNames(classes.minifyItemsStrokeWidth15)}>
-                            <Link to={'#'}>
-                              <PocketIcon/>
                             </Link>
                           </div> */}
                         </div>
@@ -1066,9 +1067,10 @@ const MobileAppFrame = (props) => {
                   </Link>
                   <Link to={`/@${username}/wallet`}  onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto) }>
+                          <WalletIcon type='outline'/>
+                          {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}/wallet`}>
                               <IconButton
                                 size="medium"
@@ -1076,11 +1078,6 @@ const MobileAppFrame = (props) => {
                               >
                                 <WalletIcon type='outline'/>
                               </IconButton>
-                            </Link>
-                          </div>
-                          {/* <div  className={classNames(classes.minifyItems)}>
-                            <Link to={'#'}>
-                              <WalletIcon type='fill'/>
                             </Link>
                           </div> */}
                         </div>
@@ -1090,9 +1087,10 @@ const MobileAppFrame = (props) => {
                   </Link>
                   <div onClick={() => showNotificationForMessage()} className={classNames(classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div className={classNames(classes.padding16, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
-                        <div className={classes.width30}>
-                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto) }>
+                          <MessageIcon type='outline'/>
+                          {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={'#'}>
                               <IconButton
                                 size="medium"
@@ -1101,7 +1099,7 @@ const MobileAppFrame = (props) => {
                                 <MessageIcon type='outline'/>
                               </IconButton>
                             </Link>
-                          </div>
+                          </div> */}
                         </div>
                         <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
                       </div>
