@@ -14,7 +14,7 @@ const AuthGuard = (props) => {
   }
 
   const isGuardedRoute = () => {
-    return pathname.match(/^(\/latest)/g) || pathname.match(/^(\/trending)/g)
+    return  pathname.match(/^(\/trending)/g)
   }
 
   // DECENTRALIZED DATABASE
