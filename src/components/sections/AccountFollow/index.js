@@ -148,7 +148,7 @@ const Profile = (props) => {
   useEffect(() => {
     const params = queryString.parse(location.search)
 
-    if(!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav'))) {
+    if(!isVisited || (params.from && (params.from === 'replies' || params.from === 'nav'))) {
       anchorTop()
       getFollowersRequest(username)
       getFollowingRequest(username)

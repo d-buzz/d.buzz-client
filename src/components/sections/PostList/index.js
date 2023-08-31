@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
   // PostTags,
+  LoginModal,
   PostActions,
 } from 'components'
 import {
@@ -213,6 +214,9 @@ const useStyle = createUseStyles(theme => ({
       },
     },
   },
+  nsfw: {
+    display: 'none',
+  },
 }))
 
 
@@ -306,6 +310,7 @@ const PostList = React.memo((props) => {
   const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
   const [seletedRemoveFromPocketBuzz, setSeletedRemoveFromPocketBuzz] = useState(null)
   const [pockets, setPockets] = useState([])
+  const [openLoginModal, setOpenLoginModal] = useState(false)
 
   const buzzRowRef = useRef(null)
 
@@ -414,7 +419,20 @@ const PostList = React.memo((props) => {
   }
 
   const openMenu = (e) => {
-    setAnchorEl(e.currentTarget)
+    // if user is authenticated call open anchor el then return
+    if (user.is_authenticated) {
+      setAnchorEl(e.currentTarget)
+      return
+    }
+
+    // if user is not authenticated call open modal then return
+    setOpenLoginModal(true)
+    return    
+  }
+
+  // hide login modal
+  const hideLoginModal = () => {
+    setOpenLoginModal(false)
   }
 
   const closeMenu = () => {
@@ -471,6 +489,11 @@ const PostList = React.memo((props) => {
     return list.length >= 1
   }
 
+  const isNSFWAllowed = () => {
+    const isNSFWEnabled = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'enabled'
+    return isCensored && isNSFWEnabled
+  }
+
   const isMutedUser = () => {
     return opacityUsers.includes(author)
   }
@@ -495,8 +518,6 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
     setRemoveFromPocketConfirmModal(true)
     setSeletedRemoveFromPocketBuzz(item)
-    console.log(getPocket())
-    console.log(item)
   }
 
   const getPocket = () => {
@@ -541,7 +562,7 @@ const PostList = React.memo((props) => {
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
-        <div ref={buzzRowRef} className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {})}>
+        <div ref={buzzRowRef} className={classNames(classes.row, muted || hidden || isMutedUser() || isAHiddenBuzz() ? classes.muted : {}, isNSFWAllowed() ? classes.nsfw: {})}>
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
@@ -626,6 +647,7 @@ const PostList = React.memo((props) => {
           </Row>
         </div>
       </div>
+      <LoginModal show={openLoginModal} onHide={hideLoginModal} />
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <RemoveFromPocketConfirmModal show={removeFromPocketConfirmModal} onHide={onHideRemoveFromPocketConfirmModal} user={user} buzz={seletedRemoveFromPocketBuzz} pocket={getPocket()} loadPockets={loadPockets}/>
     </React.Fragment>

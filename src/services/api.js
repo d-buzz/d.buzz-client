@@ -4,17 +4,17 @@ import {
   broadcast,
   formatter,
 } from '@hiveio/hive-js'
-import { hash } from '@hiveio/hive-js/lib/auth/ecc'
-import { Promise, reject } from 'bluebird'
-import { v4 as uuidv4 } from 'uuid'
+import {hash} from '@hiveio/hive-js/lib/auth/ecc'
+import {Promise, reject} from 'bluebird'
+import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import moment from 'moment'
-import { ChainTypes, makeBitMaskFilter } from '@hiveio/hive-js/lib/auth/serializer'
+import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
-import { calculateOverhead, stripHtml } from 'services/helper'
-import { hacUserAuth, hacVote, hacManualTransaction } from "@mintrawa/hive-auth-client"
+import {calculateOverhead, stripHtml} from 'services/helper'
+import {hacUserAuth, hacVote, hacManualTransaction} from "@mintrawa/hive-auth-client"
 import config from 'config'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
@@ -35,7 +35,7 @@ const visited = []
 
 const setRPCNode = () => {
   const node = localStorage.getItem('rpc')
-  api.setOptions({ url: node })
+  api.setOptions({url: node})
 }
 
 
@@ -62,21 +62,21 @@ export const removeFootNote = (data) => {
   })
 }
 
-export const callBridge = async(method, params, appendParams = true) => {
+export const callBridge = async (method, params, appendParams = true) => {
   return new Promise((resolve, reject) => {
 
-    if(appendParams) {
-      params = { "tag": `${appConfig.TAG}`, limit: 5, ...params}
+    if (appendParams) {
+      params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
     }
 
-    api.call('bridge.' + method, params, async(err, data) => {
+    api.call('bridge.' + method, params, async (err, data) => {
       if (err) {
         reject(err)
-      }else {
+      } else {
         let lastResult = []
 
-        if(data.length !== 0) {
-          lastResult = [data[data.length-1]]
+        if (data.length !== 0) {
+          lastResult = [data[data.length - 1]]
         }
 
         removeFootNote(data)
@@ -93,17 +93,17 @@ export const callBridge = async(method, params, appendParams = true) => {
 
 export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
-    const params = { account_lower_bound: username, limit: 30 }
+    const params = {account_lower_bound: username, limit: 30}
 
-    api.call('reputation_api.get_account_reputations', params, async(err, data) => {
+    api.call('reputation_api.get_account_reputations', params, async (err, data) => {
       if (err) {
         reject(err)
-      }else {
+      } else {
 
-        if(data.reputations.length !== 0) {
+        if (data.reputations.length !== 0) {
           data.reputations.forEach((item, index) => {
             let score = item.reputation ? formatter.reputation(item.reputation) : 25
-            if(!score || score < 25) {
+            if (!score || score < 25) {
               score = 25
             }
             data.reputations[index].repscore = score
@@ -124,50 +124,50 @@ export const searchPeople = (username) => {
 
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
-    const params = {"author":`${author}`, "permlink": `${permlink}`}
-    api.call('bridge.get_discussion', params, async(err, data) => {
-      if(err) {
+    const params = {"author": `${author}`, "permlink": `${permlink}`}
+    api.call('bridge.get_discussion', params, async (err, data) => {
+      if (err) {
         reject(err)
       } else {
         const authors = []
         let profile = []
 
         const arr = Object.values(data)
-        const uniqueAuthors = [ ...new Set(arr.map(item => item.author)) ]
+        const uniqueAuthors = [...new Set(arr.map(item => item.author))]
 
         uniqueAuthors.forEach((item) => {
-          if(!authors.includes(item)) {
+          if (!authors.includes(item)) {
             const profileVisited = visited.filter((prof) => prof.name === item)
-            if(!authors.includes(item) && profileVisited.length === 0) {
+            if (!authors.includes(item) && profileVisited.length === 0) {
               authors.push(item)
-            } else if(profileVisited.length !== 0) {
+            } else if (profileVisited.length !== 0) {
               profile.push(profileVisited[0])
             }
           }
         })
 
-        if(authors.length !== 0 ) {
+        if (authors.length !== 0) {
           const info = await fetchProfile(authors)
-          profile = [ ...profile, ...info]
+          profile = [...profile, ...info]
         }
 
         const parent = data[`${author}/${permlink}`]
 
         const getChildren = (reply) => {
-          const { replies } = reply
+          const {replies} = reply
           const children = []
 
-          replies.forEach(async(item) => {
+          replies.forEach(async (item) => {
             let content = data[item]
 
-            if(!content) {
+            if (!content) {
               content = item
             }
 
             content.body = content.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
             content.body = content.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
 
-            if(content.replies.length !== 0) {
+            if (content.replies.length !== 0) {
               const child = getChildren(content)
               content.replies = child
             }
@@ -192,39 +192,39 @@ export const fetchDiscussions = (author, permlink) => {
   })
 }
 
-export const getUnreadNotificationsCount = async(account) => {
+export const getUnreadNotificationsCount = async (account) => {
   return new Promise((resolve, reject) => {
-    const params = { account }
+    const params = {account}
     api.call('bridge.unread_notifications', params, (err, data) => {
-      if(err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
-    })
-  })
-}
-
-export const getAccountNotifications = async(account) => {
-  return new Promise((resolve, reject) => {
-    const params = { account, limit:100 }
-    api.call('bridge.account_notifications', params, (err, data) => {
-      if(err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
-    })
-  })
-}
-
-export const getCommunityRole = async(observer) => {
-  return new Promise((resolve, reject) => {
-    const params = { "name": `${appConfig.TAG}`, observer }
-    api.call('bridge.get_community', params, async(err, data) => {
       if (err) {
         reject(err)
-      }else {
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+
+export const getAccountNotifications = async (account) => {
+  return new Promise((resolve, reject) => {
+    const params = {account, limit: 100}
+    api.call('bridge.account_notifications', params, (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+
+export const getCommunityRole = async (observer) => {
+  return new Promise((resolve, reject) => {
+    const params = {"name": `${appConfig.TAG}`, observer}
+    api.call('bridge.get_community', params, async (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
         resolve(data.context.subscribed)
       }
     })
@@ -243,23 +243,23 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       limit: 100,
     }
 
-    api.call('bridge.get_account_posts', params, async(err, data) => {
-      if(err) {
+    api.call('bridge.get_account_posts', params, async (err, data) => {
+      if (err) {
         reject(err)
-      }else {
+      } else {
         removeFootNote(data)
 
         let lastResult = []
 
-        if(data.length !== 0) {
-          lastResult = [data[data.length-1]]
+        if (data.length !== 0) {
+          lastResult = [data[data.length - 1]]
         }
 
         let posts = data.filter((item) => invokeFilter(item))
 
         posts = [...posts, ...lastResult]
 
-        if(posts.length === 0) {
+        if (posts.length === 0) {
           posts = []
         }
         resolve(posts)
@@ -273,7 +273,7 @@ export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
     // set RPC node here because this is the first API call to execute
     setRPCNode()
-    api.getTrendingTagsAsync(null, 100)
+    api.getTrendingTagsAsync("dbuzz", 100)
       .then((result) => {
         resolve(result)
       })
@@ -286,7 +286,7 @@ export const fetchTrendingTags = () => {
 export const fetchContent = (author, permlink) => {
   return new Promise((resolve, reject) => {
     api.getContentAsync(author, permlink)
-      .then(async(result) => {
+      .then(async (result) => {
         result.body = result.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
         result.active_votes = result.active_votes.filter(v => v.percent > 0)
         const profile = await fetchProfile([result.author])
@@ -300,15 +300,15 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
-  api.setOptions({ url: 'https://api.hive.blog' })
+  api.setOptions({url: 'https://api.hive.blog'})
   return api.getContentRepliesAsync(author, permlink)
-    .then(async(replies) => {
-      if(replies.length !== 0) {
+    .then(async (replies) => {
+      if (replies.length !== 0) {
         const getProfiledata = mapFetchProfile(replies)
         await Promise.all([getProfiledata])
       }
 
-      return Promise.map(replies, async(reply) => {
+      return Promise.map(replies, async (reply) => {
         const getActiveVotes = new Promise((resolve) => {
           api.getActiveVotesAsync(reply.author, reply.permlink)
             .then((active_votes) => {
@@ -340,8 +340,8 @@ export const isFollowing = (follower, following) => {
     api.call('bridge.get_relationship_between_accounts', params, (err, data) => {
       if (err) {
         reject(err)
-      }else {
-        const { follows } = data
+      } else {
+        const {follows} = data
         resolve(follows)
       }
     })
@@ -360,35 +360,41 @@ export const fetchGlobalProperties = () => {
   })
 }
 
-export const fetchSingleProfile = (account) => {
-  const user = localStorage.getItem('active')
+export const fetchSingleProfile = async (account) => {
+  const activeUser = localStorage.getItem('active')
 
+  // Check if there's an active user and it's a non-empty string.
+  const isValidActiveUser = activeUser && activeUser.trim() !== ''
+
+  try {
+    const data = await apiCallWrapper('bridge.get_profile', {account})
+
+    if (!isValidActiveUser || activeUser === data.name) {
+      data.isFollowed = false
+      return data
+    }
+
+    data.isFollowed = await isFollowing(activeUser, data.name)
+    return data
+  } catch (err) {
+    throw err // Or any custom error handling logic.
+  }
+}
+
+const apiCallWrapper = (method, params) => {
   return new Promise((resolve, reject) => {
-    const params = {account}
-    api.call('bridge.get_profile', params, async(err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        let isFollowed = false
-
-        if(user && `${user}`.trim() !== '') {
-          if(user !== data.name) {
-            isFollowed = await isFollowing(user, data.name)
-          }
-        }
-
-        data.isFollowed = isFollowed
-
-        resolve(data)
-      }
+    api.call(method, params, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
     })
   })
 }
 
+
 export const fetchAccounts = (username) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync([username])
-      .then(async(result) => {
+      .then(async (result) => {
         resolve(result)
       }).catch((error) => {
         reject(error)
@@ -401,25 +407,25 @@ export const fetchProfile = (username, checkFollow = false) => {
 
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
-      .then(async(result) => {
-        result.forEach(async(item, index) => {
+      .then(async (result) => {
+        result.forEach(async (item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
 
-          if(!score || score < 25) {
+          if (!score || score < 25) {
             score = 25
           }
 
           result[index].reputation = score
 
-          if(checkFollow) {
+          if (checkFollow) {
 
             const follow_count = await fetchFollowCount(item.name)
             result[index].follow_count = follow_count
 
             let isFollowed = false
 
-            if(user) {
+            if (user) {
               isFollowed = await isFollowing(user.username, item.name)
             }
 
@@ -428,7 +434,7 @@ export const fetchProfile = (username, checkFollow = false) => {
 
           visited.push(result[index])
 
-          if(index === result.length - 1) {
+          if (index === result.length - 1) {
             resolve(result)
           }
         })
@@ -440,15 +446,15 @@ export const fetchProfile = (username, checkFollow = false) => {
 }
 
 export const mapFetchProfile = (data, checkFollow = false) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       let count = 0
-      const uniqueAuthors = [ ...new Set(data.map(item => item.author)) ]
+      const uniqueAuthors = [...new Set(data.map(item => item.author))]
       let profiles = []
 
       uniqueAuthors.forEach((item, index) => {
         const profileVisited = visited.filter((profile) => profile.name === item)
-        if(profileVisited.length !== 0) {
+        if (profileVisited.length !== 0) {
           profiles.push(profileVisited[0])
           uniqueAuthors.splice(index, 1)
         }
@@ -456,23 +462,23 @@ export const mapFetchProfile = (data, checkFollow = false) => {
 
       let profilesFetch = []
 
-      if(uniqueAuthors.length !== 0) {
+      if (uniqueAuthors.length !== 0) {
         profilesFetch = await fetchProfile(uniqueAuthors, checkFollow)
       }
 
       profiles = [...profiles, ...profilesFetch]
 
-      data.forEach(async(item, index) => {
+      data.forEach(async (item, index) => {
         const info = profiles.filter((profile) => profile.name === item.author)
         data[index].profile = info[0]
 
-        if(count === (data.length - 1)) {
+        if (count === (data.length - 1)) {
           resolve(true)
         }
 
         count += 1
       })
-    } catch(error) {
+    } catch (error) {
       reject(error)
     }
   })
@@ -512,8 +518,8 @@ export const broadcastVote = (wif, voter, author, permlink, weight) => {
         resolve(result)
       }).catch((error) => {
         let code = error.code
-        if(error.code === -32000){
-          if(error.message && error.message.includes('paid out is forbidden')){
+        if (error.code === -32000) {
+          if (error.message && error.message.includes('paid out is forbidden')) {
             code = -32001
           }
         }
@@ -552,11 +558,11 @@ export const fetchFollowCount = (username) => {
 
 export const fetchMuteList = (user) => {
   return new Promise((resolve, reject) => {
-    api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async(err, data) => {
+    api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async (err, data) => {
       if (err) {
         console.log(err)
         resolve([])
-      }else {
+      } else {
         resolve(data)
       }
     })
@@ -566,14 +572,14 @@ export const fetchMuteList = (user) => {
 export const fetchFollowers = (following, start_follower = '', limit = 10) => {
   return new Promise((resolve, reject) => {
     api.getFollowersAsync(following, start_follower, 'blog', limit)
-      .then(async(result) => {
-        if(result.length !== 0) {
+      .then(async (result) => {
+        if (result.length !== 0) {
 
           result.forEach((item, index) => {
             result[index].author = item.follower
           })
 
-          if(result.length === 1 && (result[0].follower === start_follower)) {
+          if (result.length === 1 && (result[0].follower === start_follower)) {
             resolve([])
           }
 
@@ -597,18 +603,18 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
     let iterator = 0
 
     api.getFollowingAsync(follower, start_following, 'blog', limit)
-      .then(async(result) => {
+      .then(async (result) => {
 
-        if(result.length === 1 && (result[0].following === start_following)) {
+        if (result.length === 1 && (result[0].following === start_following)) {
           resolve([])
         }
 
-        if(result.length !== 0) {
-          result.forEach(async(item, index) => {
+        if (result.length !== 0) {
+          result.forEach(async (item, index) => {
             const profileVisited = visited.filter((profile) => profile.name === item.following)
             let profile = []
 
-            if(profileVisited.length === 0) {
+            if (profileVisited.length === 0) {
               profile = await fetchProfile([item.following], false)
               visited.push(profile[0])
             } else {
@@ -617,7 +623,7 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
 
             result[index].profile = profile[0]
 
-            if(iterator === (result.length-1)) {
+            if (iterator === (result.length - 1)) {
               resolve(result)
             }
 
@@ -636,9 +642,9 @@ export const fetchFollowing = (follower, start_following = '', limit = 20) => {
 
 export const getAccountLists = (observer, list_type) => {
   return new Promise((resolve, reject) => {
-    const params = { observer, follow_type: list_type }
+    const params = {observer, follow_type: list_type}
     api.call('bridge.get_follow_list', params, async (err, result) => {
-      if(err) {
+      if (err) {
         reject(err)
       } else {
         resolve(result)
@@ -649,8 +655,8 @@ export const getAccountLists = (observer, list_type) => {
 
 export const checkAccountIsFollowingLists = (observer) => {
   return new Promise((resolve, reject) => {
-    api.call('bridge.get_follow_list', { observer }, async (err, result) => {
-      if(err) {
+    api.call('bridge.get_follow_list', {observer}, async (err, result) => {
+      if (err) {
         reject(err)
       } else {
         resolve(result)
@@ -663,12 +669,12 @@ export const checkAccountIsFollowingLists = (observer) => {
 // has apis
 
 export const hiveAuthenticationService = (username) => {
-  const challenge = JSON.stringify({ token: uuidv4() })
+  const challenge = JSON.stringify({token: uuidv4()})
   const hacModule = "has"
   const hacPwd = sessionStorage.getItem('hacPwd')
-  
+
   hacUserAuth(username, APP_META, hacPwd, {key_type: 'posting', value: challenge}, hacModule)
-  
+
 }
 
 export const hasFollowService = (username, following) => {
@@ -676,7 +682,7 @@ export const hasFollowService = (username, following) => {
     "required_auths": [],
     "required_posting_auths": [`${username}`],
     "id": "follow",
-    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":["blog"]}]),
+    "json": JSON.stringify(["follow", {"follower": `${username}`, "following": `${following}`, "what": ["blog"]}]),
   }])
 }
 
@@ -685,7 +691,7 @@ export const hasUnFollowService = (username, following) => {
     "required_auths": [],
     "required_posting_auths": [`${username}`],
     "id": "follow",
-    "json": JSON.stringify(["follow",{"follower":`${username}`,"following":`${following}`,"what":[]}]),
+    "json": JSON.stringify(["follow", {"follower": `${username}`, "following": `${following}`, "what": []}]),
   }])
 }
 
@@ -709,7 +715,7 @@ export const hasClearNotificationService = (username, lastNotification) => {
   let date = moment().utc().format()
   date = `${date}`.replace('Z', '')
 
-  const json = JSON.stringify(["setLastRead",{ date }])
+  const json = JSON.stringify(["setLastRead", {date}])
   hacManualTransaction("posting", ["custom_json", {
     'required_auths': [],
     'required_posting_auths': [username],
@@ -749,13 +755,14 @@ export const hasGeneratePostService = (account, title, tags, body, payout, perml
     const extensions = []
 
 
-    if(payout === 0) {
+    if (payout === 0) {
       extensions.push([
         0,
-        { beneficiaries:
-          [
-            { account: 'null', weight: 10000 },
-          ],
+        {
+          beneficiaries:
+            [
+              {account: 'null', weight: 10000},
+            ],
         },
       ])
     }
@@ -788,13 +795,13 @@ const footnote = (body) => {
   return body
 }
 
-export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
+export const publishPostWithHAS = async (user, body, tags, payout, perm) => {
 
   let title = stripHtml(body)
   title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
   title = `${title}`.trim()
 
-  if(title.length > 70) {
+  if (title.length > 70) {
     title = `${title.substr(0, 70)} ...`
   }
 
@@ -807,7 +814,7 @@ export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
   hasPostService(operations[0])
   const comment = operations[0]
   const json_metadata = comment[1].json_metadata
-  
+
   let currentDatetime = moment().toISOString()
   currentDatetime = currentDatetime.replace('Z', '')
 
@@ -850,7 +857,7 @@ export const publishPostWithHAS = async(user, body, tags, payout, perm) => {
   return data
 }
 
-export const publishReplyWithHAS = async(username, body, parent_author, parent_permlink, ref, treeHistory) => {
+export const publishReplyWithHAS = async (username, body, parent_author, parent_permlink, ref, treeHistory) => {
   body = footnote(body)
   let replyData = {}
   const json_metadata = createMeta()
@@ -865,7 +872,7 @@ export const publishReplyWithHAS = async(username, body, parent_author, parent_p
     category: 'hive-193084',
     permlink: permlink,
     title: '',
-    body:`${body.trim()}`,
+    body: `${body.trim()}`,
     replies: [],
     total_payout_value: '0.000 HBD',
     curator_payout_value: '0.000 HBD',
@@ -887,9 +894,9 @@ export const publishReplyWithHAS = async(username, body, parent_author, parent_p
     permlink: parent_permlink,
     treeHistory,
   }
-    
+
   replyData = reply
-  
+
 
   const data = {
     reply: replyData,
@@ -901,7 +908,7 @@ export const publishReplyWithHAS = async(username, body, parent_author, parent_p
 // keychain apis
 
 export const keychainSignIn = (username) => {
-  const challenge = { token: uuidv4() }
+  const challenge = {token: uuidv4()}
   const buffer = JSON.stringify(challenge, null, 0)
 
   return new Promise((resolve) => {
@@ -924,12 +931,12 @@ export const keychainUpvote = (username, permlink, author, weight) => {
       author,
       weight,
       response => {
-        if(response.success) {
+        if (response.success) {
           resolve(response)
         } else {
           let code = response.error.code
-          if(response.error.code === -32000){
-            if(response.message && response.message.includes('paid out is forbidden')){
+          if (response.error.code === -32000) {
+            if (response.message && response.message.includes('paid out is forbidden')) {
               code = -32001
             }
           }
@@ -946,7 +953,7 @@ export const generateClearNotificationOperation = (username, lastNotification) =
     let date = moment().utc().format()
     date = `${date}`.replace('Z', '')
 
-    const json = JSON.stringify(["setLastRead",{ date }])
+    const json = JSON.stringify(["setLastRead", {date}])
 
     const operation = [
       [
@@ -966,7 +973,11 @@ export const generateClearNotificationOperation = (username, lastNotification) =
 
 export const generateMuteOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["ignore"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["ignore"],
+    }])
 
     const operation = [
       [
@@ -986,7 +997,11 @@ export const generateMuteOperation = (follower, following) => {
 
 export const generateBlacklistOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blacklist"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["blacklist"],
+    }])
 
     const operation = [
       [
@@ -1005,7 +1020,11 @@ export const generateBlacklistOperation = (follower, following) => {
 
 export const generateUnblacklistOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unblacklist"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["unblacklist"],
+    }])
 
     const operation = [
       [
@@ -1024,7 +1043,11 @@ export const generateUnblacklistOperation = (follower, following) => {
 
 export const generateFollowMutedListOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["follow_muted"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["follow_muted"],
+    }])
 
     const operation = [
       [
@@ -1043,7 +1066,11 @@ export const generateFollowMutedListOperation = (follower, following) => {
 
 export const generateUnfollowMutedListOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unfollow_muted"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["unfollow_muted"],
+    }])
 
     const operation = [
       [
@@ -1062,7 +1089,11 @@ export const generateUnfollowMutedListOperation = (follower, following) => {
 
 export const generateFollowBlacklistsOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["follow_blacklist"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["follow_blacklist"],
+    }])
 
     const operation = [
       [
@@ -1081,7 +1112,11 @@ export const generateFollowBlacklistsOperation = (follower, following) => {
 
 export const generateUnfollowBlacklistsOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["unfollow_blacklist"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["unfollow_blacklist"],
+    }])
 
     const operation = [
       [
@@ -1100,7 +1135,11 @@ export const generateUnfollowBlacklistsOperation = (follower, following) => {
 
 export const generateResetBlacklistOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_blacklist"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["reset_blacklist"],
+    }])
 
     const operation = [
       [
@@ -1120,7 +1159,11 @@ export const generateResetBlacklistOperation = (follower, following) => {
 
 export const generateResetMuteListOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_mute_list"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["reset_mute_list"],
+    }])
 
     const operation = [
       [
@@ -1139,7 +1182,11 @@ export const generateResetMuteListOperation = (follower, following) => {
 
 export const generateResetFollowMuteListOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_follow_muted_list"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["reset_follow_muted_list"],
+    }])
 
     const operation = [
       [
@@ -1158,7 +1205,11 @@ export const generateResetFollowMuteListOperation = (follower, following) => {
 
 export const generateResetFollowBlacklistOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["reset_follow_blacklist"]}])
+    const json = JSON.stringify(["follow", {
+      "follower": `${follower}`,
+      "following": `${following}`,
+      "what": ["reset_follow_blacklist"],
+    }])
 
     const operation = [
       [
@@ -1177,7 +1228,7 @@ export const generateResetFollowBlacklistOperation = (follower, following) => {
 
 export const generateFollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":["blog"]}])
+    const json = JSON.stringify(["follow", {"follower": `${follower}`, "following": `${following}`, "what": ["blog"]}])
 
     const operation = [
       [
@@ -1197,7 +1248,7 @@ export const generateFollowOperation = (follower, following) => {
 
 export const generateUnfollowOperation = (follower, following) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["follow",{"follower":`${follower}`,"following":`${following}`,"what":[]}])
+    const json = JSON.stringify(["follow", {"follower": `${follower}`, "following": `${following}`, "what": []}])
 
     const operation = [
       [
@@ -1217,7 +1268,7 @@ export const generateUnfollowOperation = (follower, following) => {
 
 export const generateSubscribeOperation = (username) => {
   return new Promise((resolve) => {
-    const json = JSON.stringify(["subscribe",{ "community": `${appConfig.TAG}` }])
+    const json = JSON.stringify(["subscribe", {"community": `${appConfig.TAG}`}])
 
     const operation = [
       [
@@ -1283,7 +1334,7 @@ export const generateReplyOperation = (account, body, parent_author, parent_perm
 export const generatePostOperations = (account, title, body, tags, payout, perm) => {
 
   const json_metadata = createMeta(tags)
-  
+
   const permlink = perm === null ? createPermlink(title) : perm
 
   const operations = []
@@ -1308,13 +1359,14 @@ export const generatePostOperations = (account, title, body, tags, payout, perm)
     const extensions = []
 
 
-    if(payout === 0) {
+    if (payout === 0) {
       extensions.push([
         0,
-        { beneficiaries:
-          [
-            { account: 'null', weight: 10000 },
-          ],
+        {
+          beneficiaries:
+            [
+              {account: 'null', weight: 10000},
+            ],
         },
       ])
     }
@@ -1340,7 +1392,7 @@ export const generatePostOperations = (account, title, body, tags, payout, perm)
 
 }
 
-export const generateUpdateAccountOperation = (account, posting_json_metadata, json_metadata='') => {
+export const generateUpdateAccountOperation = (account, posting_json_metadata, json_metadata = '') => {
 
   return new Promise((resolve) => {
     const op_comment = [[
@@ -1362,7 +1414,7 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
       operations,
       key,
       response => {
-        if(!response.success) {
+        if (!response.success) {
           reject(response.error.code)
         } else {
           resolve(response)
@@ -1382,14 +1434,14 @@ export const broadcastOperation = (operations, keys, is_buzz_post = false) => {
       },
       keys,
       (error, result) => {
-        if(error) {
+        if (error) {
           console.log(error)
           if (is_buzz_post) {
             reject(error)
-          }else{
+          } else {
             reject(error.code)
           }
-          
+
         } else {
           resolve({
             success: true,
@@ -1402,12 +1454,12 @@ export const broadcastOperation = (operations, keys, is_buzz_post = false) => {
 }
 
 export const slug = (text) => {
-  return getSlug(text.replace(/[<>]/g, ''), { truncate: 128 })
+  return getSlug(text.replace(/[<>]/g, ''), {truncate: 128})
 }
 
 export const createMeta = (tags = []) => {
 
-  const uniqueTags = [ ...new Set(tags.map(item => item)) ]
+  const uniqueTags = [...new Set(tags.map(item => item))]
 
   const meta = {
     app: 'dBuzz/v3.0.0',
@@ -1419,20 +1471,22 @@ export const createMeta = (tags = []) => {
 }
 
 export const createPermlink = (title) => {
-  const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
+  const permlink = new Array(22).join().replace(/(.|$)/g, function () {
+    return ((Math.random() * 36) | 0).toString(36)
+  })
   return permlink
 }
 
 
 export const searchPostTags = (tag) => {
-  return new Promise(async(resolve, reject) => {
-    const body = { tag }
+  return new Promise(async (resolve, reject) => {
+    const body = {tag}
 
     axios({
       method: 'POST',
       url: `${searchUrl}/tags`,
       data: body,
-    }).then(async(result) => {
+    }).then(async (result) => {
       const data = result.data
 
       data.results = data.results.filter(item => invokeFilter(item))
@@ -1446,17 +1500,17 @@ export const searchPostTags = (tag) => {
 }
 
 export const searchPostAuthor = (author) => {
-  return new Promise(async(resolve, reject) => {
-    const body = { author }
+  return new Promise(async (resolve, reject) => {
+    const body = {author}
 
     axios({
       method: 'POST',
       url: `${searchUrl}/author`,
       data: body,
-    }).then(async(result) => {
+    }).then(async (result) => {
       const data = result.data
 
-      if(data.results.length !== 0) {
+      if (data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         removeFootNote(data.results)
@@ -1472,17 +1526,17 @@ export const searchPostAuthor = (author) => {
 }
 
 export const searchPostGeneral = (query) => {
-  return new Promise(async(resolve, reject) => {
-    const body = { query }
+  return new Promise(async (resolve, reject) => {
+    const body = {query}
 
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
       data: body,
-    }).then(async(result) => {
+    }).then(async (result) => {
       const data = result.data
 
-      if(data.results.length !== 0) {
+      if (data.results.length !== 0) {
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         removeFootNote(data.results)
@@ -1498,9 +1552,9 @@ export const searchPostGeneral = (query) => {
 }
 
 export const checkIfImage = (links) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
 
-    const params = { links }
+    const params = {links}
 
     const result = await axios.post(`${scrapeUrl}/generate`, params)
 
@@ -1508,21 +1562,21 @@ export const checkIfImage = (links) => {
   })
 }
 
-export const uploadImage = async(data, progress) => {
+export const uploadImage = async (data, progress) => {
   const formData = new FormData()
   formData.append('file', data)
 
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
         method: 'POST',
         url: imageUrl,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {'Content-Type': 'multipart/form-data'},
         data: formData,
         validateStatus: () => true,
         onUploadProgress: (progressEvent) => {
-          const { loaded, total } = progressEvent
-          const percent = Math.floor( (loaded * 100) / total )
+          const {loaded, total} = progressEvent
+          const percent = Math.floor((loaded * 100) / total)
           progress(percent)
         },
       })
@@ -1535,23 +1589,23 @@ export const uploadImage = async(data, progress) => {
 
 }
 
-export const uploadVideo = async(data, username, progress) => {
+export const uploadVideo = async (data, username, progress) => {
   const formData = new FormData()
   formData.append('username', username)
   formData.append('video', data)
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     axios({
       method: 'POST',
       url: `${videoUrl}/upload`,
       key: 'video',
-      headers: {'Content-Type': 'multipart/form-data' },
+      headers: {'Content-Type': 'multipart/form-data'},
       data: formData,
       onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent
-        const percent = Math.floor( (loaded * 100) / total )
+        const {loaded, total} = progressEvent
+        const percent = Math.floor((loaded * 100) / total)
         progress(percent)
       },
-    }).then(async(result) => {
+    }).then(async (result) => {
       const data = result.data
       resolve(data)
 
@@ -1562,7 +1616,7 @@ export const uploadVideo = async(data, username, progress) => {
 }
 
 export const getLinkMeta = (url) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
 
     axios.get(`${scrapeUrl}?url=${url}`)
       .then(function (result) {
@@ -1623,9 +1677,9 @@ export const getCensorTypes = () => {
   })
 }
 
-export const censorBuzz = (author, permlink, type, signature) => {
+export const censorBuzz = (author, permlink, type) => {
   return new Promise((resolve) => {
-    const params = { author, permlink, type, signature }
+    const params = {author, permlink, type}
     axios.post(`${censorUrl}/add`, params)
       .then((response) => {
         resolve(response.data)
@@ -1644,7 +1698,7 @@ export const getCensoredList = () => {
   })
 }
 
-export const fetchAccountTransferHistory = (account, start=-1, limit=1000) => {
+export const fetchAccountTransferHistory = (account, start = -1, limit = 1000) => {
   const op = ChainTypes.operations
   const filter = makeBitMaskFilter(
     [op.transfer, op.claim_reward_balance,
@@ -1680,10 +1734,12 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 }
 
 export const getEstimateAccountValue = (account) => {
-  return new Promise(async(resolve) => {
+  return new Promise(async (resolve) => {
     console.log(account)
     await formatter.estimateAccountValue(account)
-      .catch(function (err) { console.log(err) })
+      .catch(function (err) {
+        console.log(err)
+      })
       .then(function (result) {
         resolve([result])
       })
@@ -1693,13 +1749,13 @@ export const getEstimateAccountValue = (account) => {
 export const getHivePower = async (username) => {
   const [account] = await api.getAccountsAsync([username])
   const props = await api.getDynamicGlobalPropertiesAsync()
-  
+
   const totalVests = parseFloat(props.total_vesting_shares)
   const totalHive = parseFloat(props.total_vesting_fund_hive)
   const userVests = parseFloat(account.vesting_shares)
 
   const hivePower = (userVests / totalVests) * totalHive
-  
+
   return hivePower
 }
 
@@ -1716,28 +1772,28 @@ export const getPrice = async (symbol) => {
   })
 }
 
-export const getHivePrice = async() => {
-  return new Promise(async(resolve) => {
-    const { data } = await axios.get(
+export const getHivePrice = async () => {
+  return new Promise(async (resolve) => {
+    const {data} = await axios.get(
       "https://api.coingecko.com/api/v3/simple/price?ids=hive,hive_dollar&vs_currencies=usd",
     )
-    const { hive } = data
+    const {hive} = data
     resolve(hive.usd)
   })
 }
 
-export const getHbdPrice = async() => {
-  return new Promise(async(resolve) => {
-    const { data } = await axios.get(
+export const getHbdPrice = async () => {
+  return new Promise(async (resolve) => {
+    const {data} = await axios.get(
       "https://api.coingecko.com/api/v3/simple/price?ids=hive,hive_dollar&vs_currencies=usd",
     )
-    const { hive_dollar } = data
+    const {hive_dollar} = data
     resolve(hive_dollar.usd)
   })
 }
 
 export const deleteBuzzWithPostingKey = async (user, author, permalink) => {
-  let { login_data } = user
+  let {login_data} = user
   login_data = extractLoginData(login_data)
   const wif = login_data[1]
   const deleteOperation = [
@@ -1771,7 +1827,7 @@ export const isUserAlreadyVotedForProposal = (username) => {
       .then((result) => {
         const vote = result.filter(vote => vote.voter === username)
 
-        if(vote.length===1) {
+        if (vote.length === 1) {
           resolve(true)
         } else {
           resolve(false)
