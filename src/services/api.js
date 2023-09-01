@@ -1527,12 +1527,15 @@ export const searchPostAuthor = (author) => {
 
 export const searchPostGeneral = (query) => {
   return new Promise(async (resolve, reject) => {
-    const body = {query}
-
+    // const body = {query}
+    const { tag , sort } = query
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
-      data: body,
+      data: {
+        query : tag,
+        sort : sort,
+      },
     }).then(async (result) => {
       const data = result.data
 
@@ -1840,7 +1843,7 @@ export const isUserAlreadyVotedForProposal = (username) => {
   })
 }
 
-export const searchHivePosts = (query) => {
+export const searchHiveTags = (query) => {
   return new Promise(async (resolve, reject) => {
     const {sort, tag} = query
 

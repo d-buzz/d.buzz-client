@@ -111,7 +111,8 @@ import {
   hasFollowService,
   hasUnFollowService,
   fetchSingleProfile,
-  searchHivePosts,
+  searchHiveTags,
+  searchPostGeneral,
 } from 'services/api'
 import {createPatch, errorMessageComposer, censorLinks, stripHtml} from 'services/helper'
 
@@ -919,19 +920,25 @@ function* searchRequest(payload, meta) {
       results = yield call(searchPostAuthor, query)
     }
     else {
-      // Search by general case or tags
-      let tag = query
-      if (query.startsWith("#")) {
-        tag = query.replace("#", "")
-      }
+      // Split the URL path and get the keyword ("trending" or "latest")
       const parts = window.location.pathname.split('/')
-      const keyword = parts[2] // this would be either "trending" or "latest"
+      const keyword = parts[2]
 
+      // Prepare a payload object
+      const tag = query.startsWith("#") ? query.replace("#", "") : query
       const payload = {
-        tag: tag, // Using tag, which might have been updated if it originally started with '#'
+        tag: tag,
         sort: keyword === "latest" ? "newest" : "popularity",
       }
-      results = yield call(searchHivePosts, payload)
+
+      // Check if the query starts with a hashtag
+      if (query.startsWith("#")) {
+        // Call searchHiveTags if the query starts with a hashtag
+        results = yield call(searchHiveTags, payload)
+      } else {
+        // Call searchPostGeneral for general queries
+        results = yield call(searchPostGeneral, payload)
+      }
     }
 
     const profile = yield call(searchPeople, query)
