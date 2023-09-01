@@ -1314,21 +1314,21 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
 
     // // render content (supported for all browsers)
     content = content
-    // // render all urls
-      .replace(/(\b(http|https|ftp):\/\/[-A-Z0-9+&@#%?=~_|!:,.;]*[-A-Z0-9+&@#%=~_|])|(\b[-A-Z0-9+&@#%=~_|]+\.[-A-Z0-9+&@#%=~_|]+\.?\w+)/gi, (matchedURL) => {
+      // // render all urls
+      .replace(/(\b(http|https|ftp):\/\/[-A-Z0-9+&@#%?=~_|!:,.;]*[-A-Z0-9+&@#%=~_|])|(\b[-A-Z0-9+&@#%=~_|]+\.[-A-Z0-9+&@#%=~_|]+\.?\w+([-A-Z0-9+&@#%=~_|]*)?)/gi, (matchedURL) => {
         let cleanURL = matchedURL
         let trailingChar = ''
-    
+        
         if (matchedURL.endsWith('.') || matchedURL.endsWith(',')) {
           trailingChar = matchedURL.slice(-1)
           cleanURL = matchedURL.slice(0, -1)
         }
-    
+        
         if (checkForImage(cleanURL) && checkForValidURL(cleanURL)) {
           return `<span class="hyperlink" id="${cleanURL}">${truncateString(cleanURL, 25)}</span>${trailingChar}`
         }
         return cleanURL + trailingChar
-      })
+      })    
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
