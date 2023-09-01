@@ -917,16 +917,18 @@ function* searchRequest(payload, meta) {
     if(`${query}`.match(/^@/g)) {
       query = `${query}`.replace('@', '')
       results = yield call(searchPostAuthor, query)
-    }else if(`${query}`.match(/^#/g)) {
-      query = `${query}`.replace('#', '')
-      results = yield call(searchPostTags, query)
-    } else {
-
+    }
+    else {
+      // Search by general case or tags
+      let tag = query
+      if (query.startsWith("#")) {
+        tag = query.replace("#", "")
+      }
       const parts = window.location.pathname.split('/')
       const keyword = parts[2] // this would be either "trending" or "latest"
 
       const payload = {
-        tag: query,
+        tag: tag, // Using tag, which might have been updated if it originally started with '#'
         sort: keyword === "latest" ? "newest" : "popularity",
       }
       results = yield call(searchHivePosts, payload)
