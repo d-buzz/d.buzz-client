@@ -147,7 +147,7 @@ const useStyles = createUseStyles(theme => ({
     position:'absolute',
   },
   bottom0:{
-    bottom: 0
+    bottom: 0,
   },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
@@ -486,7 +486,7 @@ const useStyles = createUseStyles(theme => ({
   },
   paddingBottom10:{
     paddingBottom: 10,
-  }
+  },
 
 }))
 
