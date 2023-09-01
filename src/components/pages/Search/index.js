@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import {
-  searchRequest,
-  setPageFrom,
-} from 'store/posts/actions'
-import { anchorTop } from 'services/helper'
-import { createUseStyles } from 'react-jss'
-import { connect } from 'react-redux'
+import React, {useState, useEffect} from 'react'
+import {Tabs, Tab} from '@material-ui/core'
+import {connect} from 'react-redux'
 import queryString from 'query-string'
-import { renderRoutes } from 'react-router-config'
-import { bindActionCreators } from 'redux'
-import { useHistory, useLocation } from 'react-router-dom'
+import {renderRoutes} from 'react-router-config'
+import {bindActionCreators} from 'redux'
+import {useHistory, useLocation} from 'react-router-dom'
+import {searchRequest, setPageFrom} from 'store/posts/actions'
+import {anchorTop} from 'services/helper'
+import {createUseStyles} from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   tabs: {
@@ -59,70 +55,57 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const Search = (props) => {
+
+const Search = ({searchRequest, setPageFrom, route, user}) => {
   const [index, setIndex] = useState(0)
   const classes = useStyles()
-  const { searchRequest, setPageFrom, route, user } = props
   const location = useLocation()
-  const { pathname } = location
-  const params = queryString.parse(location.search)
-  const query = params.q !== undefined ? params.q : ''
   const history = useHistory()
+  const params = queryString.parse(location.search)
+  const query = params.q || ''
 
   useEffect(() => {
     anchorTop()
     searchRequest(query)
     setPageFrom(null)
-  // eslint-disable-next-line
-  }, [])
+  }, [searchRequest, setPageFrom, query, location.pathname])
 
   useEffect(() => {
-    if(pathname.match(/(\/search\/posts)/m)) {
+    if (location.pathname.includes('/search/latest')) {
       setIndex(1)
-    } else if(pathname.match(/(\/search\/people)/m)) {
+    } else if (location.pathname.includes('/search/people')) {
+      setIndex(2)
+    } else if (location.pathname.includes('/search/trending')) {
       setIndex(0)
     }
-  }, [pathname])
+  }, [location.pathname])
 
-  const onChange = (e, index) => {
-    setIndex(index)
-  }
+  const handleTabs = (index) => {
+    const tabsMapping = ['trending', 'latest', 'people']
+    const tab = tabsMapping[index]
+    const basePath = user.is_authenticated ? '/search' : '/ug/search'
 
-  const handleTabs = (index) => () => {
-    let tab = 'posts'
-
-    if(index === 0) {
-      tab = 'people'
-    }
-
-    const { is_authenticated } = user
-
-    if(is_authenticated) {
-      history.push(`/search/${tab}?q=${encodeURIComponent(params.q)}`)
-    } else {
-      history.push(`/ug/search/${tab}?q=${encodeURIComponent(params.q)}`)
-    }
+    history.push(`${basePath}/${tab}?q=${encodeURIComponent(params.q)}`)
   }
 
   return (
-    <React.Fragment>
+    <>
       <div className={classes.topContainer}>
         <Tabs
           value={index}
           indicatorColor="primary"
           textColor="primary"
           centered
-          onChange={onChange}
+          onChange={(e, newIndex) => handleTabs(newIndex)}
           className={classes.tabContainer}
         >
-          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Users" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Buzz's" />
+          <Tab disableTouchRipple className={classes.tabs} label="Trending"/>
+          <Tab disableTouchRipple className={classes.tabs} label="Latest"/>
+          <Tab disableTouchRipple className={classes.tabs} label="People"/>
         </Tabs>
       </div>
-      <React.Fragment>
-        {renderRoutes(route.routes)}
-      </React.Fragment>
-    </React.Fragment>
+      {renderRoutes(route.routes)}
+    </>
   )
 }
 

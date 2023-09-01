@@ -107,6 +107,16 @@ const routes =  [
             component: SearchPosts,
           },
           {
+            path: '/ug/search/trending',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/ug/search/latest',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
             path: '/ug/search/people',
             exact: true,
             component: SearchPeople,
@@ -119,6 +129,16 @@ const routes =  [
         routes: [
           {
             path: '/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/search/trending',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/search/latest',
             exact: true,
             component: SearchPosts,
           },

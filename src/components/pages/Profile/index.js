@@ -63,6 +63,7 @@ const useStyles = createUseStyles(theme => ({
     background: 'transparent',
     objectFit: 'cover',
     overFlow: 'hidden',
+    backgroundColor: `${getTheme(getUserTheme()).coverColor}`,
     '& img': {
       height: '100%',
       width: '100%',
@@ -185,7 +186,7 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#E61C34',
+    ...theme.font,
     fontWeight: 600,
     fontSize: '1.2em',
     gap: 20,
@@ -448,9 +449,16 @@ const Profile = (props) => {
 
   const {reputation = 0, isFollowed} = profile
 
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
-    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`) : ''
+  const hostUrl = 'https://d.buzz'
+  const profileLink = `${hostUrl}/@${username}`
+  const hyperlinkProfileLink = `<a href="${profileLink}">${profileLink}</a>`
+
+  const userAbout = about || ceramicProfile.description
+    ? (about ? about : ceramicProfile.description)
+      .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
+      .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
+    : hyperlinkProfileLink
+
 
   const [loader, setLoader] = useState(false)
 
@@ -629,7 +637,7 @@ const Profile = (props) => {
   // checks if the user is loaded and if it's invalid
   useEffect(() => {
     if (profile.isLoaded && profile.invalidUser) {
-      // setInvalidUser(true)
+      setInvalidUser(true)
     }
   }, [profile, username])
 
@@ -712,7 +720,7 @@ const Profile = (props) => {
           <ProfileSkeleton loading={loading}/>
           {!loading && (
             <React.Fragment>
-              <div className={classes.cover} style={!cover_image ? {backgroundColor: "#e65768"} : {}}>
+              <div className={classes.cover}>
                 {cover_image ? <img
                   src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`}
                   alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}

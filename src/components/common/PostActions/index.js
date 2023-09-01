@@ -11,7 +11,7 @@ import {
   ShareIcon,
   ClipboardIcon,
 } from 'components/elements'
-import {VoteListDialog} from 'components'
+import { VoteListDialog, LoginSignupModal } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
@@ -341,6 +341,17 @@ const PostActions = (props) => {
 
   const {is_authenticated} = user
 
+  const [openLoginSignupModal, setOpenLoginSignupModal] = useState(false)
+  const [messageBasedOn, setMessageBasedOn] = useState('upvote')
+
+  const handleClickOpenLoginSignupModal = () => {
+    setOpenLoginSignupModal(true)
+  }
+
+  const handleClickCloseLoginSignupModal = () => {
+    setOpenLoginSignupModal(false)
+  }
+
   let extraPadding = {paddingTop: 10}
 
   if (disableExtraPadding) {
@@ -547,11 +558,17 @@ const PostActions = (props) => {
                   <ActionWrapper
                     className={classes.actionWrapperSpace}
                     inlineClass={classNames(classes.inline, classes.icon)}
-                    icon={<IconButton classes={{root: classes.iconButton}} disabled={!is_authenticated || disableUpvote}
+                    icon={<IconButton classes={{ root: classes.iconButton  }}
                       size="small"><HeartIcon/></IconButton>}
                     hideStats={hideStats}
-                    disabled={!is_authenticated || disableUpvote}
-                    onClick={handleClickShowSlider}
+                    onClick={() => {
+                      if(!is_authenticated || disableUpvote){
+                        setMessageBasedOn('upvote')
+                        handleClickOpenLoginSignupModal()
+                      } else{
+                        handleClickShowSlider()
+                      }
+                    }}
                     tooltip={vote !== 0 ? <RenderUpvoteList/> : null}
                     statOnClick={handleClickOpenVoteList}
                     stat={(
@@ -585,8 +602,14 @@ const PostActions = (props) => {
                   icon={<IconButton classes={{root: classes.iconButton}} size="small"
                     disabled={!is_authenticated}><CommentIcon/></IconButton>}
                   hideStats={hideStats}
-                  disabled={!is_authenticated}
-                  onClick={handleClickReply}
+                  onClick={() => {
+                    if(!is_authenticated){
+                      setMessageBasedOn('comment')
+                      handleClickOpenLoginSignupModal()
+                    }else{
+                      handleClickReply()
+                    }
+                  }}
                   stat={(
                     <label style={{marginLeft: 5}}>
                       {replyCount}
@@ -740,6 +763,7 @@ const PostActions = (props) => {
         open={openVoteList}
         upvoteList={upvoteList}
       />
+      <LoginSignupModal show={openLoginSignupModal} messageBased={messageBasedOn} onHide={handleClickCloseLoginSignupModal} />
     </React.Fragment>
   )
 }
