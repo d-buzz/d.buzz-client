@@ -1315,7 +1315,8 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
     // // render content (supported for all browsers)
     content = content
       // // render all urls
-      .replace(/(\b(http|https|ftp):\/\/[-A-Z0-9+&@#%?=~_|!:,.;]*[-A-Z0-9+&@#%=~_|])|(\b[-A-Z0-9+&@#%=~_|]+\.[-A-Z0-9+&@#%=~_|]+\.?\w+([-A-Z0-9+&@#%=~_|]*)?)/gi, (matchedURL) => {
+      // eslint-disable-next-line
+      .replace(/(\b(http|https|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\b[-A-Z0-9+&@#\/%=~_|]+\.[-A-Z0-9+&@#\/%=~_|]+\.?\w+(\/[-A-Z0-9+&@#\/%=~_|]*)?)/gi, (matchedURL) => {
         let cleanURL = matchedURL
         let trailingChar = ''
         
