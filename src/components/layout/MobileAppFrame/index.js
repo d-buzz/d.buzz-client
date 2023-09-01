@@ -146,6 +146,9 @@ const useStyles = createUseStyles(theme => ({
   positionAbsolute: {
     position:'absolute',
   },
+  bottom0:{
+    bottom: 0
+  },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
   },
@@ -483,6 +486,9 @@ const useStyles = createUseStyles(theme => ({
   displayShow: {
     display: 'block',
   },
+  paddingBottom10:{
+    paddingBottom: 10,
+  }
 
 }))
 
@@ -1045,7 +1051,7 @@ const MobileAppFrame = (props) => {
           <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidthNoTrans':'navigationsmallWidthNoTrans',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
             <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth' )}>
               <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white', classes.width100)}>
-                <div>
+                <div className={classNames(classes.height100)}>
                   <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
                     <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
                       <div className={classNames(classes.width45Percent)}>
@@ -1170,7 +1176,7 @@ const MobileAppFrame = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom0, classes.width100, classes.paddingBottom10)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
