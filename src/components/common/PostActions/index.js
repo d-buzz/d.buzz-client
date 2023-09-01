@@ -46,7 +46,6 @@ import {invokeTwitterIntent} from 'services/helper'
 import {checkForCeramicAccount} from 'services/ceramic'
 import {hasUpvoteService} from 'services/api'
 
-
 const PrettoSlider = withStyles({
   root: {
     color: '#e53935',
@@ -549,7 +548,7 @@ const PostActions = (props) => {
                       if(!is_authenticated || disableUpvote){
                         setMessageBasedOn('upvote')
                         handleClickOpenLoginSignupModal()
-                      }else{
+                      } else{
                         handleClickShowSlider()
                       }
                     }}
@@ -583,8 +582,8 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
-                  icon={<IconButton classes={{ root: classes.iconButton  }} 
-                    size="small"><CommentIcon /></IconButton>}
+                  icon={<IconButton classes={{root: classes.iconButton}} size="small"
+                    disabled={!is_authenticated}><CommentIcon/></IconButton>}
                   hideStats={hideStats}
                   onClick={() => {
                     if(!is_authenticated){
