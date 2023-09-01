@@ -193,7 +193,7 @@ const EditProfileModal = (props) => {
       location,
     } = profileMeta || ''
 
-    const hostUrl = window.location.origin
+    const hostUrl = 'https://d.buzz'
     const profileLink = `${hostUrl}/@${username}`
 
     const {name} = postingProfileMeta || '' // get fullname from get_accounts api

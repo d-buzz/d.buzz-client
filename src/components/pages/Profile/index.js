@@ -448,7 +448,7 @@ const Profile = (props) => {
 
   const {reputation = 0, isFollowed} = profile
 
-  const hostUrl = window.location.origin
+  const hostUrl = 'https://d.buzz'
   const profileLink = `${hostUrl}/@${username}`
   const hyperlinkProfileLink = `<a href="${profileLink}">${profileLink}</a>`
 
