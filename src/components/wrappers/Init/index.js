@@ -12,6 +12,7 @@ import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
 // import { getBestCeramicHost } from 'services/ceramic'
 import Paper from '@material-ui/core/Paper'
+import classNames from 'classnames'
 
 const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
 const Typography = React.lazy(() => import('@material-ui/core/Typography'))
@@ -54,18 +55,18 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
     height: 130,
     width: 300,
-    border: '2px solid #e61c34',
+    border: '2px solid #000',
     borderRadius: '15px !important',
 
     '& .reload_button': {
       color: '#ffffff !important',
-      backgroundColor: '#E61C34',
-      borderColor: '#E61C34',
+      backgroundColor: '#000',
+      borderColor: '#000',
       
       '&:hover': {
         color: '#ffffff !important',
-        backgroundColor: '#E61C34',
-        borderColor: '#E61C34',
+        backgroundColor: '#000',
+        borderColor: '#000',
       },
     },
   },
@@ -85,14 +86,24 @@ const useStyles = createUseStyles(theme => ({
   },
   betaTitle: {
     width: 'fit-content',
-    background: '#E61C34',
     borderRadius: 5,
     textAlign: 'center',
-    color: '#ffffff',
     padding: '0 3px',
     fontSize: '0.95em',
     fontWeight: 600,
     userSelect: 'none',
+  },
+  bgBetaLight:{
+    background: '#0000000d',
+  },
+  bgBetaDark: {
+    background: "#ffffff1a",
+  },
+  textBetaLight: {
+    color: '#000',
+  },
+  textBetaDark: {
+    color: '#fff',
   },
 }))
 
@@ -121,7 +132,7 @@ const SplashScreen = () => {
           {(theme === 'gray' || theme === 'night') && (<BrandIconDark height={60}/>)}
           {config.VERSION.includes('dev') &&
               <div className={classes.betaTitleContainer}>
-                {<span className={classes.betaTitle}>BETA</span>}
+                {<span className={classNames(classes.betaTitle, theme === 'light'? classes.bgBetaLight:classes.bgBetaDark,theme === 'light'? classes.textBetaLight:classes.textBetaDark)}>BETA</span>}
               </div>}
           <Spinner
             size={35}

@@ -1527,12 +1527,15 @@ export const searchPostAuthor = (author) => {
 
 export const searchPostGeneral = (query) => {
   return new Promise(async (resolve, reject) => {
-    const body = {query}
-
+    // const body = {query}
+    const { tag , sort } = query
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
-      data: body,
+      data: {
+        query : tag,
+        sort : sort,
+      },
     }).then(async (result) => {
       const data = result.data
 
@@ -1837,5 +1840,34 @@ export const isUserAlreadyVotedForProposal = (username) => {
         console.error(error)
         reject(error)
       })
+  })
+}
+
+export const searchHiveTags = (query) => {
+  return new Promise(async (resolve, reject) => {
+    const {sort, tag} = query
+
+    // Set up the body with the specific structure you provided
+    axios({
+      method: 'POST',
+      url: `${searchUrl}/tags`,
+      data: {
+        sort,
+        tag,
+      },
+    }).then(async (result) => {
+      const data = result.data
+
+      if (data.results.length !== 0) {
+        const getProfiledata = mapFetchProfile(data.results, false)
+        await Promise.all([getProfiledata])
+        removeFootNote(data.results)
+        data.results = data.results.filter((item) => item.body.length <= 280)
+      }
+
+      resolve(data)
+    }).catch((error) => {
+      reject(error)
+    })
   })
 }
