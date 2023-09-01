@@ -11,7 +11,7 @@ import {
   ShareIcon,
   ClipboardIcon,
 } from 'components/elements'
-import {VoteListDialog} from 'components'
+import { VoteListDialog, LoginSignupModal } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
@@ -42,9 +42,10 @@ import {
 } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import {invokeTwitterIntent} from 'services/helper'
-import {checkForCeramicAccount} from 'services/ceramic'
-import {hasUpvoteService} from 'services/api'
+import { invokeTwitterIntent } from 'services/helper'
+import { checkForCeramicAccount } from 'services/ceramic'
+import { hasUpvoteService } from 'services/api'
+import { getTheme as currentTheme } from 'services/helper'
 
 const PrettoSlider = withStyles({
   root: {
@@ -140,6 +141,7 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     fontSize: 14,
     ...theme.font,
+    color: '#536471 !important',
   },
   actionWrapperSpace: {
     fontSize: 14,
@@ -164,7 +166,11 @@ const useStyles = createUseStyles(theme => ({
     ...theme.iconButton.hover,
   },
   payout: {
-    color: '#e53935',
+    color: '#000',
+    // fontSize: 14,
+  },
+  payoutWhite: {
+    color: '#fff',
     fontSize: 14,
   },
   votelist: {
@@ -190,6 +196,16 @@ const useStyles = createUseStyles(theme => ({
     color: '#d32f2f',
     '&:hover': {
       color: '#d32f2f',
+    },
+  },
+  minifyItems: {
+    textAlign: 'left',
+    width: "100%",
+    marginBottom: 5,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
     },
   },
   upvoteDialogTitle: {
@@ -255,6 +271,7 @@ const ActionWrapper = ({
 }
 
 const PostActions = (props) => {
+  const mode = currentTheme() 
   const classes = useStyles()
   const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
   const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
@@ -323,6 +340,17 @@ const PostActions = (props) => {
   const [sliderValue, setSliderValue] = useState(defaultUpvoteStrength)
 
   const {is_authenticated} = user
+
+  const [openLoginSignupModal, setOpenLoginSignupModal] = useState(false)
+  const [messageBasedOn, setMessageBasedOn] = useState('upvote')
+
+  const handleClickOpenLoginSignupModal = () => {
+    setOpenLoginSignupModal(true)
+  }
+
+  const handleClickCloseLoginSignupModal = () => {
+    setOpenLoginSignupModal(false)
+  }
 
   let extraPadding = {paddingTop: 10}
 
@@ -530,11 +558,17 @@ const PostActions = (props) => {
                   <ActionWrapper
                     className={classes.actionWrapperSpace}
                     inlineClass={classNames(classes.inline, classes.icon)}
-                    icon={<IconButton classes={{root: classes.iconButton}} disabled={!is_authenticated || disableUpvote}
+                    icon={<IconButton classes={{ root: classes.iconButton  }}
                       size="small"><HeartIcon/></IconButton>}
                     hideStats={hideStats}
-                    disabled={!is_authenticated || disableUpvote}
-                    onClick={handleClickShowSlider}
+                    onClick={() => {
+                      if(!is_authenticated || disableUpvote){
+                        setMessageBasedOn('upvote')
+                        handleClickOpenLoginSignupModal()
+                      } else{
+                        handleClickShowSlider()
+                      }
+                    }}
                     tooltip={vote !== 0 ? <RenderUpvoteList/> : null}
                     statOnClick={handleClickOpenVoteList}
                     stat={(
@@ -568,8 +602,14 @@ const PostActions = (props) => {
                   icon={<IconButton classes={{root: classes.iconButton}} size="small"
                     disabled={!is_authenticated}><CommentIcon/></IconButton>}
                   hideStats={hideStats}
-                  disabled={!is_authenticated}
-                  onClick={handleClickReply}
+                  onClick={() => {
+                    if(!is_authenticated){
+                      setMessageBasedOn('comment')
+                      handleClickOpenLoginSignupModal()
+                    }else{
+                      handleClickReply()
+                    }
+                  }}
                   stat={(
                     <label style={{marginLeft: 5}}>
                       {replyCount}
@@ -590,7 +630,7 @@ const PostActions = (props) => {
                       icon={iconDetails}
                       label={(
                         <span
-                          className={classes.payout}
+                          className={mode === 'light' ? classes.payout : classes.payoutWhite}
                           style={payoutAdditionalStyle}
                           title={!payout && !isMobile ? 'in 7 days' : (!isMobile && whenPayout ? whenPayout : '')}
                         >
@@ -611,8 +651,8 @@ const PostActions = (props) => {
                 inlineClass={classes.inline}
                 hideStats={false}
                 stat={(
-                  <IconButton onClick={openMenu} size="small">
-                    <ShareIcon/>
+                  <IconButton  onClick={openMenu} size='small'>
+                    <ShareIcon />
                   </IconButton>
                 )}
               />
@@ -723,6 +763,7 @@ const PostActions = (props) => {
         open={openVoteList}
         upvoteList={upvoteList}
       />
+      <LoginSignupModal show={openLoginSignupModal} messageBased={messageBasedOn} onHide={handleClickCloseLoginSignupModal} />
     </React.Fragment>
   )
 }
