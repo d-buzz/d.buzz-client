@@ -911,13 +911,13 @@ function* unfollowRequest(payload, meta) {
 
 function* searchRequest(payload, meta) {
   try {
-    let {query} = payload
+    let { query } = payload
     let results = []
 
-    if (`${query}`.match(/^@/g)) {
+    if(`${query}`.match(/^@/g)) {
       query = `${query}`.replace('@', '')
       results = yield call(searchPostAuthor, query)
-    } else if (`${query}`.match(/^#/g)) {
+    }else if(`${query}`.match(/^#/g)) {
       query = `${query}`.replace('#', '')
       results = yield call(searchPostTags, query)
     } else {
@@ -927,19 +927,17 @@ function* searchRequest(payload, meta) {
 
       const payload = {
         tag: query,
-        sort: keyword === "latest" ? "created" : "trending",
+        sort: keyword === "latest" ? "newest" : "popularity",
       }
-
-      const trending = yield call(searchHivePosts, payload)
-      results.results = trending.result
-      results.results.length = trending.result.length
+      results = yield call(searchHivePosts, payload)
     }
 
     const profile = yield call(searchPeople, query)
+
     results.people = profile.reputations
+
     yield put(searchSuccess(results, meta))
-  } catch (error) {
-    console.log("error", error)
+  } catch(error) {
     yield put(searchFailure(error, meta))
   }
 }

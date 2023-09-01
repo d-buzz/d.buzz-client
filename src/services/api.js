@@ -23,7 +23,6 @@ const imageUrl = `${appConfig.IMAGE_API}`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
-const hiveBlogApiUrl = `${appConfig.HIVE_BLOG_API}`
 
 const APP_META = {
   name: config.APP_NAME,
@@ -1555,33 +1554,27 @@ export const searchPostGeneral = (query) => {
 export const searchHivePosts = (query) => {
   return new Promise(async (resolve, reject) => {
     const {sort, tag} = query
+
     // Set up the body with the specific structure you provided
-    const body = {
-      "jsonrpc": "2.0",
-      "method": "bridge.get_ranked_posts",
-      "params": {
-        "sort": sort,
-        "tag": tag || "",
-      },
-      "id": 1,
-    }
     axios({
       method: 'POST',
-      url: hiveBlogApiUrl,
-      data: body,
+      url: `${searchUrl}/tags`,
+      data: {
+        sort,
+        tag,
+      },
     }).then(async (result) => {
       const data = result.data
 
-      if (data.result && data.result.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.result, false)
+      if (data.results.length !== 0) {
+        const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
-        removeFootNote(data.result)
-        data.results = data.result.filter((item) => item.body.length <= 280)
-
+        removeFootNote(data.results)
+        data.results = data.results.filter((item) => item.body.length <= 280)
       }
+
       resolve(data)
     }).catch((error) => {
-      console.log("error:", error)
       reject(error)
     })
   })

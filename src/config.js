@@ -9,7 +9,6 @@ const config = {
   PRICE_API: process.env.REACT_APP_PRICE_CHART_API,
   FLEEK_API_KEY: process.env.REACT_APP_FLEEK_API_KEY,
   FLEEK_API_SECRET: process.env.REACT_APP_FLEEK_API_SECRET,
-  HIVE_BLOG_API: process.env.REACT_APP_HIVE_BLOG_API || 'https://api.hive.blog',
   API_KEY: 'ixc0LdVDyuWarUhdt9ix3w==',
   API_SECRET: 'D4e7pwZphykKWsG0ElancXSzDmDEqImeC9yenZMMfVo=',
   BUCKET: 'nathansenn-team-bucket.storage.fleek.co',
