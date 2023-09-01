@@ -20,7 +20,7 @@ import {
   ContainedButton,
   Avatar,
   // BuzzIcon,
-  AccordionArrowDownIcon,
+  // AccordionArrowDownIcon,
   SettingsIcon,
   SearchIcon,
   PocketIcon,
@@ -46,6 +46,8 @@ import { bindActionCreators } from 'redux'
 import { broadcastNotification, setRefreshRouteStatus } from 'store/interface/actions'
 import { signoutUserRequest, setIntentBuzz } from 'store/auth/actions'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
+import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+
 import { pending } from 'redux-saga-thunk'
 import queryString from 'query-string'
 import moment from 'moment'
@@ -63,16 +65,6 @@ import SunIcon from 'components/elements/Icons/SunIcon'
 // import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
-  // headerspacing: {
-  //   width: '100%',
-  //   display: 'flex',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // titleContainerStyles: {
-  //   display: 'flex',
-  //   justifyContent: 'space-between',
-  // },
   main: {
     marginTop: 120,
   },
@@ -85,8 +77,13 @@ const useStyles = createUseStyles(theme => ({
   minifyItems: {
     textAlign: 'left',
     width: "100%",
-    marginBottom: 5,
-    ...theme.left.sidebar.items.icons,
+    '& svg': {
+      stroke: theme.font.color,
+      paddingTop: -10,
+      '& path': {
+        fill: theme.font.color,
+      },
+    },
     '& a': {
       color: theme.left.sidebar.items.color,
       textDecoration: 'none',
@@ -145,6 +142,9 @@ const useStyles = createUseStyles(theme => ({
   positionAbsolute: {
     position:'absolute',
   },
+  bottom0:{
+    bottom: 0,
+  },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
   },
@@ -177,6 +177,9 @@ const useStyles = createUseStyles(theme => ({
   },
   marginTop8:{
     marginTop: 8,
+  },
+  marginTop15:{
+    marginTop: 15,
   },
   navigationContainer: {
     height:"100vh",
@@ -299,9 +302,7 @@ const useStyles = createUseStyles(theme => ({
   paddingTop13: {
     paddingTop: 13,
   },
-  paddingBottom10: {
-    paddingBottom: 10,
-  },
+
   displayFlex: {
     display: 'flex',
   },
@@ -355,8 +356,15 @@ const useStyles = createUseStyles(theme => ({
     cursor: 'pointer',
   },
   hoverBackgroundGray:{
+    backgroundColor: 'rgba(15,20,25,0.1)',
     '&:hover': {
       backgroundColor: 'rgba(15,20,25,0.1)',
+    },
+  },
+  hoverBackgroundBlack:{
+    backgroundColor: '#272727',
+    '&:hover': {
+      backgroundColor: '#272727',
     },
   },
   demoContainer: {
@@ -472,7 +480,16 @@ const useStyles = createUseStyles(theme => ({
   displayShow: {
     display: 'block',
   },
-
+  paddingBottom10:{
+    paddingBottom: 10,
+  },
+  // icon specific styles
+  settingsIcon: {
+    stroke: theme.font.color,
+    '& .settings-cog': {
+      fill: `${theme.font.color}`,
+    },
+  },
 }))
 
 const MobileAppFrame = (props) => {
@@ -497,6 +514,44 @@ const MobileAppFrame = (props) => {
     setRefreshRouteStatus,
     generateStyles,
   } = props
+  const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+  const THEME = {
+    LIGHT: 'light',
+    NIGHT: 'night',
+  }
+  const handleClickSetTheme = (mode) => () => {
+    const data = { ...customUserData, settings: { ...customUserData?.settings, theme: mode } }
+    localStorage.setItem('customUserData', JSON.stringify({...data}))
+    const theme = getTheme(mode)
+    generateStyles(theme)
+    handleUpdateTheme(mode)
+  }
+
+  const handleUpdateTheme = (theme) => {
+    const { username } = user
+    
+    getUserCustomData(username)
+      .then(res => {
+        const userData = {
+          ...res[0],
+          settings: {
+            ...res[0].settings,
+            theme: theme,
+          },
+        }
+        const responseData = { username, userData: [userData] }
+        
+        if(res) {
+          updateUserCustomData(responseData)
+            .then(() => {
+              // setLoading(false)
+            })
+        }
+      })
+
+  }
+
+
   const mode = currentTheme() 
   const history = useHistory()
   const lastLocation = useLastLocation()
@@ -517,7 +572,7 @@ const MobileAppFrame = (props) => {
   const query = params.q === undefined ? '' : params.q
   const [searchkey, setSearchkey] = useState(query)
   const [openMoreMenu, setOpenMoreMenu] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
+  // const [showSettings, setShowSettings] = useState(false)
   const moreMenuRef = useRef()
   const classes = useStyles()
 
@@ -994,7 +1049,7 @@ const MobileAppFrame = (props) => {
           <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidthNoTrans':'navigationsmallWidthNoTrans',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
             <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth' )}>
               <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white', classes.width100)}>
-                <div>
+                <div className={classNames(classes.height100)}>
                   <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
                     <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
                       <div className={classNames(classes.width45Percent)}>
@@ -1105,13 +1160,45 @@ const MobileAppFrame = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.justifyContentCenter)}>
+                  <div className={classNames(classes.displayFlex,classes.positionRelative,classes.justifyContentCenter, classes.marginTop15)}>
                     <div className={classNames('margin-top-2','margin-bottom-2','bg-475154', 'height1', 'width89')}>
-                      
                     </div>
                   </div>
-                  {/* onClick={() => handleClickOpenMoreMenu()} */}
-                  <div  className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
+                  <div onClick={() => setOpenSettingsModal(true)} className={classNames(classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20, classes.activeItem,classes.widthAuto)}>
+                          <div className={classNames(classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 23, height: 23, padding:0 }}
+                              >
+                                <SettingsIcon className={classes.settingsIcon}/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        </div>
+                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom0, classes.width100, classes.paddingBottom10)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
+                          {mode === 'light' && (
+                            <SunIcon />
+                          )}
+                          {mode === 'night' && (
+                            <MoonIcon />
+                          )}
+                        </div>
+                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{mode === 'night'? 'Night':'Light'}</div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div  className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                     <div className={classNames(classes.displayFlex, classes.flexDirectionColumn,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div style={{paddingLeft:'18px' }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
                         <div onClick={() => setShowSettings(!showSettings)} className={classNames(classes.displayFlex, classes.alignItemsCenter)}>
@@ -1157,8 +1244,7 @@ const MobileAppFrame = (props) => {
                       </div>
                      
                     </div>
-                  </div>
-
+                  </div> */}
                 </div>
               </div>
               <div onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.width30, classes.height100)}>
@@ -1191,7 +1277,7 @@ const MobileAppFrame = (props) => {
                     </React.Fragment>)}
                   {activeView !== 'notifications' && (
                     <div className={classes.displayFlex}>
-                      <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
+                      <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,activeView === 'trending' && mode === 'light'?classes.hoverBackgroundGray:'',activeView === 'trending' && mode === 'night'?classes.hoverBackgroundBlack:'',classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
                         <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
                         <div
                           className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && mode === 'night'?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
@@ -1199,7 +1285,7 @@ const MobileAppFrame = (props) => {
                       </div>
                       
                       {!username && (
-                        <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
+                        <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,activeView === 'latest'&& mode === 'light'?classes.hoverBackgroundGray:'',activeView === 'latest' && mode === 'night'?classes.hoverBackgroundBlack:'',classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
                           <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'latest' && mode === 'light' ?classes.background606060:activeView === 'latest' && mode === 'night'?classes.backgroundaaa:'',activeView === 'latest'?classes.borderRadius10:'' )}
@@ -1207,7 +1293,7 @@ const MobileAppFrame = (props) => {
                         </div>
                       )}
                       {username && (
-                        <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
+                        <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,activeView === 'home' && mode === 'light'?classes.hoverBackgroundGray:'',activeView === 'home' && mode === 'night'?classes.hoverBackgroundBlack:'',classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
                           <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && mode === 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
