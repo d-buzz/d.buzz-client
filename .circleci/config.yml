@@ -24,7 +24,7 @@ jobs:
         - discord/status:
             success_message: test build success on mainnet branch
             failure_message: test build failed on mainnet branch
-            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+            webhook: https://discord.com/api/webhooks/1146958529668841612/fHV0f_FI-oWw6hFriNcOvlPyyMBdYCMRdvn0eTMX00wgbvg5dvvjhtS1xJdeOIQoEg-x
 
   dev_build_test:
       executor: docker-executor
@@ -34,7 +34,7 @@ jobs:
         - discord/status:
             success_message: test build success on non mainnet branch
             failure_message: test build failed on non mainnet branch
-            webhook: https://discordapp.com/api/webhooks/747082285828014170/6TLGC1_wgAAT91n5s3PYZxC9n2_Tj5BzqHQo2tO9miZxnVGKWusD3YA-pO2GjVvOWzuF
+            webhook: https://discord.com/api/webhooks/1146958529668841612/fHV0f_FI-oWw6hFriNcOvlPyyMBdYCMRdvn0eTMX00wgbvg5dvvjhtS1xJdeOIQoEg-x
 
 workflows:
   environment_builds:
