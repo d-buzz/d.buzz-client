@@ -408,6 +408,7 @@ export const fetchProfile = (username, checkFollow = false) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
       .then(async (result) => {
+        if(result.length === 0) resolve(result)
         result.forEach(async (item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
