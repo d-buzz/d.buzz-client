@@ -306,9 +306,7 @@ const useStyles = createUseStyles(theme => ({
   paddingTop13: {
     paddingTop: 13,
   },
-  paddingBottom10: {
-    paddingBottom: 10,
-  },
+
   displayFlex: {
     display: 'flex',
   },
@@ -1170,7 +1168,17 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
-                          <SettingsIcon type='outline'/>
+                          {/* <SettingsIcon type='outline'/> */}
+                          <div className={classNames(classes.minifyItems,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
+                            <Link to={'#'}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 23, height: 23, padding:0 }}
+                              >
+                                <SettingsIcon type='fill'/>
+                              </IconButton>
+                            </Link>
+                          </div>
                         </div>
                         <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                       </div>
