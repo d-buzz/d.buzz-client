@@ -17,7 +17,7 @@ const Spinner = ({ loading, top = 30, size, style = {}, color }) => {
       {loading && (
         <div style={{ paddingTop: top, ...style }} className={classes.loader}>
           <CircularProgress
-            style={{color: !color ? '#e61c34' : color}}
+            style={{color: !color ? '#000' : color}}
             size={size}
           />
         </div>
