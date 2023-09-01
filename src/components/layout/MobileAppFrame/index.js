@@ -65,16 +65,6 @@ import SunIcon from 'components/elements/Icons/SunIcon'
 // import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
-  // headerspacing: {
-  //   width: '100%', 
-  //   display: 'flex', 
-  //   justifyContent: 'center', 
-  //   alignItems: 'center',
-  // },
-  // titleContainerStyles: {
-  //   display: 'flex',
-  //   justifyContent: 'space-between',
-  // },
   main: {
     marginTop: 120,
   },
@@ -87,7 +77,13 @@ const useStyles = createUseStyles(theme => ({
   minifyItems: {
     textAlign: 'left',
     width: "100%",
-    ...theme.left.sidebar.items.icons,
+    '& svg': {
+      stroke: theme.font.color,
+      paddingTop: -10,
+      '& path': {
+        fill: theme.font.color,
+      },
+    },
     '& a': {
       color: theme.left.sidebar.items.color,
       textDecoration: 'none',
@@ -487,7 +483,13 @@ const useStyles = createUseStyles(theme => ({
   paddingBottom10:{
     paddingBottom: 10,
   },
-
+  // icon specific styles
+  settingsIcon: {
+    stroke: theme.font.color,
+    '& .settings-cog': {
+      fill: `${theme.font.color}`,
+    },
+  },
 }))
 
 const MobileAppFrame = (props) => {
@@ -1167,15 +1169,14 @@ const MobileAppFrame = (props) => {
                   <div onClick={() => setOpenSettingsModal(true)} className={classNames(classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
-                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
-                          {/* <SettingsIcon type='outline'/> */}
-                          <div className={classNames(classes.minifyItems,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20, classes.activeItem,classes.widthAuto)}>
+                          <div className={classNames(classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
                             <Link to={'#'}>
                               <IconButton
                                 size="medium"
                                 style={{width: 23, height: 23, padding:0 }}
                               >
-                                <SettingsIcon type='fill'/>
+                                <SettingsIcon className={classes.settingsIcon}/>
                               </IconButton>
                             </Link>
                           </div>
