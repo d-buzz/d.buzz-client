@@ -20,6 +20,7 @@ import {setBasicProfile} from 'services/ceramic'
 import Spinner from 'components/elements/progress/Spinner'
 import heic2any from 'heic2any'
 import IconButton from '@material-ui/core/IconButton'
+import ImageCropper from "../../common/ImageCropper"
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -175,6 +176,9 @@ const EditProfileModal = (props) => {
   const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
 
+  const [isCropperOpen, setIsCropperOpen] = useState(false)
+
+
   useEffect(() => {
     if (profile.ceramic) {
       setCeramicUser(true)
@@ -240,93 +244,219 @@ const EditProfileModal = (props) => {
 
     return compressedFile !== null && compressedFile
   }
+  // Utility Functions
 
-  const handleChangeProfileImage = (e) => {
+  const base64ToBlob = (base64Data, contentType = '') => {
+    const byteCharacters = atob(base64Data.split(',')[1])
+    const byteArrays = []
 
-    const images = Array.from(e.target.files)
-    const allImages = [...images.filter(image => image.type !== 'image/heic')]
-    const heicImages = images.filter(image => image.type === 'image/heic')
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512)
+      const byteNumbers = new Array(slice.length)
 
-    Promise.all(
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i)
+      }
+
+      const byteArray = new Uint8Array(byteNumbers)
+      byteArrays.push(byteArray)
+    }
+
+    return new Blob(byteArrays, { type: contentType })
+  }
+
+  const handleError = (error) => {
+    console.error("Error uploading the image:", error)
+    broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+    setUploadAvatarLoading(false)
+    setImageUploadProgress(0)
+  }
+
+  const handleInputType = (input) => {
+    let originalFiles = []
+
+    if (input instanceof Blob) {
+      const croppedImageFile = new File([input], "cropped-image.png", { type: "image/png" })
+      originalFiles = [croppedImageFile]
+    } else if (typeof input === 'string' && input.startsWith('data:image/')) {
+      const blob = base64ToBlob(input, 'image/png')
+      const croppedImageFile = new File([blob], "cropped-image.png", { type: "image/png" })
+      originalFiles = [croppedImageFile]
+    } else if (input instanceof Event && input.target && input.target.files) {
+      originalFiles = Array.from(input.target.files)
+    } else {
+      console.warn("Invalid input")
+      return null
+    }
+
+    return originalFiles
+  }
+
+
+  const handleChangeProfileImage = async (input) => {
+    const originalFiles = handleInputType(input)
+    if (!originalFiles) return
+
+    const allImages = [...originalFiles.filter(image => image.type !== 'image/heic')]
+    const heicImages = originalFiles.filter(image => image.type === 'image/heic')
+
+    await Promise.all(
       heicImages.map(async (image) => {
-
         const pngBlob = await heic2any({
           blob: image,
           toType: 'image/png',
           quality: 1,
         })
-
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', ''), {type: 'image/png', size: pngBlob.size}),
+          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
         )
       }),
     )
-      .then(() => {
-        setProfileAvatar(URL.createObjectURL(allImages[0]))
-        if (allImages[0]) {
-          setUploadAvatarLoading(true)
-          handleImageCompression(allImages[0]).then((compressedImage) => {
-            uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
-              setIsProfileUpdated(true)
-              setUploadAvatarLoading(false)
-              const lastImage = image[image.length - 1]
-              if (lastImage !== undefined) {
-                setProfileAvatar(lastImage)
-                setImageUploadProgress(0)
-                setUploadAvatarLoading(false)
-              } else {
-                setUploadAvatarLoading(false)
-                broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-                setImageUploadProgress(0)
-              }
-            })
-          })
+
+    setProfileAvatar(URL.createObjectURL(allImages[0]))
+
+    if (allImages[0]) {
+      setUploadAvatarLoading(true)
+      try {
+        const compressedImage = await handleImageCompression(allImages[0])
+        const image = await uploadFileRequest(compressedImage, setImageUploadProgress, false)
+        setIsProfileUpdated(true)
+        setUploadAvatarLoading(false)
+        const lastImage = image[image.length - 1]
+        if (lastImage !== undefined) {
+          setProfileAvatar(lastImage)
+          setImageUploadProgress(0)
+          setUploadAvatarLoading(false)
+        } else {
+          handleError(new Error("Image upload error"))
         }
-      })
+      } catch (error) {
+        handleError(error)
+      }
+    }
   }
 
-  const handleChangeCoverImage = (e) => {
-    const images = Array.from(e.target.files)
-    const allImages = [...images.filter(image => image.type !== 'image/heic')]
-    const heicImages = images.filter(image => image.type === 'image/heic')
+  const handleChangeCoverImage = async (input) => {
+    const originalFiles = handleInputType(input)
+    if (!originalFiles) return
 
-    Promise.all(
+    const allImages = originalFiles.filter(image => image.type !== 'image/heic')
+    const heicImages = originalFiles.filter(image => image.type === 'image/heic')
+
+    await Promise.all(
       heicImages.map(async (image) => {
-
         const pngBlob = await heic2any({
           blob: image,
           toType: 'image/png',
           quality: 1,
         })
-
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', ''), {type: 'image/png', size: pngBlob.size}),
+          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
         )
       }),
     )
-      .then(() => {
-        setProfileCoverImage(URL.createObjectURL(allImages[0]))
-        if (allImages[0]) {
-          setUploadCoverLoading(true)
-          handleImageCompression(allImages[0]).then((compressedImage) => {
-            uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
-              setIsCoverUpdated(true)
-              setUploadCoverLoading(false)
-              const lastImage = image[image.length - 1]
-              if (lastImage !== undefined) {
-                setProfileCoverImage(lastImage)
-                setImageUploadProgress(0)
-                setUploadCoverLoading(false)
-              } else {
-                setUploadCoverLoading(false)
-                broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-                setImageUploadProgress(0)
-              }
-            })
-          })
+
+    setProfileCoverImage(URL.createObjectURL(allImages[0]))
+
+    if (allImages[0]) {
+      setUploadCoverLoading(true)
+      try {
+        const compressedImage = await handleImageCompression(allImages[0])
+        const image = await uploadFileRequest(compressedImage, setImageUploadProgress, false)
+        setIsCoverUpdated(true)
+        setUploadCoverLoading(false)
+        const lastImage = image[image.length - 1]
+        if (lastImage !== undefined) {
+          setProfileCoverImage(lastImage)
+          setImageUploadProgress(0)
+          setUploadCoverLoading(false)
+        } else {
+          handleError(new Error("Image upload error"))
         }
-      })
+      } catch (error) {
+        handleError(error)
+      }
+    }
   }
+
+
+  const handleImageChange = (e, imageType) => {
+    setCurrentImageType(imageType)
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        setSelectedImage(event.target.result)
+        setIsCropperOpen(true)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+
+  const handleCropComplete = (croppedImage) => {
+    switch (currentImageType) {
+    case 'avatar':
+      handleChangeProfileImage(croppedImage)  // Set the cropped image as the new profile image
+      break
+    case 'cover':
+      handleChangeCoverImage(croppedImage)
+      break
+    default:
+      console.warn(`Unexpected image type: ${currentImageType}`)
+    }
+    setCurrentImageType(null) // Reset the image type after handling the cropped image
+    setIsCropperOpen(false) // Close the cropper
+  }
+
+
+  const [selectedImage, setSelectedImage] = useState(null) // Image URL or Base64 string
+  const [currentImageType, setCurrentImageType] = useState(null) // 'avatar' or 'cover'
+
+  // This can be called when you want to open the cropper with a specific image
+  // const handleChangeCoverImage = (e) => {
+  //   const images = Array.from(e.target.files)
+  //   const allImages = [...images.filter(image => image.type !== 'image/heic')]
+  //   const heicImages = images.filter(image => image.type === 'image/heic')
+  //
+  //   Promise.all(
+  //     heicImages.map(async (image) => {
+  //
+  //       const pngBlob = await heic2any({
+  //         blob: image,
+  //         toType: 'image/png',
+  //         quality: 1,
+  //       })
+  //
+  //       allImages.push(
+  //         new File([pngBlob], image.name.replace('.heic', ''), {type: 'image/png', size: pngBlob.size}),
+  //       )
+  //     }),
+  //   )
+  //     .then(() => {
+  //       setProfileCoverImage(URL.createObjectURL(allImages[0]))
+  //       if (allImages[0]) {
+  //         setUploadCoverLoading(true)
+  //         handleImageCompression(allImages[0]).then((compressedImage) => {
+  //           uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+  //             setIsCoverUpdated(true)
+  //             setUploadCoverLoading(false)
+  //             const lastImage = image[image.length - 1]
+  //             if (lastImage !== undefined) {
+  //               setProfileCoverImage(lastImage)
+  //               setImageUploadProgress(0)
+  //               setUploadCoverLoading(false)
+  //             } else {
+  //               setUploadCoverLoading(false)
+  //               broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+  //               setImageUploadProgress(0)
+  //             }
+  //           })
+  //         })
+  //       }
+  //     })
+  // }
+
 
   const handleRemoveCoverImage = () => {
     setProfileCoverImage('')
@@ -464,8 +594,15 @@ const EditProfileModal = (props) => {
                       accept="image/*,image/heic"
                       multiple={false}
                       ref={coverInputRef}
-                      onChange={handleChangeCoverImage}
+                      onChange={(e) => handleImageChange(e, 'cover')}
                       style={{display: 'none'}}
+                    />
+                    {/* react-cropper for profile image */}
+                    <ImageCropper
+                      isOpen={isCropperOpen}
+                      onClose={() => setIsCropperOpen(false)}
+                      src={selectedImage}
+                      onCropComplete={handleCropComplete}
                     />
                     <label htmlFor="cover-upload">
                       {!uploadCoverLoading &&
@@ -498,7 +635,7 @@ const EditProfileModal = (props) => {
                         accept="image/*,image/heic"
                         multiple={false}
                         ref={profilePicInputRef}
-                        onChange={handleChangeProfileImage}
+                        onChange={(e) => handleImageChange(e, 'avatar')}
                         style={{display: 'none'}}
                       />
                       <label htmlFor="avatar-upload">
