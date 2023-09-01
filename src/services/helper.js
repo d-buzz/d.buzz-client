@@ -5,6 +5,7 @@ import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import textParser from 'npm-text-parser'
+import axios from 'axios'
 
 const dmp = new diff_match_patch()
 
@@ -512,6 +513,15 @@ export const isGifImage = (url) => {
   return url.endsWith('.gif')
 }
 
+export const isImageUrl404 = async (url) => {
+  try {
+    const response = await axios.head(url)
+    return response.status === 404
+  } catch (error) {
+    return true
+  }
+}
+
 export const proxyImage = (url) => {
   const enabled = true
   let imageUrl = url
@@ -519,6 +529,9 @@ export const proxyImage = (url) => {
   if(enabled) {
     if(!isGifImage(url)) {
       imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+      if(isImageUrl404(imageUrl)){
+        imageUrl = url
+      }
     }
   }
 
