@@ -42,9 +42,10 @@ import {
 } from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import {invokeTwitterIntent} from 'services/helper'
-import {checkForCeramicAccount} from 'services/ceramic'
-import {hasUpvoteService} from 'services/api'
+import { invokeTwitterIntent } from 'services/helper'
+import { checkForCeramicAccount } from 'services/ceramic'
+import { hasUpvoteService } from 'services/api'
+import { getTheme as currentTheme } from 'services/helper'
 
 const PrettoSlider = withStyles({
   root: {
@@ -140,6 +141,7 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     fontSize: 14,
     ...theme.font,
+    color: '#536471 !important',
   },
   actionWrapperSpace: {
     fontSize: 14,
@@ -164,7 +166,11 @@ const useStyles = createUseStyles(theme => ({
     ...theme.iconButton.hover,
   },
   payout: {
-    color: '#e53935',
+    color: '#000',
+    // fontSize: 14,
+  },
+  payoutWhite: {
+    color: '#fff',
     fontSize: 14,
   },
   votelist: {
@@ -190,6 +196,16 @@ const useStyles = createUseStyles(theme => ({
     color: '#d32f2f',
     '&:hover': {
       color: '#d32f2f',
+    },
+  },
+  minifyItems: {
+    textAlign: 'left',
+    width: "100%",
+    marginBottom: 5,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
     },
   },
   upvoteDialogTitle: {
@@ -255,6 +271,7 @@ const ActionWrapper = ({
 }
 
 const PostActions = (props) => {
+  const mode = currentTheme() 
   const classes = useStyles()
   const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
   const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
@@ -613,7 +630,7 @@ const PostActions = (props) => {
                       icon={iconDetails}
                       label={(
                         <span
-                          className={classes.payout}
+                          className={mode === 'light' ? classes.payout : classes.payoutWhite}
                           style={payoutAdditionalStyle}
                           title={!payout && !isMobile ? 'in 7 days' : (!isMobile && whenPayout ? whenPayout : '')}
                         >
@@ -634,8 +651,8 @@ const PostActions = (props) => {
                 inlineClass={classes.inline}
                 hideStats={false}
                 stat={(
-                  <IconButton onClick={openMenu} size="small">
-                    <ShareIcon/>
+                  <IconButton  onClick={openMenu} size='small'>
+                    <ShareIcon />
                   </IconButton>
                 )}
               />

@@ -782,7 +782,7 @@ const CreateBuzzForm = (props) => {
   const buzzAllowedImages = 4
 
   const getSavedDrafts = () => {
-    if(Array.isArray(JSON.parse(localStorage.getItem('drafts')))) {
+    if (Array.isArray(JSON.parse(localStorage.getItem('drafts')))) {
       localStorage.setItem('drafts', JSON.stringify({}))
     }
     const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
@@ -791,13 +791,13 @@ const CreateBuzzForm = (props) => {
 
   const getAutoSavedDraft = () => {
     const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
-    const parsedDraft = storedDrafts[user.username]?.length>0 ? storedDrafts[user.username].filter((draft) => draft?.author === user.username).find((draft) => draft?.type === 'autosaved') : undefined
+    const parsedDraft = storedDrafts[user.username]?.length > 0 ? storedDrafts[user.username].filter((draft) => draft?.author === user.username).find((draft) => draft?.type === 'autosaved') : undefined
     return parsedDraft
   }
 
   const removeAutoSavedDraft = () => {
     const storedDrafts = JSON.parse(localStorage.getItem('drafts')) || {}
-    const parsedDrafts = storedDrafts[user.username]?.length>0 ? storedDrafts[user.username].filter((draft) => draft?.type !== 'autosaved') : []
+    const parsedDrafts = storedDrafts[user.username]?.length > 0 ? storedDrafts[user.username].filter((draft) => draft?.type !== 'autosaved') : []
     storedDrafts[user.username] = parsedDrafts
     return localStorage.setItem('drafts', JSON.stringify(storedDrafts))
   }
@@ -1023,17 +1023,32 @@ const CreateBuzzForm = (props) => {
   const handleMaxPayout = (e) => {
     const {target} = e
     let {value} = target
-
     if (!payoutAgreed) {
       setOpenPayoutDisclaimer(true)
     } else {
-      if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
-        value = 0.00
-      }
+      // if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
+      //   value = 1
+      // }
       value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
       setPayout(value)
     }
   }
+
+  const handleOnBlur = (event) => {
+    // Handle the event when the input loses focus
+    const {target} = event
+    let {value} = target
+
+    // eslint-disable-next-line no-mixed-operators
+    if ((value <= 0 || `${value}`.trim() === '')) {
+      value = 1
+    }
+
+    setPayout(value)
+
+    // You can include additional logic here, if necessary.
+  }
+
 
   // Function that auto-saves draft
   const autoSaveDraft = (content) => {
@@ -1545,14 +1560,14 @@ const CreateBuzzForm = (props) => {
   }, [buzzThreads[currentBuzz]?.content])
 
   // auto save draft when user stops typing
-  useEffect(() => {    
+  useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      if(buzzContent) {
+      if (buzzContent) {
         autoSaveDraft(buzzContent)
       }
     }, 500)
 
-    if(!buzzContent) {
+    if (!buzzContent) {
       autoSaveDraft('')
     }
 
@@ -1562,7 +1577,7 @@ const CreateBuzzForm = (props) => {
 
   // Retrieve saved draft
   useEffect(() => {
-    if(autoSavedDraft) {
+    if (autoSavedDraft) {
       const savedDraftContent = autoSavedDraft?.content || ''
       updateBuzzThreads({1: {id: 1, content: savedDraftContent, images: []}})
     }
@@ -1599,9 +1614,11 @@ const CreateBuzzForm = (props) => {
                             </IconButton>}
                           <span className={`buzzArea buzzArea${item.id} noMargin`}>
                             {item.id === 1 &&
-                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username} onClick={() => history.push(`/@${user.username}`)}/>}
+                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username}
+                                onClick={() => history.push(`/@${user.username}`)}/>}
                             {item.id !== 1 &&
-                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username} onClick={() => history.push(`/@${user.username}`)}/>}
+                              <Avatar className="userAvatar" avatarUrl={avatarUrl} author={user.username}
+                                onClick={() => history.push(`/@${user.username}`)}/>}
                             <TextArea
                               ref={buzzTextBoxRef}
                               buzzId={item.id}
@@ -1785,6 +1802,7 @@ const CreateBuzzForm = (props) => {
                       className={classes.tinyInput}
                       type="number"
                       onChange={handleMaxPayout}
+                      onBlur={handleOnBlur}  // <- add this line
                       value={payout}
                       required
                       min="0"
@@ -1870,9 +1888,12 @@ const CreateBuzzForm = (props) => {
         onHide={closePayoutDisclaimer}
       />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads}/>
-      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl} onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
-      <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts} setSelectedDraft={setSelectedDraft} author={user.username} />
-      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts} draftData={draftData} author={user.username}/>
+      <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl}
+        onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
+      <DraftsModal show={openDraftsModal} onHide={OnDraftsModalHide} drafts={drafts} setDrafts={setDrafts}
+        setSelectedDraft={setSelectedDraft} author={user.username}/>
+      <SaveDraftModal show={openSaveDraftsModal} onHide={OnSaveDraftsModalHide} drafts={drafts} setDrafts={setDrafts}
+        draftData={draftData} author={user.username}/>
     </div>
   )
 }

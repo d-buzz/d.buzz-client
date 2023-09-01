@@ -4,7 +4,6 @@ import {CloseIcon, ContainedButton, Avatar, TextField, AddImageIcon} from 'compo
 import {uploadFileRequest} from 'store/posts/actions'
 import {updateProfileRequest} from "store/profile/actions"
 import {broadcastNotification} from "store/interface/actions"
-
 import {
   Modal,
   ModalBody,
@@ -198,9 +197,12 @@ const EditProfileModal = (props) => {
       location,
     } = profileMeta || ''
 
+    const hostUrl = 'https://d.buzz'
+    const profileLink = `${hostUrl}/@${username}`
+
     const {name} = postingProfileMeta || '' // get fullname from get_accounts api
     setProfileName(name || ceramicProfile.name)
-    setProfileAbout(about || ceramicProfile.description)
+    setProfileAbout(about || ceramicProfile.description || profileLink)
     setProfileWebsite(website || ceramicProfile.url)
     setProfileLocation(location || ceramicProfile.location)
     if (cover_image || ceramicProfile.images?.background) setProfileCoverImage(cover_image || `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}`)
@@ -333,6 +335,11 @@ const EditProfileModal = (props) => {
       }
     }
   }
+
+  const handleChangeCoverImage = (e) => {
+    const images = Array.from(e.target.files)
+    const allImages = [...images.filter(image => image.type !== 'image/heic')]
+    const heicImages = images.filter(image => image.type === 'image/heic')
 
   const handleChangeCoverImage = async (input) => {
     const originalFiles = handleInputType(input)
