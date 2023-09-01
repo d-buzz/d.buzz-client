@@ -3,6 +3,7 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  coverColor: '#333639',
   notification: {
     backgroundColor: '#1a2936 !important',
   },
@@ -181,6 +182,7 @@ const light = {
     primary: 'white',
     secondary: 'white',
   },
+  coverColor: '#cfd9de',
   notification: { },
   messageColor: {
     color: 'green !important',
@@ -348,6 +350,7 @@ const gray = {
     primary: '#202225',
     secondary: '#192734',
   },
+  coverColor: '#425364',
   notification: {
     backgroundColor: '#272b2d !important',
   },

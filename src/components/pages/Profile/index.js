@@ -63,6 +63,7 @@ const useStyles = createUseStyles(theme => ({
     background: 'transparent',
     objectFit: 'cover',
     overFlow: 'hidden',
+    backgroundColor: `${getTheme(getUserTheme()).coverColor}`,
     '& img': {
       height: '100%',
       width: '100%',
@@ -722,7 +723,7 @@ const Profile = (props) => {
           <ProfileSkeleton loading={loading}/>
           {!loading && (
             <React.Fragment>
-              <div className={classes.cover} style={!cover_image ? {backgroundColor: "#e65768"} : {}}>
+              <div className={classes.cover}>
                 {cover_image ? <img
                   src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`}
                   alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}
