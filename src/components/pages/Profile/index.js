@@ -448,9 +448,16 @@ const Profile = (props) => {
 
   const {reputation = 0, isFollowed} = profile
 
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
-    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`) : ''
+  const hostUrl = 'https://d.buzz'
+  const profileLink = `${hostUrl}/@${username}`
+  const hyperlinkProfileLink = `<a href="${profileLink}">${profileLink}</a>`
+
+  const userAbout = about || ceramicProfile.description
+    ? (about ? about : ceramicProfile.description)
+      .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
+      .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
+    : hyperlinkProfileLink
+
 
   const [loader, setLoader] = useState(false)
 
@@ -609,6 +616,9 @@ const Profile = (props) => {
   const navigateToModerationTools = () => {
     alert('Coming Soon!')
   }
+
+
+  console.log("profile:", window.location.href)
 
   const copyToClipboard = () => {
     const currentURL = window.location.href

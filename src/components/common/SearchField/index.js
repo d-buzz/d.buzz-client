@@ -3,10 +3,10 @@ import { createUseStyles } from 'react-jss'
 import { useHistory } from 'react-router-dom'
 import {
   RoundedField,
-  SearchIcon,
 } from 'components/elements'
 import { isMobile } from 'react-device-detect'
 import { connect } from 'react-redux'
+import SearchBarIcon from 'components/elements/Icons/SearchBarIcon'
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -90,7 +90,7 @@ const SearchField = (props) => {
   return (
     <React.Fragment>
       <RoundedField
-        icon={<SearchIcon top={iconTop} />}
+        icon={<SearchBarIcon top={iconTop} />}
         placeholder={!isMobile ? 'Search D.Buzz': ''}
         className={classes.search}
         onMouseEnter={onMouseEnter}

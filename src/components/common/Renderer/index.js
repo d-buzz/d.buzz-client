@@ -28,7 +28,7 @@ const useStyles = createUseStyles(theme => ({
     ...theme.markdown.paragraph,
     '& a': {
       wordWrap: 'break-word',
-      color: '#FF0000 !important',
+      color: '#3ea6ff !important',
       fontWeight: 'normal',
     },
     '& p': {
@@ -1302,43 +1302,42 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
       return n.startsWith('$')
     }
 
-    const replaceLastCharacterIfCommaOrPeriod = (n) => {
-      // Check if the inputString is not empty and the last character is a comma or period
-      if (n.length > 0 && /[,.]$/.test(n)) {
-        // Replace the last character with an empty string
-        n = n.slice(0, -1)
-      }
-      return n
-    }
-    // to get the last character of a string then append it after creating the link
-    const getLastCharacterToAppend = (n) => {
-      var lastCharacter = ""
-      if (n.length > 0 && /[,]$/.test(n)) {
-        lastCharacter = ","
-      }
-
-      if (n.length > 0 && /[.]$/.test(n)) {
-        lastCharacter = "."
-      }
-      return lastCharacter
-    }
-
     // // render content (supported for all browsers)
     content = content
     // // render all urls
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*/gi, n => {
-        // need to get the full url without getting the last character if it is comma or period
-        const cleanUrlName = replaceLastCharacterIfCommaOrPeriod(n)
-
-        // need to get the last character of the full url if it is comma or period in order to re-append it without including it in the link
-        const lastCharacter = getLastCharacterToAppend(n)
-
-        return checkForImage(cleanUrlName) && checkForValidURL(cleanUrlName) ? `<span class="hyperlink" id="${cleanUrlName}">${truncateString(cleanUrlName, 25)}</span>${lastCharacter}` : cleanUrlName
+      .replace(/(\b(http|https|ftp):\/\/[-A-Z0-9+&@#%?=~_|!:,.;]*[-A-Z0-9+&@#%=~_|])|(\b[-A-Z0-9+&@#%=~_|]+\.[-A-Z0-9+&@#%=~_|]+\.?\w+)/gi, (matchedURL) => {
+        let cleanURL = matchedURL
+        let trailingChar = ''
+    
+        if (matchedURL.endsWith('.') || matchedURL.endsWith(',')) {
+          trailingChar = matchedURL.slice(-1)
+          cleanURL = matchedURL.slice(0, -1)
+        }
+    
+        if (checkForImage(cleanURL) && checkForValidURL(cleanURL)) {
+          return `<span class="hyperlink" id="${cleanURL}">${truncateString(cleanURL, 25)}</span>${trailingChar}`
+        }
+        return cleanURL + trailingChar
       })
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
-      .replace(/([a-zA-Z0-9/-]@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
+      .replace(/@([a-zA-Z0-9-]+\.?[a-zA-Z0-9-]+)/gi, (matchedUsername) => {
+        let cleanUsername = matchedUsername
+        let trailingChar = ''
+    
+        // Check if the matched username ends with a period or comma
+        if (cleanUsername.endsWith('.') || cleanUsername.endsWith(',')) {
+          trailingChar = cleanUsername.slice(-1)  // Get the trailing character
+          cleanUsername = cleanUsername.slice(0, -1)
+        }
+    
+        // Now process the cleaned username
+        return checkForValidUserName(cleanUsername) 
+          ? `<b><a href=${window.location.origin}/${cleanUsername.toLowerCase()}>${cleanUsername}</a></b>${trailingChar}`
+          : cleanUsername + trailingChar
+      })
+      .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       //   // render hashtags 
       .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
