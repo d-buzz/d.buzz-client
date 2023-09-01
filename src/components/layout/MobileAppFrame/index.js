@@ -64,9 +64,9 @@ import SunIcon from 'components/elements/Icons/SunIcon'
 
 const useStyles = createUseStyles(theme => ({
   // headerspacing: {
-  //   width: '100%', 
-  //   display: 'flex', 
-  //   justifyContent: 'center', 
+  //   width: '100%',
+  //   display: 'flex',
+  //   justifyContent: 'center',
   //   alignItems: 'center',
   // },
   // titleContainerStyles: {
@@ -536,7 +536,7 @@ const MobileAppFrame = (props) => {
   if (pathname.match(/^\/home/)) {
     title = 'Home'
   }
-  
+
   if (pathname.match(/^\/trending/)) {
     title = 'Trending'
   }
@@ -663,8 +663,7 @@ const MobileAppFrame = (props) => {
     }
   }, [username,getProfileRequest,getFollowersRequest,getFollowingRequest])
 
-  useEffect(() => {   
-       
+  useEffect(() => {
     switch(location.pathname) {
     case '/':
       setActiveView('trending')
@@ -957,7 +956,7 @@ const MobileAppFrame = (props) => {
       clearSearchPosts()
       searchRequest(searchkey)
       setDisableSearchTips(true)
-      history.push(`/search/posts?q=${encodeURIComponent(searchkey)}`)
+      history.push(`/search/trending?q=${encodeURIComponent(searchkey)}`)
     }
   }
 
@@ -1160,7 +1159,7 @@ const MobileAppFrame = (props) => {
                      
                     </div>
                   </div>
-                  
+
                 </div>
               </div>
               <div onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.width30, classes.height100)}>
@@ -1291,7 +1290,7 @@ const MobileAppFrame = (props) => {
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} fromIntentBuzz={fromIntentBuzz} buzzIntentCallback={handleSetBuzzIntent} />
-      <MoreMenu 
+      <MoreMenu
         anchor={moreMenuRef}
         className={classes.menu}
         open={openMoreMenu}
