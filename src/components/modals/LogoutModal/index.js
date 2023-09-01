@@ -64,7 +64,7 @@ import React, { useEffect, useState } from 'react'
      buzzIntentCallback = () => { },
    } = props
 
-   const [showLogoutModal, setShowLogoutModal] = useState(false)
+   const [showLogoutModal] = useState(false)
    const history = useHistory()
 
    const handleClickLogout = () => {
