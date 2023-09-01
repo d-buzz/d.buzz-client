@@ -336,11 +336,6 @@ const EditProfileModal = (props) => {
     }
   }
 
-  const handleChangeCoverImage = (e) => {
-    const images = Array.from(e.target.files)
-    const allImages = [...images.filter(image => image.type !== 'image/heic')]
-    const heicImages = images.filter(image => image.type === 'image/heic')
-
   const handleChangeCoverImage = async (input) => {
     const originalFiles = handleInputType(input)
     if (!originalFiles) return
