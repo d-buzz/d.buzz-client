@@ -1551,35 +1551,6 @@ export const searchPostGeneral = (query) => {
   })
 }
 
-export const searchHivePosts = (query) => {
-  return new Promise(async (resolve, reject) => {
-    const {sort, tag} = query
-
-    // Set up the body with the specific structure you provided
-    axios({
-      method: 'POST',
-      url: `${searchUrl}/tags`,
-      data: {
-        sort,
-        tag,
-      },
-    }).then(async (result) => {
-      const data = result.data
-
-      if (data.results.length !== 0) {
-        const getProfiledata = mapFetchProfile(data.results, false)
-        await Promise.all([getProfiledata])
-        removeFootNote(data.results)
-        data.results = data.results.filter((item) => item.body.length <= 280)
-      }
-
-      resolve(data)
-    }).catch((error) => {
-      reject(error)
-    })
-  })
-}
-
 export const checkIfImage = (links) => {
   return new Promise(async (resolve, reject) => {
 
@@ -1706,9 +1677,9 @@ export const getCensorTypes = () => {
   })
 }
 
-export const censorBuzz = (author, permlink, type, signature) => {
+export const censorBuzz = (author, permlink, type) => {
   return new Promise((resolve) => {
-    const params = {author, permlink, type, signature}
+    const params = {author, permlink, type}
     axios.post(`${censorUrl}/add`, params)
       .then((response) => {
         resolve(response.data)

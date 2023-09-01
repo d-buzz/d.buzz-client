@@ -189,7 +189,7 @@ const prepareYoutubeEmbeds = (
           }
         }
         else if(link.match(youtubeRegex) && link.includes('watch')){
-          const data = link.split('?v=')
+          const data = link.split(/\?v=|&/)
           match = link.match(youtubeRegex)
           if (data[1]) {
             id = data[1]
@@ -211,8 +211,8 @@ const prepareYoutubeEmbeds = (
         
         if(match){
           // clean first or remove all first the additional params in the id
-          if (id.match(/&t=.*/)) {
-            id = id.replace(/&t=.*/, "")
+          if (id.match(/&t=.*|\?.*|&.*/)) {
+            id = id.replace(/&t=.*|\?.*|&.*/, "")
           }
           body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
           videoEmbeds.push({ app: 'youtube', id })
