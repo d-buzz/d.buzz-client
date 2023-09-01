@@ -186,7 +186,7 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#E61C34',
+    ...theme.font,
     fontWeight: 600,
     fontSize: '1.2em',
     gap: 20,
@@ -640,7 +640,7 @@ const Profile = (props) => {
   // checks if the user is loaded and if it's invalid
   useEffect(() => {
     if (profile.isLoaded && profile.invalidUser) {
-      // setInvalidUser(true)
+      setInvalidUser(true)
     }
   }, [profile, username])
 
