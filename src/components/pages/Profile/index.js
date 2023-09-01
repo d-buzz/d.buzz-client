@@ -618,9 +618,6 @@ const Profile = (props) => {
     alert('Coming Soon!')
   }
 
-
-  console.log("profile:", window.location.href)
-
   const copyToClipboard = () => {
     const currentURL = window.location.href
     navigator.clipboard.writeText(currentURL)

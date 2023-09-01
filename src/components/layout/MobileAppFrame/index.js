@@ -630,7 +630,6 @@ const MobileAppFrame = (props) => {
 
     if (name === 'latest') {
       history.replace('/latest')
-      console.log('im here')
       refreshLatestRouteData()
       return
     }

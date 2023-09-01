@@ -56,10 +56,12 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  return data.forEach((item) => {
-    item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-    item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
-  })
+  if(typeof data !== 'string') {
+    return data.forEach((item) => {
+      item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+      item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+    })
+  }
 }
 
 export const callBridge = async (method, params, appendParams = true) => {
@@ -255,7 +257,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
           lastResult = [data[data.length - 1]]
         }
 
-        let posts = data.filter((item) => invokeFilter(item))
+        let posts = typeof data !== 'string' ? data.filter((item) => invokeFilter(item)) : []
 
         posts = [...posts, ...lastResult]
 
