@@ -207,15 +207,25 @@ const prepareYoutubeEmbeds = (
           if (data[1]) {
             id = data[1].replace(/\?feature=share/, '')
           }
+        }else if(link.match(youtubeRegex) && link.includes('playlist')){
+          const data = link.split('?list=')
+          match = link.match(youtubeRegex)
+          if (data[1]) {
+            id = data[1]
+          }
         }
         
         if(match){
           // clean first or remove all first the additional params in the id
-          if (id.match(/&t=.*|\?.*|&.*/)) {
-            id = id.replace(/&t=.*|\?.*|&.*/, "")
+          if(link.includes('playlist')) {
+            const plID = "videoseries?list="+id
+            videoEmbeds.push({ app: 'youtube', id: plID })
+          }
+          if (id.match(/&t=.*/)) {
+            id = id.replace(/&t=.*/, "")
           }
           body = body.replace(link, `~~~~~~.^.~~~:youtube:${id}:~~~~~~.^.~~~`)
-          videoEmbeds.push({ app: 'youtube', id })
+          if(!link.includes('playlist')) videoEmbeds.push({ app: 'youtube', id })
         }
       } catch(error) { }
     })
