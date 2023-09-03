@@ -930,8 +930,7 @@ const MobileAppFrame = (props) => {
   const { stats, metadata } = profile || ''
   const {profile: profileMeta} = metadata || ''
   const {name:userName} = profileMeta || ''
-  const { followers, following } = stats || 0
-  console.log('userName',userName)
+  const { followers, following } = stats || ''
   const NavigationBottom = () => {
     return (
       <Navbar className={classes.navBottom} fixed="bottom">
