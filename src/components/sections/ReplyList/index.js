@@ -73,10 +73,10 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   username: {
-    color: '#E61C34',
+    color: '#aaa',
     paddingBottom: 0,
     '&:hover': {
-      color: '#E61C34',
+      color: '#aaa',
     },
   },
   usernameStyle: {
