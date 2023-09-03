@@ -57,7 +57,7 @@ import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
-import { getTheme as currentTheme } from 'services/helper'
+import { getUserTheme } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
 import MoonIcon from 'components/elements/Icons/MoonIcon'
@@ -552,7 +552,7 @@ const MobileAppFrame = (props) => {
   }
 
 
-  const mode = currentTheme() 
+  const mode = getUserTheme() 
   const history = useHistory()
   const lastLocation = useLastLocation()
   const location = useLocation()
@@ -666,7 +666,10 @@ const MobileAppFrame = (props) => {
     left: 'auto',
     position: 'fixed',
     zIndex: 500,
-    backgroundColor: '#dadada',
+    border: `${getTheme(getUserTheme())?.buzzButton?.border}`,
+    color: `${getTheme(getUserTheme())?.buzzButton?.color}`,
+    backgroundColor: `${getTheme(getUserTheme())?.buzzButton?.backgroundColor}`,
+    fill: `${getTheme(getUserTheme())?.buzzButton?.fill}`
   }
 
   // const avatarStyle = { float: 'right' }
@@ -1354,7 +1357,7 @@ const MobileAppFrame = (props) => {
             <React.Fragment>
               {is_authenticated && (
                 <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
-                  <CreateBuzzIcon />
+                  <CreateBuzzIcon fill={floatStyle.fill}/>
                 </Fab>
               )}
               <AvatarMenu />

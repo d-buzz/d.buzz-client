@@ -7,6 +7,12 @@ const night = {
   notification: {
     backgroundColor: '#1a2936 !important',
   },
+  buzzButton: {
+    color: 'black',
+    border: '2px solid white',
+    backgroundColor: 'black',
+    fill: 'white',
+  },
   messageColor: {
     color: 'lightGreen !important',
   },
@@ -183,6 +189,12 @@ const light = {
     secondary: 'white',
   },
   coverColor: '#cfd9de',
+  buzzButton: {
+    color: 'white',
+    border: 'none',
+    backgroundColor: '#dadada',
+    fill: 'black',
+  },
   notification: { },
   messageColor: {
     color: 'green !important',
