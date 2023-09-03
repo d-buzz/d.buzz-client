@@ -8,6 +8,8 @@ import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { switchAccountRequest } from 'store/auth/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from 'components/elements/Icons/CloseIcon'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -130,6 +132,9 @@ const SwitchUserModal = (props) => {
       <Modal className={classes.modal} show={show} onHide={onHide}>
         <ModalBody>
           <div className={classes.wrapper}>
+            <IconButton style={{ marginTop: -5 }} onClick={onHide}>
+              <CloseIcon />
+            </IconButton>
             <center>
               <h6>Switch User</h6>
             </center>
