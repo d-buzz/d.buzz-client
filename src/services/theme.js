@@ -3,6 +3,9 @@ const night = {
     primary: 'rgb(21, 32, 43)',
     secondary: '#192734',
   },
+  stats: {
+    color: 'white !important',
+  },
   coverColor: '#333639',
   notification: {
     backgroundColor: '#1a2936 !important',
@@ -181,6 +184,9 @@ const light = {
   background: {
     primary: 'white',
     secondary: 'white',
+  },
+  stats: {
+    color: '#536471 !important',
   },
   coverColor: '#cfd9de',
   notification: { },
