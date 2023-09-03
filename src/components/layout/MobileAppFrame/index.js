@@ -927,8 +927,11 @@ const MobileAppFrame = (props) => {
     window.open('https://discord.gg/kCZGPs7', '_blank')
   }
 
-  const { stats } = profile || ''
+  const { stats, metadata } = profile || ''
+  const {profile: profileMeta} = metadata || ''
+  const {name:userName} = profileMeta || ''
   const { followers, following } = stats || 0
+  console.log('userName',userName)
   const NavigationBottom = () => {
     return (
       <Navbar className={classes.navBottom} fixed="bottom">
@@ -1060,7 +1063,7 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{username}</span>
+                          <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || username}</span>
                         </Link>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
                           <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
