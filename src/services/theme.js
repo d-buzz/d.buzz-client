@@ -1,11 +1,20 @@
 const night = {
   background: {
-    primary: 'rgb(21, 32, 43)',
+    primary: '#0f0f0f',
     secondary: '#192734',
+  },
+  stats: {
+    color: 'white !important',
   },
   coverColor: '#333639',
   notification: {
     backgroundColor: '#1a2936 !important',
+  },
+  buzzButton: {
+    color: 'black',
+    border: '2px solid white',
+    backgroundColor: 'black',
+    fill: 'white',
   },
   messageColor: {
     color: 'lightGreen !important',
@@ -182,7 +191,16 @@ const light = {
     primary: 'white',
     secondary: 'white',
   },
+  stats: {
+    color: '#536471 !important',
+  },
   coverColor: '#cfd9de',
+  buzzButton: {
+    color: 'white',
+    border: 'none',
+    backgroundColor: '#dadada',
+    fill: 'black',
+  },
   notification: { },
   messageColor: {
     color: 'green !important',

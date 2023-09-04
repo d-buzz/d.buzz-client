@@ -57,7 +57,7 @@ import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
-import { getTheme as currentTheme } from 'services/helper'
+import { getUserTheme } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
 import MoonIcon from 'components/elements/Icons/MoonIcon'
@@ -67,9 +67,6 @@ import SunIcon from 'components/elements/Icons/SunIcon'
 const useStyles = createUseStyles(theme => ({
   main: {
     marginTop: 120,
-  },
-  maintest: {
-    fontsize15: 15,
   },
   marginTop50: {
     marginTop: 50,
@@ -142,8 +139,8 @@ const useStyles = createUseStyles(theme => ({
   positionAbsolute: {
     position:'absolute',
   },
-  bottom0:{
-    bottom: 0,
+  bottom50:{
+    bottom: 50,
   },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
@@ -356,13 +353,11 @@ const useStyles = createUseStyles(theme => ({
     cursor: 'pointer',
   },
   hoverBackgroundGray:{
-    backgroundColor: 'rgba(15,20,25,0.1)',
     '&:hover': {
       backgroundColor: 'rgba(15,20,25,0.1)',
     },
   },
   hoverBackgroundBlack:{
-    backgroundColor: '#272727',
     '&:hover': {
       backgroundColor: '#272727',
     },
@@ -490,6 +485,9 @@ const useStyles = createUseStyles(theme => ({
       fill: `${theme.font.color}`,
     },
   },
+  marginTop85: {
+    marginTop: 85,
+  },
 }))
 
 const MobileAppFrame = (props) => {
@@ -552,7 +550,7 @@ const MobileAppFrame = (props) => {
   }
 
 
-  const mode = currentTheme() 
+  const mode = getUserTheme() 
   const history = useHistory()
   const lastLocation = useLastLocation()
   const location = useLocation()
@@ -666,7 +664,10 @@ const MobileAppFrame = (props) => {
     left: 'auto',
     position: 'fixed',
     zIndex: 500,
-    backgroundColor: '#dadada',
+    border: `${getTheme(getUserTheme())?.buzzButton?.border}`,
+    color: `${getTheme(getUserTheme())?.buzzButton?.color}`,
+    backgroundColor: `${getTheme(getUserTheme())?.buzzButton?.backgroundColor}`,
+    fill: `${getTheme(getUserTheme())?.buzzButton?.fill}`,
   }
 
   // const avatarStyle = { float: 'right' }
@@ -929,8 +930,10 @@ const MobileAppFrame = (props) => {
     window.open('https://discord.gg/kCZGPs7', '_blank')
   }
 
-  const { stats } = profile || ''
-  const { followers, following } = stats || 0
+  const { stats, metadata } = profile || ''
+  const {profile: profileMeta} = metadata || ''
+  const {name:userName} = profileMeta || ''
+  const { followers, following } = stats || ''
   const NavigationBottom = () => {
     return (
       <Navbar className={classes.navBottom} fixed="bottom">
@@ -1062,7 +1065,7 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{username}</span>
+                          <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || username}</span>
                         </Link>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
                           <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
@@ -1183,7 +1186,7 @@ const MobileAppFrame = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom0, classes.width100, classes.paddingBottom10)}>
+                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom50, classes.width100, classes.paddingBottom10)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
@@ -1252,7 +1255,7 @@ const MobileAppFrame = (props) => {
               </div>
             </div>
           </div>
-          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications'? classes.main+' '+classes.maintest:classes.marginTop50}>
+          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
             
             <Navbar className={classNames(classes.navTop,username?classes.paddingBottomEmpty:classes.paddingTop50)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
@@ -1277,7 +1280,7 @@ const MobileAppFrame = (props) => {
                     </React.Fragment>)}
                   {activeView !== 'notifications' && (
                     <div className={classes.displayFlex}>
-                      <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,activeView === 'trending' && mode === 'light'?classes.hoverBackgroundGray:'',activeView === 'trending' && mode === 'night'?classes.hoverBackgroundBlack:'',classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
+                      <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
                         <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
                         <div
                           className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && mode === 'night'?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
@@ -1285,7 +1288,7 @@ const MobileAppFrame = (props) => {
                       </div>
                       
                       {!username && (
-                        <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,activeView === 'latest'&& mode === 'light'?classes.hoverBackgroundGray:'',activeView === 'latest' && mode === 'night'?classes.hoverBackgroundBlack:'',classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
+                        <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
                           <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'latest' && mode === 'light' ?classes.background606060:activeView === 'latest' && mode === 'night'?classes.backgroundaaa:'',activeView === 'latest'?classes.borderRadius10:'' )}
@@ -1293,7 +1296,7 @@ const MobileAppFrame = (props) => {
                         </div>
                       )}
                       {username && (
-                        <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,activeView === 'home' && mode === 'light'?classes.hoverBackgroundGray:'',activeView === 'home' && mode === 'night'?classes.hoverBackgroundBlack:'',classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
+                        <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
                           <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && mode === 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
@@ -1354,12 +1357,12 @@ const MobileAppFrame = (props) => {
             <React.Fragment>
               {is_authenticated && (
                 <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
-                  <CreateBuzzIcon />
+                  <CreateBuzzIcon fill={floatStyle.fill}/>
                 </Fab>
               )}
               <AvatarMenu />
               
-              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'|| location.pathname === '/notifications'? classes.main:classes.marginTop50}>
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>

@@ -141,7 +141,7 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     fontSize: 14,
     ...theme.font,
-    color: '#536471 !important',
+    color: theme.stats.color,
   },
   actionWrapperSpace: {
     fontSize: 14,
@@ -154,9 +154,6 @@ const useStyles = createUseStyles(theme => ({
   chip: {
     border: 'none !important',
     float: 'right !important',
-    '& span': {
-      fontFamily: 'Segoe-Bold',
-    },
   },
   sliderWrapper: {
     width: '98%',

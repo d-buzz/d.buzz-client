@@ -151,9 +151,9 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   weblink: {
-    color: '#FF0000',
+    color: '#3ea6ff',
     '&:hover': {
-      color: '#FF0000',
+      color: '#3ea6ff',
     },
   },
   followLinks: {
@@ -176,7 +176,7 @@ const useStyles = createUseStyles(theme => ({
   },
   linkStyle: {
     '& a': {
-      color: 'rgb(255, 0, 0) !important',
+      color: '#3ea6ff !important',
     },
   },
   invalidUser: {
