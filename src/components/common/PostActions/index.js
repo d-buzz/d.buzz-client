@@ -154,9 +154,6 @@ const useStyles = createUseStyles(theme => ({
   chip: {
     border: 'none !important',
     float: 'right !important',
-    '& span': {
-      fontFamily: 'Segoe-Bold',
-    },
   },
   sliderWrapper: {
     width: '98%',
