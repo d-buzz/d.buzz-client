@@ -669,7 +669,7 @@ const MobileAppFrame = (props) => {
     border: `${getTheme(getUserTheme())?.buzzButton?.border}`,
     color: `${getTheme(getUserTheme())?.buzzButton?.color}`,
     backgroundColor: `${getTheme(getUserTheme())?.buzzButton?.backgroundColor}`,
-    fill: `${getTheme(getUserTheme())?.buzzButton?.fill}`
+    fill: `${getTheme(getUserTheme())?.buzzButton?.fill}`,
   }
 
   // const avatarStyle = { float: 'right' }
