@@ -1,6 +1,6 @@
 const night = {
   background: {
-    primary: 'rgb(21, 32, 43)',
+    primary: '#0f0f0f',
     secondary: '#192734',
   },
   coverColor: '#333639',
