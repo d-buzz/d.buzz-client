@@ -141,7 +141,7 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     fontSize: 14,
     ...theme.font,
-    color: '#536471 !important',
+    color: theme.stats.color,
   },
   actionWrapperSpace: {
     fontSize: 14,
