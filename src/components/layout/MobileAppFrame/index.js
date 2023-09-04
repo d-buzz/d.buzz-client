@@ -139,8 +139,8 @@ const useStyles = createUseStyles(theme => ({
   positionAbsolute: {
     position:'absolute',
   },
-  bottom0:{
-    bottom: 0,
+  bottom50:{
+    bottom: 50,
   },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
@@ -1183,7 +1183,7 @@ const MobileAppFrame = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom0, classes.width100, classes.paddingBottom10)}>
+                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom50, classes.width100, classes.paddingBottom10)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
