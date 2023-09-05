@@ -197,12 +197,9 @@ const EditProfileModal = (props) => {
       location,
     } = profileMeta || ''
 
-    const hostUrl = 'https://d.buzz'
-    const profileLink = `${hostUrl}/@${username}`
-
     const {name} = postingProfileMeta || '' // get fullname from get_accounts api
     setProfileName(name || ceramicProfile.name)
-    setProfileAbout(about || ceramicProfile.description || profileLink)
+    setProfileAbout(about || ceramicProfile.description)
     setProfileWebsite(website || ceramicProfile.url)
     setProfileLocation(location || ceramicProfile.location)
     if (cover_image || ceramicProfile.images?.background) setProfileCoverImage(cover_image || `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}`)

@@ -457,8 +457,9 @@ const Profile = (props) => {
     ? (about ? about : ceramicProfile.description)
       .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
       .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
-    : hyperlinkProfileLink
+    : `<span class=${classes.linkStyle}> ${hyperlinkProfileLink} </span>`
 
+  console.log(userAbout)
 
   const [loader, setLoader] = useState(false)
 
