@@ -1,7 +1,7 @@
 const night = {
   background: {
     primary: '#0f0f0f',
-    secondary: '#192734',
+    secondary: '#212121',
   },
   stats: {
     color: 'white !important',
@@ -33,12 +33,12 @@ const night = {
   },
   context: {
     view: {
-      backgroundColor: 'rgb(25, 39, 52)',
+      backgroundColor: '#212121',
       color: 'rgb(255, 255, 255)',
     },
   },
   nav: {
-    background: 'rgb(25, 39, 52)',
+    background: '#212121',
   },
   dialog: {
     user: {
@@ -72,11 +72,11 @@ const night = {
   },
   border: {
     primary: '1px solid rgb(56, 68, 77)',
-    thick: '10px solid rgb(37, 51, 65)',
+    thick: '10px solid #212121',
     background: 'rgb(56, 68, 77)',
   },
   textArea: {
-    // backgroundColor: 'rgb(21, 32, 43)',
+    // backgroundColor: '#212121',
     color: 'white',
     borderBottom: '1px solid rgb(56, 68, 77)',
     '&::placeholder': {
@@ -85,7 +85,7 @@ const night = {
   },
   search: {
     background: {
-      backgroundColor: 'rgb(37, 51, 65)',
+      backgroundColor: '#212121',
     },
   },
   navbar: {
@@ -113,7 +113,7 @@ const night = {
   },
   postList: {
     hover: {
-      backgroundColor: 'rgb(25, 39, 52)',
+      backgroundColor: '#212121',
     },
   },
   left: {
@@ -121,7 +121,7 @@ const night = {
       items: {
         color: 'white',
         hover: {
-          backgroundColor: '#172e3f',
+          backgroundColor: '#212121',
         },
         icons: {
           '& svg': {
@@ -170,18 +170,18 @@ const night = {
   },
   right: {
     list: {
-      background: 'rgb(25, 39, 52)',
+      background: '#212121',
       hover: {
         backgroundColor: 'rgb(56 68 77 / 31%)',
       },
     },
   },
   skeleton: {
-    color: '#172e3f',
+    color: '#212121',
     highlight: 'rgb(56 68 77 / 31%)',
   },
   seeMoreReplies: {
-    background: '#192734',
+    background: '#212121',
     color: '#ffffff',
   },
 }
