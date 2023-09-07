@@ -33,7 +33,12 @@ const APP_META = {
 
 const visited = []
 
-const setRPCNode = () => {
+export const geRPCNode = () => {
+  const node = localStorage.getItem('rpc') || 'https://hive-api.3speak.tv'
+  return node
+}
+
+export const setRPCNode = () => {
   const node = localStorage.getItem('rpc')
   api.setOptions({url: node})
 }
