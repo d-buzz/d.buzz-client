@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import { CircularProgress } from '@material-ui/core'
+import { setRPCNode } from 'services/api'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -138,6 +139,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
 
       '&:hover': {
+        padding: '5px 15px',
         background: '#B71C1C',
       },
     },
@@ -174,6 +176,12 @@ const useStyles = createUseStyles(theme => ({
     color: '#FFAD1F',
     fontWeight: 'bold',
   },
+  hiveNodeSelect: {
+    padding: '5px 10px',
+    fontSize: '1rem',
+    color: theme.font.color,
+    background: theme.background.primary,
+  },
 }))
 
 const SettingsModal = (props) => {
@@ -197,6 +205,8 @@ const SettingsModal = (props) => {
   const [selectedItem, setSelectedItem] = useState(null)
   // eslint-disable-next-line
   const [customUserData, setCustomUserData] = useState(JSON.parse(localStorage.getItem('customUserData')))
+  
+  const [activeHiveNode, setActiveHiveNode] = useState(localStorage.getItem('rpc'))
 
   useEffect(() => {
     setVideoEmbedsStatus(JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus)
@@ -327,6 +337,14 @@ const SettingsModal = (props) => {
     setIsLatest(true)
   }
 
+  const handleUpdateHiveNode = (e) => {
+    const node = e.target.value
+    setActiveHiveNode(node)
+    localStorage.setItem('rpc', node)
+    setRPCNode()
+    window.location.reload()
+  }
+
   return (
     <React.Fragment>
       <Modal
@@ -370,6 +388,17 @@ const SettingsModal = (props) => {
                   <span className='toggle' onClick={handleShowNSFWPosts}>{!(loading && selectedItem === 'showNSFWPosts') ? showNSFWPosts === 'enabled' ? 'Disable' : 'Enable' : <div className={classes.loading}><CircularProgress color='#ffffff' style={{height: 20, width: 20}} /></div>}</span>
                 </div>
                 <div className="description">All the NSFW posts are <b>{showNSFWPosts || 'disabled'}</b></div>
+              </div>
+              <div className='item'>
+                <div className="toggle_container">
+                  <span className='title'>HIVE API Node</span>
+                  <select className={classes.hiveNodeSelect} onChange={handleUpdateHiveNode} value={activeHiveNode}>
+                    <option value="https://hive-api.3speak.tv">hive-api.3speak.tv</option>
+                    <option value="https://api.hive.blog">api.hive.blog</option>
+                    <option value="https://hived.emre.sh">hived.emre.sh</option>
+                    <option value="https://rpc.ausbit.dev">rpc.ausbit.dev</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>

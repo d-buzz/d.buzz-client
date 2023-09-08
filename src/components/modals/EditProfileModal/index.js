@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { createUseStyles } from 'react-jss'
-import { CloseIcon, ContainedButton, Avatar, TextField, AddImageIcon } from 'components/elements'
-import { uploadFileRequest } from 'store/posts/actions'
-import { updateProfileRequest } from "store/profile/actions"
-import { broadcastNotification  } from "store/interface/actions"
-import { 
+import React, {useState, useEffect, useRef} from 'react'
+import {createUseStyles} from 'react-jss'
+import {CloseIcon, ContainedButton, Avatar, TextField, AddImageIcon} from 'components/elements'
+import {uploadFileRequest} from 'store/posts/actions'
+import {updateProfileRequest} from "store/profile/actions"
+import {broadcastNotification} from "store/interface/actions"
+import {
   Modal,
   ModalBody,
   Row,
   Col,
   Navbar,
 } from 'react-bootstrap'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { isMobile } from 'react-device-detect'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+import {isMobile} from 'react-device-detect'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { pending } from 'redux-saga-thunk'
-import { setBasicProfile } from 'services/ceramic'
+import {pending} from 'redux-saga-thunk'
+import {setBasicProfile} from 'services/ceramic'
 import Spinner from 'components/elements/progress/Spinner'
 import heic2any from 'heic2any'
 import IconButton from '@material-ui/core/IconButton'
+import ImageCropper from "../../common/ImageCropper"
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -128,19 +129,19 @@ const useStyles = createUseStyles(theme => ({
   },
   aboutTextLimit: {
     color: theme.font.color,
-    position: 'absolute', 
-    top: 3, 
+    position: 'absolute',
+    top: 3,
     right: 10,
   },
 }))
 
 const EditProfileModal = (props) => {
   const classes = useStyles()
-  const { 
-    show, 
-    onHide, 
-    profile, 
-    user, 
+  const {
+    show,
+    onHide,
+    profile,
+    user,
     loading,
     uploadFileRequest,
     updateProfileRequest,
@@ -148,10 +149,10 @@ const EditProfileModal = (props) => {
     setUpdatedCover,
     setUpdatedProfile,
   } = props
-  const { username } = user
-  const { metadata, posting_json_metadata } = profile || ''
-  const { profile: profileMeta } = metadata || ''
-  const { profile: postingProfileMeta } = posting_json_metadata || ''
+  const {username} = user
+  const {metadata, posting_json_metadata} = profile || ''
+  const {profile: profileMeta} = metadata || ''
+  const {profile: postingProfileMeta} = posting_json_metadata || ''
   const [profileName, setProfileName] = useState('')
   const [profileCoverImage, setProfileCoverImage] = useState('')
   const [profileAbout, setProfileAbout] = useState('')
@@ -175,44 +176,47 @@ const EditProfileModal = (props) => {
   const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
 
+  const [isCropperOpen, setIsCropperOpen] = useState(false)
+
+
   useEffect(() => {
-    if(profile.ceramic) {
+    if (profile.ceramic) {
       setCeramicUser(true)
       setCeramicProfile(profile.basic_profile)
     } else {
       setCeramicUser(false)
     }
-  }, [profile])  
+  }, [profile])
 
   useEffect(() => {
-    const { 
+    const {
       cover_image,
       profile_image,
-      website, 
-      about, 
+      website,
+      about,
       location,
     } = profileMeta || ''
 
-    const { name } = postingProfileMeta || '' // get fullname from get_accounts api
+    const {name} = postingProfileMeta || '' // get fullname from get_accounts api
     setProfileName(name || ceramicProfile.name)
-    setProfileAbout(about|| ceramicProfile.description)
-    setProfileWebsite(website|| ceramicProfile.url)
-    setProfileLocation(location|| ceramicProfile.location)
+    setProfileAbout(about || ceramicProfile.description)
+    setProfileWebsite(website || ceramicProfile.url)
+    setProfileLocation(location || ceramicProfile.location)
     if (cover_image || ceramicProfile.images?.background) setProfileCoverImage(cover_image || `https://ipfs.io/ipfs/${ceramicProfile.images.background.replace('ipfs://', '')}`)
     if (profile_image || ceramicProfile.images?.avatar) setProfileAvatar(profile_image || `https://ipfs.io/ipfs/${ceramicProfile.images.avatar.replace('ipfs://', '')}`)
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [profileMeta, postingProfileMeta, show, username, ceramicProfile])
 
   const onChange = (e) => {
-    const { target } = e
-    const { id, value } = target
+    const {target} = e
+    const {id, value} = target
     if (id === "name") {
       setProfileName(value)
-    }else if (id === "about" && value.length <= 160) {
+    } else if (id === "about" && value.length <= 160) {
       setProfileAbout(value)
-    }else if (id === "location") {
+    } else if (id === "location") {
       setProfileLocation(value)
-    }else if (id === "website") {
+    } else if (id === "website") {
       setProfileWebsite(value)
     }
   }
@@ -221,109 +225,235 @@ const EditProfileModal = (props) => {
     let compressedFile = null
 
     const MAX_SIZE = 500 * 1024
-  
+
     const options = {
       maxSizeMB: MAX_SIZE / (1024 * 1024),
       maxWidthOrHeight: 1024,
       useWebWorker: true,
     }
     try {
-      await import('browser-image-compression').then(async({ default: imageCompression }) => {
+      await import('browser-image-compression').then(async ({default: imageCompression}) => {
         compressedFile = await imageCompression(image, options)
       })
     } catch (error) {
       console.log(error)
     }
-    
+
     return compressedFile !== null && compressedFile
   }
+  // Utility Functions
 
-  const handleChangeProfileImage = (e) => {
+  const base64ToBlob = (base64Data, contentType = '') => {
+    const byteCharacters = atob(base64Data.split(',')[1])
+    const byteArrays = []
 
-    const images = Array.from(e.target.files)
-    const allImages = [...images.filter(image => image.type !== 'image/heic')]
-    const heicImages = images.filter(image => image.type === 'image/heic')
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512)
+      const byteNumbers = new Array(slice.length)
 
-    Promise.all(
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i)
+      }
+
+      const byteArray = new Uint8Array(byteNumbers)
+      byteArrays.push(byteArray)
+    }
+
+    return new Blob(byteArrays, { type: contentType })
+  }
+
+  const handleError = (error) => {
+    console.error("Error uploading the image:", error)
+    broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+    setUploadAvatarLoading(false)
+    setImageUploadProgress(0)
+  }
+
+  const handleInputType = (input) => {
+    let originalFiles = []
+
+    if (input instanceof Blob) {
+      const croppedImageFile = new File([input], "cropped-image.png", { type: "image/png" })
+      originalFiles = [croppedImageFile]
+    } else if (typeof input === 'string' && input.startsWith('data:image/')) {
+      const blob = base64ToBlob(input, 'image/png')
+      const croppedImageFile = new File([blob], "cropped-image.png", { type: "image/png" })
+      originalFiles = [croppedImageFile]
+    } else if (input instanceof Event && input.target && input.target.files) {
+      originalFiles = Array.from(input.target.files)
+    } else {
+      console.warn("Invalid input")
+      return null
+    }
+
+    return originalFiles
+  }
+
+
+  const handleChangeProfileImage = async (input) => {
+    const originalFiles = handleInputType(input)
+    if (!originalFiles) return
+
+    const allImages = [...originalFiles.filter(image => image.type !== 'image/heic')]
+    const heicImages = originalFiles.filter(image => image.type === 'image/heic')
+
+    await Promise.all(
       heicImages.map(async (image) => {
-        
         const pngBlob = await heic2any({
           blob: image,
           toType: 'image/png',
           quality: 1,
         })
-
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', ''), { type: 'image/png', size: pngBlob.size }),
+          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
         )
       }),
     )
-      .then(() => {
-        setProfileAvatar(URL.createObjectURL(allImages[0]))
-        if(allImages[0]){
-          setUploadAvatarLoading(true)
-          handleImageCompression(allImages[0]).then((compressedImage) => {
-            uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
-              setIsProfileUpdated(true)
-              setUploadAvatarLoading(false)
-              const lastImage = image[image.length - 1]
-              if (lastImage !== undefined) {
-                setProfileAvatar(lastImage)
-                setImageUploadProgress(0)
-                setUploadAvatarLoading(false)
-              } else{
-                setUploadAvatarLoading(false)
-                broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-                setImageUploadProgress(0)
-              }
-            })
-          })
-        }
-      })
-  }
-  
-  const handleChangeCoverImage = (e) => {
-    const images = Array.from(e.target.files)
-    const allImages = [...images.filter(image => image.type !== 'image/heic')]
-    const heicImages = images.filter(image => image.type === 'image/heic')
 
-    Promise.all(
+    setProfileAvatar(URL.createObjectURL(allImages[0]))
+
+    if (allImages[0]) {
+      setUploadAvatarLoading(true)
+      try {
+        const compressedImage = await handleImageCompression(allImages[0])
+        const image = await uploadFileRequest(compressedImage, setImageUploadProgress, false)
+        setIsProfileUpdated(true)
+        setUploadAvatarLoading(false)
+        const lastImage = image[image.length - 1]
+        if (lastImage !== undefined) {
+          setProfileAvatar(lastImage)
+          setImageUploadProgress(0)
+          setUploadAvatarLoading(false)
+        } else {
+          handleError(new Error("Image upload error"))
+        }
+      } catch (error) {
+        handleError(error)
+      }
+    }
+  }
+
+  const handleChangeCoverImage = async (input) => {
+    const originalFiles = handleInputType(input)
+    if (!originalFiles) return
+
+    const allImages = originalFiles.filter(image => image.type !== 'image/heic')
+    const heicImages = originalFiles.filter(image => image.type === 'image/heic')
+
+    await Promise.all(
       heicImages.map(async (image) => {
-        
         const pngBlob = await heic2any({
           blob: image,
           toType: 'image/png',
           quality: 1,
         })
-
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', ''), { type: 'image/png', size: pngBlob.size }),
+          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
         )
       }),
     )
-      .then(() => {
-        setProfileCoverImage(URL.createObjectURL(allImages[0]))
-        if(allImages[0]){
-          setUploadCoverLoading(true)
-          handleImageCompression(allImages[0]).then((compressedImage) => {
-            uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
-              setIsCoverUpdated(true)
-              setUploadCoverLoading(false)
-              const lastImage = image[image.length - 1]
-              if (lastImage !== undefined) {
-                setProfileCoverImage(lastImage)
-                setImageUploadProgress(0)
-                setUploadCoverLoading(false)
-              } else{
-                setUploadCoverLoading(false)
-                broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
-                setImageUploadProgress(0)
-              }
-            })
-          })
+
+    setProfileCoverImage(URL.createObjectURL(allImages[0]))
+
+    if (allImages[0]) {
+      setUploadCoverLoading(true)
+      try {
+        const compressedImage = await handleImageCompression(allImages[0])
+        const image = await uploadFileRequest(compressedImage, setImageUploadProgress, false)
+        setIsCoverUpdated(true)
+        setUploadCoverLoading(false)
+        const lastImage = image[image.length - 1]
+        if (lastImage !== undefined) {
+          setProfileCoverImage(lastImage)
+          setImageUploadProgress(0)
+          setUploadCoverLoading(false)
+        } else {
+          handleError(new Error("Image upload error"))
         }
-      })
+      } catch (error) {
+        handleError(error)
+      }
+    }
   }
+
+
+  const handleImageChange = (e, imageType) => {
+    setCurrentImageType(imageType)
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        setSelectedImage(event.target.result)
+        setIsCropperOpen(true)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+
+  const handleCropComplete = (croppedImage) => {
+    switch (currentImageType) {
+    case 'avatar':
+      handleChangeProfileImage(croppedImage)  // Set the cropped image as the new profile image
+      break
+    case 'cover':
+      handleChangeCoverImage(croppedImage)
+      break
+    default:
+      console.warn(`Unexpected image type: ${currentImageType}`)
+    }
+    setCurrentImageType(null) // Reset the image type after handling the cropped image
+    setIsCropperOpen(false) // Close the cropper
+  }
+
+
+  const [selectedImage, setSelectedImage] = useState(null) // Image URL or Base64 string
+  const [currentImageType, setCurrentImageType] = useState(null) // 'avatar' or 'cover'
+
+  // This can be called when you want to open the cropper with a specific image
+  // const handleChangeCoverImage = (e) => {
+  //   const images = Array.from(e.target.files)
+  //   const allImages = [...images.filter(image => image.type !== 'image/heic')]
+  //   const heicImages = images.filter(image => image.type === 'image/heic')
+  //
+  //   Promise.all(
+  //     heicImages.map(async (image) => {
+  //
+  //       const pngBlob = await heic2any({
+  //         blob: image,
+  //         toType: 'image/png',
+  //         quality: 1,
+  //       })
+  //
+  //       allImages.push(
+  //         new File([pngBlob], image.name.replace('.heic', ''), {type: 'image/png', size: pngBlob.size}),
+  //       )
+  //     }),
+  //   )
+  //     .then(() => {
+  //       setProfileCoverImage(URL.createObjectURL(allImages[0]))
+  //       if (allImages[0]) {
+  //         setUploadCoverLoading(true)
+  //         handleImageCompression(allImages[0]).then((compressedImage) => {
+  //           uploadFileRequest(compressedImage, setImageUploadProgress, false).then((image) => {
+  //             setIsCoverUpdated(true)
+  //             setUploadCoverLoading(false)
+  //             const lastImage = image[image.length - 1]
+  //             if (lastImage !== undefined) {
+  //               setProfileCoverImage(lastImage)
+  //               setImageUploadProgress(0)
+  //               setUploadCoverLoading(false)
+  //             } else {
+  //               setUploadCoverLoading(false)
+  //               broadcastNotification('error', 'Something went wrong upon uploading image. Please try again later.')
+  //               setImageUploadProgress(0)
+  //             }
+  //           })
+  //         })
+  //       }
+  //     })
+  // }
+
 
   const handleRemoveCoverImage = () => {
     setProfileCoverImage('')
@@ -374,42 +504,42 @@ const EditProfileModal = (props) => {
   const handleSubmitForm = () => {
     setUpdatingProfile(true)
     const hiveMetaData = {
-      profile : {
-        profile_image : profileAvatar ? profileAvatar : profileMeta?.profile_image,
-        cover_image : profileCoverImage,
-        name : profileName,
-        about : profileAbout,
-        location : profileLocation,
-        website : profileWebsite,
-        version : 2,  // signal upgrade to posting_json_metadata
+      profile: {
+        profile_image: profileAvatar ? profileAvatar : profileMeta?.profile_image,
+        cover_image: profileCoverImage,
+        name: profileName,
+        about: profileAbout,
+        location: profileLocation,
+        website: profileWebsite,
+        version: 2,  // signal upgrade to posting_json_metadata
       },
     }
     const ceramicMetaData = {
-      profile_image : profileAvatar ? profileAvatar : '',
-      cover_image : profileCoverImage ? profileCoverImage : '',
-      name : profileName,
-      about : profileAbout,
-      location : profileLocation,
-      url : profileWebsite,
+      profile_image: profileAvatar ? profileAvatar : '',
+      cover_image: profileCoverImage ? profileCoverImage : '',
+      name: profileName,
+      about: profileAbout,
+      location: profileLocation,
+      url: profileWebsite,
     }
 
-    if(!ceramicUser) {
-      updateProfileRequest(username,hiveMetaData).then(({success, errorMessage}) => {
-        if(success) {
-          if(isCoverUpdated || isProfileUpdated) {
-            if(isCoverUpdated) {
+    if (!ceramicUser) {
+      updateProfileRequest(username, hiveMetaData).then(({success, errorMessage}) => {
+        if (success) {
+          if (isCoverUpdated || isProfileUpdated) {
+            if (isCoverUpdated) {
               setUpdatedCover(hiveMetaData.profile.cover_image)
             } else {
               setUpdatedProfile(hiveMetaData.profile.profile_image)
             }
           }
 
-          broadcastNotification('success','Profile updated successfully')
+          broadcastNotification('success', 'Profile updated successfully')
           setUpdatingProfile(false)
           onHide()
-        } else{
+        } else {
           setUpdatingProfile(false)
-          broadcastNotification('error',errorMessage)
+          broadcastNotification('error', errorMessage)
         }
       })
     } else {
@@ -417,7 +547,7 @@ const EditProfileModal = (props) => {
       setBasicProfile(ceramicMetaData)
         .then((res) => {
           setCeramicProfileUpdateLoading(false)
-          broadcastNotification('success','Profile updated successfully')
+          broadcastNotification('success', 'Profile updated successfully')
           setUpdatingProfile(false)
           onHide()
         })
@@ -443,138 +573,146 @@ const EditProfileModal = (props) => {
       >
         <ModalBody className={classes.modalBody}>
           <Navbar.Brand className={classes.navTitle}>
-            <IconButton style={{ marginLeft: 5 }} onClick={onHide}>
-              <CloseIcon />
+            <IconButton style={{marginLeft: 5}} onClick={onHide}>
+              <CloseIcon/>
             </IconButton>
             <span className={classes.title}>Edit profile</span>
           </Navbar.Brand>
           <React.Fragment>
-            <div style={{ padding: 5}}>
+            <div style={{padding: 5}}>
               <div className={classes.cover}>
                 <React.Fragment>
-                  <img src={profileCoverImage} alt="" loading='lazy'/>
+                  <img src={profileCoverImage} alt="" loading="lazy"/>
                   <div className={classes.addCoverImageButton}>
                     <input
                       id="cover-upload"
-                      type='file'
-                      name='image'
-                      accept='image/*,image/heic'
+                      type="file"
+                      name="image"
+                      accept="image/*,image/heic"
                       multiple={false}
                       ref={coverInputRef}
-                      onChange={handleChangeCoverImage}
-                      style={{ display: 'none' }}
+                      onChange={(e) => handleImageChange(e, 'cover')}
+                      style={{display: 'none'}}
+                    />
+                    {/* react-cropper for profile image */}
+                    <ImageCropper
+                      isOpen={isCropperOpen}
+                      onClose={() => setIsCropperOpen(false)}
+                      src={selectedImage}
+                      onCropComplete={handleCropComplete}
                     />
                     <label htmlFor="cover-upload">
                       {!uploadCoverLoading &&
-                      (<IconButton className={classes.uploadButton} onClick={handleSelectCoverImage}>
-                        <AddImageIcon size="20" />
-                      </IconButton>)}
+                        (<IconButton className={classes.uploadButton} onClick={handleSelectCoverImage}>
+                          <AddImageIcon size="20"/>
+                        </IconButton>)}
                     </label>
                     {profileCoverImage && !uploadCoverLoading &&
-                        (<IconButton onClick={handleRemoveCoverImage}>
-                          <CloseIcon />
-                        </IconButton>)}
-                    {uploadCoverLoading && 
-                      (<CircularProgress variant='static' value={imageUploadProgress} size={25} color="secondary"/>)}
+                      (<IconButton onClick={handleRemoveCoverImage}>
+                        <CloseIcon/>
+                      </IconButton>)}
+                    {uploadCoverLoading &&
+                      (<CircularProgress variant="static" value={imageUploadProgress} size={25} color="secondary"/>)}
                   </div>
                 </React.Fragment>
               </div>
-              
+
             </div>
             <div className={classes.wrapper}>
               <Row>
                 <Col xs="auto">
                   <div className={classes.avatar}>
-                    <Avatar style={{ opacity: 0.5 }} border={true} height="120" author={username} size="medium" avatarUrl={profileAvatar}/>
+                    <Avatar style={{opacity: 0.5}} border={true} height="120" author={username} size="medium"
+                      avatarUrl={profileAvatar}/>
                     <div className={classes.addProfileImageButton}>
                       <input
                         id="avatar-upload"
-                        type='file'
-                        name='image'
-                        accept='image/*,image/heic'
+                        type="file"
+                        name="image"
+                        accept="image/*,image/heic"
                         multiple={false}
                         ref={profilePicInputRef}
-                        onChange={handleChangeProfileImage}
-                        style={{ display: 'none' }}
+                        onChange={(e) => handleImageChange(e, 'avatar')}
+                        style={{display: 'none'}}
                       />
                       <label htmlFor="avatar-upload">
                         {!uploadAvatarLoading &&
-                        (<IconButton className={classes.uploadButton} onClick={handleSelectProfileImage}>
-                          <AddImageIcon size="20"/>
-                        </IconButton>)}
+                          (<IconButton className={classes.uploadButton} onClick={handleSelectProfileImage}>
+                            <AddImageIcon size="20"/>
+                          </IconButton>)}
                       </label>
-                      {uploadAvatarLoading && 
-                        (<CircularProgress variant='static' value={imageUploadProgress} size={25} color="secondary"/>)}
+                      {uploadAvatarLoading &&
+                        (<CircularProgress variant="static" value={imageUploadProgress} size={25} color="secondary"/>)}
                     </div>
                   </div>
                 </Col>
               </Row>
             </div>
-            <div style={{ width: '100%', height: 'max-content', marginTop: '20px'}}>
+            <div style={{width: '100%', height: 'max-content', marginTop: '20px'}}>
               <div className={classes.wrapper}>
                 <Row>
                   <Col>
-                    <TextField 
+                    <TextField
                       id="name"
-                      label="Name" 
+                      label="Name"
                       value={profileName}
                       rowsMax={4}
                       onChange={onChange}
-                      multiline 
+                      multiline
                       fullWidth/>
                   </Col>
                 </Row>
-                <div className={classes.spacer} />
+                <div className={classes.spacer}/>
                 <Row>
                   <Col>
-                    <div style={{ position: 'relative' }}>
+                    <div style={{position: 'relative'}}>
                       <span className={classes.aboutTextLimit}>{(profileAbout ?? '').length}/160</span>
-                      <TextField 
+                      <TextField
                         id="about"
-                        label="Bio" 
+                        label="Bio"
                         value={profileAbout}
                         className={classes.textarea}
                         rowsMax={4}
                         onChange={onChange}
-                        multiline 
+                        multiline
                         fullWidth/>
                     </div>
                   </Col>
                 </Row>
-                <div className={classes.spacer} />
+                <div className={classes.spacer}/>
                 <Row>
                   <Col>
-                    <TextField 
+                    <TextField
                       id="location"
-                      label="Location" 
+                      label="Location"
                       value={profileLocation}
                       rowsMax={4}
                       onChange={onChange}
-                      multiline 
+                      multiline
                       fullWidth/>
                   </Col>
                 </Row>
-                <div className={classes.spacer} />
+                <div className={classes.spacer}/>
                 <Row>
                   <Col>
-                    <TextField 
+                    <TextField
                       id="website"
-                      label="Website" 
+                      label="Website"
                       value={profileWebsite || ceramicProfile.website}
                       rowsMax={4}
                       onChange={onChange}
-                      multiline 
+                      multiline
                       fullWidth/>
                   </Col>
                 </Row>
-                <div className={classes.spacer} />
+                <div className={classes.spacer}/>
                 <Row>
                   <Col>
                     {!updatingProfile &&
-                      <div style={{ width: '100%'}}>
+                      <div style={{width: '100%'}}>
                         <ContainedButton
                           fontSize={14}
-                          style={{ float: 'right' }}
+                          style={{float: 'right'}}
                           transparent={false}
                           onClick={handleSubmitForm}
                           label="Save"
@@ -583,9 +721,9 @@ const EditProfileModal = (props) => {
                         />
                       </div>}
                     {updatingProfile &&
-                      <div style={{ width: '100%', display: 'grid', placeItems: 'center' }}>
+                      <div style={{width: '100%', display: 'grid', placeItems: 'center'}}>
                         <span className={classes.loadingLabel}>UPDATING PROFILE</span>
-                        <Spinner loading={updatingProfile} size={30} top={15} style={{ padding: 15}} />
+                        <Spinner loading={updatingProfile} size={30} top={15} style={{padding: 15}}/>
                       </div>}
                   </Col>
                 </Row>

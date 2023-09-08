@@ -54,7 +54,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   darkModeButton: {
-    backgroundColor: 'rgb(21, 32, 43)',
+    backgroundColor: '#212121',
     '& label': {
       fontSize: 14,
       color: 'white',

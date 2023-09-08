@@ -63,6 +63,7 @@ const useStyles = createUseStyles(theme => ({
     background: 'transparent',
     objectFit: 'cover',
     overFlow: 'hidden',
+    backgroundColor: `${getTheme(getUserTheme()).coverColor}`,
     '& img': {
       height: '100%',
       width: '100%',
@@ -123,7 +124,9 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   tabs: {
+    flex: 1,
     textTransform: 'none !important',
+    minWidth: '0px !important',
     '&:hover': {
       ...theme.left.sidebar.items.hover,
       '& span': {
@@ -134,6 +137,7 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: '#ffebee',
     },
     '& span': {
+      width: 'inherit',
       ...theme.font,
       fontWeight: 'bold',
       fontFamily: 'Segoe-Bold',
@@ -148,11 +152,13 @@ const useStyles = createUseStyles(theme => ({
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
     },
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   weblink: {
-    color: '#FF0000',
+    color: '#3ea6ff',
     '&:hover': {
-      color: '#FF0000',
+      color: '#3ea6ff',
     },
   },
   followLinks: {
@@ -175,7 +181,7 @@ const useStyles = createUseStyles(theme => ({
   },
   linkStyle: {
     '& a': {
-      color: 'rgb(255, 0, 0) !important',
+      color: '#3ea6ff !important',
     },
   },
   invalidUser: {
@@ -185,7 +191,7 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#E61C34',
+    ...theme.font,
     fontWeight: 600,
     fontSize: '1.2em',
     gap: 20,
@@ -343,14 +349,18 @@ const Profile = (props) => {
 
   const handleTabs = (index) => () => {
     let tab = 'buzz'
-
     if (index === 1) {
-      tab = 'comments'
-    } else if (index === 2) {
       tab = 'replies'
+    } else if (index === 2) {
+      broadcastNotification('success', `Coming soon`)
+      tab = 'media'
     } else if (index === 3) {
       tab = 'pockets'
+    }else if (index === 4) {
+      broadcastNotification('success', `Coming soon`)
+      tab = 'likes'
     }
+    
 
     history.push(`/@${username}/t/${tab}/`)
   }
@@ -429,12 +439,14 @@ const Profile = (props) => {
   useEffect(() => {
     if (pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if (pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
-      setIndex(1)
     } else if (pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
+      setIndex(1)
+    } else if (pathname.match(/(\/t\/media\/)$|(\/t\/media)$/m)) {
       setIndex(2)
     } else if (pathname.match(/(\/t\/pockets)$|(\/t\/pockets)$/m) || pathname.match(/(\/t\/pockets\/.*)$|(\/t\/pockets\/.*)$/m)) {
       setIndex(3)
+    } else if (pathname.match(/(\/t\/likes\/)$|(\/t\/likes)$/m)) {
+      setIndex(4)
     } else {
       setIndex(0)
     }
@@ -448,9 +460,17 @@ const Profile = (props) => {
 
   const {reputation = 0, isFollowed} = profile
 
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
-    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`) : ''
+  const hostUrl = 'https://d.buzz'
+  const profileLink = `${hostUrl}/@${username}`
+  const hyperlinkProfileLink = `<a href="${profileLink}">${profileLink}</a>`
+
+  const userAbout = about || ceramicProfile.description
+    ? (about ? about : ceramicProfile.description)
+      .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
+      .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
+    : `<span class=${classes.linkStyle}> ${hyperlinkProfileLink} </span>`
+
+  console.log(userAbout)
 
   const [loader, setLoader] = useState(false)
 
@@ -629,7 +649,7 @@ const Profile = (props) => {
   // checks if the user is loaded and if it's invalid
   useEffect(() => {
     if (profile.isLoaded && profile.invalidUser) {
-      // setInvalidUser(true)
+      setInvalidUser(true)
     }
   }, [profile, username])
 
@@ -712,7 +732,7 @@ const Profile = (props) => {
           <ProfileSkeleton loading={loading}/>
           {!loading && (
             <React.Fragment>
-              <div className={classes.cover} style={!cover_image ? {backgroundColor: "#e65768"} : {}}>
+              <div className={classes.cover}>
                 {cover_image ? <img
                   src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`}
                   alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}
@@ -905,11 +925,13 @@ const Profile = (props) => {
             >
               {!loading && <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's"/>}
               {!loading && !ceramic &&
-                <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments"/>}
+                <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies"/>}
               {!loading && !ceramic &&
-                <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies"/>}
+                <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Media"/>}
               {!loading && !ceramic &&
                 <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets"/>}
+              {!loading && !ceramic &&
+                <Tab disableTouchRipple onClick={handleTabs(4)} className={classes.tabs} label="Likes"/>}
             </Tabs>
           </div>
           <React.Fragment>
