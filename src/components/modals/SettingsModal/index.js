@@ -399,7 +399,6 @@ const SettingsModal = (props) => {
                     <option value="https://rpc.ausbit.dev">rpc.ausbit.dev</option>
                   </select>
                 </div>
-                <div className="description">All the NSFW posts are <b>{showNSFWPosts || 'disabled'}</b></div>
               </div>
             </div>
           </div>
