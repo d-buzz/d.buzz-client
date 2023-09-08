@@ -33,7 +33,12 @@ const APP_META = {
 
 const visited = []
 
-const setRPCNode = () => {
+export const geRPCNode = () => {
+  const node = localStorage.getItem('rpc') || 'https://hive-api.3speak.tv'
+  return node
+}
+
+export const setRPCNode = () => {
   const node = localStorage.getItem('rpc')
   api.setOptions({url: node})
 }
@@ -56,10 +61,12 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  return data.forEach((item) => {
-    item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-    item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
-  })
+  if(typeof data !== 'string') {
+    return data.forEach((item) => {
+      item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
+      item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
+    })
+  }
 }
 
 export const callBridge = async (method, params, appendParams = true) => {
@@ -255,7 +262,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
           lastResult = [data[data.length - 1]]
         }
 
-        let posts = data.filter((item) => invokeFilter(item))
+        let posts = typeof data !== 'string' ? data.filter((item) => invokeFilter(item)) : []
 
         posts = [...posts, ...lastResult]
 
@@ -408,6 +415,7 @@ export const fetchProfile = (username, checkFollow = false) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
       .then(async (result) => {
+        if(result.length === 0) resolve(result)
         result.forEach(async (item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
@@ -1527,12 +1535,15 @@ export const searchPostAuthor = (author) => {
 
 export const searchPostGeneral = (query) => {
   return new Promise(async (resolve, reject) => {
-    const body = {query}
-
+    // const body = {query}
+    const { tag , sort } = query
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
-      data: body,
+      data: {
+        query : tag,
+        sort : sort,
+      },
     }).then(async (result) => {
       const data = result.data
 
@@ -1837,5 +1848,34 @@ export const isUserAlreadyVotedForProposal = (username) => {
         console.error(error)
         reject(error)
       })
+  })
+}
+
+export const searchHiveTags = (query) => {
+  return new Promise(async (resolve, reject) => {
+    const {sort, tag} = query
+
+    // Set up the body with the specific structure you provided
+    axios({
+      method: 'POST',
+      url: `${searchUrl}/tags`,
+      data: {
+        sort,
+        tag,
+      },
+    }).then(async (result) => {
+      const data = result.data
+
+      if (data.results.length !== 0) {
+        const getProfiledata = mapFetchProfile(data.results, false)
+        await Promise.all([getProfiledata])
+        removeFootNote(data.results)
+        data.results = data.results.filter((item) => item.body.length <= 280)
+      }
+
+      resolve(data)
+    }).catch((error) => {
+      reject(error)
+    })
   })
 }
