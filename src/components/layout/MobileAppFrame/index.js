@@ -139,8 +139,8 @@ const useStyles = createUseStyles(theme => ({
   positionAbsolute: {
     position:'absolute',
   },
-  bottom50:{
-    bottom: 50,
+  bottom20Percent:{
+    bottom: "20%",
   },
   colorBlack: {
     color: "rgba(15,20,25,1.00)",
@@ -710,6 +710,8 @@ const MobileAppFrame = (props) => {
       return
     }
   }
+
+  // eslint-disable-next-line
   useEffect(() => {
     if(username) {
       getProfileRequest(username)
@@ -718,6 +720,7 @@ const MobileAppFrame = (props) => {
     }
   }, [username,getProfileRequest,getFollowersRequest,getFollowingRequest])
 
+  // eslint-disable-next-line
   useEffect(() => {
     switch(location.pathname) {
     case '/':
@@ -1020,8 +1023,7 @@ const MobileAppFrame = (props) => {
   const showNotificationForMessage = () => {
     broadcastNotification('success', 'Coming soon')
   }
-
-
+  // eslint-disable-next-line
   useEffect(() => {
     if (is_authenticated) {
       pollNotifRequest()
@@ -1029,6 +1031,7 @@ const MobileAppFrame = (props) => {
     // eslint-disable-next-line
   }, [])
 
+  // eslint-disable-next-line
   useEffect(() => {
     if (fromIntentBuzz && is_authenticated) {
       setOpen(true)
@@ -1036,6 +1039,7 @@ const MobileAppFrame = (props) => {
     // eslint-disable-next-line
   }, [fromIntentBuzz, is_authenticated])
 
+  // eslint-disable-next-line
   useEffect(() => {
     if(title !== 'Search'){
       setSearchkey('')
@@ -1044,39 +1048,41 @@ const MobileAppFrame = (props) => {
     // eslint-disable-next-line
   }, [title])
 
+  // eslint-disable-next-line
   const [showSideBarNavigation, setShowSideBarNavigation] = useState(false)
+  
   return (
     <React.Fragment>
       <React.Fragment>
         <div className='maincontent'>
-          <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidthNoTrans':'navigationsmallWidthNoTrans',mode === 'night'? 'bg-91-112-131':'bg-black-transparent' )}>
+          <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidthNoTrans':'navigationsmallWidthNoTrans',(mode === 'night' || mode === 'gray')? 'bg-91-112-131':'bg-black-transparent' )}>
             <div className={classNames(classes.displayFlex,showSideBarNavigation?'navigationFullWidth':'navigationsmallWidth' )}>
-              <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',mode === 'night'? 'bg-21-32-43':'bg-white', classes.width100)}>
+              <div className={classNames(showSideBarNavigation?'navigationMainContentFullwidth':'navigationMainContentNowidth',(mode === 'night' || mode === 'gray')? 'bg-21-32-43':'bg-white', classes.width100)}>
                 <div className={classNames(classes.height100)}>
                   <div className={classNames(classes.padding16,classes.displayFlex,classes.flexDirectionColumn)}>
                     <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
                       <div className={classNames(classes.width45Percent)}>
                         <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                       </div> 
-                      <div onClick={() => setOpenSwitchModal(true)} className={classNames(mode==='night'?'border-white':'border-black',mode==='night'?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
+                      <div onClick={() => setOpenSwitchModal(true)} className={classNames((mode==='night' || mode==='gray') ?'border-white':'border-black',(mode==='night' || mode==='gray') ?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
                         <span ref={avatarRef}>+</span>
                       </div> 
                     </div>
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames(mode ==='night'? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || username}</span>
+                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || username}</span>
                         </Link>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames(mode === 'night'?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
+                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
                         </Link>
                       </div>
                     </div>
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
-                          <div className={classNames(mode==='night'?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{following}</span> Following</div>
-                          <div className={classNames(mode==='night'?'text-gray':'',classes.fontsize15)}><span className={classNames(mode === 'night'?'text-white':'',classes.fontWeight700)}>{followers}</span> Followers</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>{following}</span> Following</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>{followers}</span> Followers</div>
                         </div>
                       </div>
                     </div>
@@ -1098,7 +1104,7 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div onClick={()=>history.push(`/@${username}`)} className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
+                        <div onClick={()=>history.push(`/@${username}`)} className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
                       </div>
                       
                     </div>
@@ -1119,7 +1125,7 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700, classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Pockets</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700, classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Pockets</div>
                       </div>
                     </div>
                   </Link>
@@ -1139,7 +1145,7 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div className={classNames(mode === 'night'?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
                       </div>
                     </div>
                   </Link>
@@ -1159,7 +1165,7 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
                       </div>
                     </div>
                   </div>
@@ -1182,22 +1188,22 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div>
                         </div>
-                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                       </div>
                     </div>
                   </div>
-                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom50, classes.width100, classes.paddingBottom10)}>
+                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom20Percent, classes.width100, classes.paddingBottom10)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
                           {mode === 'light' && (
                             <SunIcon />
                           )}
-                          {mode === 'night' && (
+                          {(mode === 'night' || mode === 'gray') && (
                             <MoonIcon />
                           )}
                         </div>
-                        <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{mode === 'night'? 'Night':'Light'}</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{(mode === 'night' || mode === 'gray')? 'Dark':'Light'}</div>
                       </div>
                     </div>
                   </div>
@@ -1209,7 +1215,7 @@ const MobileAppFrame = (props) => {
                             <div className={classNames( classes.width30, classes.marginRight20,classes.minifyItems,classes.activeItem)}>
                               <SettingsIcon type='outline'/>
                             </div>
-                            <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                            <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                           </div>
                           
                           <div  className={classNames(classes.minifyItems, classes.activeItem, classes.displayFlex, classes.justifyContentEnd )}>
@@ -1230,17 +1236,17 @@ const MobileAppFrame = (props) => {
                                 {mode === 'light' && (
                                   <SunIcon />
                                 )}
-                                {mode === 'night' && (
+                                {(mode === 'night' || mode === 'gray') && (
                                   <MoonIcon />
                                 )}
                               </div>
-                              <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{mode === 'night'? 'Night':'Light'}</div>
+                              <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{(mode === 'night' || mode === 'gray')? 'Night':'Light'}</div>
                             </div>
                             <div onClick={() => setOpenSettingsModal(true)} className={classNames(showSettings? classes.displayFlex:classes.displayhide, classes.alignItemsCenter, classes.width100)}>
                               <div style={{width:'25%'}} className={classes.width30}>
                                 <SettingsIcon type='outline'/>
                               </div>
-                              <div className={classNames(mode === 'night'?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
+                              <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                             </div>
                           </div>
                         </div>
@@ -1274,32 +1280,32 @@ const MobileAppFrame = (props) => {
                         </div>
                         {/* <div className={classes.widthHalfWidth}> */}
                         <div className={classNames(classes.width100, classes.displayFlex, classes.justifyContentCenter, classes.alignItemsCenter)}>
-                          <Image width={'60px'} src={`${window.location.origin}/${mode === 'night'?'dbuzz-text-logo-white.svg':'dbuzz-text-logo.svg'}`}/>
+                          <Image width={'60px'} src={`${window.location.origin}/${(mode === 'night' || mode === 'gray')?'dbuzz-text-logo-white.svg':'dbuzz-text-logo.svg'}`}/>
                         </div>
                       </div>
                     </React.Fragment>)}
                   {activeView !== 'notifications' && (
                     <div className={classes.displayFlex}>
                       <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
-                        <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
+                        <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
                         <div
-                          className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && mode === 'night'?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
+                          className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
                         ></div>
                       </div>
                       
                       {!username && (
                         <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                          <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
+                          <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
                           <div
-                            className={classNames(classes.width45Percent,classes.height5,activeView === 'latest' && mode === 'light' ?classes.background606060:activeView === 'latest' && mode === 'night'?classes.backgroundaaa:'',activeView === 'latest'?classes.borderRadius10:'' )}
+                            className={classNames(classes.width45Percent,classes.height5,activeView === 'latest' && mode === 'light' ?classes.background606060:activeView === 'latest' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'latest'?classes.borderRadius10:'' )}
                           ></div>
                         </div>
                       )}
                       {username && (
                         <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                          <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):mode === 'night' && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):mode === 'night'?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
+                          <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                           <div
-                            className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && mode === 'night'?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
+                            className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
                           ></div>
                         </div>
                       )}

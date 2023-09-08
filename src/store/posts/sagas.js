@@ -913,6 +913,8 @@ function* unfollowRequest(payload, meta) {
 function* searchRequest(payload, meta) {
   try {
     let { query } = payload
+
+    query = query.toLowerCase()
     let results = []
 
     if(`${query}`.match(/^@/g)) {

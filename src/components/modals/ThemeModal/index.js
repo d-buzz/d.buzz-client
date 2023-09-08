@@ -51,7 +51,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   darkModeButton: {
-    backgroundColor: 'rgb(21, 32, 43)',
+    backgroundColor: '#212121',
     '& label': {
       fontSize: 14,
       color: 'white',
@@ -182,8 +182,8 @@ const ThemeModal = (props) => {
                   className={classNames(classes.button, classes.darkModeButton, mode === 'night' ? classes.active : '')}
                 >
                   <center>
-                    <label>Nightshade</label>
-                    <label>Dark and Shady, reduced brightness</label>
+                    <label>Dark</label>
+                    <label>Lights out, reduced brightness</label>
                   </center>
                 </div>
                 <div
@@ -191,8 +191,8 @@ const ThemeModal = (props) => {
                   className={classNames(classes.button, classes.ligthModeButton, mode === 'light' ? classes.active : '')}
                 >
                   <center>
-                    <label>Daylight</label>
-                    <label>Light and bright, default theme</label>
+                    <label>Light</label>
+                    <label>Daylight and bright, default theme</label>
                   </center>
                 </div>
               </> :
