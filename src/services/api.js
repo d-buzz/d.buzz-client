@@ -34,7 +34,7 @@ const APP_META = {
 const visited = []
 
 export const geRPCNode = () => {
-  const deafultNode = 'https://rpc.ausbit.dev'
+  const deafultNode = 'https://rpc.ecency.com'
   const node = localStorage.getItem('rpc') || deafultNode
   return node
 }
