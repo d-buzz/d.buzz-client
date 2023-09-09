@@ -393,10 +393,11 @@ const SettingsModal = (props) => {
                 <div className="toggle_container">
                   <span className='title'>HIVE API Node</span>
                   <select className={classes.hiveNodeSelect} onChange={handleUpdateHiveNode} value={activeHiveNode}>
-                    <option value="https://hive-api.3speak.tv">hive-api.3speak.tv</option>
-                    <option value="https://api.hive.blog">api.hive.blog</option>
-                    <option value="https://hived.emre.sh">hived.emre.sh</option>
                     <option value="https://rpc.ausbit.dev">rpc.ausbit.dev</option>
+                    <option value="https://api.hive.blog">api.hive.blog</option>
+                    <option value="https://rpc.ecency.com">https://rpc.ecency.com</option>
+                    <option value="https://hive-api.3speak.tv">hive-api.3speak.tv</option>
+                    <option value="https://hived.emre.sh">hived.emre.sh</option>
                   </select>
                 </div>
               </div>

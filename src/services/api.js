@@ -34,7 +34,8 @@ const APP_META = {
 const visited = []
 
 export const geRPCNode = () => {
-  const node = localStorage.getItem('rpc') || 'https://hive-api.3speak.tv'
+  const deafultNode = 'https://rpc.ausbit.dev'
+  const node = localStorage.getItem('rpc') || deafultNode
   return node
 }
 
