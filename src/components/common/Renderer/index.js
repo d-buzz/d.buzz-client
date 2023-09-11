@@ -125,6 +125,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   videoWrapper: {
+    marginTop: 26,
     position: 'relative',
     paddingBottom: '56.25%',
     marginBottom: 10,
