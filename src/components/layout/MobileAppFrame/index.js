@@ -1327,6 +1327,18 @@ const MobileAppFrame = (props) => {
                 
                 )}
                 */}
+                {title === 'Notifications' && count.unread !== 0 && (
+                  <ContainedButton
+                    fontSize={12}
+                    style={{ marginTop: -38 }}
+                    transparent={true}
+                    label="Clear"
+                    loading={loading}
+                    disabled={loading}
+                    className={classes.walletButton}
+                    onClick={handleClearNotification}
+                  />
+                )}
                 {title === 'Notifications' && <NotificationFilter />}
               </Navbar.Brand>
             
@@ -1345,18 +1357,7 @@ const MobileAppFrame = (props) => {
                   />
                 </div>
               )}
-              {title === 'Notifications' && count.unread !== 0 && (
-                <ContainedButton
-                  fontSize={12}
-                  style={{ marginTop: -3 }}
-                  transparent={true}
-                  label="Clear"
-                  loading={loading}
-                  disabled={loading}
-                  className={classes.walletButton}
-                  onClick={handleClearNotification}
-                />
-              )}
+              
               
             </Navbar>
             
