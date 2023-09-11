@@ -185,7 +185,8 @@ const Init = (props) => {
     
     // reset updates modal
     localStorage.removeItem('updatesModal')
-    localStorage.removeItem('rpc')
+    localStorage.removeItem('rpc-setting')
+    localStorage.removeItem('rpc-node')
 
     caches.keys().then((names) => {
       // Delete all the cache files

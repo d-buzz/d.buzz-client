@@ -34,14 +34,31 @@ const APP_META = {
 const visited = []
 
 export const geRPCNode = () => {
-  const deafultNode = 'https://rpc.ecency.com'
-  const node = localStorage.getItem('rpc') || deafultNode
-  return node
+  return new Promise( (resolve) => {
+    if(localStorage.getItem('rpc-setting')) {
+      if(localStorage.getItem('rpc-setting') !== 'auto') {
+        const node = localStorage.getItem('rpc-setting')
+        resolve(node)
+      } else {
+        getBestRpcNode()
+          .then((node) => {
+            resolve(node)
+          })
+      }
+    } else {
+      getBestRpcNode()
+        .then((node) => {
+          resolve(node)
+        })
+    }
+  })
 }
 
 export const setRPCNode = () => {
-  const node = localStorage.getItem('rpc')
-  api.setOptions({url: node})
+  geRPCNode()
+    .then((node) => {
+      api.setOptions({url: node})
+    })
 }
 
 

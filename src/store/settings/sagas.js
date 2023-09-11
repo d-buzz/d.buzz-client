@@ -81,7 +81,7 @@ function* checkVersionRequest(meta) {
 function* getBestRPCNode(meta) {
   const node = yield call(geRPCNode)
 
-  yield call([localStorage, localStorage.setItem], 'rpc', node)
+  yield call([localStorage, localStorage.setItem], 'rpc-node', node)
 
   yield put(setRpcNode(node, meta))
 }
