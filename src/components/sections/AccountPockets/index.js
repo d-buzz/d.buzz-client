@@ -131,12 +131,13 @@ const useStyle = createUseStyles(theme => ({
     },
     '& span': {
       ...theme.font,
-      fontWeight: 'bold',
-      fontFamily: 'Segoe-Bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Segoe',
     },
     '&.Mui-selected': {
       '& span': {
         color: '#e53935',
+        fontFamily: 'Segoe-Bold',
       },
     },
   },
