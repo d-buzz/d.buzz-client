@@ -151,6 +151,9 @@ const useStyles = createUseStyles(theme => ({
   colorGray:{
     color: "rgb(83, 100, 113)",
   },
+  colorGray2:{
+    color: "rgb(113, 118, 123)",
+  },
   fontsize17:{
     fontSize: 17,
   },
@@ -323,6 +326,7 @@ const useStyles = createUseStyles(theme => ({
   },
   paddingBottom15:{
     paddingBottom: 15,
+    fontWeight: '500',
   },
   height5:{
     height:5,
@@ -331,7 +335,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 17,
   },
   fontWeightBold: {
-    fontWeight: 'bolder',
+    fontWeight: '700',
   },
   background606060:{
     background: '#606060',
@@ -1287,7 +1291,7 @@ const MobileAppFrame = (props) => {
                   {activeView !== 'notifications' && (
                     <div className={classes.displayFlex}>
                       <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
-                        <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
+                        <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
                         <div
                           className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
                         ></div>
@@ -1295,7 +1299,7 @@ const MobileAppFrame = (props) => {
                       
                       {!username && (
                         <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                          <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
+                          <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'latest' && mode === 'light' ?classes.background606060:activeView === 'latest' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'latest'?classes.borderRadius10:'' )}
                           ></div>
@@ -1303,7 +1307,7 @@ const MobileAppFrame = (props) => {
                       )}
                       {username && (
                         <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                          <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
+                          <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
                           ></div>
