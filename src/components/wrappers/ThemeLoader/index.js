@@ -9,7 +9,6 @@ import { getTheme as getUserTheme } from 'services/helper'
 const ThemeLoader = (props) => {
   const {
     children,
-    // getSavedThemeRequest,
     generateStyles,
   } = props
 

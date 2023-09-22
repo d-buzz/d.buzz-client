@@ -173,7 +173,7 @@ const LoginModal = (props) => {
     const { name, value } = target
 
     if (name === 'username') {
-      setUsername(value.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''))
+      setUsername('@' + value.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''))
     } else if (name === 'password') {
       setPassword(value.replace(/[\s]/gi, ''))
     }
@@ -220,7 +220,7 @@ const LoginModal = (props) => {
   const handleClickLogin = () => {
     setLoading(true)
     setHasAuthenticationError(false)
-    authenticateUserRequest(username, password, useKeychain, useHAS, useCeramic)
+    authenticateUserRequest(username.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''), password, useKeychain, useHAS, useCeramic)
       .then(({ is_authenticated }) => {
 
         if (useHAS) {
@@ -348,14 +348,13 @@ const LoginModal = (props) => {
                   <React.Fragment>
                     <FormLabel className={classes.label}>Username</FormLabel>
                     <div className={classes.inputField} tabIndex={0} onFocus={() => usernameRef.current.focus()}>
-                      <b className={classes.usernameHint}>@</b>
                       <input
                         ref={usernameRef}
                         className={classes.textField}
                         disabled={loading}
                         name="username"
                         type="text"
-                        value={username}
+                        value={ username || '@' }
                         onChange={onChange}
                         onKeyDown={onKeyDown}
                         />

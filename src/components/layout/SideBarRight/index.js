@@ -60,7 +60,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
-  
+
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -68,11 +68,11 @@ const useStyles = createUseStyles(theme => ({
     height: 'fit-content',
     margin: '5px 0',
 
-    
+
     '& .price_container': {
       display: 'flex',
       alignItems: 'flex-start',
-      
+
       '& .market': {
         display: 'flex',
         alignItems: 'center',
@@ -91,7 +91,7 @@ const useStyles = createUseStyles(theme => ({
         margin: 0,
       },
     },
-    
+
     '& .price_description': {
       margin: 0,
       fontSize: 13,
@@ -186,15 +186,6 @@ const SideBarRight = (props) => {
     },
   ]
 
-  useEffect(() => {
-    (async function resources() {
-      const hivePrice = await getPrice('hive') || 'NA'
-      const hbdPrice = await getPrice('hbd') || 'NA'
-
-      setHivePrice(`$${hivePrice.hive.usd.toFixed(3) || '-'}`)
-      setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3) || '-'}`)
-    })()
-  }, [])
 
   return (
     <React.Fragment>
@@ -247,6 +238,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/tos">Terms of Service</Link>
           <Link to="/org/en/privacy">Privacy Policy</Link>
           <Link to="/org/en/disclaimer">Disclaimer</Link>
+          <Link to="/org/en/FAQs">FAQs</Link>
           <br />
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>

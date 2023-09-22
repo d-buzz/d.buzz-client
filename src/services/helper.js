@@ -5,6 +5,7 @@ import CryptoJS  from 'crypto-js'
 import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import textParser from 'npm-text-parser'
+import axios from 'axios'
 
 const dmp = new diff_match_patch()
 
@@ -263,7 +264,7 @@ export const sendToBerries = (author, theme) => {
   const { mode } = theme
   let color = ''
   if (mode === 'gray') {
-    color = '-g'
+    color = '-n'
   } else if (mode === 'night') {
     color = '-n'
   }
@@ -446,17 +447,37 @@ export const getDefaultVotingWeight = () => {
   return 1
 }
 
+const checkUrlHaveProfileRef = (urlParams) => {
+  const url = urlParams.searchParams.get('ref')
+
+  // need to enumerate the all static ref that is not related to a profile username
+  if (url && url !== 'home' && url !== 'content' && url !== 'tags' && url !== 'replies' && url !== 'SearchPosts' ) {
+    return url
+  }
+  return null
+}
 export const redirectOldLinks = () => {
+  let link
   if(window.location.hash) {
     const regexForOldProfileLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi
     const regexForOldPostLinks = /#\/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)\/c\/[a-zA-Z0-9]+/gi
+
     if(regexForOldProfileLinks.test(window.location.hash) || regexForOldPostLinks.test(window.location.hash)){
-      const link = window.location.href.replace('/#', '').replace('/c', '')
-      window.location = link
+      link = window.location.href.replace('/#', '').replace('/c', '')
     } else {
-      const link = window.location.href.replace('/#', '')
-      window.location = link
+      link = window.location.href.replace('/#', '')
     }
+
+  }else{
+    link = window.location.href
+  }
+
+  const urlParams = new URL(link)
+  const profileRef =  checkUrlHaveProfileRef(urlParams)
+   
+  if (profileRef) {
+    const redirectToProfile = window.location.origin+'/@'+profileRef
+    window.location = redirectToProfile
   }
 }
 
@@ -492,14 +513,24 @@ export const isGifImage = (url) => {
   return url.endsWith('.gif')
 }
 
+export const isImageUrl404 = async (url) => {
+  try {
+    const response = await axios.head(url)
+    return response.status === 404
+  } catch (error) {
+    return true
+  }
+}
+
 export const proxyImage = (url) => {
   const enabled = true
   let imageUrl = url
 
-  if(!!url) {
-    if(enabled && !url?.includes('localhost')) {
-      if(!isGifImage(url)) {
-        imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+  if(enabled) {
+    if(!isGifImage(url)) {
+      imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+      if(isImageUrl404(imageUrl)){
+        imageUrl = url
       }
     }
   }

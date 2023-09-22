@@ -73,10 +73,10 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   username: {
-    color: '#E61C34',
+    color: '#aaa',
     paddingBottom: 0,
     '&:hover': {
-      color: '#E61C34',
+      color: '#aaa',
     },
   },
   usernameStyle: {
@@ -449,7 +449,7 @@ const ReplyList = (props) => {
                   <div className={classes.content}>
                     <Link
                       ref={popoverAnchor}
-                      to={`${authorLink}?ref=replies`}
+                      to={`${authorLink}?from=replies`}
                       className={classNames(classes.link, classes.name)}
                     >
                       {!author.did ? author : author.name || author.did}
