@@ -4,6 +4,7 @@ const TermsConditions = React.lazy(() => import('./components/pages/TermsConditi
 const GetStarted = React.lazy(() => import('./components/pages/GetStarted'))
 const Home = React.lazy(() => import('./components/pages/Home'))
 const Trending = React.lazy(() => import('./components/pages/Trending'))
+const FAQs = React.lazy(() => import('./components/pages/FAQs'))
 const Profile = React.lazy(() => import('./components/pages/Profile'))
 const Content = React.lazy(() => import('./components/pages/Content'))
 const Latest = React.lazy(() => import('./components/pages/Latest'))
@@ -92,11 +93,26 @@ const routes =  [
         component: Notification,
       },
       {
+        path: '/org/en/faqs',
+        exact: true,
+        component: FAQs,
+      },
+      {
         path: '/ug/search',
         component: Search,
         routes: [
           {
             path: '/ug/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/ug/search/trending',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/ug/search/latest',
             exact: true,
             component: SearchPosts,
           },
@@ -113,6 +129,16 @@ const routes =  [
         routes: [
           {
             path: '/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/search/trending',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/search/latest',
             exact: true,
             component: SearchPosts,
           },

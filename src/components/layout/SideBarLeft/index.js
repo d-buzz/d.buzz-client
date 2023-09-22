@@ -44,6 +44,7 @@ import config from 'config'
 import { checkCeramicLogin, getBasicProfile, getIpfsLink } from 'services/ceramic'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import MoreIcon from 'components/elements/Icons/MoreIcon'
+import LogoutModal from 'components/modals/LogoutModal'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -314,7 +315,7 @@ const NavLinkWrapper = (props) => {
 const SideBarLeft = (props) => {
   const {
     user,
-    signoutUserRequest,
+    // signoutUserRequest,
     subscribeRequest,
     loading,
     pollNotifRequest,
@@ -333,6 +334,7 @@ const SideBarLeft = (props) => {
   const [openSwitchModal, setOpenSwitchModal] = useState(false)
   const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const [openLoginModal, setOpenLoginModal] = useState(false)
+  const [openLogoutModal, setOpenLogoutModal] = useState(false)
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -383,11 +385,11 @@ const SideBarLeft = (props) => {
     // eslint-disable-next-line
   }, [])
 
-  const handleClickLogout = () => {
-    signoutUserRequest()
-    generateStyles(getTheme('light'))
-    history.push('/')
-  }
+  // const handleClickLogout = () => {
+  //   signoutUserRequest()
+  //   generateStyles(getTheme('light'))
+  //   history.push('/')
+  // }
 
   const handleClickSubscribe = () => {
     subscribeRequest()
@@ -425,6 +427,14 @@ const SideBarLeft = (props) => {
 
   const hideLoginModal = () => {
     setOpenLoginModal(false)
+  }
+
+  const showLogoutModal = () => {
+    setOpenLogoutModal(true)
+  }
+
+  const hideLogoutModal = () => {
+    setOpenLogoutModal(false)
   }
 
   const refreshLatestRouteData = () => {
@@ -539,7 +549,7 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Profile',
-      path: `/@${username}/t/buzz?ref=nav`,
+      path: `/@${username}/t/buzz?from=nav`,
       icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
       onClick: () => handelClickItem('profile'),
     },
@@ -582,7 +592,7 @@ const SideBarLeft = (props) => {
     },
     {
       name: 'Profile',
-      path: `/@${username}/t/buzz?ref=nav`,
+      path: `/@${username}/t/buzz?from=nav`,
       icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
       onClick: () => handelClickItem('profile'),
     },
@@ -676,7 +686,7 @@ const SideBarLeft = (props) => {
             </div>
             {!fetchingUser && !minify && (
               <div className={classes.logoutButton}>
-                <div className={classes.avatarWrapper} onClick={handleClickLogout}>
+                <div className={classes.avatarWrapper} onClick={showLogoutModal}>
                   <div style={{ display: 'flex', width: '100%' }}>
                     <React.Fragment>
                       <Avatar author={username} avatarUrl={userAvatarUrl} />
@@ -703,7 +713,7 @@ const SideBarLeft = (props) => {
                   classes={{
                     root: classes.logoutButtonMinify,
                   }}
-                  onClick={handleClickLogout}
+                  onClick={showLogoutModal}
                 >
                   <PowerIcon top={0} />
                 </IconButton>
@@ -717,6 +727,7 @@ const SideBarLeft = (props) => {
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} />
+      <LogoutModal show={openLogoutModal} onHide={hideLogoutModal} />
       <MoreMenu
         themeModal={openTheme}
         switchUserModal={openSwitchModal}

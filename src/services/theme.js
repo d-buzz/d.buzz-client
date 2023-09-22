@@ -544,9 +544,7 @@ const light = {
 export const getTheme = (mode) => {
   if(mode === 'night' || mode === 'gray') {
     return night
-  // } else if (mode === 'light') {
-  //   return light
   } else {
-    return night
+    return light
   }
 }

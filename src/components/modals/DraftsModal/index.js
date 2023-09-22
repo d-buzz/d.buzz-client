@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
@@ -118,14 +118,9 @@ const DraftsModal = (props) => {
     drafts,
     setDrafts,
     setSelectedDraft,
+    author,
   } = props
   const classes = useStyles()
-
-  useEffect(() => {
-    
-    localStorage.setItem('drafts', JSON.stringify(drafts))
-
-  }, [drafts])
 
   const handleSelectDraft = (content) => {
     setSelectedDraft(content)
@@ -144,14 +139,13 @@ const DraftsModal = (props) => {
             <center>
               <h6>Drafts</h6>
             </center>
-            {drafts.length < 1 ?
+            {drafts?.length < 1 ?
               <span className={classes.message}>
                 <center>There are no drafts found.</center>
               </span>
-
               :
-
               drafts.map(draft => (
+                draft?.author === author &&
                 <div className={classes.draftItem}>
                   <span className='draft_title' onClick={() => handleSelectDraft(draft.content)}>{draft.title}</span>
                   <span className="draft_delete_button">

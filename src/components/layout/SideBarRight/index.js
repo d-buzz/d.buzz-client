@@ -11,12 +11,9 @@ import {
 } from 'components/elements'
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
-import { getPrice } from 'services/api'
-// import ThemeProvider from 'components/wrappers/ThemeProvider'
 import { isLiteMode } from 'services/helper'
 import { useQuery } from '@apollo/client'
 import { TRENDING_TAGS_QUERY } from 'services/union'
-// const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -60,7 +57,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
-  
+
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -68,11 +65,11 @@ const useStyles = createUseStyles(theme => ({
     height: 'fit-content',
     margin: '5px 0',
 
-    
+
     '& .price_container': {
       display: 'flex',
       alignItems: 'flex-start',
-      
+
       '& .market': {
         display: 'flex',
         alignItems: 'center',
@@ -91,7 +88,7 @@ const useStyles = createUseStyles(theme => ({
         margin: 0,
       },
     },
-    
+
     '& .price_description': {
       margin: 0,
       fontSize: 13,
@@ -186,15 +183,6 @@ const SideBarRight = (props) => {
     },
   ]
 
-  useEffect(() => {
-    (async function resources() {
-      const hivePrice = await getPrice('hive') || 'NA'
-      const hbdPrice = await getPrice('hbd') || 'NA'
-
-      setHivePrice(`$${hivePrice.hive.usd.toFixed(3) || '-'}`)
-      setHbdPrice(`$${hbdPrice.hive_dollar.usd.toFixed(3) || '-'}`)
-    })()
-  }, [])
 
   return (
     <React.Fragment>
@@ -247,11 +235,12 @@ const SideBarRight = (props) => {
           <Link to="/org/en/tos">Terms of Service</Link>
           <Link to="/org/en/privacy">Privacy Policy</Link>
           <Link to="/org/en/disclaimer">Disclaimer</Link>
+          <Link to="/org/en/FAQs">FAQs</Link>
           <br />
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite</i> : ''}</label>
+          <label>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>

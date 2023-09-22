@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
-import { IconButton, Chip, Tab, Tabs } from '@material-ui/core'
-import { createUseStyles } from 'react-jss'
+import {IconButton, Chip, Tab, Tabs} from '@material-ui/core'
+import {createUseStyles} from 'react-jss'
 import {
   Avatar,
   ContainedButton,
   MoreCircleIconRed,
   CustomizedMenu,
 } from 'components/elements'
-import { broadcastNotification } from 'store/interface/actions'
+import {broadcastNotification} from 'store/interface/actions'
 import {
   getProfileRequest,
   getAccountPostsRequest,
@@ -33,13 +33,13 @@ import {
   unfollowRequest,
   setPageFrom,
 } from 'store/posts/actions'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { anchorTop, getUserTheme, proxyImage, errorMessageComposer } from 'services/helper'
-import { pending } from 'redux-saga-thunk'
-import { renderRoutes } from 'react-router-config'
-import { Link, useHistory, useLocation } from 'react-router-dom'
-import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+import {anchorTop, getUserTheme, errorMessageComposer, proxyImage} from 'services/helper'
+import {pending} from 'redux-saga-thunk'
+import {renderRoutes} from 'react-router-config'
+import {Link, useHistory, useLocation} from 'react-router-dom'
+import {clearScrollIndex, openMuteDialog} from 'store/interface/actions'
 import {
   ProfileSkeleton,
   HelmetGenerator,
@@ -53,8 +53,8 @@ import DateRangeIcon from '@material-ui/icons/DateRange'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
-import { checkForCeramicAccount, followUserRequest, unFollowUserRequest } from 'services/ceramic'
-import { getTheme } from 'services/theme'
+import {checkForCeramicAccount, followUserRequest, unFollowUserRequest} from 'services/ceramic'
+import {getTheme} from 'services/theme'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -63,6 +63,7 @@ const useStyles = createUseStyles(theme => ({
     background: 'transparent',
     objectFit: 'cover',
     overFlow: 'hidden',
+    backgroundColor: `${getTheme(getUserTheme()).coverColor}`,
     '& img': {
       height: '100%',
       width: '100%',
@@ -88,7 +89,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '18px !important',
     fontWeight: 'bold',
     padding: 0,
-    fontFamily: 'Segoe-Bold !important',
     ...theme.font,
   },
   userName: {
@@ -124,7 +124,9 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   tabs: {
+    flex: 1,
     textTransform: 'none !important',
+    minWidth: '0px !important',
     '&:hover': {
       ...theme.left.sidebar.items.hover,
       '& span': {
@@ -135,6 +137,7 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: '#ffebee',
     },
     '& span': {
+      width: 'inherit',
       ...theme.font,
       fontWeight: 'bold',
       fontFamily: 'Segoe-Bold',
@@ -149,11 +152,13 @@ const useStyles = createUseStyles(theme => ({
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
     },
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   weblink: {
-    color: '#FF0000',
+    color: '#3ea6ff',
     '&:hover': {
-      color: '#FF0000',
+      color: '#3ea6ff',
     },
   },
   followLinks: {
@@ -165,7 +170,7 @@ const useStyles = createUseStyles(theme => ({
       marginRight: 12,
     },
   },
-  textIcon : {
+  textIcon: {
     ...theme.textIcon,
     display: "inline-flex",
     alignItems: "center",
@@ -176,7 +181,7 @@ const useStyles = createUseStyles(theme => ({
   },
   linkStyle: {
     '& a': {
-      color: 'rgb(255, 0, 0) !important',
+      color: '#3ea6ff !important',
     },
   },
   invalidUser: {
@@ -186,13 +191,13 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#E61C34',
+    ...theme.font,
     fontWeight: 600,
     fontSize: '1.2em',
     gap: 20,
 
     '& .errorHint': {
-      fontSize:'0.8em',
+      fontSize: '0.8em',
       opacity: 0.8,
       fontWeight: 400,
     },
@@ -214,7 +219,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 12,
     padding: '5px 15px',
     borderRadius: 35,
-    background: theme.context.view.backgroundColor ,
+    background: theme.context.view.backgroundColor,
   },
   profileImage: {
     animation: 'skeleton-loading 1s linear infinite alternate',
@@ -259,8 +264,8 @@ const Profile = (props) => {
 
   const history = useHistory()
   const location = useLocation()
-  const { pathname } = location
-  const { username: loginuser, is_authenticated } = user
+  const {pathname} = location
+  const {username: loginuser, is_authenticated} = user
 
   const classes = useStyles()
   const [index, setIndex] = useState(0)
@@ -280,14 +285,14 @@ const Profile = (props) => {
   const [followsYou, setFollowsYou] = useState(false)
 
   useEffect(() => {
-    if(profile.ceramic) {
+    if (profile.ceramic) {
       setCeramicProfile(profile.basic_profile)
       setCeramicUser(true)
     }
   }, [profile])
 
   useEffect(() => {
-    if(checkForCeramicAccount(user.username)) {
+    if (checkForCeramicAccount(user.username)) {
       setActiveCeramicUser(true)
     }
   }, [user])
@@ -298,10 +303,10 @@ const Profile = (props) => {
 
 
   const checkIfRecentlyFollowed = () => {
-    if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
+    if (Array.isArray(recentFollows) && recentFollows.length !== 0) {
       const hasBeenFollowed = recentFollows.filter((item) => item === username).length
 
-      if(hasBeenFollowed) {
+      if (hasBeenFollowed) {
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
       }
@@ -309,10 +314,10 @@ const Profile = (props) => {
   }
 
   const checkIfRecentlyUnfollowed = () => {
-    if(Array.isArray(recentUnfollows) && recentUnfollows.length !== 0) {
+    if (Array.isArray(recentUnfollows) && recentUnfollows.length !== 0) {
       const hasBeenUnfollowed = recentUnfollows.filter((item) => item === username).length
 
-      if(hasBeenUnfollowed) {
+      if (hasBeenUnfollowed) {
         setHasRecentlyUnfollowed(true)
         setHasRecentlyFollowed(false)
       }
@@ -320,13 +325,13 @@ const Profile = (props) => {
   }
 
   const checkIfFollowsYou = () => {
-    if(follows.find(u => u.following === user.username)) {
+    if (follows.find(u => u.following === user.username)) {
       setFollowsYou(true)
     } else {
       setFollowsYou(false)
     }
   }
-  
+
   useEffect(() => {
     checkIfRecentlyFollowed()
     checkIfRecentlyUnfollowed()
@@ -344,31 +349,35 @@ const Profile = (props) => {
 
   const handleTabs = (index) => () => {
     let tab = 'buzz'
-    
-    if(index === 1) {
-      tab = 'comments'
-    } else if (index === 2) {
+    if (index === 1) {
       tab = 'replies'
+    } else if (index === 2) {
+      broadcastNotification('success', `Coming soon`)
+      tab = 'media'
     } else if (index === 3) {
       tab = 'pockets'
+    }else if (index === 4) {
+      broadcastNotification('success', `Coming soon`)
+      tab = 'likes'
     }
     
+
     history.push(`/@${username}/t/${tab}/`)
   }
-  
+
   const openMuteModal = () => {
     openMuteDialog(username)
   }
-  
 
-  const { params } = match
-  const { username } = params
+
+  const {params} = match
+  const {username} = params
 
   useEffect(() => {
     setPageFrom(null)
     const params = queryString.parse(location.search)
 
-    if((!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username)) {
+    if ((!isVisited || (params.from === 'replies' || params.from === 'nav') || username)) {
       anchorTop()
       clearScrollIndex()
       clearProfile()
@@ -393,7 +402,7 @@ const Profile = (props) => {
     // eslint-disable-next-line
   }, [username])
 
-  
+
   const setMoreButtonOptions = () => {
     const moreOptionsList = [
       {
@@ -406,9 +415,14 @@ const Profile = (props) => {
         icon: '',
         onClick: navigateToModerationTools,
       },
+      {
+        label: "Copy Link",
+        icon: '',
+        onClick: copyToClipboard,
+      },
     ]
-    
-    if(username === loginuser) {
+
+    if (username === loginuser) {
       const options = [
         {
           label: "Hidden Buzzes",
@@ -417,36 +431,46 @@ const Profile = (props) => {
         },
       ]
       setMoreOptions([...options, ...moreOptionsList])
-    }else{
+    } else {
       setMoreOptions(moreOptionsList)
     }
   }
-  
+
   useEffect(() => {
-    if(pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
+    if (pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if(pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
+    } else if (pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
       setIndex(1)
-    } else if(pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
+    } else if (pathname.match(/(\/t\/media\/)$|(\/t\/media)$/m)) {
       setIndex(2)
-    } else if(pathname.match(/(\/t\/pockets)$|(\/t\/pockets)$/m) || pathname.match(/(\/t\/pockets\/.*)$|(\/t\/pockets\/.*)$/m)) {
+    } else if (pathname.match(/(\/t\/pockets)$|(\/t\/pockets)$/m) || pathname.match(/(\/t\/pockets\/.*)$|(\/t\/pockets\/.*)$/m)) {
       setIndex(3)
+    } else if (pathname.match(/(\/t\/likes\/)$|(\/t\/likes)$/m)) {
+      setIndex(4)
     } else {
       setIndex(0)
     }
   }, [pathname])
-  
-  
-  const { metadata, stats, hivepower, ceramic, created: accountCreated } = profile || ''
-  const { profile: profileMeta } = metadata || ''
-  const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
-  const { followers, following } = stats || 0
-  
-  const { reputation = 0, isFollowed } = profile
-  
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
-    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
+
+
+  const {metadata, stats, hivepower, ceramic, created: accountCreated} = profile || ''
+  const {profile: profileMeta} = metadata || ''
+  const {name, cover_image, profile_image, location: profile_location, website, about} = profileMeta || ''
+  const {followers, following} = stats || 0
+
+  const {reputation = 0, isFollowed} = profile
+
+  const hostUrl = 'https://d.buzz'
+  const profileLink = `${hostUrl}/@${username}`
+  const hyperlinkProfileLink = `<a href="${profileLink}">${profileLink}</a>`
+
+  const userAbout = about || ceramicProfile.description
+    ? (about ? about : ceramicProfile.description)
+      .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
+      .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
+    : `<span class=${classes.linkStyle}> ${hyperlinkProfileLink} </span>`
+
+  console.log(userAbout)
 
   const [loader, setLoader] = useState(false)
 
@@ -471,29 +495,29 @@ const Profile = (props) => {
   }, [profile_image, cover_image, name, about, profile_location, website])
 
   useEffect(() => {
-    if(userCoverImage === '' && !updatedCover) {
+    if (userCoverImage === '' && !updatedCover) {
       setUserCoverImage(`${window.location.origin}/dbuzz_full.svg`)
     }
     // eslint-disable-next-line
   }, [userCoverImage])
-  
+
   useEffect(() => {
-    if(!checkForCeramicAccount(username)){
+    if (!checkForCeramicAccount(username)) {
       setAvatarUrl(userProfileImage)
-    } else if(checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
+    } else if (checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
       const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
       setAvatarUrl(proxyImage(`https://ipfs.io/ipfs/${avatar}`))
     } else {
       setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
     }
-  // eslint-disable-next-line
-  },[userProfileImage, username, ceramicProfile])
+    // eslint-disable-next-line
+  }, [userProfileImage, username, ceramicProfile])
 
   const followUser = () => {
     setLoader(true)
-    if(!ceramicUser) {
+    if (!ceramicUser) {
       followRequest(username).then((result) => {
-        if(result) {
+        if (result) {
           broadcastNotification('success', `Successfully followed @${username}`)
           setHasRecentlyFollowed(true)
           setHasRecentlyUnfollowed(false)
@@ -519,17 +543,17 @@ const Profile = (props) => {
       })
     }
   }
-  
+
   const unfollowUser = () => {
     setLoader(true)
-    if(!ceramicUser) {
+    if (!ceramicUser) {
       unfollowRequest(username).then((result) => {
-        if(result === -32000){
+        if (result === -32000) {
           const errorMessage = errorMessageComposer('unfollow_user', result)
           broadcastNotification('error', errorMessage)
           setLoader(false)
         } else {
-          if(result) {
+          if (result) {
             broadcastNotification('success', `Successfully Unfollowed @${username}`)
             setHasRecentlyFollowed(false)
             setHasRecentlyUnfollowed(true)
@@ -576,7 +600,7 @@ const Profile = (props) => {
   }
 
   const navigateToBlog = () => {
-    window.open(`https://blog.d.buzz/#/@${username}`, '_blank') 
+    window.open(`https://blog.d.buzz/#/@${username}`, '_blank')
   }
 
   // const handleCopyReferral = () => {
@@ -605,14 +629,33 @@ const Profile = (props) => {
     alert('Coming Soon!')
   }
 
+  const copyToClipboard = () => {
+    const currentURL = window.location.href
+    navigator.clipboard.writeText(currentURL)
+      .then(() => {
+        broadcastNotification('success', 'Link copied to clipboard!')
+        console.log('Link copied to clipboard!')
+      })
+      .catch((error) => {
+        console.error('Failed to copy link:', error)
+      })
+  }
+
   const handleCloseReferalCopy = () => {
     setCopied(false)
   }
 
+  // checks if the user is loaded and if it's invalid
   useEffect(() => {
-    if(!loading) {
-      if(!ceramicProfile) {
-        if(profile.name) {
+    if (profile.isLoaded && profile.invalidUser) {
+      setInvalidUser(true)
+    }
+  }, [profile, username])
+
+  useEffect(() => {
+    if (!loading) {
+      if (!ceramicProfile) {
+        if (profile.name) {
           setInvalidUser(false)
         } else {
           setInvalidUser(true)
@@ -624,50 +667,51 @@ const Profile = (props) => {
     // eslint-disable-next-line
   }, [loading])
 
+
   useEffect(() => {
     const coverImage = document.getElementById('coverImage')
     const profileImage = document.getElementById('profileImage')
-    
-    if(coverImage && profileImage) {
-      
-      if(updatedCover) {
+
+    if (coverImage && profileImage) {
+
+      if (updatedCover) {
         setUserCoverImage('')
         coverImage.src = ''
         coverImage.alt = ''
         coverImage.style.animation = 'skeleton-loading 1s linear infinite alternate'
         setUserCoverImage(`${updatedCover}?${new Date().getTime()}`)
         coverImage.src = `${updatedCover}?${new Date().getTime()}`
-        
+
         setTimeout(() => {
           setUpdatedCover(false)
         }, 1000)
       }
-      
-      if(updatedProfile) {
+
+      if (updatedProfile) {
         setUserProfileImage('')
         profileImage.src = ''
         profileImage.alt = ''
         profileImage.style.animation = 'skeleton-loading 1s linear infinite alternate'
         setUserProfileImage(`${updatedProfile}?${new Date().getTime()}`)
         profileImage.src = `${updatedProfile}?${new Date().getTime()}`
-        
+
         setTimeout(() => {
           setUpdatedProfile(false)
         }, 1000)
       }
     }
   }, [updatedCover, updatedProfile])
-  
+
   const loadCoverImage = () => {
     const coverImage = document.getElementById('coverImage')
     coverImage.style.background = 'none'
     coverImage.style.animation = 'none'
     coverImage.style.opacity = '1'
 
-    if(coverImage.src === '' && !updatedCover) {
+    if (coverImage.src === '' && !updatedCover) {
       coverImage.src = `${window.location.origin}/dbuzz_full.svg`
     } else {
-      if(updatedCover === '') {
+      if (updatedCover === '') {
         coverImage.src = `${window.location.origin}/dbuzz_full.svg`
       }
     }
@@ -679,13 +723,12 @@ const Profile = (props) => {
     profileImage.style.opacity = '1'
     profileImage.style.background = `${getTheme(getUserTheme()).background.primary}`
   }
-
   return (
     <>
       {!invalidUser ?
         <React.Fragment>
-          <HelmetGenerator page='Profile' />
-          <ProfileSkeleton loading={loading} />
+          <HelmetGenerator page="Profile"/>
+          <ProfileSkeleton loading={loading}/>
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
@@ -694,8 +737,9 @@ const Profile = (props) => {
               <div className={classes.wrapper}>
                 <Row>
                   <Col xs="auto">
-                    <div className={classes.avatar} id='avatarContainer'>
-                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id='profileImage'/>
+                    <div className={classes.avatar} id="avatarContainer">
+                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username}
+                        size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id="profileImage"/>
                     </div>
                   </Col>
                   <Col>
@@ -703,17 +747,18 @@ const Profile = (props) => {
                       <React.Fragment>
                         <IconButton
                           size="medium"
-                          style={{ float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
+                          style={{float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
                           onClick={handleOpenMoreOptions}
                         >
                           <MoreCircleIconRed/>
                         </IconButton>
-                        <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions} items={moreOptions}/>
+                        <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions}
+                          items={moreOptions}/>
                         {loginuser === username && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{ float: 'right', marginTop: 5 }}
+                            style={{float: 'right', marginTop: 5}}
                             transparent={true}
                             label="Edit profile"
                             className={classes.button}
@@ -724,7 +769,7 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                            style={{float: 'right', marginTop: 5, marginLeft: 10}}
                             transparent={true}
                             label="Mute"
                             className={classes.button}
@@ -735,7 +780,7 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{ float: 'right', marginTop: 5, marginLeft: 10 }}
+                            style={{float: 'right', marginTop: 5, marginLeft: 10}}
                             transparent={true}
                             label="Unmute"
                             className={classes.button}
@@ -746,8 +791,8 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
-                            disabled={loading} 
-                            style={{ float: 'right', marginTop: 5 }}
+                            disabled={loading}
+                            style={{float: 'right', marginTop: 5}}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
@@ -758,8 +803,8 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
-                            disabled={loading} 
-                            style={{ float: 'right', marginTop: 5 }}
+                            disabled={loading}
+                            style={{float: 'right', marginTop: 5}}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
@@ -771,7 +816,7 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{ float: 'right', marginTop: 5 }}
+                            style={{float: 'right', marginTop: 5}}
                             transparent={true}
                             label="Unfollow"
                             className={classes.button}
@@ -785,20 +830,22 @@ const Profile = (props) => {
               </div>
             </React.Fragment>
           )}
-          <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
+          <div style={{width: '100%', height: 'max-content'}} className={classes.descriptionContainer}>
             <div className={classNames(classes.wrapper)}>
               {!loading && (
                 <React.Fragment>
-                  <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+                  <Row style={{paddingBottom: 0, marginBottom: 0}}>
                     <Col xs="auto">
                       <p className={classNames(classes.paragraph, classes.fullName)}>
-                        {!ceramic ? userName || username : ceramicProfile.name || 'Ceramic User'}&nbsp;{!ceramic && <Chip component="span" style={{marginRight: 5}}  size="small" label={`${reputation} Rep`} />}
-                        {!ceramic && <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />}
+                        {!ceramic ? userName || username : ceramicProfile.name || 'Ceramic User'}&nbsp;{!ceramic &&
+                        <Chip component="span" style={{marginRight: 5}} size="small" label={`${reputation} Rep`}/>}
+                        {!ceramic &&
+                          <Chip component="span" size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`}/>}
                         {followsYou && <div className={classes.followYouText}><span>Follows you</span></div>}
                       </p>
                     </Col>
                   </Row>
-                  <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
+                  <Row style={{paddingBottom: 0, marginBottom: 0}}>
                     {(name || ceramic) &&
                       <Col xs="auto">
                         <p className={classes.userName}>
@@ -809,26 +856,29 @@ const Profile = (props) => {
                   <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                        <div dangerouslySetInnerHTML={{ __html: userBio || ceramicProfile.bio }} />
+                        <div dangerouslySetInnerHTML={{__html: userBio || ceramicProfile.bio}}/>
                       </p>
                     </Col>
                   </Row>
-                  <div style={{ width: '100%', height: 10 }} />
-                  <Row style={{ marginLeft: -5 }}>
+                  <div style={{width: '100%', height: 10}}/>
+                  <Row style={{marginLeft: -5}}>
                     <p className={classes.paragraph}>
                       {accountCreated && (
-                        <span className={classes.textIcon} >
-                          <DateRangeIcon fontSize="small" />&nbsp;
-                          Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
+                        <span className={classes.textIcon}>
+                          <DateRangeIcon fontSize="small"/>&nbsp;
+                          Joined {new Date(accountCreated).toLocaleDateString("en-US", {
+                            month: 'long',
+                            year: 'numeric',
+                          })}
                         </span>
                       )}
                     </p>
                   </Row>
                   <Row>
-                    <Col xs="auto" style={{ marginTop: 10, marginLeft: -5 }}>
+                    <Col xs="auto" style={{marginTop: 10, marginLeft: -5}}>
                       <p className={classes.paragraph}>
                         {(userLocation || ceramicProfile.location) && (
-                          <span className={classes.textIcon} style={{ marginRight: 10 }}>
+                          <span className={classes.textIcon} style={{marginRight: 10}}>
                             <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
                             {userLocation || ceramicProfile.location}
                           </span>
@@ -836,7 +886,8 @@ const Profile = (props) => {
                         {(userWebsite || ceramicProfile.url) && (
                           <span>
                             <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                            <a href={website || ceramicProfile.url} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                            <a href={website || ceramicProfile.url} target="_blank" rel="noopener noreferrer"
+                              className={classes.weblink}>
                               {(userWebsite || ceramicProfile.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                             </a>
                           </span>
@@ -859,7 +910,7 @@ const Profile = (props) => {
                 </React.Fragment>
               )}
             </div>
-            <div className={classes.spacer} />
+            <div className={classes.spacer}/>
             <Tabs
               value={index}
               indicatorColor="primary"
@@ -868,23 +919,29 @@ const Profile = (props) => {
               onChange={onChange}
               className={classes.tabContainer}
             >
-              {!loading && <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />}
-              {!loading && !ceramic && <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />}
-              {!loading && !ceramic &&  <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />}
-              {!loading && !ceramic && <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets" />}
+              {!loading && <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's"/>}
+              {!loading && !ceramic &&
+                <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies"/>}
+              {!loading && !ceramic &&
+                <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Media"/>}
+              {!loading && !ceramic &&
+                <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets"/>}
+              {!loading && !ceramic &&
+                <Tab disableTouchRipple onClick={handleTabs(4)} className={classes.tabs} label="Likes"/>}
             </Tabs>
           </div>
           <React.Fragment>
-            {renderRoutes(route.routes, { author: username })}
+            {renderRoutes(route.routes, {author: username})}
           </React.Fragment>
-          <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
+          <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList}/>
           <EditProfileModal
             show={openEditProfileModal}
             onHide={handleOpenEditProfileModal}
             setUpdatedCover={setUpdatedCover}
             setUpdatedProfile={setUpdatedProfile}
           />
-          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
+          <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={copied} autoHideDuration={6000}
+            onClose={handleCloseReferalCopy}>
             <Alert onClose={handleCloseReferalCopy} severity="success">
               Referal link Successfully copied
             </Alert>
@@ -892,9 +949,9 @@ const Profile = (props) => {
         </React.Fragment> :
 
         <div className={classes.invalidUser}>
-          <PersonIcon className='userIcon' />
-          <span className='errorTitle'>This account doesn’t exist.</span>
-          <span className='errorHint'>Try searching for another one.</span>
+          <PersonIcon className="userIcon"/>
+          <span className="errorTitle">This account doesn’t exist.</span>
+          <span className="errorHint">Try searching for another one.</span>
         </div>}
     </>
   )

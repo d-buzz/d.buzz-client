@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import classNames from 'classnames'
 import {
   CommentIcon,
@@ -11,27 +11,40 @@ import {
   ShareIcon,
   ClipboardIcon,
 } from 'components/elements'
-import { VoteListDialog } from 'components'
+import { VoteListDialog, LoginSignupModal } from 'components'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Chip from '@material-ui/core/Chip'
 import Slider from '@material-ui/core/Slider'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
-import { broadcastNotification } from 'store/interface/actions'
-import { createUseStyles } from 'react-jss'
-import { withStyles } from '@material-ui/core/styles'
-import { upvoteRequest } from 'store/posts/actions'
-import { openReplyModal } from 'store/interface/actions'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { isMobile, isTablet } from 'react-device-detect'
-import { setDefaultVotingWeightRequest } from 'store/settings/actions'
-import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, WhatsappShareButton, WhatsappIcon, LinkedinShareButton, LinkedinIcon, FacebookMessengerIcon, TwitterShareButton, TwitterIcon } from 'react-share'
+import {broadcastNotification} from 'store/interface/actions'
+import {createUseStyles} from 'react-jss'
+import {withStyles} from '@material-ui/core/styles'
+import {upvoteRequest} from 'store/posts/actions'
+import {openReplyModal} from 'store/interface/actions'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {isMobile, isTablet} from 'react-device-detect'
+import {setDefaultVotingWeightRequest} from 'store/settings/actions'
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TelegramShareButton,
+  TelegramIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+  LinkedinShareButton,
+  LinkedinIcon,
+  FacebookMessengerIcon,
+  TwitterShareButton,
+  TwitterIcon,
+} from 'react-share'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
 import { hasUpvoteService } from 'services/api'
+import { getTheme as currentTheme } from 'services/helper'
 
 const PrettoSlider = withStyles({
   root: {
@@ -127,9 +140,9 @@ const useStyles = createUseStyles(theme => ({
     verticalAlign: 'top',
     fontSize: 14,
     ...theme.font,
+    color: theme?.stats?.color,
   },
   actionWrapperSpace: {
-    paddingRight: 30,
     fontSize: 14,
     whiteSpace: 'nowrap',
   },
@@ -140,10 +153,6 @@ const useStyles = createUseStyles(theme => ({
   chip: {
     border: 'none !important',
     float: 'right !important',
-    '& span': {
-      fontFamily: 'Segoe-Bold',
-      marginTop: -5,
-    },
   },
   sliderWrapper: {
     width: '98%',
@@ -153,32 +162,46 @@ const useStyles = createUseStyles(theme => ({
     ...theme.iconButton.hover,
   },
   payout: {
-    color: '#e53935',
+    color: '#000',
+    // fontSize: 14,
+  },
+  payoutWhite: {
+    color: '#fff',
     fontSize: 14,
   },
   votelist: {
     fontSize: 12,
   },
   upvoteWrapper: {
-    width: 220, 
-    height: '90%', 
+    width: 220,
+    height: '90%',
     marginTop: -10,
     backgroundColor: theme.background.primary,
   },
   upvoteInnerWrapper: {
     margin: '0 auto',
     width: '85%',
-    marginBottom: 10, 
+    marginBottom: 10,
   },
   upvoteListWrapper: {
-    width: '100%', 
-    marginBottom: 5, 
+    width: '100%',
+    marginBottom: 5,
   },
   upvoteProfileLinks: {
-    fontSize: 15, 
+    fontSize: 15,
     color: '#d32f2f',
     '&:hover': {
       color: '#d32f2f',
+    },
+  },
+  minifyItems: {
+    textAlign: 'left',
+    width: "100%",
+    marginBottom: 5,
+    ...theme.left.sidebar.items.icons,
+    '& a': {
+      color: theme.left.sidebar.items.color,
+      textDecoration: 'none',
     },
   },
   upvoteDialogTitle: {
@@ -193,7 +216,7 @@ const useStyles = createUseStyles(theme => ({
     '& .MuiPaper-root': {
       background: theme.background.primary,
     },
-    '& ul':{
+    '& ul': {
       background: theme.background.primary,
     },
     '& li': {
@@ -209,20 +232,32 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick, disabled = false,  tooltip = null, statOnClick = () => {} }) => {
+const ActionWrapper = ({
+  className,
+  inlineClass,
+  icon,
+  stat,
+  hideStats,
+  onClick,
+  disabled = false,
+  tooltip = null,
+  statOnClick = () => {
+  },
+}) => {
   return (
     <div className={classNames(className, inlineClass)}>
-      <div className={inlineClass} onClick={disabled ? () => {} : onClick}>
+      <div className={inlineClass} onClick={disabled ? () => {
+      } : onClick}>
         {icon}
       </div>
       {!hideStats && !tooltip && (
-        <div style={{ paddingTop: 2 }} className={inlineClass} onClick={statOnClick}>
+        <div style={{paddingTop: 2}} className={inlineClass} onClick={statOnClick}>
           {stat}
         </div>
       )}
-      {!hideStats  && tooltip && (
-        <Tooltip arrow title={tooltip} placement='top'>
-          <div style={{ paddingTop: 2 }} className={inlineClass} onClick={statOnClick}>
+      {!hideStats && tooltip && (
+        <Tooltip arrow title={tooltip} placement="top">
+          <div style={{paddingTop: 2}} className={inlineClass} onClick={statOnClick}>
             {stat}
           </div>
         </Tooltip>
@@ -232,12 +267,13 @@ const ActionWrapper = ({ className, inlineClass, icon, stat, hideStats, onClick,
 }
 
 const PostActions = (props) => {
+  const mode = currentTheme() 
   const classes = useStyles()
   const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
   const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
   const dbuzzImagesRegex = /(https:\/\/(storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi
   const markdownRegex = /#+\s|[*]|\s+&nbsp;+\s|\s+$/gm
-  
+
   const removeImageLinksFromContent = (content) => {
     return content
       .replace(webImagesRegex, '')
@@ -245,7 +281,7 @@ const PostActions = (props) => {
       .replace(dbuzzImagesRegex, '')
       .replace(markdownRegex, '')
   }
-  
+
   const {
     // eslint-disable-next-line
     postType,
@@ -260,7 +296,7 @@ const PostActions = (props) => {
     user,
     title,
     body = null,
-    bodyWithNoImageLinks = removeImageLinksFromContent((title|| '').replace(/\s\.\.\./, '') + (body || '').replace(/\.\.\.\s/, '')),
+    bodyWithNoImageLinks = removeImageLinksFromContent((title || '').replace(/\s\.\.\./, '') + (body || '').replace(/\.\.\.\s/, '')),
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
@@ -269,7 +305,8 @@ const PostActions = (props) => {
     broadcastNotification,
     disableUpvote = false,
     scrollIndex = 0,
-    recomputeRowIndex = () => {},
+    recomputeRowIndex = () => {
+    },
     max_accepted_payout,
     recentUpvotes,
     upvoteList = [],
@@ -282,11 +319,11 @@ const PostActions = (props) => {
   let payoutAdditionalStyle = {}
   let iconDetails = {}
 
-  if(parseFloat(max_accepted_payout) === 0) {
-    payoutAdditionalStyle = { textDecoration: 'line-through' }
-    iconDetails = <BurnIcon style={{ paddingLeft: 5 }}/>
-  }else{
-    iconDetails = <HiveIcon style={{ paddingLeft: 5 }}/>
+  if (parseFloat(max_accepted_payout) === 0) {
+    payoutAdditionalStyle = {textDecoration: 'line-through'}
+    iconDetails = <BurnIcon style={{paddingLeft: 5}}/>
+  } else {
+    iconDetails = <HiveIcon style={{paddingLeft: 5}}/>
   }
 
   const [showSlider, setShowSlider] = useState(false)
@@ -296,19 +333,30 @@ const PostActions = (props) => {
   const [openCaret, setOpenCaret] = useState(false)
   const [openVoteList, setOpenVoteList] = useState(false)
   const [whenPayout, setWhenPayout] = useState(null)
-  
+
   const [sliderValue, setSliderValue] = useState(defaultUpvoteStrength)
 
-  const { is_authenticated } = user
+  const {is_authenticated} = user
 
-  let extraPadding = { paddingTop: 10 }
+  const [openLoginSignupModal, setOpenLoginSignupModal] = useState(false)
+  const [messageBasedOn, setMessageBasedOn] = useState('upvote')
 
-  if(disableExtraPadding) {
+  const handleClickOpenLoginSignupModal = () => {
+    setOpenLoginSignupModal(true)
+  }
+
+  const handleClickCloseLoginSignupModal = () => {
+    setOpenLoginSignupModal(false)
+  }
+
+  let extraPadding = {paddingTop: 10}
+
+  if (disableExtraPadding) {
     extraPadding = {}
   }
 
   useEffect(() => {
-    if(recentUpvotes && permlink && recentUpvotes.includes(permlink)) {
+    if (recentUpvotes && permlink && recentUpvotes.includes(permlink)) {
       setUpvoted(true)
     }
     // eslint-disable-next-line
@@ -329,14 +377,14 @@ const PostActions = (props) => {
 
   const handleClickShowSlider = () => {
     setShowSlider(true)
-    if(replyRef === 'list') {
+    if (replyRef === 'list') {
       recomputeRowIndex(scrollIndex)
     }
   }
 
   const handleClickHideSlider = () => {
     setShowSlider(false)
-    if(replyRef === 'list') {
+    if (replyRef === 'list') {
       recomputeRowIndex(scrollIndex)
     }
   }
@@ -347,29 +395,29 @@ const PostActions = (props) => {
   }
 
   const handleClickUpvote = () => {
-    if(sliderValue > 0) {
-      if(replyRef === 'list') {
+    if (sliderValue > 0) {
+      if (replyRef === 'list') {
         recomputeRowIndex(scrollIndex)
       }
       setShowSlider(false)
       setLoading(true)
 
-      if(user.useHAS) {
+      if (user.useHAS) {
 
         hasUpvoteService(author, permlink, sliderValue)
 
         import('@mintrawa/hive-auth-client').then((HiveAuth) => {
           HiveAuth.hacMsg.subscribe((m) => {
-            if(isMobile) {
+            if (isMobile) {
               broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
             } else {
               broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
             }
             if (m.type === 'sign_wait') {
-              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
+              console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg ? m.msg.uuid : null)
             }
             if (m.type === 'tx_result') {
-              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
+              console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg ? m.msg : null)
               if (m.msg?.status === 'accepted') {
                 const status = m.msg?.status
                 console.log(status)
@@ -400,8 +448,8 @@ const PostActions = (props) => {
 
       } else {
         upvoteRequest(author, permlink, sliderValue)
-          .then(({ success, errorMessage }) => {
-            if(success) {
+          .then(({success, errorMessage}) => {
+            if (success) {
               setVote(vote + 1)
               setUpvoted(true)
               setLoading(false)
@@ -423,7 +471,7 @@ const PostActions = (props) => {
 
     let bodyContent = body
 
-    if(title?.endsWith('...') && body) {
+    if (title?.endsWith('...') && body) {
       // replace ... from title and body and merge them
       // eslint-disable-next-line
       bodyContent = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
@@ -451,16 +499,16 @@ const PostActions = (props) => {
   const RenderUpvoteList = () => {
     let list = upvoteList
 
-    if(vote > 15) {
+    if (vote > 15) {
       list = list.slice(0, 14)
-      list.push({ voter: `and ${vote - 15} more ...`})
+      list.push({voter: `and ${vote - 15} more ...`})
     }
 
     return (
       <React.Fragment>
-        {list.map(({ voter }) => (
+        {list.map(({voter}) => (
           <React.Fragment>
-            <span className={classes.votelist}>{voter}</span><br />
+            <span className={classes.votelist}>{voter}</span><br/>
           </React.Fragment>
         ))}
       </React.Fragment>
@@ -468,7 +516,7 @@ const PostActions = (props) => {
   }
 
   useEffect(() => {
-    if(payoutAt !== null) {
+    if (payoutAt !== null) {
       getPayoutDate(payoutAt).then((payoutDate) => {
         setWhenPayout(payoutDate)
       })
@@ -476,7 +524,7 @@ const PostActions = (props) => {
   }, [payoutAt])
 
   const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/@${author}/${permlink}`
-  
+
   const handleShareToMessenger = () => {
     window.location = messengerShareLink
   }
@@ -485,17 +533,18 @@ const PostActions = (props) => {
     <React.Fragment>
       {!showSlider && (
         <div>
-          <Row style={{ width: '100%', ...extraPadding }}>
-            <Col xs={!isMobile ? 3 : 3}>
+          <Row style={{width: '100%', ...extraPadding, display: "flex", justifyContent: "space-between"}}>
+            <div style={{ paddingLeft: 15 }}>
               {!loading && upvoted && (
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classes.inline}
-                  icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
+                  icon={<IconButton disabled={true} size="small"><HeartIconRed/></IconButton>}
                   hideStats={hideStats}
-                  tooltip={vote !== 0? <RenderUpvoteList /> : null}
+                  tooltip={vote !== 0 ? <RenderUpvoteList/> : null}
+                  statOnClick={handleClickOpenVoteList}
                   stat={(
-                    <label style={{ marginLeft: 5 }}>
+                    <label style={{marginLeft: 5}}>
                       {vote}
                     </label>
                   )}
@@ -505,13 +554,21 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.icon)}
-                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
+                  icon={<IconButton classes={{ root: classes.iconButton  }}
+                    size="small"><HeartIcon/></IconButton>}
                   hideStats={hideStats}
-                  disabled={!is_authenticated || disableUpvote}
-                  tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
+                  onClick={() => {
+                    if(!is_authenticated || disableUpvote){
+                      setMessageBasedOn('upvote')
+                      handleClickOpenLoginSignupModal()
+                    } else{
+                      handleClickShowSlider()
+                    }
+                  }}
+                  tooltip={vote !== 0 ? <RenderUpvoteList/> : null}
                   statOnClick={handleClickOpenVoteList}
                   stat={(
-                    <label style={{ marginLeft: 5 }}>
+                    <label style={{marginLeft: 5}}>
                       {vote}
                     </label>
                   )}
@@ -521,33 +578,41 @@ const PostActions = (props) => {
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
                   inlineClass={classNames(classes.inline, classes.spinner)}
-                  icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
+                  icon={<Spinner top={0} loading={true} size={20}
+                    style={{display: 'inline-block', verticalAlign: 'top'}}/>}
                   hideStats={hideStats}
                   onClick={handleClickShowSlider}
                   stat={(
-                    <label style={{ marginLeft: 5 }}>
+                    <label style={{marginLeft: 5}}>
                       {voteCount}
                     </label>
                   )}
                 />
               )}
-            </Col>
-            <Col xs={!isMobile ? 'auto' : 3}>
+            </div>
+            <div>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classNames(classes.inline, classes.icon)}
-                icon={<IconButton classes={{ root: classes.iconButton  }} size="small" disabled={!is_authenticated}><CommentIcon /></IconButton>}
+                icon={<IconButton classes={{root: classes.iconButton}} size="small"
+                  disabled={!is_authenticated}><CommentIcon/></IconButton>}
                 hideStats={hideStats}
-                disabled={!is_authenticated}
-                onClick={handleClickReply}
+                onClick={() => {
+                  if(!is_authenticated){
+                    setMessageBasedOn('comment')
+                    handleClickOpenLoginSignupModal()
+                  }else{
+                    handleClickReply()
+                  }
+                }}
                 stat={(
-                  <label style={{ marginLeft: 5 }}>
+                  <label style={{marginLeft: 5}}>
                     {replyCount}
                   </label>
                 )}
               />
-            </Col>
-            <Col xs={!isMobile ? 4 : 4}>
+            </div>
+            <div>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
@@ -555,14 +620,17 @@ const PostActions = (props) => {
                 stat={(
                   <Chip
                     className={classes.chip}
-                    size='small'
+                    size="small"
                     icon={iconDetails}
                     label={(
-                      <span className={classes.payout} style={payoutAdditionalStyle}>
+                      <span
+                        className={mode === 'light' ? classes.payout : classes.payoutWhite}
+                        style={payoutAdditionalStyle}
+                        title={!payout && !isMobile ? 'in 7 days' : (!isMobile && whenPayout ? whenPayout : '')}
+                      >
                         ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
-                        {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
-                        {!payout && isMobile ? '0.00' : ''}&nbsp;
-                        {!isMobile && whenPayout && payout ? whenPayout : ''}
+                        {!payout && !isMobile ? '0.00' : ''}&nbsp;
+                        {!payout && isMobile ? '0.00' : ''}
                       </span>
                     )}
                     color="secondary"
@@ -570,19 +638,19 @@ const PostActions = (props) => {
                   />
                 )}
               />
-            </Col>
-            <Col xs={!isMobile ? 2 : 2} className={!isMobile ? 'pl-5' : ''} >
+            </div>
+            <div>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
                 inlineClass={classes.inline}
                 hideStats={false}
                 stat={(
-                  <IconButton onClick={openMenu} size='small'>
+                  <IconButton  onClick={openMenu} size='small'>
                     <ShareIcon />
                   </IconButton>
                 )}
               />
-              <Col xs="auto">
+              <div>
                 <div className={classNames('right-content', classes.right)}>
                   <Menu
                     anchorEl={openCaret}
@@ -592,43 +660,47 @@ const PostActions = (props) => {
                     className={classes.menu}
                   >
                     <MenuItem className={classes.menuText}>
-                      <TwitterShareButton 
+                      <TwitterShareButton
                         onClick={() => {
                           setOpenCaret(false)
                         }}
                       >
-                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(bodyWithNoImageLinks)} />
+                        <TwitterIcon size={32} round={true} onClick={() => invokeTwitterIntent(bodyWithNoImageLinks)}/>
                       </TwitterShareButton>
                     </MenuItem>
                     <MenuItem className={classes.menuText}>
-                      <FacebookShareButton 
+                      <FacebookShareButton
                         url={`https://d.buzz/@${author}/${permlink}`}
                         quote={bodyWithNoImageLinks}
                         onClick={() => {
                           setOpenCaret(false)
                         }}
                       >
-                        <FacebookIcon size={32} round={true} />
+                        <FacebookIcon size={32} round={true}/>
                       </FacebookShareButton>
                     </MenuItem>
                     {(!isMobile && !isTablet) &&
                       <MenuItem className={classes.menuText} onClick={handleShareToMessenger}>
-                        <FacebookMessengerIcon size={32} round={true} />
+                        <FacebookMessengerIcon size={32} round={true}/>
                       </MenuItem>}
                     <MenuItem>
                       <TelegramShareButton
                         url={' '}
                         title={`${bodyWithNoImageLinks}\n\nhttps://d.buzz/@${author}/${permlink}`}
-                        onClick={() => {setOpenCaret(false)}}>
-                        <TelegramIcon size={32} round={true} />
+                        onClick={() => {
+                          setOpenCaret(false)
+                        }}>
+                        <TelegramIcon size={32} round={true}/>
                       </TelegramShareButton>
                     </MenuItem>
                     <MenuItem>
                       <WhatsappShareButton
                         url={`https://d.buzz/@${author}/${permlink}`}
-                        title={bodyWithNoImageLinks+'\n\n'}
-                        onClick={() => {setOpenCaret(false)}}>
-                        <WhatsappIcon size={32} round={true} />
+                        title={bodyWithNoImageLinks + '\n\n'}
+                        onClick={() => {
+                          setOpenCaret(false)
+                        }}>
+                        <WhatsappIcon size={32} round={true}/>
                       </WhatsappShareButton>
                     </MenuItem>
                     <MenuItem>
@@ -637,17 +709,20 @@ const PostActions = (props) => {
                         title={bodyWithNoImageLinks}
                         summary={bodyWithNoImageLinks}
                         source={'DBuzz'}
-                        onClick={() => {setOpenCaret(false)}}>
-                        <LinkedinIcon size={32} round={true} />
+                        onClick={() => {
+                          setOpenCaret(false)
+                        }}>
+                        <LinkedinIcon size={32} round={true}/>
                       </LinkedinShareButton>
                     </MenuItem>
-                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}} onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author}/${permlink}`)}>
-                      <ClipboardIcon />
+                    <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}}
+                      onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author}/${permlink}`)}>
+                      <ClipboardIcon/>
                     </MenuItem>
                   </Menu>
                 </div>
-              </Col>
-            </Col>
+              </div>
+            </div>
           </Row>
         </div>
       )}
@@ -655,9 +730,9 @@ const PostActions = (props) => {
         <div className={classes.sliderWrapper}>
           <Row>
             <Col xs="auto">
-              <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button} />
+              <ContainedButton onClick={handleClickUpvote} fontSize={14} label={`Upvote (${sliderValue}%)`} className={classes.button}/>
             </Col>
-            <Col style={{ paddingLeft: 0 }}>
+            <Col style={{paddingLeft: 0}}>
               <ContainedButton
                 fontSize={14}
                 transparent={true}
@@ -667,7 +742,7 @@ const PostActions = (props) => {
               />
             </Col>
           </Row>
-          <div style={{ paddingLeft: 10 }}>
+          <div style={{paddingLeft: 10}}>
             <PrettoSlider
               min={1}
               marks={marks}
@@ -682,6 +757,7 @@ const PostActions = (props) => {
         open={openVoteList}
         upvoteList={upvoteList}
       />
+      <LoginSignupModal show={openLoginSignupModal} messageBased={messageBasedOn} onHide={handleClickCloseLoginSignupModal} />
     </React.Fragment>
   )
 }

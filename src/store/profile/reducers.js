@@ -1,5 +1,6 @@
 import {
   GET_PROFILE_SUCCESS,
+  GET_PROFILE_FAILURE,
   GET_ACCOUNT_POSTS_SUCCESS,
   SET_LAST_ACCOUNT_POSTS,
   SET_PROFILE_IS_VISITED,
@@ -38,10 +39,13 @@ import {
   SET_FOLLOW_MUTED_UNFILTERED,
   UPDATE_PROFILE_METADATA,
 } from './actions'
-import { fromJS } from 'immutable'
+import {fromJS} from 'immutable'
 
 const defaultState = fromJS({
-  profile: {},
+  profile: {
+    invalidUser: false,
+    isLoaded: false,
+  },
   posts: [],
   last: [],
   isProfileVisited: false,
@@ -54,26 +58,28 @@ const defaultState = fromJS({
   comments: [],
   lastComment: [],
   mutedList: [],
-  mutedListAll : [],
+  mutedListAll: [],
   blacklistedList: [],
   blacklistedListAll: [],
-  followedMuted : [],
-  followedMutedAll : [],
-  followedBlacklist : [],
-  followedBlacklistAll : [],
-  accountLists : null,
-  listSearchkey : { list_type: null, keyword: null },
-  accountExist : {},
-  muteListLastIndex : 0,
-  blacklistLastIndex : 0,
-  followBlacklistLastIndex : 0,
-  followMutedLastIndex : 0,
+  followedMuted: [],
+  followedMutedAll: [],
+  followedBlacklist: [],
+  followedBlacklistAll: [],
+  accountLists: null,
+  listSearchkey: {list_type: null, keyword: null},
+  accountExist: {},
+  muteListLastIndex: 0,
+  blacklistLastIndex: 0,
+  followBlacklistLastIndex: 0,
+  followMutedLastIndex: 0,
 })
 
-export const profile = (state = defaultState, { type, payload }) => {
+export const profile = (state = defaultState, {type, payload}) => {
   switch (type) {
   case GET_PROFILE_SUCCESS:
-    return state.set('profile', payload)
+    return state.set('profile', {...payload, isLoaded: true, invalidUser: false})
+  case GET_PROFILE_FAILURE:
+    return state.set('profile', {invalidUser: true, isLoaded: true})
   case GET_ACCOUNT_POSTS_SUCCESS:
     return state.set('posts', payload)
   case SET_LAST_ACCOUNT_POSTS:
