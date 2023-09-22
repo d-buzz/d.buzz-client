@@ -21,7 +21,6 @@ import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}`
-const imageUrl = `${appConfig.IMAGE_API}`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`

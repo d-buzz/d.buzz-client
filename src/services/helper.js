@@ -525,12 +525,13 @@ export const isImageUrl404 = async (url) => {
 export const proxyImage = (url) => {
   const enabled = true
   let imageUrl = url
-
-  if(enabled) {
-    if(!isGifImage(url)) {
-      imageUrl = `https://wsrv.nl/?url=${url}&q=50`
-      if(isImageUrl404(imageUrl)){
-        imageUrl = url
+  if(!!url) {
+    if(enabled && !url?.includes('localhost')) {
+      if(!isGifImage(url)) {
+        imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+        if(isImageUrl404(imageUrl)){
+          imageUrl = url
+        }
       }
     }
   }

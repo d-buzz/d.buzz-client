@@ -282,7 +282,6 @@ const Content = (props) => {
 
   useEffect(() => {
     if(title?.endsWith('...') && content && body) {
-    if(title?.endsWith('...') && content && body) {
       // replace ... from title and body and merge them
       // eslint-disable-next-line
       body = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')

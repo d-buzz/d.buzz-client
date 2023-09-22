@@ -11,12 +11,9 @@ import {
 } from 'components/elements'
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
-import { getPrice } from 'services/api'
-// import ThemeProvider from 'components/wrappers/ThemeProvider'
 import { isLiteMode } from 'services/helper'
 import { useQuery } from '@apollo/client'
 import { TRENDING_TAGS_QUERY } from 'services/union'
-// const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -243,7 +240,7 @@ const SideBarRight = (props) => {
           <Link to="/org/en/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} Dataloft, LLC&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite</i> : ''}</label>
+          <label>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>

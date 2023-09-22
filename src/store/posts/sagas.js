@@ -101,7 +101,6 @@ import {
   searchPeople,
   searchPostGeneral,
   uploadImage,
-  uploadImage,
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
@@ -114,7 +113,6 @@ import {
   hasUnFollowService,
   fetchSingleProfile,
   searchHiveTags,
-  searchPostGeneral,
 } from 'services/api'
 import {createPatch, errorMessageComposer, censorLinks, stripHtml} from 'services/helper'
 

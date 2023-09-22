@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {anchorTop, getUserTheme, errorMessageComposer} from 'services/helper'
+import {anchorTop, getUserTheme, errorMessageComposer, proxyImage} from 'services/helper'
 import {pending} from 'redux-saga-thunk'
 import {renderRoutes} from 'react-router-config'
 import {Link, useHistory, useLocation} from 'react-router-dom'
