@@ -6,8 +6,9 @@ import { renderRoutes } from 'react-router-config'
 import { LastLocationProvider } from 'react-router-last-location'
 import { createUseStyles } from 'react-jss'
 import { Helmet } from 'react-helmet'
-import { redirectOldLinks } from 'services/helper'
+import { isLiteMode, redirectOldLinks } from 'services/helper'
 import { useLocation } from 'react-router-dom'
+import ceramicRoutes from 'ceramicRoutes'
 const TwitterEmbedAPI = React.lazy(() => import('components/pages/TwitterEmbedAPI'))
 
 const useStyles = createUseStyles(theme => ({
@@ -52,7 +53,11 @@ const App = () => {
               <Init>
                 <AuthGuard>
                   <AppWrapper>
-                    {renderRoutes(routes)}
+                    {!isLiteMode()
+                      ?
+                      renderRoutes(routes)
+                      :
+                      renderRoutes(ceramicRoutes)}
                   </AppWrapper>
                 </AuthGuard>
               </Init> :

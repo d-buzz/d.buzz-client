@@ -352,7 +352,7 @@ const SideBarLeft = (props) => {
       getBasicProfile(username)
         .then((res) => {
           setCeramicUser(res)
-          setUserAvatarUrl(getIpfsLink(res.images.avatar))
+          setUserAvatarUrl(getIpfsLink(res?.images?.avatar))
           setFetchingUser(false)
         })
     }

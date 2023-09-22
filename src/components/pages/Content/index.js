@@ -551,7 +551,7 @@ const Content = (props) => {
       </Helmet>
       {!loadingContent && author && (
         <React.Fragment>
-          <HelmetGenerator content={title.split('\n')[0]} user={author} />
+          <HelmetGenerator content={!ceramicPost ? title?.split('\n')[0] : title} user={author} />
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
@@ -573,7 +573,7 @@ const Content = (props) => {
               )}
               <Row>
                 <Col xs="auto" style={{ paddingRight: 0 }}>
-                  <Avatar author={author} avatarUrl={ceramicPost ? `https://ipfs.io/ipfs/${ceramicProfile.images?.avatar.replace('ipfs://', '')}` : ''} />
+                  <Avatar author={author} avatarUrl={ceramicPost ? `https://ipfs.io/ipfs/${ceramicProfile?.images?.avatar.replace('ipfs://', '')}` : ''} />
                 </Col>
                 <Col style={{ paddingLeft: 10 }}>
                   <div style={{ marginTop: 2 }}>
@@ -667,7 +667,7 @@ const Content = (props) => {
                 <React.Fragment>
                   {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
-                  {active_votes.length===0 && replyCount===0 &&
+                  {!ceramicPost && active_votes?.length===0 && replyCount===0 &&
                     <MenuItem
                       style={{ backgroundColor: '#E61C34' }}
                       onClick={handleClickDeleteBuzz}

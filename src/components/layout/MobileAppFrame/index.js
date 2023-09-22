@@ -327,7 +327,7 @@ const MobileAppFrame = (props) => {
   // const avatarStyle = { float: 'right' }
 
   const handelClickItem = (name) => {
-    setActiveView(name)
+    setActiveView(name.toLowerCase())
     switch(name) {
     case 'Home':
       refreshHomeRouteData()

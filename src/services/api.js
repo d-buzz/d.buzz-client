@@ -63,6 +63,10 @@ export const removeFootNote = (data) => {
   })
 }
 
+export const deepClone = (obj) => {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 export const callBridge = async(method, params, appendParams = true) => {
   return new Promise((resolve, reject) => {
 
@@ -275,6 +279,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
     } else {
       getUserPostRequest(account)
         .then(res => {
+          console.log(res)
           resolve(res.posts)
         })
     }
@@ -1432,7 +1437,7 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
-export const createPermlink = (title) => {
+export const createPermlink = () => {
   const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
   return permlink
 }

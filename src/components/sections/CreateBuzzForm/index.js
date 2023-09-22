@@ -1176,7 +1176,7 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const handleClickPublishPost = () => {
+  const handlePublishPost = () => {
 
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
@@ -1262,7 +1262,7 @@ const CreateBuzzForm = (props) => {
         // alert('ceramic!!!')
         setBuzzLoading(true)
         setBuzzing(true)
-        createPostRequest(user.username, '', buzzContent)
+        createPostRequest(user.username, buzzContent)
           .then((data) => {
             // console.log(data)
             if(data) {
@@ -1475,8 +1475,8 @@ const CreateBuzzForm = (props) => {
 
       getBasicProfile(user.username)
         .then((res) => {
-          if(res.images) {
-            setAvatarUrl(getIpfsLink(res.images.avatar))
+          if(res?.images) {
+            setAvatarUrl(getIpfsLink(res?.images?.avatar))
           }
         })
     }
@@ -1732,7 +1732,7 @@ const CreateBuzzForm = (props) => {
                     disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
                     label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
                     style={{margin: 0}}
-                    onClick={handleClickPublishPost}
+                    onClick={handlePublishPost}
                   />
                 </div>
               </span>
@@ -1765,7 +1765,7 @@ const CreateBuzzForm = (props) => {
               disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
               label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
               style={{margin: 0}}
-              onClick={handleClickPublishPost}
+              onClick={handlePublishPost}
             />
           </div>
         </div>}        

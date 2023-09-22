@@ -269,8 +269,8 @@ const ReplyFormModal = (props) => {
         setReplyRef(replyRef)
         if(author.did) {
           setCeramicAuthor(author)
-          if(author.images) {
-            setAuthorAvatarUrl(getIpfsLink(author.images.avatar))
+          if(author?.images) {
+            setAuthorAvatarUrl(getIpfsLink(author?.images?.avatar))
           }
         }
         setAuthor(author.did ? author.did : author)
@@ -295,8 +295,8 @@ const ReplyFormModal = (props) => {
         .then((res) => {
           setCeramicUser(res)
           setFetchingProfile(false)
-          if(res.images) {
-            setUserAvatarUrl(getIpfsLink(res.images.avatar))
+          if(res?.images) {
+            setUserAvatarUrl(getIpfsLink(res?.images?.avatar))
           }
         })
     } else {
@@ -312,7 +312,7 @@ const ReplyFormModal = (props) => {
           setCeramicAuthor(res)
           setFetchingProfile(false)
           if(res.images) {
-            setAuthorAvatarUrl(getIpfsLink(res.images.avatar))
+            setAuthorAvatarUrl(getIpfsLink(res?.images?.avatar))
           }
         })
     } else {
@@ -446,27 +446,27 @@ const ReplyFormModal = (props) => {
           })
       } else {
         generateHiveCeramicParentId(author, permlink)
-        .then((parent_id) => {
-          replyRequest(parent_id, author, content)
-            .then((data) => {
-              if(data) {
-                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-                setReplyDone(true)
-                closeReplyModal()
-                setReplying(false)
+          .then((parent_id) => {
+            replyRequest(parent_id, author, content)
+              .then((data) => {
+                if(data) {
+                  broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                  setReplyDone(true)
+                  closeReplyModal()
+                  setReplying(false)
+                  setLoading(false)
+                } else {
+                  setReplying(false)
+                  setLoading(false)
+                  broadcastNotification('error', 'There was an error while replying to this buzz.')
+                }
+              })
+              .catch((errorMessage) => {
                 setLoading(false)
-              } else {
                 setReplying(false)
-                setLoading(false)
-                broadcastNotification('error', 'There was an error while replying to this buzz.')
-              }
-            })
-            .catch((errorMessage) => {
-              setLoading(false)
-              setReplying(false)
-              broadcastNotification('error', errorMessage)
-            })
-        })
+                broadcastNotification('error', errorMessage)
+              })
+          })
       }
     }
   }

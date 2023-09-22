@@ -31,7 +31,6 @@ import { FacebookShareButton, FacebookIcon, TelegramShareButton, TelegramIcon, W
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
-import { checkForCeramicAccount } from 'services/ceramic'
 import { hasUpvoteService } from 'services/api'
 
 const PrettoSlider = withStyles({
@@ -248,7 +247,8 @@ const PostActions = (props) => {
   }
   
   const {
-    type,
+    // eslint-disable-next-line
+    postType,
     author,
     permlink,
     voteCount,
@@ -486,55 +486,52 @@ const PostActions = (props) => {
       {!showSlider && (
         <div>
           <Row style={{ width: '100%', ...extraPadding }}>
-            {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&
-              <Col xs={!isMobile ? 3 : 3}>
-                {!loading && upvoted && (
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classes.inline}
-                    icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
-                    hideStats={hideStats}
-                    tooltip={vote !== 0? <RenderUpvoteList /> : null}
-                    statOnClick={handleClickOpenVoteList}
-                    stat={(
-                      <label style={{ marginLeft: 5 }}>
-                        {vote}
-                      </label>
-                    )}
-                  />
-                )}
-                {!loading && !upvoted && (
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classNames(classes.inline, classes.icon)}
-                    icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
-                    hideStats={hideStats}
-                    disabled={!is_authenticated || disableUpvote}
-                    onClick={handleClickShowSlider}
-                    tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
-                    statOnClick={handleClickOpenVoteList}
-                    stat={(
-                      <label style={{ marginLeft: 5 }}>
-                        {vote}
-                      </label>
-                    )}
-                  />
-                )}
-                {loading && (
-                  <ActionWrapper
-                    className={classes.actionWrapperSpace}
-                    inlineClass={classNames(classes.inline, classes.spinner)}
-                    icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
-                    hideStats={hideStats}
-                    onClick={handleClickShowSlider}
-                    stat={(
-                      <label style={{ marginLeft: 5 }}>
-                        {voteCount}
-                      </label>
-                    )}
-                  />
-                )}
-              </Col>}
+            <Col xs={!isMobile ? 3 : 3}>
+              {!loading && upvoted && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classes.inline}
+                  icon={<IconButton disabled={true} size="small"><HeartIconRed /></IconButton>}
+                  hideStats={hideStats}
+                  tooltip={vote !== 0? <RenderUpvoteList /> : null}
+                  stat={(
+                    <label style={{ marginLeft: 5 }}>
+                      {vote}
+                    </label>
+                  )}
+                />
+              )}
+              {!loading && !upvoted && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classNames(classes.inline, classes.icon)}
+                  icon={<IconButton classes={{ root: classes.iconButton  }} disabled={!is_authenticated || disableUpvote} size="small"><HeartIcon /></IconButton>}
+                  hideStats={hideStats}
+                  disabled={!is_authenticated || disableUpvote}
+                  tooltip={vote !== 0 ? <RenderUpvoteList /> : null}
+                  statOnClick={handleClickOpenVoteList}
+                  stat={(
+                    <label style={{ marginLeft: 5 }}>
+                      {vote}
+                    </label>
+                  )}
+                />
+              )}
+              {loading && (
+                <ActionWrapper
+                  className={classes.actionWrapperSpace}
+                  inlineClass={classNames(classes.inline, classes.spinner)}
+                  icon={<Spinner top={0} loading={true} size={20} style={{ display: 'inline-block', verticalAlign: 'top' }} />}
+                  hideStats={hideStats}
+                  onClick={handleClickShowSlider}
+                  stat={(
+                    <label style={{ marginLeft: 5 }}>
+                      {voteCount}
+                    </label>
+                  )}
+                />
+              )}
+            </Col>
             <Col xs={!isMobile ? 'auto' : 3}>
               <ActionWrapper
                 className={classes.actionWrapperSpace}
@@ -550,31 +547,30 @@ const PostActions = (props) => {
                 )}
               />
             </Col>
-            {!checkForCeramicAccount(user.username)  && type !== 'CERAMIC' &&
-              <Col xs={!isMobile ? 4 : 4}>
-                <ActionWrapper
-                  className={classes.actionWrapperSpace}
-                  inlineClass={classes.inline}
-                  hideStats={false}
-                  stat={(
-                    <Chip
-                      className={classes.chip}
-                      size='small'
-                      icon={iconDetails}
-                      label={(
-                        <span className={classes.payout} style={payoutAdditionalStyle}>
-                          ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
-                          {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
-                          {!payout && isMobile ? '0.00' : ''}&nbsp;
-                          {!isMobile && whenPayout && payout ? whenPayout : ''}
-                        </span>
-                      )}
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  )}
-                />
-              </Col>}
+            <Col xs={!isMobile ? 4 : 4}>
+              <ActionWrapper
+                className={classes.actionWrapperSpace}
+                inlineClass={classes.inline}
+                hideStats={false}
+                stat={(
+                  <Chip
+                    className={classes.chip}
+                    size='small'
+                    icon={iconDetails}
+                    label={(
+                      <span className={classes.payout} style={payoutAdditionalStyle}>
+                        ${payout > 1 && parseFloat(max_accepted_payout) === 1 ? '1.00' : payout === '0' ? '0.00' : payout !== 0 ? payout : ''}&nbsp;
+                        {!payout && !isMobile ? '0.00 in 7 days' : ''}&nbsp;
+                        {!payout && isMobile ? '0.00' : ''}&nbsp;
+                        {!isMobile && whenPayout && payout ? whenPayout : ''}
+                      </span>
+                    )}
+                    color="secondary"
+                    variant="outlined"
+                  />
+                )}
+              />
+            </Col>
             <Col xs={!isMobile ? 2 : 2} className={!isMobile ? 'pl-5' : ''} >
               <ActionWrapper
                 className={classes.actionWrapperSpace}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import classNames from 'classnames'
-import { IconButton, Chip, Tab, Tabs } from '@material-ui/core'
+import { IconButton, Tab, Tabs } from '@material-ui/core'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -12,55 +12,36 @@ import {
 } from 'components/elements'
 import { broadcastNotification } from 'store/interface/actions'
 import {
-  getProfileRequest,
-  getAccountPostsRequest,
-  setProfileIsVisited,
-  getAccountRepliesRequest,
-  getAccountCommentsRequest,
-  clearAccountPosts,
-  clearAccountReplies,
-  getFollowersRequest,
-  clearProfile,
-  getFollowingRequest,
-  clearAccountFollowers,
-  clearAccountFollowing,
-  clearAccountComments,
-  clearAccountBlacklist,
-  clearAccountFollowedBlacklist,
-} from 'store/profile/actions'
-import {
-  followRequest,
-  unfollowRequest,
   setPageFrom,
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { anchorTop, getUserTheme, proxyImage, errorMessageComposer } from 'services/helper'
+import { getUserTheme, proxyImage } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
-import { Link, useHistory, useLocation } from 'react-router-dom'
-import { clearScrollIndex, openMuteDialog } from 'store/interface/actions'
+import { useHistory, useLocation } from 'react-router-dom'
+import { openMuteDialog } from 'store/interface/actions'
 import {
   ProfileSkeleton,
   HelmetGenerator,
   HiddenBuzzListModal,
   EditProfileModal,
 } from 'components'
-import queryString from 'query-string'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
-import DateRangeIcon from '@material-ui/icons/DateRange'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
-import { checkForCeramicAccount, followUserRequest, unFollowUserRequest } from 'services/ceramic'
+import { getIpfsLink, unFollowUserRequest } from 'services/ceramic'
 import { getTheme } from 'services/theme'
+import { PROFILE_QUERY } from 'services/union'
+import { useQuery } from '@apollo/client'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
     height: 270,
     width: '100%',
-    background: 'transparent',
+    backgroundColor: `${getTheme(getUserTheme()).coverColor}`,
     objectFit: 'cover',
     overFlow: 'hidden',
     '& img': {
@@ -221,40 +202,16 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const Profile = (props) => {
+const LiteProfile = (props) => {
   const {
     match,
-    getProfileRequest,
-    getAccountPostsRequest,
-    setProfileIsVisited,
-    getAccountRepliesRequest,
-    getFollowersRequest,
-    isVisited,
-    profile,
-    loading,
     route,
-    clearAccountPosts,
-    clearProfile,
-    clearAccountReplies,
-    getFollowingRequest,
-    clearAccountFollowers,
-    clearAccountFollowing,
-    clearAccountBlacklist,
-    clearAccountFollowedBlacklist,
     setPageFrom,
     user,
-    followRequest,
-    unfollowRequest,
     loadingFollow,
-    recentFollows,
-    recentUnfollows,
     broadcastNotification,
-    clearScrollIndex,
     openMuteDialog,
     mutelist,
-    getAccountCommentsRequest,
-    clearAccountComments,
-    follows,
   } = props
 
   const history = useHistory()
@@ -263,6 +220,9 @@ const Profile = (props) => {
   const { username: loginuser, is_authenticated } = user
 
   const classes = useStyles()
+  // eslint-disable-next-line
+  const [profile, setProfile] = useState({})
+
   const [index, setIndex] = useState(0)
   const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
   const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
@@ -271,78 +231,74 @@ const Profile = (props) => {
 
   const [moreOptions, setMoreOptions] = useState([])
   const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
+  // eslint-disable-next-line
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [copied, setCopied] = useState(false)
+  // eslint-disable-next-line
   const [invalidUser, setInvalidUser] = useState(false)
-  const [ceramicUser, setCeramicUser] = useState(false)
-  const [activeCeramicUser, setActiveCeramicUser] = useState(false)
-  const [ceramicProfile, setCeramicProfile] = useState({})
+
+  // eslint-disable-next-line
+  const [followers, setFollowers] = useState([])
+  // eslint-disable-next-line
+  const [following, setFollowing] = useState([])
+  // eslint-disable-next-line
   const [followsYou, setFollowsYou] = useState(false)
 
-  useEffect(() => {
-    if(profile.ceramic) {
-      setCeramicProfile(profile.basic_profile)
-      setCeramicUser(true)
-    }
-  }, [profile])
+
+  const [loader, setLoader] = useState(false)
+
+  // eslint-disable-next-line
+  const [userProfileImage, setUserProfileImage] = useState()
+  // eslint-disable-next-line
+  const [userCoverImage, setUserCoverImage] = useState()
+  // eslint-disable-next-line
+  const [userName, setUserName] = useState()
+  // eslint-disable-next-line
+  const [userBio, setUserBio] = useState()
+  // eslint-disable-next-line
+  const [userLocation, setUserLocation] = useState()
+  // eslint-disable-next-line
+  const [userWebsite, setUserWebsite] = useState()
+  // eslint-disable-next-line
+  const [isFollowed, setIsFollowed] = useState(false)
+
+  const [updatedCover, setUpdatedCover] = useState(false)
+  const [updatedProfile, setUpdatedProfile] = useState(false)
+  
+  const { params } = match
+  const { username } = params
+
+  // eslint-disable-next-line
+  const { loading, error, data={}, refetch } = useQuery(PROFILE_QUERY, {
+    variables: { id: loginuser === username ? loginuser : username},
+  })
 
   useEffect(() => {
-    if(checkForCeramicAccount(user.username)) {
-      setActiveCeramicUser(true)
+    if(!loading) {
+      if(data?.profile) {
+        const { profile } = data
+        setUserName(profile.name)
+        setUserBio(profile.about)
+        setUserLocation(profile.location)
+        setUserWebsite(profile.website)
+        setUserProfileImage(getIpfsLink(profile.images?.avatar))
+        setUserCoverImage(getIpfsLink(profile.images?.cover))
+        setAvatarUrl(getIpfsLink(profile.images?.avatar))
+      }
     }
-  }, [user])
+  }, [data, loading])
 
   const reloadProfile = () => {
-    getProfileRequest(username)
+    refetch()
   }
-
-
-  const checkIfRecentlyFollowed = () => {
-    if(Array.isArray(recentFollows) && recentFollows.length !== 0) {
-      const hasBeenFollowed = recentFollows.filter((item) => item === username).length
-
-      if(hasBeenFollowed) {
-        setHasRecentlyFollowed(true)
-        setHasRecentlyUnfollowed(false)
-      }
-    }
-  }
-
-  const checkIfRecentlyUnfollowed = () => {
-    if(Array.isArray(recentUnfollows) && recentUnfollows.length !== 0) {
-      const hasBeenUnfollowed = recentUnfollows.filter((item) => item === username).length
-
-      if(hasBeenUnfollowed) {
-        setHasRecentlyUnfollowed(true)
-        setHasRecentlyFollowed(false)
-      }
-    }
-  }
-
-  const checkIfFollowsYou = () => {
-    if(follows.find(u => u.following === user.username)) {
-      setFollowsYou(true)
-    } else {
-      setFollowsYou(false)
-    }
-  }
-  
-  useEffect(() => {
-    checkIfRecentlyFollowed()
-    checkIfRecentlyUnfollowed()
-    // eslint-disable-next-line
-  }, [recentFollows, recentUnfollows, loading])
-
-  useEffect(() => {
-    checkIfFollowsYou()
-    // eslint-disable-next-line
-  }, [follows, user, loading])
 
   const onChange = (e, index) => {
     setIndex(index)
   }
 
   const handleTabs = (index) => () => {
+    refetch()
+
     let tab = 'buzz'
     
     if(index === 1) {
@@ -359,35 +315,9 @@ const Profile = (props) => {
   const openMuteModal = () => {
     openMuteDialog(username)
   }
-  
-
-  const { params } = match
-  const { username } = params
 
   useEffect(() => {
     setPageFrom(null)
-    const params = queryString.parse(location.search)
-
-    if((!isVisited || (params.ref && (params.ref === 'replies' || params.ref === 'nav')) || username)) {
-      anchorTop()
-      clearScrollIndex()
-      clearProfile()
-      clearAccountPosts()
-      clearAccountReplies()
-      clearAccountFollowers()
-      clearAccountFollowing()
-      clearAccountComments()
-      clearAccountBlacklist()
-      clearAccountFollowedBlacklist()
-      setProfileIsVisited()
-      getProfileRequest(username)
-      getAccountPostsRequest(username)
-      getAccountCommentsRequest(username)
-      getAccountRepliesRequest(username)
-      getFollowersRequest(username)
-      getFollowingRequest(username)
-    }
-
     setMoreButtonOptions()
 
     // eslint-disable-next-line
@@ -435,40 +365,6 @@ const Profile = (props) => {
       setIndex(0)
     }
   }, [pathname])
-  
-  
-  const { metadata, stats, hivepower, ceramic, created: accountCreated } = profile || ''
-  const { profile: profileMeta } = metadata || ''
-  const { name, cover_image, profile_image, location: profile_location, website, about } = profileMeta || ''
-  const { followers, following } = stats || 0
-  
-  const { reputation = 0, isFollowed } = profile
-  
-  const userAbout = about || ceramicProfile.description ? (about ? about : ceramicProfile.description)
-    .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>`)
-    .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<b class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></b>` ) : ''
-
-  const [loader, setLoader] = useState(false)
-
-  const [userProfileImage, setUserProfileImage] = useState(profile_image)
-  const [userCoverImage, setUserCoverImage] = useState(cover_image)
-  const [userName, setUserName] = useState(name)
-  const [userBio, setUserBio] = useState(about)
-  const [userLocation, setUserLocation] = useState(profile_location)
-  const [userWebsite, setUserWebsite] = useState(website)
-
-  const [updatedCover, setUpdatedCover] = useState(false)
-  const [updatedProfile, setUpdatedProfile] = useState(false)
-
-  useEffect(() => {
-    setUserProfileImage(profile_image)
-    setUserCoverImage(cover_image)
-    setUserName(name)
-    setUserBio(userAbout)
-    setUserLocation(profile_location)
-    setUserWebsite(website)
-    // eslint-disable-next-line
-  }, [profile_image, cover_image, name, about, profile_location, website])
 
   useEffect(() => {
     if(userCoverImage === '' && !updatedCover) {
@@ -476,86 +372,23 @@ const Profile = (props) => {
     }
     // eslint-disable-next-line
   }, [userCoverImage])
-  
-  useEffect(() => {
-    if(!checkForCeramicAccount(username)){
-      setAvatarUrl(userProfileImage)
-    } else if(checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
-      const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
-      setAvatarUrl(proxyImage(`https://ipfs.io/ipfs/${avatar}`))
-    } else {
-      setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
-    }
-  // eslint-disable-next-line
-  },[userProfileImage, username, ceramicProfile])
 
-  const followUser = () => {
-    setLoader(true)
-    if(!ceramicUser) {
-      followRequest(username).then((result) => {
-        if(result) {
-          broadcastNotification('success', `Successfully followed @${username}`)
-          setHasRecentlyFollowed(true)
-          setHasRecentlyUnfollowed(false)
-          setLoader(false)
-          reloadProfile()
-        } else {
-          broadcastNotification('error', `Failed following @${username}`)
-        }
-      }).catch((e) => {
-        console.log(e)
-        setLoader(false)
-      })
-    } else {
-      followUserRequest(username).then(res => {
-        broadcastNotification('success', `Successfully followed @${username}`)
-        setHasRecentlyFollowed(true)
-        setHasRecentlyUnfollowed(false)
-        setLoader(false)
-        reloadProfile()
-      }).catch((e) => {
-        console.log(e.message)
-        setLoader(false)
-      })
-    }
-  }
+  // const followUser = () => {
+  //   setLoader(true)
+  // }
   
   const unfollowUser = () => {
     setLoader(true)
-    if(!ceramicUser) {
-      unfollowRequest(username).then((result) => {
-        if(result === -32000){
-          const errorMessage = errorMessageComposer('unfollow_user', result)
-          broadcastNotification('error', errorMessage)
-          setLoader(false)
-        } else {
-          if(result) {
-            broadcastNotification('success', `Successfully Unfollowed @${username}`)
-            setHasRecentlyFollowed(false)
-            setHasRecentlyUnfollowed(true)
-            setLoader(false)
-            reloadProfile()
-          } else {
-            broadcastNotification('error', `Failed Unfollowing @${username}`)
-            setLoader(false)
-          }
-        }
-      }).catch((e) => {
-        console.log(e)
-        setLoader(false)
-      })
-    } else {
-      unFollowUserRequest(username).then(res => {
-        broadcastNotification('success', `Successfully Unfollowed @${username}`)
-        setHasRecentlyFollowed(false)
-        setHasRecentlyUnfollowed(true)
-        setLoader(false)
-        reloadProfile()
-      }).catch((e) => {
-        console.log(e.message)
-        setLoader(false)
-      })
-    }
+    unFollowUserRequest(username).then(res => {
+      broadcastNotification('success', `Successfully Unfollowed @${username}`)
+      setHasRecentlyFollowed(false)
+      setHasRecentlyUnfollowed(true)
+      setLoader(false)
+      reloadProfile()
+    }).catch((e) => {
+      console.log(e.message)
+      setLoader(false)
+    })
   }
 
   const handleClickOpenHiddenBuzzList = () => {
@@ -579,28 +412,6 @@ const Profile = (props) => {
     window.open(`https://blog.d.buzz/#/@${username}`, '_blank') 
   }
 
-  // const handleCopyReferral = () => {
-  //   const referralUrl = `https://join.d.buzz/@${username}`
-  //   navigator.clipboard.writeText(referralUrl)
-  //   setCopied(true)
-  // }
-
-  // const navigateToBlackListed = () => {
-  //   history.push(`/@${username}/lists/blacklisted/users`)
-  // }
-
-  // const navigateToFollowedBlacklist = () => {
-  //   history.push(`/@${username}/lists/blacklisted/followed`)
-  // }
-
-  // const navigateToMutedUsers = () => {
-  //   history.push(`/@${username}/lists/muted/users`)
-  // }
-
-  // const navigateToFollowedMuted = () => {
-  //   history.push(`/@${username}/lists/muted/followed`)
-  // }
-
   const navigateToModerationTools = () => {
     alert('Coming Soon!')
   }
@@ -608,21 +419,6 @@ const Profile = (props) => {
   const handleCloseReferalCopy = () => {
     setCopied(false)
   }
-
-  useEffect(() => {
-    if(!loading) {
-      if(!ceramicProfile) {
-        if(profile.name) {
-          setInvalidUser(false)
-        } else {
-          setInvalidUser(true)
-        }
-      }
-    } else {
-      setInvalidUser(false)
-    }
-    // eslint-disable-next-line
-  }, [loading])
 
   useEffect(() => {
     const coverImage = document.getElementById('coverImage')
@@ -689,13 +485,13 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                <img src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && proxyImage(`https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`)} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
+                {userCoverImage && <img src={proxyImage(userCoverImage)} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />}
               </div>
               <div className={classes.wrapper}>
                 <Row>
                   <Col xs="auto">
                     <div className={classes.avatar} id='avatarContainer'>
-                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username} size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id='profileImage'/>
+                      <Avatar className={classes.avatarStyles} border={true} height="135" size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id='profileImage'/>
                     </div>
                   </Col>
                   <Col>
@@ -720,7 +516,7 @@ const Profile = (props) => {
                             onClick={handleOpenEditProfileModal}
                           />
                         )}
-                        {!ceramicUser && !activeCeramicUser && loginuser !== username && !mutelist.includes(username) && (
+                        {loginuser !== username && !mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -731,7 +527,7 @@ const Profile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {!ceramicUser && !activeCeramicUser && loginuser !== username && mutelist.includes(username) && (
+                        {/* {loginuser !== username && mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -742,7 +538,7 @@ const Profile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && !ceramicUser && !activeCeramicUser && (
+                        {!isFollowed && (loginuser !== username) && (
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
@@ -753,19 +549,7 @@ const Profile = (props) => {
                             className={classes.button}
                             onClick={followUser}
                           />
-                        )}
-                        {!isFollowed && ceramicUser && activeCeramicUser && (loginuser !== username) && (
-                          <ContainedButton
-                            fontSize={14}
-                            loading={loadingFollow || loader}
-                            disabled={loading} 
-                            style={{ float: 'right', marginTop: 5 }}
-                            transparent={true}
-                            label="Follow"
-                            className={classes.button}
-                            onClick={followUser}
-                          />
-                        )}
+                        )} */}
                         {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
                           <ContainedButton
                             fontSize={14}
@@ -792,59 +576,46 @@ const Profile = (props) => {
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                     <Col xs="auto">
                       <p className={classNames(classes.paragraph, classes.fullName)}>
-                        {!ceramic ? userName || username : ceramicProfile.name || 'Ceramic User'}&nbsp;{!ceramic && <Chip component="span" style={{marginRight: 5}}  size="small" label={`${reputation} Rep`} />}
-                        {!ceramic && <Chip component="span"  size="small" label={`${parseFloat(hivepower).toFixed(2)} HP`} />}
+                        {userName || username}&nbsp;
                         {followsYou && <div className={classes.followYouText}><span>Follows you</span></div>}
                       </p>
                     </Col>
                   </Row>
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
-                    {(name || ceramic) &&
-                      <Col xs="auto">
-                        <p className={classes.userName}>
-                          @{username}
-                        </p>
-                      </Col>}
+                    <Col xs="auto">
+                      <p className={classes.userName}>
+                        @{username}
+                      </p>
+                    </Col>
                   </Row>
                   <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                        <div dangerouslySetInnerHTML={{ __html: userBio || ceramicProfile.bio }} />
+                        <div dangerouslySetInnerHTML={{ __html: userBio }} />
                       </p>
                     </Col>
-                  </Row>
-                  <div style={{ width: '100%', height: 10 }} />
-                  <Row style={{ marginLeft: -5 }}>
-                    <p className={classes.paragraph}>
-                      {accountCreated && (
-                        <span className={classes.textIcon} >
-                          <DateRangeIcon fontSize="small" />&nbsp;
-                          Joined {new Date(accountCreated).toLocaleDateString("en-US",{month: 'long', year: 'numeric' })}
-                        </span>
-                      )}
-                    </p>
                   </Row>
                   <Row>
                     <Col xs="auto" style={{ marginTop: 10, marginLeft: -5 }}>
                       <p className={classes.paragraph}>
-                        {(userLocation || ceramicProfile.location) && (
+                        {(userLocation) && (
                           <span className={classes.textIcon} style={{ marginRight: 10 }}>
                             <LocationOnIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                            {userLocation || ceramicProfile.location}
+                            {userLocation}
                           </span>
                         )}
-                        {(userWebsite || ceramicProfile.url) && (
+                        {(userWebsite) && (
                           <span>
                             <LinkIcon fontSize="small" className={classes.textIcon}/>&nbsp;
-                            <a href={website || ceramicProfile.url} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
-                              {(userWebsite || ceramicProfile.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                            <a href={profile?.url} target="_blank" rel="noopener noreferrer" className={classes.weblink}>
+                              {(userWebsite).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                             </a>
                           </span>
                         )}
                       </p>
                     </Col>
                   </Row>
-                  <Row>
+                  {/* <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
                         <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
@@ -855,11 +626,11 @@ const Profile = (props) => {
                         </Link> &nbsp;
                       </p>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </React.Fragment>
               )}
             </div>
-            <div className={classes.spacer} />
+            {/* <div className={classes.spacer} /> */}
             <Tabs
               value={index}
               indicatorColor="primary"
@@ -869,9 +640,7 @@ const Profile = (props) => {
               className={classes.tabContainer}
             >
               {!loading && <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's" />}
-              {!loading && !ceramic && <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments" />}
-              {!loading && !ceramic &&  <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies" />}
-              {!loading && !ceramic && <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets" />}
+              {!loading && <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets" />}
             </Tabs>
           </div>
           <React.Fragment>
@@ -914,28 +683,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
-    getProfileRequest,
-    getAccountPostsRequest,
-    setProfileIsVisited,
-    getAccountRepliesRequest,
-    clearAccountPosts,
-    getFollowersRequest,
-    clearProfile,
-    clearAccountReplies,
-    getFollowingRequest,
-    clearAccountFollowers,
-    clearAccountFollowing,
-    clearAccountBlacklist,
-    clearAccountFollowedBlacklist,
     setPageFrom,
-    followRequest,
-    unfollowRequest,
     broadcastNotification,
-    clearScrollIndex,
     openMuteDialog,
-    getAccountCommentsRequest,
-    clearAccountComments,
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default connect(mapStateToProps, mapDispatchToProps)(LiteProfile)

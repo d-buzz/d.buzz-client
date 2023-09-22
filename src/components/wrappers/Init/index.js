@@ -10,7 +10,7 @@ import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
-// import { getBestCeramicHost } from 'services/ceramic'
+import { getBestCeramicHost } from 'services/ceramic'
 import Paper from '@material-ui/core/Paper'
 
 const Snackbar = React.lazy(() => import('@material-ui/core/Snackbar'))
@@ -213,17 +213,17 @@ const Init = (props) => {
   useEffect(() => {
     if(isStaging !== null) {
       if(!isStaging) {
-        if(isStaging !== null && !isLite !== null) {
-      if(!isStaging && !isLite) {
-        checkVersionRequest().then((isLatest) => {
+        if(isStaging !== null && isLite !== null) {
+          if(!isStaging && !isLite) {
+            checkVersionRequest().then((isLatest) => {
               setIsLatest(isLatest)
               getBestRpcNode().then(() => {
                 getWSNodeHAS()
                 initWSHASConnectionRequest()
-                // getBestCeramicHost().then((host) => {
-                //   initCeremicLoginRequest()
-                //   localStorage.setItem('ceramic', host)
-                // })
+                getBestCeramicHost().then((host) => {
+                  initCeremicLoginRequest()
+                  localStorage.setItem('ceramic', host)
+                })
                 const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
                 setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
                   getSavedUserRequest().then(() => {
@@ -234,35 +234,35 @@ const Init = (props) => {
                 })
               })
             })
-      } else {
-        setIsLatest(isLatest)
-        getBestRpcNode().then(() => {
-          getWSNodeHAS()
-          initWSHASConnectionRequest()
-          // getBestCeramicHost().then((host) => {
-          //   initCeremicLoginRequest()
-          //   localStorage.setItem('ceramic', host)
-          // })
-          const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-          setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-            getSavedUserRequest().then(() => {
-              setInit(true)
-              getCensorTypesRequest()
-              getTrendingTagsRequest()
+          } else {
+            setIsLatest(isLatest)
+            getBestRpcNode().then(() => {
+              getWSNodeHAS()
+              initWSHASConnectionRequest()
+              getBestCeramicHost().then((host) => {
+                initCeremicLoginRequest()
+                localStorage.setItem('ceramic', host)
+              })
+              const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+              setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+                getSavedUserRequest().then(() => {
+                  setInit(true)
+                  getCensorTypesRequest()
+                  getTrendingTagsRequest()
+                })
+              })
             })
-          })
-        })
-      }
-    }
+          }
+        }
       } else {
         setIsLatest(isLatest)
         getBestRpcNode().then(() => {
           getWSNodeHAS()
           initWSHASConnectionRequest()
-          // getBestCeramicHost().then((host) => {
-          //   initCeremicLoginRequest()
-          //   localStorage.setItem('ceramic', host)
-          // })
+          getBestCeramicHost().then((host) => {
+            initCeremicLoginRequest()
+            localStorage.setItem('ceramic', host)
+          })
           const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getSavedUserRequest().then(() => {

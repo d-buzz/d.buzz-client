@@ -216,9 +216,10 @@ const useStyle = createUseStyles(theme => ({
 }))
 
 
-const PostList = React.memo((props) => {
+const LitePostList = React.memo((props) => {
   const classes = useStyle()
   const {
+    postType,
     searchListMode = false,
     author,
     permlink,
@@ -337,7 +338,9 @@ const PostList = React.memo((props) => {
 
       if(result.length !== 0) {
         setIsCensored(true)
-        setCensorType(result[0].type)
+        if(result[0]) {
+          setCensorType(result[0].type)
+        }
       }
     }
   }, [censorList, author, permlink])
@@ -431,8 +434,10 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickMuteDialog = () => {
-    openMuteDialog(author, muteSuccessCallback)
-    setAnchorEl(null)
+    if(postType === 'HivePost') {
+      openMuteDialog(author, muteSuccessCallback)
+      setAnchorEl(null)
+    }
   }
 
   const opacityActivated = opacityUsers.includes(author)
@@ -446,8 +451,10 @@ const PostList = React.memo((props) => {
   }
 
   const handleClickHideBuzzDialog = () => {
-    openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
-    setAnchorEl(null)
+    if(postType === 'HivePost') {
+      openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
+      setAnchorEl(null)
+    }
   }
 
   const censorCallBack = () => () => {
@@ -561,7 +568,7 @@ const PostList = React.memo((props) => {
                     {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
                   </label>
                   <label className={classes.username}>
-                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? !created?.endsWith('Z') ? `${created}Z` : created : created }`).local().fromNow()}
+                    &nbsp;&bull;&nbsp;{moment(`${ !searchListMode ? !created.endsWith('Z') ? `${created}Z` : created : created }`).local().fromNow()}
                   </label>
                   {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                     <IconButton onClick={openMenu} className={classes.iconButton} style={{ float: 'right' }} size='small'>
@@ -582,6 +589,7 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
+                      postType={postType}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
                       title={title}
@@ -646,4 +654,4 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostList)
+export default connect(mapStateToProps, mapDispatchToProps)(LitePostList)

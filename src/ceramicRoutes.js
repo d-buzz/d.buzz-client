@@ -1,0 +1,263 @@
+import React from 'react'
+const AppFrame = React.lazy(() => import('./components/layout/AppFrame'))
+const TermsConditions = React.lazy(() => import('./components/pages/TermsConditions'))
+const GetStarted = React.lazy(() => import('./components/pages/GetStarted'))
+const LiteHome = React.lazy(() => import('./components/pages/LiteHome'))
+const LiteTrending = React.lazy(() => import('./components/pages/LiteTrending'))
+const LiteProfile = React.lazy(() => import('./components/pages/LiteProfile'))
+const Content = React.lazy(() => import('./components/pages/Content'))
+const LiteLatest = React.lazy(() => import('./components/pages/LiteLatest'))
+const LiteAccountPosts = React.lazy(() => import('./components/sections/LiteAccountPosts'))
+const AccountReplies = React.lazy(() => import('./components/sections/AccountReplies'))
+const AccountFollowers = React.lazy(() => import('./components/sections/AccountFollowers'))
+const AccountFollowing = React.lazy(() => import('./components/sections/AccountFollowing'))
+const AccountComments = React.lazy(() => import('./components/sections/AccountComments'))
+const AccountPockets = React.lazy(() => import('./components/sections/AccountPockets'))
+const AccountFollow = React.lazy(() => import('./components/sections/AccountFollow'))
+const AccountMuted = React.lazy(() => import('./components/sections/AccountMuted'))
+const AccountMutedUsers = React.lazy(() => import('./components/sections/AccountMutedFollowed'))
+const AccountMutedFollowed = React.lazy(() => import('./components/sections/AccountMutedFollowed'))
+const AccountBlacklisted = React.lazy(() => import('./components/sections/AccountBlacklisted'))
+const AccountBlacklistedUsers = React.lazy(() => import('./components/sections/AccountBlacklistedUsers'))
+const AccountBlacklistedFollowed = React.lazy(() => import('./components/sections/AccountBlacklistedFollowed'))
+const Notification = React.lazy(() => import('./components/pages/Notification'))
+const Tags = React.lazy(() => import('./components/pages/Tags'))
+const Search = React.lazy(() => import('./components/pages/Search'))
+const SearchPosts = React.lazy(() => import('./components/sections/SearchPosts'))
+const SearchPeople = React.lazy(() => import('./components/sections/SearchPeople'))
+const PrivacyPolicy = React.lazy(() => import('./components/pages/PrivacyPolicy'))
+const Disclaimer = React.lazy(() => import('./components/pages/Disclaimer'))
+const Developers = React.lazy(() => import('./components/pages/Developers'))
+const Wallet = React.lazy(() => import('./components/pages/Wallet'))
+const WalletBalances = React.lazy(() => import('./components/sections/WalletBalances'))
+const WalletHistory = React.lazy(() => import('./components/sections/WalletHistory'))
+
+const ceramicRoutes =  [
+  {
+    component: AppFrame,
+    routes: [
+      {
+        path: '/',
+        exact: true,
+        component: LiteTrending,
+      },
+      {
+        path: '/home',
+        exact: true,
+        component: LiteHome,
+      },
+      {
+        path: '/intent/buzz',
+        exact: true,
+        component: LiteHome,
+      },
+      {
+        path: '/developers',
+        exact: true,
+        component: Developers,
+      },
+      {
+        path: '/org/en/tos',
+        exact: true,
+        component: TermsConditions,
+      },
+      {
+        path: '/org/en/privacy',
+        exact: true,
+        component: PrivacyPolicy,
+      },
+      {
+        path: '/org/en/disclaimer',
+        exact: true,
+        component: Disclaimer,
+      },
+      {
+        path: '/org/en/getstarted',
+        exact: true,
+        component: GetStarted,
+      },
+      {
+        path: '/trending',
+        exact: true,
+        component: LiteTrending,
+      },
+      {
+        path: '/latest',
+        exact: true,
+        component: LiteLatest,
+      },
+      {
+        path: '/notifications',
+        exact: true,
+        component: Notification,
+      },
+      {
+        path: '/ug/search',
+        component: Search,
+        routes: [
+          {
+            path: '/ug/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/ug/search/people',
+            exact: true,
+            component: SearchPeople,
+          },
+        ],
+      },
+      {
+        path: '/search',
+        component: Search,
+        routes: [
+          {
+            path: '/search/posts',
+            exact: true,
+            component: SearchPosts,
+          },
+          {
+            path: '/search/people',
+            exact: true,
+            component: SearchPeople,
+          },
+        ],
+      },
+      {
+        path: '/@:username/wallet',
+        component: Wallet,
+        routes: [
+          {
+            path: '/@:username/wallet',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/balances',
+            exact: true,
+            component: WalletBalances,
+          },
+          {
+            path: '/@:username/wallet/history',
+            exact: true,
+            component: WalletHistory,
+          },
+        ],
+      },
+      {
+        path: '/tags',
+        component: Tags,
+      },
+      {
+        path: '/ug/tags',
+        component: Tags,
+      },
+      {
+        path: '/@:username/:permlink',
+        exact: true,
+        component: Content,
+      },
+      {
+        path: '/@:username/follow',
+        component: AccountFollow,
+        routes: [
+          {
+            path: '/@:username/follow',
+            exact: true,
+            component: AccountFollowers,
+          },
+          {
+            path: '/@:username/follow/followers',
+            exact: true,
+            component: AccountFollowers,
+          },
+          {
+            path: '/@:username/follow/following',
+            exact: true,
+            component: AccountFollowing,
+          },
+        ],
+      },
+      {
+        path: '/@:username/lists/muted',
+        component: AccountMuted,
+        routes: [
+          {
+            path: '/@:username/lists/muted',
+            exact: true,
+            component: AccountMutedUsers,
+          },
+          {
+            path: '/@:username/lists/muted/users',
+            exact: true,
+            component: AccountMutedUsers,
+          },
+          {
+            path: '/@:username/lists/muted/followed',
+            exact: true,
+            component: AccountMutedFollowed,
+          },
+        ],
+      },
+      {
+        path: '/@:username/lists/blacklisted',
+        component: AccountBlacklisted,
+        routes: [
+          {
+            path: '/@:username/lists/blacklisted',
+            exact: true,
+            component: AccountBlacklistedUsers,
+          },
+          {
+            path: '/@:username/lists/blacklisted/users',
+            exact: true,
+            component: AccountBlacklistedUsers,
+          },
+          {
+            path: '/@:username/lists/blacklisted/followed',
+            exact: true,
+            component: AccountBlacklistedFollowed,
+          },
+        ],
+      },
+      {
+        path: '/@:username',
+        component: LiteProfile,
+        routes: [
+          {
+            path: '/@:username/',
+            exact: true,
+            component: LiteAccountPosts,
+          },
+          {
+            path: '/@:username/t/buzz',
+            exact: true,
+            component: LiteAccountPosts,
+          },
+          {
+            path: '/@:username/t/replies',
+            exact: true,
+            component: AccountReplies,
+          },
+          {
+            path: '/@:username/t/comments',
+            exact: true,
+            component: AccountComments,
+          },
+          {
+            path: '/@:username/t/pockets',
+            exact: true,
+            component: AccountPockets,
+          },
+          {
+            path: '/@:username/t/pockets/:pocketId',
+            exact: true,
+            component: AccountPockets,
+          },
+        ],
+      },
+    ],
+  },
+]
+
+export default ceramicRoutes

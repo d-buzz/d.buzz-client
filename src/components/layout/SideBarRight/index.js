@@ -12,8 +12,11 @@ import {
 import { SearchField } from 'components'
 import { useLocation, Link } from 'react-router-dom'
 import { getPrice } from 'services/api'
-import ThemeProvider from 'components/wrappers/ThemeProvider'
-const Skeleton = React.lazy(() => import('react-loading-skeleton'))
+// import ThemeProvider from 'components/wrappers/ThemeProvider'
+import { isLiteMode } from 'services/helper'
+import { useQuery } from '@apollo/client'
+import { TRENDING_TAGS_QUERY } from 'services/union'
+// const Skeleton = React.lazy(() => import('react-loading-skeleton'))
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -101,16 +104,36 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const SideBarRight = (props) => {
-  const { user, items, loading, hideSearchBar = false } = props
+  const { user, items:hiveTrendingTags, loading:hiveTagsLoading, hideSearchBar = false } = props
   const classes = useStyles()
   const location = useLocation()
   const { pathname } = location
   let isInSearchRoute = false
   const { is_authenticated } = user
+  // eslint-disable-next-line
   const [hivePrice, setHivePrice] = useState(0)
+  // eslint-disable-next-line
   const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
   const [isLite, setIsLite] = useState(null)
+
+  // eslint-disable-next-line
+  const { loading:liteTagsLoading, error, data=[] } = useQuery(TRENDING_TAGS_QUERY(), { skip: !isLiteMode() })
+  const [liteTrendingTags, setLiteTrendingTags] = useState([])
+
+  useEffect(() => {
+    if(isLiteMode() && data?.trendingTags?.tags?.length>0) {
+      const tags = (data?.trendingTags?.tags || [])
+    
+      // re-structure tags
+      const restructuredTags = tags.map(tagItem => ({
+        name: tagItem.tag,
+        comments: tagItem.score,
+        top_posts: 0,
+      }))
+      setLiteTrendingTags(restructuredTags)
+    }
+  }, [data])
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
   
@@ -161,18 +184,6 @@ const SideBarRight = (props) => {
       imagePath: `${window.location.origin}/element.svg`,
       url: 'https://matrix.to/#/#d.buzz:matrix.org',
     },
-    // {
-    //   name: 'Facebook',
-    //   label: 'dbuzzAPP',
-    //   imagePath: `${window.location.origin}/facebook.png`,
-    //   url: 'https://www.facebook.com/dbuzzapp/',
-    // },
-    {
-      name: 'Twitter',
-      label: '@dbuzzAPP',
-      imagePath: `${window.location.origin}/twitter.svg`,
-      url: 'https://twitter.com/dbuzzAPP',
-    },
   ]
 
   useEffect(() => {
@@ -190,13 +201,17 @@ const SideBarRight = (props) => {
       {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
       <div style={{ paddingTop: 5 }}>
         <ListGroup label="Trends for you">
-          {items.slice(0, 5).map((item) => (
-            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
-          ))}
-          <Spinner size={50} loading={loading} />
+          {!isLiteMode() ?
+            hiveTrendingTags.slice(0, 5).map((item) => (
+              <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            )) :
+            liteTrendingTags.slice(0, 5).map((item) => (
+              <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            ))}
+          <Spinner size={50} loading={hiveTagsLoading || liteTagsLoading} />
         </ListGroup>
       </div>  
-      <div className={classes.coinPriceChart}>
+      {/* <div className={classes.coinPriceChart}>
         <span className={classes.priceItem}>
           <span className='price_container'>
             <label className='market'>HIVE</label>
@@ -219,7 +234,7 @@ const SideBarRight = (props) => {
           </span>
           <label className='price_description'> HBD Market Value by <a href='https://www.coingecko.com/en/coins/hive_dollar'>@CoinGecko</a></label>
         </span>
-      </div>
+      </div> */}
       <div style={{ paddingTop: 5 }}>
         <ListGroup label="Catch us on">
           {SocialMediaLinks.map((item) => (

@@ -39,8 +39,6 @@ import {
 } from 'services/api'
 import config from 'config'
 
-import crypto from 'crypto'
-
 import { setCensorList } from '../auth/actions'
 
 function* getSavedThemeRequest(payload, meta) {
