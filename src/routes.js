@@ -58,22 +58,22 @@ const routes =  [
         component: Developers,
       },
       {
-        path: '/org/en/tos',
+        path: '/tos',
         exact: true,
         component: TermsConditions,
       },
       {
-        path: '/org/en/privacy',
+        path: '/privacy',
         exact: true,
         component: PrivacyPolicy,
       },
       {
-        path: '/org/en/disclaimer',
+        path: '/disclaimer',
         exact: true,
         component: Disclaimer,
       },
       {
-        path: '/org/en/getstarted',
+        path: '/getstarted',
         exact: true,
         component: GetStarted,
       },
@@ -93,7 +93,7 @@ const routes =  [
         component: Notification,
       },
       {
-        path: '/org/en/faqs',
+        path: '/FAQs',
         exact: true,
         component: FAQs,
       },
