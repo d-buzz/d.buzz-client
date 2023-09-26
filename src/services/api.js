@@ -33,23 +33,19 @@ const APP_META = {
 
 const visited = []
 
+const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
+
 export const geRPCNode = () => {
   return new Promise( (resolve) => {
     if(localStorage.getItem('rpc-setting')) {
-      if(localStorage.getItem('rpc-setting') !== 'auto') {
+      if(localStorage.getItem('rpc-setting') !== 'default') {
         const node = localStorage.getItem('rpc-setting')
         resolve(node)
       } else {
-        getBestRpcNode()
-          .then((node) => {
-            resolve(node)
-          })
+        resolve(defaultNode)
       }
     } else {
-      getBestRpcNode()
-        .then((node) => {
-          resolve(node)
-        })
+      resolve(defaultNode)
     }
   })
 }
