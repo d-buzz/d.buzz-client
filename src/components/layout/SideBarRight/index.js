@@ -183,12 +183,12 @@ const SideBarRight = (props) => {
       </div>
       <div className={classes.footer}>
         <div className={classes.inner}>
-          <Link to="/org/en/tos">Terms of Service</Link>
-          <Link to="/org/en/privacy">Privacy Policy</Link>
-          <Link to="/org/en/disclaimer">Disclaimer</Link>
-          <Link to="/org/en/FAQs">FAQs</Link>
-          <br/>
-          <Link to="/org/en/getstarted">Get Started</Link>
+          <Link to="/tos">Terms of Service</Link>
+          <Link to="/privacy">Privacy Policy</Link>
+          <Link to="/disclaimer">Disclaimer</Link>
+          <Link to="/faqs">FAQs</Link>
+          <br />
+          <Link to="/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br/>
           <label><a href={currentSiteUrl}>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging ?

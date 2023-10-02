@@ -393,7 +393,7 @@ const SettingsModal = (props) => {
                 <div className="toggle_container">
                   <span className='title'>HIVE API Node</span>
                   <select className={classes.hiveNodeSelect} onChange={handleUpdateHiveNode} value={activeHiveNode}>
-                    <option value="auto">Auto</option>
+                    <option value="default">Default</option>
                     <option value="https://api.hive.blog">api.hive.blog</option>
                     <option value="https://rpc.ecency.com">rpc.ecency.com</option>
                     <option value="https://hive-api.3speak.tv">hive-api.3speak.tv</option>
