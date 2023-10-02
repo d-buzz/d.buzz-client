@@ -264,7 +264,7 @@ export const sendToBerries = (author, theme) => {
   const { mode } = theme
   let color = ''
   if (mode === 'gray') {
-    color = '-g'
+    color = '-n'
   } else if (mode === 'night') {
     color = '-n'
   }

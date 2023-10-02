@@ -124,7 +124,9 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   tabs: {
+    flex: 1,
     textTransform: 'none !important',
+    minWidth: '0px !important',
     '&:hover': {
       ...theme.left.sidebar.items.hover,
       '& span': {
@@ -135,6 +137,7 @@ const useStyles = createUseStyles(theme => ({
       backgroundColor: '#ffebee',
     },
     '& span': {
+      width: 'inherit',
       ...theme.font,
       fontWeight: 'bold',
       fontFamily: 'Segoe-Bold',
@@ -149,6 +152,8 @@ const useStyles = createUseStyles(theme => ({
     '& span.MuiTabs-indicator': {
       backgroundColor: '#e53935 !important',
     },
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   weblink: {
     color: '#3ea6ff',
@@ -344,14 +349,18 @@ const Profile = (props) => {
 
   const handleTabs = (index) => () => {
     let tab = 'buzz'
-
     if (index === 1) {
-      tab = 'comments'
-    } else if (index === 2) {
       tab = 'replies'
+    } else if (index === 2) {
+      broadcastNotification('success', `Coming soon`)
+      tab = 'media'
     } else if (index === 3) {
       tab = 'pockets'
+    }else if (index === 4) {
+      broadcastNotification('success', `Coming soon`)
+      tab = 'likes'
     }
+    
 
     history.push(`/@${username}/t/${tab}/`)
   }
@@ -430,12 +439,14 @@ const Profile = (props) => {
   useEffect(() => {
     if (pathname.match(/(\/t\/buzz\/)$|(\/t\/buzz)$/m)) {
       setIndex(0)
-    } else if (pathname.match(/(\/t\/comments\/)$|(\/t\/comments)$/m)) {
-      setIndex(1)
     } else if (pathname.match(/(\/t\/replies\/)$|(\/t\/replies)$/m)) {
+      setIndex(1)
+    } else if (pathname.match(/(\/t\/media\/)$|(\/t\/media)$/m)) {
       setIndex(2)
     } else if (pathname.match(/(\/t\/pockets)$|(\/t\/pockets)$/m) || pathname.match(/(\/t\/pockets\/.*)$|(\/t\/pockets\/.*)$/m)) {
       setIndex(3)
+    } else if (pathname.match(/(\/t\/likes\/)$|(\/t\/likes)$/m)) {
+      setIndex(4)
     } else {
       setIndex(0)
     }
@@ -457,8 +468,9 @@ const Profile = (props) => {
     ? (about ? about : ceramicProfile.description)
       .replace(/@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></span>`)
       .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
-    : hyperlinkProfileLink
+    : `<span class=${classes.linkStyle}> ${hyperlinkProfileLink} </span>`
 
+  console.log(userAbout)
 
   const [loader, setLoader] = useState(false)
 
@@ -913,11 +925,13 @@ const Profile = (props) => {
             >
               {!loading && <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Buzz's"/>}
               {!loading && !ceramic &&
-                <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Comments"/>}
+                <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Replies"/>}
               {!loading && !ceramic &&
-                <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Replies"/>}
+                <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Media"/>}
               {!loading && !ceramic &&
                 <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets"/>}
+              {!loading && !ceramic &&
+                <Tab disableTouchRipple onClick={handleTabs(4)} className={classes.tabs} label="Likes"/>}
             </Tabs>
           </div>
           <React.Fragment>

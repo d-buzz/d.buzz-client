@@ -1021,34 +1021,26 @@ const CreateBuzzForm = (props) => {
   }
 
   const handleMaxPayout = (e) => {
-    const {target} = e
-    let {value} = target
+    const { target } = e
+    let { value } = target
+  
     if (!payoutAgreed) {
       setOpenPayoutDisclaimer(true)
-    } else {
-      // if ((value < 0 || `${value}`.trim() === '') && payout !== 0) {
-      //   value = 1
-      // }
-      value = value % 1 === 0 ? parseInt(value) : parseFloat(value)
-      setPayout(value)
+      return
     }
-  }
-
-  const handleOnBlur = (event) => {
-    // Handle the event when the input loses focus
-    const {target} = event
-    let {value} = target
-
-    // eslint-disable-next-line no-mixed-operators
-    if ((value <= 0 || `${value}`.trim() === '')) {
-      value = 1
+  
+    value = parseFloat(value)
+  
+    if (isNaN(value)) {
+      value = 0
     }
-
+  
+    value = Math.abs(value)
+  
+    value = value % 1 === 0 ? parseInt(value) : value
+  
     setPayout(value)
-
-    // You can include additional logic here, if necessary.
   }
-
 
   // Function that auto-saves draft
   const autoSaveDraft = (content) => {
@@ -1800,13 +1792,10 @@ const CreateBuzzForm = (props) => {
                     <input
                       name="max-payout"
                       className={classes.tinyInput}
-                      type="number"
+                      type="text"
                       onChange={handleMaxPayout}
-                      onBlur={handleOnBlur}  // <- add this line
                       value={payout}
                       required
-                      min="0"
-                      step="any"
                     />
                     {!isMobile && (
                       <Tooltip title={tooltips.payout} placement="top">

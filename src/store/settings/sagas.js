@@ -30,10 +30,10 @@ import {
 } from './actions'
 
 import {
-  getBestRpcNode,
   checkVersion,
   getCensorTypes,
   censorBuzz,
+  geRPCNode,
 } from 'services/api'
 import config from 'config'
 
@@ -79,8 +79,9 @@ function* checkVersionRequest(meta) {
 }
 
 function* getBestRPCNode(meta) {
-  const node = yield call(getBestRpcNode)
-  yield call([localStorage, localStorage.setItem], 'rpc', node)
+  const node = yield call(geRPCNode)
+
+  yield call([localStorage, localStorage.setItem], 'rpc-node', node)
 
   yield put(setRpcNode(node, meta))
 }

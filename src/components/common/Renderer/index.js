@@ -230,8 +230,8 @@ const prepareYoutubeEmbeds = (
       } catch(error) { }
     })
     
-    if(body.match(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_]+:~~~~~~\.\^\.~~~/gi)) {
-      body = body.replace(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_]+:~~~~~~\.\^\.~~~/gi, '')
+    if(body.match(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_?=-]+:~~~~~~\.\^\.~~~/gi)) {
+      body = body.replace(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_?=-]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
     }
   }
@@ -1314,41 +1314,11 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
 
     // // render content (supported for all browsers)
     content = content
-      // // render all urls
-      // eslint-disable-next-line
-      .replace(/(\b(http|https|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\b[-A-Z0-9+&@#\/%=~_|]+\.[-A-Z0-9+&@#\/%=~_|]+\.?\w+(\/[-A-Z0-9+&@#\/%=~_|]*)?)/gi, (matchedURL) => {
-        let cleanURL = matchedURL
-        let trailingChar = ''
-        
-        if (matchedURL.endsWith('.') || matchedURL.endsWith(',')) {
-          trailingChar = matchedURL.slice(-1)
-          cleanURL = matchedURL.slice(0, -1)
-        }
-        
-        if (checkForImage(cleanURL) && checkForValidURL(cleanURL)) {
-          return `<span class="hyperlink" id="${cleanURL}">${truncateString(cleanURL, 25)}</span>${trailingChar}`
-        }
-        return cleanURL + trailingChar
-      })    
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){0}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*([a-zA-Z])+/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
-      .replace(/@([a-zA-Z0-9-]+\.?[a-zA-Z0-9-]+)/gi, (matchedUsername) => {
-        let cleanUsername = matchedUsername
-        let trailingChar = ''
-    
-        // Check if the matched username ends with a period or comma
-        if (cleanUsername.endsWith('.') || cleanUsername.endsWith(',')) {
-          trailingChar = cleanUsername.slice(-1)  // Get the trailing character
-          cleanUsername = cleanUsername.slice(0, -1)
-        }
-    
-        // Now process the cleaned username
-        return checkForValidUserName(cleanUsername) 
-          ? `<b><a href=${window.location.origin}/${cleanUsername.toLowerCase()}>${cleanUsername}</a></b>${trailingChar}`
-          : cleanUsername + trailingChar
-      })
-      .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
+      .replace(/([a-zA-Z0-9/-]@\S+)|@([A-Za-z0-9-]+\.?[A-Za-z0-9-]+)/gi, n => checkForValidUserName(n) ? `<b><a href=${window.location.origin}/${n.toLowerCase()}>${n}</a></b>` : n)
       //   // render hashtags 
       .replace(/([a-zA-Z0-9/-]#\S+)|#([A-Za-z\d-]+)/gi, n => checkForValidHashTag(n) ? `<b><a href='${window.location.origin}/tags?q=${n.replace('#', '').toLowerCase()}'>${n}</a></b>` : n)
       // // render crypto tickers
