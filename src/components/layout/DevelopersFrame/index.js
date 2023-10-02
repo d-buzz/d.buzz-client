@@ -98,7 +98,7 @@ const DevelopersAppBar = () => {
               <Button style={{ borderRadius: '20px', paddingLeft: 15 }} variant="outline-light">Download: D.BUZZ User Agreement</Button>
             </Nav>
           </Navbar.Collapse>
-        
+
         </Navbar>
       </Container>
       <div className={classes.heroSection}>
@@ -119,7 +119,7 @@ const DevelopersAppBar = () => {
                 pauseFor: 10000,
               }}
             />
-            
+
           </div>
         </center>
       </div>
@@ -130,7 +130,7 @@ const DevelopersAppBar = () => {
 const DevelopersFooter = () => {
   const classes = useStyles()
   const currentSiteUrl = window.location.protocol + '//' + window.location.host
-  
+
   return (
     <React.Fragment>
       <div className={classes.footer}>
@@ -138,10 +138,10 @@ const DevelopersFooter = () => {
           <center>
             <div className={classes.inner}>
               <label><a href={currentSiteUrl}>&copy; DBuzz&nbsp; - <i>v.{config.VERSION}</i></a></label>
-              <Link to="/org/en/tos">Terms & Conditions</Link>
-              <Link to="/org/en/privacy">Privacy Policy</Link>
-              <Link to="/org/en/disclaimer">Disclaimer</Link>
-              <Link to="/org/en/FAQs">FAQs</Link>
+              <Link to="/tos">Terms & Conditions</Link>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/disclaimer">Disclaimer</Link>
+              <Link to="/faqs">FAQs</Link>
             </div>
           </center>
         </Container>
