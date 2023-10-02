@@ -151,7 +151,7 @@ const useStyles = createUseStyles(theme => ({
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
+      backgroundColor: '#aaa !important',
     },
     display: 'flex',
     justifyContent: 'space-between',
