@@ -73,7 +73,7 @@ const OrganizationAppBar = () => {
   const privacyPolicy = (pathname.match(/^\/privacy/))
   const disclaimer = (pathname.match(/^\/disclaimer/))
   const getStarted = (pathname.match(/^\/getstarted/))
-  const faqs = (pathname.match(/^\/FAQs/))
+  const faqs = (pathname.match(/^\/faqs/))
 
   let title = ''
   if (termsOfService) {
@@ -154,7 +154,7 @@ const OrganizationFooter = () => {
               <Link to="/tos">Terms & Conditions</Link>
               <Link to="/privacy">Privacy Policy</Link>
               <Link to="/disclaimer">Disclaimer</Link>
-              <Link to="/FAQs">FAQs</Link>
+              <Link to="/faqs">FAQs</Link>
             </div>
           </center>
         </Container>
