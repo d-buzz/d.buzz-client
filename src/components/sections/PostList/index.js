@@ -623,6 +623,7 @@ const PostList = React.memo((props) => {
                       recomputeRowIndex={recomputeRowIndex}
                       payoutAt={payoutAt}
                       scrollIndex={scrollIndex}
+                      item = {item}
                       max_accepted_payout={max_accepted_payout}
                     />
                   </div>
