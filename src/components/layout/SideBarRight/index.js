@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { createUseStyles } from 'react-jss'
+import React, {useEffect, useState} from 'react'
+import {createUseStyles} from 'react-jss'
 import config from 'config'
-import { connect } from 'react-redux'
-import { pending } from 'redux-saga-thunk'
+import {connect} from 'react-redux'
+import {pending} from 'redux-saga-thunk'
 import {
   ListGroup,
   ListAction,
   ListLink,
   Spinner,
 } from 'components/elements'
-import { SearchField } from 'components'
-import { useLocation, Link } from 'react-router-dom'
+import {SearchField} from 'components'
+import {useLocation, Link} from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -44,7 +44,6 @@ const useStyles = createUseStyles(theme => ({
       fontWeight: 400,
     },
   },
-
   coinPriceChart: {
     marginTop: 5,
     display: 'flex',
@@ -54,7 +53,6 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
-
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -95,22 +93,35 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  trendsLabel: {
+    color: theme.font.color,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    fontSize: '1.8em',
+    fontFamily: 'Segoe-Bold',
+  },
+  catchUsLabel: {
+    color: theme.font.color,
+    marginBottom: 10,
+    fontSize: '1.5em',
+    fontFamily: 'Segoe-Bold',
+  },
 }))
 
 const SideBarRight = (props) => {
-  const { user, items, loading, hideSearchBar = false } = props
+  const {user, items, loading, hideSearchBar = false} = props
   const classes = useStyles()
   const location = useLocation()
-  const { pathname } = location
+  const {pathname} = location
   let isInSearchRoute = false
-  const { is_authenticated } = user
+  const {is_authenticated} = user
   const [isStaging, setIsStaging] = useState(null)
   const currentSiteUrl = window.location.protocol + '//' + window.location.host
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
 
   useEffect(() => {
-    if(window.location.host === 'staging.d.buzz') {
+    if (window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
     } else {
       setIsStaging(false)
@@ -147,36 +158,26 @@ const SideBarRight = (props) => {
       imagePath: `${window.location.origin}/element.svg`,
       url: 'https://matrix.to/#/#d.buzz:matrix.org',
     },
-    // {
-    //   name: 'Facebook',
-    //   label: 'dbuzzAPP',
-    //   imagePath: `${window.location.origin}/facebook.png`,
-    //   url: 'https://www.facebook.com/dbuzzapp/',
-    // },
-    // {
-    //   name: 'Twitter',
-    //   label: '@dbuzzAPP',
-    //   imagePath: `${window.location.origin}/twitter.svg`,
-    //   url: 'https://twitter.com/dbuzzAPP',
-    // },
   ]
 
 
   return (
     <React.Fragment>
-      {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
-      <div style={{ paddingTop: 5 }}>
-        <ListGroup label="Trends for you">
+      {!hideSearchBar && !isInSearchRoute && (<SearchField/>)}
+      <div style={{paddingTop: 5}}>
+        <ListGroup label="Trends for you" labelClassName={classes.trendsLabel}>
           {items.slice(0, 5).map((item) => (
-            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`}
+              subLabel={`${item.comments + item.top_posts} Buzz's`}/>
           ))}
-          <Spinner size={50} loading={loading} />
+          <Spinner size={50} loading={loading}/>
         </ListGroup>
       </div>
-      <div style={{ paddingTop: 5 }}>
-        <ListGroup label="Catch us on">
+      <div style={{paddingTop: 5}}>
+        <ListGroup label="Catch us on" labelClassName={classes.catchUsLabel}>
           {SocialMediaLinks.map((item) => (
-            <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath} href={item.url} />
+            <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath}
+              href={item.url}/>
           ))}
         </ListGroup>
       </div>
@@ -189,8 +190,9 @@ const SideBarRight = (props) => {
           <br />
           <Link to="/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
-          <br />
-          <label><a href={currentSiteUrl}>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging ? <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</a></label>
+          <br/>
+          <label><a href={currentSiteUrl}>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging ?
+            <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</a></label>
         </div>
       </div>
     </React.Fragment>
