@@ -95,15 +95,13 @@ const useStyles = createUseStyles(theme => ({
   },
   trendsLabel: {
     color: theme.font.color,
-    paddingTop: 10,
     marginBottom: 10,
     fontWeight: 'bold',
-    fontSize: '2em',
+    fontSize: '1.8em',
     fontFamily: 'Segoe-Bold',
   },
   catchUsLabel: {
     color: theme.font.color,
-    paddingTop: 10,
     marginBottom: 10,
     fontSize: '1.5em',
     fontFamily: 'Segoe-Bold',
@@ -160,18 +158,6 @@ const SideBarRight = (props) => {
       imagePath: `${window.location.origin}/element.svg`,
       url: 'https://matrix.to/#/#d.buzz:matrix.org',
     },
-    // {
-    //   name: 'Facebook',
-    //   label: 'dbuzzAPP',
-    //   imagePath: `${window.location.origin}/facebook.png`,
-    //   url: 'https://www.facebook.com/dbuzzapp/',
-    // },
-    // {
-    //   name: 'Twitter',
-    //   label: '@dbuzzAPP',
-    //   imagePath: `${window.location.origin}/twitter.svg`,
-    //   url: 'https://twitter.com/dbuzzAPP',
-    // },
   ]
 
 

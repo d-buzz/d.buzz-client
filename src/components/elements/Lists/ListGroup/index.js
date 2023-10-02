@@ -5,7 +5,10 @@ const useStyles = createUseStyles(theme => ({
   container: {
     backgroundColor: theme.right.list.background,
     borderRadius: '10px 10px',
-    padding: 10,
+    paddingTop: 15,
+    paddingBottom: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   wrapper: {
     width: '100%',
@@ -37,7 +40,6 @@ const ListGroup = (props) => {
         </div>
       </div>}
       {children}
-      <br />
     </div>
   )
 }
