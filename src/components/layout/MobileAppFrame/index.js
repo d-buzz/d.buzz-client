@@ -85,7 +85,7 @@ const useStyles = createUseStyles(theme => ({
       color: theme.left.sidebar.items.color,
       textDecoration: 'none',
     },
-   
+
   },
   minifyItemsStrokeWidth15:{
     textAlign: 'left',
@@ -150,6 +150,9 @@ const useStyles = createUseStyles(theme => ({
   },
   colorGray:{
     color: "rgb(83, 100, 113)",
+  },
+  colorGray2:{
+    color: "rgb(113, 118, 123)",
   },
   fontsize17:{
     fontSize: 17,
@@ -323,6 +326,7 @@ const useStyles = createUseStyles(theme => ({
   },
   paddingBottom15:{
     paddingBottom: 15,
+    fontWeight: '500',
   },
   height5:{
     height:5,
@@ -331,7 +335,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 17,
   },
   fontWeightBold: {
-    fontWeight: 'bolder',
+    fontWeight: '700',
   },
   background606060:{
     background: '#606060',
@@ -339,7 +343,7 @@ const useStyles = createUseStyles(theme => ({
   backgroundaaa:{
     background: '#aaa',
   },
-  
+
   borderRadius10:{
     borderRadius:10,
   },
@@ -366,7 +370,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems:'center',
-    
+
     borderRadius: '50%',
     marginRight:'34px',
   },
@@ -423,7 +427,7 @@ const useStyles = createUseStyles(theme => ({
   fontsize20:{
     fontSize:18,
   },
-  
+
   wordWrapBreakWord:{
     wordWrap:'break-word',
   },
@@ -527,7 +531,7 @@ const MobileAppFrame = (props) => {
 
   const handleUpdateTheme = (theme) => {
     const { username } = user
-    
+
     getUserCustomData(username)
       .then(res => {
         const userData = {
@@ -538,7 +542,7 @@ const MobileAppFrame = (props) => {
           },
         }
         const responseData = { username, userData: [userData] }
-        
+
         if(res) {
           updateUserCustomData(responseData)
             .then(() => {
@@ -550,7 +554,7 @@ const MobileAppFrame = (props) => {
   }
 
 
-  const mode = getUserTheme() 
+  const mode = getUserTheme()
   const history = useHistory()
   const lastLocation = useLastLocation()
   const location = useLocation()
@@ -689,7 +693,7 @@ const MobileAppFrame = (props) => {
       refreshLatestRouteData()
       return
     }
-   
+
   }
   const handelClickItem = (name) => {
     setActiveView(name)
@@ -980,8 +984,8 @@ const MobileAppFrame = (props) => {
         className={classes.menu}
       >
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/@${username}`}>Profile</MenuItem>
-        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/getstarted`}>Get Started</MenuItem>
-        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/org/en/tos`}>Terms of Service</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/getstarted`}>Get Started</MenuItem>
+        <MenuItem onClick={handleCloseAvatar} component={Link} to={`/tos`}>Terms of Service</MenuItem>
         <MenuItem onClick={handleCloseAvatar} component={Link} to={`/developers`}>Developers</MenuItem>
         <MenuItem onClick={handleDiscordClick}>Discord Channel</MenuItem>
         <MenuItem onClick={handleClickSignout}>Logout</MenuItem>
@@ -1050,7 +1054,7 @@ const MobileAppFrame = (props) => {
 
   // eslint-disable-next-line
   const [showSideBarNavigation, setShowSideBarNavigation] = useState(false)
-  
+
   return (
     <React.Fragment>
       <React.Fragment>
@@ -1063,10 +1067,10 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.displayFlex,classes.justifyContentBetween,classes.positionRelative)}>
                       <div className={classNames(classes.width45Percent)}>
                         <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
-                      </div> 
+                      </div>
                       <div onClick={() => setOpenSwitchModal(true)} className={classNames((mode==='night' || mode==='gray') ?'border-white':'border-black',(mode==='night' || mode==='gray') ?'text-white':'','width35',classes.demoContainer,classes.displayFlex,classes.justifyContentEnd,classes.marginRightNone)}>
                         <span ref={avatarRef}>+</span>
-                      </div> 
+                      </div>
                     </div>
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
@@ -1091,7 +1095,7 @@ const MobileAppFrame = (props) => {
                   <Link to={`/@${username}`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentCenter,classes.width100, classes.alignItemsCenter)}>
-                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}> 
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
                           <ProfileIcon style={{margin:0}} type='outline'/>
                           {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}`}>
@@ -1106,7 +1110,7 @@ const MobileAppFrame = (props) => {
                         </div>
                         <div onClick={()=>history.push(`/@${username}`)} className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
                       </div>
-                      
+
                     </div>
                   </Link>
                   <Link to={`/@${username}/t/pockets`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
@@ -1217,7 +1221,7 @@ const MobileAppFrame = (props) => {
                             </div>
                             <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                           </div>
-                          
+
                           <div  className={classNames(classes.minifyItems, classes.activeItem, classes.displayFlex, classes.justifyContentEnd )}>
                             <Link to={'#'}>
                               <IconButton
@@ -1251,7 +1255,7 @@ const MobileAppFrame = (props) => {
                           </div>
                         </div>
                       </div>
-                     
+
                     </div>
                   </div> */}
                 </div>
@@ -1262,7 +1266,7 @@ const MobileAppFrame = (props) => {
             </div>
           </div>
           <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
-            
+
             <Navbar className={classNames(classes.navTop,username?classes.paddingBottomEmpty:classes.paddingTop50)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && activeView !== 'notifications' && (
@@ -1274,7 +1278,7 @@ const MobileAppFrame = (props) => {
                   {is_authenticated &&
                     (<React.Fragment>
                       <div className={classNames(classes.avatarWrapper, classes.positionRelative)}>
-                                                
+
                         <div className={classNames(classes.positionAbsolute,classes.width43Percent)}>
                           <span ref={avatarRef}><Avatar onClick={handleClickAvatar} height={35} author={username} /></span>
                         </div>
@@ -1287,15 +1291,15 @@ const MobileAppFrame = (props) => {
                   {activeView !== 'notifications' && (
                     <div className={classes.displayFlex}>
                       <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
-                        <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
+                        <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
                         <div
                           className={classNames(classes.width45Percent,classes.height5,activeView === 'trending' && mode === 'light' ?classes.background606060:activeView === 'trending' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'trending'?classes.borderRadius10:'' )}
                         ></div>
                       </div>
-                      
+
                       {!username && (
                         <div onClick={() => handelClickItemByTab('latest')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                          <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
+                          <p className={mode === 'light' && activeView === 'latest'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'latest'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Latest</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'latest' && mode === 'light' ?classes.background606060:activeView === 'latest' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'latest'?classes.borderRadius10:'' )}
                           ></div>
@@ -1303,7 +1307,7 @@ const MobileAppFrame = (props) => {
                       )}
                       {username && (
                         <div onClick={() => handelClickItemByTab('home')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter,classes.paddingLeft15)}>
-                          <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorWhite,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
+                          <p className={mode === 'light' && activeView === 'home'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'home'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Following</p>
                           <div
                             className={classNames(classes.width45Percent,classes.height5,activeView === 'home' && mode === 'light' ?classes.background606060:activeView === 'home' && (mode === 'night' || mode === 'gray')?classes.backgroundaaa:'',activeView === 'home'?classes.borderRadius10:'' )}
                           ></div>
@@ -1312,8 +1316,8 @@ const MobileAppFrame = (props) => {
                     </div>
                   )}
                 </div>)}
-                
-                
+
+
                 {/* {title !== 'Search' && (
                   <div>
                     <div className={classes.titleContainerStyles}>
@@ -1322,9 +1326,9 @@ const MobileAppFrame = (props) => {
                         <Image width={'50px'} src={`${window.location.origin}/dbuzz.svg`}/>
                       </div>
                     </div>
-                    
+
                   </div>
-                
+
                 )}
                 */}
                 {title === 'Notifications' && count.unread !== 0 && (
@@ -1341,7 +1345,7 @@ const MobileAppFrame = (props) => {
                 )}
                 {title === 'Notifications' && <NotificationFilter />}
               </Navbar.Brand>
-            
+
               {title === 'Search' && (
                 <div className={classes.searchDiv}>
                   <SearchField
@@ -1358,9 +1362,8 @@ const MobileAppFrame = (props) => {
                 </div>
               )}
               
-              
             </Navbar>
-            
+
             <React.Fragment>
               {is_authenticated && (
                 <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={floatStyle}>
@@ -1368,7 +1371,7 @@ const MobileAppFrame = (props) => {
                 </Fab>
               )}
               <AvatarMenu />
-              
+
               <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
@@ -1379,8 +1382,8 @@ const MobileAppFrame = (props) => {
           </div>
         </div>
       </React.Fragment>
-        
-      
+
+
       <ThemeModal show={openTheme} onHide={onHideTheme} />
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />

@@ -69,11 +69,11 @@ const OrganizationAppBar = () => {
   const classes = useStyles()
   const { pathname } = useLocation()
 
-  const termsOfService = (pathname.match(/^\/org\/en\/tos/))
-  const privacyPolicy = (pathname.match(/^\/org\/en\/privacy/))
-  const disclaimer = (pathname.match(/^\/org\/en\/disclaimer/))
-  const getStarted = (pathname.match(/^\/org\/en\/getstarted/))
-  const faqs = (pathname.match(/^\/org\/en\/FAQs/))
+  const termsOfService = (pathname.match(/^\/\/tos/))
+  const privacyPolicy = (pathname.match(/^\/privacy/))
+  const disclaimer = (pathname.match(/^\/disclaimer/))
+  const getStarted = (pathname.match(/^\/getstarted/))
+  const faqs = (pathname.match(/^\/faqs/))
 
   let title = ''
   if (termsOfService) {
@@ -111,7 +111,7 @@ const OrganizationAppBar = () => {
               <Button style={{ borderRadius: '20px', paddingLeft: 15 }} variant="outline-light">Download: D.BUZZ User Agreement</Button>
             </Nav>
           </Navbar.Collapse>
-        
+
         </Navbar>
       </Container>
       <div className={classes.heroSection}>
@@ -132,7 +132,7 @@ const OrganizationAppBar = () => {
                 pauseFor: 10000,
               }}
             />
-            
+
           </div>
         </center>
       </div>
@@ -151,10 +151,10 @@ const OrganizationFooter = () => {
           <center>
             <div className={classes.inner}>
               <label><a href={currentSiteUrl}>&copy; DBuzz&nbsp; - <i>v.{config.VERSION}</i></a></label>
-              <Link to="/org/en/tos">Terms & Conditions</Link>
-              <Link to="/org/en/privacy">Privacy Policy</Link>
-              <Link to="/org/en/disclaimer">Disclaimer</Link>
-              <Link to="/org/en/FAQs">FAQs</Link>
+              <Link to="/tos">Terms & Conditions</Link>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/disclaimer">Disclaimer</Link>
+              <Link to="/faqs">FAQs</Link>
             </div>
           </center>
         </Container>
@@ -164,7 +164,7 @@ const OrganizationFooter = () => {
 }
 
 const OrganizationAppFrame = (props) => {
-  const { 
+  const {
     route,
   } = props
 
