@@ -118,6 +118,7 @@ export const searchPeople = (username) => {
 
     api.call('reputation_api.get_account_reputations', params, async (err, data) => {
       if (err) {
+        console.log('error', err)
         reject(err)
       } else {
 
@@ -1562,10 +1563,15 @@ export const searchPostGeneral = (query) => {
       const data = result.data
 
       if (data.results.length !== 0) {
+        console.log(data.results)
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
+        data.results = data.results.filter((item) =>
+          item.body.length <= 280 && !item.permlink.startsWith('re-'),
+        )
+
         removeFootNote(data.results)
-        data.results = data.results.filter((item) => item.body.length <= 280)
+
       }
 
       resolve(data)
