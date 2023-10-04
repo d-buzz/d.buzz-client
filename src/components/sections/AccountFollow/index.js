@@ -170,20 +170,6 @@ const Profile = (props) => {
     <React.Fragment>
       <HelmetGenerator page='Profile' />
       <ProfileSkeleton loading={loading} />
-      <div style={{ width: '100%', height: 'max-content' }} className={classes.descriptionContainer}>
-        <div className={classes.spacer} />
-        <Tabs
-          value={index}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-          onChange={onChange}
-          className={classes.tabContainer}
-        >
-          <Tab disableTouchRipple onClick={handleTabs(0)} className={classes.tabs} label="Follower" />
-          <Tab disableTouchRipple onClick={handleTabs(1)} className={classes.tabs} label="Following" />
-        </Tabs>
-      </div>
       <React.Fragment>
         {renderRoutes(route.routes, { author: username })}
       </React.Fragment>
