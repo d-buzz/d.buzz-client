@@ -1,21 +1,16 @@
-import {
-  api,
-  auth,
-  broadcast,
-  formatter,
-} from '@hiveio/hive-js'
+import {api, auth, broadcast, formatter} from '@hiveio/hive-js'
 import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
+import config from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
-import {hacUserAuth, hacVote, hacManualTransaction} from "@mintrawa/hive-auth-client"
-import config from 'config'
+import {hacManualTransaction, hacUserAuth, hacVote} from "@mintrawa/hive-auth-client"
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -36,9 +31,9 @@ const visited = []
 const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
 
 export const geRPCNode = () => {
-  return new Promise( (resolve) => {
-    if(localStorage.getItem('rpc-setting')) {
-      if(localStorage.getItem('rpc-setting') !== 'default') {
+  return new Promise((resolve) => {
+    if (localStorage.getItem('rpc-setting')) {
+      if (localStorage.getItem('rpc-setting') !== 'default') {
         const node = localStorage.getItem('rpc-setting')
         resolve(node)
       } else {
@@ -75,7 +70,7 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  if(typeof data !== 'string') {
+  if (typeof data !== 'string') {
     return data.forEach((item) => {
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
@@ -270,6 +265,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       } else {
         removeFootNote(data)
 
+        console.log(data)
         let lastResult = []
 
         if (data.length !== 0) {
@@ -429,7 +425,7 @@ export const fetchProfile = (username, checkFollow = false) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
       .then(async (result) => {
-        if(result.length === 0) resolve(result)
+        if (result.length === 0) resolve(result)
         result.forEach(async (item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
@@ -1492,11 +1488,41 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
+const STOP_WORDS = new Set([
+  "a", "about", "actually", "almost", "also", "although", "always", "am", "an",
+  "and", "any", "are", "as", "at", "be", "became", "become", "but", "by", "can",
+  "could", "did", "do", "does", "each", "either", "else", "for", "from", "had",
+  "has", "have", "hence", "how", "i", "if", "in", "is", "it", "its", "just", "may",
+  "maybe", "me", "might", "mine", "must", "my", "neither", "nor", "not", "of", "oh",
+  "ok", "when", "where", "whereas", "wherever", "whenever", "whether", "which", "while",
+  "who", "whom", "whoever", "whose", "why", "will", "with", "within", "without", "would",
+  "yes", "yet", "you", "your",
+])
+
+function sanitizeTitle(title) {
+  return title.replace(/[^a-zA-Z0-9\s]/g, '')
+}
+
+function generateSeoFriendlyPermalink(title) {
+  const words = title.split(' ').filter(word => {
+    const lowercased = word.toLowerCase()
+    return !STOP_WORDS.has(lowercased) && lowercased.length > 1
+  })
+  return words.join('-').toLowerCase()
+}
+
 export const createPermlink = (title) => {
-  const permlink = new Array(22).join().replace(/(.|$)/g, function () {
+  const sanitizedTitle = sanitizeTitle(title)
+  const seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
+
+  if (seoFriendlyPermlink.length >= 20) {
+    return seoFriendlyPermlink
+  }
+
+  // Fallback to the random string generation if the permalink is too short
+  return new Array(22).join().replace(/(.|$)/g, function () {
     return ((Math.random() * 36) | 0).toString(36)
   })
-  return permlink
 }
 
 
@@ -1550,13 +1576,13 @@ export const searchPostAuthor = (author) => {
 export const searchPostGeneral = (query) => {
   return new Promise(async (resolve, reject) => {
     // const body = {query}
-    const { tag , sort } = query
+    const {tag, sort} = query
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
       data: {
-        query : tag,
-        sort : sort,
+        query: tag,
+        sort: sort,
       },
     }).then(async (result) => {
       const data = result.data
