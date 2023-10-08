@@ -36,9 +36,9 @@ const visited = []
 const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
 
 export const geRPCNode = () => {
-  return new Promise( (resolve) => {
-    if(localStorage.getItem('rpc-setting')) {
-      if(localStorage.getItem('rpc-setting') !== 'default') {
+  return new Promise((resolve) => {
+    if (localStorage.getItem('rpc-setting')) {
+      if (localStorage.getItem('rpc-setting') !== 'default') {
         const node = localStorage.getItem('rpc-setting')
         resolve(node)
       } else {
@@ -75,7 +75,7 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  if(typeof data !== 'string') {
+  if (typeof data !== 'string') {
     return data.forEach((item) => {
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
@@ -429,7 +429,7 @@ export const fetchProfile = (username, checkFollow = false) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
       .then(async (result) => {
-        if(result.length === 0) resolve(result)
+        if (result.length === 0) resolve(result)
         result.forEach(async (item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
@@ -1550,13 +1550,13 @@ export const searchPostAuthor = (author) => {
 export const searchPostGeneral = (query) => {
   return new Promise(async (resolve, reject) => {
     // const body = {query}
-    const { tag , sort } = query
+    const {tag, sort} = query
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
       data: {
-        query : tag,
-        sort : sort,
+        query: tag,
+        sort: sort,
       },
     }).then(async (result) => {
       const data = result.data
@@ -1589,13 +1589,13 @@ export const checkIfImage = (links) => {
 
 export const uploadImage = async (data, progress) => {
   const formData = new FormData()
-  formData.append('file', data)
-
+  formData.append('file', data, data.name)
+  formData.append('filename', data.name)
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
         method: 'POST',
-        url: imageUrl,
+        url: imageUrl1,
         headers: {'Content-Type': 'multipart/form-data'},
         data: formData,
         validateStatus: () => true,
@@ -1611,8 +1611,8 @@ export const uploadImage = async (data, progress) => {
       reject(error)
     }
   })
-
 }
+
 
 export const uploadVideo = async (data, username, progress) => {
   const formData = new FormData()
