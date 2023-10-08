@@ -1595,7 +1595,7 @@ export const uploadImage = async (data, progress) => {
     try {
       const response = await axios({
         method: 'POST',
-        url: imageUrl1,
+        url: imageUrl,
         headers: {'Content-Type': 'multipart/form-data'},
         data: formData,
         validateStatus: () => true,
