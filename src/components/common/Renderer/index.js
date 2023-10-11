@@ -252,6 +252,8 @@ const prepareTwitterEmbeds = (
   let body = content
   const mainTwitterRegex = /(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i
   const mobileTwitterRegex = /(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*))))/i
+  const mainTwitterXRegex = /(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*))))/i
+  const mobileTwitterXRegex = /(?:https?:\/\/(?:(?:mobile\.x\.com\/(.*?)\/status\/(.*))))/i
   const htmlReplacement = /<blockquote[^>]*?><p[^>]*?>(.*?)<\/p>.*?mdash; (.*)<a href="(https:\/\/twitter\.com\/.*?(.*?\/status\/(.*?))\?.*?)">(.*?)<\/a><\/blockquote>/i
 
   const links = parseUrls(content)
@@ -291,10 +293,27 @@ const prepareTwitterEmbeds = (
               id = id.slice(0, -2)
             }
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+          }else if(link.match(mainTwitterXRegex)) {
+            match = link.match(mainTwitterXRegex)
+            id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
+            if(link.match(/(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+              match = link.match(/(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+              id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
+            }
+            console.log(id)
+            body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+          }else if(link.match(mobileTwitterXRegex)) {
+            match = link.match(mobileTwitterXRegex)
+            id = `${match[1]}&${match[2]}`
+            if(link.match(/(?:https?:\/\/(?:(?:mobile\.x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+              match = link.match(/(?:https?:\/\/(?:(?:mobile\.x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+              id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
+            }
+            body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
           }
   
           if(match) {
-            const id = `${match[1]}&${match[2]}`
+            const id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
             twitterEmbeds.push({ app: 'twitter', id })
           }
@@ -1402,7 +1421,7 @@ const Renderer = React.memo((props) => {
 
         if(link.includes('youtube.com') ||link.includes('youtu.be')) {
           content = prepareYoutubeEmbeds(content, buzzImages, buzzVideos, videoEmbeds, soundEmbeds, twitterEmbeds, contentImages)
-        } else if(link.includes('twitter.com')) {
+        } else if(link.includes('twitter.com') || link.includes('x.com')) {
           content = prepareTwitterEmbeds(content, buzzImages, buzzVideos, videoEmbeds, soundEmbeds, twitterEmbeds, contentImages)
         } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
           content = prepareThreeSpeakEmbeds(content, buzzImages, buzzVideos, videoEmbeds, soundEmbeds, twitterEmbeds, contentImages)
