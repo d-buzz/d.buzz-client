@@ -149,6 +149,7 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  buzzButtonFill: { fill: theme.buzzButton.fill},
   tabContainer: {
     '& span.MuiTabs-indicator': {
       backgroundColor: '#aaa !important',
@@ -753,7 +754,7 @@ const Profile = (props) => {
                           style={{float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
                           onClick={handleOpenMoreOptions}
                         >
-                          <MoreCircleIconRed/>
+                          <MoreCircleIconRed className={classes.buzzButtonFill}/>
                         </IconButton>
                         <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions}
                           items={moreOptions}/>
@@ -761,33 +762,36 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Edit profile"
                             className={classes.button}
                             onClick={handleOpenEditProfileModal}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {!ceramicUser && !activeCeramicUser && loginuser !== username && !mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5, marginLeft: 10}}
+                            style={{float: 'right', marginTop: 5, marginLeft: 10, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Mute"
                             className={classes.button}
                             onClick={openMuteModal}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {!ceramicUser && !activeCeramicUser && loginuser !== username && mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5, marginLeft: 10}}
+                            style={{float: 'right', marginTop: 5, marginLeft: 10, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Unmute"
                             className={classes.button}
                             onClick={openMuteModal}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && !ceramicUser && !activeCeramicUser && (
@@ -795,11 +799,12 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
                             onClick={followUser}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {!isFollowed && ceramicUser && activeCeramicUser && (loginuser !== username) && (
@@ -807,11 +812,12 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
                             onClick={followUser}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
@@ -819,11 +825,12 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Unfollow"
                             className={classes.button}
                             onClick={unfollowUser}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                       </React.Fragment>
