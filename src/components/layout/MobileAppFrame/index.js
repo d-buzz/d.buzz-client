@@ -1011,16 +1011,16 @@ const MobileAppFrame = (props) => {
   const onChangeSearch = (e) => {
     const { target } = e
     const { value } = target
-    setSearchkey(value)
+    setSearchkey(value.toLowerCase())
   }
 
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
       clearSearchPosts()
-      searchRequest(searchkey)
+      searchRequest(searchkey.toLowerCase())
       setDisableSearchTips(true)
-      history.push(`/search/trending?q=${encodeURIComponent(searchkey)}`)
+      history.push(`/search/trending?q=${encodeURIComponent(searchkey.toLowerCase())}`)
     }
   }
 
@@ -1353,7 +1353,7 @@ const MobileAppFrame = (props) => {
                     iconTop={-2}
                     searchWrapperClass={classes.searchWrapper}
                     style={{ fontSize: 16, height: 35 }}
-                    value={searchkey}
+                    value={searchkey.toLowerCase()}
                     onKeyDown={handleSearchKey}
                     onChange={onChangeSearch}
                     placeholder="Search D.Buzz"
