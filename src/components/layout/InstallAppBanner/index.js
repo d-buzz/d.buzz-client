@@ -61,7 +61,7 @@ const InstallAppBanner = () => {
           <CloseIcon />
         </IconButton>
         <center>
-          <ContainedButton onClick={promptToInstall} fontSize={15} label={'Install D.Buzz | Micro-blogging for HIVE'} className={classes.button} />
+          <ContainedButton onClick={promptToInstall} fontSize={15} label={'Install D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today.'} className={classes.button} />
         </center>
       </Container>
     </React.Fragment>
