@@ -581,6 +581,7 @@ const MobileAppFrame = (props) => {
   const [activeView, setActiveView] = useState('trending')
 
   let title = 'Trending'
+  let openedSubProfile = false
 
   const showThemeModal = () => {
     setOpenTheme(true)
@@ -623,6 +624,7 @@ const MobileAppFrame = (props) => {
     pathname.match(/\/lists\/blacklisted\/users/g) || pathname.match(/\/lists\/blacklisted\/followed/g)) {
     const items = pathname.split('/')
     title = `Profile / ${items[1]}`
+    openedSubProfile = true
   }
 
   const handleClickBackButton = () => {
@@ -1271,10 +1273,12 @@ const MobileAppFrame = (props) => {
               <Navbar.Brand className={classes.navTitle}>
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && activeView !== 'notifications' && (
                   <IconButton onClick={handleClickBackButton} size="small">
-                    <BackArrowIcon />
+                    <BackArrowIcon /> 
+                    {openedSubProfile && location.pathname.match(/\/follow\/followers/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Followers</div>)}
+                    {openedSubProfile && location.pathname.match(/\/follow\/following/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Following</div>)}
                   </IconButton>
                 )}
-                {title !== 'Search' && title !== 'Profile' && (<div>
+                {title !== 'Search' && title !== 'Profile' && !openedSubProfile && (<div>
                   {is_authenticated &&
                     (<React.Fragment>
                       <div className={classNames(classes.avatarWrapper, classes.positionRelative)}>
@@ -1288,7 +1292,7 @@ const MobileAppFrame = (props) => {
                         </div>
                       </div>
                     </React.Fragment>)}
-                  {activeView !== 'notifications' && window.location.pathname !== "/tags" && (
+                  {activeView !== 'notifications' && window.location.pathname !== "/tags" && !openedSubProfile && (
                     <div className={classes.displayFlex}>
                       <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
                         <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>
