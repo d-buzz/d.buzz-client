@@ -197,7 +197,7 @@ const light = {
   coverColor: '#cfd9de',
   buzzButton: {
     color: 'white',
-    border: 'none',
+    border: '2px solid black',
     backgroundColor: '#dadada',
     fill: 'black',
   },

@@ -114,31 +114,21 @@ export const callBridge = async (method, params, appendParams = true) => {
 
 export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
-    const params = {account_lower_bound: username, limit: 30}
+    fetchSingleProfile(username)
+      .then((response) => {
+        const profile = response
+        profile.reputations =  [
+          {
+            account: profile.name,
+            reputation: profile.reputation,
+          },
+        ]
 
-    api.call('reputation_api.get_account_reputations', params, async (err, data) => {
-      if (err) {
+        resolve(profile)
+      })
+      .catch((err) => {
         reject(err)
-      } else {
-
-        if (data.reputations.length !== 0) {
-          data.reputations.forEach((item, index) => {
-            let score = item.reputation ? formatter.reputation(item.reputation) : 25
-            if (!score || score < 25) {
-              score = 25
-            }
-            data.reputations[index].repscore = score
-            data.reputations[index].author = item.account
-          })
-
-          const getProfiledata = mapFetchProfile(data.reputations)
-          await Promise.all([getProfiledata])
-        }
-
-        resolve(data)
-      }
-    })
-
+      })
   })
 }
 

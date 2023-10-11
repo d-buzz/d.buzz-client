@@ -670,7 +670,7 @@ const MobileAppFrame = (props) => {
     zIndex: 500,
     border: `${getTheme(getUserTheme())?.buzzButton?.border}`,
     color: `${getTheme(getUserTheme())?.buzzButton?.color}`,
-    backgroundColor: `${getTheme(getUserTheme())?.buzzButton?.backgroundColor}`,
+    backgroundColor: `${getTheme(getUserTheme())?.background?.primary}`,
     fill: `${getTheme(getUserTheme())?.buzzButton?.fill}`,
   }
 
@@ -1288,7 +1288,7 @@ const MobileAppFrame = (props) => {
                         </div>
                       </div>
                     </React.Fragment>)}
-                  {activeView !== 'notifications' && (
+                  {activeView !== 'notifications' && window.location.pathname !== "/tags" && (
                     <div className={classes.displayFlex}>
                       <div onClick={() => handelClickItemByTab('trending')} className={classNames(classes.flexDirectionColumn,classes.hoverBackgroundGray,classes.padding15Bottom0,classes.widthHalfWidth,classes.displayFlex,classes.justifyContentCenter,classes.alignItemsCenter)}>
                         <p className={mode === 'light' && activeView === 'trending'? classNames(classes.fontSize17,classes.fontWeightBold,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray') && activeView === 'trending'? classNames(classes.colorWhite, classes.fontSize17,classes.fontWeightBold, classes.marginEmpty, classes.cursorPointer,classes.paddingBottom15):(mode === 'night' || mode === 'gray')?classNames(classes.colorGray2,classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17):classNames(classes.marginEmpty,classes.cursorPointer,classes.paddingBottom15,classes.fontSize17)}>Trending</p>

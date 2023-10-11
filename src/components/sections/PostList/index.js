@@ -37,7 +37,6 @@ import Renderer from 'components/common/Renderer'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { getUserCustomData } from 'services/database/api'
 import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
-import { checkForCeramicAccount } from 'services/ceramic'
 
 const addHover = (theme) => {
   let style = {
@@ -369,7 +368,7 @@ const PostList = React.memo((props) => {
 
   let hasUpvoted = false
   const history = useHistory()
-  const authorLink = !author.did ? `/@${author}${'?from='+profileRef}` : `/@${author.did}${'?from='+profileRef}`
+  const authorLink = `/@${author}${'?from='+profileRef}`
 
   if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
@@ -380,7 +379,7 @@ const PostList = React.memo((props) => {
   const generateLink = (author, permlink) =>  {
     let link = ''
 
-    const username = author.did ? author.did : author
+    const username = author
 
     link += `/@${username}/${permlink}`
 
@@ -566,7 +565,7 @@ const PostList = React.memo((props) => {
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
-                <Avatar height={avatarSize} author={type === 'HIVE' ? author : author.did} avatarUrl={type === 'CERAMIC' && author.images ? `https://ipfs.io/ipfs/${author.images?.avatar.replace('ipfs://', '')}` : ''}/>
+                <Avatar height={avatarSize} author={author} />
               </div>
             </Col>
             <Col xs="auto" className={classes.colRight}>
@@ -581,8 +580,7 @@ const PostList = React.memo((props) => {
                         onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
-                        {type === 'HIVE' && author}
-                        {type === 'CERAMIC' && (author.name || 'Ceramic User')}
+                        {author}
                       </Link>
                     )}
                     {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
@@ -636,10 +634,10 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
-                    {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>}
+                    {<MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>}
                     {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {selectedPocket.name || getPocket().pocketName}</MenuItem>)}
-                    {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
-                    {!isAuthor() && !checkForCeramicAccount(user.username) && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
+                    {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
+                    {!isAuthor() && (<MenuItem onClick={handleClickMuteDialog} className={classes.menuText}>Mute User</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleClickHideBuzzDialog} className={classes.menuText}>Hide Buzz</MenuItem>)}
                     {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
                   </Menu>}

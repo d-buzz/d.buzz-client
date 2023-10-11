@@ -1315,7 +1315,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
 
     // // render content (supported for all browsers)
     content = content
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){0}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*([a-zA-Z])+/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){0}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*([a-zA-Z0-9/])+/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
