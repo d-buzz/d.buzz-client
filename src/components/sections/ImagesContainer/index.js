@@ -133,7 +133,6 @@ const ImagesContainer = (props) => {
               image.style.animation = 'none'
               image.style.animation = 'fadeIn 250ms ease-out forwards'
               image.style.visibility = 'visible'
-  
 
             } else {
               image.style.height = 'auto'
@@ -176,7 +175,6 @@ const ImagesContainer = (props) => {
           onClick={() => viewFullImage(proxyImage(buzzImages[0]))}
           onLoad={() => handleImageOnLoad(proxyImage(buzzImages[0]))}
           onError={() => handleImageError(proxyImage(buzzImages[0]))}
-          loading='lazy'
         />
         {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[0])} />}
       </div>}
@@ -192,7 +190,6 @@ const ImagesContainer = (props) => {
               onClick={() => viewFullImage(buzzImages[[0]])}
               onLoad={() => handleImageOnLoad(buzzImages[[0]])}
               onError={() => handleImageError(buzzImages[[0]])}
-              loading='lazy'
             />
             {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[0])} />}
           </div>
@@ -204,7 +201,6 @@ const ImagesContainer = (props) => {
               onClick={() => viewFullImage(buzzImages[[1]])}
               onLoad={() => handleImageOnLoad(buzzImages[[1]])}
               onError={() => handleImageError(buzzImages[[1]])}
-              loading='lazy'
             />
             {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[1])} />}
           </div>
@@ -220,7 +216,6 @@ const ImagesContainer = (props) => {
               onClick={() => viewFullImage(proxyImage(buzzImages[0]))}
               onLoad={() => handleImageOnLoad(proxyImage(buzzImages[0]))}
               onError={() => handleImageError(proxyImage(buzzImages[0]))}
-              loading='lazy'
             />
             {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[0])} />}
           </div>
@@ -233,7 +228,6 @@ const ImagesContainer = (props) => {
                 onClick={() => viewFullImage(proxyImage(buzzImages[1]))}
                 onLoad={() => handleImageOnLoad(proxyImage(buzzImages[1]))}
                 onError={() => handleImageError(proxyImage(buzzImages[1]))}
-                loading='lazy'
               />
               {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[1])} />}
             </div>
@@ -245,7 +239,6 @@ const ImagesContainer = (props) => {
                 onClick={() => viewFullImage(proxyImage(buzzImages[2]))}
                 onLoad={() => handleImageOnLoad(proxyImage(buzzImages[2]))}
                 onError={() => handleImageError(proxyImage(buzzImages[2]))}
-                loading='lazy'
               />
               {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[2])} />}
             </div>
@@ -263,7 +256,6 @@ const ImagesContainer = (props) => {
                 onClick={() => viewFullImage(proxyImage(buzzImages[0]))}
                 onLoad={() => handleImageOnLoad(proxyImage(buzzImages[0]))}
                 onError={() => handleImageError(proxyImage(buzzImages[0]))}
-                loading='lazy'
               />
               {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[0])} />}
             </div>
@@ -275,7 +267,6 @@ const ImagesContainer = (props) => {
                 onClick={() => viewFullImage(proxyImage(buzzImages[1]))}
                 onLoad={() => handleImageOnLoad(proxyImage(buzzImages[1]))}
                 onError={() => handleImageError(proxyImage(buzzImages[1]))}
-                loading='lazy'
               />
               {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[1])} />}
             </div>
@@ -289,7 +280,6 @@ const ImagesContainer = (props) => {
                 onClick={() => viewFullImage(proxyImage(buzzImages[2]))}
                 onLoad={() => handleImageOnLoad(proxyImage(buzzImages[2]))}
                 onError={() => handleImageError(proxyImage(buzzImages[2]))}
-                loading='lazy'
               />
               {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[2])} />}
             </div>
@@ -302,7 +292,6 @@ const ImagesContainer = (props) => {
                   onClick={() => viewFullImage(proxyImage(buzzImages[3]))}
                   onLoad={() => handleImageOnLoad(proxyImage(buzzImages[3]))}
                   onError={() => handleImageError(proxyImage(buzzImages[3]))}
-                  loading='lazy'
                 />
                 {!loading && <DeleteIcon className='deleteImageIcon' onClick={() => handleImageDeletion(buzzImages[3])} />}
               </div>}
