@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import { createUseStyles } from 'react-jss'
+import React, { useEffect } from 'react'
 import {
   getFollowersRequest,
   clearProfile,
@@ -14,100 +11,10 @@ import { connect } from 'react-redux'
 import { anchorTop } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 import { ProfileSkeleton, HelmetGenerator } from 'components'
 
-const useStyles = createUseStyles(theme => ({
-  cover: {
-    height: 270,
-    width: '100%',
-    backgroundColor: '#ffebee',
-    overFlow: 'hidden',
-    '& img': {
-      height: '100%',
-      width: '100%',
-      objectFit: 'cover',
-      overFlow: 'hidden',
-    },
-  },
-  avatar: {
-    marginTop: -70,
-  },
-  walletButton: {
-    marginTop: 5,
-    float: 'right',
-    marginRight: 15,
-  },
-  fullName: {
-    fontSize: '18px !important',
-    fontWeight: 'bold',
-    padding: 0,
-    fontFamily: 'Segoe-Bold !important',
-    ...theme.font,
-  },
-  userName: {
-    fontSize: 16,
-    padding: 0,
-    marginTop: -20,
-    ...theme.font,
-  },
-  wrapper: {
-    width: '95%',
-    margin: '0 auto',
-    height: 'max-content',
-  },
-  paragraph: {
-    padding: 0,
-    margin: 0,
-    fontSize: 14,
-    ...theme.font,
-  },
-  spacer: {
-    width: '100%',
-    height: 20,
-  },
-  descriptionContainer: {
-    borderBottom: theme.border.primary,
-    ...theme.font,
-  },
-  tabs: {
-    textTransform: 'none !important',
-    '&:hover': {
-      ...theme.left.sidebar.items.hover,
-      '& span': {
-        color: '#e53935',
-      },
-    },
-    '&.MuiTabs-indicator': {
-      backgroundColor: '#ffebee',
-    },
-    '& span': {
-      ...theme.font,
-      fontWeight: 'bold',
-      fontFamily: 'Segoe-Bold',
-    },
-    '&.Mui-selected': {
-      '& span': {
-        color: '#e53935',
-      },
-    },
-  },
-  tabContainer: {
-    '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
-    },
-  },
-  weblink: {
-    color: '#d32f2f',
-    '&:hover': {
-      color: '#d32f2f',
-    },
-  },
-  followLinks: {
-    ...theme.font,
-  },
-}))
 
 const Profile = (props) => {
   const {
@@ -119,28 +26,7 @@ const Profile = (props) => {
     getFollowingRequest,
   } = props
 
-  const history = useHistory()
   const location = useLocation()
-  const { pathname } = location
-
-  const classes = useStyles()
-  const [index, setIndex] = useState(0)
-
-
-  const onChange = (e, index) => {
-    setIndex(index)
-  }
-
-  const handleTabs = (index) => () => {
-    let tab = 'followers'
-
-    if(index === 0) {
-      tab = 'followers'
-    } else if (index === 1) {
-      tab = 'following'
-    }
-    history.push(`/@${username}/follow/${tab}/`)
-  }
 
   const { params } = match
   const { username } = params
@@ -155,16 +41,6 @@ const Profile = (props) => {
     }
     // eslint-disable-next-line
   }, [username])
-
-  useEffect(() => {
-    if(pathname.match(/\/follow\/followers/g)) {
-      setIndex(0)
-    } else if(pathname.match((/\/follow\/following/g))) {
-      setIndex(1)
-    } else {
-      setIndex(0)
-    }
-  }, [pathname])
 
   return (
     <React.Fragment>
