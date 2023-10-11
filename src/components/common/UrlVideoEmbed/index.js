@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss'
 
 const useStyles = createUseStyles({
   videoWrapper: {
+    marginTop: 26,
     position: 'relative',
     paddingBottom: '56.25%',
     height: 0,
