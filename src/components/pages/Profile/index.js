@@ -470,8 +470,6 @@ const Profile = (props) => {
       .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
     : `<span class=${classes.linkStyle}> ${hyperlinkProfileLink} </span>`
 
-  console.log(userAbout)
-
   const [loader, setLoader] = useState(false)
 
   const [userProfileImage, setUserProfileImage] = useState(profile_image)
