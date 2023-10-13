@@ -255,7 +255,6 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       } else {
         removeFootNote(data)
 
-        console.log(data)
         let lastResult = []
 
         if (data.length !== 0) {
@@ -1478,41 +1477,11 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
-const STOP_WORDS = new Set([
-  "a", "about", "actually", "almost", "also", "although", "always", "am", "an",
-  "and", "any", "are", "as", "at", "be", "became", "become", "but", "by", "can",
-  "could", "did", "do", "does", "each", "either", "else", "for", "from", "had",
-  "has", "have", "hence", "how", "i", "if", "in", "is", "it", "its", "just", "may",
-  "maybe", "me", "might", "mine", "must", "my", "neither", "nor", "not", "of", "oh",
-  "ok", "when", "where", "whereas", "wherever", "whenever", "whether", "which", "while",
-  "who", "whom", "whoever", "whose", "why", "will", "with", "within", "without", "would",
-  "yes", "yet", "you", "your",
-])
-
-function sanitizeTitle(title) {
-  return title.replace(/[^a-zA-Z0-9\s]/g, '')
-}
-
-function generateSeoFriendlyPermalink(title) {
-  const words = title.split(' ').filter(word => {
-    const lowercased = word.toLowerCase()
-    return !STOP_WORDS.has(lowercased) && lowercased.length > 1
-  })
-  return words.join('-').toLowerCase()
-}
-
 export const createPermlink = (title) => {
-  const sanitizedTitle = sanitizeTitle(title)
-  const seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
-
-  if (seoFriendlyPermlink.length >= 20) {
-    return seoFriendlyPermlink
-  }
-
-  // Fallback to the random string generation if the permalink is too short
-  return new Array(22).join().replace(/(.|$)/g, function () {
-    return ((Math.random() * 36) | 0).toString(36)
+  const permlink = new Array(22).join().replace(/(.|$)/g, function () {
+      return ((Math.random() * 36) | 0).toString(36)
   })
+  return permlink
 }
 
 
