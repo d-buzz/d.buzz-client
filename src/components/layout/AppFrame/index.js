@@ -139,7 +139,7 @@ const AppFrame = (props) => {
 
   return (
     <React.Fragment>
-      <InstallAppBanner />
+      {!isMobile && <InstallAppBanner />}
       {!is_authenticated && (<AppBar />)}
       {!isMobile && !developersRoutes && !organizationRoutes && (
         <Container className={containerClass}>
