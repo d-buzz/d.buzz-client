@@ -13,10 +13,10 @@ const useStyles = createUseStyles(theme => ({
     display: 'block',
     '& h2': {
       fontFamily: 'Segoe-Bold',
-      fontSize: 18, 
+      fontSize: 18,
     },
     '& p': {
-      fontSize: 14, 
+      fontSize: 14,
     },
     '& i': {
       fontSize: 14,
@@ -31,9 +31,9 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   sideWrapper: {
-    width: '100%', 
-    paddingTop: 100, 
-    maxHeight: 700, 
+    width: '100%',
+    paddingTop: 100,
+    maxHeight: 700,
     overflow: 'auto',
     '& li': {
       listStyleType: 'none',
@@ -44,7 +44,7 @@ const useStyles = createUseStyles(theme => ({
       fontFamily: 'Segoe-Bold',
       fontSize: 14,
       textDecoration: 'none',
-      paddingLeft: 10, 
+      paddingLeft: 10,
     },
   },
   currentLink: {
@@ -72,10 +72,10 @@ const Disclaimer = () => {
                     <div style={{...style}}>
                       <div className={classes.sideWrapper}>
                         <Scrollspy items={[
-                          'section-1', 
-                          'section-2', 
-                          'section-3', 
-                          'section-4', 
+                          'section-1',
+                          'section-2',
+                          'section-3',
+                          'section-4',
                           'section-5',
                         ]} currentClassName={classes.currentLink}>
                           <li><HashLink to="#section-1">Website Disclaimer</HashLink></li>
@@ -87,7 +87,7 @@ const Disclaimer = () => {
                       </div>
                     </div>
                   )}
-                  
+
                 </Sticky>
               </Col>
               <Col>
@@ -152,7 +152,7 @@ const Disclaimer = () => {
                       <hr />
                       <div style={{paddingBottom: 300}}>
                         <p>
-                          The Site may contain testimonials by users of our products and/or services. These testimonials reflect the real-life experiences and opinions of such users. However, the experiences are personal to those particular users, and may not necessarily be representative of all users of our products and/or services. We do not claim, and you should not assume, that all users will have the same experiences. YOUR INDIVIDUAL RESULTS MAY VARY. 
+                          The Site may contain testimonials by users of our products and/or services. These testimonials reflect the real-life experiences and opinions of such users. However, the experiences are personal to those particular users, and may not necessarily be representative of all users of our products and/or services. We do not claim, and you should not assume, that all users will have the same experiences. YOUR INDIVIDUAL RESULTS MAY VARY.
                         </p>
                         <p>
                           The testimonials on the Site are submitted in various forms such as text, audio and/or video, and are reviewed by us before being posted. They are eddited to fit the size and lenght we have space for.

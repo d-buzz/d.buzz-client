@@ -16,6 +16,7 @@ import { useLocation } from 'react-router-dom'
 import { pending } from 'redux-saga-thunk'
 import { PostlistSkeleton } from 'components'
 import { createUseStyles } from 'react-jss'
+import { isMobile } from 'react-device-detect'
 
 const useStyles = createUseStyles(theme => ({
   searchWrapper: {
@@ -79,7 +80,7 @@ const Tags = (props) => {
   }, [items])
 
   return (
-    <React.Fragment>
+    <div style={{ marginTop: isMobile ? 90 : 0 }}>
       {results.map((item) => (
         <React.Fragment key={item.id}>
           <PostList
@@ -107,7 +108,7 @@ const Tags = (props) => {
       <PostlistSkeleton loading={loading && isLoading} />
       {(!loading && !isLoading && results.length === 0) &&
         (<center><br/><div className={classes.searchWrapper}><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></div></center>)}
-    </React.Fragment>
+    </div>
   )
 }
 

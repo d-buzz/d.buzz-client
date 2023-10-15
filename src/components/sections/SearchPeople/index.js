@@ -132,7 +132,7 @@ const SearchPeople = (props) => {
                   <div className={classes.right}>
                     <div className={classes.content}>
                       <p className={classes.name}>
-                          @{item.account} <Chip  size="small" label={item.repscore} />
+                          @{item.account} <Chip  size="small" label={item.reputation} />
                       </p>
                       <div className={classes.content}>
                         <label className={classes.username}>
