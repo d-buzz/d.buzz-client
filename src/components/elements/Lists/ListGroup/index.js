@@ -1,11 +1,14 @@
 import React from 'react'
-import { createUseStyles } from 'react-jss'
+import {createUseStyles} from 'react-jss'
 
 const useStyles = createUseStyles(theme => ({
   container: {
     backgroundColor: theme.right.list.background,
     borderRadius: '10px 10px',
-    padding: 10,
+    paddingTop: 15,
+    paddingBottom: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   wrapper: {
     width: '100%',
@@ -26,18 +29,17 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const ListGroup = (props) => {
-  const { children, label } = props
+  const { children, label, labelClassName } = props
   const classes = useStyles()
 
   return (
     <div className={classes.container}>
       {label && <div className={classes.wrapper}>
         <div className={classes.labelWrapper}>
-          <label className={classes.label}>{label}</label>
+          <label className={labelClassName || classes.label}>{label}</label>
         </div>
       </div>}
       {children}
-      <br />
     </div>
   )
 }

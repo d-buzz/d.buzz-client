@@ -17,7 +17,7 @@ const useStyles = createUseStyles(theme => ({
     border: theme.border.primary,
     borderRadius: '15px 15px',
     display: 'flex',
-    marginTop: 12,
+    marginTop: 26,
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.preview.hover.color,
@@ -85,7 +85,7 @@ const LinkPreview = (props) => {
           && !link.includes('images.hive.blog')
           && !link.includes('youtu.be')
           && !link.includes('files.peakd')
-          && !link.includes('youtube.com')
+          && (!link.includes('youtube.com') || link.match(/youtube\.com\/@[a-zA-Z0-9]/i))
           && !link.includes('3speak.co/watch?v')
           && !link.includes('3speak.online/watch?v')
           && !link.includes('app.dapplr.in')
