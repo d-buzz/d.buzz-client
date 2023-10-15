@@ -210,20 +210,19 @@ const GuardedAppFrame = (props) => {
   const onChange = (e) => {
     const { target } = e
     const { value } = target
-    setSearch(value)
+    setSearch(value.toLowerCase())
   }
 
   const handleSearchKey = (e) => {
     if(e.key === 'Enter') {
       clearSearchPosts()
-      searchRequest(search)
-
+      searchRequest(search.toLowerCase())
       let link = ''
 
-      if(search.startsWith('#')) {
-        link += `/search/trending?q=${encodeURIComponent(search)}`
-      } else if(search.startsWith('@')) {
-        link += `/search/people?q=${encodeURIComponent(search)}`
+      if(search.toLowerCase().startsWith('#')) {
+        link += `/search/trending?q=${encodeURIComponent(search.toLowerCase())}`
+      } else if(search.toLowerCase().startsWith('@')) {
+        link += `/search/people?q=${encodeURIComponent(search.toLowerCase())}`
       } else {
         link += `/search/trending?q=${encodeURIComponent(search)}`
       }
@@ -298,7 +297,7 @@ const GuardedAppFrame = (props) => {
                         labelFontSize={14}
                         searchWrapperClass={classes.searchWrapper}
                         style={{ height: 30 }}
-                        value={search}
+                        value={search.toLowerCase()}
                         onKeyDown={handleSearchKey}
                         onChange={onChange}
                         placeholder="You can use @username or #tag to simplify your query"
