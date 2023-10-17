@@ -560,3 +560,7 @@ export const getImageDimensions = (url) => {
     }
   })
 }
+
+export const parseUrls = (c) => {
+  return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
+}
