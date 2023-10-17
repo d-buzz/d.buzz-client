@@ -8,7 +8,7 @@ import VideoPreview from '../VideoPreview'
 import { bindActionCreators } from 'redux'
 import { setViewImageModal, setLinkConfirmationModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
-import { truncateString } from 'services/helper'
+import { parseUrls, truncateString } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 import BuzzRenderer from '../BuzzRenderer'
 import BuzzPhotoGrid from '../BuzzPhotoGrid'
@@ -155,10 +155,6 @@ const useStyles = createUseStyles(theme => ({
     },
   },
 }))
-
-const parseUrls = (c) => {
-  return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
-}
 
 const prepareYoutubeEmbeds = (
   content,

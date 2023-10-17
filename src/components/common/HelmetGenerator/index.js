@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { checkIfImage } from 'services/api'
 import removeMd from 'remove-markdown'
-import { stripHtml } from 'services/helper'
+import { parseUrls, stripHtml } from 'services/helper'
 
 const HelmetGenerator = (props) => {
   const {content, user, page = 'content'} = props
@@ -18,10 +18,7 @@ const HelmetGenerator = (props) => {
         const stripContent = stripHtml(removeMd(content))
         let title = stripContent
         let description = stripContent
-        let links
-        await import('markdown-link-extractor').then(({default:markdownLinkExtractor}) => {
-          links = markdownLinkExtractor(content)
-        })
+        const links = parseUrls(content)
 
         if(`${title}`.length > 80) {
           title = `${title.substr(0, 80)} ...`
