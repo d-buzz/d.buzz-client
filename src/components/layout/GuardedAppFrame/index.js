@@ -287,7 +287,7 @@ const GuardedAppFrame = (props) => {
                       </IconButton>
                     )}
                     {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
-                    {title === 'Notifications' && <NotificationFilter />}
+                    {/*{title === 'Notifications' && <NotificationFilter />}*/}
                   </Navbar.Brand>
                   {title === 'Search' && (
                     <div className={classes.searchDiv}>
