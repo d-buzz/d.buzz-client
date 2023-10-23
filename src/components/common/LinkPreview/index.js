@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import markdownLinkExtractor from 'markdown-link-extractor'
 import { LinkPreviewSkeleton } from 'components'
 import { getLinkMetaRequest } from 'store/posts/actions'
 import { connect } from 'react-redux'
@@ -7,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { createUseStyles } from 'react-jss'
 import { isMobile } from 'react-device-detect'
 import { setLinkConfirmationModal } from 'store/interface/actions'
-import { truncateString } from 'services/helper'
+import { parseUrls, truncateString } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -74,7 +73,7 @@ const LinkPreview = (props) => {
   const [meta, setMeta] = useState()
   const classes = useStyles()
 
-  const links  = markdownLinkExtractor(content)
+  const links  = parseUrls(content)
   let isValidUrl = false
   let url = ''
 
