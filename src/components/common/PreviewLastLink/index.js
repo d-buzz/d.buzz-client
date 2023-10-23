@@ -1,10 +1,10 @@
 import React from 'react'
 import { ReactTinyLink } from 'react-tiny-link'
-import markdownLinkExtractor from 'markdown-link-extractor'
+import { parseUrls } from 'services/helper'
 
 const PreviewLastLink = ({ className, content }) => {
 
-  const links  = markdownLinkExtractor(content)
+  const links  = parseUrls(content)
   let isValidUrl = false
   let url = ''
 
