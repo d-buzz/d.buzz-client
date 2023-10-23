@@ -33,7 +33,6 @@ import {
   SwitchUserModal,
   LoginModal,
   SearchField,
-  NotificationFilter,
   MoreMenu,
 } from 'components'
 import { useLocation } from 'react-router-dom'
