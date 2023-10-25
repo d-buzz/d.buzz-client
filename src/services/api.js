@@ -817,7 +817,6 @@ export const publishPostWithHAS = async (user, body, tags, payout, perm) => {
   const permlink = perm ? perm : createPermlink(title)
 
   const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
-  console.log(operations)
   hasPostService(operations[0])
   const comment = operations[0]
   const json_metadata = comment[1].json_metadata
@@ -1477,11 +1476,54 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
-export const createPermlink = (title) => {
-  const permlink = new Array(22).join().replace(/(.|$)/g, function () {
-      return ((Math.random() * 36) | 0).toString(36)
+const STOP_WORDS = new Set([
+  "a", "about", "actually", "almost", "also", "although", "always", "am", "an",
+  "and", "any", "are", "as", "at", "be", "became", "become", "but", "by", "can",
+  "could", "did", "do", "does", "each", "either", "else", "for", "from", "had",
+  "has", "have", "hence", "how", "i", "if", "in", "is", "it", "its", "just", "may",
+  "maybe", "me", "might", "mine", "must", "my", "neither", "nor", "not", "of", "oh",
+  "ok", "when", "where", "whereas", "wherever", "whenever", "whether", "which", "while",
+  "who", "whom", "whoever", "whose", "why", "will", "with", "within", "without", "would",
+  "yes", "yet", "you", "your",
+])
+
+function sanitizeTitle(title) {
+  return title.replace(/[^a-zA-Z0-9\s]/g, '')
+}
+
+function generateSeoFriendlyPermalink(title) {
+  const words = title.split(' ').filter(word => {
+    const lowercased = word.toLowerCase()
+    return !STOP_WORDS.has(lowercased) && lowercased.length > 1
   })
-  return permlink
+  return words.join('-').toLowerCase()
+}
+
+const MAX_CHARS = 20
+
+function truncatePermlink(permlink) {
+  let truncated = permlink.substring(0, MAX_CHARS)
+  while (truncated.endsWith('-')) {
+    truncated = truncated.slice(0, -1)
+  }
+  return truncated
+}
+
+function generateRandomString(length) {
+  return Array.from({ length }, () => (Math.random() * 36 | 0).toString(36)).join('')
+}
+
+export const createPermlink = (title) => {
+  const sanitizedTitle = sanitizeTitle(title)
+  let seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
+
+  if (seoFriendlyPermlink.length > MAX_CHARS) {
+    seoFriendlyPermlink = truncatePermlink(seoFriendlyPermlink)
+  }
+
+  return seoFriendlyPermlink.length >= MAX_CHARS
+    ? seoFriendlyPermlink
+    : generateRandomString(MAX_CHARS)
 }
 
 
@@ -1745,7 +1787,6 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 
 export const getEstimateAccountValue = (account) => {
   return new Promise(async (resolve) => {
-    console.log(account)
     await formatter.estimateAccountValue(account)
       .catch(function (err) {
         console.log(err)
