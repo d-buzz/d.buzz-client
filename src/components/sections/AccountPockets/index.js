@@ -108,7 +108,7 @@ const useStyle = createUseStyles(theme => ({
       justifyContent: 'flex-start !important',
     },
     '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
+      backgroundColor: '#aaa !important',
     },
     '& .MuiTabScrollButton-root': {
       '& .MuiSvgIcon-fontSizeSmall': {
@@ -131,12 +131,13 @@ const useStyle = createUseStyles(theme => ({
     },
     '& span': {
       ...theme.font,
-      fontWeight: 'bold',
-      fontFamily: 'Segoe-Bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Segoe',
     },
     '&.Mui-selected': {
       '& span': {
         color: '#e53935',
+        fontFamily: 'Segoe-Bold',
       },
     },
   },

@@ -7,6 +7,7 @@ import {
   BurnIcon,
   ContainedButton,
   HeartIconRed,
+  BookmarkIcon,
   Spinner,
   ShareIcon,
   ClipboardIcon,
@@ -46,6 +47,7 @@ import { invokeTwitterIntent } from 'services/helper'
 import { checkForCeramicAccount } from 'services/ceramic'
 import { hasUpvoteService } from 'services/api'
 import { getTheme as currentTheme } from 'services/helper'
+import AddToPocketModal from 'components/modals/AddToPocketModal'
 
 const PrettoSlider = withStyles({
   root: {
@@ -309,6 +311,7 @@ const PostActions = (props) => {
     },
     max_accepted_payout,
     recentUpvotes,
+    item,
     upvoteList = [],
     setDefaultVotingWeightRequest,
     defaultUpvoteStrength,
@@ -333,6 +336,8 @@ const PostActions = (props) => {
   const [openCaret, setOpenCaret] = useState(false)
   const [openVoteList, setOpenVoteList] = useState(false)
   const [whenPayout, setWhenPayout] = useState(null)
+  const [addToPocketModal, setAddToPocketModal] = useState(false)
+  const [selectedAddToPocketBuzz, setSelectedAddToPocketBuzz] = useState(null)
 
   const [sliderValue, setSliderValue] = useState(defaultUpvoteStrength)
 
@@ -365,6 +370,17 @@ const PostActions = (props) => {
   useEffect(() => {
     setSliderValue(defaultUpvoteStrength)
   }, [defaultUpvoteStrength])
+
+  const handleAddToPocket = () => {
+    setAddToPocketModal(true)
+    setOpenCaret(null)
+    setSelectedAddToPocketBuzz(item)
+  }
+
+  const onHideAddToPocketModal = () => {
+    setAddToPocketModal(false)
+    setSelectedAddToPocketBuzz(null)
+  }
 
   const handleClickOpenVoteList = () => {
     setOpenVoteList(true)
@@ -615,6 +631,18 @@ const PostActions = (props) => {
                 />
               </div>}
             {!checkForCeramicAccount(user.username) && type !== 'CERAMIC' &&
+            <div>
+              <ActionWrapper
+                className={classes.actionWrapperSpace}
+                inlineClass={classNames(classes.inline, classes.icon)}
+                icon={<IconButton classes={{root: classes.iconButton}} size="small"
+                  disabled={!is_authenticated}><BookmarkIcon/></IconButton>}
+                hideStats={hideStats}
+                disabled={!is_authenticated}
+                onClick={handleAddToPocket}
+              />
+            </div>}
+            {!checkForCeramicAccount(user.username) && type !== 'CERAMIC' &&
               <div>
                 <ActionWrapper
                   className={classes.actionWrapperSpace}
@@ -761,6 +789,7 @@ const PostActions = (props) => {
         upvoteList={upvoteList}
       />
       <LoginSignupModal show={openLoginSignupModal} messageBased={messageBasedOn} onHide={handleClickCloseLoginSignupModal} />
+      <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
     </React.Fragment>
   )
 }
