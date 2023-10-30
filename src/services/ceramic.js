@@ -169,53 +169,24 @@ export const loginWithMetaMask = async() => {
 export const checkForCeramicAccount = (account) => {
   return (account || '').startsWith('did:key:')
 }
-const now = new Date()
-
-async function createSchemaDocument() {
-  // The following call will fail if the Ceramic instance does not have an authenticated DID
-  const doc = await TileDocument.create(ceramicClient, {
-    $schema: 'http://json-schema.org/draft-07/schema#',
-    title: 'MySchema',
-    type: 'object',
-    properties: {
-      name: {
-        type: 'string',
-        maxLength: 150,
-      },
-    },
-    required: ['name'],
-  })
-  // The stream ID of the created document can then be accessed as the `id` property
-  return doc.id
-}
 
 
 export const createPostRequest = async(did, body) => {
   try {
-    const schemaID = await createSchemaDocument()
-    return await TileDocument.create(
-      ceramicClient,
-      {
-        parent_id: '',
-        content: {
-          json_metadata: {
-            app: 'dBuzz',
-          },
-          title: '',
-          body,
-          debug_metadata: {
-            user_id: did,
-          },
-        },
-        created_at: now.toISOString(),
-        updated_at: now.toISOString(),
+    return await spk.createDocument({
+      title: '',
+      body: body,
+      json_metadata: {
+        app: 'dBuzz',
       },
-      { tags: ['spk_network'], controllers: [did], schema: schemaID},
-      { anchor: true, publish: false },
-    )
+      debug_metadata: {
+        did: did,
+      },
+      app: 'dBuzz',
+    }, null)
   }
-  catch (err) {
-    console.log(err)
+  catch(err) {
+    console.log(err.message)
   }
 }
 

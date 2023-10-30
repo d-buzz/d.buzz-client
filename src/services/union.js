@@ -208,9 +208,6 @@ export const ACCOUNT_POSTS_QUERY = gql`
                 created_at
                 updated_at
                 app_metadata
-                json_metadata {
-                  app
-                }
                 children {
                   parent_author
                   parent_permlink

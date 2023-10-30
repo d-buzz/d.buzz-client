@@ -1327,7 +1327,6 @@ const CreateBuzzForm = (props) => {
         setBuzzing(true)
         createPostRequest(user.username, buzzContent)
           .then((data) => {
-            // console.log(data)
             if (data) {
               setPageFrom(null)
               const {creatorId, streamId} = data
