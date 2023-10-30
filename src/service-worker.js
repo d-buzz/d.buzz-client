@@ -70,3 +70,7 @@ self.addEventListener('message', (event) => {
 })
 
 // Any other custom service worker logic can go here.
+
+precacheAndRoute(self.__WB_MANIFEST, {
+  maximumFileSizeToCacheInBytes: 12 * 1024 * 1024, // 12MB
+})
