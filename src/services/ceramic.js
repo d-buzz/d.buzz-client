@@ -12,7 +12,6 @@ import { CeramicClient } from '@ceramicnetwork/http-client'
 import { IDX } from '@ceramicstudio/idx'
 import { fromString } from 'uint8arrays'
 import { hash } from '@stablelib/sha256'
-import { TileDocument } from '@ceramicnetwork/stream-tile'
 
 // const hosts = [
 //   'https://ceramic.3speak.tv',
