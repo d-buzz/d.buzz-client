@@ -5,6 +5,7 @@ const GetStarted = React.lazy(() => import('./components/pages/GetStarted'))
 const Home = React.lazy(() => import('./components/pages/Home'))
 const Trending = React.lazy(() => import('./components/pages/Trending'))
 const FAQs = React.lazy(() => import('./components/pages/FAQs'))
+const Leaderboard = React.lazy(() => import('./components/pages/Leaderboard'))
 const Profile = React.lazy(() => import('./components/pages/Profile'))
 const Content = React.lazy(() => import('./components/pages/Content'))
 const Latest = React.lazy(() => import('./components/pages/Latest'))
@@ -96,6 +97,11 @@ const routes =  [
         path: '/faqs',
         exact: true,
         component: FAQs,
+      },
+      {
+        path: '/leaderboard',
+        exact: true,
+        component: Leaderboard,
       },
       {
         path: '/ug/search',
