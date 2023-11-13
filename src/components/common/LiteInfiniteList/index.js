@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { LitePostList } from 'components'
 import { clearScrollIndex } from 'store/interface/actions'
 import { connect } from 'react-redux'
@@ -21,13 +21,18 @@ const LiteInfiniteList = ({
   selectedPocket,
 }) => {
   
-  const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' 
-    ?
-    items 
-    :
-    items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) 
-    ||
-    []
+  const posts = useMemo(() => {
+    const userData = JSON.parse(localStorage.getItem('customUserData'))
+    const showNSFWPosts = userData?.settings?.showNSFWPosts
+  
+    if (showNSFWPosts !== 'disabled') {
+      return items
+    } else {
+      return (
+        items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) || []
+      )
+    }
+  }, [items])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,7 +48,6 @@ const LiteInfiniteList = ({
       window.removeEventListener('scroll', handleScroll)
     }
   }, [loading, items, onScroll])
-  
 
   return (
     <div className='infinite-list'>
@@ -57,13 +61,15 @@ const LiteInfiniteList = ({
           title={post.title}
           unguardedLinks={unguardedLinks}
           profileRef="home"
-          author={post.author.username}
+          profile={post.author.profile}
+          did={post.__typename === 'CeramicPost' ? post.author.username : ''}
+          author={post.__typename === 'CeramicPost' ? (post.author.profile?.name || post.author.username) : post.author.username}
           permlink={post.permlink}
           created={post.created_at}
           body={post.body}
           replyCount={post.children.length}
           meta={post.json_metadata}
-          total_payout_value={posts[index].total_payout_value}
+          total_payout_value={posts[index].stats?.total_hive_reward || 0.00}
           pending_payout_value={posts[index].pending_payout_value}
           max_accepted_payout={posts[index].max_accepted_payout}
           item={post}

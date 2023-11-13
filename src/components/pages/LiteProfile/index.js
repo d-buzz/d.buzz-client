@@ -25,17 +25,18 @@ import {
   ProfileSkeleton,
   HelmetGenerator,
   HiddenBuzzListModal,
-  EditProfileModal,
+  LiteEditProfileModal,
 } from 'components'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LinkIcon from '@material-ui/icons/Link'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import PersonIcon from '@material-ui/icons/Person'
-import { getIpfsLink, unFollowUserRequest } from 'services/ceramic'
+import { followUserRequest, getFollowersList, getFollowingList, getIpfsLink, unFollowUserRequest } from 'services/ceramic'
 import { getTheme } from 'services/theme'
-import { PROFILE_QUERY } from 'services/union'
+import { FOLLOWER_FOLLOWING_QUERY, PROFILE_QUERY } from 'services/union'
 import { useQuery } from '@apollo/client'
+import Skeleton from 'react-loading-skeleton'
 
 const useStyles = createUseStyles(theme => ({
   cover: {
@@ -238,10 +239,6 @@ const LiteProfile = (props) => {
   const [invalidUser, setInvalidUser] = useState(false)
 
   // eslint-disable-next-line
-  const [followers, setFollowers] = useState([])
-  // eslint-disable-next-line
-  const [following, setFollowing] = useState([])
-  // eslint-disable-next-line
   const [followsYou, setFollowsYou] = useState(false)
 
 
@@ -273,6 +270,43 @@ const LiteProfile = (props) => {
     variables: { id: loginuser === username ? loginuser : username},
   })
 
+  // eslint-disable-next-line
+  const { loading: followerFollowingLoading, data: followersFollowingsData={} } = useQuery(FOLLOWER_FOLLOWING_QUERY, {
+    variables: { id: loginuser === username ? loginuser : username},
+  })
+
+  // TODO: Using old Offchain Indexer API for Lite Accounts until we fix following / followers issue with union indexer
+  const [ceramicFollowers, setCeramicFollowers] = useState(false)
+  const [ceramicFollowings, setCeramicFollowings] = useState(false)
+
+
+  useEffect(() => {
+    if(!loading) {
+      const { profile } = data
+      if(profile?.did) {
+        const did = profile.did
+        getFollowingList(did)
+          .then((list) => {
+
+            setCeramicFollowings(list?.length || 0)
+          })
+        getFollowersList(did)
+          .then((list) => {
+            setCeramicFollowers(list?.length || 0)
+
+            // check if following the user
+            if(list.find((user) => user.did === loginuser)) {
+              setIsFollowed(true)
+            }
+          })
+      }
+    }
+    // eslint-disable-next-line
+  }, [loading, data])
+
+  // eslint-disable-next-line
+  const { followers, followings, followers_count, followings_count } = followersFollowingsData.follows || {}
+
   useEffect(() => {
     if(!loading) {
       if(data?.profile) {
@@ -288,6 +322,7 @@ const LiteProfile = (props) => {
     }
   }, [data, loading])
 
+  // eslint-disable-next-line
   const reloadProfile = () => {
     refetch()
   }
@@ -373,9 +408,19 @@ const LiteProfile = (props) => {
     // eslint-disable-next-line
   }, [userCoverImage])
 
-  // const followUser = () => {
-  //   setLoader(true)
-  // }
+  const followUser = () => {
+    setLoader(true)
+    followUserRequest(username).then(res => {
+      broadcastNotification('success', `Successfully Followed @${username}`)
+      setHasRecentlyFollowed(false)
+      setHasRecentlyUnfollowed(true)
+      setIsFollowed(true)
+      setLoader(false)
+    }).catch((e) => {
+      console.log(e.message)
+      setLoader(false)
+    })
+  }
   
   const unfollowUser = () => {
     setLoader(true)
@@ -383,8 +428,8 @@ const LiteProfile = (props) => {
       broadcastNotification('success', `Successfully Unfollowed @${username}`)
       setHasRecentlyFollowed(false)
       setHasRecentlyUnfollowed(true)
+      setIsFollowed(false)
       setLoader(false)
-      reloadProfile()
     }).catch((e) => {
       console.log(e.message)
       setLoader(false)
@@ -527,7 +572,7 @@ const LiteProfile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {/* {loginuser !== username && mutelist.includes(username) && (
+                        {loginuser !== username && mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
@@ -538,7 +583,7 @@ const LiteProfile = (props) => {
                             onClick={openMuteModal}
                           />
                         )}
-                        {!isFollowed && (loginuser !== username) && (
+                        {!isFollowed && (loginuser !== username) && data?.profile?.did && (
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
@@ -549,8 +594,8 @@ const LiteProfile = (props) => {
                             className={classes.button}
                             onClick={followUser}
                           />
-                        )} */}
-                        {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
+                        )}
+                        {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && data?.profile?.did && (
                           <ContainedButton
                             fontSize={14}
                             loading={loadingFollow || loader}
@@ -615,18 +660,22 @@ const LiteProfile = (props) => {
                       </p>
                     </Col>
                   </Row>
-                  {/* <Row>
+                  <Row>
                     <Col xs="auto">
                       <p className={classes.paragraph}>
-                        <Link className={classes.followLinks} to={`/@${username}/follow/following`}>
-                          <b>{following}</b> <span className={classes.textIcon}>Following</span>
-                        </Link> &nbsp;
-                        <Link className={classes.followLinks} to={`/@${username}/follow/followers`}>
-                          <b>{followers}</b> <span className={classes.textIcon}>Followers</span>
-                        </Link> &nbsp;
+                        <div className={classes.followLinks}>
+                          {ceramicFollowings ?
+                            <><b>{!followerFollowingLoading ? ceramicFollowings : <Skeleton height={15} width={30} />}</b> <span className={classes.textIcon}>Following</span></> :
+                            <><b>{!followerFollowingLoading ? followings_count : <Skeleton height={15} width={30} />}</b> <span className={classes.textIcon}>Following</span></>}
+                        </div> &nbsp;
+                        <div className={classes.followLinks}>
+                          {ceramicFollowers ?
+                            <><b>{!followerFollowingLoading ? ceramicFollowers : <Skeleton height={15} width={30} />}</b> <span className={classes.textIcon}>Followers</span></> :
+                            <><b>{!followerFollowingLoading ? followers_count : <Skeleton height={15} width={30} />}</b> <span className={classes.textIcon}>Followers</span></>}
+                        </div> &nbsp;
                       </p>
                     </Col>
-                  </Row> */}
+                  </Row>
                 </React.Fragment>
               )}
             </div>
@@ -647,11 +696,12 @@ const LiteProfile = (props) => {
             {renderRoutes(route.routes, { author: username })}
           </React.Fragment>
           <HiddenBuzzListModal open={openHiddenBuzzList} onClose={handleClickOpenHiddenBuzzList} />
-          <EditProfileModal
+          <LiteEditProfileModal
             show={openEditProfileModal}
             onHide={handleOpenEditProfileModal}
             setUpdatedCover={setUpdatedCover}
             setUpdatedProfile={setUpdatedProfile}
+            reloadProfile={refetch}
           />
           <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={copied} autoHideDuration={6000} onClose={handleCloseReferalCopy}>
             <Alert onClose={handleCloseReferalCopy} severity="success">

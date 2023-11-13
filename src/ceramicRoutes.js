@@ -5,7 +5,7 @@ const GetStarted = React.lazy(() => import('./components/pages/GetStarted'))
 const LiteHome = React.lazy(() => import('./components/pages/LiteHome'))
 const LiteTrending = React.lazy(() => import('./components/pages/LiteTrending'))
 const LiteProfile = React.lazy(() => import('./components/pages/LiteProfile'))
-const Content = React.lazy(() => import('./components/pages/Content'))
+const LiteContent = React.lazy(() => import('./components/pages/LiteContent'))
 const LiteLatest = React.lazy(() => import('./components/pages/LiteLatest'))
 const LiteAccountPosts = React.lazy(() => import('./components/sections/LiteAccountPosts'))
 const AccountReplies = React.lazy(() => import('./components/sections/AccountReplies'))
@@ -155,7 +155,7 @@ const ceramicRoutes =  [
       {
         path: '/@:username/:permlink',
         exact: true,
-        component: Content,
+        component: LiteContent,
       },
       {
         path: '/@:username/follow',

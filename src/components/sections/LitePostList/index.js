@@ -6,8 +6,7 @@ import {
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import {
-  // PostTags,
-  PostActions,
+  LitePostActions,
 } from 'components'
 import {
   openUserDialog,
@@ -36,7 +35,7 @@ import Renderer from 'components/common/Renderer'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 import { getUserCustomData } from 'services/database/api'
 import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
-import { checkForCeramicAccount } from 'services/ceramic'
+import { checkForCeramicAccount, getIpfsLink } from 'services/ceramic'
 
 const addHover = (theme) => {
   let style = {
@@ -219,13 +218,15 @@ const useStyle = createUseStyles(theme => ({
 const LitePostList = React.memo((props) => {
   const classes = useStyle()
   const {
+    profile,
     postType,
     searchListMode = false,
     author,
+    did,
     permlink,
     created,
     body,
-    upvotes,
+    // upvotes,
     replyCount,
     // meta,
     active_votes = [],
@@ -235,9 +236,9 @@ const LitePostList = React.memo((props) => {
     // highlightTag = null,
     title = null,
     disableProfileLink = false,
-    disableUserMenu = false,
+    // disableUserMenu = false,
     // disableUpvote = false,
-    openUserDialog,
+    // openUserDialog,
     saveScrollIndex,
     scrollIndex,
     recomputeRowIndex = () => {},
@@ -250,7 +251,7 @@ const LitePostList = React.memo((props) => {
     openCensorshipDialog,
     censorList,
     theme,
-    upvoteList,
+    // upvoteList,
     item,
     loadPockets,
     selectedPocket = {},
@@ -292,6 +293,7 @@ const LitePostList = React.memo((props) => {
   const [rightWidth, setRightWidth] = useState({ width: isMobile ? width-90 : 480 })
   const [avatarSize, setAvatarSize] = useState(isMobile ? 45 : 50)
   const [leftWidth, setLeftWidth] = useState({ width: isMobile ? 50 : 60 })
+  // eslint-disable-next-line
   const [delayHandler, setDelayHandler] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null)
   const [muted, setMuted] = useState(false)
@@ -366,18 +368,19 @@ const LitePostList = React.memo((props) => {
 
   let hasUpvoted = false
   const history = useHistory()
-  const authorLink = !author.did ? `/@${author}${'?ref='+profileRef}` : `/@${author.did}${'?ref='+profileRef}`
+  const authorLink = !did ? `/@${author}${'?ref='+profileRef}` : `/@${did}${'?ref='+profileRef}`
 
   if(user.is_authenticated && !searchListMode) {
     hasUpvoted = active_votes.filter((vote) => vote.voter === user.username).length !== 0
   } else {
+    // eslint-disable-next-line
     hasUpvoted = false
   }
 
   const generateLink = (author, permlink) =>  {
     let link = ''
 
-    const username = author.did ? author.did : author
+    const username = author
 
     link += `/@${username}/${permlink}`
 
@@ -394,7 +397,7 @@ const LitePostList = React.memo((props) => {
       window.open(href, '_blank')
     } else {
       if(!href) {
-        const link = generateLink(author, permlink)
+        const link = generateLink(!did ? author : did, permlink)
         saveScrollIndex(scrollIndex)
         history.push(link)
       } else {
@@ -405,11 +408,11 @@ const LitePostList = React.memo((props) => {
     }
   }
 
-  const openPopOver = (e) => {
-    setDelayHandler(setTimeout(() => {
-      openUserDialog(popoverAnchor.current, (author))
-    }, 500))
-  }
+  // const openPopOver = (e) => {
+  //   setDelayHandler(setTimeout(() => {
+  //     openUserDialog(popoverAnchor.current, (author))
+  //   }, 500))
+  // }
 
   const closePopOver = () => {
     clearTimeout(delayHandler)
@@ -547,7 +550,7 @@ const LitePostList = React.memo((props) => {
           <Row>
             <Col xs="auto" className={classes.colLeft}>
               <div style={leftWidth} className={classes.left} onClick={!isMutedUser() && !isAHiddenBuzz() ? handleOpenContent : null}>
-                <Avatar height={avatarSize} author={author} />
+                <Avatar height={avatarSize} author={author} avatarUrl={getIpfsLink(profile?.images?.avatar)} />
               </div>
             </Col>
             <Col xs="auto" className={classes.colRight}>
@@ -558,8 +561,8 @@ const LitePostList = React.memo((props) => {
                       <Link
                         ref={popoverAnchor}
                         to={!muted && !opacityActivated && disableOpacity ? authorLink : '#'}
-                        onMouseEnter={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? openPopOver : () => {}}
-                        onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
+                        // onMouseEnter={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? openPopOver : () => {}}
+                        // onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
                         {author}
@@ -588,22 +591,17 @@ const LitePostList = React.memo((props) => {
                 </div>
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
-                    <PostActions
+                    <LitePostActions
                       postType={postType}
-                      upvoteList={upvoteList}
-                      // disableUpvote={disableUpvote}
                       title={title}
                       body={body}
-                      hasUpvoted={hasUpvoted}
                       author={author}
                       permlink={permlink}
-                      voteCount={upvotes}
                       replyCount={replyCount}
-                      payout={`${payout}`}
                       recomputeRowIndex={recomputeRowIndex}
+                      payout={`${payout}`}
                       payoutAt={payoutAt}
                       scrollIndex={scrollIndex}
-                      max_accepted_payout={max_accepted_payout}
                     />
                   </div>
                 )}

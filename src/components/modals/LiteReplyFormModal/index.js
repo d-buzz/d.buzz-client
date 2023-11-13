@@ -266,16 +266,14 @@ const ReplyFormModal = (props) => {
           replyRef,
           treeHistory,
         } = modalData
-        console.log(modalData)
         setReplyRef(replyRef)
-        if(author?.profile?.did) {
+        if(author.did) {
           setCeramicAuthor(author)
-          if(author?.profile?.images) {
-            setAuthorAvatarUrl(getIpfsLink(author?.profile?.images?.avatar))
+          if(author?.images) {
+            setAuthorAvatarUrl(getIpfsLink(author?.images?.avatar))
           }
         }
-        console.log(author)
-        setAuthor(author?.profile?.did ? author?.profile?.did : author)
+        setAuthor(author.did ? author.did : author)
         setPermlink(permlink)
         setBody(content)
         setTreeHistory(treeHistory)
@@ -560,7 +558,7 @@ const ReplyFormModal = (props) => {
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.profile.name || 'Ceramic User'}</a></b>}</p>
+                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
                   <div className={classes.previewContainer}>
                     <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>

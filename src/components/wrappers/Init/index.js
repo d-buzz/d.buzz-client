@@ -155,7 +155,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING v{stagingVersion}</b> : isLite ? <b>LITE</b> : ''}
+            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING v{stagingVersion}</b> : isLite ? <b>LITE v2</b> : ''}
           </Typography>
         </center>
       </div>

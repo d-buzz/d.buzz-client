@@ -37,7 +37,7 @@ const LiteAccountPosts = (props) => {
   useEffect(() => {
     const posts = deepClone(data?.socialFeed?.items || [])
     removeFootNote(posts)
-    
+
     if (!_.isEqual(posts, allPosts)) {
       setAllPosts(posts)
     }
