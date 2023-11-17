@@ -564,3 +564,33 @@ export const getImageDimensions = (url) => {
 export const parseUrls = (c) => {
   return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
 }
+
+export const getCurrentTimePart = () => (Math.floor((new Date().getHours() / 24) * 8) + 1)
+
+export const calculateAverageRanking = (users) => {
+  const userRankings = {}
+  let ranking_importance = 4
+  users.forEach((userList, systemIndex) => {
+    userList.forEach((user, userIndex) => {
+      const {rank, author} = user
+      if (!userRankings[author]) {
+        userRankings[author] = { totalRank: 0, count: 0 }
+      }
+      userRankings[author].totalRank += (((11 - rank)/55) * (100+ranking_importance))
+      userRankings[author].count++
+    })
+    ranking_importance--
+  })
+  const averageRankings = Object.entries(userRankings).map(([author, data]) => {
+    const averageRank = data.totalRank
+    return { author, averageRank }
+  })
+  averageRankings.sort((a, b) => b.averageRank - a.averageRank)
+  let top10Users = []
+  if(averageRankings.length>0){
+    for(let i=0; i<10; i++){
+      top10Users.push({rank: (i+1), author: Object.values(averageRankings)[i].author, averageRank: Object.values(averageRankings)[i].averageRank})
+    }
+  }
+  return top10Users || []
+}
