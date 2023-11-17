@@ -160,9 +160,9 @@ const Leaderboard = () => {
                                 <div>
                                   <span><Link to={`/@${ranking.author}`}>{ranking.author}</Link></span>
                                 </div>
-                                {/* <div>
+                                <div>
                                   <span>{ranking.score}</span>
-                                </div> */}
+                                </div>
                               </Row>
                             ))}
                           </React.Fragment> :
@@ -189,9 +189,9 @@ const Leaderboard = () => {
                                 <div>
                                   <span><Link to={`/@${ranking.author}`}>{ranking.author}</Link></span>
                                 </div>
-                                {/* <div>
+                                <div>
                                   <span>{ranking.score}</span>
-                                </div> */}
+                                </div>
                               </Row>
                             ))}
                           </React.Fragment> :
@@ -218,9 +218,9 @@ const Leaderboard = () => {
                                 <div>
                                   <span><Link to={`/@${ranking.author}`}>{ranking.author}</Link></span>
                                 </div>
-                                {/* <div>
+                                <div>
                                   <span>{ranking.score}</span>
-                                </div> */}
+                                </div>
                               </Row>
                             ))}
                           </React.Fragment> :
@@ -247,9 +247,9 @@ const Leaderboard = () => {
                                 <div>
                                   <span><Link to={`/@${ranking.author}`}>{ranking.author}</Link></span>
                                 </div>
-                                {/* <div>
+                                <div>
                                   <span>{ranking.score}</span>
-                                </div> */}
+                                </div>
                               </Row>
                             ))}
                           </React.Fragment> :
@@ -277,9 +277,9 @@ const Leaderboard = () => {
                                 <div>
                                   <span><Link to={`/@${ranking.author}`}>{ranking.author}</Link></span>
                                 </div>
-                                {/* <div>
+                                <div>
                                   <span>{Math.ceil(ranking.averageRank * 100) / 100}</span>
-                                </div> */}
+                                </div>
                               </Row>
                             ))}
                           </React.Fragment> :
