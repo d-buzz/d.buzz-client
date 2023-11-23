@@ -8,7 +8,7 @@ import { proxyImage } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   buzzPhotoGridWrapper: {
-    marginTop: 12,
+    marginTop: 26,
   },
   singleImageWrapper: {
     width: 'fit-content',

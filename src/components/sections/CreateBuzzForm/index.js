@@ -1,6 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import classNames from 'classnames'
 import Box from '@material-ui/core/Box'
+import {createUseStyles} from 'react-jss'
 import {createUseStyles} from 'react-jss'
 import {
   TextArea,
@@ -10,6 +12,23 @@ import {
   GifIcon,
   EmojiIcon,
 } from 'components/elements'
+import {clearIntentBuzz} from 'store/auth/actions'
+import {broadcastNotification, setLinkConfirmationModal, setViewImageModal} from 'store/interface/actions'
+import {PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
+import {bindActionCreators} from 'redux'
+import {
+  uploadFileRequest,
+  uploadVideoRequest,
+  publishPostRequest,
+  setPageFrom,
+  savePostAsDraft,
+  updateBuzzThreads,
+  publishReplyRequest,
+  setContentRedirect,
+} from 'store/posts/actions'
+import {pending} from 'redux-saga-thunk'
+import {connect} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 import {clearIntentBuzz} from 'store/auth/actions'
 import {broadcastNotification, setLinkConfirmationModal, setViewImageModal} from 'store/interface/actions'
 import {PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
@@ -1327,7 +1346,8 @@ const CreateBuzzForm = (props) => {
         setBuzzing(true)
         createPostRequest(user.username, buzzContent)
           .then((data) => {
-            if (data) {
+             // console.log(data)
+            if(data) {
               setPageFrom(null)
               const {creatorId, streamId} = data
               removeAutoSavedDraft()

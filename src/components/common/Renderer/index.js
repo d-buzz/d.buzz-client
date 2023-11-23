@@ -8,7 +8,7 @@ import VideoPreview from '../VideoPreview'
 import { bindActionCreators } from 'redux'
 import { setViewImageModal, setLinkConfirmationModal } from 'store/interface/actions'
 import { connect } from 'react-redux'
-import { truncateString } from 'services/helper'
+import { parseUrls, truncateString } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 import BuzzRenderer from '../BuzzRenderer'
 import BuzzPhotoGrid from '../BuzzPhotoGrid'
@@ -125,6 +125,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   videoWrapper: {
+    marginTop: 26,
     position: 'relative',
     paddingBottom: '56.25%',
     marginBottom: 10,
@@ -154,10 +155,6 @@ const useStyles = createUseStyles(theme => ({
     },
   },
 }))
-
-const parseUrls = (c) => {
-  return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
-}
 
 const prepareYoutubeEmbeds = (
   content,
@@ -251,6 +248,8 @@ const prepareTwitterEmbeds = (
   let body = content
   const mainTwitterRegex = /(?:https?:\/\/(?:(?:twitter\.com\/(.*?)\/status\/(.*))))/i
   const mobileTwitterRegex = /(?:https?:\/\/(?:(?:mobile\.twitter\.com\/(.*?)\/status\/(.*))))/i
+  const mainTwitterXRegex = /(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*))))/i
+  const mobileTwitterXRegex = /(?:https?:\/\/(?:(?:mobile\.x\.com\/(.*?)\/status\/(.*))))/i
   const htmlReplacement = /<blockquote[^>]*?><p[^>]*?>(.*?)<\/p>.*?mdash; (.*)<a href="(https:\/\/twitter\.com\/.*?(.*?\/status\/(.*?))\?.*?)">(.*?)<\/a><\/blockquote>/i
 
   const links = parseUrls(content)
@@ -290,10 +289,27 @@ const prepareTwitterEmbeds = (
               id = id.slice(0, -2)
             }
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+          }else if(link.match(mainTwitterXRegex)) {
+            match = link.match(mainTwitterXRegex)
+            id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
+            if(link.match(/(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+              match = link.match(/(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+              id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
+            }
+            console.log(id)
+            body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
+          }else if(link.match(mobileTwitterXRegex)) {
+            match = link.match(mobileTwitterXRegex)
+            id = `${match[1]}&${match[2]}`
+            if(link.match(/(?:https?:\/\/(?:(?:mobile\.x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)) {
+              match = link.match(/(?:https?:\/\/(?:(?:mobile\.x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
+              id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
+            }
+            body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
           }
   
           if(match) {
-            const id = `${match[1]}&${match[2]}`
+            const id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
             twitterEmbeds.push({ app: 'twitter', id })
           }
@@ -1314,7 +1330,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
 
     // // render content (supported for all browsers)
     content = content
-      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){0}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*([a-zA-Z])+/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
+      .replace(/("\S+)|(\[\S+)|(\(\S+)|(@\S+)|(#\S+)|((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){0}?([\w.,@?^=%&:/~+#!-$-]+)?(\/+[\w.,@?^=%&:/~+#!-$-]*)*([a-zA-Z0-9/])+/gi, n => checkForImage(n) && checkForValidURL(n) ? `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>` : n)
       // // render markdown links  
       .replace(/\[.*?\]\((.+?)\)/gi, (_m, n) => `<span class="hyperlink" id="${n}">${truncateString(n, 25)}</span>`)
       // // render usernames
@@ -1401,7 +1417,7 @@ const Renderer = React.memo((props) => {
 
         if(link.includes('youtube.com') ||link.includes('youtu.be')) {
           content = prepareYoutubeEmbeds(content, buzzImages, buzzVideos, videoEmbeds, soundEmbeds, twitterEmbeds, contentImages)
-        } else if(link.includes('twitter.com')) {
+        } else if(link.includes('twitter.com') || link.includes('x.com')) {
           content = prepareTwitterEmbeds(content, buzzImages, buzzVideos, videoEmbeds, soundEmbeds, twitterEmbeds, contentImages)
         } else if(link.includes('3speak.co') || link.includes('3speak.online') || link.includes('3speak.tv')) {
           content = prepareThreeSpeakEmbeds(content, buzzImages, buzzVideos, videoEmbeds, soundEmbeds, twitterEmbeds, contentImages)

@@ -8,15 +8,14 @@ import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
+import config from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
-import {hacUserAuth, hacVote, hacManualTransaction} from "@mintrawa/hive-auth-client"
-import config from 'config'
-import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
+import {hacManualTransaction, hacUserAuth, hacVote} from "@mintrawa/hive-auth-client"
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -34,23 +33,19 @@ const APP_META = {
 
 const visited = []
 
+const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
+
 export const geRPCNode = () => {
-  return new Promise( (resolve) => {
-    if(localStorage.getItem('rpc-setting')) {
-      if(localStorage.getItem('rpc-setting') !== 'auto') {
+  return new Promise((resolve) => {
+    if (localStorage.getItem('rpc-setting')) {
+      if (localStorage.getItem('rpc-setting') !== 'default') {
         const node = localStorage.getItem('rpc-setting')
         resolve(node)
       } else {
-        getBestRpcNode()
-          .then((node) => {
-            resolve(node)
-          })
+        resolve(defaultNode)
       }
     } else {
-      getBestRpcNode()
-        .then((node) => {
-          resolve(node)
-        })
+      resolve(defaultNode)
     }
   })
 }
@@ -80,16 +75,12 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  if(typeof data !== 'string') {
+  if (typeof data !== 'string') {
     return data.forEach((item) => {
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
     })
   }
-}
-
-export const deepClone = (obj) => {
-  return JSON.parse(JSON.stringify(obj))
 }
 
 export const callBridge = async (method, params, appendParams = true) => {

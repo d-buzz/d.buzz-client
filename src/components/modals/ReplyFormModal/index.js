@@ -23,6 +23,9 @@ import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, generateHiveCeramicParentId, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
 import { publishReplyWithHAS } from 'services/api'
 import { isMobile } from 'web3modal'
+import heic2any from 'heic2any'
+import {LinearProgress} from '@material-ui/core'
+import {styled} from '@material-ui/styles'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -229,6 +232,8 @@ const ReplyFormModal = (props) => {
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
   const [userAvatarUrl, setUserAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
   const [loading, setLoading] = useState(false)
+  const [imageUploadProgress, setImageUploadProgress] = useState(0)
+  const [imagesLength, setImagesLength] = useState(0)
 
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
@@ -242,6 +247,8 @@ const ReplyFormModal = (props) => {
   const iconButtonStyle = { marginTop: -5 }
   const inputFile = { display: 'none' }
   const replyButtonStyle = { width: 70 }
+
+  const buzzAllowedImages = 4
 
 
   useEffect(() => {
@@ -367,15 +374,84 @@ const ReplyFormModal = (props) => {
     target.click()
   }
 
+  const handleImageCompression = async (image) => {
+    let compressedFile = null
+    const MAX_SIZE = 500 * 1024
+
+    const options = {
+      maxSizeMB: MAX_SIZE / (1024 * 1024),
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    }
+    try {
+      await import('browser-image-compression').then(async ({default: imageCompression}) => {
+        compressedFile = await imageCompression(image, options)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    return compressedFile !== null && compressedFile
+  }
+
+  const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#7D3B4A',
+    [`& .MuiLinearProgress-barColorPrimary`]: {
+      backgroundColor: '#E74B5D',
+    },
+  }))
+
   const handleFileSelectChange = (event) => {
-    const files = event.target.files[0]
-    uploadFileRequest(files).then((images) => {
-      const lastImage = images[images.length-1]
-      if(lastImage !== undefined) {
-        const contentAppend = `${content} <br /> ${lastImage}`
-        setContent(contentAppend)
-      }
-    })
+    // const files = event.target.files[0]
+    // uploadFileRequest(files).then((images) => {
+    //   const lastImage = images[images.length-1]
+    //   if(lastImage !== undefined) {
+    //     const contentAppend = `${content} <br /> ${lastImage}`
+    //     setContent(contentAppend)
+    //   }
+    // })
+    const images = Array.from(event.target.files)
+    const allImages = [...images.filter(image => image.type !== 'image/heic')]
+    const heicImages = images.filter(image => image.type === 'image/heic')
+    const uploadedImages = []
+    Promise.all(
+      heicImages.map(async (image) => {
+        const pngBlob = await heic2any({
+          blob: image,
+          toType: 'image/png',
+          quality: 1,
+        })
+        allImages.push(
+          new File([pngBlob], image.name.replace('.heic', ''), {type: 'image/png', size: pngBlob.size}),
+        )
+      }),
+    )
+      .then(async () => {
+        if ((allImages.length) <= buzzAllowedImages) {
+          setImagesLength(allImages.length)
+          await Promise.all(
+            allImages.map(async (image) => {
+              await handleImageCompression(image).then((uri) => {
+
+                uploadFileRequest(uri, setImageUploadProgress).then((image) => {
+                  const lastImage = image[image.length - 1]
+                  uploadedImages.push(lastImage)
+
+                  if (uploadedImages.length === allImages.length) {
+                    const contentAppend = content + uploadedImages.join('<br />')
+                    setContent(contentAppend)
+                    setImagesLength(0)
+                  }
+                })
+              })
+            }),
+          )
+        } else {
+          alert(`You can only upload 4 images per buzz`)
+        }
+      })
   }
 
   const handleSubmitReply = () => {
@@ -610,14 +686,25 @@ const ReplyFormModal = (props) => {
                     onChange={handleOnChange}
                     className={classNames(classes.checkBox, classes.label)}
                   />
-                  {uploading && (
+                  {/* {uploading && (
                     <div className={classes.actionWrapper}>
                       <Box  position="relative" display="inline-flex">
                         <Spinner top={0} size={20} loading={uploading} />&nbsp;
                         <label className={classes.actionLabels}>uploading image, please wait ...</label>&nbsp;
                       </Box>
                     </div>
-                  )}
+                  )} */}
+                  {uploading && (
+                    <div style={{width: '100%', paddingTop: 5}}>
+                      {imageUploadProgress !== 100 && imagesLength === 0 ?
+                        <div className={classes.uploadProgressBar}>
+                          <BorderLinearProgress className={classes.linearProgress} variant="determinate"
+                            value={imageUploadProgress}/>
+                          <span className="progressPercent">{imageUploadProgress}%</span>
+                        </div> :
+                        <div
+                          className={classes.preparingMedia}>{imagesLength === 1 ? "Preparing Image" : `Preparing ${imagesLength} Images`}</div>}
+                    </div>)}
                   <br />
                   {content.length !== 0 && (
                     <div className={classes.previewContainer}>
@@ -635,7 +722,7 @@ const ReplyFormModal = (props) => {
                       accept='image/*'
                       ref={inputRef}
                       onChange={handleFileSelectChange}
-                      multiple={false}
+                      multiple={true}
                       style={inputFile}
                     />
                     <IconButton size="medium" onClick={handleFileSelect}>

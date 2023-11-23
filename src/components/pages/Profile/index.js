@@ -139,18 +139,20 @@ const useStyles = createUseStyles(theme => ({
     '& span': {
       width: 'inherit',
       ...theme.font,
-      fontWeight: 'bold',
-      fontFamily: 'Segoe-Bold',
+      // fontWeight: 'bold',
+      fontFamily: 'Segoe',
     },
     '&.Mui-selected': {
       '& span': {
         color: '#e53935',
+        fontFamily: 'Segoe-Bold',
       },
     },
   },
+  buzzButtonFill: { fill: theme.buzzButton.fill},
   tabContainer: {
     '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
+      backgroundColor: '#aaa !important',
     },
     display: 'flex',
     justifyContent: 'space-between',
@@ -470,8 +472,6 @@ const Profile = (props) => {
       .replace(/#([\w\d!@%^&*+=._-]+[A-Za-z0-9\w])/gi, n => `<span class=${classes.linkStyle}><a href=${window.location.origin}/#/tags?q=${n.toLowerCase().replace('#', '')}>${n}</a></span>`)
     : `<span class=${classes.linkStyle}> ${hyperlinkProfileLink} </span>`
 
-  console.log(userAbout)
-
   const [loader, setLoader] = useState(false)
 
   const [userProfileImage, setUserProfileImage] = useState(profile_image)
@@ -740,6 +740,9 @@ const Profile = (props) => {
                     <div className={classes.avatar} id="avatarContainer">
                       <Avatar className={classes.avatarStyles} border={true} height="135" author={username}
                         size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id="profileImage"/>
+                    <div className={classes.avatar} id="avatarContainer">
+                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username}
+                        size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id="profileImage"/>
                     </div>
                   </Col>
                   <Col>
@@ -750,7 +753,7 @@ const Profile = (props) => {
                           style={{float: 'right', marginTop: -5, marginLeft: -5, marginRight: -15}}
                           onClick={handleOpenMoreOptions}
                         >
-                          <MoreCircleIconRed/>
+                          <MoreCircleIconRed className={classes.buzzButtonFill}/>
                         </IconButton>
                         <CustomizedMenu anchorEl={moreOptionsEl} handleClose={handleCloseMoreOptions}
                           items={moreOptions}/>
@@ -758,33 +761,36 @@ const Profile = (props) => {
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Edit profile"
                             className={classes.button}
                             onClick={handleOpenEditProfileModal}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {!ceramicUser && !activeCeramicUser && loginuser !== username && !mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5, marginLeft: 10}}
+                            style={{float: 'right', marginTop: 5, marginLeft: 10, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Mute"
                             className={classes.button}
                             onClick={openMuteModal}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {!ceramicUser && !activeCeramicUser && loginuser !== username && mutelist.includes(username) && (
                           <ContainedButton
                             fontSize={14}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5, marginLeft: 10}}
+                            style={{float: 'right', marginTop: 5, marginLeft: 10, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Unmute"
                             className={classes.button}
                             onClick={openMuteModal}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (loginuser !== username) && !ceramicUser && !activeCeramicUser && (
@@ -792,11 +798,12 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
                             onClick={followUser}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {!isFollowed && ceramicUser && activeCeramicUser && (loginuser !== username) && (
@@ -804,11 +811,12 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Follow"
                             className={classes.button}
                             onClick={followUser}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                         {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (loginuser !== username) && (
@@ -816,11 +824,12 @@ const Profile = (props) => {
                             fontSize={14}
                             loading={loadingFollow || loader}
                             disabled={loading}
-                            style={{float: 'right', marginTop: 5}}
+                            style={{float: 'right', marginTop: 5, borderColor: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                             transparent={true}
                             label="Unfollow"
                             className={classes.button}
                             onClick={unfollowUser}
+                            labelStyle = {{ color: `${getTheme(getUserTheme()).buzzButton.fill}`}}
                           />
                         )}
                       </React.Fragment>

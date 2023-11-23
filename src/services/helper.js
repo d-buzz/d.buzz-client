@@ -6,6 +6,7 @@ import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import textParser from 'npm-text-parser'
 import axios from 'axios'
+import axios from 'axios'
 
 const dmp = new diff_match_patch()
 
@@ -564,4 +565,8 @@ export const getImageDimensions = (url) => {
 
 export const isLiteMode = () => {
   return localStorage.getItem('lite') ? true : false
+}
+
+export const parseUrls = (c) => {
+  return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
 }

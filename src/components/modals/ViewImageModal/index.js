@@ -42,20 +42,20 @@ const useStyles = createUseStyles(theme => ({
   },
   prevImageButton: {
     marginRight: '15px !important',
-    marginTop: '-20px !important',
+    marginTop: '10px !important',
     color: '#ffffff !important',
     backgroundColor: '#E61C34 !important',
     fontSize: '2em !important',
   },
   closeImageButton: {
-    marginTop: '-20px !important',
+    marginTop: '10px !important',
     color: '#ffffff !important',
     backgroundColor: '#E61C34 !important',
     fontSize: '2em !important',
   },
   nextImageButton: {
     marginLeft: '15px !important',
-    marginTop: '-20px !important',
+    marginTop: '10px !important',
     color: '#ffffff !important',
     backgroundColor: '#E61C34 !important',
     fontSize: '2em !important',

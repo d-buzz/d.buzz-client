@@ -43,10 +43,10 @@ const App = () => {
         <Helmet>
           <link rel="canonical" href={currentSiteUrl} />
           <meta property="og:title" content="D.Buzz" />
-          <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE" />
+          <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today." />
           <meta property="og:image" content="https://d.buzz/dbuzz.svg" />
           <meta property="title" content="D.Buzz" />
-          <meta property="description" content="D.Buzz | Micro-blogging for HIVE" />
+          <meta property="description" content="D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today." />
           <meta property="image" content="https://d.buzz/dbuzz-icon.svg" />
         </Helmet>
         <LastLocationProvider>

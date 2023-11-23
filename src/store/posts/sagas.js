@@ -99,7 +99,6 @@ import {
   searchPostTags,
   searchPostAuthor,
   searchPeople,
-  searchPostGeneral,
   uploadImage,
   fetchFollowCount,
   isFollowing,
@@ -113,6 +112,7 @@ import {
   hasUnFollowService,
   fetchSingleProfile,
   searchHiveTags,
+  searchPostGeneral,
 } from 'services/api'
 import {createPatch, errorMessageComposer, censorLinks, stripHtml} from 'services/helper'
 
@@ -277,7 +277,7 @@ function* getTrendingPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const {start_permlink, start_author} = payload
 
-  const params = {sort: 'trending', start_permlink, start_author}
+  const params = {sort: 'trending', limit: 10, start_permlink, start_author}
   const method = 'get_ranked_posts'
 
   try {
@@ -311,7 +311,7 @@ function* getHomePostsRequest(payload, meta) {
   const user = yield select(state => state.auth.get('user'))
   const {username: account} = user
 
-  const params = {sort: 'feed', account, limit: 50, start_permlink, start_author}
+  const params = {sort: 'feed', account, limit: 10, start_permlink, start_author}
   const method = 'get_account_posts'
 
   try {
@@ -356,7 +356,7 @@ function* getLatestPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const {start_permlink, start_author} = payload
 
-  const params = {sort: 'created', start_permlink, start_author, limit: 50}
+  const params = {sort: 'created', start_permlink, start_author, limit: 10}
   const method = 'get_ranked_posts'
 
   try {

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { createUseStyles } from 'react-jss'
+import React, {useEffect, useState} from 'react'
+import {createUseStyles} from 'react-jss'
 import config from 'config'
-import { connect } from 'react-redux'
-import { pending } from 'redux-saga-thunk'
+import {connect} from 'react-redux'
+import {pending} from 'redux-saga-thunk'
 import {
   ListGroup,
   ListAction,
@@ -47,7 +47,6 @@ const useStyles = createUseStyles(theme => ({
       fontWeight: 400,
     },
   },
-
   coinPriceChart: {
     marginTop: 5,
     display: 'flex',
@@ -98,13 +97,26 @@ const useStyles = createUseStyles(theme => ({
       },
     },
   },
+  trendsLabel: {
+    color: theme.font.color,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    fontSize: '1.8em',
+    fontFamily: 'Segoe-Bold',
+  },
+  catchUsLabel: {
+    color: theme.font.color,
+    marginBottom: 10,
+    fontSize: '1.5em',
+    fontFamily: 'Segoe-Bold',
+  },
 }))
 
 const SideBarRight = (props) => {
   const { user, items:hiveTrendingTags, loading:hiveTagsLoading, hideSearchBar = false } = props
   const classes = useStyles()
   const location = useLocation()
-  const { pathname } = location
+  const {pathname} = location
   let isInSearchRoute = false
   const { is_authenticated } = user
   // eslint-disable-next-line
@@ -135,7 +147,7 @@ const SideBarRight = (props) => {
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
   
   useEffect(() => {
-    if(window.location.host === 'staging.d.buzz') {
+    if (window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
     } else {
       setIsStaging(false)
@@ -197,47 +209,32 @@ const SideBarRight = (props) => {
               <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
             ))}
           <Spinner size={50} loading={hiveTagsLoading || liteTagsLoading} />
+      {!hideSearchBar && !isInSearchRoute && (<SearchField/>)}
+      <div style={{paddingTop: 5}}>
+        <ListGroup label="Trends for you" labelClassName={classes.trendsLabel}>
+          {items.slice(0, 5).map((item) => (
+            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`}
+              subLabel={`${item.comments + item.top_posts} Buzz's`}/>
+          ))}
+          <Spinner size={50} loading={loading}/>
         </ListGroup>
-      </div>  
-      {/* <div className={classes.coinPriceChart}>
-        <span className={classes.priceItem}>
-          <span className='price_container'>
-            <label className='market'>HIVE</label>
-            {hivePrice ?
-              <label className='price'>{hivePrice}</label> :
-              <ThemeProvider>
-                <Skeleton height={20} width={50} count={1}/>
-              </ThemeProvider>}
-          </span>
-          <label className='price_description'> HIVE Market Value by <a href='https://www.coingecko.com/en/coins/hive'>@CoinGecko</a></label>
-        </span>
-        <span className={classes.priceItem}>
-          <span className='price_container'>
-            <label className='market'>HBD</label>
-            {hbdPrice ?
-              <label className='price'>{hbdPrice || 'N/A'}</label> :
-              <ThemeProvider>
-                <Skeleton height={20} width={50} count={1}/>
-              </ThemeProvider>}
-          </span>
-          <label className='price_description'> HBD Market Value by <a href='https://www.coingecko.com/en/coins/hive_dollar'>@CoinGecko</a></label>
-        </span>
-      </div> */}
-      <div style={{ paddingTop: 5 }}>
-        <ListGroup label="Catch us on">
+      </div>
+      <div style={{paddingTop: 5}}>
+        <ListGroup label="Catch us on" labelClassName={classes.catchUsLabel}>
           {SocialMediaLinks.map((item) => (
-            <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath} href={item.url} />
+            <ListLink key={`${item.name}-links`} title={item.name} label={`${item.label}`} imagePath={item.imagePath}
+              href={item.url}/>
           ))}
         </ListGroup>
       </div>
       <div className={classes.footer}>
         <div className={classes.inner}>
-          <Link to="/org/en/tos">Terms of Service</Link>
-          <Link to="/org/en/privacy">Privacy Policy</Link>
-          <Link to="/org/en/disclaimer">Disclaimer</Link>
-          <Link to="/org/en/FAQs">FAQs</Link>
+          <Link to="/tos">Terms of Service</Link>
+          <Link to="/privacy">Privacy Policy</Link>
+          <Link to="/disclaimer">Disclaimer</Link>
+          <Link to="/faqs">FAQs</Link>
           <br />
-          <Link to="/org/en/getstarted">Get Started</Link>
+          <Link to="/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
           <label>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite v2</i> : ''}</label>

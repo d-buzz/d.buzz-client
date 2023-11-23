@@ -1,10 +1,10 @@
 import React from 'react'
 import { ReactTinyLink } from 'react-tiny-link'
-import { getUrls } from 'services/helper'
+import { parseUrls } from 'services/helper'
 
 const PreviewLastLink = ({ className, content }) => {
 
-  const links  = getUrls(content)
+  const links  = parseUrls(content)
   let isValidUrl = false
   let url = ''
 
