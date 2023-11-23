@@ -57,7 +57,7 @@ import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
-import { getUserTheme } from 'services/helper'
+import { getUserTheme, shortenDid } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
 import MoonIcon from 'components/elements/Icons/MoonIcon'
@@ -698,7 +698,7 @@ const MobileAppFrame = (props) => {
 
   }
   const handelClickItem = (name) => {
-    setActiveView(name.toLowerCase())
+    setActiveView(name)
     switch(name) {
     case 'Home':
       refreshLatestRouteData()
@@ -757,7 +757,7 @@ const MobileAppFrame = (props) => {
       return
     }
     // eslint-disable-next-line
-  }, [])
+  }, [location])
 
   const NavLinks = [
     {
@@ -774,50 +774,17 @@ const MobileAppFrame = (props) => {
       preventDefault: false,
       onClick: () => handelClickItem('search'),
     },
-    // {
-    //   name: 'Trending',
-    //   path: '/',
-    //   icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('trending'),
-    // },
-    // {
-    //   name: 'Latest',
-    //   path: "/latest",
-    //   icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('latest'),
-    // },
     {
       name: 'Notifications',
       path: `/notifications`,
       icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='outline'/></Badge>,
       onClick: () => handelClickItem('notifications'),
     },
-    // {
-    //   name: 'Profile',
-    //   path: `/@${username}/t/buzz?from=nav`,
-    //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
-    //   onClick: () => handelClickItem('profile'),
-    // },
-    // {
-    //   name: 'Wallet',
-    //   icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-    //   path: `/@${username}/wallet`,
-    //   onClick: () => handelClickItem('wallet'),
-    // },
     {
       name: 'Message',
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
       onClick:() => showNotificationForMessage(),
     },
-    // {
-    //   name: 'More'  ,
-    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-    //   path: '#',
-    //   preventDefault: true,
-    //   onClick: handleClickOpenMoreMenu,
-    // },
   ]
 
 
@@ -842,33 +809,6 @@ const MobileAppFrame = (props) => {
       path: `/message`,
       onClick: () => handelClickItem('message'),
     },
-    // {
-    //   name: 'Trending',
-    //   path: '/',
-    //   icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('trending'),
-    // },
-    // {
-    //   name: 'Latest',
-    //   path: "/latest",
-    //   icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('latest'),
-    // },
-    // {
-    //   name: 'Profile',
-    //   path: `/@${username}/t/buzz?from=nav`,
-    //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
-    //   onClick: () => handelClickItem('profile'),
-    // },
-    // {
-    //   name: 'More'  ,
-    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-    //   path: '#',
-    //   preventDefault: true,
-    //   onClick: handleClickOpenMoreMenu,
-    // },
   ]
 
   const isActivePath = (path, current) => {
@@ -1077,10 +1017,10 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || username}</span>
+                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || !username?.includes('did') ? username : shortenDid(username)}</span>
                         </Link>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
+                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{!username?.includes('did') ? username : shortenDid(username)}</span>
                         </Link>
                       </div>
                     </div>

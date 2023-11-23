@@ -209,14 +209,6 @@ const SideBarRight = (props) => {
               <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
             ))}
           <Spinner size={50} loading={hiveTagsLoading || liteTagsLoading} />
-      {!hideSearchBar && !isInSearchRoute && (<SearchField/>)}
-      <div style={{paddingTop: 5}}>
-        <ListGroup label="Trends for you" labelClassName={classes.trendsLabel}>
-          {items.slice(0, 5).map((item) => (
-            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`}
-              subLabel={`${item.comments + item.top_posts} Buzz's`}/>
-          ))}
-          <Spinner size={50} loading={loading}/>
         </ListGroup>
       </div>
       <div style={{paddingTop: 5}}>

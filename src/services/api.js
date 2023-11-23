@@ -16,6 +16,7 @@ import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
 import {hacManualTransaction, hacUserAuth, hacVote} from "@mintrawa/hive-auth-client"
+import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -1903,4 +1904,25 @@ export const searchHiveTags = (query) => {
       reject(error)
     })
   })
+}
+
+export const deepClone = (obj)  => {
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (Array.isArray(obj)) {
+    // If it's an array, clone each element
+    return obj.map(deepClone)
+  }
+
+  // If it's an object, clone each property
+  const clonedObj = {}
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      clonedObj[key] = deepClone(obj[key])
+    }
+  }
+
+  return clonedObj
 }

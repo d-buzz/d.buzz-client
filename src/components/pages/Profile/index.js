@@ -740,9 +740,6 @@ const Profile = (props) => {
                     <div className={classes.avatar} id="avatarContainer">
                       <Avatar className={classes.avatarStyles} border={true} height="135" author={username}
                         size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id="profileImage"/>
-                    <div className={classes.avatar} id="avatarContainer">
-                      <Avatar className={classes.avatarStyles} border={true} height="135" author={username}
-                        size="medium" avatarUrl={avatarUrl} onLoad={loadProfileImage} id="profileImage"/>
                     </div>
                   </Col>
                   <Col>

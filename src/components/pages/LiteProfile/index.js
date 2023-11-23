@@ -16,7 +16,7 @@ import {
 } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { getUserTheme, proxyImage } from 'services/helper'
+import { getUserTheme, proxyImage, shortenDid } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
 import { renderRoutes } from 'react-router-config'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -629,7 +629,7 @@ const LiteProfile = (props) => {
                   <Row style={{ paddingBottom: 0, marginBottom: 0 }}>
                     <Col xs="auto">
                       <p className={classes.userName}>
-                        @{username}
+                        @{!data?.profile?.did ? username : shortenDid(username)}
                       </p>
                     </Col>
                   </Row>

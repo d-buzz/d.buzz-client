@@ -6,7 +6,6 @@ import sha256 from 'crypto-js/sha256'
 import diff_match_patch from 'diff-match-patch'
 import textParser from 'npm-text-parser'
 import axios from 'axios'
-import axios from 'axios'
 
 const dmp = new diff_match_patch()
 
@@ -275,7 +274,7 @@ export const sendToBerries = (author, theme) => {
 export const calculateOverhead = (content) => {
   let urls = getUrls(content) || []
   
-  const markdown = content?.match(/#+\s|[*]|\s+&nbsp;+\s|\s+$/gm) || []
+  const markdown = content?.match(/#+\s|[*]|\s+&nbsp+\s|\s+$/gm) || []
 
   let overhead = 0
 
@@ -569,4 +568,23 @@ export const isLiteMode = () => {
 
 export const parseUrls = (c) => {
   return c.match(/((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-])+))+([a-zA-Z]*[a-zA-Z]){1}?(\/+[\w.,@?^=%&:/~+!#-$-']*)*/gm) || []
+}
+
+export const shortenDid = (didString, length = 8) => {
+  if (typeof didString !== 'string') {
+    throw new Error('Input must be a string')
+  }
+
+  const parts = didString.split(':')
+  if (parts.length < 3) {
+    throw new Error('Invalid DID format')
+  }
+
+  const method = parts[1]
+  const identifier = parts[2]
+
+  const prefix = identifier.slice(0, 4)
+  const suffix = identifier.slice(-4)
+
+  return `did:${method}:${prefix}...${suffix}`
 }

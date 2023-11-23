@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useWindowDimensions } from 'services/helper'
+import { shortenDid, useWindowDimensions } from 'services/helper'
 import { setPageFrom } from 'store/posts/actions'
 import { bindActionCreators } from 'redux'
 import { isMobile } from 'react-device-detect'
@@ -565,7 +565,7 @@ const LitePostList = React.memo((props) => {
                         // onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
-                        {author}
+                        {!author?.includes('did') ? author : shortenDid(author)}
                       </Link>
                     )}
                     {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}
