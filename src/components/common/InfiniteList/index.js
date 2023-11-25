@@ -20,12 +20,12 @@ const InfiniteList = ({
   loadPockets,
   selectedPocket,
 }) => {
-  
-  const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled' 
+
+  const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled'
     ?
-    items 
+    items
     :
-    items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW')) 
+    items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW'))
     ||
     []
 
@@ -36,7 +36,7 @@ const InfiniteList = ({
       }
     }
 
-    window.addEventListener('scroll', handleScroll) 
+    window.addEventListener('scroll', handleScroll)
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -47,6 +47,7 @@ const InfiniteList = ({
     <div className='infinite-list'>
       {posts.map((post, index) => (
         <PostListWrapper
+          key={post.id || index}
           disableOpacity={disableOpacity}
           displayTitle={title}
           title={posts[index].title}
@@ -81,7 +82,7 @@ const InfiniteList = ({
 
 const mapStateToProps = (state) => ({
   scrollToIndex: state.interfaces.get('scrollIndex'),
-  
+
 })
 
 const mapDispatchToProps = (dispatch) => ({

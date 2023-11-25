@@ -16,7 +16,7 @@ import {
   GET_HOME_POSTS_REQUEST,
   getHomePostsSuccess,
   getHomePostsFailure,
-  // setHomeLastPost,
+  setHomeLastPost,
 
   GET_LATEST_POSTS_REQUEST,
   getLatestPostsSuccess,
@@ -277,7 +277,7 @@ function* getTrendingPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const {start_permlink, start_author} = payload
 
-  const params = {sort: 'trending', limit: 10, start_permlink, start_author}
+  const params = {sort: 'trending', start_permlink, start_author}
   const method = 'get_ranked_posts'
 
   try {
@@ -307,47 +307,33 @@ function* getTrendingPostsRequest(payload, meta) {
 
 function* getHomePostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
-  let {start_permlink, start_author} = payload
+  const {start_permlink, start_author} = payload
   const user = yield select(state => state.auth.get('user'))
   const {username: account} = user
 
+  const params = {sort: 'feed', account, limit: 20, start_permlink, start_author}
   const method = 'get_account_posts'
 
   try {
     if (!checkCeramicLogin(account)) {
-      let limit = 10 // Start with a limit of 10
-      let posts = []
+      const old = yield select(state => state.posts.get('home'))
+      let data = yield call(callBridge, method, params, false)
 
-      while (posts.length < 10) {
-        const response = yield call(callBridge, method, {
-          sort: 'feed',
-          account,
-          limit,
-          start_author,
-          start_permlink,
-        }, false)
+      data = [...old, ...data]
+      data = data.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
+      })
 
-        if (!response || response.length === 0) {
-          break // No more posts available
-        }
+      yield put(setHomeLastPost(data[data.length - 1]))
+      const mutelist = yield select(state => state.auth.get('mutelist'))
 
-        const filteredPosts = response.filter(item => invokeFilter(item))
-        posts = [...posts, ...filteredPosts]
+      data = data.filter(item => invokeFilter(item))
+      const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
+      data = invokeMuteFilter(data, mutelist, opacityUsers)
+      data = invokeHideBuzzFilter(data)
+      data.map((item) => censorCheck(item, censoredList))
 
-        if (posts.length < 10) {
-          limit *= 2 // Double the limit for the next attempt
-          const lastPost = response[response.length - 1]
-          start_author = lastPost.author
-          start_permlink = lastPost.permlink
-        }
-      }
-
-      // yield put(setHomeLastPost(posts[posts.length - 1]))
-
-      posts = posts.slice(0, 10) // Ensure we only have 10 posts
-
-      posts.map((item) => censorCheck(item, censoredList))
-      yield put(getHomePostsSuccess(posts, meta))
+      yield put(getHomePostsSuccess(data, meta))
     } else {
       let data = yield call(getFollowingFeed, account)
 
@@ -370,7 +356,7 @@ function* getLatestPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const {start_permlink, start_author} = payload
 
-  const params = {sort: 'created', start_permlink, start_author, limit: 10}
+  const params = {sort: 'created', start_permlink, start_author, limit: 50}
   const method = 'get_ranked_posts'
 
   try {

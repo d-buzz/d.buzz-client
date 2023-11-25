@@ -29,7 +29,8 @@ import {
 import { clearScrollIndex, clearRefreshRouteStatus} from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
-import { Link } from 'react-router-dom'
+import {Link} from "react-router-dom"
+import Spinner from 'components/elements/progress/Spinner'
 
 
 const useStyles = createUseStyles(theme => ({
@@ -67,7 +68,6 @@ const Feeds = React.memo((props) => {
     clearReplies,
     clearScrollIndex,
     buzzModalStatus,
-    clearHomePosts,
     refreshRouteStatus,
     clearRefreshRouteStatus,
   } = props
@@ -103,22 +103,32 @@ const Feeds = React.memo((props) => {
       anchorTop()
       clearScrollIndex()
       clearHomePosts()
-      getHomePostsRequest()
+      // getHomePostsRequest()
       clearRefreshRouteStatus()
     }
     // eslint-disable-next-line
   }, [refreshRouteStatus])
 
   const loadMorePosts = useCallback(() => {
-    const { permlink, author } = last
-    getHomePostsRequest(permlink, author)
+    if (!loading) {
+      const { permlink, author } = last
+      getHomePostsRequest(permlink, author)
+    }
     // eslint-disable-next-line
-  }, [last])
-  
+  }, [last, loading]);
+
+  useEffect(() => {
+    if (items.length === 0 && !loading) {
+      loadMorePosts()
+    }
+  }, [items.length, loadMorePosts, loading])
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Home' />
       {!isMobile && !buzzModalStatus && (<CreateBuzzForm />)}
+      <Spinner size={20} loading={loading}/>
+
       {(items.length === 0) && !loading && (
         <React.Fragment>
           <center>
