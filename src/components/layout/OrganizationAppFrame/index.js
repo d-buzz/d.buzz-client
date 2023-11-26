@@ -175,7 +175,7 @@ const OrganizationAppFrame = (props) => {
   return (
     <React.Fragment>
       <OrganizationAppBar />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <StickyContainer>
           {renderRoutes(route.routes)}
         </StickyContainer>

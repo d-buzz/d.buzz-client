@@ -571,14 +571,16 @@ export const calculateAverageRanking = (users) => {
   const userRankings = {}
   let ranking_importance = 4
   users.forEach((userList, systemIndex) => {
-    userList.forEach((user, userIndex) => {
-      const {rank, author} = user
-      if (!userRankings[author]) {
-        userRankings[author] = { totalRank: 0, count: 0 }
-      }
-      userRankings[author].totalRank += (((11 - rank)/55) * (100+ranking_importance))
-      userRankings[author].count++
-    })
+    if(userList.length === 10){
+      userList.forEach((user, userIndex) => {
+        const {rank, author} = user
+        if (!userRankings[author]) {
+          userRankings[author] = { totalRank: 0, count: 0 }
+        }
+        userRankings[author].totalRank += (((11 - rank)/55) * (100+ranking_importance))
+        userRankings[author].count++
+      })
+    }
     ranking_importance--
   })
   const averageRankings = Object.entries(userRankings).map(([author, data]) => {

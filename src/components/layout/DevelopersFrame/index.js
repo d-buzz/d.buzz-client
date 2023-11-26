@@ -159,7 +159,7 @@ const DevelopersFrame = (props) => {
     <React.Fragment>
       <DevelopersAppBar />
       <CssBaseline />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {renderRoutes(route.routes)}
       </Container>
       <DevelopersFooter />

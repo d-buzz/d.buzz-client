@@ -10,6 +10,8 @@ import { getLeaderboardEngagementData, getLeaderboardCuratorData, getLeaderboard
 import { getCurrentTimePart, calculateAverageRanking } from 'services/helper'
 import { Link } from 'react-router-dom'
 
+const Button = React.lazy(() => import('@material-ui/core/Button'))
+
 const useStyles = createUseStyles(theme => ({
   wrapper: {
     paddintTop: 400,
@@ -76,34 +78,59 @@ const Leaderboard = () => {
   const [leaderboardEarlyAdoptersData, setLeaderboardEarlyAdoptersData] = useState(JSON.parse(localStorage.getItem('customUserData'))?.leaderboard?.LeaderboardEarlyAdoptersData || [])
   const [leaderboardOverallData, setLeaderboardOverallData] = useState(JSON.parse(localStorage.getItem('customUserData'))?.leaderboard?.LeaderboardOverallData || [])
   const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+  const [selectedEngagementDateType, setSelectedEngagementDateType] = useState('daily')
+  const [selectedCuratorDateType, setSelectedCuratorDateType] = useState('daily')
 
   useEffect(() => {
-    if(loading) {
-      if(leaderBoardRefreshTime){
-        if(leaderBoardRefreshTime !== getCurrentTimePart()){
-          setLeaderBoardRefreshTime(getCurrentTimePart())
-        }
-      }else setLeaderBoardRefreshTime(getCurrentTimePart())
-    }
+    if(leaderBoardRefreshTime){
+      if(leaderBoardRefreshTime !== getCurrentTimePart()){
+        setLeaderBoardRefreshTime(getCurrentTimePart())
+      }
+    }else setLeaderBoardRefreshTime(getCurrentTimePart())
+    console.log(leaderBoardRefreshTime)
     // eslint-disable-next-line
-  }, [loading])
+  }, [])
 
   useEffect(() => {
-    setLoading(true)
     const fetchData = async () => {
+      setLoading(true)
       await getLeaderboardEngagementData().then(res => {setLeaderboardEngagementData(res)})
       await getLeaderboardCuratorData().then(res => {setLeaderboardCuratorData(res)})
       await getLeaderboardAuthorData().then(res => {setLeaderboardAuthorData(res)})
       await getLeaderboardEarlyAdoptersData().then(res => {setLeaderboardEarlyAdoptersData(res)})
-      const users = [leaderboardEarlyAdoptersData, leaderboardAuthorData, leaderboardEngagementData, leaderboardCuratorData]
-      await setLeaderboardOverallData(calculateAverageRanking(users))
+      setLoading(false)
     }
     fetchData()
+    // eslint-disable-next-line
+  }, [leaderBoardRefreshTime])
+
+  useEffect(() => {
+    const users = [leaderboardEarlyAdoptersData, leaderboardAuthorData, leaderboardEngagementData, leaderboardCuratorData]
+    setLeaderboardOverallData(calculateAverageRanking(users))
     const data = { ...customUserData, leaderboard: { LeaderboardEngagementData: leaderboardEngagementData, LeaderboardCuratorData: leaderboardCuratorData, LeaderboardAuthorData: leaderboardAuthorData, LeaderboardEarlyAdoptersData: leaderboardEarlyAdoptersData, LeaderboardOverallData: leaderboardOverallData }}
     localStorage.setItem('customUserData', JSON.stringify({...data}))
-    setLoading(false)
     // eslint-disable-next-line
-  }, [leaderboardEngagementData, leaderboardCuratorData, leaderboardAuthorData, leaderboardEarlyAdoptersData, leaderboardOverallData])
+  }, [leaderboardEarlyAdoptersData, leaderboardAuthorData, leaderboardEngagementData, leaderboardCuratorData])
+
+  const handleGetEngagementBy = (date_type) => () => {
+    setSelectedEngagementDateType(date_type)
+    const fetchData = async () => {
+      setLoading(true)
+      await getLeaderboardEngagementData({date_type}).then(res => {setLeaderboardEngagementData(res)})
+      setLoading(false)
+    }
+    fetchData()
+  }
+
+  const handleGetCuratorBy = (date_type) => () => {
+    setSelectedCuratorDateType(date_type)
+    const fetchData = async () => {
+      setLoading(true)
+      await getLeaderboardCuratorData({date_type}).then(res => {setLeaderboardCuratorData(res)})
+      setLoading(false)
+    }
+    fetchData()
+  }
 
   // const refreshRanking = () => {
   //   setLeaderBoardRefreshTime(getCurrentTimePart())
@@ -113,7 +140,7 @@ const Leaderboard = () => {
   return (
     <React.Fragment>
       {/* <button className='select modalButton' onClick={refreshRanking} >REFRESH</button> */}
-      <Container maxWidth="md" fluid>
+      <Container maxWidth="lg" fluid>
         <div className={classes.wrapper}>
           <StickyContainer>
             <Row>
@@ -174,8 +201,19 @@ const Leaderboard = () => {
                   </section>
                   <section id="section-2">
                     <div className={classes.hero}>
-                      <div >
+                      <div>
                         <h3>Engagement Leaderboard</h3>
+                        <div>
+                          <Button onClick={handleGetEngagementBy('daily')} variant="text" size="small" color="secondary" style={{fontWeight: selectedEngagementDateType === 'daily' ? 'bold' : 'normal'}}>
+                            Daily
+                          </Button>
+                          <Button onClick={handleGetEngagementBy('weekly')} variant="text" size="small" color="secondary" style={{fontWeight: selectedEngagementDateType === 'weekly' ? 'bold' : 'normal'}}>
+                          Weekly
+                          </Button>
+                          <Button onClick={handleGetEngagementBy('monthly')} variant="text" size="small" color="secondary" style={{fontWeight: selectedEngagementDateType === 'monthly' ? 'bold' : 'normal'}}>
+                          Monthly
+                          </Button>
+                        </div>
                       </div>
                       <hr />
                       <div >
@@ -203,8 +241,19 @@ const Leaderboard = () => {
                   </section>
                   <section id="section-3">
                     <div className={classes.hero}>
-                      <div >
+                      <div>
                         <h3>Curator Leaderboard</h3>
+                        <div>
+                          <Button onClick={handleGetCuratorBy('daily')} variant="text" size="small" color="secondary" style={{fontWeight: selectedCuratorDateType === 'daily' ? 'bold' : 'normal'}}>
+                            Daily
+                          </Button>
+                          <Button onClick={handleGetCuratorBy('weekly')} variant="text" size="small" color="secondary" style={{fontWeight: selectedCuratorDateType === 'weekly' ? 'bold' : 'normal'}}>
+                          Weekly
+                          </Button>
+                          <Button onClick={handleGetCuratorBy('monthly')} variant="text" size="small" color="secondary" style={{fontWeight: selectedCuratorDateType === 'monthly' ? 'bold' : 'normal'}}>
+                          Monthly
+                          </Button>
+                        </div>
                       </div>
                       <hr />
                       <div >
@@ -269,7 +318,6 @@ const Leaderboard = () => {
                         {!loading && leaderboardOverallData.length > 0 ?
                           <React.Fragment>
                             {leaderboardOverallData.map(ranking => (
-                              
                               <Row style={{width: '100%', display: "flex", justifyContent: "space-between"}}>
                                 <div>
                                   <span>#{ranking.rank}</span>
