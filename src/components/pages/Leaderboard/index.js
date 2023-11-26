@@ -87,7 +87,6 @@ const Leaderboard = () => {
         setLeaderBoardRefreshTime(getCurrentTimePart())
       }
     }else setLeaderBoardRefreshTime(getCurrentTimePart())
-    console.log(leaderBoardRefreshTime)
     // eslint-disable-next-line
   }, [])
 
