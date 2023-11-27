@@ -593,6 +593,6 @@ export const calculateAverageRanking = (users) => {
     for(let i=0; i<10; i++){
       top10Users.push({rank: (i+1), author: Object.values(averageRankings)[i].author, averageRank: Object.values(averageRankings)[i].averageRank})
     }
-  }
-  return top10Users || []
+  }else top10Users = []
+  return top10Users
 }

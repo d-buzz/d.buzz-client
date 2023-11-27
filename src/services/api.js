@@ -1479,7 +1479,7 @@ export const createMeta = (tags = []) => {
 
 export const createPermlink = (title) => {
   const permlink = new Array(22).join().replace(/(.|$)/g, function () {
-      return ((Math.random() * 36) | 0).toString(36)
+    return ((Math.random() * 36) | 0).toString(36)
   })
   return permlink
 }
