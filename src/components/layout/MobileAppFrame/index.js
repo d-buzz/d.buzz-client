@@ -505,9 +505,6 @@ const MobileAppFrame = (props) => {
     loading,
     broadcastNotification,
     clearNotificationsRequest,
-    getFollowersRequest,
-    getFollowingRequest,
-    getProfileRequest,
     profile,
     setIntentBuzz,
     fromIntentBuzz,
@@ -718,13 +715,13 @@ const MobileAppFrame = (props) => {
   }
 
   // eslint-disable-next-line
-  useEffect(() => {
-    if(username) {
-      getProfileRequest(username)
-      getFollowersRequest(username)
-      getFollowingRequest(username)
-    }
-  }, [username,getProfileRequest,getFollowersRequest,getFollowingRequest])
+  // useEffect(() => {
+  //   if(username) {
+  //     getProfileRequest(username)
+  //     getFollowersRequest(username)
+  //     getFollowingRequest(username)
+  //   }
+  // }, [username,getProfileRequest,getFollowersRequest,getFollowingRequest])
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -1273,7 +1270,7 @@ const MobileAppFrame = (props) => {
               <Navbar.Brand className={classes.navTitle}>
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && activeView !== 'notifications' && (
                   <IconButton onClick={handleClickBackButton} size="small">
-                    <BackArrowIcon /> 
+                    <BackArrowIcon />
                     {openedSubProfile && location.pathname.match(/\/follow\/followers/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Followers</div>)}
                     {openedSubProfile && location.pathname.match(/\/follow\/following/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Following</div>)}
                   </IconButton>
@@ -1365,7 +1362,7 @@ const MobileAppFrame = (props) => {
                   />
                 </div>
               )}
-              
+
             </Navbar>
 
             <React.Fragment>
