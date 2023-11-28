@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, {useEffect, useCallback, useState} from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {
@@ -80,12 +80,18 @@ const Latest = (props) => {
     //eslint-disable-next-line
   }, [])
 
+  // state if the latest post is loaded
+  const [isLatestPostsLoaded , setLatestPostsLoaded] = useState(false)
+
+
   useEffect(() => {
+    // loading the page for the first time
     if(refreshRouteStatus.pathname === "latest"){
       anchorTop()
       clearScrollIndex()
       clearLatestPosts()
       getLatestPostsRequest()
+      setLatestPostsLoaded(true)
       clearRefreshRouteStatus()
     }
     // eslint-disable-next-line
@@ -96,6 +102,13 @@ const Latest = (props) => {
     getLatestPostsRequest(permlink, author)
     // eslint-disable-next-line
   }, [last])
+
+  useEffect(() => {
+    if (items.length === 0 && !loading && isLatestPostsLoaded) {
+      loadMorePosts()
+    }
+  }, [isLatestPostsLoaded, items.length, loadMorePosts, loading])
+
 
   return (
     <React.Fragment>
