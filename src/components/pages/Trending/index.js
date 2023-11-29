@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, {useEffect, useCallback, useState} from 'react'
 import { pending } from 'redux-saga-thunk'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -46,7 +46,7 @@ import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actio
 //       fontSize: 20,
 //       fontWeight: 'bold',
 //     },
-    
+
 //     '& .button': {
 //       marginTop: 15,
 //       borderRadius: 15,
@@ -120,12 +120,17 @@ const Trending = (props) => {
     // eslint-disable-next-line
   }, [])
 
+  // sets if the trending is loaded already
+  const [isTrendingPostsLoaded , setTrendingPostsLoaded] = useState(false)
+
   useEffect(() => {
+    // loading the page for the first time
     if(refreshRouteStatus.pathname === "trending"){
       anchorTop()
       clearScrollIndex()
       clearTrendingPosts()
       getTrendingPostsRequest()
+      setTrendingPostsLoaded(true)
       clearRefreshRouteStatus()
     }
     // eslint-disable-next-line
@@ -137,6 +142,13 @@ const Trending = (props) => {
     // eslint-disable-next-line
   }, [last])
 
+
+  useEffect(() => {
+    if (items.length === 0 && !loading && isTrendingPostsLoaded) {
+      loadMorePosts()
+    }
+  }, [isTrendingPostsLoaded, items.length, loadMorePosts, loading])
+
   // const handleReirectToProposal = () => {
   //   return window.location = 'https://vote.d.buzz'
   // }
@@ -144,7 +156,7 @@ const Trending = (props) => {
   // useEffect(() =>{
   //   if(user.username) {
   //     const showProposalBannerString = Cookies.get('showProposalBanner')
-  
+
   //     if (showProposalBannerString) {
   //       const showProposalBanner = JSON.parse(showProposalBannerString)
 
