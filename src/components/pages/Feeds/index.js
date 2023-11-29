@@ -117,7 +117,7 @@ const Feeds = React.memo((props) => {
       getHomePostsRequest(permlink, author)
     }
     // eslint-disable-next-line
-  }, [last, loading]);
+  }, [last, loading])
 
   useEffect(() => {
     if (items.length === 0 && !loading && isFeedPostsLoaded) {
