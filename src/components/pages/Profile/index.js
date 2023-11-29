@@ -362,7 +362,7 @@ const Profile = (props) => {
       broadcastNotification('success', `Coming soon`)
       tab = 'likes'
     }
-    
+
 
     history.push(`/@${username}/t/${tab}/`)
   }
