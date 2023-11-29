@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, {useEffect, useCallback, useState} from 'react'
 import { CreateBuzzForm, InfiniteList, HelmetGenerator } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -29,8 +29,7 @@ import {
 import { clearScrollIndex, clearRefreshRouteStatus} from 'store/interface/actions'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
-import { Link } from 'react-router-dom'
-
+import {Link} from "react-router-dom"
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
@@ -67,7 +66,6 @@ const Feeds = React.memo((props) => {
     clearReplies,
     clearScrollIndex,
     buzzModalStatus,
-    clearHomePosts,
     refreshRouteStatus,
     clearRefreshRouteStatus,
   } = props
@@ -98,27 +96,40 @@ const Feeds = React.memo((props) => {
     //eslint-disable-next-line
   }, [])
 
+  const [isFeedPostsLoaded , setFeedPostsLoad] = useState(false)
+
   useEffect(() => {
     if(refreshRouteStatus.pathname === "home"){
       anchorTop()
       clearScrollIndex()
       clearHomePosts()
       getHomePostsRequest()
+      setFeedPostsLoad(true)
       clearRefreshRouteStatus()
     }
     // eslint-disable-next-line
   }, [refreshRouteStatus])
 
+
   const loadMorePosts = useCallback(() => {
-    const { permlink, author } = last
-    getHomePostsRequest(permlink, author)
+    if (!loading) {
+      const { permlink, author } = last
+      getHomePostsRequest(permlink, author)
+    }
     // eslint-disable-next-line
-  }, [last])
-  
+  }, [last, loading])
+
+  useEffect(() => {
+    if (items.length === 0 && !loading && isFeedPostsLoaded) {
+      loadMorePosts()
+    }
+  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading])
+
   return (
     <React.Fragment>
       <HelmetGenerator page='Home' />
       {!isMobile && !buzzModalStatus && (<CreateBuzzForm />)}
+
       {(items.length === 0) && !loading && (
         <React.Fragment>
           <center>

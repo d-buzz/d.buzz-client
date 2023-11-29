@@ -188,6 +188,7 @@ const SideBarRight = (props) => {
           <Link to="/disclaimer">Disclaimer</Link>
           <Link to="/faqs">FAQs</Link>
           <br />
+          <Link to="/leaderboard">Leaderboard</Link>
           <Link to="/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br/>

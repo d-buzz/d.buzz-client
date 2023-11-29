@@ -74,6 +74,7 @@ const OrganizationAppBar = () => {
   const disclaimer = (pathname.match(/^\/disclaimer/))
   const getStarted = (pathname.match(/^\/getstarted/))
   const faqs = (pathname.match(/^\/faqs/))
+  const leaderboard = (pathname.match(/^\/leaderboard/))
 
   let title = ''
   if (termsOfService) {
@@ -86,6 +87,8 @@ const OrganizationAppBar = () => {
     title = 'Get Started'
   } else if (faqs) {
     title = 'FAQs'
+  } else if (leaderboard) {
+    title = 'Leaderboard'
   }
 
 
@@ -155,6 +158,7 @@ const OrganizationFooter = () => {
               <Link to="/privacy">Privacy Policy</Link>
               <Link to="/disclaimer">Disclaimer</Link>
               <Link to="/faqs">FAQs</Link>
+              <Link to="/leaderboard">Leaderboard</Link>
             </div>
           </center>
         </Container>
@@ -171,7 +175,7 @@ const OrganizationAppFrame = (props) => {
   return (
     <React.Fragment>
       <OrganizationAppBar />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <StickyContainer>
           {renderRoutes(route.routes)}
         </StickyContainer>
