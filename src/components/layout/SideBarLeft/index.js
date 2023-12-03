@@ -19,6 +19,9 @@ import {
   CircularBrandIcon,
   // BuzzIcon,
   WalletIcon,
+  MessageIcon,
+  BookmarkIcon,
+  CommunityIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
 import {
@@ -33,7 +36,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { pending } from 'redux-saga-thunk'
 import { signoutUserRequest, subscribeRequest } from 'store/auth/actions'
-import { setBuzzModalStatus, setRefreshRouteStatus } from 'store/interface/actions'
+import { broadcastNotification, setBuzzModalStatus, setRefreshRouteStatus } from 'store/interface/actions'
 import { generateStyles } from 'store/settings/actions'
 import { pollNotifRequest } from 'store/polling/actions'
 import moment from 'moment'
@@ -203,6 +206,21 @@ const useStyles = createUseStyles(theme => ({
     },
     '& ul':{
       background: theme.background.primary,
+      '& nav':{
+        background: theme.background.primary,
+        '& div':{
+          fontSize: 18,
+          fontWeight: '500 !important',
+          background: theme.background.primary,
+          color: theme.font.color,
+          '& div':{
+            '& div':{
+              paddingLeft: '5%',
+            },
+          },
+        },
+      },
+      
     },
     '& li': {
       fontSize: 18,
@@ -212,6 +230,12 @@ const useStyles = createUseStyles(theme => ({
 
       '&:hover': {
         ...theme.context.view,
+      },
+
+      '#advanced-subheader': {
+        // Your specific styles for the id="advanced-subheader"
+        color: 'red',
+        fontWeight: 'bold',
       },
     },
   },
@@ -327,6 +351,7 @@ const SideBarLeft = (props) => {
     fromIntentBuzz,
     setRefreshRouteStatus,
     generateStyles,
+    broadcastNotification,
   } = props
   const { username, is_subscribe } = user || ''
   const [open, setOpen] = useState(false)
@@ -347,6 +372,8 @@ const SideBarLeft = (props) => {
   const [ceramicUser, setCeramicUser] = useState(null)
   const [userAvatarUrl, setUserAvatarUrl] = useState('')
   const [fetchingUser, setFetchingUser] = useState(false)
+  const [showProfessionalTools, setShowProfessionalTools] = useState(false)
+  const [showSettingsAndSupport, setShowSettingsAndSupport] = useState(false)
 
   useEffect(() => {
     if(checkCeramicLogin(username)) {
@@ -372,10 +399,10 @@ const SideBarLeft = (props) => {
     setOpenSwitchModal(true)
   }
 
-  const showSettingsModal = () => {
-    handleClickCloseOpenMoreMenu()
-    setOpenSettingsModal(true)
-  }
+  // const showSettingsModal = () => {
+  //   handleClickCloseOpenMoreMenu()
+  //   setOpenSettingsModal(true)
+  // }
 
   useEffect(() => {
     if (isBuzzIntent || fromIntentBuzz || (intentBuzz && intentBuzz.text)) {
@@ -459,8 +486,30 @@ const SideBarLeft = (props) => {
     setOpenMoreMenu(true)
   }
 
+  const showComingSoon = () => {
+    broadcastNotification('success', `Coming soon`)
+  }
+
   const handleClickCloseOpenMoreMenu = () => {
     setOpenMoreMenu(false)
+  }
+
+  const toggleProfessionTools = () => {
+    setShowProfessionalTools(!showProfessionalTools)
+  }
+
+  const toggleSettingsAndSupport = () => {
+    setShowSettingsAndSupport(!showSettingsAndSupport)
+  }
+
+  const handelClickWallet = () => {
+    history.push(`/@${username}/wallet/balances`)
+    handelClickItem('wallet')
+  }
+  
+  const handleClickMessages = () => {
+    window.open("https://chat.d.buzz/")
+    handelClickItem('messages')
   }
 
   const handelClickItem = (name) => {
@@ -481,6 +530,14 @@ const SideBarLeft = (props) => {
       setActiveView(name)
       handleClickOpenMoreMenu()
       break
+    case 'messages':
+      setActiveView(name)
+      refreshTrendingRouteData()
+      break
+    case 'communities':
+      setActiveView(name)
+      showComingSoon()
+      break
     default:
       setActiveView(name)
       return
@@ -488,29 +545,34 @@ const SideBarLeft = (props) => {
   }
 
   useEffect(() => {
-    switch(location.pathname) {
-    case '/':
+    switch (true) {
+    case location.pathname === '/':
       setActiveView('trending')
       break
-    case '/home':
+    case location.pathname === '/home':
       setActiveView('home')
       break
-    case '/latest':
+    case location.pathname === '/latest':
       setActiveView('latest')
       break
-    case '/notifications':
+    case location.pathname === '/communities':
+      setActiveView('communities')
+      break
+    case location.pathname === '/notifications':
       setActiveView('notifications')
       break
-    case '/profile':
+    case location.pathname === '/profile':
       setActiveView('profile')
       break
-    case `/@${username}/wallet/balances`:
+    case location.pathname === `/@${username}/wallet/balances`:
       setActiveView('wallet')
+      break
+    case location.pathname.startsWith(`/@${username}/t/pockets/`):
+      setActiveView('pockets')
       break
     default:
       return
     }
-
     // eslint-disable-next-line
   }, [activeView])
 
@@ -548,17 +610,36 @@ const SideBarLeft = (props) => {
       onClick: () => handelClickItem('notifications'),
     },
     {
+      name: 'Messages',
+      icon: activeView === 'messages' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
+      path: '#',
+      preventDefault: true,
+      onClick: handleClickMessages,
+    },
+    {
+      name: 'Bookmarks',
+      path: `/@${username}/t/pockets/`,
+      icon: activeView === 'pockets' ? <BookmarkIcon type='fill'/> : <BookmarkIcon type='outline'/>,
+      onClick: () => handelClickItem('pockets'),
+    },
+    {
+      name: 'Communities',
+      path: `/communities`,
+      icon: activeView === 'communities' ? <CommunityIcon type='fill'/> : <CommunityIcon type='outline'/>,
+      onClick: () => handelClickItem('communities'),
+    },
+    {
       name: 'Profile',
       path: `/@${username}/t/buzz?from=nav`,
       icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
       onClick: () => handelClickItem('profile'),
     },
-    {
-      name: 'Wallet',
-      icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-      path: `/@${username}/wallet/balances`,
-      onClick: () => handelClickItem('wallet'),
-    },
+    // {
+    //   name: 'Wallet',
+    //   icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+    //   path: `/@${username}/wallet/balances`,
+    //   onClick: () => handelClickItem('wallet'),
+    // },
     {
       name: 'More'  ,
       icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
@@ -589,6 +670,30 @@ const SideBarLeft = (props) => {
       icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('latest'),
+    },
+    {
+      name: 'Notifications',
+      path: `/notifications`,
+      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='outline'/></Badge>,
+      onClick: () => handelClickItem('notifications'),
+    },
+    {
+      name: 'Messages',
+      path: 'https://chat.d.buzz/',
+      icon: activeView === 'messages' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
+      onClick: () => handelClickItem('messages'),
+    },
+    {
+      name: 'Bookmarks',
+      path: `/@${username}/t/pockets/`,
+      icon: activeView === 'pockets' ? <BookmarkIcon type='fill'/> : <BookmarkIcon type='outline'/>,
+      onClick: () => handelClickItem('pockets'),
+    },
+    {
+      name: 'Communities',
+      path: `/communities`,
+      icon: activeView === 'communities' ? <CommunityIcon type='fill'/> : <CommunityIcon type='outline'/>,
+      onClick: () => handelClickItem('communities'),
     },
     {
       name: 'Profile',
@@ -735,21 +840,103 @@ const SideBarLeft = (props) => {
         className={classes.menu}
         open={openMoreMenu}
         onClose={handleClickCloseOpenMoreMenu}
+        menuTitle='Advanced'
+        toggleProfessionTools={toggleProfessionTools}
+        toggleSettingsAndSupport={toggleSettingsAndSupport}
         items={[
+          // {
+          //   onClick: showThemeModal,
+          //   text: 'Theme',
+          //   visible: true,
+          // },
+          // {
+          //   onClick: showSwitchModal,
+          //   text: 'Switch Account',
+          //   visible: !ceramicUser ? true : false,
+          // },
+          // {
+          //   onClick: showSettingsModal,
+          //   text: 'Settings',
+          //   visible: true,
+          // },
           {
-            onClick: showThemeModal,
-            text: 'Theme',
+            text: 'Professional Tools',
             visible: true,
+            collapse: showProfessionalTools,
+            onClick: toggleProfessionTools,
+            subItems: [
+              {
+                subtext: 'Auto.Vote',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: 'https://auto.vote',
+                subonClick: '',
+              },
+              {
+                subtext: 'Blog',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: 'http://blog.d.buzz/#/@'+username,
+                subonClick: '',
+              },
+              {
+                subtext: 'DEX',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: 'https://dex.d.buzz',
+                subonClick: '',
+              },
+              {
+                subtext: 'Leaderboard',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: 'https://d.buzz/leaderboard',
+                subonClick: '',
+              },
+              {
+                subtext: 'Hive dApps',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: '',
+                subonClick: showComingSoon,
+              },
+            ],
           },
           {
-            onClick: showSwitchModal,
-            text: 'Switch Account',
-            visible: !ceramicUser ? true : false,
+            text: 'Settings & Support',
+            visible: true,
+            collapse: showSettingsAndSupport,
+            onClick: toggleSettingsAndSupport,
+            subItems: [
+              {
+                subtext: 'Display',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: '',
+                subonClick: showThemeModal,
+              },
+              {
+                subtext: 'Swith Account',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: '',
+                subonClick: showSwitchModal,
+              },
+              {
+                subtext: 'Messages',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: 'https://chat.d.buzz/',
+                subonClick: '',
+              },
+            ],
           },
           {
-            onClick: showSettingsModal,
-            text: 'Settings',
+            text: 'Wallet',
+            icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
             visible: true,
+            onClick: handelClickWallet,
+            subItems: [],
           },
         ]}
       />
@@ -774,6 +961,7 @@ const mapDispatchToProps = (dispatch) => ({
     setBuzzModalStatus,
     setRefreshRouteStatus,
     generateStyles,
+    broadcastNotification,
   }, dispatch),
 })
 

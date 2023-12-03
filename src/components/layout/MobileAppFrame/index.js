@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import { useHistory } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
@@ -10,6 +10,12 @@ import { useLastLocation } from 'react-router-last-location'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { pollNotifRequest } from 'store/polling/actions'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Collapse from '@material-ui/core/Collapse'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 import {
   BackArrowIcon,
   HomeIcon,
@@ -21,11 +27,12 @@ import {
   Avatar,
   // BuzzIcon,
   // AccordionArrowDownIcon,
-  SettingsIcon,
+  // SettingsIcon,
   SearchIcon,
-  PocketIcon,
+  // PocketIcon,
   MessageIcon,
-  WalletIcon,
+  BookmarkIcon,
+  // WalletIcon,
 } from 'components/elements'
 import {
   BuzzFormModal,
@@ -34,7 +41,7 @@ import {
   LoginModal,
   SearchField,
   NotificationFilter,
-  MoreMenu,
+  // MoreMenu,
 } from 'components'
 import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
@@ -46,7 +53,7 @@ import { bindActionCreators } from 'redux'
 import { broadcastNotification, setRefreshRouteStatus } from 'store/interface/actions'
 import { signoutUserRequest, setIntentBuzz } from 'store/auth/actions'
 import { searchRequest, clearSearchPosts } from 'store/posts/actions'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+// import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 
 import { pending } from 'redux-saga-thunk'
 import queryString from 'query-string'
@@ -54,14 +61,15 @@ import moment from 'moment'
 import SettingsModal from 'components/modals/SettingsModal'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 // import MoreIcon from 'components/elements/Icons/MoreIcon'
-import { checkCeramicLogin, checkForCeramicAccount } from 'services/ceramic'
+import { checkCeramicLogin } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
 import { getUserTheme } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
-import MoonIcon from 'components/elements/Icons/MoonIcon'
-import SunIcon from 'components/elements/Icons/SunIcon'
+// import MoonIcon from 'components/elements/Icons/MoonIcon'
+// import SunIcon from 'components/elements/Icons/SunIcon'
+import CommunityIcon from 'components/elements/Icons/CommunityIcon'
 // import MoreIcon from 'components/elements/Icons/MoreIcon'
 
 const useStyles = createUseStyles(theme => ({
@@ -386,6 +394,21 @@ const useStyles = createUseStyles(theme => ({
     },
     '& ul':{
       background: theme.background.primary,
+      '& nav':{
+        background: theme.background.primary,
+        '& div':{
+          fontSize: 18,
+          fontWeight: '500 !important',
+          background: theme.background.primary,
+          color: theme.font.color,
+          '& div':{
+            '& div':{
+              paddingLeft: '5%',
+            },
+          },
+        },
+      },
+      
     },
     '& li': {
       fontSize: 18,
@@ -396,9 +419,66 @@ const useStyles = createUseStyles(theme => ({
       '&:hover': {
         ...theme.context.view,
       },
+
+      '#advanced-subheader': {
+        // Your specific styles for the id="advanced-subheader"
+        color: 'red',
+        fontWeight: 'bold',
+      },
     },
-    '& a': {
-      color: theme.font.color,
+  },
+  nestedList: {
+    fontSize: 18,
+    fontWeight: 'normal !important',
+    background: theme.background.secondary,
+    color: theme.font.color,
+    '&:hover': {
+      ...theme.context.view,
+    },
+    '& div':{
+      '& div':{
+        '& div':{
+          paddingLeft: '5%',
+          // paddingTop: '4px',
+          // paddingBottom: '4px',
+          '& a':{
+            paddingTop: '0px',
+            paddingBottom: '0px',
+            paddingLeft: '5%',
+            '& div':{
+              marginTop: '0px',
+              marginBottom: '0px',
+            },
+          },
+          '& div':{
+            paddingTop: '4px',
+            paddingBottom: '4px',
+            paddingLeft: '5%',
+            '& div':{
+              marginTop: '0px',
+              marginBottom: '0px',
+            },
+          },
+        },
+      },
+    },
+    '& ul':{
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      '& div':{
+        '& div':{
+          '& span':{
+            fontWeight: 'normal !important',
+          },
+        },
+      },
+      '& a':{
+        '& div':{
+          '& span':{
+            fontWeight: 'normal !important',
+          },
+        },
+      },
     },
   },
   moreButton: {
@@ -513,42 +593,42 @@ const MobileAppFrame = (props) => {
     setRefreshRouteStatus,
     generateStyles,
   } = props
-  const customUserData = JSON.parse(localStorage.getItem('customUserData'))
-  const THEME = {
-    LIGHT: 'light',
-    NIGHT: 'night',
-  }
-  const handleClickSetTheme = (mode) => () => {
-    const data = { ...customUserData, settings: { ...customUserData?.settings, theme: mode } }
-    localStorage.setItem('customUserData', JSON.stringify({...data}))
-    const theme = getTheme(mode)
-    generateStyles(theme)
-    handleUpdateTheme(mode)
-  }
+  // const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+  // const THEME = {
+  //   LIGHT: 'light',
+  //   NIGHT: 'night',
+  // }
+  // const handleClickSetTheme = (mode) => () => {
+  //   const data = { ...customUserData, settings: { ...customUserData?.settings, theme: mode } }
+  //   localStorage.setItem('customUserData', JSON.stringify({...data}))
+  //   const theme = getTheme(mode)
+  //   generateStyles(theme)
+  //   handleUpdateTheme(mode)
+  // }
 
-  const handleUpdateTheme = (theme) => {
-    const { username } = user
+  // const handleUpdateTheme = (theme) => {
+  //   const { username } = user
 
-    getUserCustomData(username)
-      .then(res => {
-        const userData = {
-          ...res[0],
-          settings: {
-            ...res[0].settings,
-            theme: theme,
-          },
-        }
-        const responseData = { username, userData: [userData] }
+  //   getUserCustomData(username)
+  //     .then(res => {
+  //       const userData = {
+  //         ...res[0],
+  //         settings: {
+  //           ...res[0].settings,
+  //           theme: theme,
+  //         },
+  //       }
+  //       const responseData = { username, userData: [userData] }
 
-        if(res) {
-          updateUserCustomData(responseData)
-            .then(() => {
-              // setLoading(false)
-            })
-        }
-      })
+  //       if(res) {
+  //         updateUserCustomData(responseData)
+  //           .then(() => {
+  //             // setLoading(false)
+  //           })
+  //       }
+  //     })
 
-  }
+  // }
 
 
   const mode = getUserTheme()
@@ -570,12 +650,14 @@ const MobileAppFrame = (props) => {
   const [disableSearchTips, setDisableSearchTips] = useState(false)
   const query = params.q === undefined ? '' : params.q
   const [searchkey, setSearchkey] = useState(query)
-  const [openMoreMenu, setOpenMoreMenu] = useState(false)
+  // const [openMoreMenu, setOpenMoreMenu] = useState(false)
   // const [showSettings, setShowSettings] = useState(false)
-  const moreMenuRef = useRef()
+  // const moreMenuRef = useRef()
   const classes = useStyles()
 
   const [activeView, setActiveView] = useState('trending')
+  const [showProfessionalTools, setShowProfessionalTools] = useState(false)
+  const [showSettingsAndSupport, setShowSettingsAndSupport] = useState(false)
 
   let title = 'Trending'
   let openedSubProfile = false
@@ -650,13 +732,13 @@ const MobileAppFrame = (props) => {
     }
   }
 
-  const handleClickOpenMoreMenu = () => {
-    setOpenMoreMenu(true)
-  }
+  // const handleClickOpenMoreMenu = () => {
+  //   setOpenMoreMenu(true)
+  // }
 
-  const handleClickCloseOpenMoreMenu = () => {
-    setOpenMoreMenu(false)
-  }
+  // const handleClickCloseOpenMoreMenu = () => {
+  //   setOpenMoreMenu(false)
+  // }
 
   const floatStyle = {
     padding: 8,
@@ -706,9 +788,9 @@ const MobileAppFrame = (props) => {
     // case 'Latest':
     //   refreshLatestRouteData()
     //   break
-    case 'More':
-      handleClickOpenMoreMenu()
-      break
+    // case 'More':
+    //   handleClickOpenMoreMenu()
+    //   break
     default:
       return
     }
@@ -910,10 +992,10 @@ const MobileAppFrame = (props) => {
     setOpenSwitchModal(true)
   }
 
-  const showSettingsModal = () => {
-    handleClickCloseOpenMoreMenu()
-    setOpenSettingsModal(true)
-  }
+  // const showSettingsModal = () => {
+  //   handleClickCloseOpenMoreMenu()
+  //   setOpenSettingsModal(true)
+  // }
 
   const onHideSwitchModal = () => {
     setOpenSwitchModal(false)
@@ -934,6 +1016,23 @@ const MobileAppFrame = (props) => {
 
   const handleDiscordClick = () => {
     window.open('https://discord.gg/kCZGPs7', '_blank')
+  }
+
+  // const handelClickWallet = () => {
+  //   history.push(`/@${username}/wallet/balances`)
+  //   handelClickItem('wallet')
+  // }
+
+  const toggleProfessionTools = () => {
+    setShowProfessionalTools(!showProfessionalTools)
+  }
+
+  const toggleSettingsAndSupport = () => {
+    setShowSettingsAndSupport(!showSettingsAndSupport)
+  }
+
+  const showComingSoon = () => {
+    broadcastNotification('success', `Coming soon`)
   }
 
   const { stats, metadata } = profile || ''
@@ -1074,18 +1173,18 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || username}</span>
+                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17)}>{userName || username}</span>
                         </Link>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{username}</span>
+                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17)}>@{username}</span>
                         </Link>
                       </div>
                     </div>
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
-                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>{following}</span> Following</div>
-                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>{followers}</span> Followers</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{following}</span> Following</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{followers}</span> Followers</div>
                         </div>
                       </div>
                     </div>
@@ -1107,7 +1206,7 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div onClick={()=>history.push(`/@${username}`)} className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
+                        <div onClick={()=>history.push(`/@${username}`)} className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
                       </div>
 
                     </div>
@@ -1116,7 +1215,7 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
-                          <PocketIcon type='outline'/>
+                          <BookmarkIcon type='outline'/>
                           {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}/t/pockets`}>
                               <IconButton
@@ -1128,35 +1227,15 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700, classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Pockets</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Bookmarks</div>
                       </div>
                     </div>
                   </Link>
-                  <Link to={`/@${username}/wallet`}  onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div onClick={() => showComingSoon()} className={classNames(classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
-                          <WalletIcon type='outline'/>
-                          {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
-                            <Link to={`/@${username}/wallet`}>
-                              <IconButton
-                                size="medium"
-                                style={{width: 55, padding:'12px 12px 0px 0px'}}
-                              >
-                                <WalletIcon type='outline'/>
-                              </IconButton>
-                            </Link>
-                          </div> */}
-                        </div>
-                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
-                      </div>
-                    </div>
-                  </Link>
-                  <div onClick={() => showNotificationForMessage()} className={classNames(classes.displayFlex,classes.positionRelative)}>
-                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
-                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
-                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
-                          <MessageIcon type='outline'/>
+                          <CommunityIcon type='outline'/>
                           {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={'#'}>
                               <IconButton
@@ -1166,9 +1245,9 @@ const MobileAppFrame = (props) => {
                                 <MessageIcon type='outline'/>
                               </IconButton>
                             </Link>
-                          </div> */}
+                          </div>  */}
                         </div>
-                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Message</div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Communities</div>
                       </div>
                     </div>
                   </div>
@@ -1176,7 +1255,87 @@ const MobileAppFrame = (props) => {
                     <div className={classNames('margin-top-2','margin-bottom-2','bg-475154', 'height1', 'width89')}>
                     </div>
                   </div>
-                  <div onClick={() => setOpenSettingsModal(true)} className={classNames(classes.displayFlex,classes.positionRelative)}>
+                  <div className={classes.nestedList}>
+                    <List>
+                      <ListItem button onClick={toggleProfessionTools}>
+                        <ListItemText primary='Professional Tools'/>
+                        {showProfessionalTools ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      <Collapse in={showProfessionalTools} timeout="auto" unmountOnExit>
+                        <List component="div">
+                          <ListItem component="a" href='https://auto.vote' target="_blank" rel="noopener noreferrer" key='Auto.Vote' button>
+                            <ListItemText primary='Auto.Vote' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
+                          <ListItem component="a" href={'http://blog.d.buzz/#/@'+username} target="_blank" rel="noopener noreferrer" key='Blog' button>
+                            <ListItemText primary='Blog' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
+                          <ListItem component="a" href='https://dex.d.buzz' target="_blank" rel="noopener noreferrer" key='DEX' button>
+                            <ListItemText primary='DEX' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
+                          <ListItem component="a" href='https://d.buzz/leaderboard' target="_blank" rel="noopener noreferrer" key='Leaderboard' button>
+                            <ListItemText primary='Leaderboard' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
+                          <ListItem onClick={showComingSoon} key='Hive dApps' button>
+                            <ListItemText primary='Hive dApps' />
+                          </ListItem>
+                        </List>
+                      </Collapse>
+                      <ListItem button onClick={toggleSettingsAndSupport}>
+                        <ListItemText primary='Settings & Support'/>
+                        {showSettingsAndSupport ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      <Collapse in={showSettingsAndSupport} timeout="auto" unmountOnExit>
+                        <List component="div">
+                          <ListItem onClick={showThemeModal} key='Display' button>
+                            <ListItemText primary='Display' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
+                          <ListItem onClick={showSwitchModal} key='Swith Account' button>
+                            <ListItemText primary='Swith Account' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
+                          <ListItem component="a" href='https://chat.d.buzz/' target="_blank" rel="noopener noreferrer" key='Messages' button>
+                            <ListItemText primary='Messages' />
+                          </ListItem>
+                        </List>
+                      </Collapse>
+                      <ListItem component="a" href={`/@${username}/wallet`} target="_blank" rel="noopener noreferrer" key='Wallet' button>
+                        <ListItemText primary='Wallet' />
+                      </ListItem>
+                    </List>
+                  </div>
+                  {/* <Link to={`/@${username}/wallet`}  onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.displayFlex,classes.positionRelative)}>
+                    <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
+                      <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
+                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
+                          <WalletIcon type='outline'/>
+                          <div  className={classNames(classes.minifyItems, classes.activeItem )}>
+                            <Link to={`/@${username}/wallet`}>
+                              <IconButton
+                                size="medium"
+                                style={{width: 55, padding:'12px 12px 0px 0px'}}
+                              >
+                                <WalletIcon type='outline'/>
+                              </IconButton>
+                            </Link>
+                          </div>
+                        </div>
+                        <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Wallet</div>
+                      </div>
+                    </div>
+                  </Link> */}
+                  
+                  {/* <div onClick={() => setOpenSettingsModal(true)} className={classNames(classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20, classes.activeItem,classes.widthAuto)}>
@@ -1194,8 +1353,8 @@ const MobileAppFrame = (props) => {
                         <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>Settings</div>
                       </div>
                     </div>
-                  </div>
-                  <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom20Percent, classes.width100, classes.paddingBottom10)}>
+                  </div> */}
+                  {/* <div onClick={handleClickSetTheme(mode === 'light'? THEME.NIGHT: THEME.LIGHT)} className={classNames(classes.displayFlex,classes.positionAbsolute, classes.bottom20Percent, classes.width100, classes.paddingBottom10)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
@@ -1209,7 +1368,7 @@ const MobileAppFrame = (props) => {
                         <div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.width100,classes.lineHeight24,classes.fontsize20,classes.fontWeight700,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}>{(mode === 'night' || mode === 'gray')? 'Dark':'Light'}</div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   {/* <div  className={classNames(classes.displayFlex,classes.positionRelative, 'testing')}>
                     <div className={classNames(classes.displayFlex, classes.flexDirectionColumn,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div style={{paddingLeft:'18px' }} className={classNames(classes.padding16, classes.flexDirectionColumn, classes.padding8Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100)}>
@@ -1271,8 +1430,8 @@ const MobileAppFrame = (props) => {
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && activeView !== 'notifications' && (
                   <IconButton onClick={handleClickBackButton} size="small">
                     <BackArrowIcon />
-                    {openedSubProfile && location.pathname.match(/\/follow\/followers/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Followers</div>)}
-                    {openedSubProfile && location.pathname.match(/\/follow\/following/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Following</div>)}
+                    {openedSubProfile && location.pathname.match(/\/follow\/followers/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>&nbsp;Followers</div>)}
+                    {openedSubProfile && location.pathname.match(/\/follow\/following/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>&nbsp;Following</div>)}
                   </IconButton>
                 )}
                 {title !== 'Search' && title !== 'Profile' && !openedSubProfile && (<div>
@@ -1389,29 +1548,7 @@ const MobileAppFrame = (props) => {
       <SwitchUserModal show={openSwitchModal} onHide={onHideSwitchModal} addUserCallBack={addUserCallBack} />
       <SettingsModal show={openSettingsModal} onHide={onHideSettingsModal} />
       <LoginModal show={openLoginModal} onHide={hideLoginModal} fromIntentBuzz={fromIntentBuzz} buzzIntentCallback={handleSetBuzzIntent} />
-      <MoreMenu
-        anchor={moreMenuRef}
-        className={classes.menu}
-        open={openMoreMenu}
-        onClose={handleClickCloseOpenMoreMenu}
-        items={[
-          {
-            onClick: showThemeModal,
-            text: 'Theme',
-            visible: true,
-          },
-          {
-            onClick: showSwitchModal,
-            text: 'Switch Account',
-            visible: !checkForCeramicAccount(user.username) ? true : false,
-          },
-          {
-            onClick: showSettingsModal,
-            text: 'Settings',
-            visible: true,
-          },
-        ]}
-      />
+      
     </React.Fragment>
   )
 }
