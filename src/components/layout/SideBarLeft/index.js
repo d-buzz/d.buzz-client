@@ -123,11 +123,14 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'start',
-    fontSize: 14,
+    fontSize: '20px',
     overflow: 'auto',
     overflowX: 'hidden',
     width: '100%',
     height: 'fit-content',
+    '& *': {
+      fontSize: '20px',
+    }
   },
   bottom: {
     position: 'absolute',
@@ -203,14 +206,13 @@ const useStyles = createUseStyles(theme => ({
   menu: {
     '& .MuiPaper-root': {
       background: theme.background.primary,
+      minWidth: '284px !important',
     },
     '& ul':{
       background: theme.background.primary,
       '& nav':{
         background: theme.background.primary,
         '& div':{
-          fontSize: 18,
-          fontWeight: '500 !important',
           background: theme.background.primary,
           color: theme.font.color,
           '& div':{
@@ -220,23 +222,21 @@ const useStyles = createUseStyles(theme => ({
           },
         },
       },
-      
     },
     '& li': {
-      fontSize: 18,
-      fontWeight: '500 !important',
       background: theme.background.primary,
       color: theme.font.color,
-
       '&:hover': {
         ...theme.context.view,
       },
-
-      '#advanced-subheader': {
-        // Your specific styles for the id="advanced-subheader"
-        color: 'red',
-        fontWeight: 'bold',
-      },
+    },
+    '& *': {
+      fontSize: '15px !important',
+      fontWeight: '700 !important',
+    },
+    '& #advanced-subheader': {
+      fontSize: '20px !important',
+      fontWeight: '700 !important'
     },
   },
   moreButton: {
