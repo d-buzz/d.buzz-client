@@ -66,7 +66,7 @@ const FAQs = () => {
         <div className={classes.wrapper}>
           <StickyContainer>
             <Row>
-              <Col xs={8} className="d-none d-md-block">
+              <Col xs={5} className="d-none d-md-block">
                 <Sticky>
                   {({ style }) => (
                     <div style={{...style}}>
@@ -80,6 +80,7 @@ const FAQs = () => {
                           'section-6',
                           'section-7',
                           'section-8',
+                          'section-9',
                         ]} currentClassName={classes.currentLink}>
                           <li><HashLink to="#section-1">What is crypto currency?</HashLink></li>
                           <li><HashLink to="#section-2">What is Bitcoin?</HashLink></li>
@@ -88,7 +89,8 @@ const FAQs = () => {
                           <li><HashLink to="#section-5">What is blockchain technology?</HashLink></li>
                           <li><HashLink to="#section-6">What is DBuzz?</HashLink></li>
                           <li><HashLink to="#section-7">What is Web3?</HashLink></li>
-                          <li><HashLink to="#section-8">TALKING POINTS :</HashLink></li>
+                          <li><HashLink to="#section-8">Do DBuzz posts include a title section?</HashLink></li>
+                          <li><HashLink to="#section-9">TALKING POINTS :</HashLink></li>
                         </Scrollspy>
                       </div>
                     </div>
@@ -195,6 +197,19 @@ const FAQs = () => {
                   <section id="section-8">
                     <div className={classes.hero}>
                       <div >
+                        <h3>Do DBuzz posts include a title section?</h3>
+                      </div>
+                      <hr />
+                      <div>
+                        <p>
+                        The first 82 characters of each Buzz are used to form a title section at the blockchain level to display properly on front-ends that use titles (PeakD.com, Ecency.com, etc.).
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+                  <section id="section-9">
+                    <div className={classes.hero}>
+                      <div >
                         <h3>TALKING POINTS :</h3>
                       </div>
                       <hr />
@@ -211,7 +226,6 @@ const FAQs = () => {
                       </div>
                     </div>
                   </section>
-                  
                 </div>
               </Col>
             </Row>
