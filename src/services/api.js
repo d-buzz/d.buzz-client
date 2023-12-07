@@ -1616,8 +1616,8 @@ export const checkIfImage = (links) => {
 
 export const uploadImage = async (data, progress) => {
   const formData = new FormData()
-  formData.append('file', data)
-
+  formData.append('file', data, data.name)
+  formData.append('customFileName', data.name)
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
@@ -1638,8 +1638,8 @@ export const uploadImage = async (data, progress) => {
       reject(error)
     }
   })
-
 }
+
 
 export const uploadVideo = async (data, username, progress) => {
   const formData = new FormData()
