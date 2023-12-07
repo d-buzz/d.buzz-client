@@ -107,8 +107,8 @@ const UserDialog = React.memo((props) => {
   const [author, setAuthor] = useState('')
   const { username, is_authenticated } = user
   const [shouldStayOpen, setShouldStayOpen] = useState(false)
-  const [hasRecentlyFollowed, setHasRecentlyFollowed] = useState(false)
-  const [hasRecentlyUnfollowed, setHasRecentlyUnfollowed] = useState(false)
+  const [setHasRecentlyFollowed] = useState(false)
+  const [setHasRecentlyUnfollowed] = useState(false)
   const [followerCount, setFollowerCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowed, setIsFollowed] = useState(false)
