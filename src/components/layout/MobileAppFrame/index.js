@@ -40,8 +40,7 @@ import {
   SwitchUserModal,
   LoginModal,
   SearchField,
-  NotificationFilter,
-  // MoreMenu,
+  MoreMenu,
 } from 'components'
 import { useLocation } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab'
@@ -1430,8 +1429,8 @@ const MobileAppFrame = (props) => {
                 {title !== 'Home' && title !== 'Trending' && title !== 'Latest' && activeView !== 'notifications' && (
                   <IconButton onClick={handleClickBackButton} size="small">
                     <BackArrowIcon />
-                    {openedSubProfile && location.pathname.match(/\/follow\/followers/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>&nbsp;Followers</div>)}
-                    {openedSubProfile && location.pathname.match(/\/follow\/following/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>&nbsp;Following</div>)}
+                    {openedSubProfile && location.pathname.match(/\/follow\/followers/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Followers</div>)}
+                    {openedSubProfile && location.pathname.match(/\/follow\/following/g) && (<div className={classNames((mode === 'night' || mode === 'gray')?'text-white':'',classes.fontWeight700)}>&nbsp;Following</div>)}
                   </IconButton>
                 )}
                 {title !== 'Search' && title !== 'Profile' && !openedSubProfile && (<div>
@@ -1503,7 +1502,7 @@ const MobileAppFrame = (props) => {
                     onClick={handleClearNotification}
                   />
                 )}
-                {title === 'Notifications' && <NotificationFilter />}
+                {/*{title === 'Notifications' && <NotificationFilter />}*/}
               </Navbar.Brand>
 
               {title === 'Search' && (
