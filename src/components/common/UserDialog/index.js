@@ -214,6 +214,7 @@ const UserDialog = React.memo((props) => {
         broadcastNotification('success', `Successfully followed @${author}`)
         setHasRecentlyFollowed(true)
         setHasRecentlyUnfollowed(false)
+        setIsFollowed(true)
       } else {
         broadcastNotification('error', `Failed following @${author}`)
       }
@@ -228,6 +229,7 @@ const UserDialog = React.memo((props) => {
         broadcastNotification('success', `Successfully Unfollowed @${author}`)
         setHasRecentlyFollowed(false)
         setHasRecentlyUnfollowed(true)
+        setIsFollowed(false)
       } else {
         broadcastNotification('error', `Failed Unfollowing @${author}`)
       }
@@ -276,7 +278,7 @@ const UserDialog = React.memo((props) => {
                   <div className={classes.right}>
                     {is_authenticated && (
                       <React.Fragment>
-                        {((!isFollowed && !hasRecentlyFollowed) || hasRecentlyUnfollowed) && (username !== author) && (
+                        {!isFollowed && (username !== author) && (
                           <ContainedButton
                             fontSize={14}
                             loading={loading || detailsFetching}
@@ -288,7 +290,7 @@ const UserDialog = React.memo((props) => {
                             onClick={followUser}
                           />
                         )}
-                        {((isFollowed || hasRecentlyFollowed) && !hasRecentlyUnfollowed) && (username !== author) && (
+                        {isFollowed && (username !== author) && (
                           <ContainedButton
                             fontSize={14}
                             loading={loading || detailsFetching}
