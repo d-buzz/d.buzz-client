@@ -142,6 +142,7 @@ const DevelopersFooter = () => {
               <Link to="/privacy">Privacy Policy</Link>
               <Link to="/disclaimer">Disclaimer</Link>
               <Link to="/faqs">FAQs</Link>
+              <Link to="/leaderboard">Leaderboard</Link>
             </div>
           </center>
         </Container>
@@ -158,7 +159,7 @@ const DevelopersFrame = (props) => {
     <React.Fragment>
       <DevelopersAppBar />
       <CssBaseline />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {renderRoutes(route.routes)}
       </Container>
       <DevelopersFooter />

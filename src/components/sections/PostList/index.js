@@ -426,7 +426,7 @@ const PostList = React.memo((props) => {
 
     // if user is not authenticated call open modal then return
     setOpenLoginModal(true)
-    return    
+    return
   }
 
   // hide login modal
@@ -502,7 +502,7 @@ const PostList = React.memo((props) => {
     setAnchorEl(null)
     setSelectedAddToPocketBuzz(item)
   }
-  
+
   const onHideAddToPocketModal = () => {
     setAddToPocketModal(false)
     setSelectedAddToPocketBuzz(null)
@@ -522,16 +522,16 @@ const PostList = React.memo((props) => {
   const getPocket = () => {
     let pocketObject = null
 
-    
+
     pockets.forEach(pocket => {
       let hasThisBuzz
-      
+
       if(!selectedPocket.id) {
         hasThisBuzz = pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined
       } else {
         hasThisBuzz = pocket.pocketId === selectedPocket.id
       }
-      
+
       if(hasThisBuzz) {
         pocketObject = pocket
       }
@@ -607,6 +607,7 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
+                      key={item?.id}
                       type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}

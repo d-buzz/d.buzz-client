@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Collapse from '@material-ui/core/Collapse'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import Divider from '@material-ui/core/Divider'
 
 const MoreMenu = (props) => {
   const {
@@ -24,6 +31,10 @@ const MoreMenu = (props) => {
     setcallFunc(onClick)
     setOverflow('scroll')
   }
+
+  const handleClickCollapse = (onClick) => () => {
+    setcallFunc(onClick)
+  }
  
   useEffect(() => {
     // console.log(open, themeModal, switchUserModal)
@@ -36,7 +47,6 @@ const MoreMenu = (props) => {
     }
     // eslint-disable-next-line
   }, [open, themeModal, switchUserModal])
-
   return (
     <Menu
       style={{ zIndex: 3500 }}
@@ -44,11 +54,63 @@ const MoreMenu = (props) => {
       open={open}
       onClose={onClose}
       className={className}
-      transformOrigin={{vertical: 'bottom', horizontal: 'top'}}
+      transformOrigin={{vertical: 'top', horizontal: 'top'}}
     >
-      {items.map(({onClick, text, visible}) => (
-        visible && <MenuItem onClick={handleMenuClosing(onClick)} key={text} style={{ minWidth: 150 }}>{text}</MenuItem>
-      ))}
+      <List
+        component="nav"
+        aria-labelledby="advanced-subheader"
+        subheader={<ListSubheader component="div" id="advanced-subheader" style={{ fontSize: '20px !important', fontWeight: '700 !important' }}>
+          Advanced
+        </ListSubheader>}
+      >
+        <Divider />
+        {items.map(({onClick, text, visible, subItems, collapse}) => (
+          visible && 
+            (
+              Object.keys(subItems).length > 0 ? (
+                <>
+                  <ListItem button onClick={handleClickCollapse(onClick)}>
+                    {/* <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon> */}
+                    <ListItemText primary={text}/>
+                    {collapse ? <ExpandLess /> : <ExpandMore />}
+                  </ListItem>
+                  <Collapse in={collapse} timeout="auto" unmountOnExit>
+                    {subItems.map(({subonClick, subtext, subhref}) => (
+                      subhref === '' ?
+                        <List component="div">
+                          <ListItem onClick={handleMenuClosing(subonClick)} key={text} button>
+                            {/* <ListItemIcon>
+                            <StarBorder />
+                          </ListItemIcon> */}
+                            <ListItemText primary={subtext} />
+                          </ListItem>
+                        </List>
+                        :
+                        <List component="div">
+                          <ListItem component="a" href={subhref} target="_blank" rel="noopener noreferrer" key={text} button>
+                            {/* <ListItemIcon>
+                          <StarBorder />
+                        </ListItemIcon> */}
+                            <ListItemText primary={subtext} />
+                          </ListItem>
+                        </List>
+                  
+                    ))}
+                  </Collapse>
+                </>
+              )
+                :
+                <ListItem button>
+                  {/* <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon> */}
+                  <ListItemText onClick={handleMenuClosing(onClick)} key={text} primary={text} />
+                </ListItem>
+            )
+        ))}
+      </List>
     </Menu>
   )
 }
