@@ -59,8 +59,7 @@ const MoreMenu = (props) => {
       <List
         component="nav"
         aria-labelledby="advanced-subheader"
-        subheader={
-        <ListSubheader component="div" id="advanced-subheader" style={{ fontSize: '20px !important', fontWeight: '700 !important' }}>
+        subheader={<ListSubheader component="div" id="advanced-subheader" style={{ fontSize: '20px !important', fontWeight: '700 !important' }}>
           Advanced
         </ListSubheader>}
       >

@@ -130,7 +130,7 @@ const useStyles = createUseStyles(theme => ({
     height: 'fit-content',
     '& *': {
       fontSize: '20px',
-    }
+    },
   },
   bottom: {
     position: 'absolute',
@@ -236,7 +236,7 @@ const useStyles = createUseStyles(theme => ({
     },
     '& #advanced-subheader': {
       fontSize: '20px !important',
-      fontWeight: '700 !important'
+      fontWeight: '700 !important',
     },
   },
   moreButton: {
