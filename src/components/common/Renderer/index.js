@@ -215,7 +215,8 @@ const prepareYoutubeEmbeds = (
         if(match){
           // clean first or remove all first the additional params in the id
           if(link.includes('playlist')) {
-            const plID = "videoseries?list="+id
+            id = id.split(/[?/&]/)[0]
+            const plID = "videoseries?list=" + id
             videoEmbeds.push({ app: 'youtube', id: plID })
           }
           if (id.match(/&t=.*/)) {
@@ -226,7 +227,6 @@ const prepareYoutubeEmbeds = (
         }
       } catch(error) { }
     })
-    
     if(body.match(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_?=-]+:~~~~~~\.\^\.~~~/gi)) {
       body = body.replace(/~~~~~~\.\^\.~~~:youtube:[a-z-A-Z0-9_?=-]+:~~~~~~\.\^\.~~~/gi, '')
       body = `${body} \n ~~~~~~.^.~~~:dbuzz-embed-container:~~~~~~.^.~~~`
@@ -296,7 +296,6 @@ const prepareTwitterEmbeds = (
               match = link.match(/(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
               id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
             }
-            console.log(id)
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
           }else if(link.match(mobileTwitterXRegex)) {
             match = link.match(mobileTwitterXRegex)
