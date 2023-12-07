@@ -87,8 +87,6 @@ const OrganizationAppBar = () => {
   } else if (faqs) {
     title = 'FAQs'
   }
-  console.log(title)
-
 
   return (
     <React.Fragment>
