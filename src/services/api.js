@@ -1,16 +1,21 @@
-import {api, auth, broadcast, formatter} from '@hiveio/hive-js'
+import {
+  api,
+  auth,
+  broadcast,
+  formatter,
+} from '@hiveio/hive-js'
 import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
-import config from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
-import {hacManualTransaction, hacUserAuth, hacVote} from "@mintrawa/hive-auth-client"
+import {hacUserAuth, hacVote, hacManualTransaction} from "@mintrawa/hive-auth-client"
+import config from 'config'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -31,9 +36,9 @@ const visited = []
 const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
 
 export const geRPCNode = () => {
-  return new Promise((resolve) => {
-    if (localStorage.getItem('rpc-setting')) {
-      if (localStorage.getItem('rpc-setting') !== 'default') {
+  return new Promise( (resolve) => {
+    if(localStorage.getItem('rpc-setting')) {
+      if(localStorage.getItem('rpc-setting') !== 'default') {
         const node = localStorage.getItem('rpc-setting')
         resolve(node)
       } else {
@@ -70,7 +75,7 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  if (typeof data !== 'string') {
+  if(typeof data !== 'string') {
     return data.forEach((item) => {
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
@@ -109,21 +114,32 @@ export const callBridge = async (method, params, appendParams = true) => {
 
 export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
-    fetchSingleProfile(username)
-      .then((response) => {
-        const profile = response
-        profile.reputations =  [
-          {
-            account: profile.name,
-            reputation: profile.reputation,
-          },
-        ]
+    const params = {account_lower_bound: username, limit: 30}
 
-        resolve(profile)
-      })
-      .catch((err) => {
+    api.call('reputation_api.get_account_reputations', params, async (err, data) => {
+      if (err) {
+        console.log('error', err)
         reject(err)
-      })
+      } else {
+
+        if (data.reputations.length !== 0) {
+          data.reputations.forEach((item, index) => {
+            let score = item.reputation ? formatter.reputation(item.reputation) : 25
+            if (!score || score < 25) {
+              score = 25
+            }
+            data.reputations[index].repscore = score
+            data.reputations[index].author = item.account
+          })
+
+          const getProfiledata = mapFetchProfile(data.reputations)
+          await Promise.all([getProfiledata])
+        }
+
+        resolve(data)
+      }
+    })
+
   })
 }
 
@@ -414,7 +430,7 @@ export const fetchProfile = (username, checkFollow = false) => {
   return new Promise((resolve, reject) => {
     api.getAccountsAsync(username)
       .then(async (result) => {
-        if (result.length === 0) resolve(result)
+        if(result.length === 0) resolve(result)
         result.forEach(async (item, index) => {
           const repscore = item.reputation
           let score = formatter.reputation(repscore)
@@ -817,7 +833,6 @@ export const publishPostWithHAS = async (user, body, tags, payout, perm) => {
   const permlink = perm ? perm : createPermlink(title)
 
   const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
-  console.log(operations)
   hasPostService(operations[0])
   const comment = operations[0]
   const json_metadata = comment[1].json_metadata
@@ -1477,11 +1492,54 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
-export const createPermlink = (title) => {
-  const permlink = new Array(22).join().replace(/(.|$)/g, function () {
-    return ((Math.random() * 36) | 0).toString(36)
+const STOP_WORDS = new Set([
+  "a", "about", "actually", "almost", "also", "although", "always", "am", "an",
+  "and", "any", "are", "as", "at", "be", "became", "become", "but", "by", "can",
+  "could", "did", "do", "does", "each", "either", "else", "for", "from", "had",
+  "has", "have", "hence", "how", "i", "if", "in", "is", "it", "its", "just", "may",
+  "maybe", "me", "might", "mine", "must", "my", "neither", "nor", "not", "of", "oh",
+  "ok", "when", "where", "whereas", "wherever", "whenever", "whether", "which", "while",
+  "who", "whom", "whoever", "whose", "why", "will", "with", "within", "without", "would",
+  "yes", "yet", "you", "your",
+])
+
+function sanitizeTitle(title) {
+  return title.replace(/[^a-zA-Z0-9\s]/g, '')
+}
+
+function generateSeoFriendlyPermalink(title) {
+  const words = title.split(' ').filter(word => {
+    const lowercased = word.toLowerCase()
+    return !STOP_WORDS.has(lowercased) && lowercased.length > 1
   })
-  return permlink
+  return words.join('-').toLowerCase()
+}
+
+const MAX_CHARS = 20
+
+function truncatePermlink(permlink) {
+  let truncated = permlink.substring(0, MAX_CHARS)
+  while (truncated.endsWith('-')) {
+    truncated = truncated.slice(0, -1)
+  }
+  return truncated
+}
+
+function generateRandomString(length) {
+  return Array.from({ length }, () => (Math.random() * 36 | 0).toString(36)).join('')
+}
+
+export const createPermlink = (title) => {
+  const sanitizedTitle = sanitizeTitle(title)
+  let seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
+
+  if (seoFriendlyPermlink.length > MAX_CHARS) {
+    seoFriendlyPermlink = truncatePermlink(seoFriendlyPermlink)
+  }
+
+  return seoFriendlyPermlink.length >= MAX_CHARS
+    ? seoFriendlyPermlink
+    : generateRandomString(MAX_CHARS)
 }
 
 
@@ -1535,22 +1593,27 @@ export const searchPostAuthor = (author) => {
 export const searchPostGeneral = (query) => {
   return new Promise(async (resolve, reject) => {
     // const body = {query}
-    const {tag, sort} = query
+    const { tag , sort } = query
     axios({
       method: 'POST',
       url: `${searchUrl}/query`,
       data: {
-        query: tag,
-        sort: sort,
+        query : tag,
+        sort : sort,
       },
     }).then(async (result) => {
       const data = result.data
 
       if (data.results.length !== 0) {
+        console.log(data.results)
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
+        data.results = data.results.filter((item) =>
+          item.body.length <= 280 && !item.permlink.startsWith('re-'),
+        )
+
         removeFootNote(data.results)
-        data.results = data.results.filter((item) => item.body.length <= 280)
+
       }
 
       resolve(data)
@@ -1574,8 +1637,8 @@ export const checkIfImage = (links) => {
 
 export const uploadImage = async (data, progress) => {
   const formData = new FormData()
-  formData.append('file', data)
-
+  formData.append('file', data, data.name)
+  formData.append('customFileName', data.name)
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
@@ -1596,8 +1659,8 @@ export const uploadImage = async (data, progress) => {
       reject(error)
     }
   })
-
 }
+
 
 export const uploadVideo = async (data, username, progress) => {
   const formData = new FormData()
@@ -1745,7 +1808,6 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 
 export const getEstimateAccountValue = (account) => {
   return new Promise(async (resolve) => {
-    console.log(account)
     await formatter.estimateAccountValue(account)
       .catch(function (err) {
         console.log(err)

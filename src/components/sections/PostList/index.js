@@ -607,7 +607,7 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
-                      key={item.id}
+                      key={item?.id}
                       type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
