@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
-import { checkIfImage } from 'services/api'
 import removeMd from 'remove-markdown'
 import { parseUrls, stripHtml } from 'services/helper'
 
@@ -8,7 +7,6 @@ const HelmetGenerator = (props) => {
   const {content, user, page = 'content'} = props
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
-  const [image, setImage] = useState()
   const url = window.location.href
 
   useEffect(() => {
@@ -18,7 +16,6 @@ const HelmetGenerator = (props) => {
         const stripContent = stripHtml(removeMd(content))
         let title = stripContent
         let description = stripContent
-        const links = parseUrls(content)
 
         if(`${title}`.length > 80) {
           title = `${title.substr(0, 80)} ...`
@@ -31,22 +28,10 @@ const HelmetGenerator = (props) => {
         }
 
         description = `${description} | by ${user}`
-        const avatarLink = `https://images.hive.blog/u/${user}/avatar/large`
 
         setTitle(title)
         setDescription(description)
 
-        if(links.length !== 0) {
-          const result = await checkIfImage(links)
-          const { hasImage, imageUrl } = result
-          if(hasImage) {
-            setImage(`https://images.hive.blog/0x0/${imageUrl}`)
-          } else {
-            setImage(avatarLink)
-          }
-        } else {
-          setImage(avatarLink)
-        }
         window.prerenderReady = true
       }
 
@@ -65,16 +50,22 @@ const HelmetGenerator = (props) => {
         <Helmet>
           <title>{title}</title>
           <meta property="description" content={description} />
-          <meta property="image" content={image} />
+          <meta property="image" content="https://d.buzz/dbuzz.svg" />
+          <meta property="image:width" content="1200" />
+          <meta property="image:height" content="628" />
           <meta property="og:url" content={url} />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
-          <meta property="og:image" content={image} />
+          <meta property="og:image" content="https://d.buzz/dbuzz.svg" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="628" />
           <meta property="title" content={title} />
           <meta property="twitter:url" content={url} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={description} />
-          <meta property="twitter:image" ccontent={image} />
+          <meta property="twitter:image" content="https://d.buzz/dbuzz.svg" />
+          <meta property="twitter:image:width" content="1200" />
+          <meta property="twitter:image:height" content="628" />
         </Helmet>
       )}
       {page !== 'content' && (
