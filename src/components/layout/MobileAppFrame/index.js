@@ -738,6 +738,10 @@ const MobileAppFrame = (props) => {
   //   setOpenMoreMenu(false)
   // }
 
+  const redirectToChatPage = () => {
+    window.location.href = "https://chat.d.buzz"
+  }
+
   const floatStyle = {
     padding: 8,
     margin: 0,
@@ -886,7 +890,7 @@ const MobileAppFrame = (props) => {
     {
       name: 'Message',
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
-      onClick:() => showNotificationForMessage(),
+      onClick:() => redirectToChatPage(),
     },
     // {
     //   name: 'More'  ,
