@@ -67,6 +67,9 @@ const night = {
   font: {
     color: 'rgb(255, 255, 255) !important',
   },
+  hiveValuesFont: {
+    color: 'white !important',
+  },
   textIcon : {
     color: 'rgb(136, 153, 166)',
   },
@@ -246,6 +249,9 @@ const light = {
     hover: { },
   },
   font: {
+    color: 'black !important',
+  },
+  hiveValuesFont: {
     color: 'black !important',
   },
   border: {
