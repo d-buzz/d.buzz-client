@@ -1569,7 +1569,7 @@ const CreateBuzzForm = (props) => {
 
   // Retrieve saved draft
   useEffect(() => {
-    if (autoSavedDraft) {
+    if (autoSavedDraft && !wholeIntent) {
       const savedDraftContent = autoSavedDraft?.content || ''
       updateBuzzThreads({1: {id: 1, content: savedDraftContent, images: []}})
     }

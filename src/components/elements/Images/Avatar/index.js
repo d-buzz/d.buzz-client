@@ -3,7 +3,7 @@ import React, { useRef } from 'react'
 import Image from 'react-bootstrap/Image'
 import { createUseStyles } from 'react-jss'
 import { checkForCeramicAccount } from 'services/ceramic'
-import { getTheme, getUserTheme, proxyImage } from 'services/helper'
+import { getTheme, getUserTheme } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   avatarStyles: {
@@ -63,7 +63,7 @@ const Avatar = React.memo((props) => {
         id={`${id}`}
         onLoad={loadProfileImage}
         onClick={onClick}
-        src={`${proxyImage(`${avatar_src}?timestamp=${new Date().getTime()}`)}`}
+        src={`${`${avatar_src}?timestamp=${new Date().getTime()}`}`}
         roundedCircle
         height={height}
         width={height}
