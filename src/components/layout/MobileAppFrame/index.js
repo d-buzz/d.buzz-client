@@ -1124,9 +1124,6 @@ const MobileAppFrame = (props) => {
     }
   }
 
-  const showNotificationForMessage = () => {
-    broadcastNotification('success', 'Coming soon')
-  }
   // eslint-disable-next-line
   useEffect(() => {
     if (is_authenticated) {

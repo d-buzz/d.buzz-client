@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import removeMd from 'remove-markdown'
-import { parseUrls, stripHtml } from 'services/helper'
+import { stripHtml } from 'services/helper'
 
 const HelmetGenerator = (props) => {
   const {content, user, page = 'content'} = props
