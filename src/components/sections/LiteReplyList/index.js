@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Link, useHistory } from 'react-router-dom'
-import { calculateOverhead, stripHtml, truncateBody } from 'services/helper'
+import { calculateOverhead, stripHtml, truncateBody, shortenDid } from 'services/helper'
 import { censorLinks } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, getIpfsLink } from 'services/ceramic'
@@ -299,11 +299,9 @@ const LiteReplyList = (props) => {
 
   const RenderReplies = ({ reply, treeHistory }) => {
     const {
-      postType,
+      __typename: postType,
       author,
       parent_author,
-      parent_post,
-      created,
       created_at,
       permlink,
       active_votes = [],
@@ -317,6 +315,8 @@ const LiteReplyList = (props) => {
     let { payout } = reply
 
     body = truncateBody(body)
+
+    body = body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '').replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
 
     const [content, setContent] = useState(body)
     const [isCensored, setIsCensored] = useState(false)
@@ -347,7 +347,7 @@ const LiteReplyList = (props) => {
 
     let hasUpvoted = false
 
-    let authorLink = `/@${postType === "HivePost" ? author : author.profile.did}`
+    let authorLink = `/@${postType === 'HivePost' ? author.profile.username : author.profile.did}`
 
     if(is_authenticated && postType === "HivePost") {
       hasUpvoted = active_votes.filter((vote) => vote.voter === username).length !== 0
@@ -380,7 +380,7 @@ const LiteReplyList = (props) => {
         } else {
           if(!href) {
             setPageFrom(null)
-            history.push(generateLink((postType === "HivePost" ? author : author.profile.did), permlink))
+            history.push(generateLink((author?.profile?.src === 'HIVE' ? author?.profile?.username : author?.profile?.did), permlink))
           } else {
             const split = `${href}`.split('#')
 
@@ -460,14 +460,14 @@ const LiteReplyList = (props) => {
                     </Link>
                     <label className={classes.username}>
                       &nbsp;&bull;&nbsp;
-                      {postType === "HivePost" ? moment(`${created}Z`).local().fromNow() : moment(`${created_at}`).local().fromNow()}
+                      {moment(`${created_at}`).local().fromNow()}
                     </label>
                     {!isAuthor() && !isCensored && user.username === 'dbuzz' && !user.useKeychain && (
                       <IconButton onClick={handleClickCensorDialog} className={classes.muteButton} size='small'>
                         <MuteIcon  className={classes.muteIcon} />
                       </IconButton>
                     )}
-                    <p className={classes.note}>Replying to  <b><a href={`/@${parent_author||parent_post.creator_id}`} className={classes.username}>{`@${parent_author}`}</a></b></p>
+                    <p className={classes.note}>Replying to  <b><a href={`/@${parent_author}`} className={classes.username}>{`@${checkForCeramicAccount(parent_author) ? shortenDid(parent_author) : parent_author}`}</a></b></p>
                     {isCensored && (
                       <Chip label={censorType} color="secondary" size="small" className={classes.chip} />
                     )}
@@ -490,7 +490,7 @@ const LiteReplyList = (props) => {
                       treeHistory={treeHistory}
                       body={content}
                       hasUpvoted={hasUpvoted}
-                      author={author}
+                      author={author?.profile?.src === 'HIVE' ? author?.profile?.username : author?.profile?.did}
                       permlink={permlink}
                       voteCount={active_votes.length}
                       replyCount={replyCount}

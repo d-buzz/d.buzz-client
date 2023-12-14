@@ -1329,7 +1329,7 @@ const CreateBuzzForm = (props) => {
           .then((data) => {
             if(data) {
               setPageFrom(null)
-              const {creatorId, streamId} = data
+              const {creatorId, permlink} = data
               removeAutoSavedDraft()
               broadcastNotification('success', 'You successfully published a post')
               setBuzzLoading(false)
@@ -1337,7 +1337,7 @@ const CreateBuzzForm = (props) => {
               clearIntentBuzz()
               resetBuzzForm()
               hideModalCallback()
-              history.push(`/@${creatorId}/${streamId}`)
+              history.push(`/@${creatorId}/${permlink}`)
             }
           })
       }

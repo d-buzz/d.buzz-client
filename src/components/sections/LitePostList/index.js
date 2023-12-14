@@ -222,6 +222,7 @@ const LitePostList = React.memo((props) => {
     postType,
     searchListMode = false,
     author,
+    authorName,
     did,
     permlink,
     created,
@@ -565,7 +566,7 @@ const LitePostList = React.memo((props) => {
                         // onMouseLeave={(!disableUserMenu && !isMobile && !muted && !opacityActivated && disableOpacity) ? closePopOver: () => {}}
                         onClick={!muted && !opacityActivated ? closePopOver : () => {}}
                       >
-                        {!author?.includes('did') ? author : shortenDid(author)}
+                        {!author?.includes('did') ? author : authorName ? authorName : shortenDid(author)}
                       </Link>
                     )}
                     {(disableProfileLink || isMutedUser() || isAHiddenBuzz()) && (<span className={classes.spanName}>{author}</span>)}

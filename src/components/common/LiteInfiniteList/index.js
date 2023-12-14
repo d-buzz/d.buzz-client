@@ -63,7 +63,8 @@ const LiteInfiniteList = ({
           profileRef="home"
           profile={post.author.profile}
           did={post.__typename === 'CeramicPost' ? post.author.username : ''}
-          author={post.__typename === 'CeramicPost' ? (post.author.profile?.name || post.author.username) : post.author.username}
+          author={post?.author?.username}
+          authorName={post?.author?.profile?.name}
           permlink={post.permlink}
           created={post.created_at}
           body={post.body}

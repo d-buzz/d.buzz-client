@@ -41,7 +41,7 @@ import Renderer from 'components/common/Renderer'
 import { IconButton } from '@material-ui/core'
 import MoreHoriz from '@material-ui/icons/MoreHoriz'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
-import { checkForCeramicAccount } from 'services/ceramic'
+import { checkForCeramicAccount, getIpfsLink } from 'services/ceramic'
 import ViewImageModal from 'components/modals/ViewImageModal'
 import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
 import { Helmet } from 'react-helmet'
@@ -250,6 +250,8 @@ const LiteContent = (props) => {
     if(!loadingContent) {
       setPostType(contentData.socialPost?.__typename)
       setContent(contentData.socialPost)
+
+      console.log(contentData.socialPost)
     }
 
   }, [loadingContent, contentData])
@@ -271,6 +273,10 @@ const LiteContent = (props) => {
     hive_rewards,
     stats,
   } = content || ''
+
+  // useEffect(() => {
+  //   console.log(content)
+  // }, [content])
 
   let { body } = content || ''
   const { title } = content || ''
@@ -298,7 +304,7 @@ const LiteContent = (props) => {
 
   useEffect(() => {
     if(author?.profile) {
-      setAvatarUrl(author?.profile?.images?.avatar)
+      setAvatarUrl(getIpfsLink(author?.profile?.images?.avatar))
     }
   }, [author])
 
@@ -387,7 +393,7 @@ const LiteContent = (props) => {
     setOriginalContent(body)
   }
 
-  if(!cashout_time) {
+  if(!cashout_time && content?.payday) {
     const { payout_at: payday } = content
     payout_at = payday
   }
@@ -571,7 +577,7 @@ const LiteContent = (props) => {
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
-              {depth !== 0 && parent_author !== "" && !(contentLength > 280) && (
+              {depth && depth !== 0 && parent_author !== "" && !(contentLength > 280) && (
                 <Row>
                   <Col>
                     <div className={classes.context}>

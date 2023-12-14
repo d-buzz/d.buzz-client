@@ -20,7 +20,7 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
-import { checkForCeramicAccount, generateHiveCeramicParentId, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
+import { generateHiveCeramicParentId, getIpfsLink, replyRequest } from 'services/ceramic'
 import { publishReplyWithHAS } from 'services/api'
 import { isMobile } from 'web3modal'
 import heic2any from 'heic2any'
@@ -225,12 +225,12 @@ const ReplyFormModal = (props) => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [ceramicAuthor, setCeramicAuthor] = useState(false)
-  const [ceramicUser, setCeramicUser] = useState(false)
-  const [fetchingProfile, setFetchingProfile] = useState(true)
+  const [ceramicUser] = useState(false)
+  const [fetchingProfile] = useState(true)
   const [replying, setReplying] = useState(false)
   const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.svg`
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
-  const [userAvatarUrl, setUserAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
+  const [userAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
   const [loading, setLoading] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
   const [imagesLength, setImagesLength] = useState(0)
@@ -296,38 +296,6 @@ const ReplyFormModal = (props) => {
       setOpen(modalOpen)
     }
   }, [modalData])
-
-  useEffect(() => {
-    if(checkForCeramicAccount(username)) {
-      setFetchingProfile(true)
-      getBasicProfile(username)
-        .then((res) => {
-          setCeramicUser(res)
-          setFetchingProfile(false)
-          if(res?.images) {
-            setUserAvatarUrl(getIpfsLink(res?.images?.avatar))
-          }
-        })
-    } else {
-      setFetchingProfile(false)
-    }
-  }, [username])
-  
-  useEffect(() => {
-    if(checkForCeramicAccount(author)) {
-      setFetchingProfile(true)
-      getBasicProfile(author)
-        .then((res) => {
-          setCeramicAuthor(res)
-          setFetchingProfile(false)
-          if(res.images) {
-            setAuthorAvatarUrl(getIpfsLink(res?.images?.avatar))
-          }
-        })
-    } else {
-      setFetchingProfile(false)
-    }
-  }, [author])
 
   const onHide = () => {
     setOpen(false)

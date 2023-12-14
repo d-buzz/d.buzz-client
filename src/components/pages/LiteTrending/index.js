@@ -85,7 +85,7 @@ const LiteTrending = (props) => {
   const [items, setItems] = useState([])
 
   useEffect(() => {
-    const posts = deepClone(data?.trendingFeed?.items || [])
+    const posts = deepClone(data?.trendingFeed?.items || []).filter(post => post?.permlink !== null)
     removeFootNote(posts)
 
     if (!_.isEqual(posts, allPosts)) {

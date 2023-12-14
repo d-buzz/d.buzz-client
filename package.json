@@ -15,7 +15,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@mintrawa/hive-auth-client": "^0.0.8",
-    "@spknetwork/graph-client": "^1.2.0",
+    "@spknetwork/graph-client": "1.2.2",
     "@stablelib/sha256": "^1.0.1",
     "@walletconnect/ethereum-provider": "^2.10.0",
     "@walletconnect/modal": "^2.6.1",

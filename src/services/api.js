@@ -296,7 +296,6 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
     } else {
       getUserPostRequest(account)
         .then(res => {
-          console.log(res)
           resolve(res.posts)
         })
     }

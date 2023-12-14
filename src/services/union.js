@@ -548,7 +548,6 @@ query SinglePostRequest($permalink: String!, $author: String!) {
             id
             name
             about
-            did
             images {
               avatar
               cover
@@ -588,14 +587,15 @@ query SinglePostRequest($permalink: String!, $author: String!) {
         title
         updated_at
         
-              children {
+      children {
+        created_at
+        updated_at
         author {
           profile {
           ... on HiveProfile {
             id
             name
             about
-            did
             images {
               avatar
               cover
@@ -642,7 +642,6 @@ query SinglePostRequest($permalink: String!, $author: String!) {
             id
             name
             about
-            did
             images {
               avatar
               cover
@@ -674,8 +673,12 @@ query SinglePostRequest($permalink: String!, $author: String!) {
       app_metadata
     }
     ... on CeramicPost {
+      created_at
+      updated_at
+      body
       parent_author
       parent_permlink
+      title
       author {
           profile {
           ... on CeramicProfile {
@@ -695,6 +698,11 @@ query SinglePostRequest($permalink: String!, $author: String!) {
       }
       children {
         body
+        created_at
+        updated_at
+        parent_author
+        parent_permlink
+        permlink
         author {
           id
           profile {
@@ -702,7 +710,6 @@ query SinglePostRequest($permalink: String!, $author: String!) {
               id
               name
               about
-              did
               images {
                 avatar
                 cover
@@ -736,7 +743,6 @@ query SinglePostRequest($permalink: String!, $author: String!) {
             id
             name
             about
-            did
             images {
               avatar
               cover

@@ -264,7 +264,6 @@ const LitePostActions = (props) => {
       bodyContent = title.replace(/\s\.\.\./, '') + body.replace(/\.\.\.\s/, '')
     }
 
-
     openReplyModal(author, permlink, bodyContent, treeHistory, replyRef)
   }
 
@@ -292,7 +291,7 @@ const LitePostActions = (props) => {
     }
   }, [payoutAt])
 
-  const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/@${author?.profile?.username}/${permlink}`
+  const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/@${author?.profile?.id}/${permlink}`
 
   const handleShareToMessenger = () => {
     window.location = messengerShareLink
@@ -382,7 +381,7 @@ const LitePostActions = (props) => {
                   </MenuItem>
                   <MenuItem className={classes.menuText}>
                     <FacebookShareButton
-                      url={`https://d.buzz/@${author?.profile?.username}/${permlink}`}
+                      url={`https://d.buzz/@${author?.profile?.id}/${permlink}`}
                       quote={bodyWithNoImageLinks}
                       onClick={() => {
                         setOpenCaret(false)
@@ -398,7 +397,7 @@ const LitePostActions = (props) => {
                   <MenuItem>
                     <TelegramShareButton
                       url={' '}
-                      title={`${bodyWithNoImageLinks}\n\nhttps://d.buzz/@${author?.profile?.username}/${permlink}`}
+                      title={`${bodyWithNoImageLinks}\n\nhttps://d.buzz/@${author?.profile?.id}/${permlink}`}
                       onClick={() => {
                         setOpenCaret(false)
                       }}>
@@ -407,7 +406,7 @@ const LitePostActions = (props) => {
                   </MenuItem>
                   <MenuItem>
                     <WhatsappShareButton
-                      url={`https://d.buzz/@${author?.profile?.username}/${permlink}`}
+                      url={`https://d.buzz/@${author?.profile?.id}/${permlink}`}
                       title={bodyWithNoImageLinks + '\n\n'}
                       onClick={() => {
                         setOpenCaret(false)
@@ -417,7 +416,7 @@ const LitePostActions = (props) => {
                   </MenuItem>
                   <MenuItem>
                     <LinkedinShareButton
-                      url={`https://d.buzz/@${author?.profile?.username}/${permlink}`}
+                      url={`https://d.buzz/@${author?.profile?.id}/${permlink}`}
                       title={bodyWithNoImageLinks}
                       summary={bodyWithNoImageLinks}
                       source={'DBuzz'}
@@ -428,7 +427,7 @@ const LitePostActions = (props) => {
                     </LinkedinShareButton>
                   </MenuItem>
                   <MenuItem style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}}
-                    onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author?.profile?.username}/${permlink}`)}>
+                    onClick={() => navigator.clipboard.writeText(`${window.location.origin}/@${author?.profile?.id}/${permlink}`)}>
                     <ClipboardIcon/>
                   </MenuItem>
                 </Menu>

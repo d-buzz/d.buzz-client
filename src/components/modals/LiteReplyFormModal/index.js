@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
-import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
+import { calculateOverhead, invokeTwitterIntent, shortenDid } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, generateHiveCeramicParentId, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
 import { publishReplyWithHAS } from 'services/api'
@@ -266,13 +266,9 @@ const ReplyFormModal = (props) => {
           replyRef,
           treeHistory,
         } = modalData
+
         setReplyRef(replyRef)
-        if(author.did) {
-          setCeramicAuthor(author)
-          if(author?.images) {
-            setAuthorAvatarUrl(getIpfsLink(author?.images?.avatar))
-          }
-        }
+
         setAuthor(author.did ? author.did : author)
         setPermlink(permlink)
         setBody(content)
@@ -316,6 +312,7 @@ const ReplyFormModal = (props) => {
           }
         })
     } else {
+      setAuthorAvatarUrl('')
       setFetchingProfile(false)
     }
   }, [author])
@@ -558,7 +555,7 @@ const ReplyFormModal = (props) => {
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
+                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{`@${!checkForCeramicAccount(author) ? author : shortenDid(author)}`}</a></b>}</p>
                   <div className={classes.previewContainer}>
                     <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>

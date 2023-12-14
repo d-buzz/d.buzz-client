@@ -32,7 +32,7 @@ const LiteFeeds = React.memo((props) => {
   const [items, setItems] = useState([])
 
   useEffect(() => {
-    const posts = deepClone(data?.socialFeed?.items || [])
+    const posts = deepClone(data?.socialFeed?.items || []).filter(post => post?.permlink !== null)
     removeFootNote(posts)
     
     if (!_.isEqual(posts, allPosts)) {
