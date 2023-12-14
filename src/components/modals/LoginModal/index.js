@@ -258,6 +258,7 @@ const LoginModal = (props) => {
         if(useCeramic) {
           setUseCeramic(false)
           setHasAuthenticationError(false)
+          location.reload()
         }
       })
       

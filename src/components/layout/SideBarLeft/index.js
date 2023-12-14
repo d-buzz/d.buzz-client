@@ -672,12 +672,6 @@ const SideBarLeft = (props) => {
       onClick: () => handelClickItem('latest'),
     },
     {
-      name: 'Notifications',
-      path: `/notifications`,
-      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='outline'/></Badge>,
-      onClick: () => handelClickItem('notifications'),
-    },
-    {
       name: 'Messages',
       path: 'https://chat.d.buzz/',
       icon: activeView === 'messages' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
