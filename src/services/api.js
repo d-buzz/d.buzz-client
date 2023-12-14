@@ -115,6 +115,7 @@ export const callBridge = async (method, params, appendParams = true) => {
 export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
     const params = {account_lower_bound: username, limit: 30}
+    api.setOptions({url: 'https://api.hive.blog'})
 
     api.call('reputation_api.get_account_reputations', params, async (err, data) => {
       if (err) {
