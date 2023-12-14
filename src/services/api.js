@@ -114,28 +114,35 @@ export const callBridge = async (method, params, appendParams = true) => {
 
 export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
+    const method = 'condenser_api.get_account_reputations'
     const params = {account_lower_bound: username, limit: 30}
-    api.setOptions({url: 'https://api.hive.blog'})
 
-    api.call('reputation_api.get_account_reputations', params, async (err, data) => {
+    // Call the API with the specified method and parameters
+    api.call(method, params, async (err, data) => {
       if (err) {
         console.log('error', err)
         reject(err)
       } else {
-
-        if (data.reputations.length !== 0) {
-          data.reputations.forEach((item, index) => {
+        // Check if the data array is not empty
+        if (data && data.length !== 0) {
+          data.forEach((item, index) => {
+            // Calculate the score using the reputation value
             let score = item.reputation ? formatter.reputation(item.reputation) : 25
             if (!score || score < 25) {
               score = 25
             }
-            data.reputations[index].repscore = score
-            data.reputations[index].author = item.account
+            // Update the item with the calculated score and author
+            item.repscore = score
+            console.log(item)
+            item.author = item.account
           })
 
-          const getProfiledata = mapFetchProfile(data.reputations)
+          // Process the profiles
+          const getProfiledata = mapFetchProfile(data)
           await Promise.all([getProfiledata])
         }
+
+        console.log(data)
 
         resolve(data)
       }
@@ -143,6 +150,39 @@ export const searchPeople = (username) => {
 
   })
 }
+
+
+// export const searchPeople = (username) => {
+//   return new Promise((resolve, reject) => {
+//     const params = {account_lower_bound: username, limit: 30}
+//     api.setOptions({url: 'https://api.hive.blog'})
+//
+//     api.call('reputation_api.get_account_reputations', params, async (err, data) => {
+//       if (err) {
+//         console.log('error', err)
+//         reject(err)
+//       } else {
+//
+//         if (data.reputations.length !== 0) {
+//           data.reputations.forEach((item, index) => {
+//             let score = item.reputation ? formatter.reputation(item.reputation) : 25
+//             if (!score || score < 25) {
+//               score = 25
+//             }
+//             data.reputations[index].repscore = score
+//             data.reputations[index].author = item.account
+//           })
+//
+//           const getProfiledata = mapFetchProfile(data.reputations)
+//           await Promise.all([getProfiledata])
+//         }
+//
+//         resolve(data)
+//       }
+//     })
+//
+//   })
+// }
 
 
 export const fetchDiscussions = (author, permlink) => {

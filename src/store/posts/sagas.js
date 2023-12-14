@@ -943,9 +943,7 @@ function* searchRequest(payload, meta) {
       }
     }
 
-    const profile = yield call(searchPeople, query)
-
-    results.people = profile.reputations
+    results.people = yield call(searchPeople, query)
 
     yield put(searchSuccess(results, meta))
   } catch(error) {
