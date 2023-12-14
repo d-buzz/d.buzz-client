@@ -362,7 +362,7 @@ const Profile = (props) => {
       broadcastNotification('success', `Coming soon`)
       tab = 'likes'
     }
-    
+
 
     history.push(`/@${username}/t/${tab}/`)
   }
@@ -931,7 +931,7 @@ const Profile = (props) => {
               {!loading && !ceramic &&
                 <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Media"/>}
               {!loading && !ceramic &&
-                <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets"/>}
+                <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Bookmarks"/>}
               {!loading && !ceramic &&
                 <Tab disableTouchRipple onClick={handleTabs(4)} className={classes.tabs} label="Likes"/>}
             </Tabs>

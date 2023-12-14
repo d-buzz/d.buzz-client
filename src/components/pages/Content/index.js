@@ -701,6 +701,7 @@ const Content = (props) => {
                     payout={payout}
                     payoutAt={payout_at}
                     replyRef="content"
+                    item={content}
                     max_accepted_payout={max_accepted_payout}
                   />
                 </Col>

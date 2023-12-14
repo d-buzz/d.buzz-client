@@ -19,9 +19,11 @@ import { bindActionCreators } from 'redux'
 import { useLastLocation } from 'react-router-last-location'
 import { useWindowDimensions } from 'services/helper'
 import { pending } from 'redux-saga-thunk'
-import { SideBarLeft, SideBarRight, SearchField, NotificationFilter } from 'components'
+import { SideBarLeft, SideBarRight, SearchField } from 'components'
 import BuzzFormModal from 'components/modals/BuzzFormModal'
 import { Fab } from '@material-ui/core'
+import { getTheme } from 'services/theme'
+import { getUserTheme } from 'services/helper'
 // import BuzzIcon from 'components/elements/Icons/BuzzIcon'
 import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 
@@ -90,7 +92,10 @@ const floatStyle = {
   left: 'auto',
   position: 'fixed',
   zIndex: 500,
-  backgroundColor: '#e61c34',
+  border: `${getTheme(getUserTheme())?.buzzButton?.border}`,
+  color: `${getTheme(getUserTheme())?.buzzButton?.color}`,
+  backgroundColor: `${getTheme(getUserTheme())?.background?.primary}`,
+  fill: `${getTheme(getUserTheme())?.buzzButton?.fill}`,
 }
 
 const GuardedAppFrame = (props) => {
@@ -287,7 +292,7 @@ const GuardedAppFrame = (props) => {
                       </IconButton>
                     )}
                     {title !== 'Search' && (<span className={classes.title}>{title}</span>)}
-                    {title === 'Notifications' && <NotificationFilter />}
+                    {/*{title === 'Notifications' && <NotificationFilter />}*/}
                   </Navbar.Brand>
                   {title === 'Search' && (
                     <div className={classes.searchDiv}>
@@ -326,7 +331,7 @@ const GuardedAppFrame = (props) => {
                 {renderRoutes(route.routes)}
                 {minify && (
                   <Fab onClick={handleOpenBuzzModal} size="medium" color="secondary" aria-label="add" style={{...floatStyle, ...floatingButtonStyle}}>
-                    <CreateBuzzIcon />
+                    <CreateBuzzIcon fill={floatStyle.fill}/>
                   </Fab>
                 )}
                 <BuzzFormModal show={open} onHide={onHide} />

@@ -62,11 +62,11 @@ const useStyles = createUseStyles(theme => ({
     background: '#F5F8FA',
     marginRight: 8,
     color: '#000000 !important',
-    
+
     '&:hover': {
       background: '#EDF0F2',
     },
-    
+
     '&:active': {
       background: '#EDF0F2 !important',
     },
@@ -79,7 +79,7 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-const ImageCropper = ({ isOpen, onClose, src, onCropComplete }) => {
+const ImageCropper = ({ isOpen, onClose, src, onCropComplete, username }) => {
   const classes = useStyles()
   const [cropData, setCropData] = useState("#")
   const cropperRef = useRef(null)
@@ -90,7 +90,7 @@ const ImageCropper = ({ isOpen, onClose, src, onCropComplete }) => {
       const croppedImage = cropper.getCroppedCanvas().toDataURL()
       setCropData(croppedImage)
       if (onCropComplete) {
-        onCropComplete(croppedImage)
+        onCropComplete(croppedImage ,username)
       }
       console.log(cropData)
     } else {

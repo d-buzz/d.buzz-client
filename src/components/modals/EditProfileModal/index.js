@@ -259,7 +259,7 @@ const EditProfileModal = (props) => {
       byteArrays.push(byteArray)
     }
 
-    return new Blob(byteArrays, { type: contentType })
+    return new Blob(byteArrays, {type: contentType})
   }
 
   const handleError = (error) => {
@@ -269,15 +269,15 @@ const EditProfileModal = (props) => {
     setImageUploadProgress(0)
   }
 
-  const handleInputType = (input) => {
+  const handleInputType = (input, username, type = 'profile') => {
     let originalFiles = []
 
     if (input instanceof Blob) {
-      const croppedImageFile = new File([input], "cropped-image.png", { type: "image/png" })
+      const croppedImageFile = new File([input], `${username}-${type}-image.png`, {type: "image/png"})
       originalFiles = [croppedImageFile]
     } else if (typeof input === 'string' && input.startsWith('data:image/')) {
       const blob = base64ToBlob(input, 'image/png')
-      const croppedImageFile = new File([blob], "cropped-image.png", { type: "image/png" })
+      const croppedImageFile = new File([blob], `${username}-${type}-image.png`, {type: "image/png"})
       originalFiles = [croppedImageFile]
     } else if (input instanceof Event && input.target && input.target.files) {
       originalFiles = Array.from(input.target.files)
@@ -290,8 +290,8 @@ const EditProfileModal = (props) => {
   }
 
 
-  const handleChangeProfileImage = async (input) => {
-    const originalFiles = handleInputType(input)
+  const handleChangeProfileImage = async (input, username) => {
+    const originalFiles = handleInputType(input, username)
     if (!originalFiles) return
 
     const allImages = [...originalFiles.filter(image => image.type !== 'image/heic')]
@@ -305,7 +305,7 @@ const EditProfileModal = (props) => {
           quality: 1,
         })
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
+          new File([pngBlob], image.name.replace('.heic', '.png'), {type: 'image/png', size: pngBlob.size}),
         )
       }),
     )
@@ -333,8 +333,8 @@ const EditProfileModal = (props) => {
     }
   }
 
-  const handleChangeCoverImage = async (input) => {
-    const originalFiles = handleInputType(input)
+  const handleChangeCoverImage = async (input, username) => {
+    const originalFiles = handleInputType(input, username, 'cover')
     if (!originalFiles) return
 
     const allImages = originalFiles.filter(image => image.type !== 'image/heic')
@@ -348,7 +348,7 @@ const EditProfileModal = (props) => {
           quality: 1,
         })
         allImages.push(
-          new File([pngBlob], image.name.replace('.heic', '.png'), { type: 'image/png', size: pngBlob.size }),
+          new File([pngBlob], image.name.replace('.heic', '.png'), {type: 'image/png', size: pngBlob.size}),
         )
       }),
     )
@@ -391,13 +391,13 @@ const EditProfileModal = (props) => {
   }
 
 
-  const handleCropComplete = (croppedImage) => {
+  const handleCropComplete = (croppedImage, username) => {
     switch (currentImageType) {
     case 'avatar':
-      handleChangeProfileImage(croppedImage)  // Set the cropped image as the new profile image
+      handleChangeProfileImage(croppedImage, username)  // Set the cropped image as the new profile image
       break
     case 'cover':
-      handleChangeCoverImage(croppedImage)
+      handleChangeCoverImage(croppedImage, username)
       break
     default:
       console.warn(`Unexpected image type: ${currentImageType}`)
@@ -600,6 +600,7 @@ const EditProfileModal = (props) => {
                       isOpen={isCropperOpen}
                       onClose={() => setIsCropperOpen(false)}
                       src={selectedImage}
+                      username={username}
                       onCropComplete={handleCropComplete}
                     />
                     <label htmlFor="cover-upload">

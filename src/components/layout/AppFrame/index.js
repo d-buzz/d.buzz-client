@@ -90,7 +90,7 @@ const AppFrame = (props) => {
   const params = queryString.parse(search) || ''
   const referrer = document.referrer
 
-  const organizationRoutes = pathname.match(/^\/(tos|privacy|disclaimer|getstarted|faqs)/)
+  const organizationRoutes = pathname.match(/^\/(tos|privacy|disclaimer|getstarted|faqs|leaderboard)/)
   const developersRoutes = pathname.match(/^\/developers/)
 
   let containerClass = classes.guardedContainer

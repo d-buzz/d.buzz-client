@@ -37,9 +37,9 @@ const visited = []
 const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
 
 export const geRPCNode = () => {
-  return new Promise((resolve) => {
-    if (localStorage.getItem('rpc-setting')) {
-      if (localStorage.getItem('rpc-setting') !== 'default') {
+  return new Promise( (resolve) => {
+    if(localStorage.getItem('rpc-setting')) {
+      if(localStorage.getItem('rpc-setting') !== 'default') {
         const node = localStorage.getItem('rpc-setting')
         resolve(node)
       } else {
@@ -76,7 +76,7 @@ export const invokeFilter = (item) => {
 }
 
 export const removeFootNote = (data) => {
-  if (typeof data !== 'string') {
+  if(typeof data !== 'string') {
     return data.forEach((item) => {
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
       item.body = item.body.replace('<br /><br /> Posted via <a href="https://next.d.buzz/" data-link="promote-link">D.Buzz</a>', '')
@@ -845,7 +845,6 @@ export const publishPostWithHAS = async (user, body, tags, payout, perm) => {
   const permlink = perm ? perm : createPermlink(title)
 
   const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
-  console.log(operations)
   hasPostService(operations[0])
   const comment = operations[0]
   const json_metadata = comment[1].json_metadata
@@ -1505,9 +1504,54 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
-export const createPermlink = () => {
-  const permlink = new Array(22).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)})
-  return permlink
+const STOP_WORDS = new Set([
+  "a", "about", "actually", "almost", "also", "although", "always", "am", "an",
+  "and", "any", "are", "as", "at", "be", "became", "become", "but", "by", "can",
+  "could", "did", "do", "does", "each", "either", "else", "for", "from", "had",
+  "has", "have", "hence", "how", "i", "if", "in", "is", "it", "its", "just", "may",
+  "maybe", "me", "might", "mine", "must", "my", "neither", "nor", "not", "of", "oh",
+  "ok", "when", "where", "whereas", "wherever", "whenever", "whether", "which", "while",
+  "who", "whom", "whoever", "whose", "why", "will", "with", "within", "without", "would",
+  "yes", "yet", "you", "your",
+])
+
+function sanitizeTitle(title) {
+  return title.replace(/[^a-zA-Z0-9\s]/g, '')
+}
+
+function generateSeoFriendlyPermalink(title) {
+  const words = title.split(' ').filter(word => {
+    const lowercased = word.toLowerCase()
+    return !STOP_WORDS.has(lowercased) && lowercased.length > 1
+  })
+  return words.join('-').toLowerCase()
+}
+
+const MAX_CHARS = 20
+
+function truncatePermlink(permlink) {
+  let truncated = permlink.substring(0, MAX_CHARS)
+  while (truncated.endsWith('-')) {
+    truncated = truncated.slice(0, -1)
+  }
+  return truncated
+}
+
+function generateRandomString(length) {
+  return Array.from({ length }, () => (Math.random() * 36 | 0).toString(36)).join('')
+}
+
+export const createPermlink = (title) => {
+  const sanitizedTitle = sanitizeTitle(title)
+  let seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
+
+  if (seoFriendlyPermlink.length > MAX_CHARS) {
+    seoFriendlyPermlink = truncatePermlink(seoFriendlyPermlink)
+  }
+
+  return seoFriendlyPermlink.length >= MAX_CHARS
+    ? seoFriendlyPermlink
+    : generateRandomString(MAX_CHARS)
 }
 
 
@@ -1573,10 +1617,15 @@ export const searchPostGeneral = (query) => {
       const data = result.data
 
       if (data.results.length !== 0) {
+        console.log(data.results)
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
+        data.results = data.results.filter((item) =>
+          item.body.length <= 280 && !item.permlink.startsWith('re-'),
+        )
+
         removeFootNote(data.results)
-        data.results = data.results.filter((item) => item.body.length <= 280)
+
       }
 
       resolve(data)
@@ -1600,8 +1649,8 @@ export const checkIfImage = (links) => {
 
 export const uploadImage = async (data, progress) => {
   const formData = new FormData()
-  formData.append('file', data)
-
+  formData.append('file', data, data.name)
+  formData.append('customFileName', data.name)
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
@@ -1622,8 +1671,8 @@ export const uploadImage = async (data, progress) => {
       reject(error)
     }
   })
-
 }
+
 
 export const uploadVideo = async (data, username, progress) => {
   const formData = new FormData()
@@ -1771,7 +1820,6 @@ export const generateClaimRewardOperation = (account, reward_hive, reward_hbd, r
 
 export const getEstimateAccountValue = (account) => {
   return new Promise(async (resolve) => {
-    console.log(account)
     await formatter.estimateAccountValue(account)
       .catch(function (err) {
         console.log(err)

@@ -29,3 +29,23 @@ export const updateUserCustomData = async(userData) => {
 
   return res.data
 }
+
+export const getLeaderboardEngagementData = async(params) => {
+  const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get/getLeaderboardEngagement`, { params, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY, ...headers } })
+  return res.data
+}
+
+export const getLeaderboardCuratorData = async(params) => {
+  const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get/getLeaderboardCurator`, { params, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY, ...headers } })
+  return res.data
+}
+
+export const getLeaderboardAuthorData = async(params) => {
+  const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get/getLeaderboardAuthor`, { params, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY, ...headers } })
+  return res.data
+}
+
+export const getLeaderboardEarlyAdoptersData = async(params) => {
+  const res = await axios.get(`${process.env.REACT_APP_DATABASE_API}/get/getLeaderboardEarlyAdopters`, { params, headers: { auth: process.env.REACT_APP_DATABASE_AUTH_KEY, ...headers } })
+  return res.data
+}
