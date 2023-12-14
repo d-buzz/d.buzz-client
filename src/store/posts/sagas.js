@@ -509,7 +509,7 @@ function* publishPostRequest(payload, meta) {
   if (images) {
     body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
-
+  
   body = footnote(body)
 
 

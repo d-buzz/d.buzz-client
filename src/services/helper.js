@@ -274,7 +274,7 @@ export const sendToBerries = (author, theme) => {
 export const calculateOverhead = (content) => {
   let urls = getUrls(content) || []
   
-  const markdown = content?.match(/#+\s|[*]|\s+&nbsp;+\s|\s+$/gm) || []
+  const markdown = content?.match(/#+\s|[*]|\s+&nbsp+\s|\s+$/gm) || []
 
   let overhead = 0
 
@@ -525,12 +525,13 @@ export const isImageUrl404 = async (url) => {
 export const proxyImage = (url) => {
   const enabled = true
   let imageUrl = url
-
-  if(enabled) {
-    if(!isGifImage(url)) {
-      imageUrl = `https://wsrv.nl/?url=${url}&q=50`
-      if(isImageUrl404(imageUrl)){
-        imageUrl = url
+  if(!!url) {
+    if(enabled && !url?.includes('localhost')) {
+      if(!isGifImage(url)) {
+        imageUrl = `https://wsrv.nl/?url=${url}&q=50`
+        if(isImageUrl404(imageUrl)){
+          imageUrl = url
+        }
       }
     }
   }
@@ -559,6 +560,10 @@ export const getImageDimensions = (url) => {
       reject(error)
     }
   })
+}
+
+export const isLiteMode = () => {
+  return localStorage.getItem('lite') ? true : false
 }
 
 export const parseUrls = (c) => {
@@ -595,4 +600,23 @@ export const calculateAverageRanking = (users) => {
     }
   }else top10Users = []
   return top10Users
+}
+
+export const shortenDid = (didString, length = 8) => {
+  if (typeof didString !== 'string') {
+    throw new Error('Input must be a string')
+  }
+
+  const parts = didString.split(':')
+  if (parts.length < 3) {
+    throw new Error('Invalid DID format')
+  }
+
+  const method = parts[1]
+  const identifier = parts[2]
+
+  const prefix = identifier.slice(0, 4)
+  const suffix = identifier.slice(-4)
+
+  return `did:${method}:${prefix}...${suffix}`
 }

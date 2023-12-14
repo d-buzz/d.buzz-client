@@ -35,7 +35,7 @@ const useStyles = createUseStyles(theme => ({
 
     '@media (max-width: 480px)': {
       height: !isMobile ? 127 : 200,
-    }
+    },
   },
   imageGridItem: {
     height: '100%',
@@ -66,7 +66,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '2rem',
     color: '#ffffff',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  }
+  },
 }))
 
 
@@ -164,7 +164,7 @@ const BuzzPhotoGrid = ({
     setTimeout(() => { 
       image.style.visibility = 'visible'
       onImageLoad()
-     }, 2000)
+    }, 2000)
 
     if(onImageLoad) {
       onImageLoad()
@@ -307,8 +307,7 @@ const BuzzPhotoGrid = ({
                 <div className={classes.moreImages}>
                   +{images.length - 4}
                 </div>
-              </div>
-            }
+              </div>}
           </div>
         </div>}
     </div>

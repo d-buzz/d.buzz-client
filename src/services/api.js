@@ -8,14 +8,15 @@ import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
+import config from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
-import {hacUserAuth, hacVote, hacManualTransaction} from "@mintrawa/hive-auth-client"
-import config from 'config'
+import {hacManualTransaction, hacUserAuth, hacVote} from "@mintrawa/hive-auth-client"
+import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -90,25 +91,30 @@ export const callBridge = async (method, params, appendParams = true) => {
       params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
     }
 
-    api.call('bridge.' + method, params, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        let lastResult = []
-
-        if (data.length !== 0) {
-          lastResult = [data[data.length - 1]]
+    if(!params.account || !params.account.includes('did')) {
+      api.call('bridge.' + method, params, async(err, data) => {
+        if (err) {
+          reject(err)
+        }else {
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          removeFootNote(data)
+  
+          let result = data.filter((item) => invokeFilter(item))
+  
+          result = [...result, ...lastResult]
+  
+          resolve(result)
         }
+      })
+    } else {
+      return []
+    }
 
-        removeFootNote(data)
-
-        let result = data.filter((item) => invokeFilter(item))
-
-        result = [...result, ...lastResult]
-
-        resolve(result)
-      }
-    })
   })
 }
 
@@ -118,7 +124,6 @@ export const searchPeople = (username) => {
 
     api.call('reputation_api.get_account_reputations', params, async (err, data) => {
       if (err) {
-        console.log('error', err)
         reject(err)
       } else {
 
@@ -265,31 +270,38 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       limit: 100,
     }
 
-    api.call('bridge.get_account_posts', params, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        removeFootNote(data)
-
-        let lastResult = []
-
-        if (data.length !== 0) {
-          lastResult = [data[data.length - 1]]
+    if(!checkForCeramicAccount(account)) {
+      api.call('bridge.get_account_posts', params, async(err, data) => {
+        if(err) {
+          reject(err)
+        }else {
+          removeFootNote(data)
+  
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          let posts = data.filter((item) => invokeFilter(item))
+  
+          posts = [...posts, ...lastResult]
+  
+          if(posts.length === 0) {
+            posts = []
+          }
+          resolve(posts)
         }
+      })
+    } else {
+      getUserPostRequest(account)
+        .then(res => {
+          resolve(res.posts)
+        })
+    }
 
-        let posts = typeof data !== 'string' ? data.filter((item) => invokeFilter(item)) : []
-
-        posts = [...posts, ...lastResult]
-
-        if (posts.length === 0) {
-          posts = []
-        }
-        resolve(posts)
-      }
-    })
   })
 }
-
 
 export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
@@ -1939,4 +1951,25 @@ export const searchHiveTags = (query) => {
       reject(error)
     })
   })
+}
+
+export const deepClone = (obj)  => {
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (Array.isArray(obj)) {
+    // If it's an array, clone each element
+    return obj.map(deepClone)
+  }
+
+  // If it's an object, clone each property
+  const clonedObj = {}
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      clonedObj[key] = deepClone(obj[key])
+    }
+  }
+
+  return clonedObj
 }

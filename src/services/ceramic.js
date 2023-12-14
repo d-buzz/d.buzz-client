@@ -1,34 +1,31 @@
-let axios
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { isMobile } from 'react-device-detect'
+import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { DID } from 'dids'
+import { Ed25519Provider } from 'key-did-provider-ed25519'
+import { getResolver } from 'key-did-resolver'
+import Web3 from 'web3'
+import * as Web3Modal from 'web3modal'
+import * as SpkNetwork from '@spknetwork/graph-client'
+import axios from "axios"
+import { CeramicClient } from '@ceramicnetwork/http-client'
+import { IDX } from '@ceramicstudio/idx'
+import { fromString } from 'uint8arrays'
+import { hash } from '@stablelib/sha256'
 
-import('axios').then((Axios) => {
-  axios = Axios
+// const hosts = [
+//   'https://ceramic.3speak.tv',
+//   'https://ceramic.web3telekom.xyz',
+//   'https://ceramic-node.vitalpointai.com',
+// ]
+
+export const unionIndexerClient = new ApolloClient({
+  uri: 'https://union.us-02.infra.3speak.tv/api/v2/graphql',
+  cache: new InMemoryCache(),
 })
 
-const hosts = [
-  'https://ceramic.3speak.tv',
-  'https://ceramic.web3telekom.xyz',
-  'https://ceramic-node.vitalpointai.com',
-]
-
 export const getBestCeramicHost = async() => {
-  const hostsWithTimes = []
-  const times = []
-  let fastestHost = 'https://ceramic.3speak.tv'
-  await Promise.all(
-    hosts.map(async (host) => {
-      try {
-        const start = Date.now()
-        await axios.get(`${host}/api/v0/streams/kjzl6cwe1jw149xy2w2qycwts4xjpvyzrkptdw20iui7r486bd6sasqb9tgglzp`)
-          .then(() => {
-            const finish = Date.now()
-            hostsWithTimes.push({host, time: (finish - start) / 1000})
-            times.push((finish - start) / 1000)
-          })
-      } catch(err) { return }
-    }))
-    .then(() => {
-      fastestHost = (hostsWithTimes.find(h => h.time === Math.min(...times))).host
-    })
+  const fastestHost = 'https://ceramic.3speak.tv'
   return fastestHost
 }
 
@@ -40,49 +37,26 @@ const normalizeAuthSecret = (authSecret64) => {
   return authSecret
 }
 
-const providerOptions = {
-  /* See Provider Options Section */
-}
-
-let web3Modal
-let web3
-
-// dynamic imports
-
-import('web3modal').then((Web3Modal) => {
-  web3Modal = new Web3Modal.default({
-    network: "mainnet", // optional
-    cacheProvider: true, // optional
-    providerOptions, // required
-  })
+const web3Modal = new Web3Modal.default({
+  network: "mainnet",
+  cacheProvider: true,
+  providerOptions: {},
 })
 
-import('web3').then((Web3) => {
-  web3 = new Web3.default()
-})
+const web3 = new Web3()
 
 const idxAliases = {
   rootPosts: 'ceramic://kjzl6cwe1jw149xy2w2qycwts4xjpvyzrkptdw20iui7r486bd6sasqb9tgglzp',
   socialConnectionIndex: 'ceramic://kjzl6cwe1jw145f1327br2k7lkd5acrn6d2omh88xjt70ovnju491moahrxddns',
 }
 
-export const API_NODE = 'https://us-01.infra.3speak.tv'
+export const SPK_INDEXER_HOST = 'https://offchain.us-02.infra.3speak.tv'
 
-let Ceramic
-let idx
-let spk
-// dynamic imports
-import('@ceramicnetwork/http-client').then((CeramicNetwork) => {
-  Ceramic = new CeramicNetwork.CeramicClient(localStorage.getItem('ceramic') || hosts[0])
-})
-import('@ceramicstudio/idx').then((CeramicStudio) => {
-  idx = new CeramicStudio.IDX({ceramic: Ceramic, aliases: idxAliases})
-})
-import('@spknetwork/graph-client').then((SpkNetwork) => {
-  spk = new SpkNetwork.SpkClient(API_NODE, Ceramic)
-})
+const ceramicClient = new CeramicClient('https://ceramic.us-02.infra.3speak.tv')
+const spk = new SpkNetwork.SpkClient(SPK_INDEXER_HOST, ceramicClient)
+const idx = new IDX({ceramic: ceramicClient, aliases: idxAliases})
 
-window.ceramicclient = Ceramic
+window.ceramicclient = ceramicClient
 window.idxclient = idx
 window.spkclient = spk
 
@@ -100,23 +74,20 @@ const connectPrompt = async() => {
   return firstAccount
 }
 
-const resloveEthDid = async(did) => {
-  let proof
-  let verified
-  const account = await web3.eth.getAccounts().then(data=>data[0])
 
-  await import('3id-blockchain-utils').then(async(utils) => {
-    proof = await utils.createLink(did, `${account}@eip155:1`, web3.eth.currentProvider)
-    verified = await utils.validateLink(proof)
-  })
+// const resolveEthDid = async(did, provider) => {
+//   const account = await provider.getAccounts().then(data=>data[0])
 
-  // await authenticate(proof.message, `${account}@eip155:1`, web3.eth.currentProvider)
+//   const proof = await utils.createLink(did, `${account}@eip155:1`, provider.currentProvider)
+//   const verified = await utils.validateLink(proof)
 
-  return verified
-}
+//   await authenticate(proof.message, `${account}@eip155:1`, provider.currentProvider)
+
+//   return verified
+// }
 
 export const authenticateWithCeramic = (did, secret) => {
-  Ceramic.setDID(did)
+  ceramicClient.setDID(did)
   const ceramicAuth = {authDID: did.id, authSecret: secret}
   localStorage.setItem('ceramic.auth', JSON.stringify(ceramicAuth))
 }
@@ -125,7 +96,7 @@ export const reauthenticateWithCeramic = async() => {
   const auth = JSON.parse(localStorage.getItem('ceramic.auth'))
   const secret = Object.values(auth.authSecret)
   const did = await createIdentity(secret)
-  Ceramic.setDID(did)
+  ceramicClient.setDID(did)
 }
 
 const getCeramicAuth = () => {
@@ -139,62 +110,83 @@ export const checkCeramicLogin = () => {
   return ceramicAuth
 }
 
-const createIdentity = async(authSecret) => {
-  let provider
-  let resolver
-  import('key-did-provider-ed25519').then((keyDidProvider) => {
-    provider = new keyDidProvider.Ed25519Provider(authSecret)
-  })
-  import('key-did-resolver').then((keyDidResolver) => {
-    resolver = keyDidResolver.getResolver()
-  })
-  let did
-  await import('dids').then((dids) => {
-    did = new dids.DID({ provider, resolver })
-  })
-
-  await did.authenticate()
-
-  return did
+const createIdentity = async(seed) => {
+  try {
+    const provider = new Ed25519Provider(seed)
+    const did = new DID({ provider, resolver: getResolver() })
+    await did.authenticate()
+    return did
+  }
+  catch(err) {
+    console.log(err)
+  }
 }
 
-let hash
-let fromString
-import('@stablelib/sha256').then((SHA) => {
-  hash = SHA.hash
-})
-import('uint8arrays').then((Unit8Arrays) => {
-  fromString = Unit8Arrays.fromString
-})
-
 export const loginWithMetaMask = async() => {
-  const account = await connectPrompt()
-  const info = await web3.eth.personal.sign('Allow this account to control your identity', account)
-  const authSecret = normalizeAuthSecret(hash(fromString(info.slice(2))))
+  let signedMessage
 
-  const did  = await createIdentity(authSecret)
-  const proof = await resloveEthDid(did.id)
+  const walletConnectProvider = await EthereumProvider.init({
+    projectId: '686fee168a35f3cd368400c22a86860a',
+    chains: [1],
+    showQrModal: true,
+    methods: ['personal_sign', 'eth_requestAccounts'],
+    events: [],
+    qrModalOptions: {
+      themeMode: 'light',
+      themeVariables: {
+        "--wcm-z-index": 9999,
+      },
+    },
+  })
 
-  if(proof) {
+  if (!isMobile) {
+    const account = await connectPrompt()
+    if (account) {
+      signedMessage = await web3.eth.personal.sign('Allow this account to control your identity', account)
+    }
+  } else {
+    try {
+      await walletConnectProvider.connect()
+      const accounts = await walletConnectProvider.request({ method: 'eth_requestAccounts' })
+      const account= accounts[0]
+      signedMessage = await walletConnectProvider.request({ method: 'personal_sign', params: ['Allow this account to control your identity', account] })
+    } catch (error) {
+      console.error("Failed to connect:", error)
+    }
+  }
+
+  const authSecret = normalizeAuthSecret(hash(fromString(signedMessage.slice(2))))
+  const did = await createIdentity(authSecret)
+
+  if(did) {
     authenticateWithCeramic(did, authSecret)
   }
 
-  return proof ? did : null
+  return did ? did : 0
 }
 
 export const checkForCeramicAccount = (account) => {
   return (account || '').startsWith('did:key:')
 }
 
-export const createPostRequest = async(did, title, body) => {
-  return await spk.createDocument({
-    app: 'dBuzz',
-    title: title,
-    body: body,
-    debug_metadata: {
-      user_id: did,
-    },
-  })
+
+export const createPostRequest = async(did, body) => {
+  try {
+    return await spk.createDocument({
+      title: '',
+      body: body,
+      json_metadata: {
+        app: 'dBuzz',
+      },
+      debug_metadata: {
+        did: did,
+      },
+      app: 'dBuzz',
+    }, null)
+  }
+  catch(err) {
+    console.log(err.message)
+  }
 }
 
 export const updatePostRequest = async(parentId, body) => {
@@ -213,11 +205,18 @@ export const replyRequest = async(parentId, did, body) => {
   }, parentId)
 }
 
+export const generateHiveCeramicParentId = async (author, permlink) => {
+  return (await axios.post("https://union.us-02.infra.3speak.tv/api/v1/create_stream_id", {
+    author,
+    permlink,
+  })).data?.stream_id
+}
+
 
 export const getUserPostRequest = async(did) => {
   const posts = []
   if(did) {
-    const { data } = await axios.post(`${API_NODE}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
       query: `
       {
           publicFeed(parent_id:null, creator_id:"${did}") {
@@ -284,7 +283,7 @@ export const getUserPostRequest = async(did) => {
 export const getChildPostsRequest = async(parentId) => {
   const posts = []
   if(parentId) {
-    const { data } = await axios.post(`${API_NODE}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
       query: `
       {
           publicFeed(parent_id:"${parentId}") {
@@ -391,7 +390,7 @@ export const getSinglePost = async(streamId) => {
 export const getBasicProfile = async(did) => {
   let profileData
   if(did) {
-    const { data } = await axios.post(`${API_NODE}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
       query: `
         {
           ceramicProfile(userId: "${did}") {
@@ -445,15 +444,21 @@ export const setBasicProfile = async(profile) => {
   })
 }
 
-export const getIpfsLink = (hash) => {
-  return `https://ipfs.io/ipfs/${hash.replace('ipfs://', '')}`
+export const getIpfsLink = (hash='') => {
+  if(!!hash) {
+    if(hash.startsWith('ipfs://')) {
+      return `https://ipfs.io/ipfs/${hash.replace('ipfs://', '')}`
+    } else {
+      return hash
+    }
+  }
 }
 
 export const getFollowingList = async(did) => {
   let following
   
   if(did) {
-    const { data } = await axios.post(`${API_NODE}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
       query: `
       {
         following(did: "${did}") {
@@ -483,7 +488,7 @@ export const getFollowersList = async(did) => {
   let followers
   
   if(did) {
-    const { data } = await axios.post(`${API_NODE}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
       query: `
       {
         followers(did: "${did}") {
@@ -544,7 +549,7 @@ export const getFollowingFeed = async (did) => {
   const feed = []
 
   if(did) {
-    const { data } = await axios.post(`${API_NODE}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
       query: `
       {
         followingFeed(did: "${did}") {

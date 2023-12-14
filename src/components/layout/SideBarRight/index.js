@@ -9,8 +9,11 @@ import {
   ListLink,
   Spinner,
 } from 'components/elements'
-import {SearchField} from 'components'
-import {useLocation, Link} from 'react-router-dom'
+import { SearchField } from 'components'
+import { useLocation, Link } from 'react-router-dom'
+import { isLiteMode } from 'services/helper'
+import { useQuery } from '@apollo/client'
+import { TRENDING_TAGS_QUERY } from 'services/union'
 
 const useStyles = createUseStyles(theme => ({
   search: {
@@ -53,6 +56,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 10,
     padding: 15,
   },
+
   priceItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -109,17 +113,39 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const SideBarRight = (props) => {
-  const {user, items, loading, hideSearchBar = false} = props
+  const { user, items:hiveTrendingTags, loading:hiveTagsLoading, hideSearchBar = false } = props
   const classes = useStyles()
   const location = useLocation()
   const {pathname} = location
   let isInSearchRoute = false
-  const {is_authenticated} = user
+  const { is_authenticated } = user
+  // eslint-disable-next-line
+  const [hivePrice, setHivePrice] = useState(0)
+  // eslint-disable-next-line
+  const [hbdPrice, setHbdPrice] = useState(0)
   const [isStaging, setIsStaging] = useState(null)
-  const currentSiteUrl = window.location.protocol + '//' + window.location.host
+  const [isLite, setIsLite] = useState(null)
+
+  // eslint-disable-next-line
+  const { loading:liteTagsLoading, error, data=[] } = useQuery(TRENDING_TAGS_QUERY(), { skip: !isLiteMode() })
+  const [liteTrendingTags, setLiteTrendingTags] = useState([])
+
+  useEffect(() => {
+    if(isLiteMode() && data?.trendingTags?.tags?.length>0) {
+      const tags = (data?.trendingTags?.tags || [])
+    
+      // re-structure tags
+      const restructuredTags = tags.map(tagItem => ({
+        name: tagItem.tag,
+        comments: tagItem.score,
+        top_posts: 0,
+      }))
+      setLiteTrendingTags(restructuredTags)
+    }
+  }, [data])
 
   const stagingVersion = process.env.REACT_APP_STAGING_VERSION
-
+  
   useEffect(() => {
     if (window.location.host === 'staging.d.buzz') {
       setIsStaging(true)
@@ -129,6 +155,15 @@ const SideBarRight = (props) => {
     // eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    if(window.location.host === 'lite.d.buzz') {
+      setIsLite(true)
+    } else {
+      setIsLite(false)
+    }
+    // eslint-disable-next-line
+  }, [])
+  
   if (pathname.match(/(\/search?)/)) {
     isInSearchRoute = true
   }
@@ -163,14 +198,17 @@ const SideBarRight = (props) => {
 
   return (
     <React.Fragment>
-      {!hideSearchBar && !isInSearchRoute && (<SearchField/>)}
-      <div style={{paddingTop: 5}}>
-        <ListGroup label="Trends for you" labelClassName={classes.trendsLabel}>
-          {items.slice(0, 5).map((item) => (
-            <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`}
-              subLabel={`${item.comments + item.top_posts} Buzz's`}/>
-          ))}
-          <Spinner size={50} loading={loading}/>
+      {!hideSearchBar && !isInSearchRoute && (<SearchField />)}
+      <div style={{ paddingTop: 5 }}>
+        <ListGroup label="Trends for you">
+          {!isLiteMode() ?
+            hiveTrendingTags.slice(0, 5).map((item) => (
+              <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            )) :
+            liteTrendingTags.slice(0, 5).map((item) => (
+              <ListAction href={linkGenerator(item.name)} key={`${item.name}-trend`} label={`#${item.name}`} subLabel={`${item.comments + item.top_posts} Buzz's`} />
+            ))}
+          <Spinner size={50} loading={hiveTagsLoading || liteTagsLoading} />
         </ListGroup>
       </div>
       <div style={{paddingTop: 5}}>
@@ -191,9 +229,8 @@ const SideBarRight = (props) => {
           <Link to="/leaderboard">Leaderboard</Link>
           <Link to="/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
-          <br/>
-          <label><a href={currentSiteUrl}>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging ?
-            <i>v.{config.VERSION}</i> : <i>staging v{stagingVersion}</i>}</a></label>
+          <br />
+          <label>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite v2</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>

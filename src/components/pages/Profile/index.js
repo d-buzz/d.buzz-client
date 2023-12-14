@@ -35,7 +35,7 @@ import {
 } from 'store/posts/actions'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {anchorTop, getUserTheme, errorMessageComposer} from 'services/helper'
+import {anchorTop, getUserTheme, errorMessageComposer, proxyImage} from 'services/helper'
 import {pending} from 'redux-saga-thunk'
 import {renderRoutes} from 'react-router-config'
 import {Link, useHistory, useLocation} from 'react-router-dom'
@@ -506,8 +506,7 @@ const Profile = (props) => {
       setAvatarUrl(userProfileImage)
     } else if (checkForCeramicAccount(username) && ceramicProfile.images?.avatar) {
       const avatar = ceramicProfile.images?.avatar.replace('ipfs://', '')
-      alert(avatar)
-      // setAvatarUrl(`https://ipfs.io/ipfs/${avatar}`)
+      setAvatarUrl(proxyImage(`https://ipfs.io/ipfs/${avatar}`))
     } else {
       setAvatarUrl(`${window.location.origin}/ceramic_user_avatar.svg`)
     }
@@ -733,10 +732,7 @@ const Profile = (props) => {
           {!loading && (
             <React.Fragment>
               <div className={classes.cover}>
-                {cover_image ? <img
-                  src={userCoverImage ? userCoverImage : ceramicProfile && `https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`}
-                  alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}
-                  className={classes.profileImage} id="coverImage"/> : ''}
+                <img src={userCoverImage ? proxyImage(userCoverImage) : ceramicProfile && proxyImage(`https://ipfs.io/ipfs/${ceramicProfile.images?.background.replace('ipfs://', '')}`)} alt="cover" style={{borderRadius: userCoverImage ? '0 0 25px 25px' : ''}} onLoad={loadCoverImage}  className={classes.profileImage} id='coverImage' />
               </div>
               <div className={classes.wrapper}>
                 <Row>

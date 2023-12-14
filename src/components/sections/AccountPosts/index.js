@@ -26,6 +26,7 @@ const AccountPosts = (props) => {
     mutelist,
   } = props
   const classes = useStyle()
+
   const loadMorePosts =  useCallback(() => {
     try {
       const { permlink, author: start_author } = last

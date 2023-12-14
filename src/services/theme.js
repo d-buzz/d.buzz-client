@@ -188,7 +188,7 @@ const night = {
     color: '#ffffff',
   },
 }
-
+// eslint-disable-next-line
 const light = {
   background: {
     primary: 'white',

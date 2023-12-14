@@ -515,12 +515,13 @@ const EditProfileModal = (props) => {
       },
     }
     const ceramicMetaData = {
-      profile_image: profileAvatar ? profileAvatar : '',
-      cover_image: profileCoverImage ? profileCoverImage : '',
-      name: profileName,
-      about: profileAbout,
-      location: profileLocation,
-      url: profileWebsite,
+      profile_image : profileAvatar ? profileAvatar : '',
+      cover_image : profileCoverImage ? profileCoverImage : '',
+      name : profileName,
+      about : profileAbout,
+      location : profileLocation,
+      url : profileWebsite,
+      website : profileWebsite,
     }
 
     if (!ceramicUser) {

@@ -471,6 +471,11 @@ input[type=number] {
   color: #ffffff !important;
 }
 
+/* Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
 @media (prefers-color-scheme: dark) {
   /* Dark mode */
   ::-webkit-scrollbar-track {
