@@ -130,7 +130,7 @@ function WhatsNewModal(props) {
 
   useEffect(() => {
     if(VERSION.includes('dev')) {
-      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/dev-updates.json', {
+      axios.get(`${config.BUCKET}/dbuzz-backend/dev-updates.json`, {
         headers,
       })
         .then(response => {
@@ -140,7 +140,7 @@ function WhatsNewModal(props) {
           onHide()
         })
     } else {
-      axios.get('https://storageapi.fleek.co/nathansenn-team-bucket/dbuzz-backend/stable-updates.json', {
+      axios.get(`${config.BUCKET}/dbuzz-backend/stable-updates.json`, {
         headers,
       })
         .then(response => {
