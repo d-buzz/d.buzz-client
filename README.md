@@ -109,6 +109,8 @@ The site uses JSS for styling components. The main theme file with base styles i
 
 ## Development
 
+Before starting the dev server, make sure you setup `.env.development` and `.env.production` files with your own variables.
+
 To run locally:
 
 ```
