@@ -7,11 +7,12 @@ import {
   SET_DEFAULT_VOTING_WEIGHT_SUCCESS,
 } from './actions'
 import { fromJS } from 'immutable'
+import config from 'config'
 
 const defaultState = fromJS({
   theme: {},
   themeStyles: {},
-  rpcNode: 'https://api.hive.blog',
+  rpcNode: config.HIVE_API_NODE,
   censorTypes: [],
   defaultVoteWeight: 1,
 })

@@ -596,3 +596,19 @@ export const calculateAverageRanking = (users) => {
   }else top10Users = []
   return top10Users
 }
+
+export const hiveAPIUrls = [
+  "https://api.hive.blog",
+  "https://rpc.ecency.com",
+  "https://hive-api.3speak.tv",
+  "https://rpc.ausbit.dev",
+  "https://hived.privex.io",
+  "https://anyx.io",
+  "https://api.deathwing.me",
+  "https://hived.emre.sh",
+  "https://hive-api.arcange.eu",
+  "https://api.openhive.network",
+  "https://techcoderx.com",
+  "https://hive.roelandp.nl",
+  "https://api.c0ff33a.uk",
+]
