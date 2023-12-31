@@ -18,6 +18,7 @@ const imageUrl = `${appConfig.IMAGE_API}`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
+const hiveAPINODE = `${appConfig.HIVE_API_NODE}`
 
 const APP_META = {
   name: config.APP_NAME,
@@ -306,7 +307,7 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
-  api.setOptions({url: 'https://api.hive.blog'})
+  api.setOptions({url: hiveAPINODE})
   return api.getContentRepliesAsync(author, permlink)
     .then(async (replies) => {
       if (replies.length !== 0) {
@@ -1646,7 +1647,7 @@ export const getBestRpcNode = () => {
         resolve(result.data[0].endpoint)
       })
       .catch(function (error) {
-        resolve('https://api.hive.blog')
+        resolve(hiveAPINODE)
       })
   })
 }

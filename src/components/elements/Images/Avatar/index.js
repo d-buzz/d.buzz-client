@@ -63,14 +63,14 @@ const Avatar = React.memo((props) => {
         id={`${id}`}
         onLoad={loadProfileImage}
         onClick={onClick}
-        src={`${`${avatar_src}?timestamp=${new Date().getTime()}`}`}
+        src={avatar_src}
         roundedCircle
         height={height}
         width={height}
         className={classNames(className, 'user-avatar-image', classes.avatarStyles)}
         style={{
           border: border ? '5px solid white' : 'none', 
-          backgroundColor: 'none', 
+          backgroundImage: `url(${avatar_src})`, 
           objectFit : avatarUrl ? "cover" : "inherit", 
           ...style,
         }}

@@ -662,7 +662,7 @@ const Content = (props) => {
                   {!checkForCeramicAccount(user.username) && <MenuItem onClick={handleTipClick} target='_blank' className={classes.menuText}>Tip</MenuItem>}
                 </React.Fragment>
               )}
-              {!isAuthor() && user.username === 'dbuzz' && !user.useKeychain && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
+              {!isAuthor() && user.username === 'dbuzz' && !isCensored && (<MenuItem onClick={handleClickCensorDialog} className={classes.menuText}>Censor Buzz</MenuItem>)}
               {hasUpdateAuthority && (
                 <React.Fragment>
                   {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
