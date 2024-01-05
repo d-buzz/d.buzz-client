@@ -1,3 +1,5 @@
+import { CeramicClient } from '@ceramicnetwork/http-client'
+
 let axios
 
 import('axios').then((Axios) => {
@@ -68,13 +70,12 @@ const idxAliases = {
 
 export const API_NODE = 'https://us-01.infra.3speak.tv'
 
-let Ceramic
 let idx
 let spk
+
+const Ceramic = new CeramicClient(localStorage.getItem('ceramic') || hosts[0])
+
 // dynamic imports
-import('@ceramicnetwork/http-client').then((CeramicNetwork) => {
-  Ceramic = new CeramicNetwork.CeramicClient(localStorage.getItem('ceramic') || hosts[0])
-})
 import('@ceramicstudio/idx').then((CeramicStudio) => {
   idx = new CeramicStudio.IDX({ceramic: Ceramic, aliases: idxAliases})
 })
