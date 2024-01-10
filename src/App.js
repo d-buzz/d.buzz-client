@@ -41,11 +41,10 @@ const App = () => {
     if(passwordWall !== "dbuzz"){
       let passwordW = null
       while(passwordW == null || passwordW !== "dbuzz"){
-        passwordW = prompt("Type \"dbuzz\"")
+        passwordW = prompt("The password is dbuzz (all lower-case).")
       }
       localStorage.setItem('passwordWall', passwordW)
     }
-    
   }
   
   return (
