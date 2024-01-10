@@ -36,6 +36,18 @@ const App = () => {
     redirectOldLinks()
   }, [])
 
+  if(window.location.host !== 'd.buzz'){
+    const passwordWall = localStorage.getItem('passwordWall')
+    if(passwordWall !== "dbuzz"){
+      let passwordW = null
+      while(passwordW == null || passwordW !== "dbuzz"){
+        passwordW = prompt("Type \"dbuzz\"")
+      }
+      localStorage.setItem('passwordWall', passwordW)
+    }
+    
+  }
+  
   return (
     <React.Fragment>
       <React.Suspense fallback={<span> </span>}>
