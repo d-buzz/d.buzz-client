@@ -140,12 +140,14 @@ const useStyles = createUseStyles(theme => ({
       width: 'inherit',
       ...theme.font,
       // fontWeight: 'bold',
-      fontFamily: 'Segoe',
+      fontFamily: 'Segoe-Bold',
+      fontSize: '14px',
     },
     '&.Mui-selected': {
       '& span': {
         color: '#e53935',
         fontFamily: 'Segoe-Bold',
+        fontSize: '16px',
       },
     },
   },
