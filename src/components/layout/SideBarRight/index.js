@@ -230,7 +230,7 @@ const SideBarRight = (props) => {
           <Link to="/getstarted">Get Started</Link>
           <Link to="/developers">Developers</Link>
           <br />
-          <label>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>lite v2</i> : ''}</label>
+          <label>&copy; {new Date().getFullYear()} DBuzz&nbsp; - {!isStaging && !isLite ? <i>v.{config.VERSION}</i> : isStaging ? <i>staging v{stagingVersion}</i> : isLite ? <i>v{process.env.REACT_APP_LITE_VERSION}-lite</i> : ''}</label>
         </div>
       </div>
     </React.Fragment>

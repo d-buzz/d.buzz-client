@@ -155,7 +155,7 @@ const SplashScreen = () => {
             component="p"
             className={classes.version}
           >
-            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING v{stagingVersion}</b> : isLite ? <b>LITE v2</b> : ''}
+            {!isStaging && !isLite ?  <b>v{VERSION}</b> : isStaging ? <b>STAGING v{stagingVersion}</b> : isLite ? <b>v{process.env.REACT_APP_LITE_VERSION}-lite</b> : ''}
           </Typography>
         </center>
       </div>
@@ -248,20 +248,23 @@ const Init = (props) => {
               })
             })
           } else {
-            setIsLatest(isLatest)
-            getBestRpcNode().then(() => {
-              getWSNodeHAS()
-              initWSHASConnectionRequest()
-              getBestCeramicHost().then((host) => {
-                initCeremicLoginRequest()
-                localStorage.setItem('ceramic', host)
-              })
-              const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-              setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-                getSavedUserRequest().then(() => {
-                  setInit(true)
-                  getCensorTypesRequest()
-                  getTrendingTagsRequest()
+            checkVersionRequest().then(() => {
+              const liteVersion = JSON.parse(localStorage.getItem('version'))?.lite
+              setIsLatest(liteVersion === process.env.REACT_APP_LITE_VERSION)
+              getBestRpcNode().then(() => {
+                getWSNodeHAS()
+                initWSHASConnectionRequest()
+                getBestCeramicHost().then((host) => {
+                  initCeremicLoginRequest()
+                  localStorage.setItem('ceramic', host)
+                })
+                const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+                setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+                  getSavedUserRequest().then(() => {
+                    setInit(true)
+                    getCensorTypesRequest()
+                    getTrendingTagsRequest()
+                  })
                 })
               })
             })
