@@ -104,8 +104,10 @@ const Latest = (props) => {
   }, [last])
 
   useEffect(() => {
-    if (items.length === 0 && !loading && isLatestPostsLoaded) {
+    if (items.length < 3  && !loading && isLatestPostsLoaded) {
       loadMorePosts()
+    } else {
+      setLatestPostsLoaded(true)
     }
   }, [isLatestPostsLoaded, items.length, loadMorePosts, loading])
 
