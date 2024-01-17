@@ -356,7 +356,8 @@ function* getLatestPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const {start_permlink, start_author} = payload
 
-  const params = {sort: 'created', start_permlink, start_author, limit: 50}
+
+  const params = {sort: 'created', start_permlink, start_author, limit: 20}
   const method = 'get_ranked_posts'
 
   try {
