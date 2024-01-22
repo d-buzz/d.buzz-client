@@ -680,6 +680,10 @@ const MobileAppFrame = (props) => {
     title = 'Latest'
   }
 
+  if (pathname.match(/^\/messages/)) {
+    title = 'Messages'
+  }
+
   if (!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
     title = 'Profile'
   }
@@ -739,7 +743,7 @@ const MobileAppFrame = (props) => {
   // }
 
   const redirectToChatPage = () => {
-    window.location.href = "https://chat.d.buzz"
+    window.open("https://chat.d.buzz/")
   }
 
   const floatStyle = {
@@ -787,6 +791,9 @@ const MobileAppFrame = (props) => {
     case 'Trending':
       refreshTrendingRouteData()
       break
+    case 'messages':
+      redirectToChatPage()
+      break
     // case 'Latest':
     //   refreshLatestRouteData()
     //   break
@@ -819,8 +826,8 @@ const MobileAppFrame = (props) => {
     case '/latest':
       setActiveView('latest')
       break
-    case '/message':
-      setActiveView('message')
+    case '/messages':
+      setActiveView('messages')
       break
     case '/notifications':
       setActiveView('notifications')
@@ -888,9 +895,11 @@ const MobileAppFrame = (props) => {
     //   onClick: () => handelClickItem('wallet'),
     // },
     {
-      name: 'Message',
-      icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
-      onClick:() => redirectToChatPage(),
+      name: 'Messages',
+      icon: activeView === 'messages' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
+      path: `#`,
+      preventDefault: false,
+      onClick: () => handelClickItem('messages'),
     },
     // {
     //   name: 'More'  ,
@@ -921,7 +930,7 @@ const MobileAppFrame = (props) => {
       name: 'Message',
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
       path: `/message`,
-      onClick: () => handelClickItem('message'),
+      onClick:() => handelClickItem('messages'),
     },
     // {
     //   name: 'Trending',
@@ -1062,7 +1071,7 @@ const MobileAppFrame = (props) => {
   const NavLinkWrapper = ({ item, active }) => {
     return (
       <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '')+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-        <Link to={item.path || '#'}>
+        <Link onClick={item.onClick} to={item.path || '#'}>
           <IconButton
             size="medium"
             style={{width: 55, height: 55}}
@@ -1531,7 +1540,7 @@ const MobileAppFrame = (props) => {
               )}
               <AvatarMenu />
 
-              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/messages' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>
