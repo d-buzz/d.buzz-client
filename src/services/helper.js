@@ -150,14 +150,31 @@ export const calculatePayout = (data) => {
   return payout
 }
 
-export const calculateRepScore = (_reputation) => {
-  if (_reputation == null) return _reputation
-  var neg = _reputation < 0
-  var rep = String(_reputation)
-  rep = neg ? rep.substring(1) : rep
-  var v = Math.log10((rep > 0 ? rep : -rep) - 10) - 9
-  v = neg ? -v : v
-  return parseInt(v * 9 + 25)
+export const calculateRepScore = (reputation) => {
+  const log10 = (str) => {
+    const leadingDigits = parseInt(str.substring(0, 4))
+    const log = Math.log(leadingDigits) / Math.LN10 + 0.00000001
+    const n = str.length - 1
+    return n + (log - parseInt(log))
+  }
+
+  const repLog10 = rep2 => {
+    if (rep2 == null) return rep2
+    let rep = String(rep2)
+    const neg = rep.charAt(0) === '-'
+    rep = neg ? rep.substring(1) : rep
+
+    let out = log10(rep)
+    if (isNaN(out)) out = 0
+    out = Math.max(out - 9, 0) // @ -9, $0.50 earned is approx magnitude 1
+    out = (neg ? -1 : 1) * out
+    out = out * 9 + 25 // 9 points per magnitude. center at 25
+    // base-line 0 to darken and < 0 to auto hide (grep rephide)
+    out = parseInt(out)
+    return out
+  }
+
+  return repLog10(reputation)
 }
 
 const getWindowDimensions = () => {
@@ -273,7 +290,7 @@ export const sendToBerries = (author, theme) => {
 
 export const calculateOverhead = (content) => {
   let urls = getUrls(content) || []
-  
+
   const markdown = content?.match(/#+\s|[*]|\s+&nbsp;+\s|\s+$/gm) || []
 
   let overhead = 0
@@ -286,11 +303,11 @@ export const calculateOverhead = (content) => {
       overhead += item.length
     })
   }
-  
+
   if((urls.length) > 3) {
     urls = urls.slice(0, 2)
   }
-  
+
   if(urls && urls.length <= 3){
     urls.forEach((item) => {
       // overheadItems.push(item)
@@ -394,14 +411,14 @@ export const errorMessageComposer = (type = null, errorCode = 0, timeLeft= 0) =>
     if (timeLeftMessage) {
       errorMessage = timeLeftMessage
     }
-    
+
   }
 
   return errorMessage
 }
 
 const getTimeLeftErrorMessage = (timeLeft) => {
-  
+
   if (timeLeft < 1) {
     // Wait for 5 minutes before posting again.
     return 'Wait for 5 minutes before posting again.'
@@ -474,7 +491,7 @@ export const redirectOldLinks = () => {
 
   const urlParams = new URL(link)
   const profileRef =  checkUrlHaveProfileRef(urlParams)
-   
+
   if (profileRef) {
     const redirectToProfile = window.location.origin+'/@'+profileRef
     window.location = redirectToProfile
@@ -550,11 +567,11 @@ export const getImageDimensions = (url) => {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = url
-    
+
     img.onload = () => {
       resolve({ width: img.width, height: img.height })
     }
-    
+
     img.onerror = (error) => {
       reject(error)
     }
@@ -595,6 +612,12 @@ export const calculateAverageRanking = (users) => {
     }
   }else top10Users = []
   return top10Users
+}
+
+export const calculateAmount = (rshares, voteRShares, pendingPayout) => {
+  const result = ((rshares / voteRShares) * pendingPayout) ?? 0
+
+  return result.toFixed(3)
 }
 
 export const hiveAPIUrls = [
