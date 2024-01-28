@@ -523,7 +523,7 @@ export const isImageUrl404 = async (url) => {
 }
 
 export const proxyImage = (url) => {
-  const enabled = true
+  const enabled = false
   let imageUrl = url
 
   if(enabled) {
