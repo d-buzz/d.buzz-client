@@ -923,7 +923,7 @@ const SideBarLeft = (props) => {
                 subonClick: showSwitchModal,
               },
               {
-                subtext: 'More Settings',
+                subtext: 'Settings',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
                 subhref: '',
