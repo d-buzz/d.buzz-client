@@ -289,6 +289,7 @@ const Profile = (props) => {
   const [followsYou, setFollowsYou] = useState(false)
 
   useEffect(() => {
+
     if (profile.ceramic) {
       setCeramicProfile(profile.basic_profile)
       setCeramicUser(true)
@@ -399,6 +400,7 @@ const Profile = (props) => {
       getAccountRepliesRequest(username)
       getFollowersRequest(username)
       getFollowingRequest(username)
+      reloadProfile()
     }
 
     setMoreButtonOptions()
