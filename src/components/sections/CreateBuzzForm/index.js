@@ -1537,7 +1537,7 @@ const CreateBuzzForm = (props) => {
   // genarate buzz permlink if video is attached
   useEffect(() => {
     if (videoLimit) {
-      setBuzzPermlink(createPermlink())
+      setBuzzPermlink(createPermlink(buzzContent))
     } else {
       setBuzzPermlink(null)
     }
