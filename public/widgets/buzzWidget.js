@@ -15,7 +15,7 @@
         const resourceBaseUrl = "https://d.buzz";
         const buzzButtonHtmlPath = "/widgets/buzz_button.html";
         const dbuzzShareClass = "dbuzz-share-button";
-        const intentUrlRegex = /d\.buzz\/#\/intent\/buzz/
+        const intentUrlRegex = /d\.buzz\/intent\/buzz/
 
 
         /**
@@ -32,7 +32,7 @@
             const ifrm = createElement("iframe");
             const size = getSize(el);
             const args = getSource(el, i);
-            const source = resourceBaseUrl + buzzButtonHtmlPath + "#" + args;
+            const source = resourceBaseUrl + buzzButtonHtmlPath + '#' + args;
             let style = "position: static; visibility: visible;";
             if (size === 'l') {
                 style = style + 'width: 76px; height: 28px;';
