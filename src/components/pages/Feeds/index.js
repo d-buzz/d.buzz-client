@@ -43,7 +43,10 @@ const useStyles = createUseStyles(theme => ({
 
 const Feeds = React.memo((props) => {
   const {
-    last,
+    last = {
+      permalink: '',
+      author: '',
+    },
     loading,
     items,
     isHomeVisited,

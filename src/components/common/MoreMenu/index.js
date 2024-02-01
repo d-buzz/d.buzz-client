@@ -35,7 +35,7 @@ const MoreMenu = (props) => {
   const handleClickCollapse = (onClick) => () => {
     setcallFunc(onClick)
   }
- 
+
   useEffect(() => {
     // console.log(open, themeModal, switchUserModal)
     setcallFunc(callFunc)
@@ -60,12 +60,16 @@ const MoreMenu = (props) => {
         component="nav"
         aria-labelledby="advanced-subheader"
         subheader={<ListSubheader component="div" id="advanced-subheader" style={{ fontSize: '20px !important', fontWeight: '700 !important' }}>
-          Advanced
+              Advanced
         </ListSubheader>}
+        style={{
+          maxHeight: '400px', // Adjust this value based on your needs
+          overflowY: 'auto', // This makes the list scrollable
+        }}
       >
         <Divider />
         {items.map(({onClick, text, visible, subItems, collapse}) => (
-          visible && 
+          visible &&
             (
               Object.keys(subItems).length > 0 ? (
                 <>
@@ -96,7 +100,7 @@ const MoreMenu = (props) => {
                             <ListItemText primary={subtext} />
                           </ListItem>
                         </List>
-                  
+
                     ))}
                   </Collapse>
                 </>

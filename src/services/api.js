@@ -1333,8 +1333,8 @@ export const generateUpdateOperation = (parent_author, parent_permlink, author, 
 export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
 
   const json_metadata = createMeta()
-  let permlink = createPermlink(body.substring(0, 100))
-  permlink = `re-${permlink}`
+  // let permlink = createPermlink(body.substring(0, 100))
+  const permlink = `re-${parent_permlink}`
   return new Promise((resolve) => {
 
     const op_comment = [[
@@ -1533,6 +1533,8 @@ function generateRandomString(length) {
 export const createPermlink = (title) => {
   const sanitizedTitle = sanitizeTitle(title)
   let seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
+
+  console.log(seoFriendlyPermlink.length)
 
   if (seoFriendlyPermlink.length > MAX_CHARS) {
     seoFriendlyPermlink = truncatePermlink(seoFriendlyPermlink)

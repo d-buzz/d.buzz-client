@@ -399,10 +399,10 @@ const SideBarLeft = (props) => {
     setOpenSwitchModal(true)
   }
 
-  // const showSettingsModal = () => {
-  //   handleClickCloseOpenMoreMenu()
-  //   setOpenSettingsModal(true)
-  // }
+  const showSettingsModal = () => {
+    handleClickCloseOpenMoreMenu()
+    setOpenSettingsModal(true)
+  }
 
   useEffect(() => {
     if (isBuzzIntent || fromIntentBuzz || (intentBuzz && intentBuzz.text)) {
@@ -916,11 +916,18 @@ const SideBarLeft = (props) => {
                 subonClick: showThemeModal,
               },
               {
-                subtext: 'Swith Account',
+                subtext: 'Switch Account',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
                 subhref: '',
                 subonClick: showSwitchModal,
+              },
+              {
+                subtext: 'Settings',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: '',
+                subonClick: showSettingsModal,
               },
               {
                 subtext: 'Messages',
