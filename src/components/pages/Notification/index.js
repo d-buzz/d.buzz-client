@@ -320,7 +320,7 @@ const Notification = (props) => {
         </Menu>
 
       </div>
-      {notifFilter !== 'ALL' && <center><span className={classes.filteredNote}>Showing {notifFilter}S</span></center>}
+      {notifFilter !== 'ALL' && <center><span className={classes.filteredNote}></span></center>}
 
       {notifications.map((item, index) => (
         <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')} key={index}>
