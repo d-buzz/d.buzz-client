@@ -188,7 +188,10 @@ function* getAccountPostRequest(payload, meta) {
         return arr.map(mapObj => mapObj['post_id']).indexOf(obj['post_id']) === pos
       })
 
+
       data = data.filter(item => invokeFilter(item))
+
+      console.log(data)
 
       const censoredList = yield select(state => state.auth.get('censorList'))
       data.map((item) => censorCheck(item, censoredList))
