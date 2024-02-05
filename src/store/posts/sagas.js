@@ -311,7 +311,7 @@ function* getHomePostsRequest(payload, meta) {
   const user = yield select(state => state.auth.get('user'))
   const {username: account} = user
 
-  const params = {sort: 'feed', account, limit: 20, start_permlink, start_author}
+  const params = {sort: 'feed', account, limit: 50, start_permlink, start_author}
   const method = 'get_account_posts'
 
   try {

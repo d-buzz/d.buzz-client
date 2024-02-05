@@ -1640,8 +1640,9 @@ export const checkIfImage = (links) => {
 
 export const uploadImage = async (data, progress) => {
   const formData = new FormData()
+  const customImageName = data.name.replace(/ /g, "-")
   formData.append('file', data, data.name)
-  formData.append('customFileName', data.name)
+  formData.append('customFileName', customImageName)
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
