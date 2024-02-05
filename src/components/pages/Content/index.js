@@ -260,6 +260,7 @@ const Content = (props) => {
     parent_author = null,
     parent_permlink,
     ceramicProfile,
+    vote_rshares,
   } = content || ''
 
 
@@ -267,9 +268,11 @@ const Content = (props) => {
   const { title } = content || ''
   body = truncateBody(body || '')
 
-  let {  max_accepted_payout } = content || '0.00'
-
+  let { max_accepted_payout } = content || '0.00'
   max_accepted_payout = `${max_accepted_payout}`.replace('HBD', '')
+
+  let { pending_payout_value } = content || '0.00'
+  pending_payout_value = `${pending_payout_value}`.replace('HBD', '')
 
   let meta = {}
   let app = null
@@ -424,7 +427,7 @@ const Content = (props) => {
           getRepliesRequest(username, permlink)
         }
       })
-      
+
   // eslint-disable-next-line
   }, [permlink])
 
@@ -464,7 +467,7 @@ const Content = (props) => {
       if(href && !href.includes(hostname)) {
         window.open(href, '_blank')
       } else if( href !== undefined) {
-        
+
         const split = `${href}`.split('#')
         if(split.length === 2) {
           href = `${split[1]}`
@@ -531,7 +534,7 @@ const Content = (props) => {
     setAnchorEl(null)
     setSelectedAddToPocketBuzz(content)
   }
-  
+
   const onHideAddToPocketModal = () => {
     setAddToPocketModal(false)
     setSelectedAddToPocketBuzz(null)
@@ -639,7 +642,7 @@ const Content = (props) => {
             <Row>
               <Col>
                 {!ceramicUser && <Tooltip arrow title={<RenderUpvoteList />} placement='top'>
-                  <label 
+                  <label
                     className={classes.meta}
                     onClick={handleClickOpenVoteList}
                   >
@@ -725,13 +728,15 @@ const Content = (props) => {
         onMouseLeave={closePopOver}
         profile={profile}
       />
-      <VoteListDialog 
+      <VoteListDialog
         open={openVoteList}
         onClose={handleClickOnCloseVoteList}
         upvoteList={active_votes || []}
+        pendingPayout={pending_payout_value}
+        voteRShares={vote_rshares}
       />
 
-      {invalidBuzz && !loadingContent && !loadingReplies && 
+      {invalidBuzz && !loadingContent && !loadingReplies &&
         <div className={classes.invalidBuzz}>
           <ReportProblemRoundedIcon className='errorIcon' />
           <span className='errorTitle'>Hmm...this page doesn’t exist.</span>
