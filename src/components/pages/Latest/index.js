@@ -31,6 +31,7 @@ import { isUserAlreadyVotedForProposal } from 'services/api'
 import IconButton from '@material-ui/core/IconButton'
 import { CloseIcon } from 'components/elements'
 import Cookies from 'js-cookie'
+import {Spinner} from "../../elements"
 
 const useStyles = createUseStyles(theme => ({
   opensourceWrapper: {
@@ -142,11 +143,21 @@ const Latest = (props) => {
     // eslint-disable-next-line
   }, [refreshRouteStatus])
 
+  const [loadingMore, setLoadingMore] = useState(false) // Add this state to manage loading more items
+
   const loadMorePosts = useCallback(() => {
-    const { permlink, author } = last
-    getLatestPostsRequest(permlink, author)
-    // eslint-disable-next-line
-  }, [last])
+    // Check if already loading more posts to avoid multiple calls
+    if (!loadingMore && !loading && items.length > 0) {
+      setLoadingMore(true) // Set loading more to true
+
+      // Add a delay before fetching more posts
+      setTimeout(() => {
+        const { permlink, author } = last
+        getLatestPostsRequest(permlink, author)
+        setLoadingMore(false) // Reset loading more state after fetching
+      }, 2000) // Delay in milliseconds, adjust as needed
+    }
+  }, [last, loading, loadingMore, items.length, getLatestPostsRequest])
 
   useEffect(() => {
     if (items.length < 3  && !loading && isLatestPostsLoaded) {
@@ -211,6 +222,7 @@ const Latest = (props) => {
         </div>}
       <HelmetGenerator page='Latest' />
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
+      <Spinner size={30} loading={loadingMore} />
     </React.Fragment>
   )
 }
