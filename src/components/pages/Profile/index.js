@@ -140,12 +140,14 @@ const useStyles = createUseStyles(theme => ({
       width: 'inherit',
       ...theme.font,
       // fontWeight: 'bold',
-      fontFamily: 'Segoe',
+      fontFamily: 'Segoe-Bold',
+      fontSize: '14px',
     },
     '&.Mui-selected': {
       '& span': {
         color: '#e53935',
         fontFamily: 'Segoe-Bold',
+        fontSize: '16px',
       },
     },
   },
@@ -287,6 +289,7 @@ const Profile = (props) => {
   const [followsYou, setFollowsYou] = useState(false)
 
   useEffect(() => {
+
     if (profile.ceramic) {
       setCeramicProfile(profile.basic_profile)
       setCeramicUser(true)
@@ -397,6 +400,7 @@ const Profile = (props) => {
       getAccountRepliesRequest(username)
       getFollowersRequest(username)
       getFollowingRequest(username)
+      reloadProfile()
     }
 
     setMoreButtonOptions()
@@ -935,7 +939,7 @@ const Profile = (props) => {
               {!loading && !ceramic &&
                 <Tab disableTouchRipple onClick={handleTabs(2)} className={classes.tabs} label="Media"/>}
               {!loading && !ceramic &&
-                <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Pockets"/>}
+                <Tab disableTouchRipple onClick={handleTabs(3)} className={classes.tabs} label="Bookmarks"/>}
               {!loading && !ceramic &&
                 <Tab disableTouchRipple onClick={handleTabs(4)} className={classes.tabs} label="Likes"/>}
             </Tabs>
