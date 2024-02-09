@@ -311,7 +311,7 @@ function* getHomePostsRequest(payload, meta) {
   const user = yield select(state => state.auth.get('user'))
   const {username: account} = user
 
-  const params = {sort: 'feed', account, limit: 20, start_permlink, start_author}
+  const params = {sort: 'feed', account, limit: 50, start_permlink, start_author}
   const method = 'get_account_posts'
 
   try {
@@ -356,7 +356,8 @@ function* getLatestPostsRequest(payload, meta) {
   const censoredList = yield select(state => state.auth.get('censorList'))
   const {start_permlink, start_author} = payload
 
-  const params = {sort: 'created', start_permlink, start_author, limit: 50}
+
+  const params = {sort: 'created', start_permlink, start_author, limit: 20}
   const method = 'get_ranked_posts'
 
   try {

@@ -61,14 +61,14 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 14,
   },
   value : {
-    fontWeight: 'bold',
+    fontWeight: 'medium',
     paddingRight: 5,
     marginTop: 0,
     marginBottom: 0,
     paddingTop: 0,
     paddingBottom: 0,
-    color: '#e61c34',
     textAlign: 'end',
+    ...theme.hiveValuesFont,
   },
   circle: {
     strokeLinecap: 'round',
