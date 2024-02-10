@@ -1496,8 +1496,12 @@ function sanitizeTitle(title) {
   return title.replace(/[^a-zA-Z0-9\s]/g, '')
 }
 
+function removeNewLines(text) {
+  return text.replace(/[\r\n]+/g, '')
+}
+
 function generateSeoFriendlyPermalink(title) {
-  const words = title.split(' ').filter(word => {
+  const words = removeNewLines(title).split(' ').filter(word => {
     const lowercased = word.toLowerCase()
     return !STOP_WORDS.has(lowercased) && lowercased.length > 1
   })
@@ -1522,7 +1526,7 @@ export const createPermlink = (title) => {
   const sanitizedTitle = sanitizeTitle(title)
   let seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
 
-  console.log(seoFriendlyPermlink.length)
+  console.log(seoFriendlyPermlink)
 
   if (seoFriendlyPermlink.length > MAX_CHARS) {
     seoFriendlyPermlink = truncatePermlink(seoFriendlyPermlink)
