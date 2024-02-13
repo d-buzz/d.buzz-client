@@ -108,8 +108,6 @@ import {
   invokeMuteFilter,
   getMutePattern,
   uploadVideo,
-  hasFollowService,
-  hasUnFollowService,
   fetchSingleProfile,
   searchHiveTags,
   searchPostGeneral,
@@ -124,7 +122,6 @@ import {
   getFollowingFeed,
   getSinglePost,
 } from "services/ceramic"
-import {broadcastNotification} from "store/interface/actions"
 
 const footnote = (body) => {
   const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
@@ -708,206 +705,98 @@ function* getSearchTags(payload, meta) {
 function* followRequest(payload, meta) {
   const {following} = payload
   const user = yield select(state => state.auth.get('user'))
-  const {username, useKeychain, is_authenticated, useHAS} = user
+  const {username, useKeychain, is_authenticated} = user
 
   const operation = yield call(generateFollowOperation, username, following)
   let success = false
 
+  try {
 
-  if (useHAS && is_authenticated) {
-    let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
-    let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
+    if (useKeychain && is_authenticated) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let {login_data} = user
+      login_data = extractLoginData(login_data)
 
-    yield call(hasFollowService, username, following)
-
-    import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-      HiveAuth.hacMsg.subscribe(m => {
-        broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
-        if (m.type === 'sign_wait') {
-          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg ? m.msg.uuid : null)
-        }
-
-        if (m.type === 'tx_result') {
-          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg ? m.msg : null)
-          if (m.msg?.status === 'accepted') {
-            if (!Array.isArray(recentUnfollows)) {
-              recentUnfollows = []
-            } else {
-              const index = recentUnfollows.findIndex((item) => item === following)
-              if (index) {
-                recentUnfollows.splice(index, 1)
-              }
-            }
-
-            if (!Array.isArray(recentFollows)) {
-              recentFollows = []
-            }
-            recentFollows.push(following)
-            setHasBeenFollowedRecently(recentFollows)
-            setHasBeenUnfollowedRecently(recentUnfollows)
-
-          } else if (m.msg?.status === 'error') {
-            const error = m.msg?.status.error
-
-            followFailure(error, meta)
-          }
-
-        }
-
-      })
-    })
-
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
 
     if (success) {
-      console.log('succe', success)
-      yield put(followSuccess(success, meta))
-    } else {
-      const error = 'transaction error'
-      yield put(followFailure(error, meta))
-    }
+      let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+      let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
 
-  } else {
-    try {
-
-      if (useKeychain) {
-        const result = yield call(broadcastKeychainOperation, username, operation)
-        success = result.success
+      if (!Array.isArray(recentUnfollows)) {
+        recentUnfollows = []
       } else {
-        let {login_data} = user
-        login_data = extractLoginData(login_data)
-
-        const wif = login_data[1]
-        const result = yield call(broadcastOperation, operation, [wif])
-        success = result.success
+        const index = recentUnfollows.findIndex((item) => item === following)
+        if (index) {
+          recentUnfollows.splice(index, 1)
+        }
       }
 
-      if (success) {
-        let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
-        let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
-
-        if (!Array.isArray(recentUnfollows)) {
-          recentUnfollows = []
-        } else {
-          const index = recentUnfollows.findIndex((item) => item === following)
-          if (index) {
-            recentUnfollows.splice(index, 1)
-          }
-        }
-
-        if (!Array.isArray(recentFollows)) {
-          recentFollows = []
-        }
-        recentFollows.push(following)
-        yield put(setHasBeenFollowedRecently(recentFollows))
-        yield put(setHasBeenUnfollowedRecently(recentUnfollows))
+      if (!Array.isArray(recentFollows)) {
+        recentFollows = []
       }
-
-      yield put(followSuccess(success, meta))
-    } catch (error) {
-      yield put(followFailure(error, meta))
+      recentFollows.push(following)
+      yield put(setHasBeenFollowedRecently(recentFollows))
+      yield put(setHasBeenUnfollowedRecently(recentUnfollows))
     }
+
+    yield put(followSuccess(success, meta))
+  } catch (error) {
+    yield put(followFailure(error, meta))
   }
 }
 
 function* unfollowRequest(payload, meta) {
   const {following} = payload
   const user = yield select(state => state.auth.get('user'))
-  const {username, useKeychain, useHAS, is_authenticated} = user
+  const {username, useKeychain, is_authenticated} = user
 
   const operation = yield call(generateUnfollowOperation, username, following)
   let success = false
 
-  if (useHAS && is_authenticated) {
-    let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
-    let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
-    yield call(hasUnFollowService, username, following)
+  try {
+    if (useKeychain && is_authenticated) {
+      const result = yield call(broadcastKeychainOperation, username, operation)
+      success = result.success
+    } else {
+      let {login_data} = user
+      login_data = extractLoginData(login_data)
 
-    import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-      HiveAuth.hacMsg.subscribe(m => {
-        broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
-        if (m.type === 'sign_wait') {
-          console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg ? m.msg.uuid : null)
-        }
-
-        if (m.type === 'tx_result') {
-          console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg ? m.msg : null)
-          if (m.msg?.status === 'accepted') {
-            if (!Array.isArray(recentFollows)) {
-              recentFollows = []
-            } else {
-              const index = recentFollows.findIndex((item) => item === following)
-              if (index) {
-                recentFollows.splice(index, 1)
-              }
-            }
-
-            if (!Array.isArray(recentUnfollows)) {
-              recentUnfollows = []
-            }
-            recentUnfollows.push(following)
-
-            setHasBeenFollowedRecently(recentFollows)
-            setHasBeenUnfollowedRecently(recentUnfollows)
-
-          } else if (m.msg?.status === 'error') {
-            const error = m.msg?.status.error
-
-            followFailure(error, meta)
-          }
-
-        }
-
-      })
-    })
+      const wif = login_data[1]
+      const result = yield call(broadcastOperation, operation, [wif])
+      success = result.success
+    }
 
     if (success) {
-      console.log('success', success)
-      yield put(unfollowSuccess(success, meta))
-    } else {
-      const error = 'transaction error'
-      yield put(unfollowFailure(error, meta))
-    }
+      let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
+      let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
 
-  } else {
-    try {
-      if (useKeychain) {
-        const result = yield call(broadcastKeychainOperation, username, operation)
-        success = result.success
+      if (!Array.isArray(recentFollows)) {
+        recentFollows = []
       } else {
-        let {login_data} = user
-        login_data = extractLoginData(login_data)
-
-        const wif = login_data[1]
-        const result = yield call(broadcastOperation, operation, [wif])
-        success = result.success
+        const index = recentFollows.findIndex((item) => item === following)
+        if (index) {
+          recentFollows.splice(index, 1)
+        }
       }
 
-      if (success) {
-        let recentFollows = yield select(state => state.posts.get('hasBeenRecentlyFollowed'))
-        let recentUnfollows = yield select(state => state.posts.get('hasBeenRecentlyUnfollowed'))
-
-        if (!Array.isArray(recentFollows)) {
-          recentFollows = []
-        } else {
-          const index = recentFollows.findIndex((item) => item === following)
-          if (index) {
-            recentFollows.splice(index, 1)
-          }
-        }
-
-        if (!Array.isArray(recentUnfollows)) {
-          recentUnfollows = []
-        }
-        recentUnfollows.push(following)
-
-        yield put(setHasBeenFollowedRecently(recentFollows))
-        yield put(setHasBeenUnfollowedRecently(recentUnfollows))
+      if (!Array.isArray(recentUnfollows)) {
+        recentUnfollows = []
       }
+      recentUnfollows.push(following)
 
-      yield put(unfollowSuccess(success, meta))
-    } catch (error) {
-      yield put(unfollowFailure(error, meta))
+      yield put(setHasBeenFollowedRecently(recentFollows))
+      yield put(setHasBeenUnfollowedRecently(recentUnfollows))
     }
+
+    yield put(unfollowSuccess(success, meta))
+  } catch (error) {
+    yield put(unfollowFailure(error, meta))
   }
 }
 

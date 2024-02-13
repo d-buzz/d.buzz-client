@@ -68,9 +68,6 @@ import {
   unfollowBlacklistsSuccess,
   unfollowBlacklistsFailure,
 
-  INIT_WS_HAS_CONNECTION_REQUEST,
-  initWSHASConnectionSuccess,
-  initWSHASConnectionFailure,
   INIT_CERAMIC_LOGIN_REQUEST,
   initCeremicLoginFailure,
   initCeremicLoginSuccess,
@@ -95,22 +92,19 @@ import {
   generateUnblacklistOperation,
   generateFollowBlacklistsOperation,
   generateUnfollowBlacklistsOperation,
-  hiveAuthenticationService,
 } from 'services/api'
 
 import { generateSession, readSession, errorMessageComposer} from 'services/helper'
 import { checkCeramicLogin, getBasicProfile, loginWithMetaMask, reauthenticateWithCeramic } from 'services/ceramic'
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
-
 
 function* authenticateUserRequest(payload, meta) {
-  const { password, useKeychain, useHAS, useCeramic } = payload
+  const { password, useKeychain, useCeramic } = payload
   let { username } = payload
   username = `${username}`.toLowerCase()
 
   // console.log('AUTHENTICATING')
 
-  const user = { username, useKeychain, useHAS, useCeramic, is_authenticated: false, is_subscribe: false }
+  const user = { username, useKeychain, useCeramic, is_authenticated: false, is_subscribe: false }
 
   let users = yield call([localStorage, localStorage.getItem], 'user')
   let accounts = yield call([localStorage, localStorage.getItem], 'accounts')
@@ -136,69 +130,6 @@ function* authenticateUserRequest(payload, meta) {
       if(data.success) {
         user.is_authenticated = true
       }
-    } else if(useHAS) {
-      yield call(hiveAuthenticationService, username)
-      import('@mintrawa/hive-auth-client').then(({hacMsg}) => {
-        hacMsg.subscribe((m) => {
-          /** generate QR Code */
-          if (m.type === 'qr_code') {
-            const hasQRCode = "has://auth_req/" + (m).msg
-            localStorage.setItem('hasQRcode', hasQRCode)
-          }
-  
-          /** recieved authentication msg */
-          if (m.type === 'authentication')  {
-            
-            console.log('%c[HAC authentication msg]', 'color: goldenrod', m)
-            
-            /** Authentication approved */
-            if (m.msg?.status === "authentified") {
-              user.is_authenticated = true
-  
-              const is_subscribe = getCommunityRole(username)
-              user.is_subscribe = is_subscribe
-              user.active = true
-  
-              // let mutelist = fetchMuteList(username)
-  
-              // mutelist = [...new Set(mutelist.map(item => item.following))]
-  
-              // setMuteList(mutelist)
-  
-              const session = generateSession(user)
-  
-              const accountIndex = accounts.findIndex(item => item.username === username)
-  
-              if(accountIndex === -1) {
-                accounts.push({ username, keychain: useKeychain, has: useHAS, cermic: useCeramic })
-              } else {
-                accounts[accountIndex].keychain = useKeychain
-              }
-  
-              users.push(session)
-              localStorage.removeItem('hasQRcode')
-              localStorage.setItem('current', username)
-              localStorage.setItem('user', JSON.stringify(users))
-              localStorage.setItem('active', username)
-              localStorage.setItem('accounts', JSON.stringify(accounts))
-              localStorage.setItem('drafts', JSON.stringify(JSON.parse(drafts)))
-              setAccountList(accounts)
-       
-              authenticateUserSuccess(user, meta)
-              const origin = window.location.origin
-              window.location.href = origin + '#/trending'
-      
-            /** Authentication rejected */
-            } else if (m.msg?.status === "rejected") {
-              window.location.reload()
-      
-            /** Authentication error */
-            } else {
-              window.location.reload()
-            }
-          }
-        })
-      })
     } else if(useCeramic) {
       // sign in with meta mask
       console.log('logging in with ceramic + meta mask!')
@@ -229,7 +160,7 @@ function* authenticateUserRequest(payload, meta) {
         const accountIndex = accounts.findIndex(item => item.username === username)
 
         if(accountIndex === -1) {
-          accounts.push({ username: did.id, keychain: useKeychain, has: useHAS, cermic: useCeramic })
+          accounts.push({ username: did.id, keychain: useKeychain, cermic: useCeramic })
         } else {
           accounts[accountIndex].keychain = useKeychain
         }
@@ -282,7 +213,7 @@ function* authenticateUserRequest(payload, meta) {
       const accountIndex = accounts.findIndex(item => item.username === username)
 
       if(accountIndex === -1) {
-        accounts.push({ username, keychain: useKeychain, has: useHAS, ceramic: useCeramic })
+        accounts.push({ username, keychain: useKeychain, ceramic: useCeramic })
       } else {
         accounts[accountIndex].keychain = useKeychain
       }
@@ -312,7 +243,7 @@ function* authenticateUserRequest(payload, meta) {
       const accountIndex = accounts.findIndex(item => item.username === username)
 
       if(accountIndex === -1) {
-        accounts.push({ username, keychain: useKeychain, has: useHAS, ceramic: useCeramic })
+        accounts.push({ username, keychain: useKeychain, ceramic: useCeramic })
       } else {
         accounts[accountIndex].keychain = useKeychain
       }
@@ -340,7 +271,7 @@ function* authenticateUserRequest(payload, meta) {
 }
 
 function* getSavedUserRequest (meta) {
-  let user = { username: '', useKeychain: false, useHAS: false, is_authenticated: false, useCeramic: false }
+  let user = { username: '', useKeychain: false, is_authenticated: false, useCeramic: false }
   try {
     let saved = yield call([localStorage, localStorage.getItem], 'user')
     let active = yield call([localStorage, localStorage.getItem], 'active')
@@ -383,16 +314,6 @@ function* getSavedUserRequest (meta) {
         reauthenticateWithCeramic()
       }
     }
-
-    if(user.useHAS) {
-      import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-        if(HiveAuth.hacGetAccounts().length === 0) {
-          alert('Your HiveAuth session has been expired. Please login again.')
-          signoutUserRequest()
-          localStorage.clear()
-        }
-      })
-    }
     
     if(user.useCeramic) {
       const auth = JSON.parse(localStorage.getItem('ceramic.auth'))
@@ -425,67 +346,6 @@ function* getSavedUserRequest (meta) {
   }
 }
 
-function* initWSHASConnectionRequest(meta) {
-  const ceramicAuth = checkCeramicLogin()
-  const active = localStorage.getItem('active')
-  const accounts = JSON.parse(localStorage.getItem('accounts'))
-
-  if(!ceramicAuth) {
-    try {
-      const fingerPrintRequest = FingerprintJS.load({ monitoring: false })
-  
-      fingerPrintRequest.then(fingerPrint => fingerPrint.get())
-        .then(async(result) => {
-          sessionStorage.setItem('hacPwd', result.visitorId)
-          const current = localStorage.getItem('active')
-          let HiveAuthClient
-          let hacGetAccounts
-          let hacGetConnectionStatus
-          await import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-            HiveAuthClient = HiveAuth.HiveAuthClient
-            hacGetAccounts = HiveAuth.hacGetAccounts
-            hacGetConnectionStatus = HiveAuth.hacGetConnectionStatus
-          })
-  
-          if (current && accounts[0].has) {
-            const hacAccount = hacGetAccounts(current, result.visitorId)
-  
-            if (hacAccount[0]) {
-              const has_expire = hacAccount[0].has?.has_expire
-              const expire = has_expire ? new Date(has_expire) : 1
-  
-              console.log('expire', expire)
-  
-              hacGetConnectionStatus()
-              const result = HiveAuthClient(hacAccount[0].has ? [hacAccount[0].has.has_server] : undefined, { debug: true, delay: 3000 })
-              initWSHASConnectionSuccess(result, meta)
-            // window.location.href('')
-            } else {
-              hacGetConnectionStatus()
-              /** clear hac value and localstorage */
-              if(active === 'null') {
-                localStorage.clear()
-              }
-              const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
-              initWSHASConnectionSuccess(result, meta)
-            }
-          } else {
-            hacGetConnectionStatus()
-            if(active === 'null') {
-              localStorage.clear()
-            }
-            const result = HiveAuthClient(undefined, { debug: true, delay: 3000 })
-            initWSHASConnectionSuccess(result, meta)
-          }
-          
-        }).catch( error => console.log(error))
-        
-    } catch(error) {
-      yield put(initWSHASConnectionFailure(error, meta))
-    }
-  }
-}
-
 function* initCeramicLoginRequest() {
   const current = localStorage.getItem('active')
   const ceramicAuth = checkCeramicLogin()
@@ -510,7 +370,7 @@ function* initCeramicLoginRequest() {
 
 function* signoutUserRequest(meta) {
   try {
-    const user = { username: '', useKeychain: false, useHAS: false, is_authenticated: false, useCeramic: false }
+    const user = { username: '', useKeychain: false, is_authenticated: false, useCeramic: false }
     const lastUser = yield call([localStorage, localStorage.getItem], 'current')
     const voteWeight = yield call([localStorage, localStorage.getItem], 'voteWeight')
 
@@ -886,10 +746,6 @@ function* watchGetSavedUserRequest({ meta }) {
   yield call(getSavedUserRequest, meta)
 }
 
-function* watchInitWSHASConnectionRequest({ meta }) {
-  yield call(initWSHASConnectionRequest, meta)
-}
-
 function* watchInitCeramicLoginRequest() {
   yield call(initCeramicLoginRequest)
 }
@@ -946,7 +802,6 @@ export default function* sagas() {
   yield takeEvery(AUTHENTICATE_USER_REQUEST, watchAuthenticateUserRequest)
   yield takeEvery(SIGNOUT_USER_REQUEST, watchSignoutUserRequest)
   yield takeEvery(GET_SAVED_USER_REQUEST, watchGetSavedUserRequest)
-  yield takeEvery(INIT_WS_HAS_CONNECTION_REQUEST, watchInitWSHASConnectionRequest)
   yield takeEvery(INIT_CERAMIC_LOGIN_REQUEST, watchInitCeramicLoginRequest)
   yield takeEvery(SUBSCRIBE_REQUEST, watchSubscribeRequest)
   yield takeEvery(CHECK_HAS_UPDATE_AUTHORITY_REQUEST, watchCheckHasUpdateAuthorityRequest)

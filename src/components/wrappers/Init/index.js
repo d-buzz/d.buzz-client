@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
-import { getSavedUserRequest, initWSHASConnectionRequest, initCeremicLoginRequest } from 'store/auth/actions'
-import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest, getWSNodeHAS } from 'store/settings/actions'
+import { getSavedUserRequest, initCeremicLoginRequest } from 'store/auth/actions'
+import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -157,9 +157,6 @@ const Init = (props) => {
     getSavedUserRequest,
     getTrendingTagsRequest,
     getBestRpcNode,
-    getWSNodeHAS,
-    initWSHASConnectionRequest,
-    // initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -208,12 +205,6 @@ const Init = (props) => {
         checkVersionRequest().then((isLatest) => {
           setIsLatest(isLatest)
           getBestRpcNode().then(() => {
-            getWSNodeHAS()
-            initWSHASConnectionRequest()
-            // getBestCeramicHost().then((host) => {
-            //   initCeremicLoginRequest()
-            //   localStorage.setItem('ceramic', host)
-            // })
             const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
             setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
               getSavedUserRequest().then(() => {
@@ -227,12 +218,6 @@ const Init = (props) => {
       } else {
         setIsLatest(isLatest)
         getBestRpcNode().then(() => {
-          getWSNodeHAS()
-          initWSHASConnectionRequest()
-          // getBestCeramicHost().then((host) => {
-          //   initCeremicLoginRequest()
-          //   localStorage.setItem('ceramic', host)
-          // })
           const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getSavedUserRequest().then(() => {
@@ -276,8 +261,6 @@ const mapDispatchToProps = (dispatch) => ({
     getTrendingTagsRequest,
     getSavedUserRequest,
     getBestRpcNode,
-    getWSNodeHAS,
-    initWSHASConnectionRequest,
     initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,

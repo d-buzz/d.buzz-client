@@ -49,7 +49,7 @@ import SaveDraftModal from 'components/modals/SaveDraftModal'
 import {LinearProgress} from '@material-ui/core'
 import {styled} from '@material-ui/styles'
 import {checkForCeramicAccount, createPostRequest, getBasicProfile, getIpfsLink} from 'services/ceramic'
-import {createPermlink, publishPostWithHAS} from 'services/api'
+import {createPermlink} from 'services/api'
 import heic2any from 'heic2any'
 import IconButton from '@material-ui/core/IconButton'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -747,7 +747,6 @@ const CreateBuzzForm = (props) => {
     buzzThreads = {1: {id: 1, content: '', images: []}},
     updateBuzzThreads,
     publishReplyRequest,
-    setContentRedirect,
     viewImageModal,
     setViewImageModal,
   } = props
@@ -1247,87 +1246,35 @@ const CreateBuzzForm = (props) => {
       broadcastNotification('error', `${origin_app_name} requires to buzz a minimum of ${parseInt(min_chars)} characters.`)
     } else {
       if (!ceramicUser) {
-        setBuzzLoading(true)
-        setBuzzing(true)
+        publishPostRequest(buzzContent, tags, payout, buzzPermlink)
+          .then((data) => {
+            if (data.success) {
+              setPageFrom(null)
+              const {author, permlink} = data
+              // hideModalCallback()
+              clearIntentBuzz()
+              removeAutoSavedDraft()
+              broadcastNotification('success', 'You successfully published a post')
+              setPublishedBuzzes(1)
+              setNextBuzz(2)
+              setBuzzData({author: author, permlink: permlink})
+              setBuzzing(false)
 
-        if (user.useHAS) {
-          publishPostWithHAS(user, buzzContent, tags, payout, buzzPermlink)
-            .then((data) => {
-              setContentRedirect(data.content)
-
-              import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-                HiveAuth.hacMsg.subscribe(m => {
-                  if (isMobile) {
-                    broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
-                  } else {
-                    broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
-                  }
-                  if (m.type === 'sign_wait') {
-                    console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg ? m.msg.uuid : null)
-                  }
-                  if (m.type === 'tx_result') {
-                    console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg ? m.msg : null)
-                    if (m.msg?.status === 'accepted') {
-                      const status = m.msg?.status
-                      console.log(status)
-                      // success
-                      const {author, permlink} = data
-                      removeAutoSavedDraft()
-                      broadcastNotification('success', 'You successfully published a post')
-                      setBuzzLoading(false)
-                      setBuzzing(false)
-                      clearIntentBuzz()
-                      resetBuzzForm()
-                      hideModalCallback()
-                      history.push(`/@${author}/${permlink}`)
-                    } else if (m.msg?.status === 'rejected') {
-                      const status = m.msg?.status
-                      console.log(status)
-                      // error
-                      broadcastNotification('error', 'Your HiveAuth post transaction is rejected.')
-                      setBuzzLoading(false)
-                    } else if (m.msg?.status === 'error') {
-                      const error = m.msg?.status.error
-                      console.log(error)
-                      broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-                    }
-                  }
-                })
-              })
-            })
-        } else {
-          publishPostRequest(buzzContent, tags, payout, buzzPermlink)
-            .then((data) => {
-              if (data.success) {
-                setPageFrom(null)
-                const {author, permlink} = data
-                // hideModalCallback()
-                clearIntentBuzz()
-                removeAutoSavedDraft()
-                broadcastNotification('success', 'You successfully published a post')
-                setPublishedBuzzes(1)
-                setNextBuzz(2)
-                setBuzzData({author: author, permlink: permlink})
-                setBuzzing(false)
-
-                if (!isThread) {
-                  hideModalCallback()
-                  resetBuzzForm()
-                  history.push(`/@${author}/${permlink}`)
-                }
-              } else {
-                broadcastNotification('error', data.errorMessage)
-                setBuzzLoading(false)
+              if (!isThread) {
+                hideModalCallback()
+                resetBuzzForm()
+                history.push(`/@${author}/${permlink}`)
               }
-            })
-        }
+            } else {
+              broadcastNotification('error', data.errorMessage)
+              setBuzzLoading(false)
+            }
+          })
       } else {
-        // alert('ceramic!!!')
         setBuzzLoading(true)
         setBuzzing(true)
         createPostRequest(user.username, '', buzzContent)
           .then((data) => {
-            // console.log(data)
             if (data) {
               setPageFrom(null)
               const {creatorId, streamId} = data
@@ -1541,6 +1488,7 @@ const CreateBuzzForm = (props) => {
     } else {
       setBuzzPermlink(null)
     }
+    // eslint-disable-next-line
   }, [videoLimit])
 
   // update content based on the buzz's content

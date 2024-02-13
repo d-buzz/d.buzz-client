@@ -2,9 +2,9 @@ export const AUTHENTICATE_USER_REQUEST = 'AUTHENTICATE_USER_REQUEST'
 export const AUTHENTICATE_USER_SUCCESS = 'AUTHENTICATE_USER_SUCCESS'
 export const AUTHENTICATE_USER_FAILURE = 'AUTHENTICATE_USER_FAILURE'
 
-export const authenticateUserRequest = (username, password, useKeychain, useHAS, useCeramic) => ({
+export const authenticateUserRequest = (username, password, useKeychain, useCeramic) => ({
   type: AUTHENTICATE_USER_REQUEST,
-  payload: { username, password, useKeychain, useHAS, useCeramic },
+  payload: { username, password, useKeychain, useCeramic },
   meta: {
     thunk: true,
   },
@@ -45,29 +45,6 @@ export const signoutUserFailure = (error, meta) => ({
   meta,
 })
 
-export const INIT_WS_HAS_CONNECTION_REQUEST = 'INIT_WS_HAS_CONNECTION_REQUEST'
-export const INIT_WS_HAS_CONNECTION_SUCCESS = 'INIT_WS_HAS_CONNECTION_SUCCESS'
-export const INIT_WS_HAS_CONNECTION_FAILURE = 'INIT_WS_HAS_CONNECTION_FAILURE'
-
-export const initWSHASConnectionRequest = () => ({
-  type: INIT_WS_HAS_CONNECTION_REQUEST,
-  meta: {
-    thunk: true,
-  },
-})
-
-export const initWSHASConnectionSuccess = (response, meta) => ({
-  type: INIT_WS_HAS_CONNECTION_SUCCESS,
-  payload: response,
-  meta,
-})
-
-export const initWSHASConnectionFailure = (error, meta) => ({
-  type: INIT_WS_HAS_CONNECTION_FAILURE,
-  payload: error,
-  meta,
-})
-
 export const INIT_CERAMIC_LOGIN_REQUEST = 'INIT_CERAMIC_LOGIN_REQUEST'
 export const INIT_CERAMIC_LOGIN_SUCCESS = 'INIT_CERAMIC_LOGIN_SUCCESS'
 export const INIT_CERAMIC_LOGIN_FAILURE = 'INIT_CERAMIC_LOGIN_FAILURE'
@@ -87,13 +64,6 @@ export const initCeremicLoginSuccess = (response) => ({
 export const initCeremicLoginFailure = (error) => ({
   type: INIT_CERAMIC_LOGIN_FAILURE,
   payload: error,
-})
-
-export const SET_HAS_QR_CODE = 'SET_HAS_QR_CODE'
-
-export const setHASQRCode = (qrCode) => ({
-  type: SET_HAS_QR_CODE,
-  payload: qrCode,
 })
 
 

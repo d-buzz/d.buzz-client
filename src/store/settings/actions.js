@@ -52,22 +52,6 @@ export const generateStyles = (theme) => ({
   payload: theme,
 })
 
-export const GET_WS_NODE_HAS = 'GET_WS_NODE_HAS'
-export const SET_WS_NODE_HAS = 'SET_WS_NODE_HAS'
-
-export const getWSNodeHAS = () => ({
-  type: GET_WS_NODE_HAS,
-  meta: {
-    thunk: true,
-  },
-})
-
-export const setWSNodeHAS = (response, meta) => ({
-  type: SET_WS_NODE_HAS,
-  payload: response,
-  meta,
-})
-
 export const GET_BEST_RPC_NODE = 'GET_BEST_RPC_NODE'
 
 export const SET_RPC_NODE = 'SET_RPC_NODE'
