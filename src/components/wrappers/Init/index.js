@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
 import { getSavedUserRequest, initCeremicLoginRequest } from 'store/auth/actions'
-import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest } from 'store/settings/actions'
+import { getRpcNode, checkVersionRequest, setDefaultVotingWeightRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -10,7 +10,6 @@ import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { getTheme } from 'services/helper'
 import BrandIconDark from 'components/elements/Icons/BrandIconDark'
-// import { getBestCeramicHost } from 'services/ceramic'
 import Paper from '@material-ui/core/Paper'
 import classNames from 'classnames'
 
@@ -156,7 +155,7 @@ const Init = (props) => {
   const {
     getSavedUserRequest,
     getTrendingTagsRequest,
-    getBestRpcNode,
+    getRpcNode,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -204,7 +203,7 @@ const Init = (props) => {
       if(!isStaging) {
         checkVersionRequest().then((isLatest) => {
           setIsLatest(isLatest)
-          getBestRpcNode().then(() => {
+          getRpcNode().then(() => {
             const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
             setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
               getSavedUserRequest().then(() => {
@@ -217,7 +216,7 @@ const Init = (props) => {
         })
       } else {
         setIsLatest(isLatest)
-        getBestRpcNode().then(() => {
+        getRpcNode().then(() => {
           const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getSavedUserRequest().then(() => {
@@ -260,7 +259,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getTrendingTagsRequest,
     getSavedUserRequest,
-    getBestRpcNode,
+    getRpcNode,
     initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,

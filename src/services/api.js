@@ -21,34 +21,33 @@ const imageUrl = `${appConfig.IMAGE_API}`
 const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
-const hiveAPINODE = `${appConfig.HIVE_API_NODE}`
 
 const visited = []
 
-const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
+const defaultNode = appConfig.DEFAULT_RPC_NODE
 
-export const geRPCNode = () => {
-  return new Promise( (resolve) => {
-    if(localStorage.getItem('rpc-setting')) {
-      if(localStorage.getItem('rpc-setting') !== 'default') {
-        const node = localStorage.getItem('rpc-setting')
-        resolve(node)
-      } else {
-        resolve(defaultNode)
-      }
+export const getActiveRPCNode = () => {
+  const rpcSetting = localStorage.getItem('rpc-setting')
+  return rpcSetting && rpcSetting !== 'default' ? rpcSetting : defaultNode
+}
+
+export const setRPCNode = async () => {
+  try {
+    const node = getActiveRPCNode()
+    if (api && typeof api.setOptions === 'function') {
+      api.setOptions({ url: node })
     } else {
-      resolve(defaultNode)
+      throw new Error('API object or setOptions method is not available')
     }
-  })
+  } catch (error) {
+    console.error('Error setting RPC node, reverting to default:', error)
+    if (api && typeof api.setOptions === 'function') {
+      api.setOptions({ url: defaultNode })
+    } else {
+      console.error('Failed to revert to default RPC node')
+    }
+  }
 }
-
-export const setRPCNode = () => {
-  geRPCNode()
-    .then((node) => {
-      api.setOptions({url: node})
-    })
-}
-
 
 export const invokeMuteFilter = (items, mutelist, opacityUsers = []) => {
   return items.filter((item) => !mutelist.includes(item.author) || opacityUsers.includes(item.author))
@@ -302,7 +301,6 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
-  api.setOptions({url: hiveAPINODE})
   return api.getContentRepliesAsync(author, permlink)
     .then(async (replies) => {
       if (replies.length !== 0) {
@@ -560,6 +558,8 @@ export const fetchFollowCount = (username) => {
 }
 
 export const fetchMuteList = (user) => {
+  const activeRPCNode = getActiveRPCNode()
+  api.setOptions({url: activeRPCNode})
   return new Promise((resolve, reject) => {
     api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async (err, data) => {
       if (err) {
@@ -1397,18 +1397,6 @@ export const getLinkMeta = (url) => {
       })
       .catch(function (error) {
         reject(error)
-      })
-  })
-}
-
-export const getBestRpcNode = () => {
-  return new Promise((resolve) => {
-    axios.get('https://beacon.peakd.com/api/best')
-      .then(function (result) {
-        resolve(result.data[0].endpoint)
-      })
-      .catch(function (error) {
-        resolve(hiveAPINODE)
       })
   })
 }

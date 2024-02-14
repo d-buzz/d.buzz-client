@@ -52,12 +52,12 @@ export const generateStyles = (theme) => ({
   payload: theme,
 })
 
-export const GET_BEST_RPC_NODE = 'GET_BEST_RPC_NODE'
+export const GET_RPC_NODE = 'GET_RPC_NODE'
 
 export const SET_RPC_NODE = 'SET_RPC_NODE'
 
-export const getBestRpcNode = () => ({
-  type: GET_BEST_RPC_NODE,
+export const getRpcNode = () => ({
+  type: GET_RPC_NODE,
   meta: {
     thunk: true,
   },
