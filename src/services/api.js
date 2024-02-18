@@ -14,6 +14,7 @@ import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
+import { hiveAPIUrls } from './helper' // Adjust the path as necessary
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -28,9 +29,13 @@ const defaultNode = appConfig.DEFAULT_RPC_NODE
 
 export const getActiveRPCNode = () => {
   const rpcSetting = localStorage.getItem('rpc-setting')
-  return rpcSetting && rpcSetting !== 'default' ? rpcSetting : defaultNode
+  // Check if the rpcSetting is not 'default' and is included in the hiveAPIUrls list
+  if (rpcSetting && rpcSetting !== 'default' && hiveAPIUrls.includes(rpcSetting)) {
+    return rpcSetting
+  }
+  // Return defaultNode if the condition above is not met
+  return defaultNode
 }
-
 export const setRPCNode = async () => {
   try {
     const node = getActiveRPCNode()
