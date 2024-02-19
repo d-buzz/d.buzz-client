@@ -163,6 +163,30 @@ export const getContentFailure = (error, meta) => ({
   meta,
 })
 
+export const GET_ACTIVE_VOTES_REQUEST = 'GET_ACTIVE_VOTES_REQUEST'
+export const GET_ACTIVE_VOTES_SUCCESS = 'GET_ACTIVE_VOTES_SUCCESS'
+export const GET_ACTIVE_VOTES_FAILURE = 'GET_ACTIVE_VOTES_FAILURE'
+
+export const getActiveVotesRequest = (author, permlink) => ({
+  type: GET_ACTIVE_VOTES_REQUEST,
+  payload: { author, permlink },
+  meta: {
+    thunk: true,
+  },
+})
+
+export const getActiveVotesSuccess = (response, meta) => ({
+  type: GET_ACTIVE_VOTES_SUCCESS,
+  payload: response,
+  meta,
+})
+
+export const getActiveVotesFailure = (error, meta) => ({
+  type: GET_ACTIVE_VOTES_FAILURE,
+  payload: error,
+  meta,
+})
+
 export const GET_TRENDING_TAGS_REQUEST = 'GET_TRENDING_TAGS_REQUEST'
 export const GET_TRENDING_TAGS_SUCCESS = 'GET_TRENDING_TAGS_SUCCESS'
 export const GET_TRENDING_TAGS_FAILURE = 'GET_TRENDING_TAGS_FAILURE'

@@ -80,6 +80,11 @@ import {
   publishUpdateFailure,
 
   saveReceptUpvotes,
+
+  GET_ACTIVE_VOTES_REQUEST,
+  getActiveVotesSuccess,
+  getActiveVotesFailure,
+
 } from './actions'
 
 import {
@@ -113,6 +118,7 @@ import {
   fetchSingleProfile,
   searchHiveTags,
   searchPostGeneral,
+  fetchActiveVotes,
 } from 'services/api'
 import {createPatch, errorMessageComposer, censorLinks, stripHtml} from 'services/helper'
 
@@ -1060,6 +1066,19 @@ function* publishUpdateRequest(payload, meta) {
   }
 }
 
+function* getActiveVotesRequest(payload, meta) {
+  const {author, permlink} = payload
+
+  try {
+    let data = {}
+    data = yield call(fetchActiveVotes, author, permlink)
+
+    yield put(getActiveVotesSuccess(data, meta))
+  } catch (error) {
+    yield put(getActiveVotesFailure(error, meta))
+  }
+}
+
 
 function* watchGetRepliesRequest({payload, meta}) {
   yield call(getRepliesRequest, payload, meta)
@@ -1133,6 +1152,10 @@ function* watchPublishUpdateRequest({payload, meta}) {
   yield call(publishUpdateRequest, payload, meta)
 }
 
+function* watchGetActiveVotesRequest({payload, meta}) {
+  yield call(getActiveVotesRequest, payload, meta)
+}
+
 
 export default function* sagas() {
   yield takeEvery(GET_LATEST_POSTS_REQUEST, watchGetLatestPostsRequest)
@@ -1153,4 +1176,5 @@ export default function* sagas() {
   yield takeEvery(GET_FOLLOW_DETAILS_REQUEST, watchGetFollowDetailsRequest)
   yield takeEvery(GET_LINK_META_REQUEST, watchGetLinkMetaRequest)
   yield takeEvery(PUBLISH_UPDATE_REQUEST, watchPublishUpdateRequest)
+  yield takeEvery(GET_ACTIVE_VOTES_REQUEST, watchGetActiveVotesRequest)
 }

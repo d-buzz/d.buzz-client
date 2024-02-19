@@ -270,7 +270,7 @@ const ActionWrapper = ({
 }
 
 const PostActions = (props) => {
-  const mode = currentTheme() 
+  const mode = currentTheme()
   const classes = useStyles()
   const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
   const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
@@ -316,6 +316,8 @@ const PostActions = (props) => {
     setDefaultVotingWeightRequest,
     defaultUpvoteStrength,
   } = props
+
+  const { net_rshares } = item || ''
 
   const FACEBOOK_APP_ID = 45240581373116
 
@@ -786,7 +788,10 @@ const PostActions = (props) => {
       <VoteListDialog
         onClose={handleClickCloseVoteList}
         open={openVoteList}
-        upvoteList={upvoteList}
+        permlink={permlink}
+        author={author}
+        netRshares={net_rshares}
+        payout={payout}
       />
       <LoginSignupModal show={openLoginSignupModal} messageBased={messageBasedOn} onHide={handleClickCloseLoginSignupModal} />
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>

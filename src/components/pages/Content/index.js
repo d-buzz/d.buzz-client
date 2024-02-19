@@ -224,6 +224,8 @@ const Content = (props) => {
     setLinkConfirmationModal,
   } = props
 
+  console.log('props content', content)
+
   const { username, permlink } = match.params
   const [anchorEl, setAnchorEl] = useState(null)
   const [originalContent, setOriginalContent] = useState('')
@@ -260,9 +262,8 @@ const Content = (props) => {
     parent_author = null,
     parent_permlink,
     ceramicProfile,
-    vote_rshares,
+    net_rshares,
   } = content || ''
-
 
   let { body } = content || ''
   const { title } = content || ''
@@ -270,9 +271,6 @@ const Content = (props) => {
 
   let { max_accepted_payout } = content || '0.00'
   max_accepted_payout = `${max_accepted_payout}`.replace('HBD', '')
-
-  let { pending_payout_value } = content || '0.00'
-  pending_payout_value = `${pending_payout_value}`.replace('HBD', '')
 
   let meta = {}
   let app = null
@@ -512,9 +510,9 @@ const Content = (props) => {
 
     return (
       <React.Fragment>
-        {list.map(({ voter }) => (
+        {list.map(({ voter }, index) => (
           <React.Fragment>
-            <span className={classes.votelist}>{voter}</span><br />
+            <span key={index} className={classes.votelist}>{voter}</span><br />
           </React.Fragment>
         ))}
       </React.Fragment>
@@ -731,9 +729,10 @@ const Content = (props) => {
       <VoteListDialog
         open={openVoteList}
         onClose={handleClickOnCloseVoteList}
-        upvoteList={active_votes || []}
-        pendingPayout={pending_payout_value}
-        voteRShares={vote_rshares}
+        permlink={permlink}
+        author={author}
+        netRshares={net_rshares}
+        payout={payout}
       />
 
       {invalidBuzz && !loadingContent && !loadingReplies &&

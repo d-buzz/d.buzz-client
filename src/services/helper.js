@@ -614,8 +614,10 @@ export const calculateAverageRanking = (users) => {
   return top10Users
 }
 
-export const calculateAmount = (rshares, voteRShares, pendingPayout) => {
-  const result = ((rshares / voteRShares) * pendingPayout) ?? 0
+export const calculateAmount = (rshares, netRshares, payout) => {
+  const result = ((rshares / netRshares) * payout)
+
+  console.log('rshares, shares, payout', rshares, netRshares, payout)
 
   return result.toFixed(3)
 }

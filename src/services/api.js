@@ -322,6 +322,15 @@ export const fetchContent = (author, permlink) => {
   })
 }
 
+export const fetchActiveVotes = (author, permlink) => {
+  return new Promise((resolve, reject) => {
+    api.getActiveVotesAsync(author, permlink)
+      .then((active_votes) => {
+        resolve(active_votes)
+      })
+  })
+}
+
 export const fetchReplies = (author, permlink) => {
   api.setOptions({url: hiveAPINODE})
   return api.getContentRepliesAsync(author, permlink)
