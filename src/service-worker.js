@@ -30,11 +30,12 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(clients.claim());
   event.waitUntil(
     caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
+      const currentCache = [self.__WB_MANIFEST];
+      return Promise.all(cacheNames.map(cacheName => {
+        if (!currentCache.includes(cacheName)) {
           return caches.delete(cacheName);
-        })
-      );
+        }
+      }));
     })
   );
 });
