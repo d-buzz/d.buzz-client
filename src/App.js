@@ -35,17 +35,6 @@ const App = () => {
     // redirect old links to the new ones
     redirectOldLinks()
   }, [])
-
-  if(window.location.host !== 'd.buzz'){
-    const passwordWall = localStorage.getItem('passwordWall')
-    if(passwordWall !== "dbuzz"){
-      let passwordW = null
-      while(passwordW == null || passwordW !== "dbuzz"){
-        passwordW = prompt("The password is dbuzz (all lower-case).")
-      }
-      localStorage.setItem('passwordWall', passwordW)
-    }
-  }
   
   return (
     <React.Fragment>
