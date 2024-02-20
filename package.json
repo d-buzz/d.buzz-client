@@ -14,6 +14,8 @@
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@sentry/react": "^7.102.0",
+    "@sentry/tracing": "^7.102.0",
     "@spknetwork/graph-client": "1.2.2",
     "@stablelib/sha256": "^1.0.1",
     "@walletconnect/ethereum-provider": "^2.10.0",
