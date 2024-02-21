@@ -21,6 +21,27 @@ clientsClaim()
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST)
 
+const currentVersion = self.registration.active ? parseInt(self.registration.active.version) : 0
+const newVersion = self.registration.waiting ? parseInt(self.registration.waiting.version) : 0
+
+console.log("currentVersion >>", currentVersion)
+console.log("newVersion >>", newVersion)
+
+if (newVersion > currentVersion + 1) {
+  // Prompt user for confirmation
+  if (confirm('A new version is available. Do you want to update now?')) {
+    self.skipWaiting()
+  }
+}
+
+// This allows the web app to trigger skipWaiting via
+// registration.waiting.postMessage({type: 'SKIP_WAITING'})
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
+})
+
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell
@@ -60,23 +81,5 @@ registerRoute(
     ],
   }),
 )
-
-const currentVersion = self.registration.active ? parseInt(self.registration.active.version) : 0
-const newVersion = self.registration.waiting ? parseInt(self.registration.waiting.version) : 0
-
-if (newVersion > currentVersion + 1) {
-  // Prompt user for confirmation
-  if (confirm('A new version is available. Do you want to update now?')) {
-    self.skipWaiting()
-  }
-}
-
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting()
-  }
-})
 
 // Any other custom service worker logic can go here.
