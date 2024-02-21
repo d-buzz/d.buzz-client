@@ -23,16 +23,6 @@ clientsClaim()
 const manifest = self.__WB_MANIFEST
 precacheAndRoute(manifest)
 
-// Add event listener for messages from the client
-//self.addEventListener('message', (event) => {
-//  if (event.data && event.data.type === 'SKIP_WAITING') {
-    // Skip waiting and activate the new service worker immediately
-//    self.skipWaiting()
-    // Reload the page to ensure the new service worker takes effect
-  //  self.clients.claim()
-  //}
-//})
-
 // Function to extract version number from script URL
 function extractVersion(scriptURL) {
   const matches = scriptURL.match(/\/(\d+)\//)
