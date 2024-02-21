@@ -25,7 +25,7 @@ ReactDOM.render(
   document.getElementById('root'),
 )
 
-serviceWorkerRegistration.register({
+serviceWorker.register({
   onUpdate: async (registration) => {
     // We want to run this code only if we detect a new service worker is
     // waiting to be activated.
