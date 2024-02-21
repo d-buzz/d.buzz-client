@@ -20,7 +20,7 @@ clientsClaim()
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
 
-const manifest = self.__WB_MANIFEST;
+const manifest = self.__WB_MANIFEST
 precacheAndRoute(manifest)
 
 // Add event listener for messages from the client
@@ -41,7 +41,7 @@ function extractVersion(scriptURL) {
 
 // Compare versions to determine if skipping waiting is needed
 function checkSkipWaiting() {
-  const currentVersion = extractVersion(self.registration.active.scriptURL);
+  const currentVersion = extractVersion(self.registration.active.scriptURL)
   const newVersion = extractVersion(manifest[0].url)
   
   return newVersion > currentVersion
