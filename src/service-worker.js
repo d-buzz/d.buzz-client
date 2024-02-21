@@ -19,41 +19,44 @@ clientsClaim()
 // Their URLs are injected into the manifest variable below.
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
-precacheAndRoute(self.__WB_MANIFEST)
+
+const manifest = self.__WB_MANIFEST;
+
+precacheAndRoute(manifest);
 
 //self.skipWaiting()
 // Add event listener for messages from the client
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
     // Skip waiting and activate the new service worker immediately
-    self.skipWaiting()
+    self.skipWaiting();
     // Reload the page to ensure the new service worker takes effect
-    self.clients.claim()
+    self.clients.claim();
   }
-})
+});
 
 // Function to extract version number from script URL
 function extractVersion(scriptURL) {
-  const matches = scriptURL.match(/\/(\d+)\//)
-  return matches ? parseInt(matches[1]) : 0
+  const matches = scriptURL.match(/\/(\d+)\//);
+  return matches ? parseInt(matches[1]) : 0;
 }
 
 // Compare versions to determine if skipping waiting is needed
 function checkSkipWaiting() {
-  const currentVersion = extractVersion(self.registration.active.scriptURL)
-  const newVersion = extractVersion(self.__WB_MANIFEST[0].url)
-  
-  return newVersion > currentVersion
+  const currentVersion = extractVersion(self.registration.active.scriptURL);
+  const newVersion = extractVersion(manifest);
+
+  return newVersion > currentVersion;
 }
 
 // Check if there is a need to skip waiting and act accordingly
 if (checkSkipWaiting()) {
   // Send a message to the client to prompt for a reload
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => {
-      client.postMessage({ type: 'NEW_VERSION_AVAILABLE' })
-    })
-  })
+  self.clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({ type: "NEW_VERSION_AVAILABLE" });
+    });
+  });
 }
 
 /////donottouch below
