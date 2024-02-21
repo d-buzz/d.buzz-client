@@ -22,21 +22,15 @@ clientsClaim()
 precacheAndRoute(self.__WB_MANIFEST)
 
 //self.skipWaiting()
-
-navigator.serviceWorker.getRegistration().then(registration => {
-  if (registration && registration.waiting) {
-    // Send a message to the waiting service worker to skip waiting
-    registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-  }
-})
-
+// Add event listener for messages from the client
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     // Skip waiting and activate the new service worker immediately
-    self.skipWaiting()
-    window.location.reload(true)
+    self.skipWaiting();
+    // Reload the page to ensure the new service worker takes effect
+    self.clients.claim();
   }
-})
+});
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
