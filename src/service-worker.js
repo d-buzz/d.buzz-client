@@ -61,6 +61,16 @@ registerRoute(
   }),
 )
 
+const currentVersion = parseInt(self.registration.active.version)
+const newVersion = parseInt(self.registration.waiting?.version ?? 0)
+
+if (newVersion > currentVersion + 1) {
+  // Prompt user for confirmation
+  if (confirm('A new version is available. Do you want to update now?')) {
+    self.skipWaiting()
+  }
+}
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
