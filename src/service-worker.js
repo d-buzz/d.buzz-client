@@ -24,14 +24,14 @@ const manifest = self.__WB_MANIFEST
 precacheAndRoute(manifest)
 
 // Add event listener for messages from the client
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+//self.addEventListener('message', (event) => {
+//  if (event.data && event.data.type === 'SKIP_WAITING') {
     // Skip waiting and activate the new service worker immediately
-    self.skipWaiting()
+//    self.skipWaiting()
     // Reload the page to ensure the new service worker takes effect
-    self.clients.claim()
-  }
-})
+  //  self.clients.claim()
+  //}
+//})
 
 // Function to extract version number from script URL
 function extractVersion(scriptURL) {
@@ -43,18 +43,19 @@ function extractVersion(scriptURL) {
 function checkSkipWaiting() {
   const currentVersion = extractVersion(self.registration.active.scriptURL)
   const newVersion = extractVersion(manifest[0].url)
+
+  console.log("currentVersion >> ", currentVersion)
+  console.log("newVersion >> ", newVersion)
   
   return newVersion > currentVersion
 }
 
 // Check if there is a need to skip waiting and act accordingly
 if (checkSkipWaiting()) {
-  // Send a message to the client to prompt for a reload
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => {
-      client.postMessage({ type: 'NEW_VERSION_AVAILABLE' })
-    })
-  })
+    // Skip waiting and activate the new service worker immediately
+    self.skipWaiting()
+    // Reload the page to ensure the new service worker takes effect
+    self.clients.claim()
 }
 
 // Set up App Shell-style routing, so that all navigation requests
