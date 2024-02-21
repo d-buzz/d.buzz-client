@@ -21,26 +21,7 @@ clientsClaim()
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST)
 
-const currentVersion = parseInt(self.registration.active.scriptURL.split('/').pop())
-const newVersion = parseInt(self.registration.waiting?.scriptURL.split('/').pop() ?? 0)
-
-console.log("currentVersion >>", currentVersion)
-console.log("newVersion >>", newVersion)
-
-if (newVersion > currentVersion + 1) {
-  // Prompt user for confirmation
-  if (confirm('A new version is available. Do you want to update now?')) {
-    self.skipWaiting()
-  }
-}
-
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting()
-  }
-})
+self.skipWaiting()
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
