@@ -42,10 +42,10 @@ function checkSkipWaiting() {
 
 // Check if there is a need to skip waiting and act accordingly
 if (checkSkipWaiting()) {
-    // Skip waiting and activate the new service worker immediately
-    self.skipWaiting()
-    // Reload the page to ensure the new service worker takes effect
-    self.clients.claim()
+  // Skip waiting and activate the new service worker immediately
+  self.skipWaiting()
+  // Reload the page to ensure the new service worker takes effect
+  self.clients.claim()
 }
 
 // Set up App Shell-style routing, so that all navigation requests
