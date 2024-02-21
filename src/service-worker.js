@@ -21,8 +21,8 @@ clientsClaim()
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST)
 
-const currentVersion = self.registration.active ? parseInt(self.registration.active.version) : 0
-const newVersion = self.registration.waiting ? parseInt(self.registration.waiting.version) : 0
+const currentVersion = parseInt(self.registration.active.scriptURL.split('/').pop());
+const newVersion = parseInt(self.registration.waiting?.scriptURL.split('/').pop() ?? 0);
 
 console.log("currentVersion >>", currentVersion)
 console.log("newVersion >>", newVersion)
