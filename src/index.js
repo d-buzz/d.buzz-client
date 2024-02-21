@@ -37,5 +37,5 @@ serviceWorker.register({
       })
       waitingServiceWorker.postMessage({ type: "SKIP_WAITING" })
     }
-  }
+  },
 })
