@@ -43,5 +43,5 @@ serviceWorker.register({
       // Makes Workbox call skipWaiting() that will trigger upper listener
       registration.waiting.postMessage({ type: 'SKIP_WAITING' })
     }
-  }
+  },
 })
