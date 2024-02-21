@@ -21,7 +21,22 @@ clientsClaim()
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST)
 
-self.skipWaiting()
+//self.skipWaiting()
+
+navigator.serviceWorker.getRegistration().then(registration => {
+  if (registration && registration.waiting) {
+    // Send a message to the waiting service worker to skip waiting
+    registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+  }
+})
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    // Skip waiting and activate the new service worker immediately
+    self.skipWaiting()
+    window.location.reload(true)
+  }
+})
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
