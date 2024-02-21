@@ -31,7 +31,7 @@ self.addEventListener('message', (event) => {
     // Reload the page to ensure the new service worker takes effect
     self.clients.claim()
   }
-});
+})
 
 // Function to extract version number from script URL
 function extractVersion(scriptURL) {
