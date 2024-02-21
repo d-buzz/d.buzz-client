@@ -34,16 +34,16 @@ self.addEventListener('message', (event) => {
 
 // Function to extract version number from script URL
 function extractVersion(scriptURL) {
-  const matches = scriptURL.match(/\/(\d+)\//);
-  return matches ? parseInt(matches[1]) : 0;
+  const matches = scriptURL.match(/\/(\d+)\//)
+  return matches ? parseInt(matches[1]) : 0
 }
 
 // Compare versions to determine if skipping waiting is needed
 function checkSkipWaiting() {
-  const currentVersion = extractVersion(self.registration.active.scriptURL);
-  const newVersion = extractVersion(self.__WB_MANIFEST[0].url);
+  const currentVersion = extractVersion(self.registration.active.scriptURL)
+  const newVersion = extractVersion(self.__WB_MANIFEST[0].url)
   
-  return newVersion > currentVersion;
+  return newVersion > currentVersion
 }
 
 // Check if there is a need to skip waiting and act accordingly
@@ -51,9 +51,9 @@ if (checkSkipWaiting()) {
   // Send a message to the client to prompt for a reload
   self.clients.matchAll().then(clients => {
     clients.forEach(client => {
-      client.postMessage({ type: 'NEW_VERSION_AVAILABLE' });
-    });
-  });
+      client.postMessage({ type: 'NEW_VERSION_AVAILABLE' })
+    })
+  })
 }
 
 /////donottouch below
