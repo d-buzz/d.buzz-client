@@ -61,8 +61,8 @@ registerRoute(
   }),
 )
 
-const currentVersion = parseInt(self.registration.active.version)
-const newVersion = parseInt(self.registration.waiting?.version ?? 0)
+const currentVersion = self.registration.active ? parseInt(self.registration.active.version) : 0
+const newVersion = self.registration.waiting ? parseInt(self.registration.waiting.version) : 0
 
 if (newVersion > currentVersion + 1) {
   // Prompt user for confirmation
