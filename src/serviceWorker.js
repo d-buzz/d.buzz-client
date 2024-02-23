@@ -69,18 +69,14 @@ function registerValidSW(swUrl, config) {
         // "redundant"  - discarded. Either failed install, or it's been
         //                replaced by a newer version
 
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: "SKIP_WAITING" })
+        }
+
         newWorker.addEventListener("statechange", () => {
           // newWorker.state has changed
           if (newWorker.state === "activated") {
             window.location.reload()
-          }
-
-          if (newWorker.state === "installing") {
-            registration.waiting.postMessage({ type: "SKIP_WAITING" })
-          }
-
-          if (newWorker.state === "waiting") {
-            registration.waiting.postMessage({ type: "SKIP_WAITING" })
           }
         })
 
@@ -91,16 +87,17 @@ function registerValidSW(swUrl, config) {
 
       registration.onupdatefound = () => {
         const installingWorker = registration.installing
+
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: "SKIP_WAITING" })
+        }
+
         if (installingWorker == null) {
           return
         }
         installingWorker.onstatechange = () => {
           if (installingWorker.state === "activated") {
             window.location.reload()
-          }
-
-          if (installingWorker.state === "waiting") {
-            registration.waiting.postMessage({ type: "SKIP_WAITING" })
           }
 
           if (installingWorker.state === "installed") {
