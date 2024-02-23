@@ -31,6 +31,10 @@ export function register(config) {
       return
     }
 
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      window.location.reload()
+    })
+
     window.addEventListener("load", () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`
 
@@ -57,9 +61,6 @@ export function register(config) {
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
-    .addEventListener("controllerchange", () => {
-      window.location.reload()
-    })
     .then((registration) => {
       registration.addEventListener("updatefound", () => {
         // A wild service worker has appeared in registration.installing!
@@ -134,6 +135,9 @@ function registerValidSW(swUrl, config) {
     })
     .catch((error) => {
       console.error("Error during service worker registration:", error)
+    })
+    .addEventListener("controllerchange", () => {
+      window.location.reload()
     })
 }
 
