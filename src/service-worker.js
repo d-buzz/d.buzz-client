@@ -71,4 +71,8 @@ self.addEventListener("message", (event) => {
   }
 })
 
+self.addEventListener("activate", (event) => {
+  clientsClaim()
+})
+
 // Any other custom service worker logic can go here.
