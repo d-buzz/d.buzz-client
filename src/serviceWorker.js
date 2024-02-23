@@ -78,6 +78,10 @@ function registerValidSW(swUrl, config) {
           if (newWorker.state === "installing") {
             registration.waiting.postMessage({ type: "SKIP_WAITING" })
           }
+
+          if (newWorker.state === "waiting") {
+            registration.waiting.postMessage({ type: "SKIP_WAITING" })
+          }
         })
 
         newWorker.addEventListener("controllerchange", () => {
