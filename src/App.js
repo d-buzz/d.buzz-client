@@ -11,21 +11,6 @@ import { useLocation } from "react-router-dom"
 const TwitterEmbedAPI = React.lazy(
   () => import("components/pages/TwitterEmbedAPI"),
 )
-
-function checkForUpdate() {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.addEventListener(
-      "controllerchange",
-      function (event) {
-        window.location.reload()
-      },
-    )
-
-    // Send a message to the service worker
-    navigator.serviceWorker.controller.postMessage({ type: "SKIP_WAITING" })
-  }
-}
-
 const useStyles = createUseStyles((theme) => ({
   wrapper: {
     overflow: "hidden !important",
@@ -42,10 +27,6 @@ const App = () => {
   const { pathname } = useLocation()
   const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
   const currentSiteUrl = window.location.protocol + "//" + window.location.host
-
-  useEffect(() => {
-    checkForUpdate()
-  }, [])
 
   useEffect(() => {
     // redirect old links to the new ones
