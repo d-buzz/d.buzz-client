@@ -43,10 +43,7 @@ const useStyles = createUseStyles(theme => ({
 
 const Feeds = React.memo((props) => {
   const {
-    last = {
-      permalink: '',
-      author: '',
-    },
+    last,
     loading,
     items,
     isHomeVisited,
@@ -107,6 +104,7 @@ const Feeds = React.memo((props) => {
       clearScrollIndex()
       clearHomePosts()
       getHomePostsRequest()
+      setFeedPostsLoad(true)
       clearRefreshRouteStatus()
     }
     // eslint-disable-next-line
@@ -122,25 +120,17 @@ const Feeds = React.memo((props) => {
   }, [last, loading])
 
   useEffect(() => {
-    const { permlink } = last
-
-    if (items.length < 3 && !loading && isFeedPostsLoaded) {
-      if (permlink !== undefined ) {
-        loadMorePosts()
-      } else {
-        setFeedPostsLoad(true)
-      }
-    } else {
-      setFeedPostsLoad(true)
+    if (items.length === 0 && !loading && isFeedPostsLoaded) {
+      loadMorePosts()
     }
-  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading , last])
+  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading])
 
   return (
     <React.Fragment>
       <HelmetGenerator page='Home' />
       {!isMobile && !buzzModalStatus && (<CreateBuzzForm />)}
 
-      {(items.length === 0 && isFeedPostsLoaded) && !loading && (
+      {(items.length === 0) && !loading && (
         <React.Fragment>
           <center>
             <h6 className={classes.wrapper}>
