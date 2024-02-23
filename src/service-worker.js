@@ -70,4 +70,8 @@ self.addEventListener("message", (event) => {
   }
 })
 
+self.addEventListener("install", function (event) {
+  self.skipWaiting()
+})
+
 // Any other custom service worker logic can go here.
