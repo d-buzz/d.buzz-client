@@ -74,7 +74,7 @@ self.addEventListener("install", function (event) {
   self.skipWaiting()
 })
 
-self.addEventListener("activated", function (event) {
+self.addEventListener("activate", function (event) {
   window.location.reload()
 })
 
