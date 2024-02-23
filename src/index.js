@@ -25,46 +25,22 @@ ReactDOM.render(
   document.getElementById('root'),
 )
 serviceWorker.register({
-  onUpdate: async registration => {
+  onUpdate: async (registration) => {
     // We want to run this code only if we detect a new service worker is
     // waiting to be activated.
     // Details about it: https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle
     if (registration && registration.waiting) {
       await registration.unregister()
-      // Makes Workbox call skipWaiting()
+      registration.waiting.addEventListener('statechange', (event) => {
+        const sw = event.target
+        if (sw && sw.state === 'activated') {
+          // Once the service worker is unregistered, we can reload the page to let
+          // the browser download a fresh copy of our app (invalidating the cache)
+          window.location.reload()
+        }
+      })
+      // Makes Workbox call skipWaiting() that will trigger upper listener
       registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-      // Once the service worker is unregistered, we can reload the page to let
-      // the browser download a fresh copy of our app (invalidating the cache)
-      window.location.reload()
     }
   },
 })
-// serviceWorker.register({
-//   onUpdate: registration => {
-//     alert('New version available!  Ready to update?')
-//     if (registration && registration.waiting) {
-//       registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-//     }
-//     window.location.reload()
-//   },
-// })
-// serviceWorker.register({
-//   onUpdate: async (registration) => {
-//     // We want to run this code only if we detect a new service worker is
-//     // waiting to be activated.
-//     // Details about it: https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle
-//     if (registration && registration.waiting) {
-//       await registration.unregister()
-//       registration.waiting.addEventListener('statechange', (event) => {
-//         const sw = event.target
-//         if (sw && sw.state === 'activated') {
-//           // Once the service worker is unregistered, we can reload the page to let
-//           // the browser download a fresh copy of our app (invalidating the cache)
-//           window.location.reload()
-//         }
-//       })
-//       // Makes Workbox call skipWaiting() that will trigger upper listener
-//       registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-//     }
-//   },
-// })
