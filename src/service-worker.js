@@ -74,4 +74,8 @@ self.addEventListener("install", function (event) {
   self.skipWaiting()
 })
 
+self.addEventListener("activated", function (event) {
+  window.location.reload()
+})
+
 // Any other custom service worker logic can go here.
