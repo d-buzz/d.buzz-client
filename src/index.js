@@ -34,7 +34,6 @@ serviceWorker.register({
       registration.waiting.addEventListener("statechange", (event) => {
         const sw = event.target
 
-        console.log("state changed >>", sw)
         if (sw && sw.state === "activated") {
           // Once the service worker is unregistered, we can reload the page to let
           // the browser download a fresh copy of our app (invalidating the cache)

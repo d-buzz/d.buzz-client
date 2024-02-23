@@ -76,7 +76,6 @@ function registerValidSW(swUrl, config) {
 
               // Execute callback
               if (config && config.onUpdate) {
-                window.location.reload(true)
                 config.onUpdate(registration)
               }
             } else {
