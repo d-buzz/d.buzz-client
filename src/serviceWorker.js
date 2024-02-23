@@ -58,6 +58,25 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+      registration.addEventListener("updatefound", () => {
+        // A wild service worker has appeared in registration.installing!
+        const newWorker = registration.installing
+
+        // "installing" - the install event has fired, but not yet complete
+        // "installed"  - install complete
+        // "activating" - the activate event has fired, but not yet complete
+        // "activated"  - fully active
+        // "redundant"  - discarded. Either failed install, or it's been
+        //                replaced by a newer version
+
+        newWorker.addEventListener("statechange", () => {
+          // newWorker.state has changed
+          if (newWorker.state === "activated") {
+            window.location.reload()
+          }
+        })
+      })
+
       registration.onupdatefound = () => {
         const installingWorker = registration.installing
         if (installingWorker == null) {
