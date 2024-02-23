@@ -21,7 +21,7 @@ const isLocalhost = Boolean(
 )
 
 export function register(config) {
-  if ("serviceWorker" in navigator) {
+  if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href)
     if (publicUrl.origin !== window.location.origin) {
@@ -31,30 +31,26 @@ export function register(config) {
       return
     }
 
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-      window.location.reload()
+    window.addEventListener("load", () => {
+      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`
+
+      if (isLocalhost) {
+        // This is running on localhost. Let's check if a service worker still exists or not.
+        checkValidServiceWorker(swUrl, config)
+
+        // Add some additional logging to localhost, pointing developers to the
+        // service worker/PWA documentation.
+        navigator.serviceWorker.ready.then(() => {
+          console.log(
+            "This web app is being served cache-first by a service " +
+              "worker. To learn more, visit https://bit.ly/CRA-PWA",
+          )
+        })
+      } else {
+        // Is not localhost. Just register service worker
+        registerValidSW(swUrl, config)
+      }
     })
-
-    //window.addEventListener("load", () => {
-    const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`
-
-    if (isLocalhost) {
-      // This is running on localhost. Let's check if a service worker still exists or not.
-      checkValidServiceWorker(swUrl, config)
-
-      // Add some additional logging to localhost, pointing developers to the
-      // service worker/PWA documentation.
-      navigator.serviceWorker.ready.then(() => {
-        console.log(
-          "This web app is being served cache-first by a service " +
-            "worker. To learn more, visit https://bit.ly/CRA-PWA",
-        )
-      })
-    } else {
-      // Is not localhost. Just register service worker
-      registerValidSW(swUrl, config)
-    }
-    //})
   }
 }
 
@@ -62,48 +58,12 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
-      registration.addEventListener("updatefound", () => {
-        // A wild service worker has appeared in registration.installing!
-        const newWorker = registration.installing
-
-        // "installing" - the install event has fired, but not yet complete
-        // "installed"  - install complete
-        // "activating" - the activate event has fired, but not yet complete
-        // "activated"  - fully active
-        // "redundant"  - discarded. Either failed install, or it's been
-        //                replaced by a newer version
-
-        if (registration.waiting) {
-          registration.waiting.postMessage({ type: "SKIP_WAITING" })
-        }
-
-        newWorker.addEventListener("statechange", () => {
-          // newWorker.state has changed
-          if (newWorker.state === "activated") {
-            window.location.reload()
-          }
-        })
-
-        newWorker.addEventListener("controllerchange", () => {
-          window.location.reload()
-        })
-      })
-
       registration.onupdatefound = () => {
         const installingWorker = registration.installing
-
-        if (registration.waiting) {
-          registration.waiting.postMessage({ type: "SKIP_WAITING" })
-        }
-
         if (installingWorker == null) {
           return
         }
         installingWorker.onstatechange = () => {
-          if (installingWorker.state === "activated") {
-            window.location.reload()
-          }
-
           if (installingWorker.state === "installed") {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
@@ -135,9 +95,6 @@ function registerValidSW(swUrl, config) {
     })
     .catch((error) => {
       console.error("Error during service worker registration:", error)
-    })
-    .addEventListener("controllerchange", () => {
-      window.location.reload()
     })
 }
 
