@@ -1,16 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom/";
-import App from "./App";
-import store from "store/store";
-import * as serviceWorker from "./serviceWorker";
-import { Provider } from "react-redux";
-import { BrowserRouter as Router } from "react-router-dom";
-import initReactFastclick from "react-fastclick";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./override.css";
-import HttpsRedirect from "react-https-redirect";
+import React from "react"
+import ReactDOM from "react-dom/"
+import App from "./App"
+import store from "store/store"
+import * as serviceWorker from "./serviceWorker"
+import { Provider } from "react-redux"
+import { BrowserRouter as Router } from "react-router-dom"
+import initReactFastclick from "react-fastclick"
+import "bootstrap/dist/css/bootstrap.min.css"
+import "./override.css"
+import HttpsRedirect from "react-https-redirect"
 
-initReactFastclick();
+initReactFastclick()
 
 ReactDOM.render(
   <Provider store={store}>
@@ -21,7 +21,7 @@ ReactDOM.render(
     </Router>
   </Provider>,
   document.getElementById("root"),
-);
+)
 //serviceWorker.register({
 //  onUpdate: async (registration) => {
 //    // We want to run this code only if we detect a new service worker is

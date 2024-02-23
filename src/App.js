@@ -1,28 +1,28 @@
-import React, { useEffect } from "react";
-import routes from "./routes";
-import { withRouter } from "react-router";
-import { Init, AuthGuard, ThemeLoader } from "components";
-import { renderRoutes } from "react-router-config";
-import { LastLocationProvider } from "react-router-last-location";
-import { createUseStyles } from "react-jss";
-import { Helmet } from "react-helmet";
-import { redirectOldLinks } from "services/helper";
-import { useLocation } from "react-router-dom";
+import React, { useEffect } from "react"
+import routes from "./routes"
+import { withRouter } from "react-router"
+import { Init, AuthGuard, ThemeLoader } from "components"
+import { renderRoutes } from "react-router-config"
+import { LastLocationProvider } from "react-router-last-location"
+import { createUseStyles } from "react-jss"
+import { Helmet } from "react-helmet"
+import { redirectOldLinks } from "services/helper"
+import { useLocation } from "react-router-dom"
 const TwitterEmbedAPI = React.lazy(
   () => import("components/pages/TwitterEmbedAPI"),
-);
+)
 
 function checkForUpdate() {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener(
       "controllerchange",
       function (event) {
-        window.location.reload();
+        window.location.reload()
       },
-    );
+    )
 
     // Send a message to the service worker
-    navigator.serviceWorker.controller.postMessage({ type: "SKIP_WAITING" });
+    navigator.serviceWorker.controller.postMessage({ type: "SKIP_WAITING" })
   }
 }
 
@@ -31,26 +31,26 @@ const useStyles = createUseStyles((theme) => ({
     overflow: "hidden !important",
     backgroundColor: theme.background.primary,
   },
-}));
+}))
 
 const AppWrapper = ({ children }) => {
-  const classes = useStyles();
-  return <div className={classes.wrapper}>{children}</div>;
-};
+  const classes = useStyles()
+  return <div className={classes.wrapper}>{children}</div>
+}
 
 const App = () => {
-  const { pathname } = useLocation();
-  const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/);
-  const currentSiteUrl = window.location.protocol + "//" + window.location.host;
+  const { pathname } = useLocation()
+  const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
+  const currentSiteUrl = window.location.protocol + "//" + window.location.host
 
   useEffect(() => {
-    checkForUpdate();
-  }, []);
+    checkForUpdate()
+  }, [])
 
   useEffect(() => {
     // redirect old links to the new ones
-    redirectOldLinks();
-  }, []);
+    redirectOldLinks()
+  }, [])
 
   return (
     <React.Fragment>
@@ -85,7 +85,7 @@ const App = () => {
         </LastLocationProvider>
       </React.Suspense>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default withRouter(App);
+export default withRouter(App)
