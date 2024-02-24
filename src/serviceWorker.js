@@ -55,6 +55,10 @@ export function register(config) {
 }
 
 function registerValidSW(swUrl, config) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    window.location.reload()
+  })
+
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
