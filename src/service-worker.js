@@ -75,4 +75,13 @@ self.addEventListener("message", (event) => {
   }
 })
 
+self.addEventListener("activate", async () => {
+  // after we've taken over, iterate over all the current clients (windows)
+  const tabs = await self.clients.matchAll({ type: "window" })
+  tabs.forEach((tab) => {
+    // ...and refresh each one of them
+    tab.navigate(tab.url)
+  })
+})
+
 // Any other custom service worker logic can go here.
