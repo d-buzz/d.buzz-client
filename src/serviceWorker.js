@@ -10,6 +10,9 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
+import alert from "react-giphy-searchbox/lib/components/Alert/Alert";
+import {errors} from "web3";
+
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
     // [::1] is the IPv6 localhost address.
@@ -55,6 +58,7 @@ export function register(config) {
 }
 
 function registerValidSW(swUrl, config) {
+  alert(1)
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
@@ -65,6 +69,7 @@ function registerValidSW(swUrl, config) {
         }
         installingWorker.onstatechange = () => {
           if (installingWorker.state === "installed") {
+            alert(1)
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
@@ -76,6 +81,7 @@ function registerValidSW(swUrl, config) {
 
               // Execute callback
               if (config && config.onUpdate) {
+                alert(2)
                 config.onUpdate(registration)
               }
             } else {
@@ -94,6 +100,7 @@ function registerValidSW(swUrl, config) {
       }
     })
     .catch((error) => {
+      alert('error')
       console.error("Error during service worker registration:", error)
     })
 }
@@ -114,7 +121,7 @@ function checkValidServiceWorker(swUrl, config) {
         navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
             window.location.reload()
-          })
+          }).catch(errors => alert("error sericeworkers"))
         })
       } else {
         // Service worker found. Proceed as normal.
