@@ -115,23 +115,27 @@ const Feeds = React.memo((props) => {
 
   const loadMorePosts = useCallback(() => {
     if (!loading) {
-      const { permlink, author } = last
-      getHomePostsRequest(permlink, author)
+      if(items.length>0) {
+        const { permlink, author } = last
+        getHomePostsRequest(permlink, author)
+      }
     }
     // eslint-disable-next-line
   }, [last, loading])
 
   useEffect(() => {
-    const { permlink } = last
+    if(items.length>0) {
+      const { permlink } = last
 
-    if (items.length < 3 && !loading && isFeedPostsLoaded) {
-      if (permlink !== undefined ) {
-        loadMorePosts()
+      if (items.length < 3 && !loading && isFeedPostsLoaded) {
+        if (permlink !== undefined ) {
+          loadMorePosts()
+        } else {
+          setFeedPostsLoad(true)
+        }
       } else {
         setFeedPostsLoad(true)
       }
-    } else {
-      setFeedPostsLoad(true)
     }
   }, [isFeedPostsLoaded, items.length, loadMorePosts, loading , last])
 
