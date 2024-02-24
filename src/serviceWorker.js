@@ -56,7 +56,6 @@ export function register(config) {
 }
 
 function registerValidSW(swUrl, config) {
-  alert(1)
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
@@ -78,7 +77,6 @@ function registerValidSW(swUrl, config) {
 
               // Execute callback
               if (config && config.onUpdate) {
-                alert(2)
                 config.onUpdate(registration)
               }
             } else {
