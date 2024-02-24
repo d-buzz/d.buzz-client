@@ -59,11 +59,6 @@ function registerValidSW(swUrl, config) {
     .register(swUrl)
     .then((registration) => {
       registration.onupdatefound = () => {
-        const installingWorker = registration.installing
-        if (installingWorker == null) {
-          return
-        }
-
         const waitingWorker = registration.waiting
 
         if (waitingWorker && waitingWorker.state === "waiting") {
@@ -74,6 +69,11 @@ function registerValidSW(swUrl, config) {
           if (waitingWorker.state === "activated") {
             window.location.reload()
           }
+        }
+
+        const installingWorker = registration.installing
+        if (installingWorker == null) {
+          return
         }
 
         installingWorker.onstatechange = () => {
