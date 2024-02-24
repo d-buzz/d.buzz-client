@@ -10,8 +10,6 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
-import alert from "react-giphy-searchbox/lib/components/Alert/Alert";
-import {errors} from "web3";
 
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
@@ -121,8 +119,8 @@ function checkValidServiceWorker(swUrl, config) {
         navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
             window.location.reload()
-          }).catch(errors => alert("error sericeworkers"))
-        })
+          }).catch(errors => alert("error sericeworkers" + errors))
+        }).catch(errors => console.log(errors))
       } else {
         // Service worker found. Proceed as normal.
         registerValidSW(swUrl, config)
