@@ -68,7 +68,9 @@ serviceWorker.register({
   onUpdate: (registration) => {
     const waitingServiceWorker = registration.waiting
 
+    console.log('service worker event')
     if (waitingServiceWorker) {
+      console.log('waiting service worker')
       waitingServiceWorker.addEventListener("statechange", (event) => {
         if (event.target.state === "activated") {
           window.location.reload()
