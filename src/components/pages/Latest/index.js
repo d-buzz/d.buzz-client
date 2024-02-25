@@ -143,14 +143,18 @@ const Latest = (props) => {
   }, [refreshRouteStatus])
 
   const loadMorePosts = useCallback(() => {
-    const { permlink, author } = last
-    getLatestPostsRequest(permlink, author)
+    if(items.length>0) {
+      const { permlink, author } = last
+      getLatestPostsRequest(permlink, author)
+    }
     // eslint-disable-next-line
   }, [last])
 
   useEffect(() => {
-    if (items.length === 0 && !loading && isLatestPostsLoaded) {
+    if (items.length < 3  && !loading && isLatestPostsLoaded) {
       loadMorePosts()
+    } else {
+      setLatestPostsLoaded(true)
     }
   }, [isLatestPostsLoaded, items.length, loadMorePosts, loading])
 

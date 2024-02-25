@@ -12,7 +12,7 @@ import config from 'config'
 const defaultState = fromJS({
   theme: {},
   themeStyles: {},
-  rpcNode: config.HIVE_API_NODE,
+  rpcNode: config.DEFAULT_RPC_NODE,
   censorTypes: [],
   defaultVoteWeight: 1,
 })

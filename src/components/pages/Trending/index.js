@@ -136,8 +136,10 @@ const Trending = (props) => {
   }, [refreshRouteStatus])
 
   const loadMorePosts = useCallback(() => {
-    const { permlink, author } = last
-    getTrendingPostsRequest(permlink, author)
+    if(items.length>0) {
+      const { permlink, author } = last
+      getTrendingPostsRequest(permlink, author)
+    }
     // eslint-disable-next-line
   }, [last])
 

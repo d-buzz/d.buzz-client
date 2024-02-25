@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, {useEffect, useState} from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import moment from 'moment'
@@ -13,6 +13,10 @@ import { bindActionCreators } from 'redux'
 import { anchorTop } from 'services/helper'
 import { isMobile } from 'react-device-detect'
 import { ContainedButton } from 'components/elements'
+import { filterNotificationRequest } from 'store/polling/actions'
+import {Tab, Tabs} from "@material-ui/core"
+import Menu from "@material-ui/core/Menu"
+import MenuItem from "@material-ui/core/MenuItem"
 
 const addHover = (theme) => {
   let style = {
@@ -29,6 +33,55 @@ const addHover = (theme) => {
 }
 
 const useStyle = createUseStyles(theme => ({
+  tabs: {
+    textTransform: 'none !important',
+    '&:hover': {
+      backgroundColor: {
+        ...theme.textArea,
+      },
+      '& span': {
+        color: '#e53935',
+      },
+    },
+    '&.MuiTabs-indicator': {
+      backgroundColor: '#ffebee',
+    },
+    '& span': {
+      fontFamily: 'Segoe-Bold',
+      fontWeight: 'bold',
+      ...theme.font,
+    },
+    '& .MuiTab-root span.MuiTab-label': {
+      fontFamily: 'Segoe-Bold',
+      fontWeight: 'bold',
+      ...theme.font,
+    },
+    '&.Mui-selected': {
+      '& span': {
+        color: '#e53935',
+      },
+    },
+  },
+  tabsContainer: {
+    justifyContent: 'center',
+  },
+
+  topContainer: {
+    borderBottom: theme.border.primary,
+    '& label': {
+      fontFamily: 'Segoe-Bold',
+      paddingTop: 5,
+      '& span': {
+        color: '#d32f2f',
+        fontWeight: 400,
+      },
+    },
+  },
+  tabContainer: {
+    '& span.MuiTabs-indicator': {
+      backgroundColor: '#e53935 !important',
+    },
+  },
   row: {
     width: '98%',
     margin: '0 auto',
@@ -138,6 +191,9 @@ const useStyle = createUseStyles(theme => ({
     fontWeight: 'bold',
     fontSize: 15,
     ...theme.font,
+    textAlign: 'center',
+    display: 'block',
+    margin: '0 auto',
   },
   button: {
     '&:hover': {
@@ -160,7 +216,7 @@ const Notification = (props) => {
     notifFilter,
   } = props
 
-  const classes = useStyle()
+  const { filterNotificationRequest } = props
 
   useEffect(() => {
     anchorTop()
@@ -188,13 +244,12 @@ const Notification = (props) => {
   }
 
   const generateFilterDescription = () => {
-    let verb = `${notifFilter.toLowerCase().charAt(0).toUpperCase()+notifFilter.toLowerCase().slice(1)}s`
+    let verb = `${notifFilter.toLowerCase().charAt(0).toUpperCase()+notifFilter.toLowerCase().slice(1)}S`
 
     if(verb === 'Replys') {
       verb = 'Replies'
     }
-
-    return `Showing ${verb}`
+    // return `Showing ${verb}`
   }
 
   const handleClickViewProfile = (username) => (e) => {
@@ -202,63 +257,101 @@ const Notification = (props) => {
     window.open(`https://d.buzz/@${username}`, '_blank')
   }
 
+  const classes = useStyle()
+  const [selectedTab, setSelectedTab] = useState(0)
+  const [anchorEl, setAnchorEl] = useState(null)
+
+  useEffect(() => {
+    anchorTop()
+    setPageFrom(null)
+  }, [setPageFrom])
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue)
+
+    switch (newValue) {
+    case 0:
+      filterNotificationRequest('ALL')
+      generateFilterDescription()
+      break
+    case 1:
+      filterNotificationRequest('MENTION')
+      generateFilterDescription()
+      break
+    default:
+      break
+    }
+  }
+
+  const openMenu = (e) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const closeMenu = () => {
+    setAnchorEl(null)
+  }
+
+  const handleFilterChange = (filter) => () => {
+    filterNotificationRequest(filter)
+    setAnchorEl(null)
+  }
+
   return (
     <React.Fragment>
-      {notifFilter !== 'ALL' && (
-        <center>
-          <br />
-          <span className={classes.filteredNote}>
-            {generateFilterDescription()}
-          </span>
-        </center>
-      )}
+      <div className={classes.topContainer}>
+        <Tabs
+          value={selectedTab}
+          onChange={handleTabChange}
+          className={classes.tabs}
+          classes={{ flexContainer: classes.tabsContainer }}
+        >
+          <Tab label="All" />
+          <Tab label="Mention" />
+          <Tab label="Filters" onClick={openMenu} />
+        </Tabs>
+
+        <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={closeMenu}>
+          <MenuItem onClick={handleFilterChange('VOTE')}>Votes</MenuItem>
+          <MenuItem onClick={handleFilterChange('FOLLOW')}>Follows</MenuItem>
+          <MenuItem onClick={handleFilterChange('REPLY')}>Replies</MenuItem>
+          <MenuItem onClick={handleFilterChange('REBLOG')}>Reblogs</MenuItem>
+          <MenuItem onClick={handleFilterChange('TRANSFER')}>Transfers</MenuItem>
+        </Menu>
+
+      </div>
+      {/*{notifFilter !== 'ALL' && <center><span className={classes.filteredNote}>Showing {notifFilter}S</span></center>}*/}
+
       {notifications.map((item, index) => (
-        <React.Fragment key={index}>
-          <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')}>
-            <div className={classes.row}>
-              <Link to={generateNotifLink(item.type, item.url)} style={{ textDecoration: 'none' }}>
-                <Row>
-                  <Col xs="auto" style={{ paddingRight: 0 }}>
-                    <div className={classes.left}>
-                      <Avatar
-                        author={actionAuthor(item.msg).replace('@', '')}
-                        onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))}
-                      />
-                    </div>
-                  </Col>
-                  <Col>
-                    <div className={classes.right}>
-                      <div className={classes.content}>
-                        <label className={classes.username}>
-                          {item.msg}
-                        </label> <br />
-                        <label className={classes.username}>
-                          {moment(`${item.date}Z`).local().fromNow()}
-                        </label><br />
-                      </div>
-                    </div>
-                  </Col>
-                  <Col>
+        <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')} key={index}>
+          <div className={classes.row}>
+            <Link to={generateNotifLink(item.type, item.url)}>
+              <Row>
+                <Col xs="auto" style={{ paddingRight: 0 }}>
+                  <div className={classes.left}>
+                    <Avatar author={actionAuthor(item.msg).replace('@', '')} onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))} />
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.right}>
                     <div className={classes.content}>
-                      <ContainedButton
-                        fontSize={12}
-                        disabled={loading}
-                        style={{ float: 'right' }}
-                        transparent={true}
-                        label="View profile"
-                        className={classes.button}
-                        onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))}
-                      />
+                      <label className={classes.username}>{item.msg}</label>
+                      <br />
+                      <label className={classes.username}>{moment(`${item.date}Z`).local().fromNow()}</label>
+                      <br />
                     </div>
-                  </Col>
-                </Row>
-              </Link>
-            </div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className={classes.content}>
+                    <ContainedButton fontSize={12} disabled={loading} style={{ float: 'right' }} transparent={true} label="View profile" className={classes.button} onClick={handleClickViewProfile(actionAuthor(item.msg).replace('@', ''))} />
+                  </div>
+                </Col>
+              </Row>
+            </Link>
           </div>
-        </React.Fragment>
+        </div>
       ))}
-      {(!loading && notifications.length === 0) &&
-        (<span className={classes.noData}><center><br/><h6>You have no notifications</h6></center></span>)}
+      {(!loading && notifications.length === 0) && <span className={classes.noData}><center><h6>You have no notifications</h6></center></span>}
       <Spinner loading={loading} />
     </React.Fragment>
   )
@@ -274,6 +367,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     setPageFrom,
+    filterNotificationRequest,
   }, dispatch),
 })
 

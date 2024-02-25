@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import { connect } from 'react-redux'
 import { pending } from 'redux-saga-thunk'
 
@@ -26,13 +26,35 @@ const AccountPosts = (props) => {
     mutelist,
   } = props
   const classes = useStyle()
-  const loadMorePosts =  useCallback(() => {
-    try {
-      const { permlink, author: start_author } = last
-      getAccountPostsRequest(author, permlink, start_author)
-    } catch(e) { }
+
+  const [isFeedPostsLoaded , setFeedPostsLoad] = useState(false)
+
+  const loadMorePosts = useCallback(() => {
+    if (!loading) {
+      if(items.length>0) {
+        const { permlink, author: start_author } = last
+        getAccountPostsRequest(author, permlink, start_author)
+      }
+    }
     // eslint-disable-next-line
-  }, [last])
+  }, [last, loading])
+
+  useEffect(() => {
+    if (items.length < 3 && !loading && isFeedPostsLoaded) {
+      loadMorePosts()
+    } else {
+      setFeedPostsLoad(true)
+    }
+  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading])
+
+
+  // const loadMorePosts =  useCallback(() => {
+  //   try {
+  //     const { permlink, author: start_author } = last
+  //     getAccountPostsRequest(author, permlink, start_author)
+  //   } catch(e) { }
+  //   // eslint-disable-next-line
+  // }, [last])
 
   const muted = mutelist.includes(author)
 
@@ -42,8 +64,7 @@ const AccountPosts = (props) => {
         {!muted && (
           <React.Fragment>
             <InfiniteList disableOpacity={true} loading={loading} items={items} onScroll={loadMorePosts} unguardedLinks={!user.is_authenticated}/>
-            {(!loading && items.length === 0) &&
-          (<center><br/><h6>No Buzz's from @{author}</h6></center>)}
+            {(!loading && items.length === 0) && (<center><br/><h6>No Buzz's from @{author}</h6></center>)}
           </React.Fragment>
         )}
         {muted && <center><br /><h6>This user is on your mutelist, unmute this user to view their buzzes</h6></center>}

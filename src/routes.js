@@ -84,6 +84,11 @@ const routes =  [
         component: Trending,
       },
       {
+        path: '/messages',
+        exact: true,
+        component: Trending,
+      },
+      {
         path: '/latest',
         exact: true,
         component: Latest,

@@ -9,7 +9,7 @@ import {
   setThemeSuccess,
   setThemeFailure,
 
-  GET_BEST_RPC_NODE,
+  GET_RPC_NODE,
   setRpcNode,
 
   CHECK_VERSION_REQUEST,
@@ -24,16 +24,13 @@ import {
 
   SET_DEFAULT_VOTING_WEIGHT_REQUEST,
   setDefaultVotingWeightSuccess,
-
-  GET_WS_NODE_HAS,
-  setWSNodeHAS,
 } from './actions'
 
 import {
   checkVersion,
   getCensorTypes,
   censorBuzz,
-  geRPCNode,
+  getActiveRPCNode,
 } from 'services/api'
 import config from 'config'
 
@@ -78,19 +75,12 @@ function* checkVersionRequest(meta) {
   yield put(checkVersionSuccess(latest, meta))
 }
 
-function* getBestRPCNode(meta) {
-  const node = yield call(geRPCNode)
+function* getRPCNode(meta) {
+  const node = yield call(getActiveRPCNode)
 
   yield call([localStorage, localStorage.setItem], 'rpc-node', node)
 
   yield put(setRpcNode(node, meta))
-}
-
-function* getWSNodeHASRequest(meta) {
-  const hasServer = config.HAS_WS
-  yield call([localStorage, localStorage.setItem], 'websocketHAS', hasServer)
-
-  yield put(setWSNodeHAS(hasServer, meta))
 }
 
 function* getCensorTypesRequest(meta) {
@@ -129,12 +119,8 @@ function* watchSetThemeRequest({ payload, meta }) {
   yield call(setThemeRequest, payload ,meta)
 }
 
-function* watchGetBestRPCNode({ meta }) {
-  yield call(getBestRPCNode, meta)
-}
-
-function* watchGetWSNodeHAS({ meta }) {
-  yield call(getWSNodeHASRequest, meta)
+function* watchGetRPCNode({ meta }) {
+  yield call(getRPCNode, meta)
 }
 
 function* watchCheckVersionRequest({ meta }) {
@@ -156,8 +142,7 @@ function* watchSetDefaultVotingWeightRequest({ payload, meta }) {
 export default function* sagas() {
   yield takeEvery(GET_SAVED_THEME_REQUEST, watchGetSavedThemeRequest)
   yield takeEvery(SET_THEME_REQUEST, watchSetThemeRequest)
-  yield takeEvery(GET_BEST_RPC_NODE, watchGetBestRPCNode)
-  yield takeEvery(GET_WS_NODE_HAS, watchGetWSNodeHAS)
+  yield takeEvery(GET_RPC_NODE, watchGetRPCNode)
   yield takeEvery(CHECK_VERSION_REQUEST, watchCheckVersionRequest)
   yield takeEvery(GET_CENSOR_TYPES_REQUEST, watchGetCensorTypesRequest)
   yield takeEvery(CENSOR_BUZZ_REQUEST, watchCensorBuzzRequest)

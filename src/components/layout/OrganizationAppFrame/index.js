@@ -69,7 +69,7 @@ const OrganizationAppBar = () => {
   const classes = useStyles()
   const { pathname } = useLocation()
 
-  const termsOfService = (pathname.match(/^\/\/tos/))
+  const termsOfService = (pathname.match(/^\/tos/))
   const privacyPolicy = (pathname.match(/^\/privacy/))
   const disclaimer = (pathname.match(/^\/disclaimer/))
   const getStarted = (pathname.match(/^\/getstarted/))
@@ -90,7 +90,6 @@ const OrganizationAppBar = () => {
   } else if (leaderboard) {
     title = 'Leaderboard'
   }
-
 
   return (
     <React.Fragment>
