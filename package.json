@@ -1,7 +1,7 @@
 {
   "name": "d.buzz-client",
   "homepage": ".",
-  "version": "3.46.1",
+  "version": "3.46.0",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.10",
