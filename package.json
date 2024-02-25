@@ -96,6 +96,7 @@
     "start": "PORT=2020 GENERATE_SOURCEMAP=false env-cmd -f .env.development react-app-rewired start",
     "build:dev": "env-cmd -f .env.development react-app-rewired build && chmod +X ./change-version.sh",
     "build:prod": "env-cmd -f .env.production react-app-rewired build && chmod +X ./change-version.sh",
+    "build": "react-app-rewired build && chmod +X ./change-version.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src",
