@@ -31,8 +31,10 @@ const AccountPosts = (props) => {
 
   const loadMorePosts = useCallback(() => {
     if (!loading) {
-      const { permlink, author: start_author } = last
-      getAccountPostsRequest(author, permlink, start_author)
+      if(items.length>0) {
+        const { permlink, author: start_author } = last
+        getAccountPostsRequest(author, permlink, start_author)
+      }
     }
     // eslint-disable-next-line
   }, [last, loading])
