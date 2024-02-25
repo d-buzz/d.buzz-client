@@ -148,7 +148,7 @@ const Latest = (props) => {
       getLatestPostsRequest(permlink, author)
     }
     // eslint-disable-next-line
-  }, [last])
+  }, [last, items])
 
   useEffect(() => {
     if (items.length < 3  && !loading && isLatestPostsLoaded) {

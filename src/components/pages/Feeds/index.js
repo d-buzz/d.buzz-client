@@ -121,7 +121,7 @@ const Feeds = React.memo((props) => {
       }
     }
     // eslint-disable-next-line
-  }, [last, loading])
+  }, [last, loading, items])
 
   useEffect(() => {
     if(items.length>0) {
