@@ -81,7 +81,7 @@ const LinkConfirmationModal = (props) => {
         <ModalBody>
           <div style={{ width: '98%', margin: '0 auto', height: 'max-content' }}>
             <center>
-              <h2 className={classes.modalTitle}>Your're about to leave DBuzz</h2>
+              <h2 className={classes.modalTitle}>You're about to leave DBuzz</h2>
             </center>
             <span className={classes.leaveMessage}>
               <b>This link will bring you to:</b>
