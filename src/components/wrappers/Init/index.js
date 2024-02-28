@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTrendingTagsRequest } from 'store/posts/actions'
-import { getSavedUserRequest, initWSHASConnectionRequest, initCeremicLoginRequest } from 'store/auth/actions'
-import { getBestRpcNode, checkVersionRequest, setDefaultVotingWeightRequest, getWSNodeHAS } from 'store/settings/actions'
+import { getSavedUserRequest, initCeremicLoginRequest } from 'store/auth/actions'
+import { getRpcNode, checkVersionRequest, setDefaultVotingWeightRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
@@ -167,10 +167,7 @@ const Init = (props) => {
   const {
     getSavedUserRequest,
     getTrendingTagsRequest,
-    getBestRpcNode,
-    getWSNodeHAS,
-    initWSHASConnectionRequest,
-    // initCeremicLoginRequest,
+    getRpcNode,
     checkVersionRequest,
     getCensorTypesRequest,
     children,
@@ -226,59 +223,22 @@ const Init = (props) => {
   useEffect(() => {
     if(isStaging !== null) {
       if(!isStaging) {
-        if(isStaging !== null && isLite !== null) {
-          if(!isStaging && !isLite) {
-            checkVersionRequest().then((isLatest) => {
-              setIsLatest(isLatest)
-              getBestRpcNode().then(() => {
-                getWSNodeHAS()
-                initWSHASConnectionRequest()
-                getBestCeramicHost().then((host) => {
-                  initCeremicLoginRequest()
-                  localStorage.setItem('ceramic', host)
-                })
-                const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-                setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-                  getSavedUserRequest().then(() => {
-                    setInit(true)
-                    getCensorTypesRequest()
-                    getTrendingTagsRequest()
-                  })
-                })
+        checkVersionRequest().then((isLatest) => {
+          setIsLatest(isLatest)
+          getRpcNode().then(() => {
+            const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
+            setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
+              getSavedUserRequest().then(() => {
+                setInit(true)
+                getCensorTypesRequest()
+                getTrendingTagsRequest()
               })
             })
-          } else {
-            checkVersionRequest().then(() => {
-              const liteVersion = JSON.parse(localStorage.getItem('version'))?.lite
-              setIsLatest(liteVersion === process.env.REACT_APP_LITE_VERSION)
-              getBestRpcNode().then(() => {
-                getWSNodeHAS()
-                initWSHASConnectionRequest()
-                getBestCeramicHost().then((host) => {
-                  initCeremicLoginRequest()
-                  localStorage.setItem('ceramic', host)
-                })
-                const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
-                setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
-                  getSavedUserRequest().then(() => {
-                    setInit(true)
-                    getCensorTypesRequest()
-                    getTrendingTagsRequest()
-                  })
-                })
-              })
-            })
-          }
-        }
+          })
+        })
       } else {
         setIsLatest(isLatest)
-        getBestRpcNode().then(() => {
-          getWSNodeHAS()
-          initWSHASConnectionRequest()
-          getBestCeramicHost().then((host) => {
-            initCeremicLoginRequest()
-            localStorage.setItem('ceramic', host)
-          })
+        getRpcNode().then(() => {
           const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getSavedUserRequest().then(() => {
@@ -321,9 +281,7 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     getTrendingTagsRequest,
     getSavedUserRequest,
-    getBestRpcNode,
-    getWSNodeHAS,
-    initWSHASConnectionRequest,
+    getRpcNode,
     initCeremicLoginRequest,
     checkVersionRequest,
     getCensorTypesRequest,

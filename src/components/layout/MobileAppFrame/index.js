@@ -226,6 +226,7 @@ const useStyles = createUseStyles(theme => ({
     display: 'flex',
   },
   navBottom: {
+    paddingBottom: 25,
     borderTop: theme.border.primary,
     backgroundColor: theme.background.primary,
     zIndex: 2,
@@ -426,6 +427,9 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   nestedList: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     fontSize: 18,
     fontWeight: 'normal !important',
     background: theme.background.secondary,
@@ -680,6 +684,10 @@ const MobileAppFrame = (props) => {
     title = 'Latest'
   }
 
+  if (pathname.match(/^\/messages/)) {
+    title = 'Messages'
+  }
+
   if (!pathname.match(/(\/c\/)/) && pathname.match(/^\/@/)) {
     title = 'Profile'
   }
@@ -739,7 +747,7 @@ const MobileAppFrame = (props) => {
   // }
 
   const redirectToChatPage = () => {
-    window.location.href = "https://chat.d.buzz"
+    window.open("https://chat.d.buzz/")
   }
 
   const floatStyle = {
@@ -787,6 +795,9 @@ const MobileAppFrame = (props) => {
     case 'Trending':
       refreshTrendingRouteData()
       break
+    case 'messages':
+      redirectToChatPage()
+      break
     // case 'Latest':
     //   refreshLatestRouteData()
     //   break
@@ -819,8 +830,8 @@ const MobileAppFrame = (props) => {
     case '/latest':
       setActiveView('latest')
       break
-    case '/message':
-      setActiveView('message')
+    case '/messages':
+      setActiveView('messages')
       break
     case '/notifications':
       setActiveView('notifications')
@@ -888,7 +899,7 @@ const MobileAppFrame = (props) => {
       name: 'Message',
       icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
       path: `/message`,
-      onClick: () => handelClickItem('message'),
+      onClick:() => handelClickItem('messages'),
     },
   ]
 
@@ -1002,7 +1013,7 @@ const MobileAppFrame = (props) => {
   const NavLinkWrapper = ({ item, active }) => {
     return (
       <div onClick={item.onClick} className={classNames(classes.minifyItems, isActivePath(item.path, active) ? classes.activeItem : '')+' '+classes.displayFlex+' '+classes.justifyContentCenter+' '+classes.alignItemsCenter}>
-        <Link to={item.path || '#'}>
+        <Link onClick={item.onClick} to={item.path || '#'}>
           <IconButton
             size="medium"
             style={{width: 55, height: 55}}
@@ -1092,6 +1103,11 @@ const MobileAppFrame = (props) => {
   // eslint-disable-next-line
   const [showSideBarNavigation, setShowSideBarNavigation] = useState(false)
 
+  const handleRedirectToWallet = () => {
+    setShowSideBarNavigation(false)
+    history.push(`/@${username}/wallet`)
+  }
+
   return (
     <React.Fragment>
       <React.Fragment>
@@ -1112,16 +1128,18 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17,classes.fontWeight700)}>{userName || !username?.includes('did') ? username : shortenDid(username)}</span>
+                          <span className={classNames((mode ==='night' || mode ==='gray') ? 'text-white':classes.colorBlack,classes.fontsize17)}>{userName || username}</span>
                         </Link>
                         <Link to={'#'} className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100)} >
-                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17,classes.fontWeight700)}>@{!username?.includes('did') ? username : shortenDid(username)}</span>
+                          <span className={classNames((mode === 'night' || mode === 'gray')?'text-gray':classes.colorGray,classes.fontsize17)}>@{username}</span>
                         </Link>
                       </div>
                     </div>
                     <div className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                       <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100,classes.flexDirectionColumn)}>
                         <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{following}</span> Following</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{followers}</span> Followers</div>
                           <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{following}</span> Following</div>
                           <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{followers}</span> Followers</div>
                         </div>
@@ -1132,7 +1150,7 @@ const MobileAppFrame = (props) => {
                   <Link to={`/@${username}`} onClick={() => setShowSideBarNavigation(false)}  className={classNames(classes.marginTop8,classes.displayFlex,classes.positionRelative)}>
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom, classes.displayFlex,classes.justifyContentCenter,classes.width100, classes.alignItemsCenter)}>
-                        <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
+                        <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
                           <ProfileIcon style={{margin:0}} type='outline'/>
                           {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}`}>
@@ -1145,7 +1163,7 @@ const MobileAppFrame = (props) => {
                             </Link>
                           </div> */}
                         </div>
-                        <div onClick={()=>history.push(`/@${username}`)} className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
+                        <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} onClick={()=>history.push(`/@${username}`)} className={classNames((mode === 'night' || mode === 'gray')?'text-white':'text-black',classes.width100,classes.lineHeight24,classes.fontsize20,classes.displayFlex,classes.positionRelative,classes.justifyContentStart, classes.alignItemsCenter)}><p style={{margin:0}}>Profile</p></div>
                       </div>
 
                     </div>
@@ -1154,6 +1172,7 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
+                          <BookmarkIcon type='outline'/>
                           <BookmarkIcon type='outline'/>
                           {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}/t/pockets`}>
@@ -1238,8 +1257,8 @@ const MobileAppFrame = (props) => {
                           </ListItem>
                         </List>
                         <List component="div">
-                          <ListItem onClick={showSwitchModal} key='Swith Account' button>
-                            <ListItemText primary='Swith Account' />
+                          <ListItem onClick={showSwitchModal} key='Switch Account' button>
+                            <ListItemText primary='Switch Account' />
                           </ListItem>
                         </List>
                         <List component="div">
@@ -1248,7 +1267,7 @@ const MobileAppFrame = (props) => {
                           </ListItem>
                         </List>
                       </Collapse>
-                      <ListItem component="a" href={`/@${username}/wallet`} target="_blank" rel="noopener noreferrer" key='Wallet' button>
+                      <ListItem component="span" onClick={handleRedirectToWallet} key='Wallet' button>
                         <ListItemText primary='Wallet' />
                       </ListItem>
                     </List>
@@ -1471,7 +1490,7 @@ const MobileAppFrame = (props) => {
               )}
               <AvatarMenu />
 
-              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/messages' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>

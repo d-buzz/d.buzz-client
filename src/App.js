@@ -13,24 +13,20 @@ const TwitterEmbedAPI = React.lazy(() => import('components/pages/TwitterEmbedAP
 
 const useStyles = createUseStyles(theme => ({
   wrapper: {
-    overflow: 'hidden !important',
+    overflow: "hidden !important",
     backgroundColor: theme.background.primary,
   },
 }))
 
 const AppWrapper = ({ children }) => {
   const classes = useStyles()
-  return (
-    <div className={classes.wrapper}>
-      {children}
-    </div>
-  )
+  return <div className={classes.wrapper}>{children}</div>
 }
 
 const App = () => {
   const { pathname } = useLocation()
   const twitterEmbedRoutes = pathname.match(/^\/twitterEmbed/)
-  const currentSiteUrl = window.location.protocol + '//' + window.location.host
+  const currentSiteUrl = window.location.protocol + "//" + window.location.host
 
   useEffect(() => {
     // redirect old links to the new ones
@@ -43,15 +39,21 @@ const App = () => {
         <Helmet>
           <link rel="canonical" href={currentSiteUrl} />
           <meta property="og:title" content="D.Buzz" />
-          <meta property="og:description" content="D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today." />
+          <meta
+            property="og:description"
+            content="D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today."
+          />
           <meta property="og:image" content="https://d.buzz/dbuzz.svg" />
           <meta property="title" content="D.Buzz" />
-          <meta property="description" content="D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today." />
+          <meta
+            property="description"
+            content="D.Buzz | Micro-blogging for HIVE | Connect with thought leaders and like-minded individuals on d.buzz. Explore trending topics, share your insights, and join the community today."
+          />
           <meta property="image" content="https://d.buzz/dbuzz-icon.svg" />
         </Helmet>
         <LastLocationProvider>
           <ThemeLoader>
-            {!twitterEmbedRoutes ?
+            {!twitterEmbedRoutes ? (
               <Init>
                 <AuthGuard>
                   <AppWrapper>
@@ -62,8 +64,10 @@ const App = () => {
                       renderRoutes(ceramicRoutes)}
                   </AppWrapper>
                 </AuthGuard>
-              </Init> :
-              <TwitterEmbedAPI />}
+              </Init>
+            ) : (
+              <TwitterEmbedAPI />
+            )}
           </ThemeLoader>
         </LastLocationProvider>
       </React.Suspense>

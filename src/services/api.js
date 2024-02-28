@@ -4,18 +4,23 @@ import {
   broadcast,
   formatter,
 } from '@hiveio/hive-js'
+import {
+  api,
+  auth,
+  broadcast,
+  formatter,
+} from '@hiveio/hive-js'
 import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
-import config from 'config'
 import axios from 'axios'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
-import {hacManualTransaction, hacUserAuth, hacVote} from "@mintrawa/hive-auth-client"
+import { hiveAPIUrls } from './helper' // Adjust the path as necessary
 import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
@@ -25,39 +30,36 @@ const videoUrl = `${appConfig.VIDEO_API}`
 const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
 
-const APP_META = {
-  name: config.APP_NAME,
-  description: config.APP_DESCRIPTION,
-  icon: config.APP_ICON,
-}
-
-
 const visited = []
 
-const defaultNode = process.env.REACT_APP_DEFAULT_RPC_NODE
+const defaultNode = appConfig.DEFAULT_RPC_NODE
 
-export const geRPCNode = () => {
-  return new Promise( (resolve) => {
-    if(localStorage.getItem('rpc-setting')) {
-      if(localStorage.getItem('rpc-setting') !== 'default') {
-        const node = localStorage.getItem('rpc-setting')
-        resolve(node)
-      } else {
-        resolve(defaultNode)
-      }
+export const getActiveRPCNode = () => {
+  const rpcSetting = localStorage.getItem('rpc-setting')
+  // Check if the rpcSetting is not 'default' and is included in the hiveAPIUrls list
+  if (rpcSetting && rpcSetting !== 'default' && hiveAPIUrls.includes(rpcSetting)) {
+    return rpcSetting
+  }
+  // Return defaultNode if the condition above is not met
+  return defaultNode
+}
+export const setRPCNode = async () => {
+  try {
+    const node = getActiveRPCNode()
+    if (api && typeof api.setOptions === 'function') {
+      api.setOptions({ url: node })
     } else {
-      resolve(defaultNode)
+      throw new Error('API object or setOptions method is not available')
     }
-  })
+  } catch (error) {
+    console.error('Error setting RPC node, reverting to default:', error)
+    if (api && typeof api.setOptions === 'function') {
+      api.setOptions({ url: defaultNode })
+    } else {
+      console.error('Failed to revert to default RPC node')
+    }
+  }
 }
-
-export const setRPCNode = () => {
-  geRPCNode()
-    .then((node) => {
-      api.setOptions({url: node})
-    })
-}
-
 
 export const invokeMuteFilter = (items, mutelist, opacityUsers = []) => {
   return items.filter((item) => !mutelist.includes(item.author) || opacityUsers.includes(item.author))
@@ -147,7 +149,6 @@ export const searchPeople = (username) => {
 
   })
 }
-
 
 export const fetchDiscussions = (author, permlink) => {
   return new Promise((resolve, reject) => {
@@ -334,7 +335,6 @@ export const fetchContent = (author, permlink) => {
 }
 
 export const fetchReplies = (author, permlink) => {
-  api.setOptions({url: 'https://api.hive.blog'})
   return api.getContentRepliesAsync(author, permlink)
     .then(async (replies) => {
       if (replies.length !== 0) {
@@ -592,6 +592,8 @@ export const fetchFollowCount = (username) => {
 }
 
 export const fetchMuteList = (user) => {
+  const activeRPCNode = getActiveRPCNode()
+  api.setOptions({url: activeRPCNode})
   return new Promise((resolve, reject) => {
     api.call('condenser_api.get_following', [user, null, 'ignore', 1000], async (err, data) => {
       if (err) {
@@ -698,245 +700,6 @@ export const checkAccountIsFollowingLists = (observer) => {
       }
     })
   })
-}
-
-
-// has apis
-
-export const hiveAuthenticationService = (username) => {
-  const challenge = JSON.stringify({token: uuidv4()})
-  const hacModule = "has"
-  const hacPwd = sessionStorage.getItem('hacPwd')
-
-  hacUserAuth(username, APP_META, hacPwd, {key_type: 'posting', value: challenge}, hacModule)
-
-}
-
-export const hasFollowService = (username, following) => {
-  hacManualTransaction("posting", ["custom_json", {
-    "required_auths": [],
-    "required_posting_auths": [`${username}`],
-    "id": "follow",
-    "json": JSON.stringify(["follow", {"follower": `${username}`, "following": `${following}`, "what": ["blog"]}]),
-  }])
-}
-
-export const hasUnFollowService = (username, following) => {
-  hacManualTransaction("posting", ["custom_json", {
-    "required_auths": [],
-    "required_posting_auths": [`${username}`],
-    "id": "follow",
-    "json": JSON.stringify(["follow", {"follower": `${username}`, "following": `${following}`, "what": []}]),
-  }])
-}
-
-export const hasUpvoteService = (author, permlink, weight) => {
-  return hacVote(author, permlink, parseInt(weight))
-}
-
-export const hasReplyService = (username, body, parent_author, parent_permlink, json_metadata, permlink) => {
-  hacManualTransaction("posting", ["comment", {
-    "author": username,
-    "title": '',
-    "body": `${body.trim()}`,
-    parent_author,
-    parent_permlink,
-    permlink,
-    json_metadata,
-  }])
-}
-
-export const hasClearNotificationService = (username, lastNotification) => {
-  let date = moment().utc().format()
-  date = `${date}`.replace('Z', '')
-
-  const json = JSON.stringify(["setLastRead", {date}])
-  hacManualTransaction("posting", ["custom_json", {
-    'required_auths': [],
-    'required_posting_auths': [username],
-    'id': 'notify',
-    json,
-  }])
-}
-
-
-export const hasPostService = (operations) => {
-  console.log('wrdd')
-  hacManualTransaction("posting", operations)
-}
-
-export const hasGeneratePostService = (account, title, tags, body, payout, permlink) => {
-  const json_metadata = createMeta(tags)
-
-  const operations = []
-
-  return new Promise((resolve) => {
-    const op_comment = [
-      'comment',
-      {
-        'author': account,
-        'title': stripHtml(title),
-        'body': `${body.trim()}`,
-        'parent_author': '',
-        'parent_permlink': `${appConfig.TAG}`,
-        permlink,
-        json_metadata,
-      },
-    ]
-
-    operations.push(op_comment)
-
-    const max_accepted_payout = `${payout.toFixed(3)} HBD`
-    const extensions = []
-
-
-    if (payout === 0) {
-      extensions.push([
-        0,
-        {
-          beneficiaries:
-            [
-              {account: 'null', weight: 10000},
-            ],
-        },
-      ])
-    }
-
-
-    const op_comment_options = [
-      'comment_options',
-      {
-        'author': account,
-        permlink,
-        max_accepted_payout,
-        'percent_hbd': 10000,
-        'allow_votes': true,
-        'allow_curation_rewards': true,
-        extensions,
-      },
-    ]
-
-    operations.push(op_comment_options)
-
-    resolve(operations)
-  })
-
-}
-
-const footnote = (body) => {
-  const footnoteAppend = '<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>'
-  body = `${body} ${footnoteAppend}`
-
-  return body
-}
-
-export const publishPostWithHAS = async (user, body, tags, payout, perm) => {
-
-  let title = stripHtml(body)
-  title = `${title}`.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-  title = `${title}`.trim()
-
-  if (title.length > 70) {
-    title = `${title.substr(0, 70)} ...`
-  }
-
-  body = footnote(body)
-
-  const permlink = perm ? perm : createPermlink(title)
-
-  const operations = await hasGeneratePostService(user.username, title, tags, body, payout, permlink)
-  hasPostService(operations[0])
-  const comment = operations[0]
-  const json_metadata = comment[1].json_metadata
-
-  let currentDatetime = moment().toISOString()
-  currentDatetime = currentDatetime.replace('Z', '')
-
-  let cashout_time = moment().add(7, 'days').toISOString()
-  cashout_time = cashout_time.replace('Z', '')
-
-  let bodyOperation = comment[1].body
-  bodyOperation = bodyOperation.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-
-
-  const content = {
-    author: user.username,
-    category: 'hive-193084',
-    permlink,
-    title: comment[1].title,
-    body: bodyOperation,
-    replies: [],
-    total_payout_value: '0.000 HBD',
-    curator_payout_value: '0.000 HBD',
-    pending_payout_value: '0.000 HBD',
-    active_votes: [],
-    root_author: "",
-    parent_author: null,
-    parent_permlink: "hive-190384",
-    root_permlink: permlink,
-    root_title: title,
-    json_metadata,
-    children: 0,
-    created: currentDatetime,
-    cashout_time,
-    max_accepted_payout: `${payout.toFixed(3)} HBD`,
-  }
-
-  const data = {
-    author: user.username,
-    permlink,
-    content,
-  }
-
-  return data
-}
-
-export const publishReplyWithHAS = async (username, body, parent_author, parent_permlink, ref, treeHistory) => {
-  body = footnote(body)
-  let replyData = {}
-  const json_metadata = createMeta()
-  let permlink = createPermlink(body.substring(0, 100))
-  permlink = `re-${permlink}`
-  hasReplyService(username, body, parent_author, parent_permlink, json_metadata, permlink)
-  let currentDatetime = moment().toISOString()
-  currentDatetime = currentDatetime.replace('Z', '')
-
-  const reply = {
-    author: username,
-    category: 'hive-193084',
-    permlink: permlink,
-    title: '',
-    body: `${body.trim()}`,
-    replies: [],
-    total_payout_value: '0.000 HBD',
-    curator_payout_value: '0.000 HBD',
-    pending_payout_value: '0.000 HBD',
-    active_votes: [],
-    parent_author,
-    parent_permlink,
-    root_author: parent_author,
-    root_permlink: parent_permlink,
-    children: 0,
-    created: currentDatetime,
-  }
-
-  reply.body = reply.body.replace('<br /><br /> Posted via <a href="https://d.buzz" data-link="promote-link">D.Buzz</a>', '')
-
-  reply.refMeta = {
-    ref,
-    author: parent_author,
-    permlink: parent_permlink,
-    treeHistory,
-  }
-
-  replyData = reply
-
-
-  const data = {
-    reply: replyData,
-  }
-
-  return data
 }
 
 // keychain apis
@@ -1344,8 +1107,8 @@ export const generateUpdateOperation = (parent_author, parent_permlink, author, 
 export const generateReplyOperation = (account, body, parent_author, parent_permlink) => {
 
   const json_metadata = createMeta()
-  let permlink = createPermlink(body.substring(0, 100))
-  permlink = `re-${permlink}`
+  // let permlink = createPermlink(body.substring(0, 100))
+  const permlink = `re-${parent_permlink}`
   return new Promise((resolve) => {
 
     const op_comment = [[
@@ -1649,8 +1412,9 @@ export const checkIfImage = (links) => {
 
 export const uploadImage = async (data, progress) => {
   const formData = new FormData()
+  const customImageName = data.name.replace(/ /g, "-")
   formData.append('file', data, data.name)
-  formData.append('customFileName', data.name)
+  formData.append('customFileName', customImageName)
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios({
@@ -1710,18 +1474,6 @@ export const getLinkMeta = (url) => {
       })
       .catch(function (error) {
         reject(error)
-      })
-  })
-}
-
-export const getBestRpcNode = () => {
-  return new Promise((resolve) => {
-    axios.get('https://beacon.peakd.com/api/best')
-      .then(function (result) {
-        resolve(result.data[0].endpoint)
-      })
-      .catch(function (error) {
-        resolve('https://api.hive.blog')
       })
   })
 }

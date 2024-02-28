@@ -8,6 +8,14 @@ import Collapse from '@material-ui/core/Collapse'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import Divider from '@material-ui/core/Divider'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Collapse from '@material-ui/core/Collapse'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import Divider from '@material-ui/core/Divider'
 
 const MoreMenu = (props) => {
   const {
@@ -36,6 +44,11 @@ const MoreMenu = (props) => {
     setcallFunc(onClick)
   }
  
+
+  const handleClickCollapse = (onClick) => () => {
+    setcallFunc(onClick)
+  }
+
   useEffect(() => {
     // console.log(open, themeModal, switchUserModal)
     setcallFunc(callFunc)
@@ -55,17 +68,22 @@ const MoreMenu = (props) => {
       onClose={onClose}
       className={className}
       transformOrigin={{vertical: 'top', horizontal: 'top'}}
+      transformOrigin={{vertical: 'top', horizontal: 'top'}}
     >
       <List
         component="nav"
         aria-labelledby="advanced-subheader"
         subheader={<ListSubheader component="div" id="advanced-subheader" style={{ fontSize: '20px !important', fontWeight: '700 !important' }}>
-          Advanced
+              Advanced
         </ListSubheader>}
+        style={{
+          maxHeight: '400px', // Adjust this value based on your needs
+          overflowY: 'auto', // This makes the list scrollable
+        }}
       >
         <Divider />
         {items.map(({onClick, text, visible, subItems, collapse}) => (
-          visible && 
+          visible &&
             (
               Object.keys(subItems).length > 0 ? (
                 <>
@@ -96,7 +114,7 @@ const MoreMenu = (props) => {
                             <ListItemText primary={subtext} />
                           </ListItem>
                         </List>
-                  
+
                     ))}
                   </Collapse>
                 </>

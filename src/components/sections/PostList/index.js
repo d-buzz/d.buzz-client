@@ -426,6 +426,7 @@ const PostList = React.memo((props) => {
     // if user is not authenticated call open modal then return
     setOpenLoginModal(true)
     return
+    return
   }
 
   // hide login modal
@@ -602,6 +603,8 @@ const PostList = React.memo((props) => {
                 {!muted && !hidden && !opacityActivated && disableOpacity && !isMutedUser() && !isAHiddenBuzz() && (
                   <div className={classes.actionWrapper}>
                     <PostActions
+                      key={item?.id}
+                      type={type}
                       upvoteList={upvoteList}
                       // disableUpvote={disableUpvote}
                       title={title}

@@ -22,6 +22,9 @@ import {
   MessageIcon,
   BookmarkIcon,
   CommunityIcon,
+  MessageIcon,
+  BookmarkIcon,
+  CommunityIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
 import {
@@ -910,11 +913,18 @@ const SideBarLeft = (props) => {
                 subonClick: showThemeModal,
               },
               {
-                subtext: 'Swith Account',
+                subtext: 'Switch Account',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
                 subhref: '',
                 subonClick: showSwitchModal,
+              },
+              {
+                subtext: 'Settings',
+                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
+                subvisible: true,
+                subhref: '',
+                subonClick: showSettingsModal,
               },
               {
                 subtext: 'Messages',
