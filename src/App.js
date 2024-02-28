@@ -1,17 +1,17 @@
-import React, { useEffect } from "react"
-import routes from "./routes"
-import { withRouter } from "react-router"
-import { Init, AuthGuard, ThemeLoader } from "components"
-import { renderRoutes } from "react-router-config"
-import { LastLocationProvider } from "react-router-last-location"
-import { createUseStyles } from "react-jss"
-import { Helmet } from "react-helmet"
-import { redirectOldLinks } from "services/helper"
-import { useLocation } from "react-router-dom"
-const TwitterEmbedAPI = React.lazy(
-  () => import("components/pages/TwitterEmbedAPI"),
-)
-const useStyles = createUseStyles((theme) => ({
+import React, { useEffect } from 'react'
+import routes from './routes'
+import { withRouter } from 'react-router'
+import { Init, AuthGuard, ThemeLoader } from 'components'
+import { renderRoutes } from 'react-router-config'
+import { LastLocationProvider } from 'react-router-last-location'
+import { createUseStyles } from 'react-jss'
+import { Helmet } from 'react-helmet'
+import { isLiteMode, redirectOldLinks } from 'services/helper'
+import { useLocation } from 'react-router-dom'
+import ceramicRoutes from 'ceramicRoutes'
+const TwitterEmbedAPI = React.lazy(() => import('components/pages/TwitterEmbedAPI'))
+
+const useStyles = createUseStyles(theme => ({
   wrapper: {
     overflow: "hidden !important",
     backgroundColor: theme.background.primary,
@@ -56,7 +56,13 @@ const App = () => {
             {!twitterEmbedRoutes ? (
               <Init>
                 <AuthGuard>
-                  <AppWrapper>{renderRoutes(routes)}</AppWrapper>
+                  <AppWrapper>
+                    {!isLiteMode()
+                      ?
+                      renderRoutes(routes)
+                      :
+                      renderRoutes(ceramicRoutes)}
+                  </AppWrapper>
                 </AuthGuard>
               </Init>
             ) : (

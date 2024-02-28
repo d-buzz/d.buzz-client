@@ -22,6 +22,9 @@ import {
   MessageIcon,
   BookmarkIcon,
   CommunityIcon,
+  MessageIcon,
+  BookmarkIcon,
+  CommunityIcon,
 } from 'components/elements'
 import IconButton from '@material-ui/core/IconButton'
 import {
@@ -381,7 +384,7 @@ const SideBarLeft = (props) => {
       getBasicProfile(username)
         .then((res) => {
           setCeramicUser(res)
-          setUserAvatarUrl(getIpfsLink(res.images.avatar))
+          setUserAvatarUrl(getIpfsLink(res?.images?.avatar))
           setFetchingUser(false)
         })
     }
@@ -399,10 +402,10 @@ const SideBarLeft = (props) => {
     setOpenSwitchModal(true)
   }
 
-  const showSettingsModal = () => {
-    handleClickCloseOpenMoreMenu()
-    setOpenSettingsModal(true)
-  }
+  // const showSettingsModal = () => {
+  //   handleClickCloseOpenMoreMenu()
+  //   setOpenSettingsModal(true)
+  // }
 
   useEffect(() => {
     if (isBuzzIntent || fromIntentBuzz || (intentBuzz && intentBuzz.text)) {
@@ -670,12 +673,6 @@ const SideBarLeft = (props) => {
       icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
       preventDefault: false,
       onClick: () => handelClickItem('latest'),
-    },
-    {
-      name: 'Notifications',
-      path: `/notifications`,
-      icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" overlap="rectangular"><NotificationsIcon type='outline'/></Badge>,
-      onClick: () => handelClickItem('notifications'),
     },
     {
       name: 'Messages',

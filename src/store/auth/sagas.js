@@ -172,6 +172,7 @@ function* authenticateUserRequest(payload, meta) {
         localStorage.setItem('user', JSON.stringify(users))
         localStorage.setItem('accounts', JSON.stringify(accounts))
         localStorage.setItem('drafts', JSON.stringify(JSON.parse(drafts)))
+        yield call([localStorage, localStorage.setItem], 'lite', 'TRUE')
         setAccountList(accounts)
 
         authenticateUserSuccess(user, meta)
@@ -256,6 +257,7 @@ function* authenticateUserRequest(payload, meta) {
       yield call([localStorage, localStorage.setItem], 'accounts', JSON.stringify(accounts))
       yield call([localStorage, localStorage.setItem], 'ceramic.auth', JSON.stringify(JSON.parse(ceramicAuth)))
       yield call([localStorage, localStorage.setItem], 'drafts', JSON.stringify(JSON.parse(drafts)))
+      yield call([localStorage, localStorage.setItem], 'lite', 'TRUE')
       yield put(setAccountList(accounts))
 
     }

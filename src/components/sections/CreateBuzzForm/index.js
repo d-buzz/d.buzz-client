@@ -11,6 +11,9 @@ import {
   EmojiIcon,
 } from 'components/elements'
 import {clearIntentBuzz} from 'store/auth/actions'
+import {pending} from 'redux-saga-thunk'
+import {connect} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 import {broadcastNotification, setLinkConfirmationModal, setViewImageModal} from 'store/interface/actions'
 import {PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
 import {bindActionCreators} from 'redux'
@@ -24,9 +27,6 @@ import {
   publishReplyRequest,
   setContentRedirect,
 } from 'store/posts/actions'
-import {pending} from 'redux-saga-thunk'
-import {connect} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 // import { WithContext as ReactTags } from 'react-tag-input'
 import {isDesktop, isMobile} from 'react-device-detect'
 import {invokeTwitterIntent, calculateOverhead, stripHtml} from 'services/helper'
@@ -1236,7 +1236,7 @@ const CreateBuzzForm = (props) => {
     }
   }
 
-  const handleClickPublishPost = () => {
+  const handlePublishPost = () => {
 
     if (buzzToTwitter) {
       invokeTwitterIntent(content)
@@ -1273,11 +1273,11 @@ const CreateBuzzForm = (props) => {
       } else {
         setBuzzLoading(true)
         setBuzzing(true)
-        createPostRequest(user.username, '', buzzContent)
+        createPostRequest(user.username, buzzContent)
           .then((data) => {
             if (data) {
               setPageFrom(null)
-              const {creatorId, streamId} = data
+              const {creatorId, permlink} = data
               removeAutoSavedDraft()
               broadcastNotification('success', 'You successfully published a post')
               setBuzzLoading(false)
@@ -1285,7 +1285,7 @@ const CreateBuzzForm = (props) => {
               clearIntentBuzz()
               resetBuzzForm()
               hideModalCallback()
-              history.push(`/@${creatorId}/${streamId}`)
+              history.push(`/@${creatorId}/${permlink}`)
             }
           })
       }
@@ -1474,8 +1474,8 @@ const CreateBuzzForm = (props) => {
 
       getBasicProfile(user.username)
         .then((res) => {
-          if (res.images) {
-            setAvatarUrl(getIpfsLink(res.images.avatar))
+          if(res?.images) {
+            setAvatarUrl(getIpfsLink(res?.images?.avatar))
           }
         })
     }
@@ -1762,7 +1762,7 @@ const CreateBuzzForm = (props) => {
                     disabled={loading || publishing || (content.trim().length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
                     label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
                     style={{margin: 0}}
-                    onClick={handleClickPublishPost}
+                    onClick={handlePublishPost}
                   />
                 </div>
               </span>
@@ -1795,7 +1795,7 @@ const CreateBuzzForm = (props) => {
               disabled={loading || publishing || (content.length === 0 && buzzImages === 0) || buzzRemainingChars < 0}
               label={buzzThreads ? Object.keys(buzzThreads).length > 1 ? 'Buzz all' : 'Buzz' : 'Buzz'}
               style={{margin: 0}}
-              onClick={handleClickPublishPost}
+              onClick={handlePublishPost}
             />
           </div>
         </div>}

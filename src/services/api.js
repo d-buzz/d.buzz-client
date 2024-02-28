@@ -4,6 +4,12 @@ import {
   broadcast,
   formatter,
 } from '@hiveio/hive-js'
+import {
+  api,
+  auth,
+  broadcast,
+  formatter,
+} from '@hiveio/hive-js'
 import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
@@ -15,6 +21,7 @@ import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer
 import 'react-app-polyfill/stable'
 import {calculateOverhead, stripHtml} from 'services/helper'
 import { hiveAPIUrls } from './helper' // Adjust the path as necessary
+import { checkForCeramicAccount, getUserPostRequest } from './ceramic'
 
 const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
@@ -86,45 +93,60 @@ export const callBridge = async (method, params, appendParams = true) => {
       params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
     }
 
-    api.call('bridge.' + method, params, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        let lastResult = []
-
-        if (data.length !== 0) {
-          lastResult = [data[data.length - 1]]
+    if(!params.account || !params.account.includes('did')) {
+      api.call('bridge.' + method, params, async(err, data) => {
+        if (err) {
+          reject(err)
+        }else {
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          removeFootNote(data)
+  
+          let result = data.filter((item) => invokeFilter(item))
+  
+          result = [...result, ...lastResult]
+  
+          resolve(result)
         }
+      })
+    } else {
+      return []
+    }
 
-        removeFootNote(data)
-
-        let result = data.filter((item) => invokeFilter(item))
-
-        result = [...result, ...lastResult]
-
-        resolve(result)
-      }
-    })
   })
 }
 
 export const searchPeople = (username) => {
   return new Promise((resolve, reject) => {
-    fetchSingleProfile(username)
-      .then((response) => {
-        const profile = response
-        profile.reputations =  [
-          {
-            account: profile.name,
-            reputation: profile.reputation,
-          },
-        ]
+    const params = {account_lower_bound: username, limit: 30}
 
-        resolve(profile)
-      })
-      .catch((err) => {
+    api.call('reputation_api.get_account_reputations', params, async (err, data) => {
+      if (err) {
         reject(err)
-      })
+      } else {
+
+        if (data.reputations.length !== 0) {
+          data.reputations.forEach((item, index) => {
+            let score = item.reputation ? formatter.reputation(item.reputation) : 25
+            if (!score || score < 25) {
+              score = 25
+            }
+            data.reputations[index].repscore = score
+            data.reputations[index].author = item.account
+          })
+
+          const getProfiledata = mapFetchProfile(data.reputations)
+          await Promise.all([getProfiledata])
+        }
+
+        resolve(data)
+      }
+    })
+
   })
 }
 
@@ -249,31 +271,38 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       limit: 100,
     }
 
-    api.call('bridge.get_account_posts', params, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        removeFootNote(data)
-
-        let lastResult = []
-
-        if (data.length !== 0) {
-          lastResult = [data[data.length - 1]]
+    if(!checkForCeramicAccount(account)) {
+      api.call('bridge.get_account_posts', params, async(err, data) => {
+        if(err) {
+          reject(err)
+        }else {
+          removeFootNote(data)
+  
+          let lastResult = []
+  
+          if(data.length !== 0) {
+            lastResult = [data[data.length-1]]
+          }
+  
+          let posts = data.filter((item) => invokeFilter(item))
+  
+          posts = [...posts, ...lastResult]
+  
+          if(posts.length === 0) {
+            posts = []
+          }
+          resolve(posts)
         }
+      })
+    } else {
+      getUserPostRequest(account)
+        .then(res => {
+          resolve(res.posts)
+        })
+    }
 
-        let posts = typeof data !== 'string' ? data.filter((item) => invokeFilter(item)) : []
-
-        posts = [...posts, ...lastResult]
-
-        if (posts.length === 0) {
-          posts = []
-        }
-        resolve(posts)
-      }
-    })
   })
 }
-
 
 export const fetchTrendingTags = () => {
   return new Promise((resolve, reject) => {
@@ -1238,11 +1267,54 @@ export const createMeta = (tags = []) => {
   return JSON.stringify(meta)
 }
 
-export const createPermlink = (title) => {
-  const permlink = new Array(22).join().replace(/(.|$)/g, function () {
-    return ((Math.random() * 36) | 0).toString(36)
+const STOP_WORDS = new Set([
+  "a", "about", "actually", "almost", "also", "although", "always", "am", "an",
+  "and", "any", "are", "as", "at", "be", "became", "become", "but", "by", "can",
+  "could", "did", "do", "does", "each", "either", "else", "for", "from", "had",
+  "has", "have", "hence", "how", "i", "if", "in", "is", "it", "its", "just", "may",
+  "maybe", "me", "might", "mine", "must", "my", "neither", "nor", "not", "of", "oh",
+  "ok", "when", "where", "whereas", "wherever", "whenever", "whether", "which", "while",
+  "who", "whom", "whoever", "whose", "why", "will", "with", "within", "without", "would",
+  "yes", "yet", "you", "your",
+])
+
+function sanitizeTitle(title) {
+  return title.replace(/[^a-zA-Z0-9\s]/g, '')
+}
+
+function generateSeoFriendlyPermalink(title) {
+  const words = title.split(' ').filter(word => {
+    const lowercased = word.toLowerCase()
+    return !STOP_WORDS.has(lowercased) && lowercased.length > 1
   })
-  return permlink
+  return words.join('-').toLowerCase()
+}
+
+const MAX_CHARS = 20
+
+function truncatePermlink(permlink) {
+  let truncated = permlink.substring(0, MAX_CHARS)
+  while (truncated.endsWith('-')) {
+    truncated = truncated.slice(0, -1)
+  }
+  return truncated
+}
+
+function generateRandomString(length) {
+  return Array.from({ length }, () => (Math.random() * 36 | 0).toString(36)).join('')
+}
+
+export const createPermlink = (title) => {
+  const sanitizedTitle = sanitizeTitle(title)
+  let seoFriendlyPermlink = generateSeoFriendlyPermalink(sanitizedTitle)
+
+  if (seoFriendlyPermlink.length > MAX_CHARS) {
+    seoFriendlyPermlink = truncatePermlink(seoFriendlyPermlink)
+  }
+
+  return seoFriendlyPermlink.length >= MAX_CHARS
+    ? seoFriendlyPermlink
+    : generateRandomString(MAX_CHARS)
 }
 
 
@@ -1631,4 +1703,25 @@ export const searchHiveTags = (query) => {
       reject(error)
     })
   })
+}
+
+export const deepClone = (obj)  => {
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (Array.isArray(obj)) {
+    // If it's an array, clone each element
+    return obj.map(deepClone)
+  }
+
+  // If it's an object, clone each property
+  const clonedObj = {}
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      clonedObj[key] = deepClone(obj[key])
+    }
+  }
+
+  return clonedObj
 }

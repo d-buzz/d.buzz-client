@@ -99,7 +99,7 @@ const routes =  [
         component: Notification,
       },
       {
-        path: '/faqs',
+        path: '/org/en/faqs',
         exact: true,
         component: FAQs,
       },

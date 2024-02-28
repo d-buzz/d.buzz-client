@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from 'components/elements/Icons/CloseIcon'
+import { shortenDid } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -146,7 +147,7 @@ const SwitchUserModal = (props) => {
               >
                 <div className={classes.buttonInner}>
                   <Avatar author={username} height={40} />&nbsp;
-                  <label>{username} ({activeUser === username ? 'online' : 'offline'})</label>
+                  <label>{!username?.includes('did') ? username : shortenDid(username)} ({activeUser === username ? 'online' : 'offline'})</label>
                 </div>
               </div>
             ))}

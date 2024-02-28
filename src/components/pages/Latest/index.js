@@ -200,6 +200,13 @@ const Latest = (props) => {
     setIsUserVotedForProposal(true)
   }
 
+  useEffect(() => {
+    if (items.length === 0 && !loading && isLatestPostsLoaded) {
+      loadMorePosts()
+    }
+  }, [isLatestPostsLoaded, items.length, loadMorePosts, loading])
+
+
   return (
     <React.Fragment>
       {/* disable banner */}

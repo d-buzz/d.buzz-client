@@ -15,7 +15,7 @@ const useStyles = createUseStyles(theme => ({
     padding: '5px 15px',
     borderRadius: 10,
     color: '#000000',
-    transition: 'all 250ms',
+    transition: 'background 250ms',
     background: '#f7e2cd',
     cursor: 'pointer',
     userSelect: 'none',
@@ -40,7 +40,8 @@ const useStyles = createUseStyles(theme => ({
   },
                                             
   newLabel: {
-    width: 40,
+    padding: '2px 8px',
+    border: `3px solid ${theme.background.primary}`,
     height: 'fit-cntent',
     position: 'absolute',
     top: -10,
@@ -48,7 +49,7 @@ const useStyles = createUseStyles(theme => ({
     background: '#e53935',
     color: '#ffffff',
     borderRadius: 50,
-    fontSize: 14,
+    fontSize: 12,
   },
   
 }))

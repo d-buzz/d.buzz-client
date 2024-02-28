@@ -275,6 +275,7 @@ function* getTrendingPostsRequest(payload, meta) {
   const {start_permlink, start_author} = payload
 
   const params = {sort: 'trending', start_permlink, start_author}
+  const params = {sort: 'trending', start_permlink, start_author}
   const method = 'get_ranked_posts'
 
   try {
@@ -507,7 +508,7 @@ function* publishPostRequest(payload, meta) {
   if (images) {
     body += `\n${images.toString().replace(/,/gi, ' ')}`
   }
-
+  
   body = footnote(body)
 
 

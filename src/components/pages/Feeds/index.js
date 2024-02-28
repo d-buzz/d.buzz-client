@@ -1,4 +1,5 @@
 import React, {useEffect, useCallback, useState} from 'react'
+import React, {useEffect, useCallback, useState} from 'react'
 import { CreateBuzzForm, InfiniteList, HelmetGenerator } from 'components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -107,6 +108,7 @@ const Feeds = React.memo((props) => {
       clearScrollIndex()
       clearHomePosts()
       getHomePostsRequest()
+      setFeedPostsLoad(true)
       clearRefreshRouteStatus()
     }
     // eslint-disable-next-line

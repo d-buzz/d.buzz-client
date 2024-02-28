@@ -19,6 +19,7 @@ import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
 import HiveButton from 'components/common/HiveButton'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import { window } from 'rxjs'
+import MetaMaskButton from 'components/common/MetaMaskButton'
 const FormControlLabel = React.lazy((() => import('@material-ui/core/FormControlLabel')))
 
 const useStyles = createUseStyles(theme => ({
@@ -157,8 +158,8 @@ const LoginModal = (props) => {
   const [useCeramic, setUseCeramic] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(false)
-  const [loginMethod, setLoginMethod] = useState('HIVE')
+  const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(true)
+  const [loginMethod, setLoginMethod] = useState(null)
   /* eslint-disable */
   let [hasExpiredDelay, setHasExpiredDelay] = useState(60)
   

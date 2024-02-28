@@ -20,7 +20,7 @@ import FormCheck from 'react-bootstrap/FormCheck'
 import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent } from 'services/helper'
 import Renderer from 'components/common/Renderer'
-import { checkForCeramicAccount, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
+import { generateHiveCeramicParentId, getIpfsLink, replyRequest } from 'services/ceramic'
 import heic2any from 'heic2any'
 import {LinearProgress} from '@material-ui/core'
 import {styled} from '@material-ui/styles'
@@ -223,12 +223,12 @@ const ReplyFormModal = (props) => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
   const [ceramicAuthor, setCeramicAuthor] = useState(false)
-  const [ceramicUser, setCeramicUser] = useState(false)
-  const [fetchingProfile, setFetchingProfile] = useState(true)
+  const [ceramicUser] = useState(false)
+  const [fetchingProfile] = useState(true)
   const [replying, setReplying] = useState(false)
   const defaultProfileImage = `${window.location.origin}/ceramic_user_avatar.svg`
   const [authorAvatarUrl, setAuthorAvatarUrl] = useState(ceramicAuthor ? defaultProfileImage : '')
-  const [userAvatarUrl, setUserAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
+  const [userAvatarUrl] = useState(ceramicUser ? defaultProfileImage : '')
   const [loading, setLoading] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
   const [imagesLength, setImagesLength] = useState(0)
@@ -271,14 +271,16 @@ const ReplyFormModal = (props) => {
           replyRef,
           treeHistory,
         } = modalData
+        console.log(modalData)
         setReplyRef(replyRef)
-        if(author.did) {
+        if(author?.profile?.did) {
           setCeramicAuthor(author)
-          if(author.images) {
-            setAuthorAvatarUrl(getIpfsLink(author.images.avatar))
+          if(author?.profile?.images) {
+            setAuthorAvatarUrl(getIpfsLink(author?.profile?.images?.avatar))
           }
         }
-        setAuthor(author.did ? author.did : author)
+        console.log(author)
+        setAuthor(author?.profile?.did ? author?.profile?.did : author)
         setPermlink(permlink)
         setBody(content)
         setTreeHistory(treeHistory)
@@ -292,38 +294,6 @@ const ReplyFormModal = (props) => {
       setOpen(modalOpen)
     }
   }, [modalData])
-
-  useEffect(() => {
-    if(checkForCeramicAccount(username)) {
-      setFetchingProfile(true)
-      getBasicProfile(username)
-        .then((res) => {
-          setCeramicUser(res)
-          setFetchingProfile(false)
-          if(res.images) {
-            setUserAvatarUrl(getIpfsLink(res.images.avatar))
-          }
-        })
-    } else {
-      setFetchingProfile(false)
-    }
-  }, [username])
-  
-  useEffect(() => {
-    if(checkForCeramicAccount(author)) {
-      setFetchingProfile(true)
-      getBasicProfile(author)
-        .then((res) => {
-          setCeramicAuthor(res)
-          setFetchingProfile(false)
-          if(res.images) {
-            setAuthorAvatarUrl(getIpfsLink(res.images.avatar))
-          }
-        })
-    } else {
-      setFetchingProfile(false)
-    }
-  }, [author])
 
   const onHide = () => {
     setOpen(false)
@@ -473,24 +443,27 @@ const ReplyFormModal = (props) => {
           }
         })
     } else {
-      replyRequest(permlink, author, content)
-        .then((data) => {
-          if(data) {
-            broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-            setReplyDone(true)
-            closeReplyModal()
-            setReplying(false)
-            setLoading(false)
-          } else {
-            setReplying(false)
-            setLoading(false)
-            broadcastNotification('error', 'There was an error while replying to this buzz.')
-          }
-        })
-        .catch((errorMessage) => {
-          setLoading(false)
-          setReplying(false)
-          broadcastNotification('error', errorMessage)
+      generateHiveCeramicParentId(author, permlink)
+        .then((parent_id) => {
+          replyRequest(parent_id, author, content)
+            .then((data) => {
+              if(data) {
+                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                setReplyDone(true)
+                closeReplyModal()
+                setReplying(false)
+                setLoading(false)
+              } else {
+                setReplying(false)
+                setLoading(false)
+                broadcastNotification('error', 'There was an error while replying to this buzz.')
+              }
+            })
+            .catch((errorMessage) => {
+              setLoading(false)
+              setReplying(false)
+              broadcastNotification('error', errorMessage)
+            })
         })
     }
   }
@@ -582,7 +555,7 @@ const ReplyFormModal = (props) => {
               </Col>
               <Col style={zeroPadding}>
                 <div className={classNames('right-content', classes.right)}>
-                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.name || 'Ceramic User'}</a></b>}</p>
+                  <p>Replying to {!fetchingProfile && <b><a href={`/@${author}`} className={classes.username}>{!ceramicAuthor ? `@${author}` : ceramicAuthor.profile.name || 'Ceramic User'}</a></b>}</p>
                   <div className={classes.previewContainer}>
                     <Renderer content={body} minifyAssets={true} onModal={true}/>
                   </div>

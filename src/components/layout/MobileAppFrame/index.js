@@ -62,7 +62,7 @@ import CreateBuzzIcon from 'components/elements/Icons/CreateBuzzIcon'
 import { checkCeramicLogin } from 'services/ceramic'
 import { generateStyles } from 'store/settings/actions'
 import { getTheme } from 'services/theme'
-import { getUserTheme } from 'services/helper'
+import { getUserTheme, shortenDid } from 'services/helper'
 import { Image } from 'react-bootstrap'
 import ProfileIcon from 'components/elements/Icons/ProfileIcon'
 // import MoonIcon from 'components/elements/Icons/MoonIcon'
@@ -866,52 +866,17 @@ const MobileAppFrame = (props) => {
       preventDefault: false,
       onClick: () => handelClickItem('search'),
     },
-    // {
-    //   name: 'Trending',
-    //   path: '/',
-    //   icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('trending'),
-    // },
-    // {
-    //   name: 'Latest',
-    //   path: "/latest",
-    //   icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('latest'),
-    // },
     {
       name: 'Notifications',
       path: `/notifications`,
       icon: activeView === 'notifications' ? <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='fill'/></Badge> : <Badge badgeContent={count.unread || 0} color="secondary" style={{height:30}}><NotificationsIcon type='outline'/></Badge>,
       onClick: () => handelClickItem('notifications'),
     },
-    // {
-    //   name: 'Profile',
-    //   path: `/@${username}/t/buzz?from=nav`,
-    //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
-    //   onClick: () => handelClickItem('profile'),
-    // },
-    // {
-    //   name: 'Wallet',
-    //   icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-    //   path: `/@${username}/wallet`,
-    //   onClick: () => handelClickItem('wallet'),
-    // },
     {
-      name: 'Messages',
-      icon: activeView === 'messages' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
-      path: `#`,
-      preventDefault: false,
-      onClick: () => handelClickItem('messages'),
+      name: 'Message',
+      icon: activeView === 'message' ? <MessageIcon type='fill'/> : <MessageIcon type='outline'/>,
+      onClick:() => redirectToChatPage(),
     },
-    // {
-    //   name: 'More'  ,
-    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-    //   path: '#',
-    //   preventDefault: true,
-    //   onClick: handleClickOpenMoreMenu,
-    // },
   ]
 
 
@@ -936,33 +901,6 @@ const MobileAppFrame = (props) => {
       path: `/message`,
       onClick:() => handelClickItem('messages'),
     },
-    // {
-    //   name: 'Trending',
-    //   path: '/',
-    //   icon: activeView === 'trending' ? <TrendingIcon type='fill'/> : <TrendingIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('trending'),
-    // },
-    // {
-    //   name: 'Latest',
-    //   path: "/latest",
-    //   icon: activeView === 'latest' ? <LatestIcon type='fill'/> : <LatestIcon type='outline'/>,
-    //   preventDefault: false,
-    //   onClick: () => handelClickItem('latest'),
-    // },
-    // {
-    //   name: 'Profile',
-    //   path: `/@${username}/t/buzz?from=nav`,
-    //   icon: activeView === 'profile' ? <ProfileIcon type='fill'/> : <ProfileIcon type='outline'/>,
-    //   onClick: () => handelClickItem('profile'),
-    // },
-    // {
-    //   name: 'More'  ,
-    //   icon: <div className={classes.moreButton} ref={moreMenuRef}><MoreIcon /></div>,
-    //   path: '#',
-    //   preventDefault: true,
-    //   onClick: handleClickOpenMoreMenu,
-    // },
   ]
 
   const isActivePath = (path, current) => {
@@ -1202,6 +1140,8 @@ const MobileAppFrame = (props) => {
                         <div className={classNames(classes.displayFlex,classes.justifyContentStart)}>
                           <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{following}</span> Following</div>
                           <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{followers}</span> Followers</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.marginRight30,classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{following}</span> Following</div>
+                          <div className={classNames((mode==='night' || mode==='gray') ?'text-gray':'',classes.fontsize15)}><span className={classNames((mode === 'night' || mode === 'gray')?'text-white':'')}>{followers}</span> Followers</div>
                         </div>
                       </div>
                     </div>
@@ -1232,6 +1172,7 @@ const MobileAppFrame = (props) => {
                     <div className={classNames(classes.displayFlex,classes.positionRelative,classes.maxWidth100,classes.width100)}>
                       <div className={classNames(classes.padding16, classes.padding16Left,classes.padding8Top,classes.padding8Bottom,classes.displayFlex,classes.justifyContentBetween,classes.width100, classes.alignItemsCenter)}>
                         <div className={classNames(classes.marginRight20,classes.minifyItems, classes.activeItem,classes.widthAuto)}>
+                          <BookmarkIcon type='outline'/>
                           <BookmarkIcon type='outline'/>
                           {/* <div  className={classNames(classes.minifyItems, classes.activeItem )}>
                             <Link to={`/@${username}/t/pockets`}>

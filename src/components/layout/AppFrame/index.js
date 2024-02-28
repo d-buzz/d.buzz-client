@@ -10,6 +10,7 @@ import {
   OrganizationAppFrame,
   MobileAppFrame,
   ReplyFormModal,
+  LiteReplyFormModal,
   NotificationBox,
   UserDialog,
   MuteModal,
@@ -31,6 +32,7 @@ import { bindActionCreators } from 'redux'
 import { setIntentBuzz, setFromIntentBuzz } from 'store/auth/actions'
 import queryString from 'query-string'
 import LinkConfirmationModal from 'components/modals/LinkConfirmationModal'
+import { isLiteMode } from 'services/helper'
 
 
 const useStyles = createUseStyles({
@@ -157,7 +159,7 @@ const AppFrame = (props) => {
       {isMobile && !developersRoutes && !organizationRoutes && (<MobileAppFrame pathname={pathname} route={route} />)}
       {developersRoutes && (<DevelopersFrame route={route} />)}
       {organizationRoutes && (<OrganizationAppFrame pathname={pathname} route={route} />)}
-      <ReplyFormModal />
+      {isLiteMode() ? <LiteReplyFormModal /> : <ReplyFormModal />}
       <NotificationBox />
       <MuteModal />
       <FollowMutedListModal/>
