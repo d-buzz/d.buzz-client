@@ -776,7 +776,6 @@ const CreateBuzzForm = (props) => {
   const [videoLimit, setVideoLimit] = useState(false)
   const [imageLimit, setImageLimit] = useState(false)
   const [buzzPermlink, setBuzzPermlink] = useState(null)
-  const [imageUrl, setImageUrl] = useState(null)
   // const dbuzzVideoThumbnail = 'https://ipfs.io/ipfs/bafybeie3jqbbitahv4a5bwjlk7r3unrpwxk34mdqml6t4jcirpd6rz6kty'
 
   const buzzAllowedImages = 4
