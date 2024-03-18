@@ -21,8 +21,6 @@ import { useHistory } from 'react-router-dom'
 import { calculateOverhead, invokeTwitterIntent, shortenDid } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import { checkForCeramicAccount, generateHiveCeramicParentId, getBasicProfile, getIpfsLink, replyRequest } from 'services/ceramic'
-import { publishReplyWithHAS } from 'services/api'
-import { isMobile } from 'web3modal'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -380,91 +378,44 @@ const ReplyFormModal = (props) => {
 
     setReplying(true)
 
-    if(user.useHAS) {
-      publishReplyWithHAS(user.username, content, author, permlink, replyRef, treeHistory)
-        .then((data) => {
-          // console.log(data)
-          import('@mintrawa/hive-auth-client').then((HiveAuth) => {
-            HiveAuth.hacMsg.subscribe(m => {
-              if(isMobile) {
-                broadcastNotification('warning', 'Tap on this link to open Hive Keychain app and confirm the transaction.', 600000, `has://sign_req/${m.msg}`)
-              } else {
-                broadcastNotification('warning', 'Please open Hive Keychain app on your phone and confirm the transaction.', 600000)
-              }
-              if (m.type === 'sign_wait') {
-                console.log('%c[HAC Sign wait]', 'color: goldenrod', m.msg? m.msg.uuid : null)
-              }
-          
-              if (m.type === 'tx_result') {
-                console.log('%c[HAC Sign result]', 'color: goldenrod', m.msg? m.msg : null)
-                if (m.msg?.status === 'accepted') {                  
-                  broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-                  setReplyDone(true)
-                  setLoading(false)
-                  setReplying(false)
-                  closeReplyModal()
-                } else if (m.msg?.status === 'rejected') {
-                  // const status = m.msg?.status
-                  // console.log(status)
-                  setLoading(false)
-                  setReplying(false)
-                  // error
-                  broadcastNotification('error', 'Your HiveAuth reply transaction is rejected.')
-                } else if (m.msg?.status === 'error') { 
-                  // const error = m.msg?.status.error
-                  // console.log(error)
-                  setReplying(false)
-                  setLoading(false)
-                  broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-                } else {
-                  setReplying(false)
-                  setLoading(false)
-                  broadcastNotification('error', 'Unknown error occurred, please try again in some time.')
-                }
-              }
-            })
-          })
+    if(!ceramicUser) {
+      publishReplyRequest(author, permlink, content, replyRef, treeHistory)
+        .then(({ success, errorMessage }) => {
+          if(success) {
+            setLoading(false)
+            broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+            setReplyDone(true)
+            closeReplyModal()
+            setReplying(false)
+          } else {
+            setReplying(false)
+            setLoading(false)
+            broadcastNotification('error', 'There was an error while replying to this buzz.')
+          }
         })
     } else {
-      if(!ceramicUser) {
-        publishReplyRequest(author, permlink, content, replyRef, treeHistory)
-          .then(({ success, errorMessage }) => {
-            if(success) {
-              setLoading(false)
-              broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-              setReplyDone(true)
-              closeReplyModal()
-              setReplying(false)
-            } else {
-              setReplying(false)
-              setLoading(false)
-              broadcastNotification('error', 'There was an error while replying to this buzz.')
-            }
-          })
-      } else {
-        generateHiveCeramicParentId(author, permlink)
-          .then((parent_id) => {
-            replyRequest(parent_id, author, content)
-              .then((data) => {
-                if(data) {
-                  broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
-                  setReplyDone(true)
-                  closeReplyModal()
-                  setReplying(false)
-                  setLoading(false)
-                } else {
-                  setReplying(false)
-                  setLoading(false)
-                  broadcastNotification('error', 'There was an error while replying to this buzz.')
-                }
-              })
-              .catch((errorMessage) => {
-                setLoading(false)
+      generateHiveCeramicParentId(author, permlink)
+        .then((parent_id) => {
+          replyRequest(parent_id, author, content)
+            .then((data) => {
+              if(data) {
+                broadcastNotification('success', `Succesfully replied to @${author}/${permlink}`)
+                setReplyDone(true)
+                closeReplyModal()
                 setReplying(false)
-                broadcastNotification('error', errorMessage)
-              })
-          })
-      }
+                setLoading(false)
+              } else {
+                setReplying(false)
+                setLoading(false)
+                broadcastNotification('error', 'There was an error while replying to this buzz.')
+              }
+            })
+            .catch((errorMessage) => {
+              setLoading(false)
+              setReplying(false)
+              broadcastNotification('error', errorMessage)
+            })
+        })
     }
   }
 

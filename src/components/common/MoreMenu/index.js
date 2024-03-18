@@ -8,14 +8,6 @@ import Collapse from '@material-ui/core/Collapse'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import Divider from '@material-ui/core/Divider'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Collapse from '@material-ui/core/Collapse'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
-import Divider from '@material-ui/core/Divider'
 
 const MoreMenu = (props) => {
   const {
@@ -43,11 +35,6 @@ const MoreMenu = (props) => {
   const handleClickCollapse = (onClick) => () => {
     setcallFunc(onClick)
   }
- 
-
-  const handleClickCollapse = (onClick) => () => {
-    setcallFunc(onClick)
-  }
 
   useEffect(() => {
     // console.log(open, themeModal, switchUserModal)
@@ -67,7 +54,6 @@ const MoreMenu = (props) => {
       open={open}
       onClose={onClose}
       className={className}
-      transformOrigin={{vertical: 'top', horizontal: 'top'}}
       transformOrigin={{vertical: 'top', horizontal: 'top'}}
     >
       <List

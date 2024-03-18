@@ -4,12 +4,6 @@ import {
   broadcast,
   formatter,
 } from '@hiveio/hive-js'
-import {
-  api,
-  auth,
-  broadcast,
-  formatter,
-} from '@hiveio/hive-js'
 import {hash} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'

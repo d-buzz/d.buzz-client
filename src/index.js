@@ -8,27 +8,27 @@ import { BrowserRouter as Router } from "react-router-dom"
 import initReactFastclick from "react-fastclick"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./override.css"
-// import HttpsRedirect from "react-https-redirect"
-import * as Sentry from "@sentry/react"
-
-initReactFastclick()
-
-Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN, // Replace with your Sentry DSN
-  integrations: [new Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
-
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  tracesSampleRate: 1.0,
-
-  // Capture Replay for 10% of all sessions,
-  // plus for 100% of sessions with an error
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-})
+import HttpsRedirect from "react-https-redirect"
+// import * as Sentry from "@sentry/react"
 
 import { ApolloProvider } from '@apollo/client'
 import { unionIndexerClient } from 'services/ceramic'
+
+initReactFastclick()
+
+// Sentry.init({
+//   dsn: process.env.REACT_APP_SENTRY_DSN, // Replace with your Sentry DSN
+//   integrations: [new Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+
+//   // Set tracesSampleRate to 1.0 to capture 100%
+//   // of transactions for performance monitoring.
+//   tracesSampleRate: 1.0,
+
+//   // Capture Replay for 10% of all sessions,
+//   // plus for 100% of sessions with an error
+//   replaysSessionSampleRate: 0.1,
+//   replaysOnErrorSampleRate: 1.0,
+// })
 
 initReactFastclick()
 
@@ -36,9 +36,9 @@ ReactDOM.render(
   <ApolloProvider client={unionIndexerClient}>
     <Provider store={store}>
       <Router>
-        {/* <HttpsRedirect> */}
-        <App />
-        {/* </HttpsRedirect> */}
+        <HttpsRedirect>
+          <App />
+        </HttpsRedirect>
       </Router>
     </Provider>
   </ApolloProvider>,

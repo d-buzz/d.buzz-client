@@ -36,7 +36,6 @@ const useStyles = createUseStyles(theme => ({
     '@media (max-width: 480px)': {
       height: !isMobile ? 127 : 200,
     },
-    },
   },
   imageGridItem: {
     height: '100%',
@@ -50,7 +49,6 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzImage: {
     maxHeight: ({ minifyAssets }) => minifyAssets ? '510px !important' : 'auto',
-    maxWidth: ({ minifyAssets }) => minifyAssets ? '480px !important' : 'auto',
     transformOrigin: 'top',
     height: 'auto',
     objectPosition: 'center',
@@ -67,7 +65,6 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '2rem',
     color: '#ffffff',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
   },
 }))
 
@@ -309,7 +306,6 @@ const BuzzPhotoGrid = ({
                 <div className={classes.moreImages}>
                   +{images.length - 4}
                 </div>
-              </div>}
               </div>}
           </div>
         </div>}

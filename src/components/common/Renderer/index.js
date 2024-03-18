@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import classNames from 'classnames'
-import ReactSoundCloud from 'react-soundcloud-embedded'
+// import ReactSoundCloud from 'react-soundcloud-embedded'
 import { UrlVideoEmbed, LinkPreview } from 'components'
 import { createUseStyles } from 'react-jss'
 import TwitterEmbed from '../TwitterEmbed'
@@ -1195,7 +1195,7 @@ const render = (content, markdownClass, assetClass, minifyAssets, scrollIndex, r
   } else if (content.includes(':dbuzz-embed-container:')) {
     return <UrlVideoEmbed key={`${videoEmbeds[0]?.id}${scrollIndex}url-embed`} embed={videoEmbeds} />
   } else if (content.includes(':dbuzz-sound-embed-container:')) {
-    return <ReactSoundCloud url={`https://soundcloud.com/${soundEmbeds.filter(embed => embed.app === 'soundcloud')[0]?.id}`} />
+    // return <ReactSoundCloud url={`https://soundcloud.com/${soundEmbeds.filter(embed => embed.app === 'soundcloud')[0]?.id}`} />
   } else if (content.includes(':dbuzz-twitter-embed-container:')) {
     return <TwitterEmbed key={`${twitterEmbeds[0]?.id}${scrollIndex}tweet`} tweet={twitterEmbeds} onIframeLoad={onImageLoad} />
   } else if (content.includes(':dbuzz-tiktok-embed-container:')) {

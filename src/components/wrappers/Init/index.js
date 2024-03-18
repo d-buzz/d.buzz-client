@@ -226,6 +226,10 @@ const Init = (props) => {
         checkVersionRequest().then((isLatest) => {
           setIsLatest(isLatest)
           getRpcNode().then(() => {
+            getBestCeramicHost().then((host) => {
+              initCeremicLoginRequest()
+              localStorage.setItem('ceramic', host)
+            })
             const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
             setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
               getSavedUserRequest().then(() => {
@@ -239,6 +243,10 @@ const Init = (props) => {
       } else {
         setIsLatest(isLatest)
         getRpcNode().then(() => {
+          getBestCeramicHost().then((host) => {
+            initCeremicLoginRequest()
+            localStorage.setItem('ceramic', host)
+          })
           const defaultUpvoteWeight = localStorage.getItem('voteWeight') || 1
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getSavedUserRequest().then(() => {

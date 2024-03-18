@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import { updateBuzzThreads } from 'store/posts/actions'
 import { connect } from 'react-redux'
 import { proxyImage } from 'services/helper'
-import { isMobile } from 'web3modal'
+import { isMobileOnly } from 'react-device-detect'
 
 const useStyles = createUseStyles(theme => ({
   // images container styles
@@ -48,7 +48,7 @@ const useStyles = createUseStyles(theme => ({
     },
     
     '@media (max-width: 480px)': {
-      height: !isMobile ? 127 : 200,
+      height: !isMobileOnly ? 127 : 200,
     },
   },
   imageGridItem: {

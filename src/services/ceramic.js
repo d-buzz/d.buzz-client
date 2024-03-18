@@ -1,23 +1,15 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { isMobile } from 'react-device-detect'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { DID } from 'dids'
 import { Ed25519Provider } from 'key-did-provider-ed25519'
 import { getResolver } from 'key-did-resolver'
 import Web3 from 'web3'
-import * as Web3Modal from 'web3modal'
-import * as SpkNetwork from '@spknetwork/graph-client'
 import axios from "axios"
 import { CeramicClient } from '@ceramicnetwork/http-client'
 import { IDX } from '@ceramicstudio/idx'
 import { fromString } from 'uint8arrays'
 import { hash } from '@stablelib/sha256'
-
-// const hosts = [
-//   'https://ceramic.3speak.tv',
-//   'https://ceramic.web3telekom.xyz',
-//   'https://ceramic-node.vitalpointai.com',
-// ]
+import { SpkClient } from '@spknetwork/graph-client'
 
 export const unionIndexerClient = new ApolloClient({
   uri: 'https://union.us-02.infra.3speak.tv/api/v2/graphql',
@@ -37,14 +29,6 @@ const normalizeAuthSecret = (authSecret64) => {
   return authSecret
 }
 
-const web3Modal = new Web3Modal.default({
-  network: "mainnet",
-  cacheProvider: true,
-  providerOptions: {},
-})
-
-const web3 = new Web3()
-
 const idxAliases = {
   rootPosts: 'ceramic://kjzl6cwe1jw149xy2w2qycwts4xjpvyzrkptdw20iui7r486bd6sasqb9tgglzp',
   socialConnectionIndex: 'ceramic://kjzl6cwe1jw145f1327br2k7lkd5acrn6d2omh88xjt70ovnju491moahrxddns',
@@ -53,38 +37,12 @@ const idxAliases = {
 export const SPK_INDEXER_HOST = 'https://offchain.us-02.infra.3speak.tv'
 
 const ceramicClient = new CeramicClient('https://ceramic.us-02.infra.3speak.tv')
-const spk = new SpkNetwork.SpkClient(SPK_INDEXER_HOST, ceramicClient)
+const spkClient = new SpkClient(SPK_INDEXER_HOST, ceramicClient)
 const idx = new IDX({ceramic: ceramicClient, aliases: idxAliases})
 
 window.ceramicclient = ceramicClient
 window.idxclient = idx
-window.spkclient = spk
-
-const connectPrompt = async() => {
-  let firstAccount = null
-  try {
-    const provider = await web3Modal.connect()
-    web3.setProvider(provider)
-
-    firstAccount = await web3.eth.getAccounts().then(data=>data[0])
-  }
-  catch(err) {
-    console.log(err)
-  }
-  return firstAccount
-}
-
-
-// const resolveEthDid = async(did, provider) => {
-//   const account = await provider.getAccounts().then(data=>data[0])
-
-//   const proof = await utils.createLink(did, `${account}@eip155:1`, provider.currentProvider)
-//   const verified = await utils.validateLink(proof)
-
-//   await authenticate(proof.message, `${account}@eip155:1`, provider.currentProvider)
-
-//   return verified
-// }
+window.spkclient = spkClient
 
 export const authenticateWithCeramic = (did, secret) => {
   ceramicClient.setDID(did)
@@ -122,67 +80,73 @@ const createIdentity = async(seed) => {
   }
 }
 
-export const loginWithMetaMask = async() => {
+export const loginWithMetaMask = async () => {
   let signedMessage
 
-  const walletConnectProvider = await EthereumProvider.init({
-    projectId: '686fee168a35f3cd368400c22a86860a',
-    chains: [1],
-    showQrModal: true,
-    methods: ['personal_sign', 'eth_requestAccounts'],
-    events: [],
-    qrModalOptions: {
-      themeMode: 'light',
-      themeVariables: {
-        "--wcm-z-index": 9999,
-      },
-    },
-  })
+  // Check if MetaMask is installed by looking for window.ethereum
+  if (window.ethereum && window.ethereum.isMetaMask) {
+    // MetaMask is installed, directly request account access
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      const account = accounts[0]
+      signedMessage = await window.ethereum.request({ method: 'personal_sign', params: ['Allow this account to control your identity', account] })
 
-  if (!isMobile) {
-    const account = await connectPrompt()
-    if (account) {
-      signedMessage = await web3.eth.personal.sign('Allow this account to control your identity', account)
+      const authSecret = normalizeAuthSecret(hash(fromString(signedMessage.slice(2))))
+      const did = await createIdentity(authSecret)
+
+      if (did) {
+        authenticateWithCeramic(did, authSecret)
+      }
+
+      return did ? did : 0
+    } catch (error) {
+      console.error("Failed to connect with MetaMask:", error)
+      // Optionally fall back to WalletConnect if MetaMask connection fails
     }
   } else {
+    // MetaMask not installed, fall back to WalletConnect or show modal
+    const walletConnectProvider = await EthereumProvider.init({
+      projectId: '686fee168a35f3cd368400c22a86860a',
+      chains: [1],
+      showQrModal: true,
+      methods: ['personal_sign', 'eth_requestAccounts'],
+      events: [],
+      qrModalOptions: {
+        themeMode: 'light',
+        themeVariables: {
+          "--wcm-z-index": 9999,
+        },
+      },
+    })
+
     try {
       await walletConnectProvider.connect()
       const accounts = await walletConnectProvider.request({ method: 'eth_requestAccounts' })
-      const account= accounts[0]
+      const account = accounts[0]
       signedMessage = await walletConnectProvider.request({ method: 'personal_sign', params: ['Allow this account to control your identity', account] })
     } catch (error) {
       console.error("Failed to connect:", error)
     }
   }
-
-  const authSecret = normalizeAuthSecret(hash(fromString(signedMessage.slice(2))))
-  const did = await createIdentity(authSecret)
-
-  if(did) {
-    authenticateWithCeramic(did, authSecret)
-  }
-
-  return did ? did : 0
 }
 
 export const checkForCeramicAccount = (account) => {
   return (account || '').startsWith('did:key:')
 }
 
-
 export const createPostRequest = async(did, body) => {
   try {
-    return await spk.createDocument({
+    return await spkClient.createDocument({
       title: '',
       body: body,
-      json_metadata: {
-        app: 'dBuzz',
-      },
+      // json_metadata: {
+      //   app: 'dBuzz',
+      // },
       debug_metadata: {
         did: did,
       },
       app: 'dBuzz',
-    }, null)
+    }, 'k2t6wyfsu4pg0bl4ne8z9dqgx8keriewo18ueao7ivfisvustydpnq200qeav6')
   }
   catch(err) {
     console.log(err.message)
@@ -190,13 +154,13 @@ export const createPostRequest = async(did, body) => {
 }
 
 export const updatePostRequest = async(parentId, body) => {
-  return await spk.updateDocument(parentId, {
+  return await spkClient.updateDocument(parentId, {
     body: body,
   })
 }
     
 export const replyRequest = async(parentId, did, body) => {
-  return await spk.createDocument({
+  return await spkClient.createDocument({
     app: 'dBuzz',
     body: body,
     debug_metadata: {
@@ -372,13 +336,13 @@ export const getChildPostsRequest = async(parentId) => {
 }
 
 export const getAllDocsFromSpk = async(did) => {
-  const data = await spk.getDocumentsForUser(did)
+  const data = await spkClient.getDocumentsForUser(did)
   // console.log(data)
   return data
 }
 
 export const getSinglePost = async(streamId) => {
-  const post = await spk.fetchDocument(streamId)
+  const post = await spkClient.fetchDocument(streamId)
   const childPosts = await getChildPostsRequest(streamId)
   const profileData = await getBasicProfile(post.creatorId)
 

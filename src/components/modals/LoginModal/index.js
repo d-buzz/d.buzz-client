@@ -14,12 +14,11 @@ import { isMobile } from 'react-device-detect'
 import { SuccessConfirmation } from 'components/elements'
 import { Checkbox } from '@material-ui/core'
 import { HiveKeyChainIcon } from 'components/elements'
-// import MetaMaskButton from 'components/common/MetaMaskButton'
+import MetaMaskButton from 'components/common/MetaMaskButton'
 import CircularBrandIcon from 'components/elements/Icons/CircularBrandIcon'
 import HiveButton from 'components/common/HiveButton'
 import { FaChrome, FaFirefoxBrowser } from 'react-icons/fa'
 import { window } from 'rxjs'
-import MetaMaskButton from 'components/common/MetaMaskButton'
 const FormControlLabel = React.lazy((() => import('@material-ui/core/FormControlLabel')))
 
 const useStyles = createUseStyles(theme => ({
@@ -158,10 +157,9 @@ const LoginModal = (props) => {
   const [useCeramic, setUseCeramic] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [hasMetaMaskInstalled, setHasMetaMaskIntalled] = useState(true)
+  const [hasMetaMaskInstalled] = useState(typeof window.ethereum === undefined ? false : true)
   const [loginMethod, setLoginMethod] = useState(null)
   /* eslint-disable */
-  let [hasExpiredDelay, setHasExpiredDelay] = useState(60)
   
   const onChange = (e) => {
     const { target } = e
@@ -205,6 +203,9 @@ const LoginModal = (props) => {
           setUseCeramic(false)
         }
       })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   const isDisabled = () => {
@@ -234,25 +235,27 @@ const LoginModal = (props) => {
     return hasMatch
   }
 
-  // const handleCeramicLogin = () => {
-  //   setUseCeramic(true)
-  // }
-
+  const handleCeramicLogin = () => {
+    setUseCeramic(true)
+  }
+  
   useEffect(() => {
     if(useCeramic) {
       handleClickLogin()
     }
   }, [useCeramic])
   
-
+  
   useEffect(() => {
     const isCompatible = hasCompatibleKeychain() ? true : false
     setHasInstalledKeychain(isCompatible)
-
-    if (typeof window.ethereum !== 'undefined') {
-      setHasMetaMaskIntalled(true)
-    }
   }, [])
+
+  const handleGoBack = () => {
+    setLoginMethod(null)
+    setUseKeychain(false)
+    setUseCeramic(false)
+  }
 
   return (
     <React.Fragment>
@@ -380,6 +383,10 @@ const LoginModal = (props) => {
                 </React.Fragment>
                 <FormSpacer />
                 <React.Fragment>
+                  {hasMetaMaskInstalled
+                    &&
+                    <MetaMaskButton onClick={handleCeramicLogin} disabled={useKeychain || useCeramic} title='Login with MetaMask'/>
+                  }
                   {!hasMetaMaskInstalled && !isMobile && (
                     <React.Fragment>
                       <FormSpacer />
@@ -413,6 +420,15 @@ const LoginModal = (props) => {
               </React.Fragment>
             }
             <center>
+            {loginMethod !== null && !loading &&
+                  <ContainedButton
+                    onClick={handleGoBack}
+                    transparent={true}
+                    className={classes.loginButton}
+                    fontSize={15}
+                    label="Go Back"
+                  />
+                }
               {loading && (
                 <Spinner size={40} loading={true} />
               )}
@@ -422,6 +438,7 @@ const LoginModal = (props) => {
         </ModalBody>
       </Modal>
     </React.Fragment>
+
   )
 }
 

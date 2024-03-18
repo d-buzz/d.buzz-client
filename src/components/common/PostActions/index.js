@@ -44,7 +44,6 @@ import {
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { invokeTwitterIntent } from 'services/helper'
-import { checkForCeramicAccount } from 'services/ceramic'
 import { getTheme as currentTheme } from 'services/helper'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
 
