@@ -157,7 +157,7 @@ const LoginModal = (props) => {
   const [useCeramic, setUseCeramic] = useState(false)
   const [hasInstalledKeychain, setHasInstalledKeychain] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [hasMetaMaskInstalled] = useState(typeof window.ethereum === "undefined" ? false : true)
+  const [hasMetaMaskInstalled] = useState(true)
   const [loginMethod, setLoginMethod] = useState(null)
   /* eslint-disable */
   
