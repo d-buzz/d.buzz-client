@@ -3,7 +3,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { DID } from 'dids'
 import { Ed25519Provider } from 'key-did-provider-ed25519'
 import { getResolver } from 'key-did-resolver'
-import Web3 from 'web3'
+// import Web3 from 'web3'
 import axios from "axios"
 import { CeramicClient } from '@ceramicnetwork/http-client'
 import { IDX } from '@ceramicstudio/idx'
