@@ -1306,6 +1306,7 @@ export const searchPostGeneral = (query) => {
       const data = result.data
 
       if (data.results.length !== 0) {
+        console.log(data.results)
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         data.results = data.results.filter((item) =>

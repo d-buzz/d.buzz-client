@@ -141,7 +141,7 @@ const Trending = (props) => {
       getTrendingPostsRequest(permlink, author)
     }
     // eslint-disable-next-line
-  }, [last])
+  }, [last, items])
 
 
   useEffect(() => {

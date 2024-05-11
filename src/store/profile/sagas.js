@@ -190,6 +190,8 @@ function* getAccountPostRequest(payload, meta) {
 
       data = data.filter(item => invokeFilter(item))
 
+      console.log(data)
+
       const censoredList = yield select(state => state.auth.get('censorList'))
       data.map((item) => censorCheck(item, censoredList))
 
