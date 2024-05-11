@@ -15,6 +15,7 @@ const AccountFollowers = React.lazy(() => import('./components/sections/AccountF
 const AccountFollowing = React.lazy(() => import('./components/sections/AccountFollowing'))
 const AccountComments = React.lazy(() => import('./components/sections/AccountComments'))
 const AccountPockets = React.lazy(() => import('./components/sections/AccountPockets'))
+const AccountMedia = React.lazy(() => import('./components/sections/AccountMedia'))
 const AccountFollow = React.lazy(() => import('./components/sections/AccountFollow'))
 const AccountMuted = React.lazy(() => import('./components/sections/AccountMuted'))
 const AccountMutedUsers = React.lazy(() => import('./components/sections/AccountMutedFollowed'))
@@ -285,6 +286,11 @@ const routes =  [
             path: '/@:username/t/pockets',
             exact: true,
             component: AccountPockets,
+          },
+          {
+            path: '/@:username/t/media',
+            exact: true,
+            component: AccountMedia,
           },
           {
             path: '/@:username/t/pockets/:pocketId',

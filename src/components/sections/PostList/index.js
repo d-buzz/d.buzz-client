@@ -9,6 +9,7 @@ import {
   // PostTags,
   LoginModal,
   PostActions,
+  DeleteBuzzModal,
 } from 'components'
 import {
   openUserDialog,
@@ -310,6 +311,7 @@ const PostList = React.memo((props) => {
   const [seletedRemoveFromPocketBuzz, setSeletedRemoveFromPocketBuzz] = useState(null)
   const [pockets, setPockets] = useState([])
   const [openLoginModal, setOpenLoginModal] = useState(false)
+  const [deleteBuzzModal, setDeleteBuzzModal] = useState(false)
 
   const buzzRowRef = useRef(null)
 
@@ -558,6 +560,11 @@ const PostList = React.memo((props) => {
     // eslint-disable-next-line
   }, [])
 
+  const handleClickDeleteBuzz = () => {
+    setAnchorEl(null)
+    setDeleteBuzzModal(true)
+  }
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
@@ -635,6 +642,14 @@ const PostList = React.memo((props) => {
                     onClose={closeMenu}
                     className={classes.menu}
                   >
+                    {isAuthor() && replyCount===0 && upvotes===0 && <MenuItem
+                      style={{ backgroundColor: '#E61C34' }}
+                      onClick={handleClickDeleteBuzz}
+                    >
+                      <span className='delete-buzz-button'>
+                        Delete
+                      </span>
+                    </MenuItem>}
                     {<MenuItem onClick={handleAddToPocket} className={classes.menuText}>Add to Pocket</MenuItem>}
                     {(pockets && pockets.find(pocket => pocket.pocketBuzzes.find((b) => b.permlink === permlink) !== undefined) && <MenuItem onClick={handleRemoveFromPocket} className={classes.menuText}>Remove from {selectedPocket.name || getPocket().pocketName}</MenuItem>)}
                     {!isAuthor() && (<MenuItem onClick={handleTipClick} className={classes.menuText}>Tip</MenuItem>)}
@@ -650,6 +665,7 @@ const PostList = React.memo((props) => {
       <LoginModal show={openLoginModal} onHide={hideLoginModal} />
       <AddToPocketModal show={addToPocketModal} onHide={onHideAddToPocketModal} user={user} author={author} buzz={selectedAddToPocketBuzz}/>
       <RemoveFromPocketConfirmModal show={removeFromPocketConfirmModal} onHide={onHideRemoveFromPocketConfirmModal} user={user} buzz={seletedRemoveFromPocketBuzz} pocket={getPocket()} loadPockets={loadPockets}/>
+      <DeleteBuzzModal show={deleteBuzzModal} onHide={setDeleteBuzzModal} buzzId={`@${author}/${permlink}`} />
     </React.Fragment>
   )
 })

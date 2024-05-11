@@ -190,6 +190,7 @@ const EditProfileModal = (props) => {
 
   useEffect(() => {
     const {
+      name,
       cover_image,
       profile_image,
       website,
@@ -197,7 +198,6 @@ const EditProfileModal = (props) => {
       location,
     } = profileMeta || ''
 
-    const {name} = postingProfileMeta || '' // get fullname from get_accounts api
     setProfileName(name || ceramicProfile.name)
     setProfileAbout(about || ceramicProfile.description)
     setProfileWebsite(website || ceramicProfile.url)

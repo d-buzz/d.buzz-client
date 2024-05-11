@@ -274,18 +274,16 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
   })
 }
 
-
-export const fetchTrendingTags = () => {
+export const fetchTrendingTags = (tag = "hive-193084", limit = 100) => {
   return new Promise((resolve, reject) => {
-    // set RPC node here because this is the first API call to execute
-    setRPCNode()
-    api.getTrendingTagsAsync("dbuzz", 100)
-      .then((result) => {
-        resolve(result)
-      })
-      .catch((error) => {
-        reject(error)
-      })
+    api.call('condenser_api.get_trending_tags', [tag, limit], (err, data) => {
+      if (err) {
+        console.error('Error fetching trending tags:', err)
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
   })
 }
 
@@ -1308,7 +1306,6 @@ export const searchPostGeneral = (query) => {
       const data = result.data
 
       if (data.results.length !== 0) {
-        console.log(data.results)
         const getProfiledata = mapFetchProfile(data.results, false)
         await Promise.all([getProfiledata])
         data.results = data.results.filter((item) =>

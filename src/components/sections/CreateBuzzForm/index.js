@@ -415,9 +415,9 @@ const useStyles = createUseStyles(theme => ({
   buzzToTwitterToggle: {
     display: 'grid',
     placeItems: 'center',
-    height: 28,
-    width: 28,
-    background: '#E65768',
+    height: 32,
+    width: 32,
+    background: '#ffffff',
     borderRadius: '50%',
     cursor: 'pointer',
 
@@ -1728,7 +1728,7 @@ const CreateBuzzForm = (props) => {
                       style={{...BuzzToTwitterToggleStyle}}
                       onClick={() => setBuzzToTwitter(!buzzToTwitter)}
                     >
-                      <img className="icon" src={`${window.location.origin}/twitter-icon.svg`} alt="twitter-icon"
+                      <img className="icon" src={`${window.location.origin}/x.svg`} alt="twitter-icon"
                         loading="lazy"/>
                       {/* <div className='title'>Buzz to Twitter</div> */}
                     </div>

@@ -357,11 +357,10 @@ const Profile = (props) => {
     if (index === 1) {
       tab = 'replies'
     } else if (index === 2) {
-      broadcastNotification('success', `Coming soon`)
       tab = 'media'
     } else if (index === 3) {
       tab = 'pockets'
-    }else if (index === 4) {
+    } else if (index === 4) {
       broadcastNotification('success', `Coming soon`)
       tab = 'likes'
     }
