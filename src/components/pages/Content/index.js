@@ -551,7 +551,7 @@ const Content = (props) => {
       </Helmet>
       {!loadingContent && author && (
         <React.Fragment>
-          <HelmetGenerator content={title.split('\n')[0]} user={author} />
+          <HelmetGenerator content={body.split('\n')[0]} user={author} />
           <div className={classes.wrapper}>
             <br />
             <React.Fragment>
@@ -667,7 +667,7 @@ const Content = (props) => {
                 <React.Fragment>
                   {!checkForCeramicAccount(user.username) && <MenuItem target='_blank' className={classes.menuText} onClick={handleAddToPocket}>Add to a Pocket</MenuItem>}
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
-                  {active_votes.length===0 && replyCount===0 &&
+                  {active_votes.length===0 && replyCount===0 && !parent_author &&
                     <MenuItem
                       style={{ backgroundColor: '#E61C34' }}
                       onClick={handleClickDeleteBuzz}

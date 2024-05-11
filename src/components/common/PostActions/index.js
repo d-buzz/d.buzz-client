@@ -7,7 +7,7 @@ import {
   BurnIcon,
   ContainedButton,
   HeartIconRed,
-  BookmarkIcon,
+  AddPocketIcon,
   Spinner,
   ShareIcon,
   ClipboardIcon,
@@ -589,7 +589,7 @@ const PostActions = (props) => {
                 className={classes.actionWrapperSpace}
                 inlineClass={classNames(classes.inline, classes.icon)}
                 icon={<IconButton classes={{root: classes.iconButton}} size="small"
-                  disabled={!is_authenticated}><BookmarkIcon/></IconButton>}
+                  disabled={!is_authenticated}><AddPocketIcon type={true}/></IconButton>}
                 hideStats={hideStats}
                 disabled={!is_authenticated}
                 onClick={handleAddToPocket}
