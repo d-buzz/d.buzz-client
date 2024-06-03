@@ -34,7 +34,7 @@ const idxAliases = {
   socialConnectionIndex: 'ceramic://kjzl6cwe1jw145f1327br2k7lkd5acrn6d2omh88xjt70ovnju491moahrxddns',
 }
 
-export const SPK_INDEXER_HOST = 'https://offchain.us-02.infra.3speak.tv'
+export const SPK_INDEXER_HOST = 'https://union.us-02.infra.3speak.tv'
 
 const ceramicClient = new CeramicClient('https://ceramic.us-02.infra.3speak.tv')
 const spkClient = new SpkClient(SPK_INDEXER_HOST, ceramicClient)
@@ -170,7 +170,7 @@ export const replyRequest = async(parentId, did, body) => {
 }
 
 export const generateHiveCeramicParentId = async (author, permlink) => {
-  return (await axios.post("https://union.us-02.infra.3speak.tv/api/v1/create_stream_id", {
+  return (await axios.post("https://union.us-02.infra.3speak.tv/api/v2/create_stream_id", {
     author,
     permlink,
   })).data?.stream_id
@@ -180,7 +180,7 @@ export const generateHiveCeramicParentId = async (author, permlink) => {
 export const getUserPostRequest = async(did) => {
   const posts = []
   if(did) {
-    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v2/graphql`, {
       query: `
       {
           publicFeed(parent_id:null, creator_id:"${did}") {
@@ -354,27 +354,28 @@ export const getSinglePost = async(streamId) => {
 export const getBasicProfile = async(did) => {
   let profileData
   if(did) {
-    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/api/v2/graphql`, {
       query: `
-        {
-          ceramicProfile(userId: "${did}") {
-            did
+      query Profile {
+        profile(id: "${did}") {
+          ... on CeramicProfile {
+            id
             name
-            description
-            location
-            website
-            url
-            
+            about
+            did
             images {
+              cover
               avatar
-              background
             }
-
+            location
+            src
+            website
           }
-        }           
+        }
+      }         
       `,
     })
-    profileData = data.data.ceramicProfile
+    profileData = data.profile
   }
   return profileData
 }
@@ -422,28 +423,35 @@ export const getFollowingList = async(did) => {
   let following
   
   if(did) {
-    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/api/v2/graphql`, {
       query: `
-      {
-        following(did: "${did}") {
-          did,
-          profile {
-            did
-            name
-            description
-            location
-            url
-
-            images {
-              avatar
-              background
+      query Profile {
+        follows(id: "${did}") {
+          followings {
+            followed_at
+            follower
+            follower_profile {
+              ... on CeramicProfile {
+                id
+                name
+                location
+                images {
+                  avatar
+                  cover
+                }
+                src
+                website
+                about
+                did
+              }
             }
           }
         }
-    }       
+      }    
     `,
     })
-    following = data.data.following
+    following = data.data.follows.followings
+
   }
   return following
 }
@@ -452,28 +460,34 @@ export const getFollowersList = async(did) => {
   let followers
   
   if(did) {
-    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/api/v2/graphql`, {
       query: `
-      {
-        followers(did: "${did}") {
-          did,
-          profile {
-            did
-            name
-            description
-            location
-            url
-
-            images {
-              avatar
-              background
+      query Profile {
+        follows(id: "${did}") {
+          followers {
+            followed_at
+            follower
+            follower_profile {
+              ... on CeramicProfile {
+                id
+                name
+                location
+                images {
+                  avatar
+                  cover
+                }
+                src
+                website
+                about
+                did
+              }
             }
           }
         }
-    }       
+      }    
     `,
     })
-    followers = data.data.followers
+    followers = data.data.follows.followers
   }
   return followers
 }
@@ -513,7 +527,7 @@ export const getFollowingFeed = async (did) => {
   const feed = []
 
   if(did) {
-    const { data } = await axios.post(`${SPK_INDEXER_HOST}/v1/graphql`, {
+    const { data } = await axios.post(`${SPK_INDEXER_HOST}/2/graphql`, {
       query: `
       {
         followingFeed(did: "${did}") {
