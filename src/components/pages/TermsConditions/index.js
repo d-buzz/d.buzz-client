@@ -121,7 +121,7 @@ const TermsConditions = () => {
                         <li><HashLink to="#section-13">For European Union (EU) Users</HashLink></li>
                         <li><HashLink to="#section-14">United States Legal Compliance</HashLink></li>
                         <li><HashLink to="#section-15">Severability and Waiver</HashLink></li>
-                        <li><HashLink to="#section-16">Translation InterpretationS</HashLink></li>
+                        <li><HashLink to="#section-16">Translation Interpretations</HashLink></li>
                         <li><HashLink to="#section-17">Changes to These Terms and Conditions</HashLink></li>
                         <li><HashLink to="#section-18">Contact Us</HashLink></li>
                       </Scrollspy>
@@ -518,7 +518,7 @@ const TermsConditions = () => {
                   <section id="section-16">
                     <div className={classes.hero}>
                       <div>
-                        <h3>Translation Interpretation</h3>
+                        <h3>Translation Interpretations</h3>
                       </div>
                       <hr />
                       <div>

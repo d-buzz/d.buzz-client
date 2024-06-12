@@ -145,8 +145,10 @@ const AccountFollowers = (props) => {
   }
 
   const loadMorePosts = () => {
-    const { follower } = last || ''
-    getFollowersRequest(author, follower)
+    if(items.length>0) {
+      const { follower } = last || ''
+      getFollowersRequest(author, follower)
+    }
   }
 
   return (

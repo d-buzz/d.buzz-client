@@ -146,8 +146,10 @@ const AccountFollowing = (props) => {
   }
 
   const loadMorePosts = () => {
-    const { following } = last
-    getFollowingRequest(author, following)
+    if(items.length>0) {
+      const { following } = last
+      getFollowingRequest(author, following)
+    }
   }
 
   return (

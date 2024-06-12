@@ -114,8 +114,8 @@ div.ReactTags__selected a.ReactTags__remove {
   transition-property:'background-color';
   transition-timing-function:ease;
   transition-duration: 250ms;
-
 }
+
 .navigationsmallWidth{
   height: 100%;
   position: fixed;

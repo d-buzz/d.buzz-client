@@ -168,45 +168,21 @@ const LoginSignupModal = (props) => {
 
   const handleClickLoginSignup = () => {
     setLoading(true)
-    setHasAuthenticationError(false)
-    authenticateUserRequest(username.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''), password, useKeychain, useHAS, useCeramic)
+    authenticateUserRequest(username.replace(/[@!#$%^&*()+=/\\~`,;:"'_\s]/gi, ''), password, useKeychain, useCeramic)
       .then(({ is_authenticated }) => {
 
-        if (useHAS) {
-          const hasExpiredDelayInterval = setInterval(() => {
-            // console.log('this', hasExpiredDelay)
-            hasExpiredDelay -= 1
-            setHasExpiredDelay(hasExpiredDelay)
-
+        if (!is_authenticated) {
+          setLoading(false)
+        } else {
+          if (fromIntentBuzz && buzzIntentCallback) {
+            buzzIntentCallback()
             setLoading(false)
-            const rawQR = localStorage.getItem('hasQRcode')
-            setQRCode(rawQR)
-
-            if (hasExpiredDelay === 0) {
-              // console.log('sample hit')
-              clearInterval(hasExpiredDelayInterval)
-              setHasExpiredDelay(60)
-              localStorage.removeItem('hasQRcode')
-              handleClickBack()
-            }
-          }, 1000)  
-
-        } else if (!useHAS) {
-          if (!is_authenticated) {
-            setHasAuthenticationError(true)
-            setLoading(false)
-          } else {
-            if (fromIntentBuzz && buzzIntentCallback) {
-              buzzIntentCallback()
-              setLoading(false)
-            }
-            onHide()
           }
+          onHide()
         }
 
         if(useCeramic) {
           setUseCeramic(false)
-          setHasAuthenticationError(false)
         }
       })
   }

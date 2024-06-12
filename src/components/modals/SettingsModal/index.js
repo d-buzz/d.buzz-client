@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux'
 import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import { CircularProgress } from '@material-ui/core'
 import { setRPCNode } from 'services/api'
+import { hiveAPIUrls } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   modal: {
@@ -394,21 +395,11 @@ const SettingsModal = (props) => {
                   <span className='title'>HIVE API Node</span>
                   <select className={classes.hiveNodeSelect} onChange={handleUpdateHiveNode} value={activeHiveNode}>
                     <option value="default">Default</option>
-                    <option value="https://api.hive.blog">api.hive.blog</option>
-                    <option value="https://rpc.ecency.com">rpc.ecency.com</option>
-                    <option value="https://hive-api.3speak.tv">hive-api.3speak.tv</option>
-                    <option value="https://rpc.ausbit.dev">rpc.ausbit.dev</option>
-                    <option value="https://hived.privex.io">hived.privex.io</option>
-                    <option value="https://anyx.io">anyx.io</option>
-                    <option value="https://api.deathwing.me">api.deathwing.me</option>
-                    <option value="https://hived.emre.sh">hived.emre.sh</option>
-                    <option value="https://hive-api.arcange.eu">hive-api.arcange.eu</option>
-                    <option value="https://api.openhive.network">api.openhive.network</option>
-                    <option value="https://techcoderx.com">techcoderx.com</option>
-                    <option value="https://hive-api.arcange.eu">hive-api.arcange.eu</option>
-                    <option value="https://hive.roelandp.nl">hive.roelandp.nl</option>
-                    <option value="https://api.c0ff33a.uk">api.c0ff33a.uk</option>
+                    {hiveAPIUrls.map(url => (
+                      <option key={url} value={url}>{url}</option>
+                    ))}
                   </select>
+
                 </div>
               </div>
             </div>

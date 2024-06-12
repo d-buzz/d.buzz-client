@@ -523,7 +523,7 @@ export const isImageUrl404 = async (url) => {
 }
 
 export const proxyImage = (url) => {
-  const enabled = true
+  const enabled = false
   let imageUrl = url
   if(!!url) {
     if(enabled && !url?.includes('localhost')) {
@@ -620,3 +620,14 @@ export const shortenDid = (didString, length = 8) => {
 
   return `did:${method}:${prefix}...${suffix}`
 }
+
+export const hiveAPIUrls = [
+  "https://api.hive.blog",
+  "https://hive-api.3speak.tv",
+  "https://anyx.io",
+  "https://api.deathwing.me",
+  "https://hived.emre.sh",
+  "https://api.openhive.network",
+  "https://techcoderx.com",
+  "https://api.c0ff33a.uk",
+]

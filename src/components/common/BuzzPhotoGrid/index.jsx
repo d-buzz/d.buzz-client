@@ -49,7 +49,6 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzImage: {
     maxHeight: ({ minifyAssets }) => minifyAssets ? '510px !important' : 'auto',
-    maxWidth: ({ minifyAssets }) => minifyAssets ? '480px !important' : 'auto',
     transformOrigin: 'top',
     height: 'auto',
     objectPosition: 'center',
@@ -164,7 +163,7 @@ const BuzzPhotoGrid = ({
     setTimeout(() => { 
       image.style.visibility = 'visible'
       onImageLoad()
-    }, 2000)
+    },2000)
 
     if(onImageLoad) {
       onImageLoad()

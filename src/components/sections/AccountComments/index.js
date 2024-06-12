@@ -28,8 +28,10 @@ const AccountComments = (props) => {
   const classes = useStyle()
   const loadMorePosts =  useCallback(() => {
     try {
-      const { permlink, author: start_author } = last
-      getAccountCommentsRequest(author, permlink, start_author)
+      if(items.length>0) {
+        const { permlink, author: start_author } = last
+        getAccountCommentsRequest(author, permlink, start_author)
+      }
     } catch(e) { }
     // eslint-disable-next-line
   }, [last])

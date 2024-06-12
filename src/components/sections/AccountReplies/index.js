@@ -27,8 +27,10 @@ const AccountReplies = (props) => {
 
   const classes = useStyle()
   const loadMorePosts =  useCallback(() => {
-    const { author: start_author, permlink } = last
-    getAccountRepliesRequest(author, permlink, start_author)
+    if(items.length>0) {
+      const { author: start_author, permlink } = last
+      getAccountRepliesRequest(author, permlink, start_author)
+    }
     // eslint-disable-next-line
   }, [last])
 

@@ -58,7 +58,7 @@ const useStyles = createUseStyles(theme => ({
 const Developers = () => {
   const classes = useStyles()
   const hostUrl = window.location.origin
-  const webIntentUrl = `${hostUrl}/#/intent/buzz`
+  const webIntentUrl = `${hostUrl}/intent/buzz`
   const snippet1 = `<a class="dbuzz-share-button" href="${webIntentUrl}">Buzz</a>`
   const snippet2 = `<a class="dbuzz-share-button" href="${webIntentUrl}?text=Hello%20dbuzz">Buzz</a>`
   const snippet3 = `<a class="dbuzz-share-button" href="${webIntentUrl}" ` +
