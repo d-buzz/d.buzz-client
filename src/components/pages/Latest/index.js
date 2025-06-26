@@ -26,46 +26,46 @@ import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
 import { InfiniteList, HelmetGenerator } from 'components'
 import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
-import { createUseStyles } from 'react-jss'
+// import { createUseStyles } from 'react-jss'
 import { isUserAlreadyVotedForProposal } from 'services/api'
 // import IconButton from '@material-ui/core/IconButton'
 // import { CloseIcon } from 'components/elements'
 import Cookies from 'js-cookie'
 
-const useStyles = createUseStyles(theme => ({
-  opensourceWrapper: {
-    position: 'relative',
-    padding: '25px 0px 25px 0px',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#e6ecf0',
+// const useStyles = createUseStyles(theme => ({
+//   opensourceWrapper: {
+//     position: 'relative',
+//     padding: '25px 0px 25px 0px',
+//     width: '100%',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     backgroundColor: '#e6ecf0',
 
-    '& .title': {
-      width: 'fit-content',
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
+//     '& .title': {
+//       width: 'fit-content',
+//       fontSize: 20,
+//       fontWeight: 'bold',
+//     },
 
-    '& .button': {
-      marginTop: 15,
-      borderRadius: 15,
-      width: 'fit-content',
-      padding: '5px 15px 5px 15px',
-      fontSize: 18,
-      fontWeight: 'bold',
-      background: '#E61C34',
-      color: '#FFFFFF',
-      cursor: 'pointer',
-      userSelect: 'none',
+//     '& .button': {
+//       marginTop: 15,
+//       borderRadius: 15,
+//       width: 'fit-content',
+//       padding: '5px 15px 5px 15px',
+//       fontSize: 18,
+//       fontWeight: 'bold',
+//       background: '#E61C34',
+//       color: '#FFFFFF',
+//       cursor: 'pointer',
+//       userSelect: 'none',
 
-      '&:hover': {
-        opacity: 0.85,
-      },
-    },
-  },
-}))
+//       '&:hover': {
+//         opacity: 0.85,
+//       },
+//     },
+//   },
+// }))
 
 const Latest = (props) => {
   const {
@@ -96,7 +96,7 @@ const Latest = (props) => {
     user,
   } = props
 
-  const classes = useStyles()
+  // const classes = useStyles()
 
   const [, setIsUserVotedForProposal] = useState(true)
 
