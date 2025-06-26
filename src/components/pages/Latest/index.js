@@ -28,8 +28,8 @@ import { InfiniteList, HelmetGenerator } from 'components'
 import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
 import { createUseStyles } from 'react-jss'
 import { isUserAlreadyVotedForProposal } from 'services/api'
-import IconButton from '@material-ui/core/IconButton'
-import { CloseIcon } from 'components/elements'
+// import IconButton from '@material-ui/core/IconButton'
+// import { CloseIcon } from 'components/elements'
 import Cookies from 'js-cookie'
 
 const useStyles = createUseStyles(theme => ({
@@ -98,7 +98,7 @@ const Latest = (props) => {
 
   const classes = useStyles()
 
-  const [isUserVotedForProposal, setIsUserVotedForProposal] = useState(true)
+  const [, setIsUserVotedForProposal] = useState(true)
 
   useEffect(() => {
     setPageFrom('latest')
@@ -158,9 +158,9 @@ const Latest = (props) => {
     }
   }, [isLatestPostsLoaded, items.length, loadMorePosts, loading])
 
-  const handleReirectToProposal = () => {
-    return window.location = 'https://vote.d.buzz'
-  }
+  // const handleReirectToProposal = () => {
+  //   return window.location = 'https://vote.d.buzz'
+  // }
 
   useEffect(() =>{
     if(user.username) {
@@ -188,17 +188,17 @@ const Latest = (props) => {
     }
   }, [user])
 
-  const handleHideProposalBanner = () => {
-    const showProposalBanner = {
-      visibility: false,
-    }
+  // const handleHideProposalBanner = () => {
+  //   const showProposalBanner = {
+  //     visibility: false,
+  //   }
 
-    const showProposalBannerString = JSON.stringify(showProposalBanner)
+  //   const showProposalBannerString = JSON.stringify(showProposalBanner)
 
-    Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
+  //   Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
 
-    setIsUserVotedForProposal(true)
-  }
+  //   setIsUserVotedForProposal(true)
+  // }
 
   return (
     <React.Fragment>
