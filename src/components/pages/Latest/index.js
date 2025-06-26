@@ -203,14 +203,14 @@ const Latest = (props) => {
   return (
     <React.Fragment>
       {/* disable banner */}
-      {!isUserVotedForProposal &&
+      {/* {!isUserVotedForProposal &&
         <div className={classes.opensourceWrapper}>
           <IconButton style={{ position: 'absolute', right: 0, top: 15, marginLeft: 'auto', marginRight: 15 }} onClick={handleHideProposalBanner}>
             <CloseIcon />
           </IconButton>
           {<span className='title'>Vote for DBuzz - Proposal #2</span>}
           <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>
-        </div>}
+        </div>} */}
       <HelmetGenerator page='Latest' />
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>

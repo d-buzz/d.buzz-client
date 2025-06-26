@@ -440,9 +440,9 @@ function* fileUploadRequest(payload, meta) {
         images = [...old]
       }
 
-      const {imageUrl} = result
+      const {previewUrl} = result
 
-      images.push(imageUrl)
+      images.push(previewUrl)
 
       yield put(uploadFileSuccess(images, meta))
     } else {
