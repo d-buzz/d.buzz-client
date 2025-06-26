@@ -26,46 +26,46 @@ import { pending } from 'redux-saga-thunk'
 import { anchorTop } from 'services/helper'
 import { InfiniteList, HelmetGenerator } from 'components'
 import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
-import { createUseStyles } from 'react-jss'
+// import { createUseStyles } from 'react-jss'
 import { isUserAlreadyVotedForProposal } from 'services/api'
-import IconButton from '@material-ui/core/IconButton'
-import { CloseIcon } from 'components/elements'
+// import IconButton from '@material-ui/core/IconButton'
+// import { CloseIcon } from 'components/elements'
 import Cookies from 'js-cookie'
 
-const useStyles = createUseStyles(theme => ({
-  opensourceWrapper: {
-    position: 'relative',
-    padding: '25px 0px 25px 0px',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#e6ecf0',
+// const useStyles = createUseStyles(theme => ({
+//   opensourceWrapper: {
+//     position: 'relative',
+//     padding: '25px 0px 25px 0px',
+//     width: '100%',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     backgroundColor: '#e6ecf0',
 
-    '& .title': {
-      width: 'fit-content',
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
+//     '& .title': {
+//       width: 'fit-content',
+//       fontSize: 20,
+//       fontWeight: 'bold',
+//     },
 
-    '& .button': {
-      marginTop: 15,
-      borderRadius: 15,
-      width: 'fit-content',
-      padding: '5px 15px 5px 15px',
-      fontSize: 18,
-      fontWeight: 'bold',
-      background: '#E61C34',
-      color: '#FFFFFF',
-      cursor: 'pointer',
-      userSelect: 'none',
+//     '& .button': {
+//       marginTop: 15,
+//       borderRadius: 15,
+//       width: 'fit-content',
+//       padding: '5px 15px 5px 15px',
+//       fontSize: 18,
+//       fontWeight: 'bold',
+//       background: '#E61C34',
+//       color: '#FFFFFF',
+//       cursor: 'pointer',
+//       userSelect: 'none',
 
-      '&:hover': {
-        opacity: 0.85,
-      },
-    },
-  },
-}))
+//       '&:hover': {
+//         opacity: 0.85,
+//       },
+//     },
+//   },
+// }))
 
 const Latest = (props) => {
   const {
@@ -96,9 +96,9 @@ const Latest = (props) => {
     user,
   } = props
 
-  const classes = useStyles()
+  // const classes = useStyles()
 
-  const [isUserVotedForProposal, setIsUserVotedForProposal] = useState(true)
+  const [, setIsUserVotedForProposal] = useState(true)
 
   useEffect(() => {
     setPageFrom('latest')
@@ -158,9 +158,9 @@ const Latest = (props) => {
     }
   }, [isLatestPostsLoaded, items.length, loadMorePosts, loading])
 
-  const handleReirectToProposal = () => {
-    return window.location = 'https://vote.d.buzz'
-  }
+  // const handleReirectToProposal = () => {
+  //   return window.location = 'https://vote.d.buzz'
+  // }
 
   useEffect(() =>{
     if(user.username) {
@@ -188,29 +188,29 @@ const Latest = (props) => {
     }
   }, [user])
 
-  const handleHideProposalBanner = () => {
-    const showProposalBanner = {
-      visibility: false,
-    }
+  // const handleHideProposalBanner = () => {
+  //   const showProposalBanner = {
+  //     visibility: false,
+  //   }
 
-    const showProposalBannerString = JSON.stringify(showProposalBanner)
+  //   const showProposalBannerString = JSON.stringify(showProposalBanner)
 
-    Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
+  //   Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
 
-    setIsUserVotedForProposal(true)
-  }
+  //   setIsUserVotedForProposal(true)
+  // }
 
   return (
     <React.Fragment>
       {/* disable banner */}
-      {!isUserVotedForProposal &&
+      {/* {!isUserVotedForProposal &&
         <div className={classes.opensourceWrapper}>
           <IconButton style={{ position: 'absolute', right: 0, top: 15, marginLeft: 'auto', marginRight: 15 }} onClick={handleHideProposalBanner}>
             <CloseIcon />
           </IconButton>
           {<span className='title'>Vote for DBuzz - Proposal #2</span>}
           <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>
-        </div>}
+        </div>} */}
       <HelmetGenerator page='Latest' />
       <InfiniteList loading={loading} items={items} onScroll={loadMorePosts} />
     </React.Fragment>

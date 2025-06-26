@@ -1356,7 +1356,7 @@ export const uploadImage = async (data, progress) => {
         },
       })
 
-      resolve(response.data)
+      resolve(response.data.data)
     } catch (error) {
       reject(error)
     }
