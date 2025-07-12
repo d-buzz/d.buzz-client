@@ -1,7 +1,7 @@
-import React, {useEffect, useCallback, useState} from 'react'
-import { pending } from 'redux-saga-thunk'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import React, { useEffect, useCallback, useState } from "react"
+import { pending } from "redux-saga-thunk"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 import {
   getTrendingPostsRequest,
   setTrendingIsVisited,
@@ -15,55 +15,58 @@ import {
   clearLastSearchTag,
   clearSearchPosts,
   clearTrendingPosts,
-} from 'store/posts/actions'
+} from "store/posts/actions"
 import {
   setProfileIsVisited,
   clearAccountPosts,
   clearAccountReplies,
-} from 'store/profile/actions'
-import { anchorTop } from 'services/helper'
-import { InfiniteList, HelmetGenerator } from 'components'
-import { clearScrollIndex, clearRefreshRouteStatus } from 'store/interface/actions'
-import { createUseStyles } from 'react-jss'
-import { isUserAlreadyVotedForProposal } from 'services/api'
-import IconButton from '@material-ui/core/IconButton'
-import { CloseIcon } from 'components/elements'
-import Cookies from 'js-cookie'
+} from "store/profile/actions"
+import { anchorTop } from "services/helper"
+import { InfiniteList, HelmetGenerator } from "components"
+import {
+  clearScrollIndex,
+  clearRefreshRouteStatus,
+} from "store/interface/actions"
+// import { createUseStyles } from 'react-jss'
+import { isUserAlreadyVotedForProposal } from "services/api"
+// import IconButton from '@material-ui/core/IconButton'
+// import { CloseIcon } from 'components/elements'
+import Cookies from "js-cookie"
 
-const useStyles = createUseStyles(theme => ({
-  opensourceWrapper: {
-    position: 'relative',
-    padding: '25px 0px 25px 0px',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#e6ecf0',
+// const useStyles = createUseStyles(theme => ({
+//   opensourceWrapper: {
+//     position: 'relative',
+//     padding: '25px 0px 25px 0px',
+//     width: '100%',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     backgroundColor: '#e6ecf0',
 
-    '& .title': {
-      width: 'fit-content',
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
+//     '& .title': {
+//       width: 'fit-content',
+//       fontSize: 20,
+//       fontWeight: 'bold',
+//     },
 
-    '& .button': {
-      marginTop: 15,
-      borderRadius: 15,
-      width: 'fit-content',
-      padding: '5px 15px 5px 15px',
-      fontSize: 18,
-      fontWeight: 'bold',
-      background: '#E61C34',
-      color: '#FFFFFF',
-      cursor: 'pointer',
-      userSelect: 'none',
+//     '& .button': {
+//       marginTop: 15,
+//       borderRadius: 15,
+//       width: 'fit-content',
+//       padding: '5px 15px 5px 15px',
+//       fontSize: 18,
+//       fontWeight: 'bold',
+//       background: '#E61C34',
+//       color: '#FFFFFF',
+//       cursor: 'pointer',
+//       userSelect: 'none',
 
-      '&:hover': {
-        opacity: 0.85,
-      },
-    },
-  },
-}))
+//       '&:hover': {
+//         opacity: 0.85,
+//       },
+//     },
+//   },
+// }))
 
 const Trending = (props) => {
   const {
@@ -93,12 +96,12 @@ const Trending = (props) => {
     clearRefreshRouteStatus,
   } = props
 
-  const classes = useStyles()
+  // const classes = useStyles()
 
-  const [isUserVotedForProposal, setIsUserVotedForProposal] = useState(true)
+  const [, setIsUserVotedForProposal] = useState(true)
 
   useEffect(() => {
-    setPageFrom('trending')
+    setPageFrom("trending")
     if (!isVisited) {
       anchorTop()
       clearScrollIndex()
@@ -120,11 +123,11 @@ const Trending = (props) => {
   }, [])
 
   // sets if the trending is loaded already
-  const [isTrendingPostsLoaded , setTrendingPostsLoaded] = useState(false)
+  const [isTrendingPostsLoaded, setTrendingPostsLoaded] = useState(false)
 
   useEffect(() => {
     // loading the page for the first time
-    if(refreshRouteStatus.pathname === "trending"){
+    if (refreshRouteStatus.pathname === "trending") {
       anchorTop()
       clearScrollIndex()
       clearTrendingPosts()
@@ -136,13 +139,12 @@ const Trending = (props) => {
   }, [refreshRouteStatus])
 
   const loadMorePosts = useCallback(() => {
-    if(items.length>0) {
+    if (items.length > 0) {
       const { permlink, author } = last
       getTrendingPostsRequest(permlink, author)
     }
     // eslint-disable-next-line
   }, [last, items])
-
 
   useEffect(() => {
     if (items.length === 0 && !loading && isTrendingPostsLoaded) {
@@ -151,93 +153,99 @@ const Trending = (props) => {
   }, [isTrendingPostsLoaded, items.length, loadMorePosts, loading])
 
   const handleReirectToProposal = () => {
-    return window.location = 'https://vote.d.buzz'
+    return (window.location = "https://vote.d.buzz")
   }
 
-  useEffect(() =>{
-    if(user.username) {
-      const showProposalBannerString = Cookies.get('showProposalBanner')
+  useEffect(() => {
+    if (user.username) {
+      const showProposalBannerString = Cookies.get("showProposalBanner")
 
       if (showProposalBannerString) {
         const showProposalBanner = JSON.parse(showProposalBannerString)
 
-        if(showProposalBanner.visibility === true) {
-          isUserAlreadyVotedForProposal(user.username)
-            .then((response) => {
-              setIsUserVotedForProposal(response)
-            })
+        if (showProposalBanner.visibility === true) {
+          isUserAlreadyVotedForProposal(user.username).then((response) => {
+            setIsUserVotedForProposal(response)
+          })
         } else {
           setIsUserVotedForProposal(true)
         }
       } else {
-        isUserAlreadyVotedForProposal(user.username)
-          .then((response) => {
-            setIsUserVotedForProposal(response)
-          })
+        isUserAlreadyVotedForProposal(user.username).then((response) => {
+          setIsUserVotedForProposal(response)
+        })
       }
     } else {
       setIsUserVotedForProposal(false)
     }
   }, [user])
 
-  const handleHideProposalBanner = () => {
-    const showProposalBanner = {
-      visibility: false,
-    }
+  // const handleHideProposalBanner = () => {
+  //   const showProposalBanner = {
+  //     visibility: false,
+  //   }
 
-    const showProposalBannerString = JSON.stringify(showProposalBanner)
+  //   const showProposalBannerString = JSON.stringify(showProposalBanner)
 
-    Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
+  //   Cookies.set('showProposalBanner', showProposalBannerString, { expires: 10 })
 
-    setIsUserVotedForProposal(true)
-  }
+  //   setIsUserVotedForProposal(true)
+  // }
 
   return (
     <React.Fragment>
-      <HelmetGenerator page='Trending' />
+      <HelmetGenerator page="Trending" />
       {/* disable banner */}
-      {!isUserVotedForProposal &&
+      {/* {!isUserVotedForProposal &&
         <div className={classes.opensourceWrapper}>
           <IconButton style={{ position: 'absolute', right: 0, top: 15, marginLeft: 'auto', marginRight: 15 }} onClick={handleHideProposalBanner}>
             <CloseIcon />
           </IconButton>
           {<span className='title'>Vote for DBuzz - Proposal #2</span>}
           <span className='button' onClick={handleReirectToProposal}>Vote for DBuzz Proposal</span>
-        </div>}
-      <InfiniteList unguardedLinks={unguardedLinks} loading={loading} items={items} onScroll={loadMorePosts} />
+        </div>} */}
+      <InfiniteList
+        unguardedLinks={unguardedLinks}
+        loading={loading}
+        items={items}
+        onScroll={loadMorePosts}
+      />
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => ({
-  user: state.auth.get('user'),
-  loading: pending(state, 'GET_TRENDING_POSTS_REQUEST'),
-  isVisited: state.posts.get('isTrendingVisited'),
-  items: state.posts.get('trending'),
-  last: state.posts.get('lastTrending'),
-  refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
+  user: state.auth.get("user"),
+  loading: pending(state, "GET_TRENDING_POSTS_REQUEST"),
+  isVisited: state.posts.get("isTrendingVisited"),
+  items: state.posts.get("trending"),
+  last: state.posts.get("lastTrending"),
+  refreshRouteStatus: state.interfaces.get("refreshRouteStatus"),
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    getTrendingPostsRequest,
-    setTrendingIsVisited,
-    setHomeIsVisited,
-    clearHomePosts,
-    setLatestIsVisited,
-    clearLatestPosts,
-    setProfileIsVisited,
-    clearAccountPosts,
-    clearAccountReplies,
-    clearTagsPost,
-    setTagsIsVisited,
-    setPageFrom,
-    clearLastSearchTag,
-    clearSearchPosts,
-    clearScrollIndex,
-    clearTrendingPosts,
-    clearRefreshRouteStatus,
-  }, dispatch),
+  ...bindActionCreators(
+    {
+      getTrendingPostsRequest,
+      setTrendingIsVisited,
+      setHomeIsVisited,
+      clearHomePosts,
+      setLatestIsVisited,
+      clearLatestPosts,
+      setProfileIsVisited,
+      clearAccountPosts,
+      clearAccountReplies,
+      clearTagsPost,
+      setTagsIsVisited,
+      setPageFrom,
+      clearLastSearchTag,
+      clearSearchPosts,
+      clearScrollIndex,
+      clearTrendingPosts,
+      clearRefreshRouteStatus,
+    },
+    dispatch
+  ),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Trending)
