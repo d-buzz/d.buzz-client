@@ -1295,6 +1295,11 @@ const MobileAppFrame = (props) => {
                           </ListItem>
                         </List>
                         <List component="div">
+                          <ListItem component="a" href='https://dbuzz-explorer.netlify.app/' target="_blank" rel="noopener noreferrer" key='Explorer' button>
+                            <ListItemText primary='Explorer' />
+                          </ListItem>
+                        </List>
+                        <List component="div">
                           <ListItem component="a" href='https://d.buzz/leaderboard' target="_blank" rel="noopener noreferrer" key='Leaderboard' button>
                             <ListItemText primary='Leaderboard' />
                           </ListItem>
