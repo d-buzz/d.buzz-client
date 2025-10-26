@@ -151,6 +151,13 @@ export const setMuteList = (response) => ({
   payload: response,
 })
 
+export const SET_GLOBAL_MUTE_LIST = 'SET_GLOBAL_MUTE_LIST'
+
+export const setGlobalMuteList = (response) => ({
+  type: SET_GLOBAL_MUTE_LIST,
+  payload: response,
+})
+
 export const MUTE_USER_REQUEST = 'MUTE_USER_REQUEST'
 export const MUTE_USER_FAILURE = 'MUTE_USER_FAILURE'
 export const MUTE_USER_SUCCESS = 'MUTE_USER_SUCCESS'

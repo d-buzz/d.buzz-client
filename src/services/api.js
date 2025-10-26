@@ -53,8 +53,16 @@ export const setRPCNode = async () => {
   }
 }
 
-export const invokeMuteFilter = (items, mutelist, opacityUsers = []) => {
-  return items.filter((item) => !mutelist.includes(item.author) || opacityUsers.includes(item.author))
+export const invokeMuteFilter = (items, mutelist, opacityUsers = [], globalMuteList = []) => {
+  return items.filter((item) => {
+    const isPersonallyMuted = mutelist.includes(item.author)
+    const isGloballyMuted = globalMuteList.includes(item.author)
+    const hasOpacity = opacityUsers.includes(item.author)
+
+    // Show post if: not muted at all, OR has opacity (personal mute visibility override)
+    // Global mutes cannot be overridden by opacity
+    return (!isPersonallyMuted && !isGloballyMuted) || (isPersonallyMuted && !isGloballyMuted && hasOpacity)
+  })
 }
 
 export const hashBuffer = (buffer) => {

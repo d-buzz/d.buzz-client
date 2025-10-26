@@ -5,6 +5,7 @@ import {
   SUBSCRIBE_SUCCESS,
   SET_FROM_LANDING,
   SET_MUTE_LIST,
+  SET_GLOBAL_MUTE_LIST,
   SET_HAS_PAYOUT_AGREED,
   SET_INTENT_BUZZ,
   CLEAR_INTENT_BUZZ,
@@ -22,6 +23,7 @@ const defaultState = fromJS({
   user: {},
   fromLanding: false,
   mutelist: [],
+  globalMuteList: [],
   payoutAgreed: false,
   opacityUsers: [],
   intentBuzz: {},
@@ -47,6 +49,8 @@ export const auth = (state = defaultState, { type, payload }) => {
     return state.set('fromLanding', payload)
   case SET_MUTE_LIST:
     return state.set('mutelist', payload)
+  case SET_GLOBAL_MUTE_LIST:
+    return state.set('globalMuteList', payload)
   case SET_HAS_PAYOUT_AGREED:
     return state.set('payoutAgreed', payload)
   case SET_INTENT_BUZZ:
