@@ -175,7 +175,7 @@ const HideBuzzModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  hideBuzzDialog: state.interfaces.get('hideBuzzDialog'),
+  hideBuzzDialog: state.interfaces.get('hideBuzzDialog')?.toJS ? state.interfaces.get('hideBuzzDialog').toJS() : state.interfaces.get('hideBuzzDialog'),
   loading: pending(state, 'HIDE_BUZZ_REQUEST'),
   mutelist: state.auth.get('mutelist'),
 })

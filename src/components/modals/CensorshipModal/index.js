@@ -200,7 +200,7 @@ const CensorhipModal = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  item: state.interfaces.get('censorshipDialog'),
+  item: state.interfaces.get('censorshipDialog')?.toJS ? state.interfaces.get('censorshipDialog').toJS() : state.interfaces.get('censorshipDialog'),
   censorTypes: [],
   loading: false,
 })
