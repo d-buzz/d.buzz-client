@@ -4,8 +4,7 @@ import {
   broadcast,
   formatter,
 } from '@hiveio/hive-js'
-import {hash} from '@hiveio/hive-js/lib/auth/ecc'
-import {PrivateKey} from '@hiveio/hive-js/lib/auth/ecc'
+import {hash, PrivateKey} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
@@ -1566,7 +1565,8 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
 
           // Sign the hash with posting private key
           console.log('[HIVE UPLOAD] Signing with posting key...')
-          const privateKey = PrivateKey.fromString(postingKey)
+          const privateKey = PrivateKey.fromString ? PrivateKey.fromString(postingKey) : PrivateKey(postingKey)
+          console.log('[HIVE UPLOAD] Private key created:', !!privateKey)
           const signature = privateKey.sign(Buffer.from(imageHash)).toString()
           console.log('[HIVE UPLOAD] Signature created:', signature.substring(0, 20) + '...')
 
