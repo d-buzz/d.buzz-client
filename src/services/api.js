@@ -10,7 +10,7 @@ import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
-import {sha256} from '@stablelib/sha256'
+import {hash as sha256Hash} from '@stablelib/sha256'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
@@ -1554,7 +1554,7 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
           const combined = new Uint8Array(prefix.length + imageData.length)
           combined.set(prefix)
           combined.set(imageData, prefix.length)
-          const imageHash = sha256(combined)
+          const imageHash = sha256Hash(combined)
 
           // Sign the hash with posting private key
           const privateKey = PrivateKey.fromString(postingKey)
