@@ -69,6 +69,7 @@ const InfiniteList = ({
           payoutAt={posts[index].payout_at}
           cashout_time={posts[index].cashout_time}
           scrollIndex={index}
+          type="HIVE"
           // muteTrigger={muteTrigger}
           item={posts[index]}
           selectedPocket={selectedPocket}
