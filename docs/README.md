@@ -2,6 +2,32 @@
 
 Welcome to the comprehensive documentation for D.Buzz Client, a decentralized social media platform built on the Hive blockchain.
 
+## What's New (2024 Updates)
+
+### 🚀 100% Frontend Architecture
+D.Buzz is now a completely client-side application with **no backend servers**:
+- All data fetched directly from Hive blockchain
+- No intermediary servers or custom APIs required
+- Maximum privacy and decentralization
+- Fully open-source and transparent
+
+### ⚡ Automatic API Failover System
+Enhanced reliability with intelligent failover:
+- **3 Hive API nodes** with priority-based selection
+- **Automatic switching** on API failures
+- **5-minute cooldown** for failed nodes
+- **Zero downtime** - seamless user experience
+
+### 🔧 Improved Error Handling
+- JSON-RPC response format handling
+- Data validation and normalization
+- Smart retry logic with exponential backoff
+- Detailed debug logging
+
+[See full changelog →](./api/api-service.md#recent-improvements-2024)
+
+---
+
 ## Table of Contents
 
 ### Getting Started

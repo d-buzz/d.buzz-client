@@ -271,8 +271,11 @@
 - **Price API**: External price chart service
 
 ### Hive Blockchain
-- **RPC Nodes**: Configurable Hive API endpoints
-- **Default**: rpc.d.buzz
+- **RPC Nodes**: Multiple Hive API endpoints with automatic failover
+- **Primary Node**: api.hive.blog (default)
+- **Backup Nodes**: api.openhive.network, api.deathwing.me
+- **Failover System**: Automatic switching on API failure
+- **Cooldown Period**: 5 minutes for failed nodes
 
 ### External APIs
 - **Giphy API**: GIF search and embedding

@@ -4,35 +4,121 @@
 
 The API service (`/src/services/api.js`) is the central module for all Hive blockchain operations. It provides a comprehensive interface for interacting with the Hive network, managing user data, and handling content operations.
 
-**File Size**: 1,600 lines
+**File Size**: 1,900+ lines
 **Location**: `/src/services/api.js`
+
+## Automatic Failover System
+
+D.Buzz implements a robust automatic failover system for Hive API nodes to ensure high availability and reliability.
+
+### Failover Features
+
+- **Priority-Based Selection**: APIs are tried in priority order
+- **Automatic Retry**: Failed requests automatically retry with backup nodes
+- **Smart Cooldown**: Failed APIs are temporarily disabled for 5 minutes
+- **Transparent Switching**: Automatic failover with no user intervention required
+
+### Available Hive API Nodes (Priority Order)
+
+1. **Primary**: `https://api.hive.blog` (default)
+2. **Backup 1**: `https://api.openhive.network`
+3. **Backup 2**: `https://api.deathwing.me`
+
+### Failover Configuration
+
+```javascript
+const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown for failed APIs
+const allHiveAPIs = [defaultNode, ...hiveAPIUrls]
+```
+
+### How Failover Works
+
+1. Request is sent to highest priority available API
+2. If request fails, API is marked as failed with timestamp
+3. Next available API in priority order is selected
+4. Failed APIs are excluded for 5 minutes (cooldown period)
+5. After cooldown, failed APIs become available again
+6. If all APIs fail, the system resets and retries from the top
+
+### Failover Functions
+
+#### `getAvailableAPIs()`
+Returns list of APIs that are not in cooldown period.
+
+```javascript
+const availableAPIs = getAvailableAPIs()
+// Returns: Array of available API URLs
+```
+
+#### `markAPIAsFailed(apiUrl)`
+Marks an API as failed and starts cooldown timer.
+
+```javascript
+markAPIAsFailed('https://api.hive.blog')
+// API will be unavailable for 5 minutes
+```
+
+#### `getNextAvailableAPI()`
+Gets the next available API in priority order.
+
+```javascript
+const nextAPI = getNextAvailableAPI()
+// Returns: Highest priority available API URL
+```
+
+#### `apiCallWithFailover(apiCallFunction, maxRetries = 3)`
+Wrapper for API calls with automatic failover and retry logic.
+
+```javascript
+const result = await apiCallWithFailover(async () => {
+  return await someAPICall()
+}, 3) // Will retry up to 3 times
+```
+
+**Parameters**:
+- `apiCallFunction` (function): Async function that makes the API call
+- `maxRetries` (number): Maximum retry attempts (default: 3)
+
+**Features**:
+- Automatically switches to backup APIs on failure
+- Exponential backoff between retries (1s, 2s, 3s)
+- Throws last error if all retries fail
 
 ## Core Functions
 
 ### RPC Node Management
 
 #### `getActiveRPCNode()`
-Returns the currently active Hive RPC node URL.
+Returns the currently active Hive RPC node URL with automatic failover support.
 
 ```javascript
 const node = getActiveRPCNode()
-// Returns: 'https://rpc.d.buzz' or configured node
+// Returns: 'https://api.hive.blog' or next available node
 ```
 
-#### `setRPCNode(nodeUrl)`
-Sets a new active RPC node.
+**Behavior**:
+- Checks localStorage for user-selected RPC node
+- Falls back to automatic failover if no custom node set
+- Returns next available node based on priority and cooldown status
+
+#### `setRPCNode()`
+Sets a new active RPC node with automatic failover on failure.
 
 ```javascript
-setRPCNode('https://api.hive.blog')
+await setRPCNode()
+// Automatically selects best available node
 ```
 
-**Parameters**:
-- `nodeUrl` (string): The URL of the Hive RPC node
+**Features**:
+- No parameters needed (automatic selection)
+- Marks failed nodes and switches to backup
+- Logs connection status for debugging
+- Handles errors gracefully with fallback logic
 
 ### Bridge API Calls
 
-#### `callBridge(endpoint, params)`
-Generic function for calling Hive bridge API endpoints.
+#### `callBridge(endpoint, params, appendParams = true)`
+Generic function for calling Hive bridge API endpoints with automatic failover.
 
 ```javascript
 const result = await callBridge('get_ranked_posts', {
@@ -45,8 +131,29 @@ const result = await callBridge('get_ranked_posts', {
 **Parameters**:
 - `endpoint` (string): Bridge API endpoint name
 - `params` (object): Endpoint-specific parameters
+- `appendParams` (boolean): Auto-append default tag and limit (default: true)
 
-**Returns**: Promise with API response data
+**Returns**: Promise with API response data (always returns an array)
+
+**Features**:
+- **Automatic Failover**: Uses `apiCallWithFailover()` wrapper
+- **JSON-RPC Handling**: Automatically unwraps JSON-RPC response format
+- **Data Validation**: Ensures response is always an array
+- **Error Recovery**: Retries failed requests with backup APIs
+
+**Response Handling**:
+```javascript
+// Handles JSON-RPC wrapped responses
+if (data && typeof data === 'object' && 'result' in data) {
+  data = data.result
+}
+
+// Ensures data is always an array
+if (!Array.isArray(data)) {
+  console.error('callBridge received non-array data:', data)
+  resolve([])
+}
+```
 
 **Common Endpoints**:
 - `get_ranked_posts` - Get posts by ranking (trending, hot, created)
@@ -520,16 +627,47 @@ function* fetchTrendingSaga() {
 // From config.js
 export const HIVE_TAG = 'hive-193084'
 export const MODERATOR_ACCOUNT = 'dbuzz'
-export const DEFAULT_RPC_NODE = process.env.REACT_APP_DEFAULT_RPC_NODE
+export const DEFAULT_RPC_NODE = 'https://api.hive.blog' // Updated default
+export const GIPHY_API_KEY = 'ecohRlzr8FrMGrTfX8JJ4uoilgdIiZI5'
+
+// Failover configuration
+export const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes
+export const hiveAPIUrls = [
+  "https://api.openhive.network",
+  "https://api.deathwing.me"
+]
 ```
+
+## Recent Improvements (2024)
+
+### 100% Frontend Architecture
+D.Buzz is now a completely frontend application with no backend API dependencies:
+- **Direct Blockchain Access**: All data fetched directly from Hive blockchain
+- **No Intermediary Servers**: No custom backend required
+- **Fully Decentralized**: True peer-to-peer architecture
+- **Better Privacy**: No data passes through D.Buzz servers
+
+### Enhanced Reliability
+- **Automatic Failover**: Seamless switching between Hive API nodes
+- **Smart Retry Logic**: Exponential backoff for failed requests
+- **Error Recovery**: Graceful degradation and recovery
+- **Improved Logging**: Detailed debug information for troubleshooting
+
+### API Improvements
+- **JSON-RPC Handling**: Properly unwraps JSON-RPC response format
+- **Data Validation**: Ensures consistent data types (arrays)
+- **Limit Validation**: Prevents exceeding Hive API maximum limits
+- **Response Normalization**: Consistent response format across all calls
 
 ## Best Practices
 
 1. **Always handle errors**: Wrap API calls in try/catch
 2. **Use pagination**: Don't fetch all data at once
-3. **Implement failover**: Have backup RPC nodes
+3. **Trust automatic failover**: The system handles API failures automatically
 4. **Cache when appropriate**: Reduce redundant API calls
 5. **Validate input**: Check parameters before API calls
 6. **Use observer parameter**: Get personalized data (vote status, etc.)
 7. **Respect rate limits**: Don't spam the API
 8. **Clean up subscriptions**: Unsubscribe from real-time updates
+9. **Monitor console logs**: Check failover activity for debugging
+10. **Test with multiple APIs**: Verify failover works correctly

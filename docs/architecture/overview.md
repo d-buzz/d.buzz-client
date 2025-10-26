@@ -50,6 +50,13 @@ D.Buzz is a decentralized social media platform that provides a Twitter-like mic
 
 ## Technical Highlights
 
+### 100% Frontend Architecture
+- **No Backend Servers**: Completely client-side application
+- **Direct Blockchain Access**: All data fetched directly from Hive nodes
+- **Fully Decentralized**: No intermediary servers or APIs
+- **Maximum Privacy**: No data passes through D.Buzz infrastructure
+- **Open Source**: Transparent and auditable codebase
+
 ### Modern React Application
 - React 16.13.1 with hooks and functional components
 - Redux for predictable state management
@@ -59,8 +66,16 @@ D.Buzz is a decentralized social media platform that provides a Twitter-like mic
 ### Blockchain-First Design
 - Hive.js integration for blockchain operations
 - Real-time data synchronization with Hive nodes
+- Automatic failover between multiple Hive API nodes
 - Transaction signing with Hive Keychain
 - Web3 support for MetaMask integration
+
+### High Availability & Reliability
+- **Automatic API Failover**: Seamless switching between Hive nodes
+- **Smart Retry Logic**: Exponential backoff for failed requests
+- **Multi-Node Support**: Primary and backup API endpoints
+- **Self-Healing**: Automatic recovery from network issues
+- **Zero Downtime**: Continues working even if APIs fail temporarily
 
 ### Progressive Web App (PWA)
 - Service worker for offline capabilities
