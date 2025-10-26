@@ -32,8 +32,8 @@ const AuthGuard = (props) => {
             videoEmbedsStatus: 'enabled',
             linkPreviewsStatus: 'enabled',
             showImagesStatus: 'enabled',
-            showNSFWPosts: 'disabled'
-          }
+            showNSFWPosts: 'disabled',
+          },
         }
         localStorage.setItem('customUserData', JSON.stringify(defaultSettings))
         console.log('New user settings initialized in localStorage')
