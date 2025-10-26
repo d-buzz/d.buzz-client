@@ -978,7 +978,7 @@ const mapStateToProps = (state) => ({
   loadingFollow: pending(state, 'FOLLOW_REQUEST') || pending(state, 'UNFOLLOW_REQUEST'),
   recentFollows: state.posts.get('hasBeenRecentlyFollowed'),
   recentUnfollows: state.posts.get('hasBeenRecentlyUnfollowed'),
-  mutelist: state.auth.get('mutelist'),
+  mutelist: state.auth.get('mutelist')?.toJS ? state.auth.get('mutelist').toJS() : state.auth.get('mutelist'),
   follows: state.profile.get('following'),
 })
 

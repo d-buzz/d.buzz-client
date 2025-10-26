@@ -84,8 +84,8 @@ const MuteButton = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  mutedList: state.profile.get('mutedList'),
-  mutedListAll: state.profile.get('mutedListAll'),
+  mutedList: state.profile.get('mutedList')?.toJS ? state.profile.get('mutedList').toJS() : state.profile.get('mutedList'),
+  mutedListAll: state.profile.get('mutedListAll')?.toJS ? state.profile.get('mutedListAll').toJS() : state.profile.get('mutedListAll'),
 })
 
 

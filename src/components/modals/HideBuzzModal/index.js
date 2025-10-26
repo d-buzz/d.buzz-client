@@ -177,7 +177,7 @@ const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   hideBuzzDialog: state.interfaces.get('hideBuzzDialog')?.toJS ? state.interfaces.get('hideBuzzDialog').toJS() : state.interfaces.get('hideBuzzDialog'),
   loading: pending(state, 'HIDE_BUZZ_REQUEST'),
-  mutelist: state.auth.get('mutelist'),
+  mutelist: state.auth.get('mutelist')?.toJS ? state.auth.get('mutelist').toJS() : state.auth.get('mutelist'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
