@@ -2,18 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { broadcastNotification, closeCensorshipDialog } from 'store/interface/actions'
-import { censorBuzzRequest } from 'store/settings/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import { pending } from 'redux-saga-thunk'
-import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
@@ -124,7 +117,6 @@ const CensorhipModal = (props) => {
     item,
     closeCensorshipDialog,
     censorTypes = [],
-    censorBuzzRequest,
     broadcastNotification,
   } = props
 
@@ -217,7 +209,6 @@ const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     broadcastNotification,
     closeCensorshipDialog,
-    censorBuzzRequest,
   }, dispatch),
 })
 
