@@ -185,6 +185,11 @@ export const callBridge = async (method, params, appendParams = true) => {
         if (err) {
           reject(err)
         } else {
+          // Handle JSON-RPC response format
+          if (data && typeof data === 'object' && 'result' in data) {
+            data = data.result
+          }
+
           // Ensure data is an array
           if (!Array.isArray(data)) {
             console.error('callBridge received non-array data:', data)
@@ -238,6 +243,11 @@ export const fetchDiscussions = (author, permlink) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         const authors = []
         let profile = []
 
@@ -308,6 +318,11 @@ export const getUnreadNotificationsCount = async (account) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -321,6 +336,11 @@ export const getAccountNotifications = async (account) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -334,6 +354,11 @@ export const getCommunityRole = async (observer) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data.context.subscribed)
       }
     })
@@ -356,6 +381,11 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         // Ensure data is an array
         if (!Array.isArray(data)) {
           console.error('fetchAccountPosts received non-array data:', data)
@@ -391,6 +421,11 @@ export const fetchTrendingTags = (tag = "hive-193084", limit = 100) => {
         console.error('Error fetching trending tags:', err)
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -454,6 +489,11 @@ export const isFollowing = (follower, following) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         const {follows} = data
         resolve(follows)
       }
@@ -498,7 +538,13 @@ const apiCallWrapper = (method, params) => {
   return new Promise((resolve, reject) => {
     api.call(method, params, (err, data) => {
       if (err) reject(err)
-      else resolve(data)
+      else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+        resolve(data)
+      }
     })
   })
 }
@@ -681,6 +727,11 @@ export const fetchMuteList = (user) => {
         console.log(err)
         resolve([])
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -765,6 +816,11 @@ export const getAccountLists = (observer, list_type) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (result && typeof result === 'object' && 'result' in result) {
+          result = result.result
+        }
+
         resolve(result)
       }
     })
@@ -777,6 +833,11 @@ export const checkAccountIsFollowingLists = (observer) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (result && typeof result === 'object' && 'result' in result) {
+          result = result.result
+        }
+
         resolve(result)
       }
     })
