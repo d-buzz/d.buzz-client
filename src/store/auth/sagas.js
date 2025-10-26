@@ -85,7 +85,6 @@ import {
   extractLoginData,
   fetchMuteList,
   generateMuteOperation,
-  getCensoredList,
   generateFollowMutedListOperation,
   generateUnfollowMutedListOperation,
   generateBlacklistOperation,
@@ -324,9 +323,9 @@ function* getSavedUserRequest (meta) {
         })
     }
     
-    const censorList = yield call(getCensoredList)
-    yield put(setCensorList(censorList))
-    
+    // Censor API removed - no longer fetching censored list
+    yield put(setCensorList([]))
+
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
     
     if(payoutAgreed === null) {

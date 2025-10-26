@@ -2,18 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import ModalBody from 'react-bootstrap/ModalBody'
 import { broadcastNotification, closeCensorshipDialog } from 'store/interface/actions'
-import { censorBuzzRequest } from 'store/settings/actions'
 import { ContainedButton } from 'components/elements'
 import { createUseStyles } from 'react-jss'
 import { connect } from 'react-redux'
 import { Spinner } from 'components/elements'
 import { bindActionCreators } from 'redux'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import { pending } from 'redux-saga-thunk'
-import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
@@ -124,7 +117,6 @@ const CensorhipModal = (props) => {
     item,
     closeCensorshipDialog,
     censorTypes = [],
-    censorBuzzRequest,
     broadcastNotification,
   } = props
 
@@ -155,18 +147,10 @@ const CensorhipModal = (props) => {
   }
 
   const handleClickCensorBuzz = () => {
-    censorBuzzRequest(author, permlink, typeId)
-      .then(() => {
-        setOpen(false)
-        broadcastNotification('success', `Successfully censored @${author}/${permlink}`)
-        callback()
-        setTypeId(0)
-      })
-      .catch(() => {
-        setOpen(false)
-        broadcastNotification('error', `Something went wrong while`)
-        setTypeId(0)
-      })
+    // Censorship API has been removed - feature no longer available
+    setOpen(false)
+    broadcastNotification('error', 'Censorship feature is no longer available')
+    setTypeId(0)
   }
 
 
@@ -178,60 +162,28 @@ const CensorhipModal = (props) => {
             <center>
               {!loading && (
                 <React.Fragment>
-                  <h6>Would you like to censor this buzz?</h6>
+                  <h6>Censorship Feature Unavailable</h6>
                   <p className={classes.text}>
-                    Clicking yes will mark this buzz as censored <br />
-                    <Link className={classes.link} to={`/@${author}/${permlink}`} rel='noopener noreferrer' target='_blank'>@${author}/${permlink}</Link> <br />
+                    The censorship API is no longer available. This feature has been deprecated. <br />
+                    <Link className={classes.link} to={`/@${author}/${permlink}`} rel='noopener noreferrer' target='_blank'>@{author}/{permlink}</Link> <br />
                   </p>
                   <p className={classes.text}>
-                    Pick a reason below why this buzz should be censored
+                    Please use your personal mute/block features instead.
                   </p>
                 </React.Fragment>
               )}
-              {loading && (<h6>Marking buzz as censored, please wait while it process</h6>)}
+              {loading && (<h6>Processing...</h6>)}
             </center>
-            {!loading && (
-              <FormControl variant="outlined" className={classes.formControl} classes={{ input: classes.selectRoot }}>
-                <InputLabel className={classes.text}>Reason</InputLabel>
-                <Select
-                  label='Reason'
-                  value={typeId}
-                  onChange={handleChangeTypeId}
-                  className={classNames(classes.text, classes.selectRoot)}
-                  inputProps={{
-                    classes: {
-                      icon: classes.icon,
-                    },
-                  }}
-                >
-                  <MenuItem key={0} value={0}>
-                    <em>-- select --</em>
-                  </MenuItem>
-                  {censorTypes.map((item) => (
-                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
           </div>
           {!loading && (
             <React.Fragment>
-              <div style={{ display: 'inline-block' }}>
-                <ContainedButton
-                  className={classes.closeButton}
-                  fontSize={14}
-                  transparent={true}
-                  onClick={handleClickCensorBuzz}
-                  label="Yes"
-                />
-              </div>
-              <div style={{ display: 'inline-block', float: 'right' }}>
+              <div style={{ textAlign: 'center' }}>
                 <ContainedButton
                   className={classes.closeButton}
                   fontSize={14}
                   transparent={true}
                   onClick={handleClickCloseDialog}
-                  label="Cancel"
+                  label="Close"
                 />
               </div>
             </React.Fragment>
@@ -249,15 +201,14 @@ const CensorhipModal = (props) => {
 
 const mapStateToProps = (state) => ({
   item: state.interfaces.get('censorshipDialog'),
-  censorTypes: state.settings.get('censorTypes'),
-  loading: pending(state, 'CENSOR_BUZZ_REQUEST'),
+  censorTypes: [],
+  loading: false,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   ...bindActionCreators({
     broadcastNotification,
     closeCensorshipDialog,
-    censorBuzzRequest,
   }, dispatch),
 })
 

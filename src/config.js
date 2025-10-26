@@ -5,7 +5,6 @@ const config = {
   SCRAPE_API: process.env.REACT_APP_SCRAPE_API,
   IMAGE_API: process.env.REACT_APP_IMAGE_API || 'http://localhost:3040/api/v1',
   VIDEO_API: process.env.REACT_APP_VIDEO_API || 'http://localhost:5454/api/v1',
-  CENSOR_API: process.env.REACT_APP_CENSOR_API || 'http://localhost:3001/api/v1/censor',
   PRICE_API: process.env.REACT_APP_PRICE_CHART_API,
   BUCKET: process.env.REACT_APP_FLEEK_BUCKET,
   GIPHY_API_KEY: 'ecohRlzr8FrMGrTfX8JJ4uoilgdIiZI5',

@@ -20,7 +20,6 @@ const searchUrl = `${appConfig.SEARCH_API}/search`
 const scrapeUrl = `${appConfig.SCRAPE_API}/scrape`
 const imageUrl = `${appConfig.IMAGE_API}`
 const videoUrl = `${appConfig.VIDEO_API}`
-const censorUrl = `${appConfig.CENSOR_API}`
 const priceChartURL = `${appConfig.PRICE_API}`
 
 const visited = []
@@ -1416,45 +1415,6 @@ export const checkVersion = () => {
 export const getMutePattern = () => {
   return new Promise((resolve) => {
     axios.get('https://endpoint.d.buzz/pattern.json')
-      .then(function (result) {
-        resolve(result.data)
-      })
-  })
-}
-
-export const getKeyPair = () => {
-  return new Promise((resolve) => {
-    axios.get(`${censorUrl}/keypair`)
-      .then(function (result) {
-        resolve(result.data)
-      })
-  })
-}
-
-export const getCensorTypes = () => {
-  return new Promise((resolve) => {
-    axios.get(`${censorUrl}/types`)
-      .then(function (result) {
-        resolve(result.data)
-      })
-  })
-}
-
-export const censorBuzz = (author, permlink, type) => {
-  return new Promise((resolve) => {
-    const params = {author, permlink, type}
-    axios.post(`${censorUrl}/add`, params)
-      .then((response) => {
-        resolve(response.data)
-      }, (error) => {
-        reject(error)
-      })
-  })
-}
-
-export const getCensoredList = () => {
-  return new Promise((resolve) => {
-    axios.get(`${censorUrl}/list`)
       .then(function (result) {
         resolve(result.data)
       })

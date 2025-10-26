@@ -5,7 +5,6 @@ import { getRpcNode, checkVersionRequest, setDefaultVotingWeightRequest } from '
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { BrandIcon, Spinner } from 'components/elements'
-import { getCensorTypesRequest } from 'store/settings/actions'
 import { createUseStyles } from 'react-jss'
 import config from 'config'
 import { getTheme } from 'services/helper'
@@ -157,7 +156,6 @@ const Init = (props) => {
     getTrendingTagsRequest,
     getRpcNode,
     checkVersionRequest,
-    getCensorTypesRequest,
     children,
     setDefaultVotingWeightRequest,
   } = props
@@ -208,7 +206,6 @@ const Init = (props) => {
             setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
               getSavedUserRequest().then(() => {
                 setInit(true)
-                getCensorTypesRequest()
                 getTrendingTagsRequest()
               })
             })
@@ -221,7 +218,6 @@ const Init = (props) => {
           setDefaultVotingWeightRequest(defaultUpvoteWeight).then(() => {
             getSavedUserRequest().then(() => {
               setInit(true)
-              getCensorTypesRequest()
               getTrendingTagsRequest()
             })
           })
@@ -262,7 +258,6 @@ const mapDispatchToProps = (dispatch) => ({
     getRpcNode,
     initCeremicLoginRequest,
     checkVersionRequest,
-    getCensorTypesRequest,
     setDefaultVotingWeightRequest,
   }, dispatch),
 })
