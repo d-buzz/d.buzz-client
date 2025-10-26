@@ -1540,6 +1540,10 @@ export const uploadImage = async (data, progress) => {
 }
 
 export const uploadImageToHiveBlog = async (data, username, postingKey, progress) => {
+  console.log('[HIVE UPLOAD] Starting upload to images.hive.blog')
+  console.log('[HIVE UPLOAD] Username:', username)
+  console.log('[HIVE UPLOAD] File:', data.name, 'Size:', data.size, 'Type:', data.type)
+
   return new Promise(async (resolve, reject) => {
     try {
       // Read file data as ArrayBuffer
@@ -1547,6 +1551,7 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
 
       fileReader.onload = async (e) => {
         try {
+          console.log('[HIVE UPLOAD] File read complete, size:', e.target.result.byteLength, 'bytes')
           const imageData = new Uint8Array(e.target.result)
 
           // Create hash: SHA256('ImageSigningChallenge' + imageData)
@@ -1554,46 +1559,68 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
           const combined = new Uint8Array(prefix.length + imageData.length)
           combined.set(prefix)
           combined.set(imageData, prefix.length)
+
+          console.log('[HIVE UPLOAD] Creating SHA256 hash...')
           const imageHash = sha256Hash(combined)
+          console.log('[HIVE UPLOAD] Hash created:', imageHash.length, 'bytes')
 
           // Sign the hash with posting private key
+          console.log('[HIVE UPLOAD] Signing with posting key...')
           const privateKey = PrivateKey.fromString(postingKey)
           const signature = privateKey.sign(Buffer.from(imageHash)).toString()
+          console.log('[HIVE UPLOAD] Signature created:', signature.substring(0, 20) + '...')
 
           // Create FormData with the image file
           const formData = new FormData()
           formData.append('file', data, data.name)
 
+          const uploadUrl = `https://images.hive.blog/${username}/${signature}`
+          console.log('[HIVE UPLOAD] Uploading to:', uploadUrl)
+
           // Upload to images.hive.blog
           const response = await axios({
             method: 'POST',
-            url: `https://images.hive.blog/${username}/${signature}`,
+            url: uploadUrl,
             headers: {'Content-Type': 'multipart/form-data'},
             data: formData,
             onUploadProgress: (progressEvent) => {
               const {loaded, total} = progressEvent
               const percent = Math.floor((loaded * 100) / total)
+              console.log('[HIVE UPLOAD] Progress:', percent + '%', `(${loaded}/${total} bytes)`)
               progress(percent)
             },
           })
 
+          console.log('[HIVE UPLOAD] Response status:', response.status)
+          console.log('[HIVE UPLOAD] Response data:', response.data)
+
           // Return the uploaded image URL
           if (response.data && response.data.url) {
+            console.log('[HIVE UPLOAD] ✅ SUCCESS! Image URL:', response.data.url)
             resolve({previewUrl: response.data.url})
           } else {
+            console.error('[HIVE UPLOAD] ❌ No URL in response:', response.data)
             reject(new Error('No URL in response'))
           }
         } catch (error) {
+          console.error('[HIVE UPLOAD] ❌ Error during upload:', error)
+          console.error('[HIVE UPLOAD] Error details:', error.message)
+          if (error.response) {
+            console.error('[HIVE UPLOAD] Server response:', error.response.status, error.response.data)
+          }
           reject(error)
         }
       }
 
-      fileReader.onerror = () => {
+      fileReader.onerror = (error) => {
+        console.error('[HIVE UPLOAD] ❌ Failed to read file:', error)
         reject(new Error('Failed to read file'))
       }
 
+      console.log('[HIVE UPLOAD] Reading file as ArrayBuffer...')
       fileReader.readAsArrayBuffer(data)
     } catch (error) {
+      console.error('[HIVE UPLOAD] ❌ Outer error:', error)
       reject(error)
     }
   })
