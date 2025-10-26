@@ -234,7 +234,7 @@ const FollowBlacklistsModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  followBlacklistsDialog: state.interfaces.get('followBlacklistsDialog'),
+  followBlacklistsDialog: state.interfaces.get('followBlacklistsDialog')?.toJS ? state.interfaces.get('followBlacklistsDialog').toJS() : state.interfaces.get('followBlacklistsDialog'),
   loading: pending(state, 'FOLLOW_BLACKLISTS_REQUEST') || pending(state, 'UNFOLLOW_BLACKLISTS_REQUEST'),
   followedBlacklist: state.profile.get('followedBlacklist'),
 })

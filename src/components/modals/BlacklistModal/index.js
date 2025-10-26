@@ -203,7 +203,7 @@ const BlacklistModal = (props) => {
 
 const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
-  blacklistModal: state.interfaces.get('blacklistDialog'),
+  blacklistModal: state.interfaces.get('blacklistDialog')?.toJS ? state.interfaces.get('blacklistDialog').toJS() : state.interfaces.get('blacklistDialog'),
   loading: pending(state, 'BLACKLIST_USER_REQUEST') || pending(state, 'UNBLACKLIST_USER_REQUEST'),
   blacklistedList: state.profile.get('blacklistedList'),
 })

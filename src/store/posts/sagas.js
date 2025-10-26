@@ -100,6 +100,7 @@ import {
   searchPostAuthor,
   searchPeople,
   uploadImage,
+  uploadImageToHiveBlog,
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
@@ -429,14 +430,34 @@ function* upvoteRequest(payload, meta) {
 
 function* fileUploadRequest(payload, meta) {
   try {
+    console.log('[SAGA] fileUploadRequest called')
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
-    const {is_authenticated} = user
+    const {is_authenticated, username, login_data} = user
     const {file, progress} = payload
+
+    console.log('[SAGA] User authenticated:', is_authenticated)
+    console.log('[SAGA] Username:', username)
+    console.log('[SAGA] Has login_data:', !!login_data)
+    console.log('[SAGA] File:', file.name, file.size, file.type)
 
     if (is_authenticated) {
 
-      const result = yield call(uploadImage, file, progress)
+      // Extract posting key from login_data
+      let result
+      if (login_data) {
+        console.log('[SAGA] Using hive.blog upload (has login_data)')
+        const [, postingKey] = extractLoginData(login_data)
+        console.log('[SAGA] Extracted posting key (length):', postingKey?.length)
+        // Use new hive.blog upload method
+        result = yield call(uploadImageToHiveBlog, file, username, postingKey, progress)
+        console.log('[SAGA] Upload result:', result)
+      } else {
+        console.log('[SAGA] Using old upload method (no login_data - keychain user?)')
+        // Fallback to old upload method if no login_data (e.g., keychain users)
+        result = yield call(uploadImage, file, progress)
+        console.log('[SAGA] Upload result:', result)
+      }
 
       let images = []
 
@@ -445,14 +466,21 @@ function* fileUploadRequest(payload, meta) {
       }
 
       const {previewUrl} = result
+      console.log('[SAGA] Preview URL:', previewUrl)
 
       images.push(previewUrl)
+      console.log('[SAGA] All images:', images)
 
       yield put(uploadFileSuccess(images, meta))
+      console.log('[SAGA] ✅ Upload success dispatched')
     } else {
+      console.error('[SAGA] ❌ User not authenticated')
       yield put(uploadFileError('authentication required', meta))
     }
   } catch (error) {
+    console.error('[SAGA] ❌ Upload error:', error)
+    console.error('[SAGA] Error message:', error.message)
+    console.error('[SAGA] Error stack:', error.stack)
     yield put(uploadFileError(error, meta))
   }
 }
