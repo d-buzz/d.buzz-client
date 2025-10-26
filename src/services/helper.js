@@ -646,6 +646,5 @@ export const calculateAverageRanking = (users) => {
 
 export const hiveAPIUrls = [
   "https://api.openhive.network",
-  "https://hived.emre.sh",
   "https://api.deathwing.me",
 ]
