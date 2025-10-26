@@ -28,7 +28,7 @@ const defaultNode = appConfig.DEFAULT_RPC_NODE
 
 // Failover system for Hive APIs
 let currentRPCIndex = 0
-let failedAPIs = new Map() // Track failed APIs with timestamps
+const failedAPIs = new Map() // Track failed APIs with timestamps
 const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown for failed APIs
 const allHiveAPIs = [defaultNode, ...hiveAPIUrls]
 
