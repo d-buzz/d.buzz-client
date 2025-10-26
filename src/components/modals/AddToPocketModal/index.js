@@ -4,7 +4,7 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+// Database API removed - using localStorage only
 import Spinner from 'components/elements/progress/Spinner'
 
 const useStyles = createUseStyles(theme => ({
@@ -194,14 +194,12 @@ function AddToPocketModal(props) {
 
   useEffect(() => {
     if(show) {
-      getUserCustomData(user.username)
-        .then(res => {
-          if(res[0].pockets) {
-            setPockets([...res[0].pockets])
-          } else {
-            setPockets([])
-          }
-        })
+      const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+      if(customUserData?.pockets) {
+        setPockets([...customUserData.pockets])
+      } else {
+        setPockets([])
+      }
     }
     // eslint-disable-next-line
   }, [show])
@@ -240,22 +238,19 @@ function AddToPocketModal(props) {
 
   const addToPockets = () => {
     setLoading(true)
-    getUserCustomData(user.username)
-      .then((data) => {
-        // add buzz to the specified pocket
-        const pockets = data[0].pockets
-        pockets[selectedPocket.index].pocketBuzzes.push(buzz)
+    const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+    // add buzz to the specified pocket
+    const pockets = customUserData.pockets
+    pockets[selectedPocket.index].pocketBuzzes.push(buzz)
 
-        // prepare data to be updated
-        const resData = { username: user.username, userData: [{username: data[0].username, settings: data[0].settings, pockets: [...pockets]}] }
+    // prepare data to be updated
+    const updatedData = {username: customUserData.username, settings: customUserData.settings, pockets: [...pockets]}
 
-        // update users's pockets data
-        updateUserCustomData(resData).then(() => {
-          setLoading(false)
-          setSelectedPocket(null)
-          onHide()
-        })
-      })
+    // update users's pockets data
+    localStorage.setItem('customUserData', JSON.stringify(updatedData))
+    setLoading(false)
+    setSelectedPocket(null)
+    onHide()
   }
 
   return (

@@ -5,7 +5,7 @@ import { createUseStyles } from 'react-jss'
 import Add from '@material-ui/icons/Add'
 import { IconButton, Menu, MenuItem, Snackbar, Tab, Tabs } from '@material-ui/core'
 import CreatePocketModal from 'components/modals/CreatePocketModal'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+// Database API removed - using localStorage only
 import Tooltip from '@material-ui/core/Tooltip'
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded'
 import KeyboardArrowUpRoundedIcon from '@material-ui/icons/KeyboardArrowUpRounded'
@@ -245,26 +245,25 @@ const AccountsPockets = (props) => {
   
   const loadPockets = (slug) => {
     setLoading(true)
-    getUserCustomData(author)
-      .then(res => {
-        if(res[0]?.pockets?.length > 0) {
-          // if has slug thenfind index else the index is 0
-          const index = res[0].pockets.findIndex(obj => obj.pocketSlug === slug) >= 0 ? res[0].pockets.findIndex(obj => obj.pocketSlug === slug) : 0
+    // Get data from localStorage
+    const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+    if(customUserData?.pockets?.length > 0) {
+      // if has slug then find index else the index is 0
+      const index = customUserData.pockets.findIndex(obj => obj.pocketSlug === slug) >= 0 ? customUserData.pockets.findIndex(obj => obj.pocketSlug === slug) : 0
 
-          setUserData(res[0])
-          setPockets([...res[0].pockets])
-          setSelectedPocket({index, id: res[0].pockets[index].pocketId, name: res[0].pockets[index].pocketName, slug: res[0].pockets[index].pocketSlug})
-          setPocketBuzzes(res[0].pockets[index]?.pocketBuzzes.reverse())
-          updatePocketRoute(res[0].pockets[index].pocketSlug)
-          setLoading(false)
-        } else {
-          setPockets([])
-          setSelectedPocket({index: 0})
-          setPocketBuzzes([])
-          updatePocketRoute()
-          setLoading(false)
-        }
-      })
+      setUserData(customUserData)
+      setPockets([...customUserData.pockets])
+      setSelectedPocket({index, id: customUserData.pockets[index].pocketId, name: customUserData.pockets[index].pocketName, slug: customUserData.pockets[index].pocketSlug})
+      setPocketBuzzes(customUserData.pockets[index]?.pocketBuzzes.reverse())
+      updatePocketRoute(customUserData.pockets[index].pocketSlug)
+      setLoading(false)
+    } else {
+      setPockets([])
+      setSelectedPocket({index: 0})
+      setPocketBuzzes([])
+      updatePocketRoute()
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -301,11 +300,10 @@ const AccountsPockets = (props) => {
       pocketsArray.splice(pocketIndex, 1)
     }
 
-	  const customUserData = { username: user.username, userData: [{...userData, pockets: pocketsArray}] }
-
-    updateUserCustomData(customUserData).then(() => {
-      loadPockets(selectedPocket.slug)
-    })
+    // Update localStorage
+    const customUserData = {...userData, pockets: pocketsArray}
+    localStorage.setItem('customUserData', JSON.stringify(customUserData))
+    loadPockets(selectedPocket.slug)
   }
 
   const handleOnClickDeletePocket = () => {

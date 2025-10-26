@@ -36,7 +36,7 @@ import Chip from '@material-ui/core/Chip'
 import { sendToBerries, censorLinks } from 'services/helper'
 import Renderer from 'components/common/Renderer'
 import AddToPocketModal from 'components/modals/AddToPocketModal'
-import { getUserCustomData } from 'services/database/api'
+// Database API removed - using localStorage only
 import RemoveFromPocketConfirmModal from 'components/modals/RemoveFromPocketConfirmModal'
 
 const addHover = (theme) => {
@@ -326,14 +326,13 @@ const PostList = React.memo((props) => {
 
   useEffect(() => {
     if(anchorEl !== null) {
-      getUserCustomData(user.username)
-        .then(res => {
-          if(res[0].pockets) {
-            setPockets([...res[0].pockets])
-          } else {
-            setPockets([])
-          }
-        })
+      // Get pockets from localStorage
+      const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+      if(customUserData?.pockets) {
+        setPockets([...customUserData.pockets])
+      } else {
+        setPockets([])
+      }
     }
     // eslint-disable-next-line
   }, [anchorEl])

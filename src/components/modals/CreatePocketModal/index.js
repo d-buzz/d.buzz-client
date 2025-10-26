@@ -4,7 +4,7 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+// Database API removed - using localStorage only
 import Spinner from 'components/elements/progress/Spinner'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import moment from 'moment'
@@ -172,17 +172,20 @@ function CreatePocketModal(props) {
   useEffect(() => {
     if(show) {
       setFetching(true)
-      getUserCustomData(user.username)
-        .then(res => {
-          setUserData(res)
-          setFetching(false)
+      const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+      if (customUserData) {
+        setUserData([customUserData])
+        setFetching(false)
 
-          if(res[0]?.pockets) {
-            res[0].pockets.forEach((pocket) => {
-              setPocketNames(pocketNames => [...pocketNames, pocket.pocketName])
-            })
-          }
-        })
+        if(customUserData?.pockets) {
+          customUserData.pockets.forEach((pocket) => {
+            setPocketNames(pocketNames => [...pocketNames, pocket.pocketName])
+          })
+        }
+      } else {
+        setUserData([{}])
+        setFetching(false)
+      }
     }
     // eslint-disable-next-line
   }, [show])
@@ -220,19 +223,14 @@ function CreatePocketModal(props) {
       // 	pocketBuzzes: []
       // }
   
-      const customUserData = { username: user.username, userData: [{...userData[0], pockets}] }
-      updateUserCustomData(customUserData).then(() => {
-        loadPockets(pocketSlug)
-        setPocketName('')
-        setPocketSlug('')
-        setLoading(false)
-        onHide(!true)
-        setTryAgain(false)
-      })
-        .catch(() => {
-          setLoading(false)
-          setTryAgain(true)
-        })
+      const updatedData = {...userData[0], pockets}
+      localStorage.setItem('customUserData', JSON.stringify(updatedData))
+      loadPockets(pocketSlug)
+      setPocketName('')
+      setPocketSlug('')
+      setLoading(false)
+      onHide(!true)
+      setTryAgain(false)
   
       // setUserData(data => [{...data[0], pockets}])
     } else {

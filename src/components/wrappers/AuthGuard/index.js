@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useLocation, Redirect } from 'react-router-dom'
-import { getUserCustomData, initilizeUserInDatabase } from 'services/database/api'
 
 const AuthGuard = (props) => {
   const { children, user, fromLanding } = props
@@ -17,24 +16,29 @@ const AuthGuard = (props) => {
     return  pathname.match(/^(\/trending)/g)
   }
 
-  // DECENTRALIZED DATABASE
+  // LOCAL STORAGE - Front-end only, no backend database
 
   useEffect(() => {
     const { username } = user
 
     if(username) {
-      getUserCustomData(username).then(data => {
-        if(data !== 'User not found') {
-          localStorage.setItem('customUserData', JSON.stringify(...data))
-        } else {
-          // initialize datbase here
-          initilizeUserInDatabase(username).then(() => {
-            console.log('new user initialized')
-          })
+      // Initialize user settings in localStorage if not present
+      const existingData = localStorage.getItem('customUserData')
+      if (!existingData) {
+        const defaultSettings = {
+          username: username,
+          settings: {
+            theme: 'light',
+            videoEmbedsStatus: 'enabled',
+            linkPreviewsStatus: 'enabled',
+            showImagesStatus: 'enabled',
+            showNSFWPosts: 'disabled'
+          }
         }
-      })
+        localStorage.setItem('customUserData', JSON.stringify(defaultSettings))
+        console.log('New user settings initialized in localStorage')
+      }
     } else {
-      
       // guest
       console.log('%c[CURRENT SESSION]: ', 'color: goldenrod', 'Logged Out')
     }
