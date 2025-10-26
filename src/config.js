@@ -11,6 +11,7 @@ const config = {
   DISABLE_MOBILE: false,
   BRANCH: process.env.REACT_APP_ENV,
   DEFAULT_RPC_NODE: process.env.REACT_APP_DEFAULT_RPC_NODE,
+  MODERATOR_ACCOUNT: 'dbuzz', // Account whose mute list applies globally
   APP_NAME: 'D.Buzz',
   APP_DESCRIPTION: 'Micro-blogging social media Dapp on the HIVE blockchain.',
   APP_ICON: 'https://images.hive.blog/p/D5zH9SyxCKdAD9rYwjD1VDFVfes4J8WBmiaYPdeZndqBcsWCe3xdjZ9FWukYQcKxKMUaJu2FLm66h23z4KvAS7BxXaBpNLPzMVDqas4kKbBvZPf2zny6g2ePMPCmbC44pcvGUN?width=128&height=128',

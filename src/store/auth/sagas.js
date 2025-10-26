@@ -22,6 +22,7 @@ import {
   checkHasUpdateAuthorityFailure,
 
   setMuteList,
+  setGlobalMuteList,
 
   MUTE_USER_REQUEST,
   muteUserFailure,
@@ -325,6 +326,17 @@ function* getSavedUserRequest (meta) {
     
     // Censor API removed - no longer fetching censored list
     yield put(setCensorList([]))
+
+    // Fetch global mute list from moderator account
+    try {
+      const config = require('config').default
+      let globalMuteList = yield call(fetchMuteList, config.MODERATOR_ACCOUNT)
+      globalMuteList = [...new Set(globalMuteList.map(item => item.following))]
+      yield put(setGlobalMuteList(globalMuteList))
+    } catch(error) {
+      console.log('Failed to fetch global mute list:', error)
+      yield put(setGlobalMuteList([]))
+    }
 
     let payoutAgreed = yield call([localStorage, localStorage.getItem], 'payoutAgreed')
     

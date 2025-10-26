@@ -165,8 +165,9 @@ function* getRepliesRequest(payload, meta) {
   try {
     if (!checkForCeramicAccount(author)) {
       const mutelist = yield select(state => state.auth.get('mutelist'))
+      const globalMuteList = yield select(state => state.auth.get('globalMuteList'))
       let replies = yield call(fetchDiscussions, author, permlink)
-      replies = invokeMuteFilter(replies, mutelist)
+      replies = invokeMuteFilter(replies, mutelist, [], globalMuteList)
       // console.log(replies)
       yield put(getRepliesSuccess(replies, meta))
     } else {
@@ -291,8 +292,9 @@ function* getTrendingPostsRequest(payload, meta) {
     data = data.filter(item => invokeFilter(item))
 
     const mutelist = yield select(state => state.auth.get('mutelist'))
+    const globalMuteList = yield select(state => state.auth.get('globalMuteList'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
-    data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeMuteFilter(data, mutelist, opacityUsers, globalMuteList)
     data = invokeHideBuzzFilter(data)
     data.map((item) => censorCheck(item, censoredList))
 
@@ -323,10 +325,11 @@ function* getHomePostsRequest(payload, meta) {
 
       yield put(setHomeLastPost(data[data.length - 1]))
       const mutelist = yield select(state => state.auth.get('mutelist'))
+      const globalMuteList = yield select(state => state.auth.get('globalMuteList'))
 
       data = data.filter(item => invokeFilter(item))
       const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
-      data = invokeMuteFilter(data, mutelist, opacityUsers)
+      data = invokeMuteFilter(data, mutelist, opacityUsers, globalMuteList)
       data = invokeHideBuzzFilter(data)
       data.map((item) => censorCheck(item, censoredList))
 
@@ -371,9 +374,10 @@ function* getLatestPostsRequest(payload, meta) {
     data = data.filter(item => invokeFilter(item))
 
     const mutelist = yield select(state => state.auth.get('mutelist'))
+    const globalMuteList = yield select(state => state.auth.get('globalMuteList'))
     const opacityUsers = yield select(state => state.auth.get('opacityUsers'))
     const patterns = yield call(getMutePattern)
-    data = invokeMuteFilter(data, mutelist, opacityUsers)
+    data = invokeMuteFilter(data, mutelist, opacityUsers, globalMuteList)
     data = invokeHideBuzzFilter(data)
 
     data = patternMute(patterns, data)
