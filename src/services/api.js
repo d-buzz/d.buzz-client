@@ -1568,13 +1568,12 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
           const privateKey = PrivateKey.fromString ? PrivateKey.fromString(postingKey) : new PrivateKey(postingKey)
           console.log('[HIVE UPLOAD] Private key created:', !!privateKey)
 
-          // Use Signature.signBuffer to sign the already-hashed data
-          console.log('[HIVE UPLOAD] Using Signature.signBuffer:', !!Signature.signBuffer)
-          const signatureObj = Signature.signBuffer ?
-            Signature.signBuffer(Buffer.from(imageHash), privateKey) :
-            Signature.signBufferSha256(Buffer.from(imageHash), privateKey)
+          // Use Signature.signBufferSha256 to sign the already-computed SHA256 hash
+          // signBuffer would double-hash, so we use signBufferSha256 for pre-hashed data
+          console.log('[HIVE UPLOAD] Using Signature.signBufferSha256')
+          const signatureObj = Signature.signBufferSha256(Buffer.from(imageHash), privateKey)
           console.log('[HIVE UPLOAD] Signature object created:', !!signatureObj)
-          const signature = signatureObj.toHex ? signatureObj.toHex() : signatureObj.toString()
+          const signature = signatureObj.toHex()
           console.log('[HIVE UPLOAD] Signature hex:', signature.substring(0, 20) + '...')
 
           // Create FormData with the image file
