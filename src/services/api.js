@@ -1565,7 +1565,7 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
 
           // Sign the hash with posting private key
           console.log('[HIVE UPLOAD] Signing with posting key...')
-          const privateKey = PrivateKey.fromString ? PrivateKey.fromString(postingKey) : new PrivateKey(postingKey)
+          const privateKey = PrivateKey.fromWif(postingKey)
           console.log('[HIVE UPLOAD] Private key created:', !!privateKey)
 
           // Use Signature.signBufferSha256 to sign the already-computed SHA256 hash
