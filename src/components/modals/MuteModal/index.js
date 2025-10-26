@@ -117,8 +117,12 @@ const MuteModal = (props) => {
   const { muteSuccessCallback } = muteModal
 
   useEffect(() => {
+    console.log('MuteModal useEffect - muteModal:', muteModal)
+    console.log('MuteModal useEffect - muteModal type:', typeof muteModal, muteModal?.constructor?.name)
+    console.log('MuteModal useEffect - has open prop?', muteModal?.hasOwnProperty('open'))
     if(muteModal && muteModal.hasOwnProperty('open')) {
       const { open, username } = muteModal
+      console.log('MuteModal opening - open:', open, 'username:', username)
       setOpen(open)
       setUsername(username)
       if(mutelist.includes(username)) {

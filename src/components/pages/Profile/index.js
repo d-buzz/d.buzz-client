@@ -370,6 +370,8 @@ const Profile = (props) => {
   }
 
   const openMuteModal = () => {
+    console.log('openMuteModal called for username:', username)
+    console.log('openMuteDialog function:', typeof openMuteDialog)
     openMuteDialog(username)
   }
 
