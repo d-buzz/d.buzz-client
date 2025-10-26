@@ -97,6 +97,19 @@ export const callBridge = async (method, params, appendParams = true) => {
       if (err) {
         reject(err)
       } else {
+        // Handle cases where API returns full JSON-RPC response object instead of just result
+        // This can happen with get_account_posts when feed is empty or during API failover
+        if (data && typeof data === 'object' && data.hasOwnProperty('result')) {
+          console.log(`callBridge unwrapping JSON-RPC response for ${method}`)
+          data = data.result
+        }
+
+        // Ensure data is an array
+        if (!Array.isArray(data)) {
+          console.warn(`callBridge received non-array data for ${method}:`, data)
+          data = []
+        }
+
         let lastResult = []
 
         if (data.length !== 0) {
