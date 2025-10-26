@@ -186,13 +186,21 @@ export const callBridge = async (method, params, appendParams = true) => {
           reject(err)
         } else {
           // Handle JSON-RPC response format
-          if (data && typeof data === 'object' && 'result' in data) {
+          const originalData = data
+          const hasResult = data && typeof data === 'object' && !Array.isArray(data) && 'result' in data
+
+          if (hasResult) {
+            console.log(`🔧 Unwrapping JSON-RPC response for bridge.${method}`)
             data = data.result
           }
 
           // Ensure data is an array
           if (!Array.isArray(data)) {
-            console.error('callBridge received non-array data:', data)
+            console.error(`❌ callBridge(${method}) received non-array data:`, originalData)
+            console.error(`   hasResult check:`, hasResult)
+            console.error(`   typeof data:`, typeof originalData)
+            console.error(`   is array:`, Array.isArray(originalData))
+            console.error(`   has 'result' property:`, originalData && 'result' in originalData)
             resolve([])
             return
           }
