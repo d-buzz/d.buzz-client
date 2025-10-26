@@ -7,7 +7,6 @@ import config from 'config'
 import { checkVersionRequest } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import { CircularProgress } from '@material-ui/core'
 import { setRPCNode } from 'services/api'
 import { hiveAPIUrls } from 'services/helper'
@@ -242,25 +241,14 @@ const SettingsModal = (props) => {
 
   const handleUpdateSettings = () => {
     setLoading(true)
-    const { username } = user
-    getUserCustomData(username).then(res => {
-      const userData = {...res[0], settings: {
-        ...res[0].settings,
-        videoEmbedsStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.videoEmbedsStatus,
-        linkPreviewsStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.linkPreviewsStatus,
-        showImagesStatus: JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus,
-        showNSFWPosts: JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts,
-      }}
-      const responseData = { username: username, userData: [userData] }
-      if(res) {
-        updateUserCustomData(responseData).then(() => {
-          setSelectedItem(null)
-          setLoading(false)
-          handleDisableEnableToggles(true)
-          window.location.reload()
-        })
-      }
-    })
+    // Settings are already saved to localStorage via useEffect
+    // Just reload the page to apply changes
+    setTimeout(() => {
+      setSelectedItem(null)
+      setLoading(false)
+      handleDisableEnableToggles(true)
+      window.location.reload()
+    }, 500)
   }
 
   const handleVideoEmbedsToggle = () => {

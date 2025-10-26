@@ -1412,20 +1412,17 @@ export const getLinkMeta = (url) => {
 }
 
 export const checkVersion = () => {
+  // Backend removed - always return current version as latest
   return new Promise((resolve) => {
-    axios.get('https://endpoint.d.buzz/version.json')
-      .then(function (result) {
-        resolve(result.data)
-      })
+    const { BRANCH, VERSION } = appConfig
+    resolve({ [BRANCH]: VERSION })
   })
 }
 
 export const getMutePattern = () => {
+  // Backend removed - return empty pattern array
   return new Promise((resolve) => {
-    axios.get('https://endpoint.d.buzz/pattern.json')
-      .then(function (result) {
-        resolve(result.data)
-      })
+    resolve([])
   })
 }
 

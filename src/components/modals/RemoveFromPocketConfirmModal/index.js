@@ -4,7 +4,7 @@ import ModalBody from 'react-bootstrap/ModalBody'
 import { createUseStyles } from 'react-jss'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
+// Database API removed - using localStorage only
 import Spinner from 'components/elements/progress/Spinner'
 import { CircularProgress } from '@material-ui/core'
 
@@ -126,12 +126,16 @@ function RemoveFromPocketConfirmModal(props) {
   useEffect(() => {
     if(show) {
       setFetching(true)
-      getUserCustomData(user.username)
-        .then(res => {
-          setUserData(res[0])
-          setPockets([...res[0].pockets])
-          setFetching(false)
-        })
+      const customUserData = JSON.parse(localStorage.getItem('customUserData'))
+      if (customUserData) {
+        setUserData(customUserData)
+        setPockets([...customUserData.pockets])
+        setFetching(false)
+      } else {
+        setUserData({})
+        setPockets([])
+        setFetching(false)
+      }
     }
     // eslint-disable-next-line
   }, [show])
@@ -157,16 +161,15 @@ function RemoveFromPocketConfirmModal(props) {
     pockets[pocketIndex].pocketBuzzes = [...pocketBuzzesArray]
     
     // prepare data to be updated
-    const customUserData = { username: user.username, userData: [{...userData, pockets: pocketsArray}] }
+    const updatedData = {...userData, pockets: pocketsArray}
 
-    updateUserCustomData(customUserData).then(() => {
-      setLoading(false)
-      onCancel()
-      
-      if(loadPockets) {
-        loadPockets(pocket.pocketSlug)
-      }
-    })
+    localStorage.setItem('customUserData', JSON.stringify(updatedData))
+    setLoading(false)
+    onCancel()
+
+    if(loadPockets) {
+      loadPockets(pocket.pocketSlug)
+    }
   }
 
   const onCancel = () => {

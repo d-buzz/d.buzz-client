@@ -8,7 +8,6 @@ import { getTheme } from 'services/theme'
 import { setThemeRequest, generateStyles } from 'store/settings/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getUserCustomData, updateUserCustomData } from 'services/database/api'
 import { CircularProgress } from '@material-ui/core'
 
 const useStyles = createUseStyles(theme => ({
@@ -139,27 +138,11 @@ const ThemeModal = (props) => {
   }
   
   const handleUpdateTheme = (theme) => {
-    const { username } = user
-    
-    getUserCustomData(username)
-      .then(res => {
-        const userData = {
-          ...res[0],
-          settings: {
-            ...res[0].settings,
-            theme: theme,
-          },
-        }
-        const responseData = { username, userData: [userData] }
-        
-        if(res) {
-          updateUserCustomData(responseData)
-            .then(() => {
-              setLoading(false)
-            })
-        }
-      })
-
+    // Theme is already saved to localStorage in handleSetTheme
+    // Just finish loading state
+    setTimeout(() => {
+      setLoading(false)
+    }, 300)
   }
 
   return (
