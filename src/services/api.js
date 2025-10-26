@@ -27,7 +27,6 @@ const visited = []
 const defaultNode = appConfig.DEFAULT_RPC_NODE
 
 // Failover system for Hive APIs
-let currentRPCIndex = 0
 const failedAPIs = new Map() // Track failed APIs with timestamps
 const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown for failed APIs
 const allHiveAPIs = [defaultNode, ...hiveAPIUrls]
@@ -53,21 +52,19 @@ const markAPIAsFailed = (apiUrl) => {
   console.warn(`Marked API as failed: ${apiUrl}. Will retry after cooldown.`)
 }
 
-// Get next available API in rotation
+// Get next available API - always tries in priority order
 const getNextAvailableAPI = () => {
   const available = getAvailableAPIs()
   if (available.length === 0) {
     // All APIs failed, clear the failed list and start over
     console.warn('All Hive APIs failed, resetting and retrying...')
     failedAPIs.clear()
-    currentRPCIndex = 0
     return allHiveAPIs[0]
   }
 
-  // Rotate through available APIs
-  const api = available[currentRPCIndex % available.length]
-  currentRPCIndex++
-  return api
+  // Always return the first available API (priority order)
+  // Priority: api.hive.blog -> api.openhive.network -> api.deathwing.me
+  return available[0]
 }
 
 export const getActiveRPCNode = () => {
