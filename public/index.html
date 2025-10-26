@@ -43,6 +43,9 @@
 
   <base href="/">
 
+  <!-- Self-hosted fonts to avoid third-party tracking -->
+  <link rel="stylesheet" href="/fontface.css">
+
 </head>
 
 <body>
@@ -55,7 +58,7 @@
 <script>window.prerenderReady = false;</script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+  /* Google Fonts removed - now using self-hosted fonts in fontface.css */
 
   @media (min-width: 1200px) {
     .container {

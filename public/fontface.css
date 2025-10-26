@@ -6,3 +6,33 @@
   font-family: 'Segoe-Bold';
   src: url('./fonts/Segoe-Bold.ttf');
 }
+
+/* Roboto font family - self-hosted to avoid Google tracking */
+@font-face {
+  font-family: 'Roboto';
+  src: url('./fonts/Roboto-Regular.ttf');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('./fonts/Roboto-Medium.ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('./fonts/Roboto-Bold.ttf');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('./fonts/Roboto-Black.ttf');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
