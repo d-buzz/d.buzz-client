@@ -31,6 +31,9 @@ const failedAPIs = new Map() // Track failed APIs with timestamps
 const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown for failed APIs
 const allHiveAPIs = [defaultNode, ...hiveAPIUrls]
 
+// Log the API list on initialization
+console.log('Hive API failover initialized with priority order:', allHiveAPIs)
+
 // Get list of available (not recently failed) APIs
 const getAvailableAPIs = () => {
   const now = Date.now()
@@ -49,22 +52,28 @@ const getAvailableAPIs = () => {
 // Mark API as failed
 const markAPIAsFailed = (apiUrl) => {
   failedAPIs.set(apiUrl, Date.now())
-  console.warn(`Marked API as failed: ${apiUrl}. Will retry after cooldown.`)
+  console.warn(`❌ Marked API as failed: ${apiUrl}. Will retry after cooldown.`)
 }
 
 // Get next available API - always tries in priority order
 const getNextAvailableAPI = () => {
   const available = getAvailableAPIs()
+
+  console.log('Available APIs:', available)
+  console.log('Failed APIs:', Array.from(failedAPIs.keys()))
+
   if (available.length === 0) {
     // All APIs failed, clear the failed list and start over
-    console.warn('All Hive APIs failed, resetting and retrying...')
+    console.warn('⚠️ All Hive APIs failed, resetting and retrying...')
     failedAPIs.clear()
     return allHiveAPIs[0]
   }
 
   // Always return the first available API (priority order)
   // Priority: api.hive.blog -> api.openhive.network -> api.deathwing.me
-  return available[0]
+  const selectedAPI = available[0]
+  console.log(`✅ Selected API (priority order): ${selectedAPI}`)
+  return selectedAPI
 }
 
 export const getActiveRPCNode = () => {
@@ -82,12 +91,12 @@ export const setRPCNode = async () => {
     const node = getActiveRPCNode()
     if (api && typeof api.setOptions === 'function') {
       api.setOptions({ url: node })
-      console.log(`Connected to Hive API: ${node}`)
+      console.log(`🔗 Connected to Hive API: ${node}`)
     } else {
       throw new Error('API object or setOptions method is not available')
     }
   } catch (error) {
-    console.error('Error setting RPC node:', error)
+    console.error('❌ Error setting RPC node:', error)
     const currentNode = getActiveRPCNode()
     markAPIAsFailed(currentNode)
 
@@ -96,10 +105,10 @@ export const setRPCNode = async () => {
       const nextNode = getNextAvailableAPI()
       if (api && typeof api.setOptions === 'function') {
         api.setOptions({ url: nextNode })
-        console.log(`Switched to backup Hive API: ${nextNode}`)
+        console.log(`🔄 Switched to backup Hive API: ${nextNode}`)
       }
     } catch (fallbackError) {
-      console.error('Failed to set backup RPC node:', fallbackError)
+      console.error('❌ Failed to set backup RPC node:', fallbackError)
     }
   }
 }
