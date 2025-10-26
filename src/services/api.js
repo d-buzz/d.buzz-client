@@ -185,6 +185,13 @@ export const callBridge = async (method, params, appendParams = true) => {
         if (err) {
           reject(err)
         } else {
+          // Ensure data is an array
+          if (!Array.isArray(data)) {
+            console.error('callBridge received non-array data:', data)
+            resolve([])
+            return
+          }
+
           let lastResult = []
 
           if (data.length !== 0) {
@@ -349,6 +356,13 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       if (err) {
         reject(err)
       } else {
+        // Ensure data is an array
+        if (!Array.isArray(data)) {
+          console.error('fetchAccountPosts received non-array data:', data)
+          resolve([])
+          return
+        }
+
         removeFootNote(data)
 
         let lastResult = []
@@ -357,7 +371,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
           lastResult = [data[data.length - 1]]
         }
 
-        let posts = typeof data !== 'string' ? data.filter((item) => invokeFilter(item)) : []
+        let posts = data.filter((item) => invokeFilter(item))
 
         posts = [...posts, ...lastResult]
 
