@@ -645,12 +645,7 @@ export const calculateAverageRanking = (users) => {
 }
 
 export const hiveAPIUrls = [
-  "https://hive-api.3speak.tv",
-  "https://rpc.mahdiyari.info",
-  "https://anyx.io",
-  "https://api.deathwing.me",
-  "https://hived.emre.sh",
   "https://api.openhive.network",
-  "https://techcoderx.com",
-  "https://api.c0ff33a.uk",
+  "https://hived.emre.sh",
+  "https://api.deathwing.me",
 ]
