@@ -4,7 +4,7 @@ import {
   broadcast,
   formatter,
 } from '@hiveio/hive-js'
-import {hash, PrivateKey} from '@hiveio/hive-js/lib/auth/ecc'
+import {hash, PrivateKey, Signature} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
@@ -1567,8 +1567,15 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
           console.log('[HIVE UPLOAD] Signing with posting key...')
           const privateKey = PrivateKey.fromString ? PrivateKey.fromString(postingKey) : new PrivateKey(postingKey)
           console.log('[HIVE UPLOAD] Private key created:', !!privateKey)
-          const signature = privateKey.sign(Buffer.from(imageHash)).toString()
-          console.log('[HIVE UPLOAD] Signature created:', signature.substring(0, 20) + '...')
+
+          // Use Signature.signBuffer to sign the already-hashed data
+          console.log('[HIVE UPLOAD] Using Signature.signBuffer:', !!Signature.signBuffer)
+          const signatureObj = Signature.signBuffer ?
+            Signature.signBuffer(Buffer.from(imageHash), privateKey) :
+            Signature.signBufferSha256(Buffer.from(imageHash), privateKey)
+          console.log('[HIVE UPLOAD] Signature object created:', !!signatureObj)
+          const signature = signatureObj.toHex ? signatureObj.toHex() : signatureObj.toString()
+          console.log('[HIVE UPLOAD] Signature hex:', signature.substring(0, 20) + '...')
 
           // Create FormData with the image file
           const formData = new FormData()
