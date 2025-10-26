@@ -5,10 +5,12 @@ import {
   formatter,
 } from '@hiveio/hive-js'
 import {hash} from '@hiveio/hive-js/lib/auth/ecc'
+import {PrivateKey} from '@hiveio/hive-js/lib/auth/ecc'
 import {Promise, reject} from 'bluebird'
 import {v4 as uuidv4} from 'uuid'
 import appConfig from 'config'
 import axios from 'axios'
+import {hash as sha256Hash} from '@stablelib/sha256'
 import getSlug from 'speakingurl'
 import moment from 'moment'
 import {ChainTypes, makeBitMaskFilter} from '@hiveio/hive-js/lib/auth/serializer'
@@ -1531,6 +1533,66 @@ export const uploadImage = async (data, progress) => {
       })
 
       resolve(response.data.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export const uploadImageToHiveBlog = async (data, username, postingKey, progress) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Read file data as ArrayBuffer
+      const fileReader = new FileReader()
+
+      fileReader.onload = async (e) => {
+        try {
+          const imageData = new Uint8Array(e.target.result)
+
+          // Create hash: SHA256('ImageSigningChallenge' + imageData)
+          const prefix = new TextEncoder().encode('ImageSigningChallenge')
+          const combined = new Uint8Array(prefix.length + imageData.length)
+          combined.set(prefix)
+          combined.set(imageData, prefix.length)
+          const imageHash = sha256Hash(combined)
+
+          // Sign the hash with posting private key
+          const privateKey = PrivateKey.fromString(postingKey)
+          const signature = privateKey.sign(Buffer.from(imageHash)).toString()
+
+          // Create FormData with the image file
+          const formData = new FormData()
+          formData.append('file', data, data.name)
+
+          // Upload to images.hive.blog
+          const response = await axios({
+            method: 'POST',
+            url: `https://images.hive.blog/${username}/${signature}`,
+            headers: {'Content-Type': 'multipart/form-data'},
+            data: formData,
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent
+              const percent = Math.floor((loaded * 100) / total)
+              progress(percent)
+            },
+          })
+
+          // Return the uploaded image URL
+          if (response.data && response.data.url) {
+            resolve({previewUrl: response.data.url})
+          } else {
+            reject(new Error('No URL in response'))
+          }
+        } catch (error) {
+          reject(error)
+        }
+      }
+
+      fileReader.onerror = () => {
+        reject(new Error('Failed to read file'))
+      }
+
+      fileReader.readAsArrayBuffer(data)
     } catch (error) {
       reject(error)
     }

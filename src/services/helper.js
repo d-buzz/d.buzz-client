@@ -563,6 +563,11 @@ export const proxyImage = (url) => {
   const enabled = false
   let imageUrl = url
 
+  // Fix for old d.buzz images - proxy through images.hive.blog
+  if (url && url.includes('images.d.buzz')) {
+    return `https://images.hive.blog/0x0/${url}`
+  }
+
   if (enabled) {
     if (!isGifImage(url)) {
       imageUrl = `https://wsrv.nl/?url=${url}&q=50`

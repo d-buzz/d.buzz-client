@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import sanitizeHtml from 'sanitize-html'
+import { proxyImage } from 'services/helper'
 
 const useStyles = createUseStyles(theme => ({
   rendererWrapper: {
@@ -31,7 +32,14 @@ const createReactElement = (node, skipTags) => {
     const isSelfClosing = ['br', 'img', 'input', 'hr', 'meta', 'link'].includes(tagName)
     const attributes = Array.from(node.attributes).reduce((acc, attr) => {
       const propName = attr.name === 'class' ? 'className' : attr.name
-      acc[propName] = attr.value
+      let value = attr.value
+
+      // Fix for old d.buzz images in img tags
+      if (tagName === 'img' && attr.name === 'src' && value) {
+        value = proxyImage(value)
+      }
+
+      acc[propName] = value
       return acc
     }, {})
 

@@ -100,6 +100,7 @@ import {
   searchPostAuthor,
   searchPeople,
   uploadImage,
+  uploadImageToHiveBlog,
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
@@ -431,12 +432,21 @@ function* fileUploadRequest(payload, meta) {
   try {
     const user = yield select(state => state.auth.get('user'))
     const old = yield select(state => state.posts.get('images'))
-    const {is_authenticated} = user
+    const {is_authenticated, username, login_data} = user
     const {file, progress} = payload
 
     if (is_authenticated) {
 
-      const result = yield call(uploadImage, file, progress)
+      // Extract posting key from login_data
+      let result
+      if (login_data) {
+        const [, postingKey] = extractLoginData(login_data)
+        // Use new hive.blog upload method
+        result = yield call(uploadImageToHiveBlog, file, username, postingKey, progress)
+      } else {
+        // Fallback to old upload method if no login_data (e.g., keychain users)
+        result = yield call(uploadImage, file, progress)
+      }
 
       let images = []
 
