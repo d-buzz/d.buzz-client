@@ -10,7 +10,7 @@ const config = {
   GIPHY_API_KEY: 'ecohRlzr8FrMGrTfX8JJ4uoilgdIiZI5',
   DISABLE_MOBILE: false,
   BRANCH: process.env.REACT_APP_ENV,
-  DEFAULT_RPC_NODE: process.env.REACT_APP_DEFAULT_RPC_NODE,
+  DEFAULT_RPC_NODE: process.env.REACT_APP_DEFAULT_RPC_NODE || 'https://api.hive.blog',
   MODERATOR_ACCOUNT: 'dbuzz', // Account whose mute list applies globally
   APP_NAME: 'D.Buzz',
   APP_DESCRIPTION: 'Micro-blogging social media Dapp on the HIVE blockchain.',
