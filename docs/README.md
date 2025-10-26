@@ -2,7 +2,7 @@
 
 Welcome to the comprehensive documentation for D.Buzz Client, a decentralized social media platform built on the Hive blockchain.
 
-## What's New (2024 Updates)
+## What's New (2025 Updates)
 
 ### 🚀 100% Frontend Architecture
 D.Buzz is now a completely client-side application with **no backend servers**:
@@ -18,13 +18,22 @@ Enhanced reliability with intelligent failover:
 - **5-minute cooldown** for failed nodes
 - **Zero downtime** - seamless user experience
 
+### 📸 Direct Hive Image Upload
+Native integration with Hive's image hosting:
+- **Direct upload to images.hive.blog** - No third-party servers
+- **Cryptographic signing** - Secure authentication with posting key
+- **Progress tracking** - Real-time upload progress
+- **Automatic fallback** - Handles legacy image URLs
+- **Full debugging** - Comprehensive logging for troubleshooting
+
 ### 🔧 Improved Error Handling
 - JSON-RPC response format handling
 - Data validation and normalization
 - Smart retry logic with exponential backoff
 - Detailed debug logging
+- Fixed Immutable.js modal issues
 
-[See full changelog →](./api/api-service.md#recent-improvements-2024)
+[See full changelog →](./api/api-service.md#recent-improvements-2025)
 
 ---
 

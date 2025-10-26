@@ -4,7 +4,7 @@
 
 The API service (`/src/services/api.js`) is the central module for all Hive blockchain operations. It provides a comprehensive interface for interacting with the Hive network, managing user data, and handling content operations.
 
-**File Size**: 1,900+ lines
+**File Size**: ~1,850 lines (updated 2025)
 **Location**: `/src/services/api.js`
 
 ## Automatic Failover System
@@ -488,6 +488,109 @@ Remove content from a pocket.
 await removeFromPocket('username', 'pocket-id', 'author', 'permlink')
 ```
 
+## Media Operations
+
+### Image Upload
+
+#### `uploadImageToHiveBlog(data, username, postingKey, progress)`
+Upload images directly to Hive's official image hosting service (images.hive.blog).
+
+**NEW in 2025**: Native Hive blockchain image hosting with cryptographic authentication.
+
+```javascript
+const result = await uploadImageToHiveBlog(
+  imageFile,           // File object
+  'username',          // Hive username
+  postingPrivateKey,   // Posting private key
+  (percent) => {       // Progress callback
+    console.log(`Upload: ${percent}%`)
+  }
+)
+
+console.log('Image URL:', result.previewUrl)
+// Example: https://images.hive.blog/0x0/https://i.imgur.com/abc123.jpg
+```
+
+**Parameters**:
+- `data` (File): Image file object to upload
+- `username` (string): Hive username
+- `postingKey` (string): Posting private key for signing
+- `progress` (function): Progress callback receiving percent (0-100)
+
+**Returns**: Promise with `{ previewUrl: string }`
+
+**How It Works**:
+
+1. **File Reading**: Converts image to ArrayBuffer
+2. **Hash Creation**: Creates SHA256 hash of 'ImageSigningChallenge' + imageData
+3. **Cryptographic Signing**: Signs hash with posting private key
+4. **Upload**: POSTs to `https://images.hive.blog/{username}/{signature}`
+5. **Progress Tracking**: Reports upload progress via callback
+
+**Features**:
+- ✅ **Decentralized**: No third-party hosting
+- ✅ **Secure**: Cryptographic proof of ownership
+- ✅ **Progress**: Real-time upload tracking
+- ✅ **Debug Logging**: Comprehensive console logging with `[HIVE UPLOAD]` prefix
+
+**Debug Logging**:
+```javascript
+[HIVE UPLOAD] Starting upload to images.hive.blog
+[HIVE UPLOAD] Username: alice
+[HIVE UPLOAD] File: photo.jpg Size: 524288 Type: image/jpeg
+[HIVE UPLOAD] File read complete, size: 524288 bytes
+[HIVE UPLOAD] Creating SHA256 hash...
+[HIVE UPLOAD] Hash created: 32 bytes
+[HIVE UPLOAD] Signing with posting key...
+[HIVE UPLOAD] Private key created: true
+[HIVE UPLOAD] Signature created: SIG_K1_abc123...
+[HIVE UPLOAD] Uploading to: https://images.hive.blog/alice/SIG_K1_abc123...
+[HIVE UPLOAD] Progress: 25% (131072/524288 bytes)
+[HIVE UPLOAD] Progress: 50% (262144/524288 bytes)
+[HIVE UPLOAD] Progress: 75% (393216/524288 bytes)
+[HIVE UPLOAD] Progress: 100% (524288/524288 bytes)
+[HIVE UPLOAD] Response status: 200
+[HIVE UPLOAD] ✅ SUCCESS! Image URL: https://images.hive.blog/0x0/...
+```
+
+**Error Handling**:
+```javascript
+try {
+  const result = await uploadImageToHiveBlog(file, user, key, progress)
+} catch (error) {
+  if (error.response) {
+    // Server error
+    console.error('Upload failed:', error.response.status, error.response.data)
+  } else if (error.message === 'Failed to read file') {
+    // File reading error
+    console.error('Cannot read file')
+  } else {
+    // Other errors (network, signing, etc.)
+    console.error('Upload error:', error.message)
+  }
+}
+```
+
+#### `uploadImage(data, progress)` (Legacy)
+Upload images to D.Buzz's image server (legacy method).
+
+**Note**: This method is maintained for backward compatibility but `uploadImageToHiveBlog()` is recommended for new implementations.
+
+```javascript
+const result = await uploadImage(
+  imageFile,
+  (percent) => console.log(`Upload: ${percent}%`)
+)
+
+console.log('Image URL:', result.data)
+```
+
+**Parameters**:
+- `data` (File): Image file object
+- `progress` (function): Progress callback
+
+**Returns**: Promise with uploaded image data
+
 ## Data Fetching Patterns
 
 ### Trending Posts
@@ -638,7 +741,7 @@ export const hiveAPIUrls = [
 ]
 ```
 
-## Recent Improvements (2024)
+## Recent Improvements (2025)
 
 ### 100% Frontend Architecture
 D.Buzz is now a completely frontend application with no backend API dependencies:
@@ -646,6 +749,52 @@ D.Buzz is now a completely frontend application with no backend API dependencies
 - **No Intermediary Servers**: No custom backend required
 - **Fully Decentralized**: True peer-to-peer architecture
 - **Better Privacy**: No data passes through D.Buzz servers
+
+### Native Hive Image Upload
+Direct integration with Hive's official image hosting:
+- **Upload to images.hive.blog**: Native Hive blockchain image hosting
+- **Cryptographic Authentication**: SHA256 hashing with posting key signature
+- **Secure & Decentralized**: No third-party image hosting dependencies
+- **Progress Tracking**: Real-time upload progress feedback
+- **Comprehensive Logging**: Detailed debug information for troubleshooting
+- **Automatic Fallback**: Graceful handling of legacy image URLs
+
+**Image Upload Process**:
+```javascript
+export const uploadImageToHiveBlog = async (data, username, postingKey, progress) => {
+  // 1. Read file as ArrayBuffer
+  const imageData = new Uint8Array(fileReader.result)
+
+  // 2. Create hash: SHA256('ImageSigningChallenge' + imageData)
+  const prefix = new TextEncoder().encode('ImageSigningChallenge')
+  const combined = new Uint8Array(prefix.length + imageData.length)
+  combined.set(prefix)
+  combined.set(imageData, prefix.length)
+  const imageHash = sha256Hash(combined)
+
+  // 3. Sign hash with posting private key
+  const privateKey = PrivateKey.fromString(postingKey)
+  const signature = privateKey.sign(Buffer.from(imageHash)).toString()
+
+  // 4. Upload to images.hive.blog/{username}/{signature}
+  const uploadUrl = `https://images.hive.blog/${username}/${signature}`
+  const response = await axios.post(uploadUrl, formData, {
+    onUploadProgress: (progressEvent) => {
+      const percent = Math.floor((loaded * 100) / total)
+      progress(percent)
+    }
+  })
+
+  // 5. Return uploaded image URL
+  return { previewUrl: response.data.url }
+}
+```
+
+**Features**:
+- **Cryptographic Proof**: Image authenticity verified through signature
+- **Progress Callbacks**: Real-time upload progress (0-100%)
+- **Error Handling**: Comprehensive error logging and recovery
+- **No External Dependencies**: Pure Hive blockchain integration
 
 ### Enhanced Reliability
 - **Automatic Failover**: Seamless switching between Hive API nodes
@@ -658,6 +807,12 @@ D.Buzz is now a completely frontend application with no backend API dependencies
 - **Data Validation**: Ensures consistent data types (arrays)
 - **Limit Validation**: Prevents exceeding Hive API maximum limits
 - **Response Normalization**: Consistent response format across all calls
+
+### Bug Fixes
+- **Modal Dialogs**: Fixed Immutable.js to plain JavaScript object conversion
+- **PrivateKey Import**: Resolved `PrivateKey.fromString is not a function` error
+- **Image Loading**: Fixed broken images from old d.buzz image server
+- **SHA256 Import**: Corrected build-time import errors
 
 ## Best Practices
 

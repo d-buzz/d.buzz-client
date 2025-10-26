@@ -253,12 +253,40 @@ dispatch(transfer({
 
 ### 8. Rich Media Support
 
-#### Image Support
-- **Upload Images**: Add images to buzzes
+#### Image Support ⭐ NEW in 2025
+- **Direct Hive Upload**: Upload to images.hive.blog (native blockchain hosting)
+- **Cryptographic Signing**: Secure authentication with posting key
+- **Upload Progress**: Real-time progress tracking
 - **Image Compression**: Auto-compress large images
 - **Image Cropping**: Crop before upload
 - **Multiple Images**: Upload several images
 - **Image Preview**: Preview before posting
+- **Legacy Fallback**: Automatic handling of old image URLs
+
+**How It Works**:
+1. Select image from your device
+2. Image is cryptographically signed with your posting key
+3. Uploaded directly to images.hive.blog
+4. Progress tracked in real-time (0-100%)
+5. Image URL automatically added to buzz
+
+**Technical Details**:
+```javascript
+// Upload to Hive blockchain image hosting
+const result = await uploadImageToHiveBlog(
+  imageFile,
+  username,
+  postingPrivateKey,
+  (progress) => console.log(`${progress}%`)
+)
+// Returns: { previewUrl: 'https://images.hive.blog/...' }
+```
+
+**Benefits**:
+- ✅ **Decentralized**: No third-party image hosts
+- ✅ **Permanent**: Images stored on Hive infrastructure
+- ✅ **Secure**: Cryptographic proof of ownership
+- ✅ **Fast**: Direct upload with progress tracking
 
 #### GIF Integration
 - **Giphy Search**: Search and add GIFs
