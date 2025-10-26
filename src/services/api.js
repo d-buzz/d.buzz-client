@@ -26,31 +26,118 @@ const visited = []
 
 const defaultNode = appConfig.DEFAULT_RPC_NODE
 
+// Failover system for Hive APIs
+const failedAPIs = new Map() // Track failed APIs with timestamps
+const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown for failed APIs
+const allHiveAPIs = [defaultNode, ...hiveAPIUrls]
+
+// Log the API list on initialization
+console.log('Hive API failover initialized with priority order:', allHiveAPIs)
+
+// Get list of available (not recently failed) APIs
+const getAvailableAPIs = () => {
+  const now = Date.now()
+  return allHiveAPIs.filter(url => {
+    const failedTime = failedAPIs.get(url)
+    if (!failedTime) return true
+    // Remove from failed list if cooldown period has passed
+    if (now - failedTime > API_COOLDOWN_MS) {
+      failedAPIs.delete(url)
+      return true
+    }
+    return false
+  })
+}
+
+// Mark API as failed
+const markAPIAsFailed = (apiUrl) => {
+  failedAPIs.set(apiUrl, Date.now())
+  console.warn(`❌ Marked API as failed: ${apiUrl}. Will retry after cooldown.`)
+}
+
+// Get next available API - always tries in priority order
+const getNextAvailableAPI = () => {
+  const available = getAvailableAPIs()
+
+  console.log('Available APIs:', available)
+  console.log('Failed APIs:', Array.from(failedAPIs.keys()))
+
+  if (available.length === 0) {
+    // All APIs failed, clear the failed list and start over
+    console.warn('⚠️ All Hive APIs failed, resetting and retrying...')
+    failedAPIs.clear()
+    return allHiveAPIs[0]
+  }
+
+  // Always return the first available API (priority order)
+  // Priority: api.hive.blog -> api.openhive.network -> api.deathwing.me
+  const selectedAPI = available[0]
+  console.log(`✅ Selected API (priority order): ${selectedAPI}`)
+  return selectedAPI
+}
+
 export const getActiveRPCNode = () => {
   const rpcSetting = localStorage.getItem('rpc-setting')
   // Check if the rpcSetting is not 'default' and is included in the hiveAPIUrls list
   if (rpcSetting && rpcSetting !== 'default' && hiveAPIUrls.includes(rpcSetting)) {
     return rpcSetting
   }
-  // Return defaultNode if the condition above is not met
-  return defaultNode
+  // Return next available node with failover
+  return getNextAvailableAPI()
 }
+
 export const setRPCNode = async () => {
   try {
     const node = getActiveRPCNode()
     if (api && typeof api.setOptions === 'function') {
       api.setOptions({ url: node })
+      console.log(`🔗 Connected to Hive API: ${node}`)
     } else {
       throw new Error('API object or setOptions method is not available')
     }
   } catch (error) {
-    console.error('Error setting RPC node, reverting to default:', error)
-    if (api && typeof api.setOptions === 'function') {
-      api.setOptions({ url: defaultNode })
-    } else {
-      console.error('Failed to revert to default RPC node')
+    console.error('❌ Error setting RPC node:', error)
+    const currentNode = getActiveRPCNode()
+    markAPIAsFailed(currentNode)
+
+    // Try next available API
+    try {
+      const nextNode = getNextAvailableAPI()
+      if (api && typeof api.setOptions === 'function') {
+        api.setOptions({ url: nextNode })
+        console.log(`🔄 Switched to backup Hive API: ${nextNode}`)
+      }
+    } catch (fallbackError) {
+      console.error('❌ Failed to set backup RPC node:', fallbackError)
     }
   }
+}
+
+// Wrapper for API calls with automatic failover
+export const apiCallWithFailover = async (apiCallFunction, maxRetries = 3) => {
+  let lastError = null
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const result = await apiCallFunction()
+      return result
+    } catch (error) {
+      lastError = error
+      console.warn(`API call failed (attempt ${attempt + 1}/${maxRetries}):`, error.message)
+
+      // Mark current API as failed and switch to next one
+      const currentNode = getActiveRPCNode()
+      markAPIAsFailed(currentNode)
+      await setRPCNode()
+
+      // Wait a bit before retrying
+      if (attempt < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)))
+      }
+    }
+  }
+
+  throw lastError
 }
 
 export const invokeMuteFilter = (items, mutelist, opacityUsers = [], globalMuteList = []) => {
@@ -87,30 +174,44 @@ export const removeFootNote = (data) => {
 }
 
 export const callBridge = async (method, params, appendParams = true) => {
-  return new Promise((resolve, reject) => {
+  return apiCallWithFailover(() => {
+    return new Promise((resolve, reject) => {
 
-    if (appendParams) {
-      params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
-    }
-
-    api.call('bridge.' + method, params, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        let lastResult = []
-
-        if (data.length !== 0) {
-          lastResult = [data[data.length - 1]]
-        }
-
-        removeFootNote(data)
-
-        let result = data.filter((item) => invokeFilter(item))
-
-        result = [...result, ...lastResult]
-
-        resolve(result)
+      if (appendParams) {
+        params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
       }
+
+      api.call('bridge.' + method, params, async (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          // Handle JSON-RPC response format
+          if (data && typeof data === 'object' && 'result' in data) {
+            data = data.result
+          }
+
+          // Ensure data is an array
+          if (!Array.isArray(data)) {
+            console.error('callBridge received non-array data:', data)
+            resolve([])
+            return
+          }
+
+          let lastResult = []
+
+          if (data.length !== 0) {
+            lastResult = [data[data.length - 1]]
+          }
+
+          removeFootNote(data)
+
+          let result = data.filter((item) => invokeFilter(item))
+
+          result = [...result, ...lastResult]
+
+          resolve(result)
+        }
+      })
     })
   })
 }
@@ -142,6 +243,11 @@ export const fetchDiscussions = (author, permlink) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         const authors = []
         let profile = []
 
@@ -212,6 +318,11 @@ export const getUnreadNotificationsCount = async (account) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -220,11 +331,16 @@ export const getUnreadNotificationsCount = async (account) => {
 
 export const getAccountNotifications = async (account) => {
   return new Promise((resolve, reject) => {
-    const params = {account, limit: 100}
+    const params = {account, limit: 20}
     api.call('bridge.account_notifications', params, (err, data) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -238,6 +354,11 @@ export const getCommunityRole = async (observer) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data.context.subscribed)
       }
     })
@@ -253,13 +374,25 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       observer: account,
       start_author: start_author,
       start_permlink,
-      limit: 100,
+      limit: 20,
     }
 
     api.call('bridge.get_account_posts', params, async (err, data) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
+        // Ensure data is an array
+        if (!Array.isArray(data)) {
+          console.error('fetchAccountPosts received non-array data:', data)
+          resolve([])
+          return
+        }
+
         removeFootNote(data)
 
         let lastResult = []
@@ -268,7 +401,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
           lastResult = [data[data.length - 1]]
         }
 
-        let posts = typeof data !== 'string' ? data.filter((item) => invokeFilter(item)) : []
+        let posts = data.filter((item) => invokeFilter(item))
 
         posts = [...posts, ...lastResult]
 
@@ -288,6 +421,11 @@ export const fetchTrendingTags = (tag = "hive-193084", limit = 100) => {
         console.error('Error fetching trending tags:', err)
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -351,6 +489,11 @@ export const isFollowing = (follower, following) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         const {follows} = data
         resolve(follows)
       }
@@ -395,7 +538,13 @@ const apiCallWrapper = (method, params) => {
   return new Promise((resolve, reject) => {
     api.call(method, params, (err, data) => {
       if (err) reject(err)
-      else resolve(data)
+      else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+        resolve(data)
+      }
     })
   })
 }
@@ -523,19 +672,21 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
-  return new Promise((resolve, reject) => {
-    broadcast.voteAsync(wif, voter, author, permlink, weight)
-      .then((result) => {
-        resolve(result)
-      }).catch((error) => {
-        let code = error.code
-        if (error.code === -32000) {
-          if (error.message && error.message.includes('paid out is forbidden')) {
-            code = -32001
+  return apiCallWithFailover(() => {
+    return new Promise((resolve, reject) => {
+      broadcast.voteAsync(wif, voter, author, permlink, weight)
+        .then((result) => {
+          resolve(result)
+        }).catch((error) => {
+          let code = error.code
+          if (error.code === -32000) {
+            if (error.message && error.message.includes('paid out is forbidden')) {
+              code = -32001
+            }
           }
-        }
-        reject(code)
-      })
+          reject(code)
+        })
+    })
   })
 }
 
@@ -576,6 +727,11 @@ export const fetchMuteList = (user) => {
         console.log(err)
         resolve([])
       } else {
+        // Handle JSON-RPC response format
+        if (data && typeof data === 'object' && 'result' in data) {
+          data = data.result
+        }
+
         resolve(data)
       }
     })
@@ -660,6 +816,11 @@ export const getAccountLists = (observer, list_type) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (result && typeof result === 'object' && 'result' in result) {
+          result = result.result
+        }
+
         resolve(result)
       }
     })
@@ -672,6 +833,11 @@ export const checkAccountIsFollowingLists = (observer) => {
       if (err) {
         reject(err)
       } else {
+        // Handle JSON-RPC response format
+        if (result && typeof result === 'object' && 'result' in result) {
+          result = result.result
+        }
+
         resolve(result)
       }
     })
@@ -1198,31 +1364,32 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys, is_buzz_post = false) => {
+  return apiCallWithFailover(() => {
+    return new Promise((resolve, reject) => {
+      broadcast.send(
+        {
+          extensions: [],
+          operations,
+        },
+        keys,
+        (error, result) => {
+          if (error) {
+            console.log(error)
+            if (is_buzz_post) {
+              reject(error)
+            } else {
+              reject(error.code)
+            }
 
-  return new Promise((resolve, reject) => {
-    broadcast.send(
-      {
-        extensions: [],
-        operations,
-      },
-      keys,
-      (error, result) => {
-        if (error) {
-          console.log(error)
-          if (is_buzz_post) {
-            reject(error)
           } else {
-            reject(error.code)
+            resolve({
+              success: true,
+              result,
+            })
           }
-
-        } else {
-          resolve({
-            success: true,
-            result,
-          })
-        }
-      },
-    )
+        },
+      )
+    })
   })
 }
 
@@ -1412,20 +1579,17 @@ export const getLinkMeta = (url) => {
 }
 
 export const checkVersion = () => {
+  // Backend removed - always return current version as latest
   return new Promise((resolve) => {
-    axios.get('https://endpoint.d.buzz/version.json')
-      .then(function (result) {
-        resolve(result.data)
-      })
+    const { BRANCH, VERSION } = appConfig
+    resolve({ [BRANCH]: VERSION })
   })
 }
 
 export const getMutePattern = () => {
+  // Backend removed - return empty pattern array
   return new Promise((resolve) => {
-    axios.get('https://endpoint.d.buzz/pattern.json')
-      .then(function (result) {
-        resolve(result.data)
-      })
+    resolve([])
   })
 }
 
