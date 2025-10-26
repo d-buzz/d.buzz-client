@@ -26,31 +26,112 @@ const visited = []
 
 const defaultNode = appConfig.DEFAULT_RPC_NODE
 
+// Failover system for Hive APIs
+let currentRPCIndex = 0
+const failedAPIs = new Map() // Track failed APIs with timestamps
+const API_COOLDOWN_MS = 5 * 60 * 1000 // 5 minutes cooldown for failed APIs
+const allHiveAPIs = [defaultNode, ...hiveAPIUrls]
+
+// Get list of available (not recently failed) APIs
+const getAvailableAPIs = () => {
+  const now = Date.now()
+  return allHiveAPIs.filter(url => {
+    const failedTime = failedAPIs.get(url)
+    if (!failedTime) return true
+    // Remove from failed list if cooldown period has passed
+    if (now - failedTime > API_COOLDOWN_MS) {
+      failedAPIs.delete(url)
+      return true
+    }
+    return false
+  })
+}
+
+// Mark API as failed
+const markAPIAsFailed = (apiUrl) => {
+  failedAPIs.set(apiUrl, Date.now())
+  console.warn(`Marked API as failed: ${apiUrl}. Will retry after cooldown.`)
+}
+
+// Get next available API in rotation
+const getNextAvailableAPI = () => {
+  const available = getAvailableAPIs()
+  if (available.length === 0) {
+    // All APIs failed, clear the failed list and start over
+    console.warn('All Hive APIs failed, resetting and retrying...')
+    failedAPIs.clear()
+    currentRPCIndex = 0
+    return allHiveAPIs[0]
+  }
+
+  // Rotate through available APIs
+  const api = available[currentRPCIndex % available.length]
+  currentRPCIndex++
+  return api
+}
+
 export const getActiveRPCNode = () => {
   const rpcSetting = localStorage.getItem('rpc-setting')
   // Check if the rpcSetting is not 'default' and is included in the hiveAPIUrls list
   if (rpcSetting && rpcSetting !== 'default' && hiveAPIUrls.includes(rpcSetting)) {
     return rpcSetting
   }
-  // Return defaultNode if the condition above is not met
-  return defaultNode
+  // Return next available node with failover
+  return getNextAvailableAPI()
 }
+
 export const setRPCNode = async () => {
   try {
     const node = getActiveRPCNode()
     if (api && typeof api.setOptions === 'function') {
       api.setOptions({ url: node })
+      console.log(`Connected to Hive API: ${node}`)
     } else {
       throw new Error('API object or setOptions method is not available')
     }
   } catch (error) {
-    console.error('Error setting RPC node, reverting to default:', error)
-    if (api && typeof api.setOptions === 'function') {
-      api.setOptions({ url: defaultNode })
-    } else {
-      console.error('Failed to revert to default RPC node')
+    console.error('Error setting RPC node:', error)
+    const currentNode = getActiveRPCNode()
+    markAPIAsFailed(currentNode)
+
+    // Try next available API
+    try {
+      const nextNode = getNextAvailableAPI()
+      if (api && typeof api.setOptions === 'function') {
+        api.setOptions({ url: nextNode })
+        console.log(`Switched to backup Hive API: ${nextNode}`)
+      }
+    } catch (fallbackError) {
+      console.error('Failed to set backup RPC node:', fallbackError)
     }
   }
+}
+
+// Wrapper for API calls with automatic failover
+export const apiCallWithFailover = async (apiCallFunction, maxRetries = 3) => {
+  let lastError = null
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const result = await apiCallFunction()
+      return result
+    } catch (error) {
+      lastError = error
+      console.warn(`API call failed (attempt ${attempt + 1}/${maxRetries}):`, error.message)
+
+      // Mark current API as failed and switch to next one
+      const currentNode = getActiveRPCNode()
+      markAPIAsFailed(currentNode)
+      await setRPCNode()
+
+      // Wait a bit before retrying
+      if (attempt < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)))
+      }
+    }
+  }
+
+  throw lastError
 }
 
 export const invokeMuteFilter = (items, mutelist, opacityUsers = [], globalMuteList = []) => {
@@ -87,30 +168,32 @@ export const removeFootNote = (data) => {
 }
 
 export const callBridge = async (method, params, appendParams = true) => {
-  return new Promise((resolve, reject) => {
+  return apiCallWithFailover(() => {
+    return new Promise((resolve, reject) => {
 
-    if (appendParams) {
-      params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
-    }
-
-    api.call('bridge.' + method, params, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        let lastResult = []
-
-        if (data.length !== 0) {
-          lastResult = [data[data.length - 1]]
-        }
-
-        removeFootNote(data)
-
-        let result = data.filter((item) => invokeFilter(item))
-
-        result = [...result, ...lastResult]
-
-        resolve(result)
+      if (appendParams) {
+        params = {"tag": `${appConfig.TAG}`, limit: 5, ...params}
       }
+
+      api.call('bridge.' + method, params, async (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          let lastResult = []
+
+          if (data.length !== 0) {
+            lastResult = [data[data.length - 1]]
+          }
+
+          removeFootNote(data)
+
+          let result = data.filter((item) => invokeFilter(item))
+
+          result = [...result, ...lastResult]
+
+          resolve(result)
+        }
+      })
     })
   })
 }
@@ -523,19 +606,21 @@ export const fetchRewardFund = (username) => {
 }
 
 export const broadcastVote = (wif, voter, author, permlink, weight) => {
-  return new Promise((resolve, reject) => {
-    broadcast.voteAsync(wif, voter, author, permlink, weight)
-      .then((result) => {
-        resolve(result)
-      }).catch((error) => {
-        let code = error.code
-        if (error.code === -32000) {
-          if (error.message && error.message.includes('paid out is forbidden')) {
-            code = -32001
+  return apiCallWithFailover(() => {
+    return new Promise((resolve, reject) => {
+      broadcast.voteAsync(wif, voter, author, permlink, weight)
+        .then((result) => {
+          resolve(result)
+        }).catch((error) => {
+          let code = error.code
+          if (error.code === -32000) {
+            if (error.message && error.message.includes('paid out is forbidden')) {
+              code = -32001
+            }
           }
-        }
-        reject(code)
-      })
+          reject(code)
+        })
+    })
   })
 }
 
@@ -1198,31 +1283,32 @@ export const broadcastKeychainOperation = (account, operations, key = 'Posting')
 }
 
 export const broadcastOperation = (operations, keys, is_buzz_post = false) => {
+  return apiCallWithFailover(() => {
+    return new Promise((resolve, reject) => {
+      broadcast.send(
+        {
+          extensions: [],
+          operations,
+        },
+        keys,
+        (error, result) => {
+          if (error) {
+            console.log(error)
+            if (is_buzz_post) {
+              reject(error)
+            } else {
+              reject(error.code)
+            }
 
-  return new Promise((resolve, reject) => {
-    broadcast.send(
-      {
-        extensions: [],
-        operations,
-      },
-      keys,
-      (error, result) => {
-        if (error) {
-          console.log(error)
-          if (is_buzz_post) {
-            reject(error)
           } else {
-            reject(error.code)
+            resolve({
+              success: true,
+              result,
+            })
           }
-
-        } else {
-          resolve({
-            success: true,
-            result,
-          })
-        }
-      },
-    )
+        },
+      )
+    })
   })
 }
 
