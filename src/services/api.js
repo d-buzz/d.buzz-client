@@ -186,21 +186,13 @@ export const callBridge = async (method, params, appendParams = true) => {
           reject(err)
         } else {
           // Handle JSON-RPC response format
-          const originalData = data
-          const hasResult = data && typeof data === 'object' && !Array.isArray(data) && 'result' in data
-
-          if (hasResult) {
-            console.log(`🔧 Unwrapping JSON-RPC response for bridge.${method}`)
+          if (data && typeof data === 'object' && 'result' in data) {
             data = data.result
           }
 
           // Ensure data is an array
           if (!Array.isArray(data)) {
-            console.error(`❌ callBridge(${method}) received non-array data:`, originalData)
-            console.error(`   hasResult check:`, hasResult)
-            console.error(`   typeof data:`, typeof originalData)
-            console.error(`   is array:`, Array.isArray(originalData))
-            console.error(`   has 'result' property:`, originalData && 'result' in originalData)
+            console.error('callBridge received non-array data:', data)
             resolve([])
             return
           }
@@ -339,7 +331,7 @@ export const getUnreadNotificationsCount = async (account) => {
 
 export const getAccountNotifications = async (account) => {
   return new Promise((resolve, reject) => {
-    const params = {account, limit: 100}
+    const params = {account, limit: 20}
     api.call('bridge.account_notifications', params, (err, data) => {
       if (err) {
         reject(err)
@@ -382,7 +374,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       observer: account,
       start_author: start_author,
       start_permlink,
-      limit: 100,
+      limit: 20,
     }
 
     api.call('bridge.get_account_posts', params, async (err, data) => {
