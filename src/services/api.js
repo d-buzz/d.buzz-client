@@ -331,7 +331,7 @@ export const getUnreadNotificationsCount = async (account) => {
 
 export const getAccountNotifications = async (account) => {
   return new Promise((resolve, reject) => {
-    const params = {account, limit: 100}
+    const params = {account, limit: 20}
     api.call('bridge.account_notifications', params, (err, data) => {
       if (err) {
         reject(err)
@@ -374,7 +374,7 @@ export const fetchAccountPosts = (account, start_permlink = null, start_author =
       observer: account,
       start_author: start_author,
       start_permlink,
-      limit: 100,
+      limit: 20,
     }
 
     api.call('bridge.get_account_posts', params, async (err, data) => {
