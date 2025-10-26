@@ -96,6 +96,7 @@ import {
 
 import { generateSession, readSession, errorMessageComposer} from 'services/helper'
 import { checkCeramicLogin, getBasicProfile, loginWithMetaMask, reauthenticateWithCeramic } from 'services/ceramic'
+import config from 'config'
 
 function* authenticateUserRequest(payload, meta) {
   const { password, useKeychain, useCeramic } = payload
@@ -329,7 +330,6 @@ function* getSavedUserRequest (meta) {
 
     // Fetch global mute list from moderator account
     try {
-      const config = require('config').default
       let globalMuteList = yield call(fetchMuteList, config.MODERATOR_ACCOUNT)
       globalMuteList = [...new Set(globalMuteList.map(item => item.following))]
       yield put(setGlobalMuteList(globalMuteList))
