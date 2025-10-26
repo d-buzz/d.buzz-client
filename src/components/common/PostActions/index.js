@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback, useMemo} from 'react'
 import classNames from 'classnames'
 import {
   CommentIcon,
@@ -268,21 +268,25 @@ const ActionWrapper = ({
   )
 }
 
-const PostActions = (props) => {
-  const mode = currentTheme() 
-  const classes = useStyles()
-  const webImagesRegex = /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi
-  const ipfsImagesRegex = /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi
-  const dbuzzImagesRegex = /(https:\/\/(storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi
-  const markdownRegex = /#+\s|[*]|\s+&nbsp;+\s|\s+$/gm
+// Move regex patterns outside component to prevent recompilation on every render
+const REGEX_PATTERNS = {
+  webImages: /("\S+)|(\[\S+)|(\(\S+)|(https?:\/\/[a-zA-Z0-9=+-?_]+\.(?:png|jpg|gif|jpeg|webp|bmp))/gi,
+  ipfsImages: /(\[\S+)|(\(\S+)|(?:https?:\/\/(?:ipfs\.io\/ipfs\/[a-zA-Z0-9=+-?]+))/gi,
+  dbuzzImages: /(https:\/\/(storageapi\.fleek\.co\/[a-z-]+\/dbuzz-images\/dbuzz-image-[0-9]+\.(?:png|jpg|gif|jpeg|webp|bmp)))/gi,
+  markdown: /#+\s|[*]|\s+&nbsp;+\s|\s+$/gm,
+}
 
-  const removeImageLinksFromContent = (content) => {
-    return content
-      .replace(webImagesRegex, '')
-      .replace(ipfsImagesRegex, '')
-      .replace(dbuzzImagesRegex, '')
-      .replace(markdownRegex, '')
-  }
+const removeImageLinksFromContent = (content) => {
+  return content
+    .replace(REGEX_PATTERNS.webImages, '')
+    .replace(REGEX_PATTERNS.ipfsImages, '')
+    .replace(REGEX_PATTERNS.dbuzzImages, '')
+    .replace(REGEX_PATTERNS.markdown, '')
+}
+
+const PostActions = (props) => {
+  const mode = currentTheme()
+  const classes = useStyles()
 
   const {
     type,
@@ -297,7 +301,6 @@ const PostActions = (props) => {
     user,
     title,
     body = null,
-    bodyWithNoImageLinks = removeImageLinksFromContent((title || '').replace(/\s\.\.\./, '') + (body || '').replace(/\.\.\.\s/, '')),
     replyRef = 'list',
     treeHistory = 0,
     payoutAt = null,
@@ -315,6 +318,11 @@ const PostActions = (props) => {
     setDefaultVotingWeightRequest,
     defaultUpvoteStrength,
   } = props
+
+  // Memoize expensive content processing
+  const bodyWithNoImageLinks = useMemo(() => {
+    return removeImageLinksFromContent((title || '').replace(/\s\.\.\./, '') + (body || '').replace(/\.\.\.\s/, ''))
+  }, [title, body])
 
   const FACEBOOK_APP_ID = 45240581373116
 
@@ -345,13 +353,13 @@ const PostActions = (props) => {
   const [openLoginSignupModal, setOpenLoginSignupModal] = useState(false)
   const [messageBasedOn, setMessageBasedOn] = useState('upvote')
 
-  const handleClickOpenLoginSignupModal = () => {
+  const handleClickOpenLoginSignupModal = useCallback(() => {
     setOpenLoginSignupModal(true)
-  }
+  }, [])
 
-  const handleClickCloseLoginSignupModal = () => {
+  const handleClickCloseLoginSignupModal = useCallback(() => {
     setOpenLoginSignupModal(false)
-  }
+  }, [])
 
   let extraPadding = {paddingTop: 10}
 
@@ -370,46 +378,45 @@ const PostActions = (props) => {
     setSliderValue(defaultUpvoteStrength)
   }, [defaultUpvoteStrength])
 
-  const handleAddToPocket = () => {
+  const handleAddToPocket = useCallback(() => {
     setAddToPocketModal(true)
     setOpenCaret(null)
     setSelectedAddToPocketBuzz(item)
-  }
+  }, [item])
 
-  const onHideAddToPocketModal = () => {
+  const onHideAddToPocketModal = useCallback(() => {
     setAddToPocketModal(false)
     setSelectedAddToPocketBuzz(null)
-  }
+  }, [])
 
-  const handleClickOpenVoteList = () => {
+  const handleClickOpenVoteList = useCallback(() => {
     setOpenVoteList(true)
-  }
+  }, [])
 
-  const handleClickCloseVoteList = () => {
+  const handleClickCloseVoteList = useCallback(() => {
     setOpenVoteList(false)
-  }
+  }, [])
 
-
-  const handleClickShowSlider = () => {
+  const handleClickShowSlider = useCallback(() => {
     setShowSlider(true)
     if (replyRef === 'list') {
       recomputeRowIndex(scrollIndex)
     }
-  }
+  }, [replyRef, recomputeRowIndex, scrollIndex])
 
-  const handleClickHideSlider = () => {
+  const handleClickHideSlider = useCallback(() => {
     setShowSlider(false)
     if (replyRef === 'list') {
       recomputeRowIndex(scrollIndex)
     }
-  }
+  }, [replyRef, recomputeRowIndex, scrollIndex])
 
-  const handleChange = (e, value) => {
+  const handleChange = useCallback((e, value) => {
     setDefaultVotingWeightRequest(value)
     setSliderValue(value)
-  }
+  }, [setDefaultVotingWeightRequest])
 
-  const handleClickUpvote = () => {
+  const handleClickUpvote = useCallback(() => {
     if (sliderValue > 0) {
       if (replyRef === 'list') {
         recomputeRowIndex(scrollIndex)
@@ -434,10 +441,9 @@ const PostActions = (props) => {
     } else {
       broadcastNotification('error', 'Voting cannot done with 0% Power!')
     }
-  }
+  }, [sliderValue, replyRef, recomputeRowIndex, scrollIndex, upvoteRequest, author, permlink, vote, broadcastNotification])
 
-  const handleClickReply = () => {
-
+  const handleClickReply = useCallback(() => {
     let bodyContent = body
 
     if (title?.endsWith('...') && body) {
@@ -447,25 +453,25 @@ const PostActions = (props) => {
     }
 
     openReplyModal(author, permlink, bodyContent, treeHistory, replyRef)
-  }
+  }, [body, title, openReplyModal, author, permlink, treeHistory, replyRef])
 
-  const getPayoutDate = async (date) => {
+  const getPayoutDate = useCallback(async (date) => {
     let semantic
     await import('moment').then((moment) => {
       semantic = moment.default(`${date}Z`).local().fromNow()
     })
     return !semantic.includes('years ago') ? semantic : ''
-  }
+  }, [])
 
-  const openMenu = (e) => {
+  const openMenu = useCallback((e) => {
     setOpenCaret(e.currentTarget)
-  }
+  }, [])
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setOpenCaret(false)
-  }
+  }, [])
 
-  const RenderUpvoteList = () => {
+  const RenderUpvoteList = useCallback(() => {
     let list = upvoteList
 
     if (vote > 15) {
@@ -476,13 +482,13 @@ const PostActions = (props) => {
     return (
       <React.Fragment>
         {list.map(({voter}) => (
-          <React.Fragment>
+          <React.Fragment key={voter}>
             <span className={classes.votelist}>{voter}</span><br/>
           </React.Fragment>
         ))}
       </React.Fragment>
     )
-  }
+  }, [upvoteList, vote, classes.votelist])
 
   useEffect(() => {
     if (payoutAt !== null) {
@@ -490,13 +496,13 @@ const PostActions = (props) => {
         setWhenPayout(payoutDate)
       })
     }
-  }, [payoutAt])
+  }, [payoutAt, getPayoutDate])
 
   const messengerShareLink = `http://www.facebook.com/dialog/send?app_id=${FACEBOOK_APP_ID}4&redirect_uri=${window.location.origin}&link=https://d.buzz/@${author}/${permlink}`
 
-  const handleShareToMessenger = () => {
+  const handleShareToMessenger = useCallback(() => {
     window.location = messengerShareLink
-  }
+  }, [messengerShareLink])
 
   return (
     <React.Fragment>
@@ -762,4 +768,5 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostActions)
+// Wrap with React.memo to prevent unnecessary re-renders
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(PostActions))

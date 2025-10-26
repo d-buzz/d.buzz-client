@@ -36,8 +36,7 @@ const AccountPosts = (props) => {
         getAccountPostsRequest(author, permlink, start_author)
       }
     }
-    // eslint-disable-next-line
-  }, [last, loading])
+  }, [last, loading, items.length, author, getAccountPostsRequest])
 
   useEffect(() => {
     if (items.length < 3 && !loading && isFeedPostsLoaded) {
@@ -87,4 +86,5 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountPosts)
+// Wrap with React.memo to prevent unnecessary re-renders
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(AccountPosts))

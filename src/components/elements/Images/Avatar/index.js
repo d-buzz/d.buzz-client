@@ -64,14 +64,16 @@ const Avatar = React.memo((props) => {
         onLoad={loadProfileImage}
         onClick={onClick}
         src={avatar_src}
+        loading="lazy"
+        alt={author || 'User avatar'}
         roundedCircle
         height={height}
         width={height}
         className={classNames(className, 'user-avatar-image', classes.avatarStyles)}
         style={{
-          border: border ? '5px solid white' : 'none', 
-          backgroundImage: `url(${avatar_src})`, 
-          objectFit : avatarUrl ? "cover" : "inherit", 
+          border: border ? '5px solid white' : 'none',
+          backgroundImage: `url(${avatar_src})`,
+          objectFit : avatarUrl ? "cover" : "inherit",
           ...style,
         }}
       />

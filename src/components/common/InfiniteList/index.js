@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useCallback } from 'react'
 import { PostList, PostlistSkeleton } from 'components'
 import { clearScrollIndex } from 'store/interface/actions'
 import { connect } from 'react-redux'
@@ -20,28 +20,37 @@ const InfiniteList = ({
   loadPockets,
   selectedPocket,
 }) => {
+  // Memoize localStorage parsing and NSFW filtering to prevent repeated parsing on every render
+  const posts = useMemo(() => {
+    // Parse localStorage once
+    const showNSFW = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled'
 
-  const posts = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'disabled'
-    ?
-    items
-    :
-    items?.filter((item) => !item?.json_metadata?.tags?.includes('nsfw'))?.filter((item) => !item?.json_metadata?.tags?.includes('NSFW'))
-    ||
-    []
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 250)) {
-        onScroll()
-      }
+    if (showNSFW) {
+      return items || []
     }
 
-    window.addEventListener('scroll', handleScroll)
+    // Single filter pass instead of two separate filter calls
+    return items?.filter((item) => {
+      const tags = item?.json_metadata?.tags ?? []
+      return !tags.includes('nsfw') && !tags.includes('NSFW')
+    }) ?? []
+  }, [items])
+
+  // Memoize scroll handler to prevent recreating on every render
+  const handleScroll = useCallback(() => {
+    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 250)) {
+      onScroll()
+    }
+  }, [onScroll])
+
+  useEffect(() => {
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [loading, items, onScroll])
+  }, [handleScroll])
 
   return (
     <div className='infinite-list'>
@@ -92,4 +101,5 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(InfiniteList)
+// Wrap with React.memo to prevent unnecessary re-renders
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(InfiniteList))

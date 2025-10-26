@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useMemo } from 'react'
 import { isMobile } from 'react-device-detect'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'
@@ -80,7 +80,10 @@ const BuzzPhotoGrid = ({
   const buzzPhotoGridRef = useRef(null)
   const imageLoadTime = 2
 
-  const [imagesEnabled] = useState(JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled') 
+  // Memoize localStorage parsing to avoid repeated parsing on every render
+  const imagesEnabled = useMemo(() => {
+    return JSON.parse(localStorage.getItem('customUserData'))?.settings?.showImagesStatus !== 'disabled'
+  }, []) 
 
   const calculateHeightWithMaxWidth = (image, maxWidth) => {
     const originalWidth = image.naturalWidth
@@ -321,4 +324,5 @@ const mapDispatchToProps = (dispatch) => ({
     },dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(BuzzPhotoGrid)
+// Wrap with React.memo to prevent unnecessary re-renders
+export default connect(null, mapDispatchToProps)(React.memo(BuzzPhotoGrid))
