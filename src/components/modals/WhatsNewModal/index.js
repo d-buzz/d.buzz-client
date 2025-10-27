@@ -55,7 +55,7 @@ const useStyles = createUseStyles(theme => ({
     '& .heading': {
       display: 'flex',
       alignItems: 'center',
-      color: '#E61C34',
+      color: '#1877F2',
       margin: '5px 0',
       fontSize: '1.2em',
       fontWeight: 700,
@@ -64,7 +64,7 @@ const useStyles = createUseStyles(theme => ({
       '&:after': {
         content: '""',
         height: 3,
-        background: '#E61C34',
+        background: '#1877F2',
         borderRadius: '25px',
         margin: '0 20px 0 0',
         flex: '1 0 20px',

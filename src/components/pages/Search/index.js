@@ -17,7 +17,7 @@ const useStyles = createUseStyles(theme => ({
         ...theme.textArea,
       },
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
     '&.MuiTabs-indicator': {
@@ -30,17 +30,17 @@ const useStyles = createUseStyles(theme => ({
     },
     '&.Mui-selected': {
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
+      backgroundColor: '#1877F2 !important',
     },
   },
   weblink: {
-    color: '#d32f2f',
+    color: '#1565C0',
   },
   topContainer: {
     borderBottom: theme.border.primary,
@@ -48,7 +48,7 @@ const useStyles = createUseStyles(theme => ({
       fontFamily: 'Segoe-Bold',
       paddingTop: 5,
       '& span': {
-        color: '#d32f2f',
+        color: '#1565C0',
         fontWeight: 400,
       },
     },

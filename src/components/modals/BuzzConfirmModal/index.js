@@ -78,7 +78,7 @@ const useStyles = createUseStyles(theme => ({
     },
 
     '& .discard': {
-      background: '#E61C34',
+      background: '#1877F2',
       color: '#ffffff',
 
       '&:hover': {

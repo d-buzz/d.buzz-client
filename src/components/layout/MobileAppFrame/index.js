@@ -114,7 +114,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '50px 50px',
     cursor: 'pointer',
     '& a': {
-      color: '#e53935',
+      color: '#1877F2',
     },
     '& svg': {
       '& path': {

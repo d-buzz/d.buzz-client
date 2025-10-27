@@ -54,7 +54,7 @@ const useStyles = createUseStyles(theme => ({
     },
     '& label': {
       fontSize: 12,
-      color: '#d32f2f !important',
+      color: '#1565C0 !important',
     },
   },
 }))

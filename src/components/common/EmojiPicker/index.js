@@ -64,7 +64,7 @@ const EmojiPicker = (props) => {
           title='Pick your emoji…' 
           onSelect={handleSelectEmoji}
           emoji=""
-          color="#e61c34"
+          color="#1877f2"
           sheetSize={32}
           autoFocus
         />
@@ -76,7 +76,7 @@ const EmojiPicker = (props) => {
           title='Pick your emoji…' 
           onSelect={handleSelectEmoji}
           emoji=""
-          color="#e61c34"
+          color="#1877f2"
           sheetSize={32}
           autoFocus
         />}

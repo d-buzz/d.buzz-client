@@ -25,9 +25,9 @@ const useStyles = createUseStyles(theme => ({
   },
   upvoteProfileLinks: {
     fontSize: 15, 
-    color: '#d32f2f',
+    color: '#1565C0',
     '&:hover': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
   },
   upvoteDialogTitle: {

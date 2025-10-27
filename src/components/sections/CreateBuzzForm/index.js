@@ -123,12 +123,12 @@ const useStyles = createUseStyles(theme => ({
   note: {
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
-    color: '#d32f2f',
+    color: '#1565C0',
   },
   actionLabels: {
     fontFamily: 'Segoe-Bold',
     fontSize: 14,
-    color: '#e53935',
+    color: '#1877F2',
     paddingTop: 2,
   },
   disabled: {
@@ -164,7 +164,7 @@ const useStyles = createUseStyles(theme => ({
     border: theme.border.primary,
   },
   payoutNote: {
-    color: '#d32f2f',
+    color: '#1565C0',
     fontSize: 12,
     fontWeight: 'bold',
     display: 'block',
@@ -202,15 +202,15 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     marginRight: 5,
     fontSize: '1.2em',
-    color: '#e61c34',
+    color: '#1877f2',
     padding: '2px 10px',
     width: 'fit-content',
-    border: '1px solid #e61c34',
+    border: '1px solid #1877f2',
     borderRadius: '5px',
     userSelect: 'none',
     transition: 'all 350ms',
     '&:hover': {
-      background: '#e61c34',
+      background: '#1877f2',
       color: '#ffffff',
     },
   },
@@ -234,7 +234,7 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 'bold',
     fontSize: '0.8em',
     marginRight: 12,
-    color: '#e61c34',
+    color: '#1877f2',
     width: 'fit-content',
     left: '50%',
     top: '50%',
@@ -260,8 +260,8 @@ const useStyles = createUseStyles(theme => ({
     placeItems: 'center',
     width: 35,
     height: 35,
-    color: '#e61c34',
-    border: '1px solid #e61c34',
+    color: '#1877f2',
+    border: '1px solid #1877f2',
     borderRadius: '50%',
     transform: 'translateY(-2px)',
     cursor: 'pointer',
@@ -302,7 +302,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 18,
     color: '#ffffff',
     padding: '8px 25px',
-    background: '#E61C34',
+    background: '#1877F2',
     border: 'none',
     borderRadius: 5,
     userSelect: 'none',
@@ -637,7 +637,7 @@ const useStyles = createUseStyles(theme => ({
   },
   linearProgress: {
     width: '90%',
-    color: '#E61C34',
+    color: '#1877F2',
     height: 5,
     borderRadius: 5,
     marginRight: 15,
@@ -817,7 +817,7 @@ const CreateBuzzForm = (props) => {
     color: "rgba(230, 28, 52, 0.2)",
     transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)',
   }
-  const [counterColor, setCounterColor] = useState('#e53935')
+  const [counterColor, setCounterColor] = useState('#1877F2')
   const CircularProgressStyle = {...counterDefaultStyles, float: 'right', color: counterColor}
   const BuzzToTwitterToggleStyle = {opacity: !buzzToTwitter ? 0.5 : 1}
   const [buzzLength, setBuzzLength] = useState(content.length - overhead)
@@ -947,7 +947,7 @@ const CreateBuzzForm = (props) => {
     } else if (length >= 260) {
       setCounterColor('#FFAD1F')
     } else {
-      setCounterColor('#e53935')
+      setCounterColor('#1877F2')
     }
     // eslint-disable-next-line
   }, [buzzContent])

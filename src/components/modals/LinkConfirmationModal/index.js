@@ -53,7 +53,7 @@ const useStyles = createUseStyles(theme => ({
   },
   link: {
     width: '80%',
-    color: '#E61C34',
+    color: '#1877F2',
     fontWeight: 800,
     wordBreak: 'break-word',
   },

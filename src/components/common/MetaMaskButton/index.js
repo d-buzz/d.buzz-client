@@ -45,7 +45,7 @@ const useStyles = createUseStyles(theme => ({
     position: 'absolute',
     top: -10,
     right: -10,
-    background: '#e53935',
+    background: '#1877F2',
     color: '#ffffff',
     borderRadius: 50,
     fontSize: 14,

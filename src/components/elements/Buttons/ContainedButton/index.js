@@ -8,7 +8,7 @@ const useStyles = createUseStyles({
     padding: '5px 15px',
     display: 'grid',
     placeItems: 'center',
-    backgroundColor: '#e61c34',
+    backgroundColor: '#1877f2',
     borderRadius: '50px 50px',
     width: 'max-content',
     border: 'none',
@@ -20,10 +20,10 @@ const useStyles = createUseStyles({
       fontFamily: 'Segoe-Bold',
     },
     '&:hover': {
-      backgroundColor: '#b71c1c',
+      backgroundColor: '#0D47A1',
     },
     '&:disabled': {
-      backgroundColor: '#e61c34',
+      backgroundColor: '#1877f2',
       opacity: 0.5,
       cursor: 'not-allowed',
     },
@@ -31,18 +31,18 @@ const useStyles = createUseStyles({
   transparentButton: {
     padding: '5px 15px',
     background: 'transparent',
-    border: '1px solid #e61c34',
+    border: '1px solid #1877f2',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'pointer',
     '& span': {
       whiteSpace: 'nowrap',
-      color: '#e61c34',
+      color: '#1877f2',
       fontWeight: 'bold',
       fontFamily: 'Segoe-Bold',
     },
     '&:hover': {
-      backgroundColor: '#b71c1c1c',
+      backgroundColor: '#0D47A11c',
     },
     '&:disabled': {
       opacity: 0.5,
@@ -69,13 +69,13 @@ const useStyles = createUseStyles({
   },
   disabledButtonTransparent: {
     padding: '5px 15px',
-    border: '1px solid #e61c34',
+    border: '1px solid #1877f2',
     borderRadius: '50px 50px',
     width: 'max-content',
     cursor: 'mouse',
     outlineWidth: 'none',
     '& span': {
-      color: '#e61c34',
+      color: '#1877f2',
       whiteSpace: 'nowrap',
       fontFamily: 'Segoe-Bold',
     },

@@ -134,7 +134,7 @@ const useStyle = createUseStyles(theme => ({
     width: 'calc(100% - 60px)',
     height: 'max-content',
     '& a': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
   },
   popover: {
@@ -181,7 +181,7 @@ const useStyle = createUseStyles(theme => ({
   moreIcon: {
     ...theme.font,
     '&:hover': {
-      color: '#E61C34 !important',
+      color: '#1877F2 !important',
     },
   },
   menuText: {
@@ -642,7 +642,7 @@ const PostList = React.memo((props) => {
                     className={classes.menu}
                   >
                     {isAuthor() && replyCount===0 && upvotes===0 && <MenuItem
-                      style={{ backgroundColor: '#E61C34' }}
+                      style={{ backgroundColor: '#1877F2' }}
                       onClick={handleClickDeleteBuzz}
                     >
                       <span className='delete-buzz-button'>

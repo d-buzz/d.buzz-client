@@ -120,7 +120,7 @@ const useStyles = createUseStyles(theme => ({
     textAlign: 'center',
   },
   uploadButton: {
-    backgroundColor: '#e53935 !important',
+    backgroundColor: '#1877F2 !important',
   },
   textarea: {
     '& #about': {

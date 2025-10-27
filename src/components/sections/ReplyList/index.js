@@ -102,7 +102,7 @@ const useStyles = createUseStyles(theme => ({
       borderRadius: '15px 15px',
     },
     '& a': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
     '&:after': {
       content: '',
@@ -127,7 +127,7 @@ const useStyles = createUseStyles(theme => ({
     width: 'calc(100% - 60px)',
     height: 'max-content',
     '& a': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
   },
   link: {
@@ -147,7 +147,7 @@ const useStyles = createUseStyles(theme => ({
     width: '98%',
     margin: '0 auto',
     marginTop: 10,
-    color: '#d32f2f',
+    color: '#1565C0',
     paddingBottom: 10,
     fontFamily: 'Segoe-Bold',
   },
@@ -172,7 +172,7 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
     margin: '0 auto',
     '& a': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
     paddingTop: 10,
     paddingBottom: 2,

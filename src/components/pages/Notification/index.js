@@ -40,7 +40,7 @@ const useStyle = createUseStyles(theme => ({
         ...theme.textArea,
       },
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
     '&.MuiTabs-indicator': {
@@ -58,7 +58,7 @@ const useStyle = createUseStyles(theme => ({
     },
     '&.Mui-selected': {
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
   },
@@ -72,14 +72,14 @@ const useStyle = createUseStyles(theme => ({
       fontFamily: 'Segoe-Bold',
       paddingTop: 5,
       '& span': {
-        color: '#d32f2f',
+        color: '#1565C0',
         fontWeight: 400,
       },
     },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
+      backgroundColor: '#1877F2 !important',
     },
   },
   row: {
@@ -178,7 +178,7 @@ const useStyle = createUseStyles(theme => ({
     width: 'calc(100% - 60px)',
     height: 'max-content',
     '& a': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
   },
   chips: {
@@ -207,7 +207,7 @@ const useStyle = createUseStyles(theme => ({
   },
   button: {
     '&:hover': {
-      background: '#E61C34',
+      background: '#1877F2',
 
       '& label': {
         color: '#ffffff !important',

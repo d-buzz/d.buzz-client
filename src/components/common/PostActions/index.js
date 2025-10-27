@@ -50,11 +50,11 @@ import AddToPocketModal from 'components/modals/AddToPocketModal'
 
 const PrettoSlider = withStyles({
   root: {
-    color: '#e53935',
+    color: '#1877F2',
     height: 5,
     '& .MuiSlider-markLabel': {
       fontSize: 12,
-      color: '#d32f2f',
+      color: '#1565C0',
     },
   },
   thumb: {
@@ -191,9 +191,9 @@ const useStyles = createUseStyles(theme => ({
   },
   upvoteProfileLinks: {
     fontSize: 15,
-    color: '#d32f2f',
+    color: '#1565C0',
     '&:hover': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
   },
   minifyItems: {

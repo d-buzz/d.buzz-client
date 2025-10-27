@@ -56,7 +56,7 @@ import Cookies from "js-cookie"
 //       padding: '5px 15px 5px 15px',
 //       fontSize: 18,
 //       fontWeight: 'bold',
-//       background: '#E61C34',
+//       background: '#1877F2',
 //       color: '#FFFFFF',
 //       cursor: 'pointer',
 //       userSelect: 'none',
