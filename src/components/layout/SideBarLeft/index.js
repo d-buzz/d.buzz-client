@@ -875,7 +875,7 @@ const SideBarLeft = (props) => {
               {
                 subtext: 'Leaderboard',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-                subvisible: false,  // Disabled - requires backend API
+                subvisible: true,
                 subhref: 'https://d.buzz/leaderboard',
                 subonClick: '',
               },

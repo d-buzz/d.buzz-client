@@ -699,7 +699,7 @@ const EditProfileModal = (props) => {
                     <TextField
                       id="website"
                       label="Website"
-                      value={profileWebsite || ceramicProfile.website}
+                      value={profileWebsite || ceramicProfile.url}
                       rowsMax={4}
                       onChange={onChange}
                       multiline
