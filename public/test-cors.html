@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS/ORB Header Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #00ff00;
+    }
+    .success { color: #00ff00; }
+    .error { color: #ff0000; }
+    .info { color: #ffaa00; }
+    pre {
+      background: #000;
+      padding: 10px;
+      border: 1px solid #333;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 CORS/ORB Header Test Page</h1>
+  <p>This page tests if headers are correctly set on your Netlify deploy.</p>
+
+  <h2>Test Results:</h2>
+  <div id="results"></div>
+
+  <h2>Instructions:</h2>
+  <ol>
+    <li>Open browser DevTools (F12)</li>
+    <li>Go to Network tab</li>
+    <li>Reload this page</li>
+    <li>Click on any .js file in the list</li>
+    <li>Check "Response Headers" section</li>
+  </ol>
+
+  <h3>Required Headers (should see these):</h3>
+  <pre>
+access-control-allow-origin: *
+cross-origin-resource-policy: cross-origin
+content-type: application/javascript
+  </pre>
+
+  <script>
+    const results = document.getElementById('results');
+
+    async function testHeaders() {
+      results.innerHTML += '<p class="info">⏳ Testing headers...</p>';
+
+      try {
+        // Test fetching this page
+        const response = await fetch(window.location.href);
+        const headers = {};
+
+        for (let [key, value] of response.headers.entries()) {
+          headers[key] = value;
+        }
+
+        results.innerHTML += '<h3>Headers on this page:</h3>';
+        results.innerHTML += '<pre>' + JSON.stringify(headers, null, 2) + '</pre>';
+
+        // Check for required headers
+        const hasACAO = headers['access-control-allow-origin'] === '*';
+        const hasCORP = headers['cross-origin-resource-policy'] === 'cross-origin';
+
+        if (hasACAO && hasCORP) {
+          results.innerHTML += '<p class="success">✅ CORS headers are correctly set!</p>';
+        } else {
+          results.innerHTML += '<p class="error">❌ Missing required headers:</p>';
+          if (!hasACAO) results.innerHTML += '<p class="error">  - access-control-allow-origin</p>';
+          if (!hasCORP) results.innerHTML += '<p class="error">  - cross-origin-resource-policy</p>';
+        }
+
+      } catch (error) {
+        results.innerHTML += '<p class="error">❌ Error testing headers: ' + error.message + '</p>';
+      }
+
+      // Show current URL
+      results.innerHTML += '<h3>Current URL:</h3>';
+      results.innerHTML += '<pre>' + window.location.href + '</pre>';
+
+      // Show user agent
+      results.innerHTML += '<h3>User Agent:</h3>';
+      results.innerHTML += '<pre>' + navigator.userAgent + '</pre>';
+    }
+
+    testHeaders();
+  </script>
+</body>
+</html>
