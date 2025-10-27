@@ -101,7 +101,7 @@ const useStyles = createUseStyles(theme => ({
           minWidth: 100,
 
           '&:hover': {
-            background: '#B71C1C',
+            background: '#0D47A1',
           },
         },
 
@@ -140,7 +140,7 @@ const useStyles = createUseStyles(theme => ({
 
       '&:hover': {
         padding: '5px 15px',
-        background: '#B71C1C',
+        background: '#0D47A1',
       },
     },
 

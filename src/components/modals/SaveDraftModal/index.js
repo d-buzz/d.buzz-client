@@ -36,7 +36,7 @@ const useStyles = createUseStyles(theme => ({
     color: 'white',
     cursor: 'pointer',
     '&:hover': {
-      background: '#B71C1C',
+      background: '#0D47A1',
     },
   },
   titleBox: {
