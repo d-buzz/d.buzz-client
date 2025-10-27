@@ -185,7 +185,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function AddToPocketModal(props) {
-  const { show, onHide, user, author, buzz } = props
+  const { show, onHide, author, buzz } = props
   const [selectedPocket, setSelectedPocket] = useState(null)
   const [loading, setLoading] = useState(false)
   const [pockets, setPockets] = useState([])

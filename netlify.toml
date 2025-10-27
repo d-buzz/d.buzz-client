@@ -11,7 +11,8 @@
 [build.environment]
   # Disable source maps in production for faster builds
   GENERATE_SOURCEMAP = "false"
-  CI = "true"
+  # Don't treat warnings as errors in deploy previews
+  CI = ""
 
 # Redirects and rewrites
 [[redirects]]

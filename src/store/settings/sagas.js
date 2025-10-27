@@ -1,4 +1,4 @@
-import { call, put, select, takeEvery } from "redux-saga/effects"
+import { call, put, takeEvery } from "redux-saga/effects"
 
 import {
   GET_SAVED_THEME_REQUEST,

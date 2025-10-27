@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react'
+import React, { useRef, useMemo } from 'react'
 import { isMobile } from 'react-device-detect'
 import { createUseStyles } from 'react-jss'
 import { bindActionCreators } from 'redux'

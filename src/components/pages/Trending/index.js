@@ -152,9 +152,10 @@ const Trending = (props) => {
     }
   }, [isTrendingPostsLoaded, items.length, loadMorePosts, loading])
 
-  const handleReirectToProposal = () => {
-    return (window.location = "https://vote.d.buzz")
-  }
+  // Unused function - may be needed for future features
+  // const handleReirectToProposal = () => {
+  //   return (window.location = "https://vote.d.buzz")
+  // }
 
   useEffect(() => {
     if (user.username) {
