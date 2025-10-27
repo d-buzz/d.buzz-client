@@ -1295,21 +1295,19 @@ export const generatePostOperations = (account, title, body, tags, payout, perm)
 
     operations.push(op_comment)
 
-    const max_accepted_payout = `${payout.toFixed(3)} HBD`
+    const max_accepted_payout = '1000000.000 HBD'
     const extensions = []
 
-
-    if (payout === 0) {
-      extensions.push([
-        0,
-        {
-          beneficiaries:
-            [
-              {account: 'null', weight: 10000},
-            ],
-        },
-      ])
-    }
+    // Always set beneficiary to @hive.fund to support Hive development
+    extensions.push([
+      0,
+      {
+        beneficiaries:
+          [
+            {account: 'hive.fund', weight: 10000},
+          ],
+      },
+    ])
 
 
     const op_comment_options = [

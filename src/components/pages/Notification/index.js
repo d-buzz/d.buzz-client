@@ -92,6 +92,16 @@ const useStyle = createUseStyles(theme => ({
       cusor: 'pointer',
     },
   },
+  firstRow: {
+    width: '98%',
+    margin: '0 auto',
+    paddingTop: 0,
+    marginBottom: 10,
+    cursor: 'pointer',
+    '& label': {
+      cusor: 'pointer',
+    },
+  },
   unread: {
     ...theme.unread,
   },
@@ -323,7 +333,7 @@ const Notification = (props) => {
 
       {notifications.map((item, index) => (
         <div className={classNames(classes.wrapper, (index < count.unread) && notifFilter === 'ALL' ? classes.unread : '')} key={index}>
-          <div className={classes.row}>
+          <div className={index === 0 ? classes.firstRow : classes.row}>
             <Link to={generateNotifLink(item.type, item.url)}>
               <Row>
                 <Col xs="auto" style={{ paddingRight: 0 }}>

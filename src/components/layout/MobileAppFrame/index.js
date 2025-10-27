@@ -1430,7 +1430,7 @@ const MobileAppFrame = (props) => {
               </div>
             </div>
           </div>
-          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
+          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications' ? classes.main : classes.marginTop50}>
 
             <Navbar className={classNames(classes.navTop,username?classes.paddingBottomEmpty:classes.paddingTop50)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
@@ -1539,7 +1539,7 @@ const MobileAppFrame = (props) => {
               )}
               <AvatarMenu />
 
-              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/messages' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/messages' || location.pathname === '/trending' || location.pathname === '/notifications' ? classes.main : classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>
