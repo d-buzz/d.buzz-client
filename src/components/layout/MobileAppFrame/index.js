@@ -1280,18 +1280,8 @@ const MobileAppFrame = (props) => {
                       </ListItem>
                       <Collapse in={showProfessionalTools} timeout="auto" unmountOnExit>
                         <List component="div">
-                          <ListItem component="a" href='https://auto.vote' target="_blank" rel="noopener noreferrer" key='Auto.Vote' button>
-                            <ListItemText primary='Auto.Vote' />
-                          </ListItem>
-                        </List>
-                        <List component="div">
                           <ListItem component="a" href={'http://blog.d.buzz/#/@'+username} target="_blank" rel="noopener noreferrer" key='Blog' button>
                             <ListItemText primary='Blog' />
-                          </ListItem>
-                        </List>
-                        <List component="div">
-                          <ListItem component="a" href='https://dex.d.buzz' target="_blank" rel="noopener noreferrer" key='DEX' button>
-                            <ListItemText primary='DEX' />
                           </ListItem>
                         </List>
                         <List component="div">
@@ -1300,7 +1290,7 @@ const MobileAppFrame = (props) => {
                           </ListItem>
                         </List>
                         <List component="div">
-                          <ListItem onClick={showComingSoon} key='Hive dApps' button>
+                          <ListItem component="a" href='https://hive.io/eco' target="_blank" rel="noopener noreferrer" key='Hive dApps' button>
                             <ListItemText primary='Hive dApps' />
                           </ListItem>
                         </List>

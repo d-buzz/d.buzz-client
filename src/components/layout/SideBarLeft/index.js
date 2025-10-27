@@ -866,24 +866,10 @@ const SideBarLeft = (props) => {
             onClick: toggleProfessionTools,
             subItems: [
               {
-                subtext: 'Auto.Vote',
-                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-                subvisible: true,
-                subhref: 'https://auto.vote',
-                subonClick: '',
-              },
-              {
                 subtext: 'Blog',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
                 subhref: 'http://blog.d.buzz/#/@'+username,
-                subonClick: '',
-              },
-              {
-                subtext: 'DEX',
-                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-                subvisible: true,
-                subhref: 'https://dex.d.buzz',
                 subonClick: '',
               },
               {
@@ -897,8 +883,8 @@ const SideBarLeft = (props) => {
                 subtext: 'Hive dApps',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
-                subhref: '',
-                subonClick: showComingSoon,
+                subhref: 'https://hive.io/eco',
+                subonClick: '',
               },
             ],
           },

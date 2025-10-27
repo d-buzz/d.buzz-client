@@ -416,11 +416,6 @@ const Profile = (props) => {
         onClick: navigateToBlog,
       },
       {
-        label: "Moderation Tools",
-        icon: '',
-        onClick: navigateToModerationTools,
-      },
-      {
         label: "Copy Link",
         icon: '',
         onClick: copyToClipboard,
@@ -628,10 +623,6 @@ const Profile = (props) => {
   // const navigateToFollowedMuted = () => {
   //   history.push(`/@${username}/lists/muted/followed`)
   // }
-
-  const navigateToModerationTools = () => {
-    alert('Coming Soon!')
-  }
 
   const copyToClipboard = () => {
     const currentURL = window.location.href
