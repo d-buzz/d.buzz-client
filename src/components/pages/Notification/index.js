@@ -44,7 +44,7 @@ const useStyle = createUseStyles(theme => ({
       },
     },
     '&.MuiTabs-indicator': {
-      backgroundColor: '#ffebee',
+      backgroundColor: '#E3F2FD',
     },
     '& span': {
       fontFamily: 'Segoe-Bold',
