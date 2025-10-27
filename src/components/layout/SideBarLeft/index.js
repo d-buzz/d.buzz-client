@@ -71,9 +71,9 @@ const useStyles = createUseStyles(theme => ({
       ...theme.left.sidebar.items.hover,
       cursor: 'pointer',
       '& svg': {
-        color: '#e53935',
+        color: '#1877F2',
         '& path': {
-          // stroke: '#e53935',
+          // stroke: '#1877F2',
         },
       },
     },
@@ -86,16 +86,16 @@ const useStyles = createUseStyles(theme => ({
       color: theme.left.sidebar.items.color,
       textDecoration: 'none',
       '&:hover': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
     '&:hover': {
       cursor: 'pointer',
       '& a': {
-        color: '#e53935',
+        color: '#1877F2',
       },
       '& svg': {
-        color: '#e53935',
+        color: '#1877F2',
         '& path': {
         },
       },
@@ -183,9 +183,9 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzButton: {
     padding: 8,
-    backgroundColor: '#e53935 !important',
+    backgroundColor: '#1877F2 !important',
     '&:hover': {
-      backgroundColor: '#b71c1c !important',
+      backgroundColor: '#0D47A1 !important',
     },
   },
   logoutButton: {
@@ -241,7 +241,7 @@ const useStyles = createUseStyles(theme => ({
   },
   moreButton: {
     display: 'flex',
-    color: '#e61c34',
+    color: '#1877f2',
 
     '&:hover': {
       color: '#E53935',
@@ -253,7 +253,7 @@ const useStyles = createUseStyles(theme => ({
   },
   betaTitle: {
     width: 'fit-content',
-    background: '#E61C34',
+    background: '#1877F2',
     borderRadius: 5,
     textAlign: 'center',
     color: '#ffffff',
@@ -866,13 +866,6 @@ const SideBarLeft = (props) => {
             onClick: toggleProfessionTools,
             subItems: [
               {
-                subtext: 'Auto.Vote',
-                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-                subvisible: true,
-                subhref: 'https://auto.vote',
-                subonClick: '',
-              },
-              {
                 subtext: 'Blog',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
@@ -880,16 +873,9 @@ const SideBarLeft = (props) => {
                 subonClick: '',
               },
               {
-                subtext: 'DEX',
-                // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-                subvisible: true,
-                subhref: 'https://dex.d.buzz',
-                subonClick: '',
-              },
-              {
                 subtext: 'Leaderboard',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
-                subvisible: false,  // Disabled - requires backend API
+                subvisible: true,
                 subhref: 'https://d.buzz/leaderboard',
                 subonClick: '',
               },
@@ -897,8 +883,8 @@ const SideBarLeft = (props) => {
                 subtext: 'Hive dApps',
                 // icon: activeView === 'wallet' ? <WalletIcon type='fill'/> : <WalletIcon type='outline'/>,
                 subvisible: true,
-                subhref: '',
-                subonClick: showComingSoon,
+                subhref: 'https://hive.io/eco',
+                subonClick: '',
               },
             ],
           },

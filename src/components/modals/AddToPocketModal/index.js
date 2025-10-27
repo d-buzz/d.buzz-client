@@ -140,7 +140,7 @@ const useStyles = createUseStyles(theme => ({
       },
   
       '& .select': {
-        background: '#E61C34',
+        background: '#1877F2',
         color: '#ffffff',
   
         '&:hover': {
@@ -169,7 +169,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     textAlign: 'center',
     margin: '15px 0',
-    color: '#E61C34',
+    color: '#1877F2',
     fontSize: '1.2em',
     fontWeight: 'bold',
     animation: 'zoomIn 350ms',
@@ -179,7 +179,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '1.5em',
     color: '#ffffff',
     padding: '5px 25px',
-    background: '#E61C3455',
+    background: '#1877F255',
     borderRadius: 8,
   },
 }))

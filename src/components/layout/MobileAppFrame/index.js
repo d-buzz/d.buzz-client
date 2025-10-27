@@ -114,7 +114,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: '50px 50px',
     cursor: 'pointer',
     '& a': {
-      color: '#e53935',
+      color: '#1877F2',
     },
     '& svg': {
       '& path': {
@@ -1280,18 +1280,8 @@ const MobileAppFrame = (props) => {
                       </ListItem>
                       <Collapse in={showProfessionalTools} timeout="auto" unmountOnExit>
                         <List component="div">
-                          <ListItem component="a" href='https://auto.vote' target="_blank" rel="noopener noreferrer" key='Auto.Vote' button>
-                            <ListItemText primary='Auto.Vote' />
-                          </ListItem>
-                        </List>
-                        <List component="div">
                           <ListItem component="a" href={'http://blog.d.buzz/#/@'+username} target="_blank" rel="noopener noreferrer" key='Blog' button>
                             <ListItemText primary='Blog' />
-                          </ListItem>
-                        </List>
-                        <List component="div">
-                          <ListItem component="a" href='https://dex.d.buzz' target="_blank" rel="noopener noreferrer" key='DEX' button>
-                            <ListItemText primary='DEX' />
                           </ListItem>
                         </List>
                         <List component="div">
@@ -1300,7 +1290,7 @@ const MobileAppFrame = (props) => {
                           </ListItem>
                         </List>
                         <List component="div">
-                          <ListItem onClick={showComingSoon} key='Hive dApps' button>
+                          <ListItem component="a" href='https://hive.io/eco' target="_blank" rel="noopener noreferrer" key='Hive dApps' button>
                             <ListItemText primary='Hive dApps' />
                           </ListItem>
                         </List>
@@ -1440,7 +1430,7 @@ const MobileAppFrame = (props) => {
               </div>
             </div>
           </div>
-          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
+          <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/trending' || location.pathname === '/notifications' ? classes.main : classes.marginTop50}>
 
             <Navbar className={classNames(classes.navTop,username?classes.paddingBottomEmpty:classes.paddingTop50)} fixed="top">
               <Navbar.Brand className={classes.navTitle}>
@@ -1549,7 +1539,7 @@ const MobileAppFrame = (props) => {
               )}
               <AvatarMenu />
 
-              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/messages' || location.pathname === '/trending'|| (location.pathname === '/notifications' && count.unread !== 0 )? classes.main:(location.pathname === '/notifications' && count.unread === 0 )?classes.marginTop85:classes.marginTop50}>
+              <div className={location.pathname === '/' || location.pathname === '/home' || location.pathname === '/latest' || location.pathname === '/messages' || location.pathname === '/trending' || location.pathname === '/notifications' ? classes.main : classes.marginTop50}>
                 {renderRoutes(route.routes)}
               </div>
             </React.Fragment>

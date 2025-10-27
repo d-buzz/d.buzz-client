@@ -8,7 +8,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     display: 'grid',
     placeItems: 'center',
-    background: '#e61c34',
+    background: '#1877f2',
     fontSize: '1em',
     color: '#ffffff',
     fontWeight: 600,

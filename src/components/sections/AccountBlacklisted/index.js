@@ -29,7 +29,7 @@ const useStyles = createUseStyles(theme => ({
     '&:hover': {
       ...theme.left.sidebar.items.hover,
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
     '&.MuiTabs-indicator': {
@@ -42,13 +42,13 @@ const useStyles = createUseStyles(theme => ({
     },
     '&.Mui-selected': {
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
   },
   tabContainer: {
     '& span.MuiTabs-indicator': {
-      backgroundColor: '#e53935 !important',
+      backgroundColor: '#1877F2 !important',
     },
   },
 }))

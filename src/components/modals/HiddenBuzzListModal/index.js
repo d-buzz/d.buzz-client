@@ -47,7 +47,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   removeButton: {
@@ -67,7 +67,7 @@ const useStyles = createUseStyles(theme => ({
   },
   buzzLinks: {
     marginLeft: 10,
-    color: '#d32f2f',
+    color: '#1565C0',
   },
   list: {
     outline: 'none',

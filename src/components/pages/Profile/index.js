@@ -130,7 +130,7 @@ const useStyles = createUseStyles(theme => ({
     '&:hover': {
       ...theme.left.sidebar.items.hover,
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
     '&.MuiTabs-indicator': {
@@ -145,7 +145,7 @@ const useStyles = createUseStyles(theme => ({
     },
     '&.Mui-selected': {
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
         fontFamily: 'Segoe-Bold',
         fontSize: '16px',
       },
@@ -416,11 +416,6 @@ const Profile = (props) => {
         onClick: navigateToBlog,
       },
       {
-        label: "Moderation Tools",
-        icon: '',
-        onClick: navigateToModerationTools,
-      },
-      {
         label: "Copy Link",
         icon: '',
         onClick: copyToClipboard,
@@ -628,10 +623,6 @@ const Profile = (props) => {
   // const navigateToFollowedMuted = () => {
   //   history.push(`/@${username}/lists/muted/followed`)
   // }
-
-  const navigateToModerationTools = () => {
-    alert('Coming Soon!')
-  }
 
   const copyToClipboard = () => {
     const currentURL = window.location.href

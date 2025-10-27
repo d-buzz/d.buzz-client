@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
       backgroundColor: '#ffebee',
       '& svg': {
         '& path': {
-          stroke: '#e53935',
+          stroke: '#1877F2',
         },
       },
     },

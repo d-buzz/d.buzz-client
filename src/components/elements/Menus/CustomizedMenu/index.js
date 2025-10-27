@@ -25,7 +25,7 @@ const StyledMenu = withStyles({
 const StyledMenuItem = withStyles((theme) => ({
   root: {
     '&:focus': {
-      backgroundColor: '#e61c34',
+      backgroundColor: '#1877f2',
       '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
         color: theme.palette.common.white,
       },

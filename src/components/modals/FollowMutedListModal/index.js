@@ -46,7 +46,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   darkModeButton: {
@@ -83,7 +83,7 @@ const useStyles = createUseStyles(theme => ({
     height: 35,
   },
   active: {
-    border: '3px solid #e61c34',
+    border: '3px solid #1877f2',
   },
   innerModal: {
     width: '98%',

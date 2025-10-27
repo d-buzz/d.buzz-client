@@ -31,7 +31,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 25,
     lineHeight: 0.8,
     border: 'none',
-    background: '#E61C34',
+    background: '#1877F2',
     fontWeight: 'bold',
     color: 'white',
     cursor: 'pointer',
@@ -50,7 +50,7 @@ const useStyles = createUseStyles(theme => ({
     color: theme.font.color,
 
     '&:focus': {
-      border: '2px solid #E61C34',
+      border: '2px solid #1877F2',
     },
   },
   draftModalContainer: {
@@ -78,7 +78,7 @@ const useStyles = createUseStyles(theme => ({
           outlineWidth: 0,
           border: 'none',
           padding: '5px 15px',
-          boxShadow: '0 0 0 2px #E61C34',
+          boxShadow: '0 0 0 2px #1877F2',
           borderRadius: 25,
           fontSize: '1.5em',
           marginRight: 10,

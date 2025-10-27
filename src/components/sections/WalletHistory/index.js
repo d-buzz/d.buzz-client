@@ -29,7 +29,7 @@ const useStyles = createUseStyles(theme => ({
   },
   redBottomBorder: {
     width: '100%',
-    borderBottom: "2px solid #e61c34",
+    borderBottom: "2px solid #1877f2",
   },
   right: {
     height: 'max-content',
@@ -76,7 +76,7 @@ const useStyles = createUseStyles(theme => ({
   },
   negativeValue : {
     fontWeight: 'bold',
-    color: "#e61c34",
+    color: "#1877f2",
     textAlign: "end",
   },
   positiveValue : {
@@ -86,7 +86,7 @@ const useStyles = createUseStyles(theme => ({
   },
   circle: {
     strokeLinecap: 'round',
-    color: '#e53935',
+    color: '#1877F2',
   },
   spacer: {
     width: '100%',
@@ -96,7 +96,7 @@ const useStyles = createUseStyles(theme => ({
     height: 35,
   },
   lockIcon : {
-    color: "#e61c34 !important",
+    color: "#1877f2 !important",
     padding: "0px !important",
     paddingLeft: "3px !important",
     '& .MuiIconButton-label' : {

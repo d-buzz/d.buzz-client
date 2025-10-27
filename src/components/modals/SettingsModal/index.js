@@ -54,7 +54,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   settings: {
@@ -93,7 +93,7 @@ const useStyles = createUseStyles(theme => ({
           padding: '5px 15px',
           fontSize: '1.2em',
           fontWeight: '600',
-          background: '#E61C34',
+          background: '#1877F2',
           color: '#ffffff',
           borderRadius: 25,
           userSelect: 'none',
@@ -122,7 +122,7 @@ const useStyles = createUseStyles(theme => ({
 
     '& .current_version': {
       fontSize: '1.2em',
-      color: '#E61C34',
+      color: '#1877F2',
       fontWeight: 500,
     },
     '& .check_updates_button, .updates_avaialble': {
@@ -134,7 +134,7 @@ const useStyles = createUseStyles(theme => ({
       fontSize: '1.35em',
       fontWeight: 'bold',
       borderRadius: 5,
-      background: '#E61C34',
+      background: '#1877F2',
       userSelect: 'none',
       cursor: 'pointer',
 
@@ -153,7 +153,7 @@ const useStyles = createUseStyles(theme => ({
       fontSize: '1.35em',
       fontWeight: 'bold',
       borderRadius: 5,
-      background: '#E61C34',
+      background: '#1877F2',
       userSelect: 'none',
     },
 

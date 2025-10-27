@@ -45,7 +45,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   closeButton: {
@@ -106,7 +106,7 @@ const useStyles = createUseStyles(theme => ({
     fill: theme.font.color,
   },
   link: {
-    color: '#d32f2f',
+    color: '#1565C0',
   },
 }))
 

@@ -40,7 +40,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
     '& span': {
-      color: '#d32f2f',
+      color: '#1565C0',
       fontWeight: 400,
     },
   },

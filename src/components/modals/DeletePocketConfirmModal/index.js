@@ -40,7 +40,7 @@ const useStyles = createUseStyles(theme => ({
 
     '& .description': {
       margin: '15px 0',
-      color: '#E61C34',
+      color: '#1877F2',
       fontSize: '1.25em',
       fontWeight: 600,
     },
@@ -59,7 +59,7 @@ const useStyles = createUseStyles(theme => ({
           cursor: 'none',
 
           '&:hover': {
-            background: '#E61C34',
+            background: '#1877F2',
           },
         },
       },
@@ -87,7 +87,7 @@ const useStyles = createUseStyles(theme => ({
       },
   
       '& .discard': {
-        background: '#E61C34',
+        background: '#1877F2',
         color: '#ffffff',
   
         '&:hover': {

@@ -44,20 +44,20 @@ const useStyles = createUseStyles(theme => ({
     marginRight: '15px !important',
     marginTop: '10px !important',
     color: '#ffffff !important',
-    backgroundColor: '#E61C34 !important',
+    backgroundColor: '#1877F2 !important',
     fontSize: '2em !important',
   },
   closeImageButton: {
     marginTop: '10px !important',
     color: '#ffffff !important',
-    backgroundColor: '#E61C34 !important',
+    backgroundColor: '#1877F2 !important',
     fontSize: '2em !important',
   },
   nextImageButton: {
     marginLeft: '15px !important',
     marginTop: '10px !important',
     color: '#ffffff !important',
-    backgroundColor: '#E61C34 !important',
+    backgroundColor: '#1877F2 !important',
     fontSize: '2em !important',
   },
 }))

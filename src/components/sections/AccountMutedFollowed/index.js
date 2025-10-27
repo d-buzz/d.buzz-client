@@ -86,7 +86,7 @@ const useStyle = createUseStyles(theme => ({
     paddingTop: 0,
     paddingBottom: 0,
     ...theme.font,
-    color: "#e61c34",
+    color: "#1877f2",
   },
 }))
 

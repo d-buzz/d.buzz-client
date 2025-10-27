@@ -41,7 +41,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   titleBox: {
@@ -54,7 +54,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 15,
 
     '&:focus': {
-      border: '2px solid #E61C34',
+      border: '2px solid #1877F2',
     },
   },
 
@@ -84,7 +84,7 @@ const useStyles = createUseStyles(theme => ({
       width: '100%',
       
       '& .delete_icon' : {
-        color: '#E61C34',
+        color: '#1877F2',
         fontSize: '1.5em',
         padding: 5,
         cursor: 'pointer',
@@ -93,7 +93,7 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
           opacity: 0.8,
           color: '#ffffff',
-          background: '#E61C34',
+          background: '#1877F2',
           borderRadius: '50%',
         },
       }, 

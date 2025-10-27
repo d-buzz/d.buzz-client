@@ -36,7 +36,7 @@ const useStyle = createUseStyles(theme => ({
       height: 50,
       padding: 10,
       borderRadius: '50%',
-      backgroundColor: '#E61C34',
+      backgroundColor: '#1877F2',
       color: '#ffffff',
       cursor: 'pointer',
     },
@@ -123,7 +123,7 @@ const useStyle = createUseStyles(theme => ({
     '&:hover': {
       ...theme.left.sidebar.items.hover,
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
       },
     },
     '&.MuiTabs-indicator': {
@@ -137,7 +137,7 @@ const useStyle = createUseStyles(theme => ({
     },
     '&.Mui-selected': {
       '& span': {
-        color: '#e53935',
+        color: '#1877F2',
         fontFamily: 'Segoe-Bold',
         fontSize: '16px',
       },
@@ -152,15 +152,15 @@ const useStyle = createUseStyles(theme => ({
   moreOptionsButton: {  
     '& .icon': {
       fontSize: 25,
-      color: '#E61C34',
+      color: '#1877F2',
       borderRadius: 30,
-      border: '2px solid #E61C34',
+      border: '2px solid #1877F2',
     },
     '& .iconUp': {
       fontSize: 25,
       color: '#ffffff',
       borderRadius: 30,
-      background: '#E61C34',
+      background: '#1877F2',
     },
   },
   pocketsLoadingContainer: {
@@ -180,7 +180,7 @@ const useStyle = createUseStyles(theme => ({
     margin: 'auto',
     
     '& .addPocketButton': {
-      color: '#e53935',
+      color: '#1877F2',
       fontSize: 25,
     },
   },

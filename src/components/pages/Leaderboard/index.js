@@ -59,9 +59,9 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   currentLink: {
-    borderLeft: '3px solid #FF625E',
+    borderLeft: '3px solid #42A5F5',
     '& a': {
-      color: '#f83541 !important',
+      color: '#1877F2 !important',
     },
   },
   innerWrapper: {

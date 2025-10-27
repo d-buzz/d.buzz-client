@@ -32,7 +32,7 @@ const useStyle = createUseStyles({
     lineHeight: 1.2,
   },
   highlighted: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#1565C0',
     borderRadius: 8,
     padding: '3px 6px',
     color: '#ffffff !important',

@@ -40,7 +40,7 @@ const useStyles = createUseStyles(theme => ({
       cursor: 'pointer',
     },
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   titleBox: {
@@ -53,7 +53,7 @@ const useStyles = createUseStyles(theme => ({
     borderRadius: 15,
 
     '&:focus': {
-      border: '2px solid #E61C34',
+      border: '2px solid #1877F2',
     },
   },
 }))

@@ -115,7 +115,7 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
     margin: '0 auto',
     '& a': {
-      color: '#d32f2f',
+      color: '#1565C0',
     },
     paddingTop: 10,
     paddingBottom: 2,
@@ -134,7 +134,7 @@ const useStyles = createUseStyles(theme => ({
   moreIcon: {
     ...theme.font,
     '&:hover': {
-      color: '#E61C34 !important',
+      color: '#1877F2 !important',
     },
   },
   iconCursor: {
@@ -160,7 +160,7 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#E61C34',
+    color: '#1877F2',
     fontWeight: 600,
     fontSize: '1.2em',
     gap: 20,
@@ -669,7 +669,7 @@ const Content = (props) => {
                   <MenuItem onClick={handleClickOpenUpdateForm}>Edit</MenuItem>
                   {active_votes.length===0 && replyCount===0 && !parent_author &&
                     <MenuItem
-                      style={{ backgroundColor: '#E61C34' }}
+                      style={{ backgroundColor: '#1877F2' }}
                       onClick={handleClickDeleteBuzz}
                     >
                       <span className='delete-buzz-button'>

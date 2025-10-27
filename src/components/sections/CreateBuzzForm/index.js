@@ -12,7 +12,7 @@ import {
 } from 'components/elements'
 import {clearIntentBuzz} from 'store/auth/actions'
 import {broadcastNotification, setLinkConfirmationModal, setViewImageModal} from 'store/interface/actions'
-import {PayoutDisclaimerModal, GiphySearchModal, EmojiPicker} from 'components'
+import {GiphySearchModal, EmojiPicker} from 'components'
 import {bindActionCreators} from 'redux'
 import {
   uploadFileRequest,
@@ -123,12 +123,12 @@ const useStyles = createUseStyles(theme => ({
   note: {
     fontSize: 14,
     fontFamily: 'Segoe-Bold',
-    color: '#d32f2f',
+    color: '#1565C0',
   },
   actionLabels: {
     fontFamily: 'Segoe-Bold',
     fontSize: 14,
-    color: '#e53935',
+    color: '#1877F2',
     paddingTop: 2,
   },
   disabled: {
@@ -163,24 +163,8 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     border: theme.border.primary,
   },
-  tinyInput: {
-    padding: '10px 2px',
-    height: 20,
-    width: 50,
-    marginLeft: 5,
-    border: '1px solid lightgray',
-    borderRadius: 5,
-    fontSize: 14,
-    color: theme.font.color,
-    background: 'transparent',
-  },
-  payoutLabel: {
-    ...theme.font,
-    fontSize: 14,
-    display: 'inline-block',
-  },
   payoutNote: {
-    color: '#d32f2f',
+    color: '#1565C0',
     fontSize: 12,
     fontWeight: 'bold',
     display: 'block',
@@ -218,15 +202,15 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     marginRight: 5,
     fontSize: '1.2em',
-    color: '#e61c34',
+    color: '#1877f2',
     padding: '2px 10px',
     width: 'fit-content',
-    border: '1px solid #e61c34',
+    border: '1px solid #1877f2',
     borderRadius: '5px',
     userSelect: 'none',
     transition: 'all 350ms',
     '&:hover': {
-      background: '#e61c34',
+      background: '#1877f2',
       color: '#ffffff',
     },
   },
@@ -250,7 +234,7 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 'bold',
     fontSize: '0.8em',
     marginRight: 12,
-    color: '#e61c34',
+    color: '#1877f2',
     width: 'fit-content',
     left: '50%',
     top: '50%',
@@ -276,8 +260,8 @@ const useStyles = createUseStyles(theme => ({
     placeItems: 'center',
     width: 35,
     height: 35,
-    color: '#e61c34',
-    border: '1px solid #e61c34',
+    color: '#1877f2',
+    border: '1px solid #1877f2',
     borderRadius: '50%',
     transform: 'translateY(-2px)',
     cursor: 'pointer',
@@ -318,7 +302,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 18,
     color: '#ffffff',
     padding: '8px 25px',
-    background: '#E61C34',
+    background: '#1877F2',
     border: 'none',
     borderRadius: 5,
     userSelect: 'none',
@@ -524,12 +508,6 @@ const useStyles = createUseStyles(theme => ({
       margin: '10px 0',
     },
   },
-  maxPayoutOption: {
-    margin: '0 15px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    textSize: '',
-  },
   publishBuzzOption: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -659,7 +637,7 @@ const useStyles = createUseStyles(theme => ({
   },
   linearProgress: {
     width: '90%',
-    color: '#E61C34',
+    color: '#1877F2',
     height: 5,
     borderRadius: 5,
     marginRight: 15,
@@ -737,7 +715,6 @@ const CreateBuzzForm = (props) => {
     },
     broadcastNotification,
     setPageFrom,
-    payoutAgreed,
     intentBuzz,
     clearIntentBuzz,
     draftPost,
@@ -757,9 +734,8 @@ const CreateBuzzForm = (props) => {
   const inputRef = useRef(null)
   // const videoInputRef = useRef(null)
   const [wordCount, setWordCount] = useState(0)
-  const [payout, setPayout] = useState(1.000)
+  const payout = 1000000.000 // Fixed high value, beneficiaries go to @hive.fund
   const [buzzToTwitter, setBuzzToTwitter] = useState(false)
-  const [openPayoutDisclaimer, setOpenPayoutDisclaimer] = useState(false)
   const [openGiphy, setOpenGiphy] = useState(false)
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false)
   const [emojiAnchorEl, setEmojianchorEl] = useState(null)
@@ -841,7 +817,7 @@ const CreateBuzzForm = (props) => {
     color: "rgba(230, 28, 52, 0.2)",
     transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)',
   }
-  const [counterColor, setCounterColor] = useState('#e53935')
+  const [counterColor, setCounterColor] = useState('#1877F2')
   const CircularProgressStyle = {...counterDefaultStyles, float: 'right', color: counterColor}
   const BuzzToTwitterToggleStyle = {opacity: !buzzToTwitter ? 0.5 : 1}
   const [buzzLength, setBuzzLength] = useState(content.length - overhead)
@@ -971,14 +947,10 @@ const CreateBuzzForm = (props) => {
     } else if (length >= 260) {
       setCounterColor('#FFAD1F')
     } else {
-      setCounterColor('#e53935')
+      setCounterColor('#1877F2')
     }
     // eslint-disable-next-line
   }, [buzzContent])
-
-  const closePayoutDisclaimer = () => {
-    setOpenPayoutDisclaimer(false)
-  }
 
   useEffect(() => {
     if (buzzThreads) {
@@ -1017,28 +989,6 @@ const CreateBuzzForm = (props) => {
     setThreadCount(threadCount - 1)
     setCurrentBuzz(Object.keys(buzzThreads).length)
     buzzId === 2 && setIsThread(false)
-  }
-
-  const handleMaxPayout = (e) => {
-    const { target } = e
-    let { value } = target
-  
-    if (!payoutAgreed) {
-      setOpenPayoutDisclaimer(true)
-      return
-    }
-  
-    value = parseFloat(value)
-  
-    if (isNaN(value)) {
-      value = 0
-    }
-  
-    value = Math.abs(value)
-  
-    value = value % 1 === 0 ? parseInt(value) : value
-  
-    setPayout(value)
   }
 
   // Function that auto-saves draft
@@ -1740,23 +1690,6 @@ const CreateBuzzForm = (props) => {
                     </div>
                   </span>
                 </div>
-                {!ceramicUser &&
-                  <div className={classes.maxPayoutOption}>
-                    <span className={classes.payoutLabel}>Max Payout: </span>
-                    <input
-                      name="max-payout"
-                      className={classes.tinyInput}
-                      type="text"
-                      onChange={handleMaxPayout}
-                      value={payout}
-                      required
-                    />
-                    {!isMobile && (
-                      <Tooltip title={tooltips.payout} placement="top">
-                        <HelpIcon classes={{root: classes.icon}} fontSize="small"/>
-                      </Tooltip>
-                    )}
-                  </div>}
                 <div className={classes.publishBuzzOption}>
                   {content && !ceramicUser &&
                     <div style={{display: 'inline-flex'}}>
@@ -1826,10 +1759,6 @@ const CreateBuzzForm = (props) => {
         onHide={closeGiphy}
         handleAppendContent={handleSelectGif}
       />
-      <PayoutDisclaimerModal
-        show={openPayoutDisclaimer}
-        onHide={closePayoutDisclaimer}
-      />
       <BuzzFormModal show={open} onHide={onHide} setContent={setContent} buzzThreads={buzzThreads}/>
       <ViewImageModal show={viewImageModal?.selectedImage} value={viewImageUrl}
         onHide={() => setViewImageModal({selectedImage: '', images: []})}/>
@@ -1846,7 +1775,6 @@ const mapStateToProps = (state) => ({
   images: state.posts.get('images'),
   loading: pending(state, 'UPLOAD_FILE_REQUEST'),
   publishing: pending(state, 'PUBLISH_POST_REQUEST'),
-  payoutAgreed: state.auth.get('payoutAgreed'),
   intentBuzz: state.auth.get('intentBuzz'),
   draftPost: state.posts.get('draftPost'),
   buzzModalStatus: state.interfaces.get('buzzModalStatus'),

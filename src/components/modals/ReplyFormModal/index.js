@@ -83,10 +83,10 @@ const useStyles = createUseStyles(theme => ({
     ...theme.font,
   },
   username: {
-    color: '#E61C34',
+    color: '#1877F2',
     paddingBottom: 0,
     '&:hover': {
-      color: '#E61C34',
+      color: '#1877F2',
     },
   },
   usernameStyle: {
@@ -148,7 +148,7 @@ const useStyles = createUseStyles(theme => ({
   actionLabels: {
     fontFamily: 'Segoe-Bold',
     fontSize: 14,
-    color: '#e53935',
+    color: '#1877F2',
     paddingTop: 2,
   },
   break: {
@@ -183,7 +183,7 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 'bold',
     fontSize: '0.8em',
     marginRight: 12,
-    color: '#e61c34',
+    color: '#1877f2',
     width: 'fit-content',
     left: '50%',
     top: '50%',
@@ -236,7 +236,7 @@ const ReplyFormModal = (props) => {
   // cursor state
   const [cursorPosition, setCursorPosition] = useState(null)
 
-  const [counterColor, setCounterColor] = useState('#e53935')
+  const [counterColor, setCounterColor] = useState('#1877F2')
   const counterDefaultStyles = { color: "rgba(230, 28, 52, 0.2)", transform: content.length - overhead >= 260 && 'rotate(-85deg) scale(1.3)' }
   const CircularProgressStyle = { ...counterDefaultStyles, float: 'right', color: counterColor }
 
@@ -346,7 +346,7 @@ const ReplyFormModal = (props) => {
     } else if(content.length - overhead >= 260) {
       setCounterColor('#FFAD1F')
     } else {
-      setCounterColor('#e53935')
+      setCounterColor('#1877F2')
     }
     // eslint-disable-next-line
   }, [content])

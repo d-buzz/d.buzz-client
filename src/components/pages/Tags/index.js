@@ -107,7 +107,7 @@ const Tags = (props) => {
       )}
       <PostlistSkeleton loading={loading && isLoading} />
       {(!loading && !isLoading && results.length === 0) &&
-        (<center><br/><div className={classes.searchWrapper}><h6>No Buzz's found with <span style={{ color: '#d32f2f', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></div></center>)}
+        (<center><br/><div className={classes.searchWrapper}><h6>No Buzz's found with <span style={{ color: '#1565C0', fontFamily: 'Segoe-Bold' }}>#{tag}</span></h6></div></center>)}
     </div>
   )
 }

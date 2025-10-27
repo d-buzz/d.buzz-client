@@ -47,7 +47,7 @@ const useStyles = createUseStyles(theme => ({
     boxShadow: 'none !important',
   },
   doneButton: {
-    background: '#E61C34',
+    background: '#1877F2',
     color: '#ffffff',
 
     '&:hover': {

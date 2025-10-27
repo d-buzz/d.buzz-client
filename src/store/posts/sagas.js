@@ -101,6 +101,7 @@ import {
   searchPeople,
   uploadImage,
   uploadImageToHiveBlog,
+  uploadImageWithKeychain,
   fetchFollowCount,
   isFollowing,
   getLinkMeta,
@@ -447,11 +448,11 @@ function* fileUploadRequest(payload, meta) {
       let result
       if (login_data) {
         const [, postingKey] = extractLoginData(login_data)
-        // Use new hive.blog upload method
+        // Use hive.blog upload method with private key signature
         result = yield call(uploadImageToHiveBlog, file, username, postingKey, progress)
       } else {
-        // Fallback to old upload method if no login_data (e.g., keychain users)
-        result = yield call(uploadImage, file, progress)
+        // Keychain users: Use requestSignBuffer for signing
+        result = yield call(uploadImageWithKeychain, file, username, progress)
       }
 
       let images = []

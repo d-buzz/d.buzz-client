@@ -26,7 +26,7 @@ const useStyles = createUseStyles(theme => ({
   },
   redBottomBorder: {
     width: '100%',
-    borderBottom: '2px solid #e61c34',
+    borderBottom: '2px solid #1877f2',
   },
   right: {
     height: 'max-content',
@@ -72,7 +72,7 @@ const useStyles = createUseStyles(theme => ({
   },
   circle: {
     strokeLinecap: 'round',
-    color: '#e53935',
+    color: '#1877F2',
   },
   spacer: {
     width: '100%',

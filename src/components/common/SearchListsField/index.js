@@ -26,7 +26,7 @@ const useStyles = createUseStyles(theme => ({
   },
   circle: {
     strokeLinecap: 'round',
-    color: '#e53935',
+    color: '#1877F2',
   },
   searchError: {
     fontSize: 14,
@@ -34,7 +34,7 @@ const useStyles = createUseStyles(theme => ({
     color: theme.font.color,
     marginLeft: 15,
     '& span': {
-      color: '#d32f2f',
+      color: '#1565C0',
       fontWeight: 400,
     },
   },

@@ -90,7 +90,7 @@ const useStyles = createUseStyles(theme => ({
       '& .select': {
         display: 'grid',
         placeItems: 'center',
-        background: '#E61C34',
+        background: '#1877F2',
         color: '#ffffff',
   
         '&:hover': {
@@ -110,7 +110,7 @@ const useStyles = createUseStyles(theme => ({
       width: '100%',
       fontSize: '0.95em',
       fontWeight: 'bold',
-      color: '#E61C34',
+      color: '#1877F2',
       animation: 'zoomIn 350ms',
     },
 

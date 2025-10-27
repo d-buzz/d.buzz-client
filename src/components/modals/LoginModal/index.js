@@ -84,7 +84,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: 14,
   },
   signup: {
-    color: '#d32f2f !important',
+    color: '#1565C0 !important',
     wordBreak: 'break-word !important',
     whiteSpace: 'nowrap',
     fontSize: 14,
@@ -102,7 +102,7 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    border: '1px solid #e61c34',
+    border: '1px solid #1877f2',
     borderRadius: 50,
     overflow: 'hidden',
     padding: '5px 10px',

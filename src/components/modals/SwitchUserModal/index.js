@@ -79,7 +79,7 @@ const useStyles = createUseStyles(theme => ({
     height: 35,
   },
   active: {
-    border: '3px solid #e61c34 !important',
+    border: '3px solid #1877f2 !important',
     cursor: 'default !important',
   },
   accountButtons: {
@@ -96,7 +96,7 @@ const useStyles = createUseStyles(theme => ({
   },
   hoverable: {
     '&:hover': {
-      border: '3px solid #e61c34',
+      border: '3px solid #1877f2',
     },
   },
   wrapper: {
