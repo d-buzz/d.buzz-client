@@ -1630,6 +1630,123 @@ export const uploadImageToHiveBlog = async (data, username, postingKey, progress
   })
 }
 
+export const uploadImageWithKeychain = async (data, username, progress) => {
+  console.log('[KEYCHAIN UPLOAD] Starting upload with Keychain signing')
+  console.log('[KEYCHAIN UPLOAD] Username:', username)
+  console.log('[KEYCHAIN UPLOAD] File:', data.name, 'Size:', data.size, 'Type:', data.type)
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Read file data as ArrayBuffer
+      const fileReader = new FileReader()
+
+      fileReader.onload = async (e) => {
+        try {
+          console.log('[KEYCHAIN UPLOAD] File read complete, size:', e.target.result.byteLength, 'bytes')
+          const imageData = new Uint8Array(e.target.result)
+
+          // Create hash: SHA256('ImageSigningChallenge' + imageData)
+          const prefix = new TextEncoder().encode('ImageSigningChallenge')
+          const combined = new Uint8Array(prefix.length + imageData.length)
+          combined.set(prefix)
+          combined.set(imageData, prefix.length)
+
+          console.log('[KEYCHAIN UPLOAD] Creating SHA256 hash...')
+          const imageHash = sha256Hash(combined)
+          console.log('[KEYCHAIN UPLOAD] Hash created:', imageHash.length, 'bytes')
+
+          // Convert hash to hex string for Keychain
+          const hashHex = Array.from(imageHash)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('')
+          console.log('[KEYCHAIN UPLOAD] Hash hex:', hashHex.substring(0, 20) + '...')
+
+          // Request signature from Keychain
+          console.log('[KEYCHAIN UPLOAD] Requesting signature from Keychain...')
+
+          if (!window.hive_keychain) {
+            throw new Error('Hive Keychain extension not found')
+          }
+
+          window.hive_keychain.requestSignBuffer(
+            username,
+            hashHex,
+            'Posting',
+            async (response) => {
+              try {
+                if (!response.success) {
+                  console.error('[KEYCHAIN UPLOAD] ❌ Keychain signing failed:', response.error)
+                  reject(new Error(response.message || 'Keychain signing failed'))
+                  return
+                }
+
+                console.log('[KEYCHAIN UPLOAD] ✅ Signature received from Keychain')
+                const signature = response.result
+                console.log('[KEYCHAIN UPLOAD] Signature:', signature.substring(0, 20) + '...')
+
+                // Create FormData with the image file
+                const formData = new FormData()
+                formData.append('file', data, data.name)
+
+                const uploadUrl = `https://images.hive.blog/${username}/${signature}`
+                console.log('[KEYCHAIN UPLOAD] Uploading to:', uploadUrl)
+
+                // Upload to images.hive.blog
+                const uploadResponse = await axios({
+                  method: 'POST',
+                  url: uploadUrl,
+                  headers: {'Content-Type': 'multipart/form-data'},
+                  data: formData,
+                  onUploadProgress: (progressEvent) => {
+                    const {loaded, total} = progressEvent
+                    const percent = Math.floor((loaded * 100) / total)
+                    console.log('[KEYCHAIN UPLOAD] Progress:', percent + '%', `(${loaded}/${total} bytes)`)
+                    progress(percent)
+                  },
+                })
+
+                console.log('[KEYCHAIN UPLOAD] Response status:', uploadResponse.status)
+                console.log('[KEYCHAIN UPLOAD] Response data:', uploadResponse.data)
+
+                // Return the uploaded image URL
+                if (uploadResponse.data && uploadResponse.data.url) {
+                  console.log('[KEYCHAIN UPLOAD] ✅ SUCCESS! Image URL:', uploadResponse.data.url)
+                  resolve({previewUrl: uploadResponse.data.url})
+                } else {
+                  console.error('[KEYCHAIN UPLOAD] ❌ No URL in response:', uploadResponse.data)
+                  reject(new Error('No URL in response'))
+                }
+              } catch (uploadError) {
+                console.error('[KEYCHAIN UPLOAD] ❌ Error during upload:', uploadError)
+                console.error('[KEYCHAIN UPLOAD] Error details:', uploadError.message)
+                if (uploadError.response) {
+                  console.error('[KEYCHAIN UPLOAD] Server response:', uploadError.response.status, uploadError.response.data)
+                }
+                reject(uploadError)
+              }
+            }
+          )
+        } catch (error) {
+          console.error('[KEYCHAIN UPLOAD] ❌ Error during processing:', error)
+          console.error('[KEYCHAIN UPLOAD] Error details:', error.message)
+          reject(error)
+        }
+      }
+
+      fileReader.onerror = (error) => {
+        console.error('[KEYCHAIN UPLOAD] ❌ Failed to read file:', error)
+        reject(new Error('Failed to read file'))
+      }
+
+      console.log('[KEYCHAIN UPLOAD] Reading file as ArrayBuffer...')
+      fileReader.readAsArrayBuffer(data)
+    } catch (error) {
+      console.error('[KEYCHAIN UPLOAD] ❌ Outer error:', error)
+      reject(error)
+    }
+  })
+}
+
 
 export const uploadVideo = async (data, username, progress) => {
   const formData = new FormData()
