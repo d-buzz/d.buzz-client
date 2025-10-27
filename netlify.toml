@@ -11,8 +11,6 @@
 [build.environment]
   # Disable source maps in production for faster builds
   GENERATE_SOURCEMAP = "false"
-  # Don't treat warnings as errors in deploy previews
-  CI = ""
 
 # Redirects and rewrites
 [[redirects]]
@@ -29,12 +27,18 @@
 # Deploy context-specific settings
 [context.production]
   command = "npm run build:prod"
+  [context.production.environment]
+    CI = "true"
 
 [context.deploy-preview]
   command = "npm run build:dev"
+  [context.deploy-preview.environment]
+    CI = ""
 
 [context.branch-deploy]
   command = "npm run build:dev"
+  [context.branch-deploy.environment]
+    CI = ""
 
 # Headers configuration (also defined in public/_headers for redundancy)
 [[headers]]
