@@ -314,7 +314,7 @@ const useStyles = createUseStyles(theme => ({
     },
 
     '&:hover:enabled': {
-      background: '#B71C1C',
+      background: '#0D47A1',
     },
   },
   imageAlert: {

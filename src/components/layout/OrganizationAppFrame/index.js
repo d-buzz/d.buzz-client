@@ -17,7 +17,7 @@ import {
 const useStyles = createUseStyles({
   nav: {
     height: 80,
-    backgroundColor: '#f83541',
+    backgroundColor: '#42A5F5',
   },
   container: {
     margin: '0 auto',
@@ -35,7 +35,7 @@ const useStyles = createUseStyles({
   heroSection: {
     width: '100%',
     maxHeight: 500,
-    backgroundColor: '#f83541',
+    backgroundColor: '#42A5F5',
     paddingTop: '4rem',
     backgroundSize: '85%',
     backgroundRepeat: 'no-repeat',
@@ -46,7 +46,7 @@ const useStyles = createUseStyles({
     bottom: 0,
     width: '100%',
     height: 80,
-    backgroundColor: '#f83541',
+    backgroundColor: '#42A5F5',
   },
   inner: {
     width: '100%',

@@ -51,11 +51,11 @@ const useStyles = createUseStyles(theme => ({
     color: '#ffffff',
 
     '&:hover': {
-      background: '#B71C1C',
+      background: '#0D47A1',
     },
 
     '&:active': {
-      background: '#B71C1C !important',
+      background: '#0D47A1 !important',
     },
   },
   cancelButton: {
