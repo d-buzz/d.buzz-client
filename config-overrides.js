@@ -29,5 +29,10 @@ module.exports = function override(config) {
     warnings: false
   };
 
+  // Add crossorigin attribute to script tags to fix CORS/ORB issues
+  if (config.output) {
+    config.output.crossOriginLoading = 'anonymous';
+  }
+
   return config;
 }

@@ -5,12 +5,13 @@
   command = "npm run build:prod"
   # Output directory
   publish = "build"
+  # Node version
+  NODE_VERSION = "16.20.2"
 
 [build.environment]
-  # Node version
-  NODE_VERSION = "16"
   # Disable source maps in production for faster builds
   GENERATE_SOURCEMAP = "false"
+  CI = "true"
 
 # Redirects and rewrites
 [[redirects]]

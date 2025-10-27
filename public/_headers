@@ -5,16 +5,17 @@
   Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
   Access-Control-Allow-Headers: Content-Type, Authorization
 
-  # Fix ORB (Opaque Response Blocking) errors
+  # Fix ORB (Opaque Response Blocking) errors - CRITICAL
   Cross-Origin-Resource-Policy: cross-origin
 
   # Allow embedding from any origin
   X-Frame-Options: SAMEORIGIN
 
-  # Security headers
-  X-Content-Type-Options: nosniff
-  X-XSS-Protection: 1; mode=block
+  # Security headers - permissive for development
   Referrer-Policy: strict-origin-when-cross-origin
+
+  # Timing headers
+  Timing-Allow-Origin: *
 
 # JavaScript and CSS files - critical for fixing ORB blocking
 /static/js/*
