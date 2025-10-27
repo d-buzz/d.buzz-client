@@ -531,7 +531,7 @@ const Profile = (props) => {
           broadcastNotification('error', `Failed following @${username}`)
         }
       }).catch((e) => {
-        console.log(e)
+        // Error following Ceramic user
         setLoader(false)
       })
     } else {
@@ -542,7 +542,7 @@ const Profile = (props) => {
         setLoader(false)
         reloadProfile()
       }).catch((e) => {
-        console.log(e.message)
+        // Error following user
         setLoader(false)
       })
     }
@@ -569,7 +569,7 @@ const Profile = (props) => {
           }
         }
       }).catch((e) => {
-        console.log(e)
+        // Error unfollowing Ceramic user
         setLoader(false)
       })
     } else {
@@ -580,7 +580,7 @@ const Profile = (props) => {
         setLoader(false)
         reloadProfile()
       }).catch((e) => {
-        console.log(e.message)
+        // Error unfollowing user
         setLoader(false)
       })
     }
@@ -638,10 +638,9 @@ const Profile = (props) => {
     navigator.clipboard.writeText(currentURL)
       .then(() => {
         broadcastNotification('success', 'Link copied to clipboard!')
-        console.log('Link copied to clipboard!')
       })
       .catch((error) => {
-        console.error('Failed to copy link:', error)
+        broadcastNotification('error', 'Failed to copy link')
       })
   }
 

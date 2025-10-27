@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
 import {
   Avatar,
@@ -377,7 +377,7 @@ const PostList = React.memo((props) => {
     hasUpvoted = false
   }
 
-  const generateLink = (author, permlink) =>  {
+  const generateLink = useCallback((author, permlink) =>  {
     let link = ''
 
     const username = author
@@ -385,9 +385,9 @@ const PostList = React.memo((props) => {
     link += `/@${username}/${permlink}`
 
     return link
-  }
+  }, [])
 
-  const handleOpenContent = (e) => {
+  const handleOpenContent = useCallback((e) => {
     const { target } = e
     let { href } = target
     const hostname = window.location.hostname
@@ -406,19 +406,19 @@ const PostList = React.memo((props) => {
         history.push(href)
       }
     }
-  }
+  }, [author, permlink, scrollIndex, saveScrollIndex, history, generateLink])
 
-  const openPopOver = (e) => {
+  const openPopOver = useCallback((e) => {
     setDelayHandler(setTimeout(() => {
       openUserDialog(popoverAnchor.current, (author))
     }, 500))
-  }
+  }, [author, openUserDialog])
 
-  const closePopOver = () => {
+  const closePopOver = useCallback(() => {
     clearTimeout(delayHandler)
-  }
+  }, [delayHandler])
 
-  const openMenu = (e) => {
+  const openMenu = useCallback((e) => {
     // if user is authenticated call open anchor el then return
     if (user.is_authenticated) {
       setAnchorEl(e.currentTarget)
@@ -428,99 +428,99 @@ const PostList = React.memo((props) => {
     // if user is not authenticated call open modal then return
     setOpenLoginModal(true)
     return
-  }
+  }, [user.is_authenticated])
 
   // hide login modal
-  const hideLoginModal = () => {
+  const hideLoginModal = useCallback(() => {
     setOpenLoginModal(false)
-  }
+  }, [])
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setAnchorEl(null)
-  }
+  }, [])
 
-  const muteSuccessCallback = () => {
+  const muteSuccessCallback = useCallback(() => {
     setMuted(true)
     recomputeRowIndex(scrollIndex)
-  }
+  }, [scrollIndex, recomputeRowIndex])
 
-  const hideBuzzSuccesCallback = () => {
+  const hideBuzzSuccesCallback = useCallback(() => {
     setHidden(true)
     recomputeRowIndex(scrollIndex)
-  }
+  }, [scrollIndex, recomputeRowIndex])
 
-  const handleClickMuteDialog = () => {
+  const handleClickMuteDialog = useCallback(() => {
     if(type === 'HIVE') {
       openMuteDialog(author, muteSuccessCallback)
       setAnchorEl(null)
     }
-  }
+  }, [type, author, openMuteDialog, muteSuccessCallback])
 
   const opacityActivated = opacityUsers.includes(author)
 
-  const handleTipClick = () => {
+  const handleTipClick = useCallback(() => {
     sendToBerries(author, theme)
-  }
+  }, [author, theme])
 
-  const isAuthor = () => {
+  const isAuthor = useCallback(() => {
     return user.username && user.username === author
-  }
+  }, [user.username, author])
 
-  const handleClickHideBuzzDialog = () => {
+  const handleClickHideBuzzDialog = useCallback(() => {
     if(type === 'HIVE') {
       openHideBuzzDialog(author, permlink, hideBuzzSuccesCallback)
       setAnchorEl(null)
     }
-  }
+  }, [type, author, permlink, openHideBuzzDialog, hideBuzzSuccesCallback])
 
-  const censorCallBack = () => () => {
+  const censorCallBack = useCallback(() => () => {
     const contentCopy = censorLinks(content)
     setContent(contentCopy)
     recomputeRowIndex(scrollIndex)
-  }
+  }, [content, scrollIndex, recomputeRowIndex])
 
-  const handleClickCensorDialog = () => {
+  const handleClickCensorDialog = useCallback(() => {
     openCensorshipDialog(author, permlink, censorCallBack)
     setAnchorEl(null)
-  }
+  }, [author, permlink, openCensorshipDialog, censorCallBack])
 
-  const isAHiddenBuzz = () => {
+  const isAHiddenBuzz = useCallback(() => {
     const list = hiddenBuzzes.filter( item => item.author === author && item.permlink === permlink )
     return list.length >= 1
-  }
+  }, [hiddenBuzzes, author, permlink])
 
-  const isNSFWAllowed = () => {
+  const isNSFWAllowed = useCallback(() => {
     const isNSFWEnabled = JSON.parse(localStorage.getItem('customUserData'))?.settings?.showNSFWPosts !== 'enabled'
     return isCensored && isNSFWEnabled
-  }
+  }, [isCensored])
 
-  const isMutedUser = () => {
+  const isMutedUser = useCallback(() => {
     return opacityUsers.includes(author)
-  }
+  }, [opacityUsers, author])
 
-  const handleAddToPocket = () => {
+  const handleAddToPocket = useCallback(() => {
     setAddToPocketModal(true)
     setAnchorEl(null)
     setSelectedAddToPocketBuzz(item)
-  }
+  }, [item])
 
-  const onHideAddToPocketModal = () => {
+  const onHideAddToPocketModal = useCallback(() => {
     setAddToPocketModal(false)
     setSelectedAddToPocketBuzz(null)
-  }
+  }, [])
 
-  const onHideRemoveFromPocketConfirmModal = () => {
+  const onHideRemoveFromPocketConfirmModal = useCallback(() => {
     setRemoveFromPocketConfirmModal(false)
     setSeletedRemoveFromPocketBuzz(null)
-  }
+  }, [])
 
-  const handleRemoveFromPocket = () => {
+  const handleRemoveFromPocket = useCallback(() => {
     setAnchorEl(null)
     setRemoveFromPocketConfirmModal(true)
     setSeletedRemoveFromPocketBuzz(item)
-  }
+  }, [item])
 
-  const getPocket = () => {
+  const getPocket = useCallback(() => {
     let pocketObject = null
 
 
@@ -539,7 +539,7 @@ const PostList = React.memo((props) => {
     })
 
     return pocketObject
-  }
+  }, [pockets, selectedPocket.id, permlink])
 
   // handle dynamic image sizes
   useEffect(() => {
@@ -559,10 +559,10 @@ const PostList = React.memo((props) => {
     // eslint-disable-next-line
   }, [])
 
-  const handleClickDeleteBuzz = () => {
+  const handleClickDeleteBuzz = useCallback(() => {
     setAnchorEl(null)
     setDeleteBuzzModal(true)
-  }
+  }, [])
 
   return (
     <React.Fragment>

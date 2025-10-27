@@ -1104,7 +1104,7 @@ const CreateBuzzForm = (props) => {
         compressedFile = await imageCompression(image, options)
       })
     } catch (error) {
-      console.log(error)
+      // Error during image compression
     }
 
     return compressedFile !== null && compressedFile
@@ -1152,15 +1152,11 @@ const CreateBuzzForm = (props) => {
                 setCompressing(false)
                 setImageSize(Number((uri.size / 1e+6).toFixed(2)))
 
-                console.log('[CREATE FORM] Starting upload for:', uri.name)
                 uploadFileRequest(uri, setImageUploadProgress).then((imageArray) => {
-                  console.log('[CREATE FORM] Upload complete, received array:', imageArray)
                   const lastImage = imageArray[imageArray.length - 1]
-                  console.log('[CREATE FORM] Last image URL:', lastImage)
                   uploadedImages.push(lastImage)
 
                   if (uploadedImages.length === allImages.length) {
-                    console.log('[CREATE FORM] All uploads complete, setting buzzAttachedImages:', uploadedImages)
                     setImageUploading(false)
                     setBuzzAttachedImages(images => [...images, ...uploadedImages])
                     document.getElementById('file-upload').value = ''
@@ -1174,7 +1170,7 @@ const CreateBuzzForm = (props) => {
                     setImagesLength(0)
                   }
                 }).catch((error) => {
-                  console.error('[CREATE FORM] ❌ Upload failed:', error)
+                  // Handle upload error
                 })
               })
             }),
