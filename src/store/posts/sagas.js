@@ -329,7 +329,7 @@ function* getHomePostsRequest(payload, meta) {
   try {
     if (!checkCeramicLogin(account)) {
       const old = yield select(state => state.posts.get('home'))
-      let rawData = yield call(callBridge, method, params, false)
+      const rawData = yield call(callBridge, method, params, false)
 
       // Check if API returned empty data (no more posts available)
       // This check happens BEFORE filtering, so we know if the API truly has no more posts
