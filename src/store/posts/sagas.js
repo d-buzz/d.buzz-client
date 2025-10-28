@@ -17,6 +17,7 @@ import {
   getHomePostsSuccess,
   getHomePostsFailure,
   setHomeLastPost,
+  setHomeHasMore,
 
   GET_LATEST_POSTS_REQUEST,
   getLatestPostsSuccess,
@@ -328,9 +329,14 @@ function* getHomePostsRequest(payload, meta) {
   try {
     if (!checkCeramicLogin(account)) {
       const old = yield select(state => state.posts.get('home'))
-      let data = yield call(callBridge, method, params, false)
+      let rawData = yield call(callBridge, method, params, false)
 
-      data = [...old, ...data]
+      // Check if API returned empty data (no more posts available)
+      // This check happens BEFORE filtering, so we know if the API truly has no more posts
+      const hasMorePosts = rawData && rawData.length > 0
+      yield put(setHomeHasMore(hasMorePosts))
+
+      let data = [...old, ...rawData]
       data = deduplicateByPostId(data)
 
       yield put(setHomeLastPost(data[data.length - 1]))

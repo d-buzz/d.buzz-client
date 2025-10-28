@@ -50,6 +50,7 @@ const Feeds = React.memo((props) => {
     loading,
     items,
     isHomeVisited,
+    homeHasMore,
     setHomeIsVisited,
     getHomePostsRequest,
     setTrendingIsVisited,
@@ -100,8 +101,6 @@ const Feeds = React.memo((props) => {
   }, [])
 
   const [isFeedPostsLoaded , setFeedPostsLoad] = useState(false)
-  const [previousItemsLength, setPreviousItemsLength] = useState(0)
-  const [hasMorePosts, setHasMorePosts] = useState(true)
 
   useEffect(() => {
     if(refreshRouteStatus.pathname === "home"){
@@ -110,9 +109,6 @@ const Feeds = React.memo((props) => {
       clearHomePosts()
       getHomePostsRequest()
       clearRefreshRouteStatus()
-      // Reset states when refreshing
-      setHasMorePosts(true)
-      setPreviousItemsLength(0)
       setFeedPostsLoad(false)
     }
     // eslint-disable-next-line
@@ -120,31 +116,21 @@ const Feeds = React.memo((props) => {
 
 
   const loadMorePosts = useCallback(() => {
-    if (!loading && hasMorePosts) {
+    if (!loading && homeHasMore) {
       if(items.length>0) {
         const { permlink, author } = last
         getHomePostsRequest(permlink, author)
       }
     }
     // eslint-disable-next-line
-  }, [last, loading, items, hasMorePosts])
-
-  // Track when no new posts are loaded to prevent infinite loop
-  useEffect(() => {
-    if (!loading && items.length > 0) {
-      if (items.length === previousItemsLength) {
-        // No new posts were loaded, so we've reached the end
-        setHasMorePosts(false)
-      }
-      setPreviousItemsLength(items.length)
-    }
-  }, [items.length, loading, previousItemsLength])
+  }, [last, loading, items, homeHasMore])
 
   useEffect(() => {
     if(items.length>0) {
       const { permlink } = last
 
-      if (items.length < 3 && !loading && isFeedPostsLoaded && hasMorePosts) {
+      // Auto-load more posts if we have < 3 and more posts are available from the API
+      if (items.length < 3 && !loading && isFeedPostsLoaded && homeHasMore) {
         if (permlink !== undefined ) {
           loadMorePosts()
         } else {
@@ -154,7 +140,7 @@ const Feeds = React.memo((props) => {
         setFeedPostsLoad(true)
       }
     }
-  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading , last, hasMorePosts])
+  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading , last, homeHasMore])
 
   return (
     <React.Fragment>
@@ -183,6 +169,7 @@ const mapStateToProps = (state) => ({
   isHomeVisited: state.posts.get('isHomeVisited'),
   items: state.posts.get('home'),
   last: state.posts.get('lastHome'),
+  homeHasMore: state.posts.get('homeHasMore'),
   refreshRouteStatus: state.interfaces.get('refreshRouteStatus'),
 })
 

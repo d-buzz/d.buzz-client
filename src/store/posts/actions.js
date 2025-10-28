@@ -53,6 +53,13 @@ export const setHomeLastPost = (post) => ({
   payload: post,
 })
 
+export const SET_HOME_HAS_MORE = 'SET_HOME_HAS_MORE'
+
+export const setHomeHasMore = (hasMore) => ({
+  type: SET_HOME_HAS_MORE,
+  payload: hasMore,
+})
+
 export const GET_TRENDING_POSTS_REQUEST = 'GET_TRENDING_POSTS_REQUEST'
 export const GET_TRENDING_POSTS_SUCCESS = 'GET_TRENDING_POSTS_SUCCESS'
 export const GET_TRENDING_POSTS_FAILURE = 'GET_TRENDING_POSTS_FAILURE'
