@@ -100,6 +100,8 @@ const Feeds = React.memo((props) => {
   }, [])
 
   const [isFeedPostsLoaded , setFeedPostsLoad] = useState(false)
+  const [previousItemsLength, setPreviousItemsLength] = useState(0)
+  const [hasMorePosts, setHasMorePosts] = useState(true)
 
   useEffect(() => {
     if(refreshRouteStatus.pathname === "home"){
@@ -108,26 +110,41 @@ const Feeds = React.memo((props) => {
       clearHomePosts()
       getHomePostsRequest()
       clearRefreshRouteStatus()
+      // Reset states when refreshing
+      setHasMorePosts(true)
+      setPreviousItemsLength(0)
+      setFeedPostsLoad(false)
     }
     // eslint-disable-next-line
   }, [refreshRouteStatus])
 
 
   const loadMorePosts = useCallback(() => {
-    if (!loading) {
+    if (!loading && hasMorePosts) {
       if(items.length>0) {
         const { permlink, author } = last
         getHomePostsRequest(permlink, author)
       }
     }
     // eslint-disable-next-line
-  }, [last, loading, items])
+  }, [last, loading, items, hasMorePosts])
+
+  // Track when no new posts are loaded to prevent infinite loop
+  useEffect(() => {
+    if (!loading && items.length > 0) {
+      if (items.length === previousItemsLength) {
+        // No new posts were loaded, so we've reached the end
+        setHasMorePosts(false)
+      }
+      setPreviousItemsLength(items.length)
+    }
+  }, [items.length, loading, previousItemsLength])
 
   useEffect(() => {
     if(items.length>0) {
       const { permlink } = last
 
-      if (items.length < 3 && !loading && isFeedPostsLoaded) {
+      if (items.length < 3 && !loading && isFeedPostsLoaded && hasMorePosts) {
         if (permlink !== undefined ) {
           loadMorePosts()
         } else {
@@ -137,7 +154,7 @@ const Feeds = React.memo((props) => {
         setFeedPostsLoad(true)
       }
     }
-  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading , last])
+  }, [isFeedPostsLoaded, items.length, loadMorePosts, loading , last, hasMorePosts])
 
   return (
     <React.Fragment>
