@@ -8,6 +8,7 @@ import { createUseStyles } from "react-jss"
 import { Helmet } from "react-helmet"
 import { redirectOldLinks } from "services/helper"
 import { useLocation } from "react-router-dom"
+import { ChatContainer } from "components/chat"
 const TwitterEmbedAPI = React.lazy(
   () => import("components/pages/TwitterEmbedAPI"),
 )
@@ -56,7 +57,10 @@ const App = () => {
             {!twitterEmbedRoutes ? (
               <Init>
                 <AuthGuard>
-                  <AppWrapper>{renderRoutes(routes)}</AppWrapper>
+                  <AppWrapper>
+                    {renderRoutes(routes)}
+                    <ChatContainer />
+                  </AppWrapper>
                 </AuthGuard>
               </Init>
             ) : (
