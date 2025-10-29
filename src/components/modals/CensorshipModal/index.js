@@ -116,25 +116,21 @@ const CensorhipModal = (props) => {
     loading,
     item,
     closeCensorshipDialog,
-    censorTypes = [],
+    // censorTypes = [], // Unused - may be needed for future features
     broadcastNotification,
   } = props
 
   const [open, setOpen] = useState(false)
   const [author, setAuthor] = useState(null)
   const [permlink, setPermlink] = useState(null)
-  const [typeId, setTypeId] = useState(0)
-  const [callback, setCallback] = useState(null)
   const classes = useStyles()
 
   useEffect(() => {
     if(item && item.hasOwnProperty('open')) {
-      const { open, author, permlink, callback } = item
-      setCallback(callback)
+      const { open, author, permlink } = item
       setOpen(open)
       setAuthor(author)
       setPermlink(permlink)
-      setTypeId(0)
     }
   }, [item])
 
@@ -142,16 +138,16 @@ const CensorhipModal = (props) => {
     closeCensorshipDialog()
   }
 
-  const handleChangeTypeId = (event) => {
-    setTypeId(event.target.value)
-  }
+  // Unused functions - censorship feature deprecated
+  // const handleChangeTypeId = (event) => {
+  //   setTypeId(event.target.value)
+  // }
 
-  const handleClickCensorBuzz = () => {
-    // Censorship API has been removed - feature no longer available
-    setOpen(false)
-    broadcastNotification('error', 'Censorship feature is no longer available')
-    setTypeId(0)
-  }
+  // const handleClickCensorBuzz = () => {
+  //   setOpen(false)
+  //   broadcastNotification('error', 'Censorship feature is no longer available')
+  //   setTypeId(0)
+  // }
 
 
   return (

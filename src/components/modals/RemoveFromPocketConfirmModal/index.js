@@ -115,7 +115,7 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function RemoveFromPocketConfirmModal(props) {
-  const { show, onHide, user, pocket, buzz, loadPockets } = props
+  const { show, onHide, pocket, buzz, loadPockets } = props
   const classes = useStyles()
 
   const [fetching, setFetching] = useState(false)

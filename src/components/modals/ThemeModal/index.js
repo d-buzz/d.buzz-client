@@ -114,7 +114,7 @@ const ThemeModal = (props) => {
     // setThemeRequest,
     generateStyles,
     // theme,
-    user,
+    // user, // Unused variable
   } = props
   // const { mode } = theme
   const classes = useStyles()

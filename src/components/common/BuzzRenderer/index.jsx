@@ -53,7 +53,7 @@ const createReactElement = (node, skipTags) => {
   return null
 }
 
-const BuzzRenderer = ({ content, skipTags = [], className }) => {
+const BuzzRenderer = React.memo(({ content, skipTags = [], className }) => {
   const classes = useStyles()
   const sanitizedContent = sanitizeHtml(content, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['span']),
@@ -71,6 +71,6 @@ const BuzzRenderer = ({ content, skipTags = [], className }) => {
     .filter(el => el)
 
   return <span className={classNames(className, classes.rendererWrapper)}>{elements}</span>
-}
+})
 
 export default BuzzRenderer

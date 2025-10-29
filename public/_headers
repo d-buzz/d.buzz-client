@@ -1,0 +1,104 @@
+# Headers for all files
+/*
+  # Allow cross-origin requests for all resources
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization
+
+  # Fix ORB (Opaque Response Blocking) errors - CRITICAL
+  Cross-Origin-Resource-Policy: cross-origin
+
+  # Allow embedding from any origin
+  X-Frame-Options: SAMEORIGIN
+
+  # Security headers - permissive for development
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Timing headers
+  Timing-Allow-Origin: *
+
+# JavaScript and CSS files - critical for fixing ORB blocking
+/static/js/*
+  Content-Type: application/javascript
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/static/css/*
+  Content-Type: text/css
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service Worker
+/service-worker.js
+  Content-Type: application/javascript
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Media files
+/static/media/*
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images
+/*.jpg
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.png
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts
+/fonts/*
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff2
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.ttf
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.eot
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML files - no caching
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+# Manifest and other JSON files
+/*.json
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=86400

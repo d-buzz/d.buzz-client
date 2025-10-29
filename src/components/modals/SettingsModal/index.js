@@ -189,7 +189,7 @@ const SettingsModal = (props) => {
     show,
     onHide,
     checkVersionRequest,
-    user,
+    // user, // Unused variable
   } = props
   const classes = useStyles()
 

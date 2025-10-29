@@ -296,7 +296,6 @@ const prepareTwitterEmbeds = (
               match = link.match(/(?:https?:\/\/(?:(?:x\.com\/(.*?)\/status\/(.*)?=(.*))))/i)
               id = `${match[1]}&${match[2].split(/[?/]/)[0]}`
             }
-            console.log(id)
             body = body.replace(link, `~~~~~~.^.~~~:twitter:${id}:~~~~~~.^.~~~`)
           }else if(link.match(mobileTwitterXRegex)) {
             match = link.match(mobileTwitterXRegex)
