@@ -9,12 +9,14 @@ import { polling } from './polling/reducers'
 import { settings } from './settings/reducers'
 import { interfaces } from './interface/reducers'
 import { wallet } from './wallet/reducers'
+import { chat } from './chat/reducers'
 import * as postSagas from './posts/sagas'
 import * as authSagas from './auth/sagas'
 import * as profileSagas from './profile/sagas'
 import * as pollSagas from './polling/sagas'
 import * as settingSagas from './settings/sagas'
 import * as walletSagas from './wallet/sagas'
+import * as chatSagas from './chat/sagas'
 
 export const rootReducer = combineReducers({
   thunk: thunkReducer,
@@ -25,6 +27,7 @@ export const rootReducer = combineReducers({
   settings,
   interfaces,
   wallet,
+  chat,
 })
 
 export function* rootSaga() {
@@ -35,5 +38,6 @@ export function* rootSaga() {
     ...Object.values(pollSagas),
     ...Object.values(settingSagas),
     ...Object.values(walletSagas),
+    ...Object.values(chatSagas),
   ].map(fork))
 }
