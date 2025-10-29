@@ -236,7 +236,7 @@ const mapStateToProps = (state) => ({
   theme: state.settings.get('theme'),
   followMutedModal: state.interfaces.get('followMutedListDialog')?.toJS ? state.interfaces.get('followMutedListDialog').toJS() : state.interfaces.get('followMutedListDialog'),
   loading: pending(state, 'FOLLOW_MUTED_LIST_REQUEST') || pending(state, 'UNFOLLOW_MUTED_LIST_REQUEST'),
-  followedMutedList: state.profile.get('followedMuted'),
+  followedMutedList: state.profile.get('followedMuted')?.toJS ? state.profile.get('followedMuted').toJS() : state.profile.get('followedMuted'),
 })
 
 const mapDispatchToProps = (dispatch) => ({
