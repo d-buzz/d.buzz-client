@@ -3,6 +3,7 @@ import {
   GET_CONTENT_SUCCESS,
   SET_HOME_IS_VISITED,
   SET_HOME_LAST_POST,
+  SET_HOME_HAS_MORE,
   SET_TRENDING_IS_VISITED,
   GET_TRENDING_TAGS_SUCCESS,
   GET_TRENDING_POSTS_SUCCESS,
@@ -56,6 +57,7 @@ const defaultState = fromJS({
   lastTrending: {},
   lastHome: {},
   lastLatest: {},
+  homeHasMore: true,
   images: [],
   published: {},
   appendReply: {},
@@ -93,6 +95,8 @@ export const posts = (state = defaultState, { type, payload }) => {
     return state.set('isHomeVisited', payload)
   case SET_HOME_LAST_POST:
     return state.set('lastHome', payload)
+  case SET_HOME_HAS_MORE:
+    return state.set('homeHasMore', payload)
   case SET_TRENDING_IS_VISITED:
     return state.set('isTrendingVisited', payload)
   case SET_LATEST_IS_VISITED:
@@ -100,7 +104,7 @@ export const posts = (state = defaultState, { type, payload }) => {
   case GET_TRENDING_TAGS_SUCCESS:
     return state.set('tags', payload)
   case CLEAR_HOME_POSTS:
-    return state.set('home', [])
+    return state.set('home', []).set('homeHasMore', true)
   case CLEAR_TRENDING_POSTS:
     return state.set('trending', [])
   case CLEAR_LATEST_POSTS:
