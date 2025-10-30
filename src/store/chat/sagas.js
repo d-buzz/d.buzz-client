@@ -24,7 +24,9 @@ import {
   POLL_ACTIVE_CONVERSATIONS,
   POLL_NEW_CONVERSATIONS,
   OPEN_CHAT,
+  RETRY_MESSAGE,
   // Action creators
+  sendMessageRequest,
   sendMessageSuccess,
   sendMessageFailure,
   fetchConversationsSuccess,
@@ -42,6 +44,8 @@ import {
   updateLastPollTime,
   updateLastFetchedBlock,
   updateMemoKeyCache,
+  updateTypingStatus,
+  receiveReadReceipt,
   setLoading,
   setError,
   clearError,
@@ -72,8 +76,12 @@ import {
   fetchAllMessages,
   fetchIncomingTransfers,
   fetchNewMessages,
+  fetchTypingIndicators,
+  fetchReadReceipts,
   getConversationSummaries,
   getLatestBlockNum,
+  checkSufficientRC,
+  getRCPercentage,
 } from 'services/chat/blockchain'
 
 import {
@@ -81,6 +89,12 @@ import {
   broadcastKeychainOperation,
   extractLoginData,
 } from 'services/api'
+
+import {
+  showMessageNotification,
+  shouldShowNotification,
+  requestNotificationPermission,
+} from 'services/chat/notifications'
 
 /**
  * Selectors
@@ -90,6 +104,7 @@ const getConversations = (state) => state.chat.get('conversations')
 const getMessages = (state, username) => state.chat.getIn(['messages', username])
 const getLastFetchedBlock = (state, username) => state.chat.getIn(['lastFetchedBlocks', username])
 const getActiveChats = (state) => state.chat.get('activeChats')
+const getCurrentChat = (state) => state.chat.get('currentChat')
 const getMemoKeyCache = (state, username) => state.chat.getIn(['memoKeys', username])
 const getSettings = (state) => state.chat.get('settings')
 
@@ -160,6 +175,20 @@ export function* sendMessageSaga(action) {
       options.forcePriority
     )
 
+    // Check RC before proceeding (skip for transfer operations as they don't use RC)
+    if (operationType !== 'transfer') {
+      const hasSufficientRC = yield call(checkSufficientRC, username, 'custom_json')
+      if (!hasSufficientRC) {
+        yield put(messageFailed(tempId, 'Insufficient Resource Credits. Please wait for RC to regenerate or use a transfer message.'))
+        yield put(sendMessageFailure(
+          new Error('Insufficient Resource Credits'),
+          meta
+        ))
+        yield put(setLoading(false, 'sending'))
+        return
+      }
+    }
+
     // Generate operation
     let operation
     if (operationType === 'transfer') {
@@ -214,6 +243,52 @@ export function* sendMessageSaga(action) {
     yield put(sendMessageFailure(error.message, meta))
     yield put(setError(error.message, 'sending'))
     yield put(setLoading(false, 'sending'))
+  }
+}
+
+/**
+ * Retry Message Saga
+ * Retries sending a failed message
+ */
+export function* retryMessageSaga(action) {
+  const { tempId } = action.payload
+
+  try {
+    // Find the failed message in state
+    const conversations = yield select(getConversations)
+    let failedMessage = null
+    let recipient = null
+
+    // Search through all conversations to find the failed message
+    for (const [username, conversation] of conversations.entries()) {
+      const messages = yield select(getMessages, username)
+      if (messages) {
+        const message = messages.find(
+          (msg) => msg.get('tempId') === tempId && msg.get('status') === 'failed'
+        )
+        if (message) {
+          failedMessage = message
+          recipient = username
+          break
+        }
+      }
+    }
+
+    if (!failedMessage || !recipient) {
+      console.error('Failed message not found:', tempId)
+      return
+    }
+
+    // Extract message content
+    const content = failedMessage.get('content')
+
+    // Remove the failed message from state
+    // This will be handled by the optimistic update in sendMessageRequest
+
+    // Resend the message
+    yield put(sendMessageRequest(recipient, content))
+  } catch (error) {
+    console.error('Retry message failed:', error)
   }
 }
 
@@ -451,6 +526,68 @@ export function* pollActiveConversationsSaga() {
             if (latestBlock) {
               yield put(updateLastFetchedBlock(partner, latestBlock))
             }
+
+            // Show notifications for new messages
+            const settings = yield select(getSettings)
+            const notificationsEnabled = settings.get('notificationsEnabled')
+            const activeChats = yield select(getActiveChats)
+            const currentChat = yield select(getCurrentChat)
+
+            // Check if chat with this partner is currently open
+            const isChatOpen = activeChats.includes(partner) || currentChat === partner
+
+            // Filter messages sent TO the current user (not sent BY the current user)
+            const incomingMessages = newMessages.filter((msg) => msg.from === partner)
+
+            if (incomingMessages.length > 0 && shouldShowNotification(isChatOpen, notificationsEnabled)) {
+              // Show notification for the first new message
+              const firstMessage = incomingMessages[0]
+              showMessageNotification(firstMessage, (username) => {
+                // Callback when notification is clicked
+                // This would need to be connected to the router/navigation
+                window.location.hash = `/messages/${username}`
+              })
+            }
+          }
+
+          // Poll for typing indicators from this partner
+          try {
+            const typingIndicators = yield call(fetchTypingIndicators, partner, lastBlockNum, 20)
+
+            if (typingIndicators.length > 0) {
+              // Find the most recent typing indicator
+              const mostRecent = typingIndicators[typingIndicators.length - 1]
+              const timeDiff = Date.now() - mostRecent.timestamp
+
+              // Only show typing if indicator was sent within last 5 seconds
+              if (timeDiff < 5000) {
+                yield put(updateTypingStatus(partner, true))
+
+                // Auto-clear typing status after 5 seconds
+                yield delay(5000)
+                yield put(updateTypingStatus(partner, false))
+              } else {
+                yield put(updateTypingStatus(partner, false))
+              }
+            }
+          } catch (typingError) {
+            // Silently handle typing indicator errors
+            console.warn(`Typing indicator polling failed for ${partner}:`, typingError)
+          }
+
+          // Poll for read receipts from this partner
+          try {
+            const readReceipts = yield call(fetchReadReceipts, partner, lastBlockNum, 50)
+
+            if (readReceipts.length > 0) {
+              // Process each read receipt
+              for (const receipt of readReceipts) {
+                yield put(receiveReadReceipt(receipt.read_by, receipt.message_ids))
+              }
+            }
+          } catch (receiptError) {
+            // Silently handle read receipt errors
+            console.warn(`Read receipt polling failed for ${partner}:`, receiptError)
           }
 
           yield put(updateLastPollTime(partner, Date.now()))
@@ -570,8 +707,32 @@ export function* openChatSaga(action) {
       yield put({ type: FETCH_MESSAGES_REQUEST, payload: { username }, meta: { thunk: true } })
     }
 
-    // Mark messages as read
-    yield put(markMessagesRead(username))
+    // Get all unread messages from this partner
+    if (messages && messages.size > 0) {
+      const currentUser = yield select(getCurrentUser)
+      const currentUsername = currentUser.get('username')
+
+      // Find all unread messages sent by the partner
+      const unreadMessageIds = messages
+        .filter((msg) => msg.get('from') === username && !msg.get('read'))
+        .map((msg) => msg.get('messageId') || msg.get('txId'))
+        .toArray()
+
+      // Mark messages as read locally
+      yield put(markMessagesRead(username))
+
+      // Send read receipts if there are unread messages
+      if (unreadMessageIds.length > 0) {
+        yield put({
+          type: MARK_MESSAGES_READ_REQUEST,
+          payload: { username, messageIds: unreadMessageIds },
+          meta: { thunk: true }
+        })
+      }
+    } else {
+      // Just mark as read locally if no messages yet
+      yield put(markMessagesRead(username))
+    }
   } catch (error) {
     console.error('Open chat failed:', error)
   }
@@ -583,6 +744,10 @@ export function* openChatSaga(action) {
  */
 export function* watchSendMessage() {
   yield takeEvery(SEND_MESSAGE_REQUEST, sendMessageSaga)
+}
+
+export function* watchRetryMessage() {
+  yield takeEvery(RETRY_MESSAGE, retryMessageSaga)
 }
 
 export function* watchFetchConversations() {

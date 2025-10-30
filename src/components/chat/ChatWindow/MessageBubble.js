@@ -8,13 +8,15 @@
  */
 
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { createUseStyles } from 'react-jss'
-import { Typography, Tooltip } from '@material-ui/core'
+import { Typography, Tooltip, IconButton } from '@material-ui/core'
 import DoneIcon from '@material-ui/icons/Done'
 import DoneAllIcon from '@material-ui/icons/DoneAll'
 import ScheduleIcon from '@material-ui/icons/Schedule'
 import ErrorIcon from '@material-ui/icons/Error'
 import moment from 'moment'
+import { retryMessage } from 'store/chat/actions'
 
 const useStyles = createUseStyles(theme => ({
   messageContainer: {
@@ -82,6 +84,7 @@ const useStyles = createUseStyles(theme => ({
 
 const MessageBubble = ({ message, isSent }) => {
   const classes = useStyles({ isSent })
+  const dispatch = useDispatch()
   const [showTooltip, setShowTooltip] = useState(false)
 
   const {
@@ -90,7 +93,14 @@ const MessageBubble = ({ message, isSent }) => {
     status = 'confirmed',
     type,
     read = false,
+    tempId,
   } = message
+
+  const handleRetry = () => {
+    if (status === 'failed' && tempId) {
+      dispatch(retryMessage(tempId))
+    }
+  }
 
   const getStatusIcon = () => {
     if (!isSent) return null
@@ -114,8 +124,14 @@ const MessageBubble = ({ message, isSent }) => {
         )
       case 'failed':
         return (
-          <Tooltip title="Failed to send. Tap to retry.">
-            <ErrorIcon className={`${classes.statusIcon} ${classes.errorIcon}`} />
+          <Tooltip title="Failed to send. Click to retry.">
+            <IconButton
+              size="small"
+              onClick={handleRetry}
+              style={{ padding: 0 }}
+            >
+              <ErrorIcon className={`${classes.statusIcon} ${classes.errorIcon}`} />
+            </IconButton>
           </Tooltip>
         )
       default:

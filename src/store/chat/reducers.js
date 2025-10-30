@@ -20,6 +20,7 @@ import {
   UPDATE_CONVERSATION_MESSAGES,
   NEW_CONVERSATION_DETECTED,
   MARK_MESSAGES_READ,
+  RECEIVE_READ_RECEIPT,
   ARCHIVE_CONVERSATION,
   DELETE_CONVERSATION,
   MUTE_CONVERSATION,
@@ -252,6 +253,26 @@ export const chat = (state = defaultState, { type, payload }) => {
       }
 
       return state
+    }
+
+    case RECEIVE_READ_RECEIPT: {
+      const { username, messageIds } = payload
+      const messages = state.getIn(['messages', username])
+
+      if (!messages) return state
+
+      // Mark specified messages as read
+      let updatedMessages = messages
+      messageIds.forEach((messageId) => {
+        const messageIndex = messages.findIndex(
+          (msg) => msg.get('messageId') === messageId || msg.get('txId') === messageId
+        )
+        if (messageIndex !== -1) {
+          updatedMessages = updatedMessages.setIn([messageIndex, 'read'], true)
+        }
+      })
+
+      return state.setIn(['messages', username], updatedMessages)
     }
 
     case ARCHIVE_CONVERSATION: {

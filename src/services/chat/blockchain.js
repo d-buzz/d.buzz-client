@@ -426,6 +426,36 @@ export const checkSufficientRC = async (username, operationType) => {
 }
 
 /**
+ * Get RC percentage for display
+ *
+ * @param {string} username - Username to check
+ * @returns {Promise<number>} RC percentage (0-100)
+ */
+export const getRCPercentage = async (username) => {
+  try {
+    const accounts = await apiCallWithFailover(() =>
+      api.getAccountsAsync([username])
+    )
+
+    if (!accounts || accounts.length === 0) {
+      return 100 // Default to 100% if can't fetch
+    }
+
+    const account = accounts[0]
+    const currentMana = parseInt(account.voting_manabar?.current_mana || 0)
+    const maxMana = parseInt(account.voting_manabar?.max_mana || currentMana)
+
+    if (maxMana === 0) return 100
+
+    const percentage = (currentMana / maxMana) * 100
+    return Math.round(percentage * 100) / 100 // Round to 2 decimal places
+  } catch (error) {
+    console.error(`Failed to get RC percentage for ${username}:`, error)
+    return 100 // Default to 100% on error
+  }
+}
+
+/**
  * Get conversation summary from messages
  * Groups messages by conversation partner
  *

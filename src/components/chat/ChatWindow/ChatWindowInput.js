@@ -13,6 +13,7 @@ import { TextField, IconButton, InputAdornment, Tooltip } from '@material-ui/cor
 import SendIcon from '@material-ui/icons/Send'
 import { EmojiIcon } from 'components/elements'
 import EmojiPicker from 'components/common/EmojiPicker'
+import useTypingIndicator from 'hooks/useTypingIndicator'
 
 const useStyles = createUseStyles(theme => ({
   inputContainer: {
@@ -91,11 +92,16 @@ const ChatWindowInput = ({ onSendMessage, partnerUsername }) => {
   const [message, setMessage] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const inputRef = useRef(null)
+  const onTyping = useTypingIndicator(partnerUsername)
 
   const handleChange = (event) => {
     const value = event.target.value
     if (value.length <= MAX_MESSAGE_LENGTH) {
       setMessage(value)
+      // Trigger typing indicator
+      if (value.trim().length > 0) {
+        onTyping()
+      }
     }
   }
 

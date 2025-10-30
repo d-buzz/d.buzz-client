@@ -53,6 +53,13 @@ export const messageFailed = (tempId, error) => ({
   payload: { tempId, error },
 })
 
+export const RETRY_MESSAGE = 'RETRY_MESSAGE'
+
+export const retryMessage = (tempId) => ({
+  type: RETRY_MESSAGE,
+  payload: { tempId },
+})
+
 // ========================================
 // Receive Message Actions
 // ========================================
@@ -161,6 +168,13 @@ export const markMessagesReadSuccess = (response, meta) => ({
 export const markMessagesRead = (username) => ({
   type: MARK_MESSAGES_READ,
   payload: { username },
+})
+
+export const RECEIVE_READ_RECEIPT = 'RECEIVE_READ_RECEIPT'
+
+export const receiveReadReceipt = (username, messageIds) => ({
+  type: RECEIVE_READ_RECEIPT,
+  payload: { username, messageIds },
 })
 
 // ========================================
