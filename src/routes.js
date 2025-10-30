@@ -35,6 +35,8 @@ const Developers = React.lazy(() => import('./components/pages/Developers'))
 const Wallet = React.lazy(() => import('./components/pages/Wallet'))
 const WalletBalances = React.lazy(() => import('./components/sections/WalletBalances'))
 const WalletHistory = React.lazy(() => import('./components/sections/WalletHistory'))
+const Messages = React.lazy(() => import('./components/pages/Messages'))
+const ChatView = React.lazy(() => import('./components/pages/Messages/ChatView'))
 
 const routes =  [
   {
@@ -88,7 +90,12 @@ const routes =  [
       {
         path: '/messages',
         exact: true,
-        component: Trending,
+        component: Messages,
+      },
+      {
+        path: '/messages/:username',
+        exact: true,
+        component: ChatView,
       },
       {
         path: '/latest',
